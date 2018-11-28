@@ -1,0 +1,17 @@
+platform :ios, '9.0'
+
+use_frameworks!
+
+target 'Iceland' do
+    pod 'RxSwift'
+    pod 'RxCocoa'
+end
+
+target 'IcelandTests' do
+    pod 'RxSwift'
+    pod 'RxCocoa'
+end
+
+target 'Storage' do
+   pod 'KeychainAccess'
+end
