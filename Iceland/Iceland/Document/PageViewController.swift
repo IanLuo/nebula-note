@@ -52,6 +52,10 @@ new itunes connct api
 2. make a tool to do it
 remember for random task
 day plan
+- [-] target 1
+    - [ ] target 3
+    - [x] target 4
+- [ ] target 2
 review the upcoming week
 reschedule
 priority of task

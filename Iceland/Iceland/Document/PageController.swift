@@ -9,8 +9,8 @@
 import Foundation
 import UIKit
 
-public protocol OutlineMasterDelegate: class {
-    func didUpdateHeadings(headings: [NSRange])
+public protocol PageControllerDelegate: class {
+    
 }
 
 public class PageController: NSObject {
@@ -69,8 +69,39 @@ extension PageController: OutlineTextViewDelegate {
         }
     }
     
-    public func didTapOnCheckbox(textView: UITextView, characterIndex: Int) {
+    public func didTapOnCheckbox(textView: UITextView, characterIndex: Int, statusRange: NSRange) {
+        var replacement: String = ""
+        switch (textView.text as NSString).substring(with: statusRange) {
+        case "- [ ]": replacement = "- [x]"
+        case "- [x]": replacement = "- [ ]"
+        case "- [-]": replacement = "- [ ]"
+        default: break
+        }
         
+        if replacement.count > 0 {
+            self.textStorage.replaceCharacters(in: statusRange, with: replacement)
+        }
+    }
+    
+    public func didTapOnLink(textView: UITextView, characterIndex: Int, linkRange: NSRange) {
+        if let url = OutlineParser.Matcher.Element.url {
+            let result: [[String: NSRange]] = url
+                .matches(in: textView.text, options: [], range: linkRange)
+                .map { (result: NSTextCheckingResult) -> [String: NSRange] in
+                    var comp: [String: NSRange] = [:]
+                    comp[OutlineParser.Key.Element.link] = result.range(at: 0)
+                    comp[OutlineParser.Key.Element.Link.url] = result.range(at: 1)
+                    comp[OutlineParser.Key.Element.Link.scheme] = result.range(at: 2)
+                    comp[OutlineParser.Key.Element.Link.title] = result.range(at: 3)
+                    return comp.filter { _, value in value.location != Int.max }
+            }
+            
+            if let result = result.first {
+                print((textView.text as NSString).substring(with: result[OutlineParser.Key.Element.Link.url]!))
+                print((textView.text as NSString).substring(with: result[OutlineParser.Key.Element.Link.title]!))
+                print((textView.text as NSString).substring(with: result[OutlineParser.Key.Element.Link.scheme]!))
+            }
+        }
     }
 }
 

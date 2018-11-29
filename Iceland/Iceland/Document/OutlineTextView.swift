@@ -11,7 +11,8 @@ import UIKit
 
 public protocol OutlineTextViewDelegate: class {
     func didTapOnLevel(textView: UITextView, chracterIndex: Int)
-    func didTapOnCheckbox(textView: UITextView, characterIndex: Int)
+    func didTapOnCheckbox(textView: UITextView, characterIndex: Int, statusRange: NSRange)
+    func didTapOnLink(textView: UITextView, characterIndex: Int, linkRange: NSRange)
 }
 
 public class OutlineTextView: UITextView {
@@ -47,8 +48,10 @@ public class OutlineTextView: UITextView {
         
         if attributes[OutlineTextStorage.OutlineAttribute.Heading.level] != nil {
             self.tapDelegate?.didTapOnLevel(textView: self, chracterIndex: characterIndex)
-        } else if attributes[OutlineTextStorage.OutlineAttribute.Checkbox.box] != nil {
-            self.tapDelegate?.didTapOnCheckbox(textView: self, characterIndex: characterIndex)
+        } else if let statusRange = attributes[OutlineTextStorage.OutlineAttribute.Checkbox.box] as? NSRange {
+            self.tapDelegate?.didTapOnCheckbox(textView: self, characterIndex: characterIndex, statusRange: statusRange)
+        } else if let linkRange = attributes[OutlineTextStorage.OutlineAttribute.link] as? NSRange {
+            self.tapDelegate?.didTapOnLink(textView: self, characterIndex: characterIndex, linkRange: linkRange)
         }
     }
 }

@@ -186,7 +186,7 @@ public class OutlineParser {
             
             if result.count > 0 {
                 self.logResult(result)
-                self.delegate?.didFoundURL(text: str, urlRanges: result)
+                self.delegate?.didFoundLink(text: str, urlRanges: result)
             }
         }
         
@@ -232,14 +232,14 @@ public protocol OutlineParserDelegate: class {
     func didFoundSeperator(text: String, seperatorRanges: [[String: NSRange]])
     func didFoundCodeBlock(text: String, codeBlockRanges: [[String: NSRange]])
     func didFoundAttachment(text: String, attachmentRanges: [[String: NSRange]])
-    func didFoundURL(text: String, urlRanges: [[String: NSRange]])
+    func didFoundLink(text: String, urlRanges: [[String: NSRange]])
     func didFoundTextMark(text: String, markRanges: [[String: NSRange]])
     func didStartParsing(text: String)
     func didCompleteParsing(text: String)
 }
 
 extension OutlineParser {
-    private struct Matcher {
+    public struct Matcher {
         public struct Node {
             public static var heading = try? NSRegularExpression(pattern: RegexPattern.Node.heading, options: [.anchorsMatchLines])
             public static var checkbox = try? NSRegularExpression(pattern: RegexPattern.Node.checkBox, options: [.anchorsMatchLines])

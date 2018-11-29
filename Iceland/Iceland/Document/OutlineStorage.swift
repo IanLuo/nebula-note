@@ -174,6 +174,13 @@ public class OutlineTextStorage: NSTextStorage {
                changeInLength: attrString.string.count - range.length)
     }
     
+    public override func replaceCharacters(in range: NSRange, with str: String) {
+        backingStore.replaceCharacters(in: range, with: str)
+        edited(NSTextStorage.EditActions.editedAttributes,
+               range: range,
+               changeInLength: str.count - range.length)
+    }
+    
     public override func processEditing() {
         super.processEditing()
     }
@@ -345,16 +352,16 @@ extension OutlineTextStorage: OutlineParserDelegate {
         }
     }
     
-    public func didFoundURL(text: String, urlRanges: [[String : NSRange]]) {
+    public func didFoundLink(text: String, urlRanges: [[String : NSRange]]) {
         self.tempParsingResult.append(contentsOf: urlRanges)
         self.ignoreTextMarkRanges.append(contentsOf: urlRanges.map { $0[OutlineParser.Key.Element.link]! })
         urlRanges.forEach {
             $0.forEach {
                 if $0.key == OutlineParser.Key.Element.link {
-                    self.addAttribute(OutlineAttribute.link, value: 1, range: $0.value)
+                    self.addAttribute(OutlineAttribute.link, value: $0.value, range: $0.value)
                     self.addAttribute(NSAttributedString.Key.link, value: 1, range: $0.value)
                 } else if $0.key == OutlineParser.Key.Element.Link.title {
-                    self.addAttribute(OutlineAttribute.Link.title, value: 1, range: $0.value)
+                    self.addAttribute(OutlineAttribute.Link.title, value: $0.value, range: $0.value)
                 }
             }
         }
@@ -372,10 +379,12 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 if key == OutlineParser.Key.Element.Checkbox.status {
                     let attachment = NSTextAttachment()
                     attachment.bounds = CGRect(origin: .zero, size: CGSize(width: 24, height: 24))
-                    attachment.image = UIImage.create(with: UIColor.green, size: attachment.bounds.size)
+                    let status = (self.string as NSString).substring(with: range)
+                    let color = status == "- [ ]" ? UIColor.green : status == "- [x]" ? UIColor.red : UIColor.lightGray
+                    attachment.image = UIImage.create(with: color, size: attachment.bounds.size)
                     self.addAttribute(NSAttributedString.Key.attachment, value: attachment, range: NSRange(location: range.location, length: 1))
-                    self.addAttribute(OutlineAttribute.Checkbox.box, value: 1, range: NSRange(location: range.location, length: 1))
-                    self.addAttribute(OutlineAttribute.Checkbox.status, value: 1, range: range)
+                    self.addAttribute(OutlineAttribute.Checkbox.box, value: range, range: NSRange(location: range.location, length: 1))
+                    self.addAttribute(OutlineAttribute.Checkbox.status, value: range, range: range)
                 }
             }
         }

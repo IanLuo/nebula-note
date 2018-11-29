@@ -14,7 +14,7 @@ class TestDelegate: OutlineParserDelegate {
     func didStartParsing(text: String) {}
     
     var didHit = false
-    func didFoundURL(text: String, urlRanges: [[String : NSRange]]) {}
+    func didFoundLink(text: String, urlRanges: [[String : NSRange]]) {}
     func didFoundAttachment(text: String, attachmentRanges: [[String : NSRange]]) {}
     func didFoundCheckbox(text: String, checkboxRanges: [[String : NSRange]]) {}
     func didFoundOrderedList(text: String, orderedListRnages: [[String : NSRange]]) {}
