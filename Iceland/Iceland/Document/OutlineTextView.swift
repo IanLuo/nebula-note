@@ -17,6 +17,7 @@ public protocol OutlineTextViewDelegate: class {
 
 public class OutlineTextView: UITextView {
     public weak var tapDelegate: OutlineTextViewDelegate?
+    private let tapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer()
     
     public override init(frame: CGRect, textContainer: NSTextContainer?) {
         super.init(frame: frame, textContainer: textContainer)
@@ -29,10 +30,11 @@ public class OutlineTextView: UITextView {
     }
     
     private func setup() {
-        self.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapped)))
+        self.tapGestureRecognizer.delegate = self
+        self.addGestureRecognizer(self.tapGestureRecognizer)
     }
     
-    @objc func tapped(guesture: UITapGestureRecognizer) {
+    private func tapped(guesture: UITapGestureRecognizer) -> Bool {
         let location = guesture.location(in: self)
         
         let characterIndex = self.layoutManager.characterIndex(for: location,
@@ -46,13 +48,27 @@ public class OutlineTextView: UITextView {
         
         let attributes = self.textStorage.attributes(at: characterIndex, effectiveRange: nil)
         
+        var shouldPassTapToOtherGuestureRecognizers = false
         if attributes[OutlineTextStorage.OutlineAttribute.Heading.level] != nil {
             self.tapDelegate?.didTapOnLevel(textView: self, chracterIndex: characterIndex)
         } else if let statusRange = attributes[OutlineTextStorage.OutlineAttribute.Checkbox.box] as? NSRange {
             self.tapDelegate?.didTapOnCheckbox(textView: self, characterIndex: characterIndex, statusRange: statusRange)
         } else if let linkRange = attributes[OutlineTextStorage.OutlineAttribute.link] as? NSRange {
             self.tapDelegate?.didTapOnLink(textView: self, characterIndex: characterIndex, linkRange: linkRange)
+        } else {
+            shouldPassTapToOtherGuestureRecognizers = true
         }
+        
+        return shouldPassTapToOtherGuestureRecognizers
     }
 }
 
+extension OutlineTextView: UIGestureRecognizerDelegate {
+    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        if gestureRecognizer == self.tapGestureRecognizer {
+            return self.tapped(guesture: self.tapGestureRecognizer)
+        } else {
+            return true
+        }
+    }
+}
