@@ -22,22 +22,28 @@ public class OutlineLayoutManager: NSLayoutManager {
 
 extension OutlineLayoutManager: NSLayoutManagerDelegate {
     public func layoutManager(_ layoutManager: NSLayoutManager, shouldGenerateGlyphs glyphs: UnsafePointer<CGGlyph>, properties props: UnsafePointer<NSLayoutManager.GlyphProperty>, characterIndexes charIndexes: UnsafePointer<Int>, font aFont: UIFont, forGlyphRange glyphRange: NSRange) -> Int {
+        let controlCharProps: UnsafeMutablePointer<NSLayoutManager.GlyphProperty> = UnsafeMutablePointer(mutating: props)
+        for i in 0..<glyphRange.length {
+            let attributes = self.textStorage!.attributes(at: glyphRange.location + i, effectiveRange: nil)
         
-        if hasMarkToHide(glyphs: glyphs) {
-            layoutManager.setGlyphs(glyphs, properties: props,
-                                    characterIndexes: charIndexes,
-                                    font: aFont,
-                                    forGlyphRange: glyphRange)
-            
-            return glyphRange.length
+            if attributes[OutlineTextStorage.OutlineAttribute.Heading.folded] != nil {
+                controlCharProps[i] = .null
+            } else if attributes[OutlineTextStorage.OutlineAttribute.link] != nil
+                && attributes[OutlineTextStorage.OutlineAttribute.Link.title] == nil {
+                controlCharProps[i] = .null
+            } else if attributes[OutlineTextStorage.OutlineAttribute.Checkbox.status] != nil
+                && attributes[OutlineTextStorage.OutlineAttribute.Checkbox.box] == nil {
+                controlCharProps[i] = .null
+            }
         }
         
-        return 0
-    }
-    
-    public func layoutManager(_ layoutManager: NSLayoutManager, shouldSetLineFragmentRect lineFragmentRect: UnsafeMutablePointer<CGRect>, lineFragmentUsedRect: UnsafeMutablePointer<CGRect>, baselineOffset: UnsafeMutablePointer<CGFloat>, in textContainer: NSTextContainer, forGlyphRange glyphRange: NSRange) -> Bool {
+        layoutManager.setGlyphs(glyphs,
+                                properties: controlCharProps,
+                                characterIndexes: charIndexes,
+                                font: aFont,
+                                forGlyphRange: glyphRange)
         
-        return false
+        return glyphRange.length
     }
 }
 

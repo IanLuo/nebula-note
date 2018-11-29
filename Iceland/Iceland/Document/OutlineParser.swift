@@ -66,11 +66,7 @@ public class OutlineParser {
             }
             
             if result.count > 0 {
-                for dict in result {
-                    for (key, value) in dict {
-                        print(">>> \(key): \(value)")
-                    }
-                }
+                self.logResult(result)
                 self.delegate?.didFoundHeadings(text:str, headingDataRanges: result)
             }
         }
@@ -87,12 +83,8 @@ public class OutlineParser {
             }
             
             if result.count > 0 {
-                for dict in result {
-                    for (key, value) in dict {
-                        print(">>> \(key): \(value)")
-                    }
-                }
-                self.delegate?.difFoundCheckbox(text: str, checkboxRanges: result)
+                self.logResult(result)
+                self.delegate?.didFoundCheckbox(text: str, checkboxRanges: result)
             }
         }
         
@@ -109,11 +101,7 @@ public class OutlineParser {
             }
             
             if result.count > 0 {
-                for dict in result {
-                    for (key, value) in dict {
-                        print(">>> \(key): \(value)")
-                    }
-                }
+                self.logResult(result)
                 self.delegate?.didFoundCodeBlock(text: str, codeBlockRanges: result)
             }
         }
@@ -130,11 +118,7 @@ public class OutlineParser {
             }
             
             if result.count > 0 {
-                for dict in result {
-                    for (key, value) in dict {
-                        print(">>> \(key): \(value)")
-                    }
-                }
+                self.logResult(result)
                 self.delegate?.didFoundOrderedList(text: str, orderedListRnages: result)
             }
         }
@@ -150,11 +134,7 @@ public class OutlineParser {
             }
             
             if result.count > 0 {
-                for dict in result {
-                    for (key, value) in dict {
-                        print(">>> \(key): \(value)")
-                    }
-                }
+                self.logResult(result)
                 self.delegate?.didFoundUnOrderedList(text: str, unOrderedListRnages: result)
             }
         }
@@ -168,11 +148,7 @@ public class OutlineParser {
             }
             
             if result.count > 0 {
-                for dict in result {
-                    for (key, value) in dict {
-                        print(">>> \(key): \(value)")
-                    }
-                }
+                self.logResult(result)
                 self.delegate?.didFoundSeperator(text: str, seperatorRanges: result)
             }
         }
@@ -190,11 +166,7 @@ public class OutlineParser {
             }
             
             if result.count > 0 {
-                for dict in result {
-                    for (key, value) in dict {
-                        print(">>> \(key): \(value)")
-                    }
-                }
+                self.logResult(result)
                 self.delegate?.didFoundAttachment(text: str, attachmentRanges: result)
             }
         }
@@ -206,17 +178,14 @@ public class OutlineParser {
                 .map { (result: NSTextCheckingResult) -> [String: NSRange] in
                     var comp: [String: NSRange] = [:]
                     comp[Key.Element.link] = result.range(at: 0)
-                    comp[Key.Element.Link.title] = result.range(at: 1)
-                    comp[Key.Element.Link.url] = result.range(at: 2)
+                    comp[Key.Element.Link.url] = result.range(at: 1)
+                    comp[Key.Element.Link.scheme] = result.range(at: 2)
+                    comp[Key.Element.Link.title] = result.range(at: 3)
                     return comp.filter { _, value in value.location != Int.max }
             }
             
             if result.count > 0 {
-                for dict in result {
-                    for (key, value) in dict {
-                        print(">>> \(key): \(value)")
-                    }
-                }
+                self.logResult(result)
                 self.delegate?.didFoundURL(text: str, urlRanges: result)
             }
         }
@@ -245,11 +214,7 @@ public class OutlineParser {
             }
         
         if markResuls.count > 0 {
-            for dict in markResuls {
-                for (key, value) in dict {
-                    print(">>> \(key): \(value)")
-                }
-            }
+            self.logResult(markResuls)
             self.delegate?.didFoundTextMark(text: str, markRanges: markResuls)
         }
         
@@ -261,7 +226,7 @@ public class OutlineParser {
 
 public protocol OutlineParserDelegate: class {
     func didFoundHeadings(text: String, headingDataRanges: [[String: NSRange]])
-    func difFoundCheckbox(text: String, checkboxRanges: [[String: NSRange]])
+    func didFoundCheckbox(text: String, checkboxRanges: [[String: NSRange]])
     func didFoundOrderedList(text: String, orderedListRnages: [[String: NSRange]])
     func didFoundUnOrderedList(text: String, unOrderedListRnages: [[String: NSRange]])
     func didFoundSeperator(text: String, seperatorRanges: [[String: NSRange]])
@@ -347,6 +312,7 @@ extension OutlineParser {
             public struct Link {
                 public static let title = "title"
                 public static let url = "url"
+                public static let scheme = "scheme"
             }
             
             public struct TextMark {
@@ -404,4 +370,15 @@ extension OutlineParser {
         
     }
     
+}
+
+
+extension OutlineParser {
+    fileprivate func logResult(_ result: [[String: NSRange]]) {
+        for dict in result {
+            for (key, value) in dict {
+                print(">>> \(key): \(value)")
+            }
+        }
+    }
 }

@@ -45,20 +45,43 @@ public class PageController: NSObject {
     }
 }
 
+extension PageController: OutlineTextViewDelegate {
+    public func didTapOnLevel(textView: UITextView, chracterIndex: Int) {
+        for range in self.textStorage.currentParagraphs {
+            if range.contains(chracterIndex) {
+                self.textStorage.currentLocation = chracterIndex
+                self.textStorage.updateCurrentInfo()
+                
+                let contentLocation = self.textStorage.currentHeading!.range.upperBound
+                let contentRange = NSRange(location: contentLocation, length: range.upperBound - contentLocation)
+                
+                if self.textStorage.attributes(at: contentLocation, effectiveRange: nil)[OutlineTextStorage.OutlineAttribute.Heading.folded] == nil {
+                    self.textStorage.addAttribute(OutlineTextStorage.OutlineAttribute.Heading.folded, value: 1, range: contentRange)
+                } else {
+                    self.textStorage.removeAttribute(OutlineTextStorage.OutlineAttribute.Heading.folded, range: contentRange)
+                }
+                
+                self.layoutManager.invalidateDisplay(forCharacterRange: range)
+                self.layoutManager.ensureLayout(forGlyphRange: range)
+                
+                return
+            }
+        }
+    }
+    
+    public func didTapOnCheckbox(textView: UITextView, characterIndex: Int) {
+        
+    }
+}
+
 extension PageController: NSTextStorageDelegate {
     public func textStorage(_ textStorage: NSTextStorage, willProcessEditing editedMask: NSTextStorage.EditActions, range editedRange: NSRange, changeInLength delta: Int) {
         
         // 清空 attributes
-        var i: OutlineTextStorage.Item? = self.textStorage.item(after: editedRange.location)
-        repeat {
-            if let range = i?.actualRange {
-                textStorage.attributes(at: range.location, longestEffectiveRange: nil, in: range).forEach {
-                    textStorage.removeAttribute($0.key, range: range)
-                }
-            }
-            
-            i = i?.next
-        } while i != nil
+        for (key, _) in textStorage.attributes(at: editedRange.location, longestEffectiveRange: nil, in: editedRange) {
+            if key == OutlineTextStorage.OutlineAttribute.Heading.folded { continue }
+            textStorage.removeAttribute(key, range: editedRange)
+        }   
     }
     
     /// 添加文字属性

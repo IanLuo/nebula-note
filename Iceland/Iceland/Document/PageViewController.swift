@@ -10,13 +10,15 @@ import Foundation
 import UIKit
 
 public class PageViewController: UIViewController {
-    private let textView: UITextView
+    private let textView: OutlineTextView
     private let pageController: PageController
     
     public init() {
         pageController = PageController(parser: OutlineParser())
         
-        self.textView = UITextView(frame: .zero, textContainer: pageController.textContainer)
+        self.textView = OutlineTextView(frame: .zero, textContainer: pageController.textContainer)
+        
+        self.textView.tapDelegate = self.pageController
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -45,7 +47,7 @@ new itunes connct api
 ** fastlane design
 [[https://github.com/fastlane/fastlane][fastlane official site]]
 [[https://fastlane.tools][fastlane docs]]
-** iOS platform structure [[file:iOS_graph.org][project]]
+** iOS platform structure [[http://iOS_graph.org][project]]
 1. list the structure
 2. make a tool to do it
 remember for random task
@@ -64,7 +66,8 @@ use voice to record remember task is handy
 dddd        sdfsfsd
 asdfasdfsafa
         
-*** asdfsafs
+*** fififififi¡™£¢¢∞§£ª•˙
+        ˙˚˙˚∆˙˚∆¬˙˚∆˙˚˙˚˙˚å˙˚˚˙˙˙©©©ß©ß
 """
     }
 }

@@ -16,7 +16,7 @@ class TestDelegate: OutlineParserDelegate {
     var didHit = false
     func didFoundURL(text: String, urlRanges: [[String : NSRange]]) {}
     func didFoundAttachment(text: String, attachmentRanges: [[String : NSRange]]) {}
-    func difFoundCheckbox(text: String, checkboxRanges: [[String : NSRange]]) {}
+    func didFoundCheckbox(text: String, checkboxRanges: [[String : NSRange]]) {}
     func didFoundOrderedList(text: String, orderedListRnages: [[String : NSRange]]) {}
     func didFoundUnOrderedList(text: String, unOrderedListRnages: [[String : NSRange]]) {}
     func didFoundSeperator(text: String, seperatorRanges: [[String : NSRange]]) {}
@@ -83,7 +83,7 @@ public class ParseOutlineTests: XCTestCase {
     
     func testCheckbox() {
         class TestDelegate_: TestDelegate {
-            override func difFoundCheckbox(text: String, checkboxRanges: [[String : NSRange]]) {
+            override func didFoundCheckbox(text: String, checkboxRanges: [[String : NSRange]]) {
                 XCTAssertEqual("- [-] do something", (text as NSString).substring(with: checkboxRanges[0][OutlineParser.Key.Node.checkbox]!))
                 XCTAssertEqual("- [-]", (text as NSString).substring(with: checkboxRanges[0][OutlineParser.Key.Element.Checkbox.status]!))
                 

@@ -10,6 +10,23 @@ import Foundation
 import UIKit
 
 public class OutlineTextStorage: NSTextStorage {
+    public struct OutlineAttribute {
+        public struct Link {
+            public static let title: NSAttributedString.Key = NSAttributedString.Key("link-title")
+        }
+        
+        public struct Checkbox {
+            public static let box: NSAttributedString.Key = NSAttributedString.Key("checkbox-box")
+            public static let status: NSAttributedString.Key = NSAttributedString.Key("checkbox-status")
+        }
+        
+        public struct Heading {
+            public static let level: NSAttributedString.Key = NSAttributedString.Key("heading-level")
+            public static let folded: NSAttributedString.Key = NSAttributedString.Key("heading-folded")
+        }
+        public static let link: NSAttributedString.Key = NSAttributedString.Key("link")
+    }
+    
     /// Node 和 element 都是 Item
     public class Item {
         var offset: Int = 0
@@ -17,13 +34,17 @@ public class OutlineTextStorage: NSTextStorage {
         var next: Item?
         var range: NSRange
         var name: String
+        var data: [String: NSRange]
         var actualRange: NSRange {
             return offset == 0 ? range : range.offset(self.offset)
         }
+        var contentLength: Int
         
-        public init(range: NSRange, name: String) {
+        public init(range: NSRange, name: String, data: [String: NSRange]) {
             self.range = range
             self.name = name
+            self.data = data
+            self.contentLength = 0
         }
         
         public func offset(_ offset: Int) {
@@ -44,8 +65,8 @@ public class OutlineTextStorage: NSTextStorage {
         /// 当前的 heading level
         public var level: Int = 0
         
-        public convenience init(range: NSRange) {
-            self.init(range: range, name: OutlineParser.Key.Node.heading)
+        public convenience init(range: NSRange, data: [String: NSRange]) {
+            self.init(range: range, name: OutlineParser.Key.Node.heading, data: data)
         }
         
         public var isFolded: Bool = false
@@ -63,11 +84,13 @@ public class OutlineTextStorage: NSTextStorage {
     
     public var currentHeading: Heading?
     
+    public var currentParagraphs: [NSRange] = []
+    
     /// 当前的解析范围，需要进行解析的字符串范围，用于对 item，索引 等缓存数据进行重新组织
     public var currentParseRange: NSRange? {
         didSet {
             if let _ = oldValue {
-                self.removeAttribute(NSAttributedString.Key.backgroundColor, range: NSRange(location: 0, length: self.string.count - 1))
+                self.removeAttribute(NSAttributedString.Key.backgroundColor, range: NSRange(location: 0, length: self.string.count))
             }
             self.addAttributes([NSAttributedString.Key.backgroundColor: UIColor.red.withAlphaComponent(0.1)], range: currentParseRange!)
         }
@@ -175,14 +198,20 @@ public class OutlineTextStorage: NSTextStorage {
         return ranges.count - 1
     }
     
-    internal func updateCurrentInfo() {
+    public func updateCurrentInfo() {
         guard self.savedHeadings.count > 0 else { return }
         
-        // 获取最近的 heading 信息，heading 数组中，location <= currentLocation 的最靠近尾部的 heading
-        let index = findInsertPosition(new: self.currentLocation, ranges: self.savedHeadings)
+        // 获取最近的 heading 信息，heading 数组中，location <= currentLocation 的最靠近头部的 heading
+        var index: Int = 0
+        for (i, range) in self.savedHeadings.reversed().enumerated() {
+            if range.location <= self.currentLocation {
+                index = self.savedHeadings.count - 1 - i
+                break
+            }
+        }
         
         let currentHeadingData = self.savedDataHeadings[index]
-        let currentHeading: Heading = Heading(range: currentHeadingData[OutlineParser.Key.Node.heading]!)
+        let currentHeading: Heading = Heading(range: currentHeadingData[OutlineParser.Key.Node.heading]!, data: currentHeadingData)
         if let planningRange = currentHeadingData[OutlineParser.Key.Element.Heading.planning] {
             currentHeading.planning = (self.string as NSString).substring(with: planningRange)
         }
@@ -247,7 +276,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
         var newItems: [Item] = []
         items.forEach {
             for (key, value) in $0 {
-                newItems.append(Item(range: value, name: key))
+                newItems.append(Item(range: value, name: key, data: [key: value]))
             }
         }
         
@@ -319,14 +348,37 @@ extension OutlineTextStorage: OutlineParserDelegate {
     public func didFoundURL(text: String, urlRanges: [[String : NSRange]]) {
         self.tempParsingResult.append(contentsOf: urlRanges)
         self.ignoreTextMarkRanges.append(contentsOf: urlRanges.map { $0[OutlineParser.Key.Element.link]! })
+        urlRanges.forEach {
+            $0.forEach {
+                if $0.key == OutlineParser.Key.Element.link {
+                    self.addAttribute(OutlineAttribute.link, value: 1, range: $0.value)
+                    self.addAttribute(NSAttributedString.Key.link, value: 1, range: $0.value)
+                } else if $0.key == OutlineParser.Key.Element.Link.title {
+                    self.addAttribute(OutlineAttribute.Link.title, value: 1, range: $0.value)
+                }
+            }
+        }
     }
     
     public func didFoundAttachment(text: String, attachmentRanges: [[String : NSRange]]) {
         self.tempParsingResult.append(contentsOf: attachmentRanges)
     }
     
-    public func difFoundCheckbox(text: String, checkboxRanges: [[String : NSRange]]) {
+    public func didFoundCheckbox(text: String, checkboxRanges: [[String : NSRange]]) {
         self.tempParsingResult.append(contentsOf: checkboxRanges)
+        
+        checkboxRanges.forEach {
+            for (key, range) in $0 {
+                if key == OutlineParser.Key.Element.Checkbox.status {
+                    let attachment = NSTextAttachment()
+                    attachment.bounds = CGRect(origin: .zero, size: CGSize(width: 24, height: 24))
+                    attachment.image = UIImage.create(with: UIColor.green, size: attachment.bounds.size)
+                    self.addAttribute(NSAttributedString.Key.attachment, value: attachment, range: NSRange(location: range.location, length: 1))
+                    self.addAttribute(OutlineAttribute.Checkbox.box, value: 1, range: NSRange(location: range.location, length: 1))
+                    self.addAttribute(OutlineAttribute.Checkbox.status, value: 1, range: range)
+                }
+            }
+        }
     }
     
     public func didFoundOrderedList(text: String, orderedListRnages: [[String : NSRange]]) {
@@ -348,6 +400,16 @@ extension OutlineTextStorage: OutlineParserDelegate {
     public func didFoundHeadings(text: String, headingDataRanges: [[String : NSRange]]) {
         self.tempParsingResult.append(contentsOf: headingDataRanges)
         self.updateHeadingIfNeeded(headingDataRanges)
+        
+        headingDataRanges.forEach {
+            if let levelRange = $0[OutlineParser.Key.Element.Heading.level] {
+                let attachment = NSTextAttachment()
+                attachment.bounds = CGRect(origin: .zero, size: CGSize(width: 24, height: 24))
+                attachment.image = UIImage.create(with: UIColor.lightGray, size: attachment.bounds.size)
+                self.addAttribute(NSAttributedString.Key.attachment, value: attachment, range: levelRange)
+                self.addAttribute(OutlineAttribute.Heading.level, value: 1, range: levelRange)
+            }
+        }
     }
     
     public func didStartParsing(text: String) {
@@ -360,11 +422,13 @@ extension OutlineTextStorage: OutlineParserDelegate {
         
         self.insertItems(items: self.tempParsingResult)
         
-        self.addParagraphIndent()
+        self.currentParagraphs = paragraphs()
+        
+        self.setParagraphIndent()
     }
     
-    private func addParagraphIndent() {
-        let paragraphRanges = self.paragraphs()
+    private func setParagraphIndent() {
+        let paragraphRanges = self.currentParagraphs
         for i in 0..<paragraphRanges.count {
             let paragraphStyle = NSMutableParagraphStyle()
             paragraphStyle.firstLineHeadIndent = CGFloat(self.savedDataHeadings[i][OutlineParser.Key.Element.Heading.level]!.length * 8) // FIXME: 设置 indent 的宽度
