@@ -205,19 +205,22 @@ public class OutlineTextStorage: NSTextStorage {
         return ranges.count - 1
     }
     
-    public func updateCurrentInfo() {
-        guard self.savedHeadings.count > 0 else { return }
-        
-        // 获取最近的 heading 信息，heading 数组中，location <= currentLocation 的最靠近头部的 heading
+    public func headingIndex(at characterIndex: Int) -> Int {
         var index: Int = 0
         for (i, range) in self.savedHeadings.reversed().enumerated() {
-            if range.location <= self.currentLocation {
+            if range.location <= characterIndex {
                 index = self.savedHeadings.count - 1 - i
                 break
             }
         }
         
-        let currentHeadingData = self.savedDataHeadings[index]
+        return index
+    }
+    
+    public func updateCurrentInfo() {
+        guard self.savedHeadings.count > 0 else { return }
+        
+        let currentHeadingData = self.savedDataHeadings[self.headingIndex(at: self.currentLocation)]
         let currentHeading: Heading = Heading(range: currentHeadingData[OutlineParser.Key.Node.heading]!, data: currentHeadingData)
         if let planningRange = currentHeadingData[OutlineParser.Key.Element.Heading.planning] {
             currentHeading.planning = (self.string as NSString).substring(with: planningRange)

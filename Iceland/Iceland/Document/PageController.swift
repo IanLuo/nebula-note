@@ -49,10 +49,11 @@ extension PageController: OutlineTextViewDelegate {
     public func didTapOnLevel(textView: UITextView, chracterIndex: Int) {
         for range in self.textStorage.currentParagraphs {
             if range.contains(chracterIndex) {
-                self.textStorage.currentLocation = chracterIndex
-                self.textStorage.updateCurrentInfo()
+                let heading = self.textStorage.savedDataHeadings[self.textStorage.headingIndex(at: chracterIndex)]
                 
-                let contentLocation = self.textStorage.currentHeading!.range.upperBound
+                guard let headingRange = heading[OutlineParser.Key.Node.heading] else { return }
+                
+                let contentLocation = headingRange.upperBound
                 let contentRange = NSRange(location: contentLocation, length: range.upperBound - contentLocation)
                 
                 if self.textStorage.attributes(at: contentLocation, effectiveRange: nil)[OutlineTextStorage.OutlineAttribute.Heading.folded] == nil {
@@ -108,7 +109,7 @@ extension PageController: OutlineTextViewDelegate {
 extension PageController: NSTextStorageDelegate {
     public func textStorage(_ textStorage: NSTextStorage, willProcessEditing editedMask: NSTextStorage.EditActions, range editedRange: NSRange, changeInLength delta: Int) {
         
-        // 清空 attributes
+        // 清空 attributes, 但是保留折叠的状态
         for (key, _) in textStorage.attributes(at: editedRange.location, longestEffectiveRange: nil, in: editedRange) {
             if key == OutlineTextStorage.OutlineAttribute.Heading.folded { continue }
             textStorage.removeAttribute(key, range: editedRange)
@@ -117,11 +118,6 @@ extension PageController: NSTextStorageDelegate {
     
     /// 添加文字属性
     public func textStorage(_ textStorage: NSTextStorage, didProcessEditing editedMask: NSTextStorage.EditActions, range editedRange: NSRange, changeInLength delta: Int) {
-        // heading
-        // 根据文字 mark 添加不同的显示样式
-        // 解析字符串内容
-        // 找到 heading，将 heading 下的内容进行分组
-        
         /// 当前交互的位置
         self.textStorage.currentLocation = editedRange.location
         
