@@ -62,9 +62,6 @@ extension PageController: OutlineTextViewDelegate {
                     self.textStorage.removeAttribute(OutlineTextStorage.OutlineAttribute.Heading.folded, range: contentRange)
                 }
                 
-                self.layoutManager.invalidateDisplay(forCharacterRange: range)
-                self.layoutManager.ensureLayout(forGlyphRange: range)
-                
                 return
             }
         }
@@ -113,7 +110,7 @@ extension PageController: NSTextStorageDelegate {
         for (key, _) in textStorage.attributes(at: editedRange.location, longestEffectiveRange: nil, in: editedRange) {
             if key == OutlineTextStorage.OutlineAttribute.Heading.folded { continue }
             textStorage.removeAttribute(key, range: editedRange)
-        }   
+        }
     }
     
     /// 添加文字属性
@@ -147,12 +144,12 @@ extension NSRange {
                     extendedRange = NSRange(location: extendedRange.location - 1, length: extendedRange.length + 1)
         }
         
-        // 向下，下一个 '\n' 之前
-        while extendedRange.upperBound < string.count - 1 &&
-            (string as NSString)
-                .substring(with: NSRange(location: extendedRange.upperBound, length: 1)) != "\n" {
-                    extendedRange = NSRange(location: extendedRange.location, length: extendedRange.length + 1)
-        }
+//        // 向下，下一个 '\n' 之前
+//        while extendedRange.upperBound < string.count - 1 &&
+//            (string as NSString)
+//                .substring(with: NSRange(location: extendedRange.upperBound, length: 1)) != "\n" {
+//                    extendedRange = NSRange(location: extendedRange.location, length: extendedRange.length + 1)
+//        }
         
         return extendedRange
     }

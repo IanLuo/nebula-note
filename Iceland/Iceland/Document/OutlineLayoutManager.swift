@@ -29,13 +29,15 @@ extension OutlineLayoutManager: NSLayoutManagerDelegate {
             if attributes[OutlineTextStorage.OutlineAttribute.Heading.folded] != nil {
                 controlCharProps[i] = .null
             } else if attributes[OutlineTextStorage.OutlineAttribute.link] != nil
-                && attributes[OutlineTextStorage.OutlineAttribute.Link.title] == nil {
+                      && attributes[OutlineTextStorage.OutlineAttribute.Link.title] == nil {
                 controlCharProps[i] = .null
             } else if attributes[OutlineTextStorage.OutlineAttribute.Checkbox.status] != nil
-                && attributes[OutlineTextStorage.OutlineAttribute.Checkbox.box] == nil {
+                      && attributes[OutlineTextStorage.OutlineAttribute.Checkbox.box] == nil {
                 controlCharProps[i] = .null
             }
         }
+        
+        print((self.textStorage!.string as NSString).substring(with: glyphRange))
         
         layoutManager.setGlyphs(glyphs,
                                 properties: controlCharProps,

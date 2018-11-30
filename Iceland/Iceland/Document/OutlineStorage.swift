@@ -23,6 +23,9 @@ public class OutlineTextStorage: NSTextStorage {
         public struct Heading {
             public static let level: NSAttributedString.Key = NSAttributedString.Key("heading-level")
             public static let folded: NSAttributedString.Key = NSAttributedString.Key("heading-folded")
+            public static let schedule: NSAttributedString.Key = NSAttributedString.Key("heading-schedule")
+            public static let deadline: NSAttributedString.Key = NSAttributedString.Key("heading-deadline")
+            public static let tags: NSAttributedString.Key = NSAttributedString.Key("heading-tags")
         }
         public static let link: NSAttributedString.Key = NSAttributedString.Key("link")
     }
@@ -183,14 +186,6 @@ public class OutlineTextStorage: NSTextStorage {
     
     public override func processEditing() {
         super.processEditing()
-    }
-    
-    internal func hideCurrentHeadingBelowContents() {
-        // TODO: 折叠
-    }
-    
-    internal func showCurrentHeadingBelowContents() {
-        // TODO: 展开
     }
     
     private func findInsertPosition(new: Int, ranges: [NSRange]) -> Int {
@@ -419,7 +414,28 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 attachment.bounds = CGRect(origin: .zero, size: CGSize(width: 24, height: 24))
                 attachment.image = UIImage.create(with: UIColor.lightGray, size: attachment.bounds.size)
                 self.addAttribute(NSAttributedString.Key.attachment, value: attachment, range: levelRange)
-                self.addAttribute(OutlineAttribute.Heading.level, value: 1, range: levelRange)
+                self.addAttribute(OutlineAttribute.Heading.level, value: levelRange, range: levelRange)
+            }
+            
+            if let scheduleRange = $0[OutlineParser.Key.Element.Heading.schedule] {
+                self.addAttribute(OutlineAttribute.Heading.schedule, value: scheduleRange, range: scheduleRange)
+                self.addAttribute(NSAttributedString.Key.backgroundColor, value: UIColor.orange, range: scheduleRange)
+            }
+            
+            if let deadlineRange = $0[OutlineParser.Key.Element.Heading.deadline] {
+                self.addAttribute(OutlineAttribute.Heading.deadline, value: deadlineRange, range: deadlineRange)
+                self.addAttribute(NSAttributedString.Key.backgroundColor, value: UIColor.purple, range: deadlineRange)
+            }
+            
+            if let tagsRange = $0[OutlineParser.Key.Element.Heading.tags] {
+                self.addAttribute(OutlineAttribute.Heading.deadline, value: tagsRange, range: tagsRange)
+                self.addAttribute(NSAttributedString.Key.backgroundColor, value: UIColor.cyan, range: tagsRange)
+            }
+            
+            if let planningRange = $0[OutlineParser.Key.Element.Heading.planning] {
+                self.addAttribute(OutlineAttribute.Heading.deadline, value: planningRange, range: planningRange)
+                self.addAttribute(NSAttributedString.Key.font, value: UIFont.boldSystemFont(ofSize: 12), range: planningRange)
+                self.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.red, range: planningRange)
             }
         }
     }

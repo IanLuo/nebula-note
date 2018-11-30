@@ -53,9 +53,8 @@ public class OutlineParser {
                      (Key.Element.Heading.deadline, Matcher.Element.Heading.deadline),
                      (Key.Element.Heading.tags, Matcher.Element.Heading.tags)]
                         .forEach {
-                            if let planning = $0.1 {
-                                if let range = planning
-                                    .firstMatch(in: headingText, options: [], range: NSRange(location: 0, length: headingText.count))?
+                            if let matcher = $0.1 {
+                                if let range = matcher.firstMatch(in: headingText, options: [], range: NSRange(location: 0, length: headingText.count))?
                                     .range(at: 1), range.location != Int.max {
                                     comp[$0.0] = NSRange(location: headingRange.location + range.location, length: range.length)
                                 }
@@ -339,8 +338,8 @@ extension OutlineParser {
             public static let heading = "^(\\*+) (.+)"
             // FIXME: 如果 BEGIN 和 END 内部没有至少一个空行，则无法匹配成功
             public static let codeBlock =       "^[\\t ]*\\#\\+BEGIN\\_SRC( [0-9a-zA-Z\\.]*)?\\n([^\\#\\+END\\_SRC]*)\\n\\s*\\#\\+END\\_SRC[\\t ]*\\n"
-            public static let checkBox =        "^[\\t ]*(\\- \\[[x| |\\-]\\]) .+"
-            public static let unorderedList =   "^[\\t ]*[\\-\\+] .+"
+            public static let checkBox =        "^[\\t ]*(\\- \\[[x| |\\-]\\]) .*"
+            public static let unorderedList =   "^[\\t ]*[\\-\\+] .*"
             public static let orderedList =     "^[\\t ]*([0-9a-zA-Z\\.])+[\\.\\)\\>] .*"
             public static let seperator =       "^[\\t ]*(\\-{5,}[\\t ]*)"
             public static let attachment =      "\\/\\/Attachment\\:(image|video|audio|sketch|location)\\=([^\\=\\n]+)" // like: //Attachment:image=xdafeljlfjeksjdf
@@ -348,9 +347,9 @@ extension OutlineParser {
         
         public struct Element {
             public struct Heading {
-                public static let schedule =    " (SCHEDULE\\:\\[[0-9]{4}\\-[0-9]{2}\\-[0-9]{2}\\])"
-                public static let deadline =    " (DEADLINE\\:\\[[0-9]{4}\\-[0-9]{2}\\-[0-9]{2}\\])"
-                public static let planning =    "(TODO|NEXT|DONE|CANCELD) ?"
+                public static let schedule =    " (SCHEDULE\\:\\[[0-9]{4}\\-[0-9]{1,2}\\-[0-9]{1,2}\\])"
+                public static let deadline =    " (DEADLINE\\:\\[[0-9]{4}\\-[0-9]{1,2}\\-[0-9]{1,2}\\])"
+                public static let planning =    " (TODO|NEXT|DONE|CANCELD)? "
                 public static let tags =        " (\\:([a-zA-Z0-9]+\\:)+)"
             }
             

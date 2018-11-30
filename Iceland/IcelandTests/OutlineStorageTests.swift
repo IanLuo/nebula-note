@@ -46,7 +46,7 @@ public class OutlineStorageTests: XCTestCase {
     }
     
     func testCurrentLocation() {
-        let storage = OutlineTextStorage(parser: OutlineParser(delegate: nil))
+        let storage = PageController(parser: OutlineParser(delegate: nil))
         let textView = UITextView(frame: .zero, textContainer: storage.textContainer)
         textView.text = """
         * TODO fastlane design SCHEDULE:[2020-12-12] DEADLINE:[2022-12-11] :movie:entertainment:"
@@ -86,7 +86,7 @@ public class OutlineStorageTests: XCTestCase {
     }
     
     func testNewLoadItems() {
-        let storage = OutlineTextStorage(parser: OutlineParser(delegate: nil))
+        let storage = PageController(parser: OutlineParser(delegate: nil))
         let textView = UITextView(frame: .zero, textContainer: storage.textContainer)
         textView.text = """
         * TODO fastlane design SCHEDULE:[2020-12-12] DEADLINE:[2022-12-11] :movie:entertainment:"
@@ -125,7 +125,7 @@ public class OutlineStorageTests: XCTestCase {
     }
     
     func testEditItems() {
-        let storage = OutlineTextStorage(parser: OutlineParser(delegate: nil))
+        let storage = PageController(parser: OutlineParser(delegate: nil))
         let textView = UITextView(frame: .zero, textContainer: storage.textContainer)
         textView.text = """
         * TODO fastlane design SCHEDULE:[2020-12-12] DEADLINE:[2022-12-11] :movie:entertainment:"

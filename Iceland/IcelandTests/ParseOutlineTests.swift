@@ -268,7 +268,7 @@ public class ParseOutlineTests: XCTestCase {
     
     public func testLink() {
         class TestDelegate_: TestDelegate {
-            override func didFoundURL(text: String, urlRanges: [[String: NSRange]]) {
+            override func didFoundLink(text: String, urlRanges: [[String: NSRange]]) {
                 XCTAssertEqual("[[http://some.domain.com][the title]]", (text as NSString).substring(with: urlRanges[0][OutlineParser.Key.Element.link]!))
                 XCTAssertEqual("the title", (text as NSString).substring(with: urlRanges[0][OutlineParser.Key.Element.Link.title]!))
                 XCTAssertEqual("http://some.domain.com", (text as NSString).substring(with: urlRanges[0][OutlineParser.Key.Element.Link.url]!))
