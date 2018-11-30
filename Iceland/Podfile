@@ -5,6 +5,7 @@ use_frameworks!
 target 'Iceland' do
     pod 'RxSwift'
     pod 'RxCocoa'
+    pod 'SwiftyBeaver'
 end
 
 target 'IcelandTests' do

@@ -10,26 +10,6 @@ import Foundation
 import UIKit
 
 public class OutlineTextStorage: NSTextStorage {
-    public struct OutlineAttribute {
-        public struct Link {
-            public static let title: NSAttributedString.Key = NSAttributedString.Key("link-title")
-        }
-        
-        public struct Checkbox {
-            public static let box: NSAttributedString.Key = NSAttributedString.Key("checkbox-box")
-            public static let status: NSAttributedString.Key = NSAttributedString.Key("checkbox-status")
-        }
-        
-        public struct Heading {
-            public static let level: NSAttributedString.Key = NSAttributedString.Key("heading-level")
-            public static let folded: NSAttributedString.Key = NSAttributedString.Key("heading-folded")
-            public static let schedule: NSAttributedString.Key = NSAttributedString.Key("heading-schedule")
-            public static let deadline: NSAttributedString.Key = NSAttributedString.Key("heading-deadline")
-            public static let tags: NSAttributedString.Key = NSAttributedString.Key("heading-tags")
-        }
-        public static let link: NSAttributedString.Key = NSAttributedString.Key("link")
-    }
-    
     /// Node 和 element 都是 Item
     public class Item {
         var offset: Int = 0
@@ -77,10 +57,8 @@ public class OutlineTextStorage: NSTextStorage {
     
     public var theme: OutlineTheme = OutlineTheme()
     
-    /// 用于保存已经找到的 heading range，以顺序与 ```savedDataHeadings``` 一一对应
-    public var savedHeadings: [NSRange] = []
-    /// 用于保存已经找到的 heading 数据，包括 TODO，scheudle，deadline，tags，其顺序与 ```savedHeadings``` 一一对应
-    public var savedDataHeadings: [[String: NSRange]] = []
+    /// 用于保存已经找到的 heading
+    public var savedHeadings: [Heading] = []
     
     /// 当前交互的文档位置，当前解析部分相对于文档开始的偏移量，不同于 currentParseRange 中的 location
     public var currentLocation: Int = 0
@@ -140,7 +118,7 @@ public class OutlineTextStorage: NSTextStorage {
         if let indexs = self.indexsOfItem(in: currentParseRange) {
             // 清除 currentParseRange 内的所有保存的 index 和对应的 Item
             
-            print("remove indexs: \(indexs)")
+            log.verbose("remove indexs: \(indexs)")
             indexs.reversed().forEach {
                 self.itemRangeDataMapping.removeValue(forKey: self.itemRanges.remove(at: $0))
             }
@@ -151,6 +129,10 @@ public class OutlineTextStorage: NSTextStorage {
                     self.itemRangeDataMapping[self.itemRanges[lastDeletedIndex]]?.offset(delta)
                 }
             }
+        }
+        
+        self.savedHeadings.forEach {
+            $0.offset(delta)
         }
     }
     
@@ -202,8 +184,8 @@ public class OutlineTextStorage: NSTextStorage {
     
     public func headingIndex(at characterIndex: Int) -> Int {
         var index: Int = 0
-        for (i, range) in self.savedHeadings.reversed().enumerated() {
-            if range.location <= characterIndex {
+        for (i, heading) in self.savedHeadings.reversed().enumerated() {
+            if heading.range.location <= characterIndex {
                 index = self.savedHeadings.count - 1 - i
                 break
             }
@@ -215,31 +197,7 @@ public class OutlineTextStorage: NSTextStorage {
     public func updateCurrentInfo() {
         guard self.savedHeadings.count > 0 else { return }
         
-        let currentHeadingData = self.savedDataHeadings[self.headingIndex(at: self.currentLocation)]
-        let currentHeading: Heading = Heading(range: currentHeadingData[OutlineParser.Key.Node.heading]!, data: currentHeadingData)
-        if let planningRange = currentHeadingData[OutlineParser.Key.Element.Heading.planning] {
-            currentHeading.planning = (self.string as NSString).substring(with: planningRange)
-        }
-        
-        if let scheduleRange = currentHeadingData[OutlineParser.Key.Element.Heading.schedule] {
-            currentHeading.schedule = (self.string as NSString).substring(with: scheduleRange)
-        }
-        
-        if let deadlineRange = currentHeadingData[OutlineParser.Key.Element.Heading.deadline] {
-            currentHeading.deadline = (self.string as NSString).substring(with: deadlineRange)
-        }
-        
-        if let levelRange = currentHeadingData[OutlineParser.Key.Element.Heading.level] {
-            currentHeading.level = levelRange.length
-        }
-        
-        if let tagsRange = currentHeadingData[OutlineParser.Key.Element.Heading.tags] {
-            currentHeading.tags = (self.string as NSString).substring(with: tagsRange)
-                .components(separatedBy: ":")
-                .filter { $0.count > 0 }
-        }
-        
-        self.currentHeading = currentHeading
+        self.currentHeading = self.savedHeadings[self.headingIndex(at: self.currentLocation)]
     }
 }
 
@@ -250,27 +208,25 @@ extension OutlineTextStorage: OutlineParserDelegate {
     private func updateHeadingIfNeeded(_ newHeadings: [[String: NSRange]]) {
         // 如果已保存的 heading 为空，直接全部添加
         if savedHeadings.count == 0 {
-            self.savedHeadings = newHeadings.map { $0[OutlineParser.Key.Node.heading]! } // OutlineParser.Key.Node.heading 总是存在
-            self.savedDataHeadings = newHeadings
+            self.savedHeadings = newHeadings.map { Heading(range: $0[OutlineParser.Key.Node.heading]!, data: $0) } // OutlineParser.Key.Node.heading 总是存在
         } else {
             // 删除 currentParsingRange 范围内包含的所有 heading, 删除后，将新的 headings 插入删除掉的位置
             if let currentRange = self.currentParseRange {
                 var indexsToRemove: [Int] = []
-                for (index, range) in self.savedHeadings.enumerated() {
-                    if range.location >= currentRange.location && range.upperBound <= currentRange.upperBound {
+                for (index, heading) in self.savedHeadings.enumerated() {
+                    if heading.range.location >= currentRange.location
+                        && heading.range.upperBound <= currentRange.upperBound {
                         indexsToRemove.append(index)
                     }
                 }
                 
                 indexsToRemove.reversed().forEach {
                     self.savedHeadings.remove(at: $0)
-                    self.savedDataHeadings.remove(at: $0)
                 }
                 
                 if indexsToRemove.count > 0 {
-                    let newHeadingRanges = newHeadings.map { $0[OutlineParser.Key.Node.heading]! }
+                    let newHeadingRanges = newHeadings.map { Heading(range: $0[OutlineParser.Key.Node.heading]!, data: $0) }
                     self.savedHeadings.insert(contentsOf: newHeadingRanges, at: indexsToRemove[0])
-                    self.savedDataHeadings.insert(contentsOf: newHeadings, at: indexsToRemove[0])
                 }
             }
         }
@@ -297,13 +253,12 @@ extension OutlineTextStorage: OutlineParserDelegate {
             self.itemRangeDataMapping[$0.range] = $0
         }
         
-        
         if let first = newItems.first {
             if self.itemRanges.count == 0 {
                 self.itemRanges = newItems.map { $0.range }
             } else {
                 let index = findInsertPosition(new: first.range.location, ranges: self.itemRanges)
-                print("insert at: \(index)")
+                log.verbose("insert at: \(index)")
                 if index == self.itemRanges.count - 1 {
                     self.itemRanges.append(contentsOf: newItems.map { $0.range })
                 } else {
@@ -378,7 +333,10 @@ extension OutlineTextStorage: OutlineParserDelegate {
                     let attachment = NSTextAttachment()
                     attachment.bounds = CGRect(origin: .zero, size: CGSize(width: 24, height: 24))
                     let status = (self.string as NSString).substring(with: range)
-                    let color = status == "- [ ]" ? UIColor.green : status == "- [x]" ? UIColor.red : UIColor.lightGray
+                    let color = status == OutlineParser.Values.Checkbox.unchecked
+                        ? UIColor.green
+                        : status == OutlineParser.Values.Checkbox.checked ? UIColor.red : UIColor.lightGray
+                    
                     attachment.image = UIImage.create(with: color, size: attachment.bounds.size)
                     self.addAttribute(NSAttributedString.Key.attachment, value: attachment, range: NSRange(location: range.location, length: 1))
                     self.addAttribute(OutlineAttribute.Checkbox.box, value: range, range: NSRange(location: range.location, length: 1))
@@ -446,9 +404,9 @@ extension OutlineTextStorage: OutlineParserDelegate {
     }
     
     public func didCompleteParsing(text: String) {
-        guard self.tempParsingResult.count > 0 else { return }
-        
-        self.insertItems(items: self.tempParsingResult)
+        if self.tempParsingResult.count > 0 {
+            self.insertItems(items: self.tempParsingResult)
+        }
         
         self.currentParagraphs = paragraphs()
         
@@ -459,7 +417,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
         let paragraphRanges = self.currentParagraphs
         for i in 0..<paragraphRanges.count {
             let paragraphStyle = NSMutableParagraphStyle()
-            paragraphStyle.firstLineHeadIndent = CGFloat(self.savedDataHeadings[i][OutlineParser.Key.Element.Heading.level]!.length * 8) // FIXME: 设置 indent 的宽度
+            paragraphStyle.firstLineHeadIndent = CGFloat(self.savedHeadings[i].level * 8) // FIXME: 设置 indent 的宽度
             paragraphStyle.headIndent = paragraphStyle.firstLineHeadIndent
             
             (self.string as NSString)
@@ -468,11 +426,11 @@ extension OutlineTextStorage: OutlineParserDelegate {
                     options: .byLines
                 ) { (_, range, inclosingRange, stop) in
                     if range.location == paragraphRanges[i].location {
-                        let paragraphStyle = NSMutableParagraphStyle()
-                        paragraphStyle.headIndent = paragraphStyle.firstLineHeadIndent
-                        self.addAttributes([NSAttributedString.Key.paragraphStyle: paragraphStyle], range: inclosingRange)
+                        let headParagraphStyle = NSMutableParagraphStyle()
+                        headParagraphStyle.headIndent = paragraphStyle.firstLineHeadIndent
+                        self.addAttributes([NSAttributedString.Key.paragraphStyle: headParagraphStyle], range: range)
                     } else {
-                        self.addAttributes([NSAttributedString.Key.paragraphStyle: paragraphStyle], range: inclosingRange)
+                        self.addAttributes([NSAttributedString.Key.paragraphStyle: paragraphStyle], range: range)
                     }
             }
         }
@@ -484,12 +442,13 @@ extension OutlineTextStorage: OutlineParserDelegate {
         if var last = self.savedHeadings.first {
             for i in 1..<self.savedHeadings.count {
                 let next = self.savedHeadings[i]
-                let range = NSRange(location: last.location, length: next.location - last.location - 1)
+                let range = NSRange(location: last.range.location,
+                                    length: next.range.location - last.range.location - 1)
                 paragrphs.append(range)
                 last = self.savedHeadings[i]
             }
             
-            let lastRange = NSRange(location: last.location, length: self.string.count - last.location)
+            let lastRange = NSRange(location: last.range.location, length: self.string.count - last.range.location)
             paragrphs.append(lastRange)
         }
         

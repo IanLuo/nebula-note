@@ -49,11 +49,11 @@ public class OutlineTextView: UITextView {
         let attributes = self.textStorage.attributes(at: characterIndex, effectiveRange: nil)
         
         var shouldPassTapToOtherGuestureRecognizers = false
-        if attributes[OutlineTextStorage.OutlineAttribute.Heading.level] != nil {
+        if attributes[OutlineAttribute.Heading.level] != nil {
             self.tapDelegate?.didTapOnLevel(textView: self, chracterIndex: characterIndex)
-        } else if let statusRange = attributes[OutlineTextStorage.OutlineAttribute.Checkbox.box] as? NSRange {
+        } else if let statusRange = attributes[OutlineAttribute.Checkbox.box] as? NSRange {
             self.tapDelegate?.didTapOnCheckbox(textView: self, characterIndex: characterIndex, statusRange: statusRange)
-        } else if let linkRange = attributes[OutlineTextStorage.OutlineAttribute.link] as? NSRange {
+        } else if let linkRange = attributes[OutlineAttribute.link] as? NSRange {
             self.tapDelegate?.didTapOnLink(textView: self, characterIndex: characterIndex, linkRange: linkRange)
         } else {
             shouldPassTapToOtherGuestureRecognizers = true

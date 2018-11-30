@@ -7,14 +7,22 @@
 //
 
 import UIKit
+import SwiftyBeaver
+
+internal let log = SwiftyBeaver.self
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
-
+    let console = ConsoleDestination()
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        console.format = "$DHH:mm:ss$d $L $M"
+        
+        log.addDestination(console)
         
         window = UIWindow(frame: UIScreen.main.bounds)
         
