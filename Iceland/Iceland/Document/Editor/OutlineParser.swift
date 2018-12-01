@@ -240,7 +240,7 @@ extension OutlineParser {
     fileprivate func logResult(_ result: [[String: NSRange]]) {
         for dict in result {
             for (key, value) in dict {
-                log.verbose(">>> \(key): \(value)")
+//                log.verbose(">>> \(key): \(value)")
             }
         }
     }

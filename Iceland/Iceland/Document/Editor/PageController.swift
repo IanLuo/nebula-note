@@ -87,7 +87,8 @@ extension PageController: OutlineTextViewDelegate {
     
     public func didTapOnCheckbox(textView: UITextView, characterIndex: Int, statusRange: NSRange) {
         var replacement: String = ""
-        switch (textView.text as NSString).substring(with: statusRange) {
+        let offsetedRange = statusRange.offset(statusRange.location - characterIndex)
+        switch (textView.text as NSString).substring(with: offsetedRange) {
         case OutlineParser.Values.Checkbox.unchecked: replacement = OutlineParser.Values.Checkbox.checked
         case OutlineParser.Values.Checkbox.checked: replacement = OutlineParser.Values.Checkbox.unchecked
         case OutlineParser.Values.Checkbox.halfChecked: replacement = OutlineParser.Values.Checkbox.checked
@@ -95,7 +96,7 @@ extension PageController: OutlineTextViewDelegate {
         }
         
         if replacement.count > 0 {
-            self.textStorage.replaceCharacters(in: statusRange, with: replacement)
+            self.textStorage.replaceCharacters(in: offsetedRange, with: replacement)
         }
     }
     
@@ -143,7 +144,12 @@ extension PageController: NSTextStorageDelegate {
         self.textStorage.currentLocation = editedRange.location
         
         // 扩大需要解析的字符串范围
-        self.textStorage.currentParseRange = editedRange.expand(string: textStorage.string)
+        self.textStorage.currentParseRange = editedRange.expandFoward(string: textStorage.string)
+        
+        // 如果是删除操作，将解析的位置向后扩展到行尾，默认的删除操作的范围在行首到当前位置，这样的话会导致 heading 无法更新
+//        if delta < 0 {
+            self.textStorage.currentParseRange = self.textStorage.currentParseRange?.expandBackward(string: textStorage.string)
+//        }
         
         // 更新 item 索引缓存
         self.textStorage.updateItemIndexAndRange(delta: delta)
@@ -158,7 +164,7 @@ extension PageController: NSTextStorageDelegate {
 
 extension NSRange {
     /// 将在字符串中的选择区域扩展到前一个换行符之后，后一个换行符之前
-    internal func expand(string: String) -> NSRange {
+    internal func expandFoward(string: String) -> NSRange {
         var extendedRange = self
         // 向上, 到上一个 '\n' 之后
         while extendedRange.location > 0 &&
@@ -167,8 +173,23 @@ extension NSRange {
                 .substring(with: NSRange(location: extendedRange.location - 1, length: 1)) != "\n" {
                     extendedRange = NSRange(location: extendedRange.location - 1, length: extendedRange.length + 1)
         }
-        
         return extendedRange
+    }
+    
+    internal func expandBackward(string: String) -> NSRange {
+//         向下，下一个 '\n' 之后
+        var extendedRange = self
+        while extendedRange.upperBound < string.count - 1 &&
+            (string as NSString)
+                .substring(with: NSRange(location: extendedRange.upperBound, length: 1)) != "\n" {
+                    extendedRange = NSRange(location: extendedRange.location, length: extendedRange.length + 1)
+        }
+
+        if extendedRange.upperBound >= string.count - 1 {
+            return NSRange(location: extendedRange.location, length: string.count - extendedRange.location - 1)
+        }
+        
+        return NSRange(location: extendedRange.location, length: extendedRange.length + 1)
     }
 }
 
@@ -189,7 +210,7 @@ extension PageController: NSLayoutManagerDelegate {
             }
         }
         
-        log.verbose((self.textStorage.string as NSString).substring(with: glyphRange))
+//        log.verbose((self.textStorage.string as NSString).substring(with: glyphRange))
         
         layoutManager.setGlyphs(glyphs,
                                 properties: controlCharProps,

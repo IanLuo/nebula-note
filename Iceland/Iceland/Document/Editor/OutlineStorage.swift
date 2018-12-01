@@ -12,7 +12,11 @@ import UIKit
 public class OutlineTextStorage: NSTextStorage {
     /// Node 和 element 都是 Item
     public class Item {
-        private var offset: Int = 0
+        private var offset: Int = 0 {
+            didSet {
+                log.verbose("offset did set: \(offset)")
+            }
+        }
         private var previouse: Item?
         private var next: Item?
         private var _range: NSRange
@@ -65,6 +69,7 @@ public class OutlineTextStorage: NSTextStorage {
         
         public convenience init(range: NSRange, data: [String: NSRange]) {
             self.init(range: range, name: OutlineParser.Key.Node.heading, data: data)
+            log.verbose("new heading: \(range)")
         }
         
         public var isFolded: Bool = false
