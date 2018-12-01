@@ -12,22 +12,27 @@ import UIKit
 public class OutlineTextStorage: NSTextStorage {
     /// Node 和 element 都是 Item
     public class Item {
-        var offset: Int = 0
-        var previouse: Item?
-        var next: Item?
-        var range: NSRange
-        var name: String
-        var data: [String: NSRange]
-        var actualRange: NSRange {
-            return offset == 0 ? range : range.offset(self.offset)
+        private var offset: Int = 0
+        private var previouse: Item?
+        private var next: Item?
+        private var _range: NSRange
+        public var range: NSRange {
+            set { _range = newValue }
+            get { return offset == 0 ? _range : _range.offset(self.offset) }
         }
-        var contentLength: Int
+        public var name: String
+        public var data: [String: NSRange]
+        public var contentLength: Int
         
         public init(range: NSRange, name: String, data: [String: NSRange]) {
-            self.range = range
+            self._range = range
             self.name = name
             self.data = data
             self.contentLength = 0
+        }
+        
+        public var paragraphRange: NSRange {
+            return NSRange(location: range.location, length: contentLength)
         }
         
         public func offset(_ offset: Int) {
@@ -38,15 +43,25 @@ public class OutlineTextStorage: NSTextStorage {
     
     public class Heading: Item {
         /// 当前的 heading 的 planning TODO|NEXT|DONE|CANCELD 等
-        public var planning: String?
+        public var planning: NSRange? {
+            return data[OutlineParser.Key.Element.Heading.planning]
+        }
         /// 当前 heading 的 tag 数组
-        public var tags: [String]?
+        public var tags: NSRange? {
+            return data[OutlineParser.Key.Element.Heading.tags]
+        }
         /// 当前 heading 的 schedule
-        public var schedule: String?
+        public var schedule: NSRange? {
+            return data[OutlineParser.Key.Element.Heading.schedule]
+        }
         /// 当前 heading 的 deadline
-        public var deadline: String?
+        public var deadline: NSRange? {
+            return data[OutlineParser.Key.Element.Heading.deadline]
+        }
         /// 当前的 heading level
-        public var level: Int = 0
+        public var level: Int {
+            return data[OutlineParser.Key.Element.Heading.level]!.length
+        }
         
         public convenience init(range: NSRange, data: [String: NSRange]) {
             self.init(range: range, name: OutlineParser.Key.Node.heading, data: data)
@@ -64,8 +79,6 @@ public class OutlineTextStorage: NSTextStorage {
     public var currentLocation: Int = 0
     
     public var currentHeading: Heading?
-    
-    public var currentParagraphs: [NSRange] = []
     
     /// 当前的解析范围，需要进行解析的字符串范围，用于对 item，索引 等缓存数据进行重新组织
     public var currentParseRange: NSRange? {
@@ -131,9 +144,11 @@ public class OutlineTextStorage: NSTextStorage {
             }
         }
         
-        self.savedHeadings.forEach {
-            $0.offset(delta)
-        }
+        self.savedHeadings
+            .filter { $0.range.location > self.currentLocation }
+            .forEach { $0.offset(delta) }
+        
+        self.currentHeading?.contentLength += delta
     }
     
     private var backingStore: NSMutableAttributedString = NSMutableAttributedString()
@@ -408,36 +423,35 @@ extension OutlineTextStorage: OutlineParserDelegate {
             self.insertItems(items: self.tempParsingResult)
         }
         
-        self.currentParagraphs = paragraphs()
+        self.updateHeadingParagraphLength()
         
         self.setParagraphIndent()
     }
     
     private func setParagraphIndent() {
-        let paragraphRanges = self.currentParagraphs
-        for i in 0..<paragraphRanges.count {
+        for heading in self.savedHeadings {
             let paragraphStyle = NSMutableParagraphStyle()
-            paragraphStyle.firstLineHeadIndent = CGFloat(self.savedHeadings[i].level * 8) // FIXME: 设置 indent 的宽度
+            paragraphStyle.firstLineHeadIndent = CGFloat(heading.level * 8) // FIXME: 设置 indent 的宽度
             paragraphStyle.headIndent = paragraphStyle.firstLineHeadIndent
             
             (self.string as NSString)
                 .enumerateSubstrings(
-                    in: paragraphRanges[i],
+                    in: heading.paragraphRange,
                     options: .byLines
                 ) { (_, range, inclosingRange, stop) in
-                    if range.location == paragraphRanges[i].location {
+                    if range.location == heading.range.location {
                         let headParagraphStyle = NSMutableParagraphStyle()
                         headParagraphStyle.headIndent = paragraphStyle.firstLineHeadIndent
-                        self.addAttributes([NSAttributedString.Key.paragraphStyle: headParagraphStyle], range: range)
+                        self.addAttributes([NSAttributedString.Key.paragraphStyle: headParagraphStyle], range: inclosingRange)
                     } else {
-                        self.addAttributes([NSAttributedString.Key.paragraphStyle: paragraphStyle], range: range)
+                        self.addAttributes([NSAttributedString.Key.paragraphStyle: paragraphStyle], range: inclosingRange)
                     }
             }
         }
     }
     
     /// 获得用 heading 分割的段落的 range 列表
-    private func paragraphs() -> [NSRange] {
+    private func updateHeadingParagraphLength() {
         var paragrphs: [NSRange] = []
         if var last = self.savedHeadings.first {
             for i in 1..<self.savedHeadings.count {
@@ -452,6 +466,9 @@ extension OutlineTextStorage: OutlineParserDelegate {
             paragrphs.append(lastRange)
         }
         
-        return paragrphs
+        for (index, range) in paragrphs.enumerated() {
+            self.savedHeadings[index].contentLength = range.length
+        }
+        
     }
 }

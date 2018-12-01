@@ -41,6 +41,8 @@ public class PageController: NSObject {
         self.layoutManager.delegate = self
         layoutManager.allowsNonContiguousLayout = true
         layoutManager.addTextContainer(textContainer)
+        
+        self.layoutManager.showsInvisibleCharacters = true
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -50,11 +52,18 @@ public class PageController: NSObject {
 
 extension PageController: OutlineTextViewDelegate {
     public func didTapOnLevel(textView: UITextView, chracterIndex: Int) {
-        for range in self.textStorage.currentParagraphs {
+        for heading in self.textStorage.savedHeadings {
+            let range = heading.paragraphRange
             if range.contains(chracterIndex) {
-                let headingRange = self.textStorage.savedHeadings[self.textStorage.headingIndex(at: chracterIndex)].actualRange
+                let headingRange = self.textStorage.savedHeadings[self.textStorage.headingIndex(at: chracterIndex)].range
                 let contentLocation = headingRange.upperBound + 1 // contentLocation + 1 因为有换行符
-                let contentRange = NSRange(location: contentLocation, length: range.upperBound - contentLocation)
+                
+                // 当位于文章末尾之前的章节，添加一个长度，避免折叠后留下一个换行符，导致章节之间有空行
+                var postParagraphLength = 1
+                if range.upperBound >= textView.text.count - 1 {
+                    postParagraphLength = 0
+                }
+                let contentRange = NSRange(location: contentLocation, length: range.upperBound - contentLocation + postParagraphLength)
                 
                 if self.textStorage.attributes(at: contentRange.location, effectiveRange: nil)[OutlineAttribute.Heading.folded] == nil {
                     self.textStorage.addAttribute(OutlineAttribute.Heading.folded, value: contentRange, range: contentRange)
@@ -109,6 +118,7 @@ extension PageController: NSTextStorageDelegate {
         log.info("removing attributes in range: \(editedRange)")
         
         // 清空 attributes, 保留折叠的状态
+        guard editedRange.upperBound < textStorage.string.count else { return }
         for (key, _) in textStorage.attributes(at: editedRange.location, longestEffectiveRange: nil, in: editedRange) {
             if key == OutlineAttribute.Heading.folded { continue }
             textStorage.removeAttribute(key, range: editedRange)
@@ -124,7 +134,7 @@ extension PageController: NSTextStorageDelegate {
         self.textStorage.currentLocation = editedRange.location
         
         // 扩大需要解析的字符串范围
-        self.textStorage.currentParseRange = editedRange//.expand(string: textStorage.string)
+        self.textStorage.currentParseRange = editedRange.expand(string: textStorage.string)
         
         // 更新 item 索引缓存
         self.textStorage.updateItemIndexAndRange(delta: delta)
