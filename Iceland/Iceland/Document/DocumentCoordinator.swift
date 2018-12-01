@@ -13,7 +13,8 @@ public class DocumentCoordinator: Coordinator {
     private let viewController: PageViewController
 
     public override init(stack: UINavigationController) {
-        self.viewController = PageViewController()
+        let pageViewModel = PageViewModel(pageController: PageController(parser: OutlineParser()))
+        self.viewController = PageViewController(viewModel: pageViewModel)
         super.init(stack: stack)
     }
     

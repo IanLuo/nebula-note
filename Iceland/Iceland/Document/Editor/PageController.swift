@@ -58,7 +58,7 @@ extension PageController: OutlineTextViewDelegate {
                 let headingRange = self.textStorage.savedHeadings[self.textStorage.headingIndex(at: chracterIndex)].range
                 let contentLocation = headingRange.upperBound + 1 // contentLocation + 1 因为有换行符
                 
-                // 当位于文章末尾之前的章节，添加一个长度，避免折叠后留下一个换行符，导致章节之间有空行
+                // 当位于文章末尾之前的章节，长度 + 1，避免折叠后留下一个换行符，导致章节之间有空行
                 var postParagraphLength = 1
                 if range.upperBound >= textView.text.count - 1 {
                     postParagraphLength = 0
@@ -66,9 +66,18 @@ extension PageController: OutlineTextViewDelegate {
                 let contentRange = NSRange(location: contentLocation, length: range.upperBound - contentLocation + postParagraphLength)
                 
                 if self.textStorage.attributes(at: contentRange.location, effectiveRange: nil)[OutlineAttribute.Heading.folded] == nil {
-                    self.textStorage.addAttribute(OutlineAttribute.Heading.folded, value: contentRange, range: contentRange)
+                    // 如果当前 cursor 在被折叠的部分，会造成 indent 出错, 因此将 cursor 移到 heading 的末尾
+                    if contentRange.contains(textView.selectedRange.location) {
+                        textView.selectedRange = NSRange(location: contentRange.location - 1,
+                                                         length: 0)
+                    }
+                    
+                    self.textStorage.addAttribute(OutlineAttribute.Heading.folded,
+                                                  value: contentRange,
+                                                  range: contentRange)
                 } else {
-                    self.textStorage.removeAttribute(OutlineAttribute.Heading.folded, range: contentRange)
+                    self.textStorage.removeAttribute(OutlineAttribute.Heading.folded,
+                                                     range: contentRange)
                 }
                 
                 return
@@ -158,13 +167,6 @@ extension NSRange {
                 .substring(with: NSRange(location: extendedRange.location - 1, length: 1)) != "\n" {
                     extendedRange = NSRange(location: extendedRange.location - 1, length: extendedRange.length + 1)
         }
-        
-//        // 向下，下一个 '\n' 之前
-//        while extendedRange.upperBound < string.count - 1 &&
-//            (string as NSString)
-//                .substring(with: NSRange(location: extendedRange.upperBound, length: 1)) != "\n" {
-//                    extendedRange = NSRange(location: extendedRange.location, length: extendedRange.length + 1)
-//        }
         
         return extendedRange
     }
