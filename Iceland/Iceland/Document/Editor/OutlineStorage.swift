@@ -12,7 +12,7 @@ import UIKit
 public class OutlineTextStorage: NSTextStorage {
     /// Node 和 element 都是 Item
     public class Item {
-        private var offset: Int = 0 {
+        public var offset: Int = 0 {
             didSet {
                 log.verbose("offset did set: \(offset)")
             }
@@ -48,19 +48,19 @@ public class OutlineTextStorage: NSTextStorage {
     public class Heading: Item {
         /// 当前的 heading 的 planning TODO|NEXT|DONE|CANCELD 等
         public var planning: NSRange? {
-            return data[OutlineParser.Key.Element.Heading.planning]
+            return data[OutlineParser.Key.Element.Heading.planning]?.offset(offset)
         }
         /// 当前 heading 的 tag 数组
         public var tags: NSRange? {
-            return data[OutlineParser.Key.Element.Heading.tags]
+            return data[OutlineParser.Key.Element.Heading.tags]?.offset(offset)
         }
         /// 当前 heading 的 schedule
         public var schedule: NSRange? {
-            return data[OutlineParser.Key.Element.Heading.schedule]
+            return data[OutlineParser.Key.Element.Heading.schedule]?.offset(offset)
         }
         /// 当前 heading 的 deadline
         public var deadline: NSRange? {
-            return data[OutlineParser.Key.Element.Heading.deadline]
+            return data[OutlineParser.Key.Element.Heading.deadline]?.offset(offset)
         }
         /// 当前的 heading level
         public var level: Int {
@@ -71,8 +71,6 @@ public class OutlineTextStorage: NSTextStorage {
             self.init(range: range, name: OutlineParser.Key.Node.heading, data: data)
             log.verbose("new heading: \(range)")
         }
-        
-        public var isFolded: Bool = false
     }
     
     public var theme: OutlineTheme = OutlineTheme()
@@ -159,7 +157,8 @@ public class OutlineTextStorage: NSTextStorage {
     private var backingStore: NSMutableAttributedString = NSMutableAttributedString()
     
     public override var string: String {
-        return backingStore.string
+        set { backingStore = NSMutableAttributedString(string: newValue) }
+        get { return backingStore.string }
     }
     
     public override func attributes(at location: Int, effectiveRange range: NSRangePointer?) -> [NSAttributedString.Key : Any] {

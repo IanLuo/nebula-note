@@ -31,22 +31,22 @@ public class OutlineStorageTests: XCTestCase {
           use voice to record remember task is handy
         """
     
-        var extendedRange = NSRange(location: 10, length: 1).expand(string: text)
+        var extendedRange = NSRange(location: 10, length: 1).expandFoward(string: text).expandBackward(string: text)
         
         XCTAssertEqual(0, extendedRange.location)
         XCTAssertEqual(17, extendedRange.length)
         
-        extendedRange = NSRange(location: 31, length: 1).expand(string: text)
+        extendedRange = NSRange(location: 31, length: 1).expandFoward(string: text).expandBackward(string: text)
         XCTAssertEqual(17, extendedRange.location)
         XCTAssertEqual(23, extendedRange.length)
         
-        extendedRange = NSRange(location: 16, length: 2).expand(string: text)
+        extendedRange = NSRange(location: 16, length: 2).expandFoward(string: text).expandBackward(string: text)
         XCTAssertEqual(0, extendedRange.location)
         XCTAssertEqual(40, extendedRange.length)
     }
     
     func testCurrentLocation() {
-        let storage = PageController(parser: OutlineParser(delegate: nil))
+        let storage = EditorController(parser: OutlineParser(delegate: nil))
         let textView = UITextView(frame: .zero, textContainer: storage.textContainer)
         textView.text = """
         * TODO fastlane design SCHEDULE:[2020-12-12] DEADLINE:[2022-12-11] :movie:entertainment:"
@@ -68,25 +68,25 @@ public class OutlineStorageTests: XCTestCase {
         """
         
         XCTAssertEqual(storage.textStorage.currentLocation, 0)
-        XCTAssertEqual(2, storage.textStorage.savedDataHeadings.count)
+        XCTAssertEqual(2, storage.textStorage.savedHeadings.count)
         XCTAssertEqual(2, storage.textStorage.savedHeadings.count)
         XCTAssertEqual(storage.textStorage.currentHeading?.level, 1)
-        XCTAssertEqual(storage.textStorage.currentHeading?.planning, "TODO")
-        XCTAssertEqual(storage.textStorage.currentHeading?.schedule, "SCHEDULE:[2020-12-12]")
-        XCTAssertEqual(storage.textStorage.currentHeading?.deadline, "DEADLINE:[2022-12-11]")
-        XCTAssertEqual(storage.textStorage.currentHeading?.tags, ["movie", "entertainment"])
+        XCTAssertEqual((textView.text as NSString).substring(with: storage.textStorage.currentHeading!.planning!), "TODO")
+        XCTAssertEqual((textView.text as NSString).substring(with: storage.textStorage.currentHeading!.schedule!), "SCHEDULE:[2020-12-12]")
+        XCTAssertEqual((textView.text as NSString).substring(with: storage.textStorage.currentHeading!.deadline!), "DEADLINE:[2022-12-11]")
+        XCTAssertEqual((textView.text as NSString).substring(with: storage.textStorage.currentHeading!.tags!), ":movie:entertainment:")
         
         storage.textStorage.currentLocation = 150
         storage.textStorage.updateCurrentInfo()
         XCTAssertEqual(storage.textStorage.currentHeading?.level, 3)
-        XCTAssertEqual(storage.textStorage.currentHeading?.planning, "DONE")
+        XCTAssertEqual((textView.text as NSString).substring(with: storage.textStorage.currentHeading!.planning!), "DONE")
         XCTAssertEqual(storage.textStorage.currentHeading?.schedule, nil)
         XCTAssertEqual(storage.textStorage.currentHeading?.deadline, nil)
         XCTAssertEqual(storage.textStorage.currentHeading?.tags, nil)
     }
     
     func testNewLoadItems() {
-        let storage = PageController(parser: OutlineParser(delegate: nil))
+        let storage = EditorController(parser: OutlineParser(delegate: nil))
         let textView = UITextView(frame: .zero, textContainer: storage.textContainer)
         textView.text = """
         * TODO fastlane design SCHEDULE:[2020-12-12] DEADLINE:[2022-12-11] :movie:entertainment:"
@@ -125,7 +125,7 @@ public class OutlineStorageTests: XCTestCase {
     }
     
     func testEditItems() {
-        let storage = PageController(parser: OutlineParser(delegate: nil))
+        let storage = EditorController(parser: OutlineParser(delegate: nil))
         let textView = UITextView(frame: .zero, textContainer: storage.textContainer)
         textView.text = """
         * TODO fastlane design SCHEDULE:[2020-12-12] DEADLINE:[2022-12-11] :movie:entertainment:"
@@ -170,7 +170,7 @@ public class OutlineStorageTests: XCTestCase {
         
         storage.textStorage.currentLocation = 150
         storage.textStorage.updateCurrentInfo()
-        storage.textStorage.currentParseRange = NSRange(location: 150, length: 10).expand(string: textView.text!)
+        storage.textStorage.currentParseRange = NSRange(location: 150, length: 10).expandFoward(string: textView.text!).expandBackward(string: textView.text!)
         storage.textStorage.updateItemIndexAndRange(delta: 0)
         storage.parser.parse(str: textView.text!, range: storage.textStorage.currentParseRange)
         

@@ -9,19 +9,21 @@
 import Foundation
 import UIKit
 
-public protocol PageControllerDelegate: class {
-    
+public protocol EditorControllerDelegate: class {
+
 }
 
-public class PageController: NSObject {
+public class EditorController: NSObject {
     
-    let layoutManager: NSLayoutManager
+    private let layoutManager: NSLayoutManager
+
+    internal let textContainer: NSTextContainer
     
-    let textContainer: NSTextContainer
+    internal let textStorage: OutlineTextStorage
     
-    let textStorage: OutlineTextStorage
+    internal var parser: OutlineParser!
     
-    var parser: OutlineParser!
+    public weak var delegate: EditorControllerDelegate?
     
     public convenience init(parser: OutlineParser) {
         self.init()
@@ -50,10 +52,27 @@ public class PageController: NSObject {
     }
 }
 
-extension PageController: OutlineTextViewDelegate {
-    public func didTapOnLevel(textView: UITextView, chracterIndex: Int) {
+extension EditorController {
+    public func getParagraphs() -> [OutlineTextStorage.Heading] {
+        return self.textStorage.savedHeadings // FIXME: may be not the best way, this function should be called on Agenda to load content of heading
+    }
+    
+    public func insertToParagraph(at heading: OutlineTextStorage.Heading, content: String) {
+        // TODO: insert content at the bottom of the paragraph
+    }
+    
+    public var string: String {
+        set { self.textStorage.string = newValue }
+        get { return self.textStorage.string }
+    }
+}
+
+extension EditorController: OutlineTextViewDelegate {
+    public func didTapOnLevel(textView: UITextView,
+                              chracterIndex: Int) {
         for heading in self.textStorage.savedHeadings {
             let range = heading.paragraphRange
+            
             if range.contains(chracterIndex) {
                 let headingRange = self.textStorage.savedHeadings[self.textStorage.headingIndex(at: chracterIndex)].range
                 let contentLocation = headingRange.upperBound + 1 // contentLocation + 1 因为有换行符
@@ -63,9 +82,11 @@ extension PageController: OutlineTextViewDelegate {
                 if range.upperBound >= textView.text.count - 1 {
                     postParagraphLength = 0
                 }
-                let contentRange = NSRange(location: contentLocation, length: range.upperBound - contentLocation + postParagraphLength)
+                let contentRange = NSRange(location: contentLocation,
+                                           length: range.upperBound - contentLocation + postParagraphLength)
                 
                 if self.textStorage.attributes(at: contentRange.location, effectiveRange: nil)[OutlineAttribute.Heading.folded] == nil {
+                    
                     // 如果当前 cursor 在被折叠的部分，会造成 indent 出错, 因此将 cursor 移到 heading 的末尾
                     if contentRange.contains(textView.selectedRange.location) {
                         textView.selectedRange = NSRange(location: contentRange.location - 1,
@@ -85,9 +106,12 @@ extension PageController: OutlineTextViewDelegate {
         }
     }
     
-    public func didTapOnCheckbox(textView: UITextView, characterIndex: Int, statusRange: NSRange) {
+    public func didTapOnCheckbox(textView: UITextView,
+                                 characterIndex: Int,
+                                 statusRange: NSRange) {
         var replacement: String = ""
         let offsetedRange = statusRange.offset(statusRange.location - characterIndex)
+        
         switch (textView.text as NSString).substring(with: offsetedRange) {
         case OutlineParser.Values.Checkbox.unchecked: replacement = OutlineParser.Values.Checkbox.checked
         case OutlineParser.Values.Checkbox.checked: replacement = OutlineParser.Values.Checkbox.unchecked
@@ -100,7 +124,9 @@ extension PageController: OutlineTextViewDelegate {
         }
     }
     
-    public func didTapOnLink(textView: UITextView, characterIndex: Int, linkRange: NSRange) {
+    public func didTapOnLink(textView: UITextView,
+                             characterIndex: Int,
+                             linkRange: NSRange) {
         if let url = OutlineParser.Matcher.Element.url {
             let result: [[String: NSRange]] = url
                 .matches(in: textView.text, options: [], range: linkRange)
@@ -122,13 +148,17 @@ extension PageController: OutlineTextViewDelegate {
     }
 }
 
-extension PageController: NSTextStorageDelegate {
-    public func textStorage(_ textStorage: NSTextStorage, willProcessEditing editedMask: NSTextStorage.EditActions, range editedRange: NSRange, changeInLength delta: Int) {
+extension EditorController: NSTextStorageDelegate {
+    public func textStorage(_ textStorage: NSTextStorage,
+                            willProcessEditing editedMask: NSTextStorage.EditActions,
+                            range editedRange: NSRange,
+                            changeInLength delta: Int) {
         
         log.info("removing attributes in range: \(editedRange)")
         
         // 清空 attributes, 保留折叠的状态
         guard editedRange.upperBound < textStorage.string.count else { return }
+        
         for (key, _) in textStorage.attributes(at: editedRange.location, longestEffectiveRange: nil, in: editedRange) {
             if key == OutlineAttribute.Heading.folded { continue }
             textStorage.removeAttribute(key, range: editedRange)
@@ -136,7 +166,10 @@ extension PageController: NSTextStorageDelegate {
     }
     
     /// 添加文字属性
-    public func textStorage(_ textStorage: NSTextStorage, didProcessEditing editedMask: NSTextStorage.EditActions, range editedRange: NSRange, changeInLength delta: Int) {
+    public func textStorage(_ textStorage: NSTextStorage,
+                            didProcessEditing editedMask: NSTextStorage.EditActions,
+                            range editedRange: NSRange,
+                            changeInLength delta: Int) {
         
         log.info("editing in range: \(editedRange)")
         
@@ -145,11 +178,7 @@ extension PageController: NSTextStorageDelegate {
         
         // 扩大需要解析的字符串范围
         self.textStorage.currentParseRange = editedRange.expandFoward(string: textStorage.string)
-        
-        // 如果是删除操作，将解析的位置向后扩展到行尾，默认的删除操作的范围在行首到当前位置，这样的话会导致 heading 无法更新
-//        if delta < 0 {
-            self.textStorage.currentParseRange = self.textStorage.currentParseRange?.expandBackward(string: textStorage.string)
-//        }
+        self.textStorage.currentParseRange = self.textStorage.currentParseRange?.expandBackward(string: textStorage.string)
         
         // 更新 item 索引缓存
         self.textStorage.updateItemIndexAndRange(delta: delta)
@@ -159,6 +188,36 @@ extension PageController: NSTextStorageDelegate {
 
         // 更新当前状态缓存
         self.textStorage.updateCurrentInfo()
+    }
+}
+
+extension EditorController: NSLayoutManagerDelegate {
+    public func layoutManager(_ layoutManager: NSLayoutManager, shouldGenerateGlyphs glyphs: UnsafePointer<CGGlyph>, properties props: UnsafePointer<NSLayoutManager.GlyphProperty>, characterIndexes charIndexes: UnsafePointer<Int>, font aFont: UIFont, forGlyphRange glyphRange: NSRange) -> Int {
+        let controlCharProps: UnsafeMutablePointer<NSLayoutManager.GlyphProperty> = UnsafeMutablePointer(mutating: props)
+        for i in 0..<glyphRange.length {
+            let attributes = self.textStorage.attributes(at: glyphRange.location + i, effectiveRange: nil)
+
+            // 隐藏这些字符
+            if attributes[OutlineAttribute.Heading.folded] != nil { // 标记为折叠
+                controlCharProps[i] = .null
+            } else if attributes[OutlineAttribute.link] != nil // 标记为 link 中非 title 的部分
+                && attributes[OutlineAttribute.Link.title] == nil {
+                controlCharProps[i] = .null
+            } else if attributes[OutlineAttribute.Checkbox.status] != nil // 标记为 checkbox 中非 box 的部分
+                && attributes[OutlineAttribute.Checkbox.box] == nil {
+                controlCharProps[i] = .null
+            }
+        }
+        
+//        log.verbose((self.textStorage.string as NSString).substring(with: glyphRange))
+        
+        layoutManager.setGlyphs(glyphs,
+                                properties: controlCharProps,
+                                characterIndexes: charIndexes,
+                                font: aFont,
+                                forGlyphRange: glyphRange)
+        
+        return glyphRange.length
     }
 }
 
@@ -177,51 +236,18 @@ extension NSRange {
     }
     
     internal func expandBackward(string: String) -> NSRange {
-//         向下，下一个 '\n' 之后
+        // 向下，下一个 '\n' 之后
         var extendedRange = self
         while extendedRange.upperBound < string.count - 1 &&
             (string as NSString)
                 .substring(with: NSRange(location: extendedRange.upperBound, length: 1)) != "\n" {
                     extendedRange = NSRange(location: extendedRange.location, length: extendedRange.length + 1)
         }
-
+        
         if extendedRange.upperBound >= string.count - 1 {
             return NSRange(location: extendedRange.location, length: string.count - extendedRange.location - 1)
         }
         
         return NSRange(location: extendedRange.location, length: extendedRange.length + 1)
-    }
-}
-
-extension PageController: NSLayoutManagerDelegate {
-    public func layoutManager(_ layoutManager: NSLayoutManager, shouldGenerateGlyphs glyphs: UnsafePointer<CGGlyph>, properties props: UnsafePointer<NSLayoutManager.GlyphProperty>, characterIndexes charIndexes: UnsafePointer<Int>, font aFont: UIFont, forGlyphRange glyphRange: NSRange) -> Int {
-        let controlCharProps: UnsafeMutablePointer<NSLayoutManager.GlyphProperty> = UnsafeMutablePointer(mutating: props)
-        for i in 0..<glyphRange.length {
-            let attributes = self.textStorage.attributes(at: glyphRange.location + i, effectiveRange: nil)
-            
-            if attributes[OutlineAttribute.Heading.folded] != nil {
-                controlCharProps[i] = .null
-            } else if attributes[OutlineAttribute.link] != nil
-                && attributes[OutlineAttribute.Link.title] == nil {
-                controlCharProps[i] = .null
-            } else if attributes[OutlineAttribute.Checkbox.status] != nil
-                && attributes[OutlineAttribute.Checkbox.box] == nil {
-                controlCharProps[i] = .null
-            }
-        }
-        
-//        log.verbose((self.textStorage.string as NSString).substring(with: glyphRange))
-        
-        layoutManager.setGlyphs(glyphs,
-                                properties: controlCharProps,
-                                characterIndexes: charIndexes,
-                                font: aFont,
-                                forGlyphRange: glyphRange)
-        
-        return glyphRange.length
-    }
-    
-    public func layoutManager(_ layoutManager: NSLayoutManager, didCompleteLayoutFor textContainer: NSTextContainer?, atEnd layoutFinishedFlag: Bool) {
-
     }
 }

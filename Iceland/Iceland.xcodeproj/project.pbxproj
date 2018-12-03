@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		20B6438499F032D8B24BB28F /* Pods_Storage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58F6ADB9E7BCAC752C4FE4C6 /* Pods_Storage.framework */; };
 		67BA3CC510702431FFD23301 /* Pods_IcelandTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC69118DDC07F2D89DFC636D /* Pods_IcelandTests.framework */; };
-		E41F86BE218E9882006C4CDB /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F86BD218E9882006C4CDB /* Document.swift */; };
 		E41F86C3218EF4BF006C4CDB /* Capture.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F86C2218EF4BF006C4CDB /* Capture.swift */; };
 		E41F86C5218EF4E1006C4CDB /* Agenda.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F86C4218EF4E1006C4CDB /* Agenda.swift */; };
 		E41F86C7218EF5D8006C4CDB /* CaptureService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F86C6218EF5D8006C4CDB /* CaptureService.swift */; };
@@ -25,7 +24,7 @@
 		E41F870421902DB3006C4CDB /* KeyValueStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F870321902DB3006C4CDB /* KeyValueStore.swift */; };
 		E41F870621902E47006C4CDB /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F870521902E47006C4CDB /* File.swift */; };
 		E41F870821902E7A006C4CDB /* Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F870721902E7A006C4CDB /* Storage.swift */; };
-		E41FA5752191569C001D8C63 /* PageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41FA5742191569C001D8C63 /* PageViewController.swift */; };
+		E41FA5752191569C001D8C63 /* DocumentEditController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41FA5742191569C001D8C63 /* DocumentEditController.swift */; };
 		E43427FA2121BF5B00EC6DC3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43427F92121BF5B00EC6DC3 /* AppDelegate.swift */; };
 		E43428012121BF5F00EC6DC3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E43428002121BF5F00EC6DC3 /* Assets.xcassets */; };
 		E43428042121BF5F00EC6DC3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E43428022121BF5F00EC6DC3 /* LaunchScreen.storyboard */; };
@@ -35,7 +34,7 @@
 		E44825A3219722C300C17568 /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44825A2219722C300C17568 /* Application.swift */; };
 		E44825A52197E6F600C17568 /* DocumentCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44825A42197E6F600C17568 /* DocumentCoordinator.swift */; };
 		E44825A7219810E100C17568 /* OutlineLayoutManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44825A6219810E100C17568 /* OutlineLayoutManager.swift */; };
-		E44825A9219810FF00C17568 /* PageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44825A8219810FF00C17568 /* PageController.swift */; };
+		E44825A9219810FF00C17568 /* EditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44825A8219810FF00C17568 /* EditorController.swift */; };
 		E44825AB219AE47000C17568 /* ParseOutlineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44825AA219AE47000C17568 /* ParseOutlineTests.swift */; };
 		E44825AD219C1AAA00C17568 /* OutlineParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44825AC219C1AAA00C17568 /* OutlineParser.swift */; };
 		E464BBB121A69C9000D34C88 /* OutlineTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = E464BBB021A69C9000D34C88 /* OutlineTheme.swift */; };
@@ -46,7 +45,12 @@
 		E4A46A2021AF90B200FBDA04 /* OutlineTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A1F21AF90B200FBDA04 /* OutlineTextView.swift */; };
 		E4A46A2521B0DA1300FBDA04 /* OutlineAttribute.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A2421B0DA1300FBDA04 /* OutlineAttribute.swift */; };
 		E4A46A2721B0E2D500FBDA04 /* OutlineParserMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A2621B0E2D500FBDA04 /* OutlineParserMatcher.swift */; };
-		E4A46A2921B28ED800FBDA04 /* PageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A2821B28ED800FBDA04 /* PageViewModel.swift */; };
+		E4A46A2921B28ED800FBDA04 /* DocumentEditViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A2821B28ED800FBDA04 /* DocumentEditViewModel.swift */; };
+		E4A46A2B21B4109C00FBDA04 /* DocumentSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A2A21B4109C00FBDA04 /* DocumentSearchViewController.swift */; };
+		E4A46A2D21B410BE00FBDA04 /* DocumentSearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A2C21B410BE00FBDA04 /* DocumentSearchViewModel.swift */; };
+		E4A46A3021B4150A00FBDA04 /* SyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A2F21B4150A00FBDA04 /* SyncManager.swift */; };
+		E4A46A3221B4D07500FBDA04 /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A3121B4D07500FBDA04 /* Document.swift */; };
+		E4A46A3421B4F36800FBDA04 /* DocumentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A3321B4F36800FBDA04 /* DocumentTests.swift */; };
 		EE260FEBE701F7B91549B9B8 /* Pods_Iceland.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B03B21DC28F546E7D3A966E7 /* Pods_Iceland.framework */; };
 /* End PBXBuildFile section */
 
@@ -111,7 +115,6 @@
 		A8E4EC2FC1088F978E881464 /* Pods-Iceland.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Iceland.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Iceland/Pods-Iceland.debug.xcconfig"; sourceTree = "<group>"; };
 		AA6BE9F0E63F15EB98E44990 /* Pods-IcelandTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IcelandTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-IcelandTests/Pods-IcelandTests.release.xcconfig"; sourceTree = "<group>"; };
 		B03B21DC28F546E7D3A966E7 /* Pods_Iceland.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Iceland.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		E41F86BD218E9882006C4CDB /* Document.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Document.swift; sourceTree = "<group>"; };
 		E41F86C2218EF4BF006C4CDB /* Capture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Capture.swift; sourceTree = "<group>"; };
 		E41F86C4218EF4E1006C4CDB /* Agenda.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Agenda.swift; sourceTree = "<group>"; };
 		E41F86C6218EF5D8006C4CDB /* CaptureService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureService.swift; sourceTree = "<group>"; };
@@ -128,7 +131,7 @@
 		E41F870321902DB3006C4CDB /* KeyValueStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyValueStore.swift; sourceTree = "<group>"; };
 		E41F870521902E47006C4CDB /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		E41F870721902E7A006C4CDB /* Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storage.swift; sourceTree = "<group>"; };
-		E41FA5742191569C001D8C63 /* PageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageViewController.swift; sourceTree = "<group>"; };
+		E41FA5742191569C001D8C63 /* DocumentEditController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentEditController.swift; sourceTree = "<group>"; };
 		E43427F62121BF5B00EC6DC3 /* Iceland.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Iceland.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E43427F92121BF5B00EC6DC3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E43428002121BF5F00EC6DC3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -144,7 +147,7 @@
 		E44825A2219722C300C17568 /* Application.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Application.swift; sourceTree = "<group>"; };
 		E44825A42197E6F600C17568 /* DocumentCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentCoordinator.swift; sourceTree = "<group>"; };
 		E44825A6219810E100C17568 /* OutlineLayoutManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineLayoutManager.swift; sourceTree = "<group>"; };
-		E44825A8219810FF00C17568 /* PageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageController.swift; sourceTree = "<group>"; };
+		E44825A8219810FF00C17568 /* EditorController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorController.swift; sourceTree = "<group>"; };
 		E44825AA219AE47000C17568 /* ParseOutlineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParseOutlineTests.swift; sourceTree = "<group>"; };
 		E44825AC219C1AAA00C17568 /* OutlineParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineParser.swift; sourceTree = "<group>"; };
 		E464BBB021A69C9000D34C88 /* OutlineTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineTheme.swift; sourceTree = "<group>"; };
@@ -155,7 +158,12 @@
 		E4A46A1F21AF90B200FBDA04 /* OutlineTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineTextView.swift; sourceTree = "<group>"; };
 		E4A46A2421B0DA1300FBDA04 /* OutlineAttribute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineAttribute.swift; sourceTree = "<group>"; };
 		E4A46A2621B0E2D500FBDA04 /* OutlineParserMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineParserMatcher.swift; sourceTree = "<group>"; };
-		E4A46A2821B28ED800FBDA04 /* PageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageViewModel.swift; sourceTree = "<group>"; };
+		E4A46A2821B28ED800FBDA04 /* DocumentEditViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentEditViewModel.swift; sourceTree = "<group>"; };
+		E4A46A2A21B4109C00FBDA04 /* DocumentSearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentSearchViewController.swift; sourceTree = "<group>"; };
+		E4A46A2C21B410BE00FBDA04 /* DocumentSearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentSearchViewModel.swift; sourceTree = "<group>"; };
+		E4A46A2F21B4150A00FBDA04 /* SyncManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncManager.swift; sourceTree = "<group>"; };
+		E4A46A3121B4D07500FBDA04 /* Document.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Document.swift; sourceTree = "<group>"; };
+		E4A46A3321B4F36800FBDA04 /* DocumentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentTests.swift; sourceTree = "<group>"; };
 		FC69118DDC07F2D89DFC636D /* Pods_IcelandTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_IcelandTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -248,11 +256,14 @@
 		E41F86C1218EF4B0006C4CDB /* Document */ = {
 			isa = PBXGroup;
 			children = (
+				E4A46A2E21B414FA00FBDA04 /* Sync */,
 				E4A46A2221B0D9AC00FBDA04 /* Editor */,
 				E44825A42197E6F600C17568 /* DocumentCoordinator.swift */,
-				E41F86BD218E9882006C4CDB /* Document.swift */,
-				E41FA5742191569C001D8C63 /* PageViewController.swift */,
-				E4A46A2821B28ED800FBDA04 /* PageViewModel.swift */,
+				E4A46A2A21B4109C00FBDA04 /* DocumentSearchViewController.swift */,
+				E4A46A2C21B410BE00FBDA04 /* DocumentSearchViewModel.swift */,
+				E41FA5742191569C001D8C63 /* DocumentEditController.swift */,
+				E4A46A2821B28ED800FBDA04 /* DocumentEditViewModel.swift */,
+				E4A46A3121B4D07500FBDA04 /* Document.swift */,
 			);
 			path = Document;
 			sourceTree = "<group>";
@@ -323,7 +334,7 @@
 		E43427F82121BF5B00EC6DC3 /* Iceland */ = {
 			isa = PBXGroup;
 			children = (
-				E4A46A1C21AE6CDC00FBDA04 /* UI */,
+				E4A46A1C21AE6CDC00FBDA04 /* GeneralUI */,
 				E41F86DF21902BF3006C4CDB /* Setting */,
 				E41F86DA21900902006C4CDB /* Attachment */,
 				E41F86C1218EF4B0006C4CDB /* Document */,
@@ -346,6 +357,7 @@
 				E4A46A1621A9A26300FBDA04 /* AttachmentTests.swift */,
 				E43428102121BF6000EC6DC3 /* Info.plist */,
 				E44825AA219AE47000C17568 /* ParseOutlineTests.swift */,
+				E4A46A3321B4F36800FBDA04 /* DocumentTests.swift */,
 				E49FF46321A429F9003A5B3C /* OutlineStorageTests.swift */,
 			);
 			path = IcelandTests;
@@ -360,12 +372,12 @@
 			path = IcelandUITests;
 			sourceTree = "<group>";
 		};
-		E4A46A1C21AE6CDC00FBDA04 /* UI */ = {
+		E4A46A1C21AE6CDC00FBDA04 /* GeneralUI */ = {
 			isa = PBXGroup;
 			children = (
 				E4A46A1D21AE6CF400FBDA04 /* Image+Generation.swift */,
 			);
-			path = UI;
+			path = GeneralUI;
 			sourceTree = "<group>";
 		};
 		E4A46A2221B0D9AC00FBDA04 /* Editor */ = {
@@ -377,7 +389,7 @@
 				E4A46A1821AA8E9F00FBDA04 /* OutlineStorage.swift */,
 				E464BBB021A69C9000D34C88 /* OutlineTheme.swift */,
 				E4A46A1F21AF90B200FBDA04 /* OutlineTextView.swift */,
-				E44825A8219810FF00C17568 /* PageController.swift */,
+				E44825A8219810FF00C17568 /* EditorController.swift */,
 			);
 			path = Editor;
 			sourceTree = "<group>";
@@ -389,6 +401,14 @@
 				E4A46A2621B0E2D500FBDA04 /* OutlineParserMatcher.swift */,
 			);
 			path = Constants;
+			sourceTree = "<group>";
+		};
+		E4A46A2E21B414FA00FBDA04 /* Sync */ = {
+			isa = PBXGroup;
+			children = (
+				E4A46A2F21B4150A00FBDA04 /* SyncManager.swift */,
+			);
+			path = Sync;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -721,24 +741,27 @@
 			files = (
 				E464BBB121A69C9000D34C88 /* OutlineTheme.swift in Sources */,
 				E41F86C3218EF4BF006C4CDB /* Capture.swift in Sources */,
-				E44825A9219810FF00C17568 /* PageController.swift in Sources */,
+				E44825A9219810FF00C17568 /* EditorController.swift in Sources */,
 				E41F86DC219009DD006C4CDB /* Attachment.swift in Sources */,
 				E4A46A2521B0DA1300FBDA04 /* OutlineAttribute.swift in Sources */,
 				E44825A3219722C300C17568 /* Application.swift in Sources */,
+				E4A46A2B21B4109C00FBDA04 /* DocumentSearchViewController.swift in Sources */,
 				E44825A7219810E100C17568 /* OutlineLayoutManager.swift in Sources */,
 				E41F86C9218EF759006C4CDB /* AgendaService.swift in Sources */,
+				E4A46A2D21B410BE00FBDA04 /* DocumentSearchViewModel.swift in Sources */,
 				E43427FA2121BF5B00EC6DC3 /* AppDelegate.swift in Sources */,
-				E41FA5752191569C001D8C63 /* PageViewController.swift in Sources */,
+				E41FA5752191569C001D8C63 /* DocumentEditController.swift in Sources */,
 				E41F86C7218EF5D8006C4CDB /* CaptureService.swift in Sources */,
-				E4A46A2921B28ED800FBDA04 /* PageViewModel.swift in Sources */,
+				E4A46A2921B28ED800FBDA04 /* DocumentEditViewModel.swift in Sources */,
 				E44825A52197E6F600C17568 /* DocumentCoordinator.swift in Sources */,
 				E4A46A1E21AE6CF400FBDA04 /* Image+Generation.swift in Sources */,
+				E4A46A3021B4150A00FBDA04 /* SyncManager.swift in Sources */,
 				E4A46A2021AF90B200FBDA04 /* OutlineTextView.swift in Sources */,
 				E4A46A2721B0E2D500FBDA04 /* OutlineParserMatcher.swift in Sources */,
+				E4A46A3221B4D07500FBDA04 /* Document.swift in Sources */,
 				E4A46A1921AA8E9F00FBDA04 /* OutlineStorage.swift in Sources */,
 				E44825AD219C1AAA00C17568 /* OutlineParser.swift in Sources */,
 				E41F86DE21902BA1006C4CDB /* AttachmentManager.swift in Sources */,
-				E41F86BE218E9882006C4CDB /* Document.swift in Sources */,
 				E41F86CB218EF7A7006C4CDB /* Task.swift in Sources */,
 				E41F86C5218EF4E1006C4CDB /* Agenda.swift in Sources */,
 			);
@@ -752,6 +775,7 @@
 				E44825AB219AE47000C17568 /* ParseOutlineTests.swift in Sources */,
 				E434280F2121BF5F00EC6DC3 /* IcelandTests.swift in Sources */,
 				E4357B4A21A995DA006DDD72 /* CaptureTests.swift in Sources */,
+				E4A46A3421B4F36800FBDA04 /* DocumentTests.swift in Sources */,
 				E4A46A1721A9A26300FBDA04 /* AttachmentTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

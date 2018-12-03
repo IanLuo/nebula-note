@@ -10,11 +10,19 @@ import Foundation
 import UIKit
 
 public class DocumentCoordinator: Coordinator {
-    private let viewController: PageViewController
-
-    public override init(stack: UINavigationController) {
-        let pageViewModel = PageViewModel(pageController: PageController(parser: OutlineParser()))
-        self.viewController = PageViewController(viewModel: pageViewModel)
+    private let viewController: DocumentEditViewController
+    
+    public init(stack: UINavigationController, newFileTitle title: String) {
+        let pageViewModel = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()),
+                                                  title: title)
+        self.viewController = DocumentEditViewController(viewModel: pageViewModel)
+        super.init(stack: stack)
+    }
+    
+    public init(stack: UINavigationController, editFile url: URL) {
+        let pageViewModel = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()),
+                                                  url: url)
+        self.viewController = DocumentEditViewController(viewModel: pageViewModel)
         super.init(stack: stack)
     }
     

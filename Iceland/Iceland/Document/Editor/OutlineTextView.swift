@@ -16,7 +16,7 @@ public protocol OutlineTextViewDelegate: class {
 }
 
 public class OutlineTextView: UITextView {
-    public weak var tapDelegate: OutlineTextViewDelegate?
+    public weak var outlineDelegate: OutlineTextViewDelegate?
     private let tapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer()
     
     public override init(frame: CGRect, textContainer: NSTextContainer?) {
@@ -50,11 +50,11 @@ public class OutlineTextView: UITextView {
         
         var shouldPassTapToOtherGuestureRecognizers = false
         if attributes[OutlineAttribute.Heading.level] != nil {
-            self.tapDelegate?.didTapOnLevel(textView: self, chracterIndex: characterIndex)
+            self.outlineDelegate?.didTapOnLevel(textView: self, chracterIndex: characterIndex)
         } else if let statusRange = attributes[OutlineAttribute.Checkbox.box] as? NSRange {
-            self.tapDelegate?.didTapOnCheckbox(textView: self, characterIndex: characterIndex, statusRange: statusRange)
+            self.outlineDelegate?.didTapOnCheckbox(textView: self, characterIndex: characterIndex, statusRange: statusRange)
         } else if let linkRange = attributes[OutlineAttribute.link] as? NSRange {
-            self.tapDelegate?.didTapOnLink(textView: self, characterIndex: characterIndex, linkRange: linkRange)
+            self.outlineDelegate?.didTapOnLink(textView: self, characterIndex: characterIndex, linkRange: linkRange)
         } else {
             shouldPassTapToOtherGuestureRecognizers = true
         }
@@ -65,6 +65,7 @@ public class OutlineTextView: UITextView {
 
 extension OutlineTextView: UIGestureRecognizerDelegate {
     public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        // 拦截 textView 中点击到需要与用户交互的 tap, 比如折叠，checkbox，link 等
         if gestureRecognizer == self.tapGestureRecognizer {
             return self.tapped(guesture: self.tapGestureRecognizer)
         } else {
