@@ -8,9 +8,16 @@
 
 import Foundation
 import UIKit
+import Storage
 
 public class Document: UIDocument {
+    public static let fileExtension = "org"
     var string: String = ""
+    var title: String = ""
+    
+    public override init(fileURL url: URL) {
+        super.init(fileURL: url.appendingPathExtension(Document.fileExtension))
+    }
     
     public override var fileType: String? { return "txt" }
     
@@ -21,6 +28,39 @@ public class Document: UIDocument {
     public override func load(fromContents contents: Any, ofType typeName: String?) throws {
         if let data = contents as? Data {
             self.string = String(data: data, encoding: .utf8)!
+        }
+    }
+}
+
+extension URL {
+    public func rename(url: URL, completion: ((Error?) -> Void)?) {
+        let oldURL = self
+        let newURL = url
+        var error: NSError?
+        
+        DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
+            let fileCoordinator = NSFileCoordinator(filePresenter: nil)
+            fileCoordinator.coordinate(writingItemAt: oldURL,
+                                       options: NSFileCoordinator.WritingOptions.forMoving,
+                                       writingItemAt: newURL,
+                                       options: NSFileCoordinator.WritingOptions.forReplacing,
+                                       error: &error,
+                                       byAccessor: { (newURL1, newURL2) in
+                                        do {
+                                            let fileManager = FileManager.default
+                                            fileCoordinator.item(at: oldURL, willMoveTo: newURL)
+                                            try fileManager.moveItem(at: newURL1, to: newURL2)
+                                            fileCoordinator.item(at: oldURL, didMoveTo: newURL)
+                                            DispatchQueue.main.async {
+                                                completion?(error)
+                                            }
+                                        } catch {
+                                            DispatchQueue.main.async {
+                                                completion?(error)
+                                            }
+                                        }
+                                        
+            })
         }
     }
 }

@@ -32,51 +32,7 @@ public class DocumentEditViewController: UIViewController {
         
         self.view.addSubview(self.textView)
         
-        viewModel.delegate = self
-        
         viewModel.open()
-    }
-}
-
-extension DocumentEditViewController: DocumentEditDelegate {
-    public func didCloseDocument() {
-        
-    }
-    
-    public func didFailedToCloseDocument() {
-        
-    }
-    
-    public func didDeleteDocument(url: URL) {
-        
-    }
-    
-    public func didFailedToDeleteDocument(error: Error) {
-        
-    }
-    
-    public func didRename() {
-        
-    }
-    
-    public func didFailToRename(with error: Error) {
-        
-    }
-    
-    public func didSaveDocument() {
-        
-    }
-    
-    public func didFailedToSaveDocument(with error: Error) {
-        
-    }
-    
-    public func didFailedToOpenDocument(with error: Error) {
-        
-    }
-    
-    public func didOpenDocument(text: String) {
-        self.textView.text = text
     }
 }
 

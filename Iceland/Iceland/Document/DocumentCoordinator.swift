@@ -10,23 +10,36 @@ import Foundation
 import UIKit
 
 public class DocumentCoordinator: Coordinator {
-    private let viewController: DocumentEditViewController
+    public let browserViewController: UIViewController
     
-    public init(stack: UINavigationController, newFileTitle title: String) {
-        let pageViewModel = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()),
-                                                  title: title)
-        self.viewController = DocumentEditViewController(viewModel: pageViewModel)
+    public override init(stack: UINavigationController) {
+        let viewModel = DocumentBrowserViewModel()
+        self.browserViewController = DocumentBrowserViewController(viewModel: viewModel)
         super.init(stack: stack)
-    }
-    
-    public init(stack: UINavigationController, editFile url: URL) {
-        let pageViewModel = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()),
-                                                  url: url)
-        self.viewController = DocumentEditViewController(viewModel: pageViewModel)
-        super.init(stack: stack)
+        viewModel.delegate = self
     }
     
     public override func start() {
-        self.stack.pushViewController(self.viewController, animated: true)
+        self.stack.pushViewController(self.browserViewController, animated: true)
+    }
+    
+    public func openDocument(document: Document) {
+        let editViewModel = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()),
+                                                  document: document)
+        editViewModel.delegate = self
+        let viewController = DocumentEditViewController(viewModel: editViewModel)
+        stack.pushViewController(viewController, animated: true)
+    }
+}
+
+extension DocumentCoordinator: DocumentEditDelegate {
+    public func didClickLink(url: URL) {
+        
+    }
+}
+
+extension DocumentCoordinator: DocumentBrowserDelegate {
+    public func didSelectDocument(document: Document) {
+        self.openDocument(document: document)
     }
 }

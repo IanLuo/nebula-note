@@ -62,6 +62,11 @@ public struct File {
             case let .custom(customPath):
                 return customPath.hasSuffix("/") ? customPath : customPath + "/"
             }
+            
+        }
+        
+        public var url: URL {
+            return URL(fileURLWithPath: self.path)
         }
         
         public func remove() {
@@ -177,6 +182,10 @@ public struct File {
             do { try Foundation.FileManager.default.removeItem(atPath: filePath) }
             catch { print("Error when removing file for path: \(filePath): error") }
         }
+    }
+    
+    public var url: URL {
+        return URL(fileURLWithPath: self.filePath)
     }
     
     // 是否存在

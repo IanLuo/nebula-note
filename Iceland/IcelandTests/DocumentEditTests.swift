@@ -11,46 +11,25 @@ import XCTest
 @testable import Iceland
 import Storage
 
-public class DocumentTests: XCTestCase {
+public class DocumentEditTests: XCTestCase {
     public override func tearDown() {
         try? FileManager.default.contentsOfDirectory(atPath: File.Folder.document("files").path).forEach {
             try? FileManager.default.removeItem(atPath: "\(File.Folder.document("files").path)/\($0)")
         }
     }
     
-    class DocumentDelegate: DocumentEditDelegate {
-        let ex: XCTestExpectation
-        init(ex: XCTestExpectation) { self.ex = ex }
-        func didCloseDocument() {}
-        func didFailedToCloseDocument() {}
-        func didDeleteDocument(url: URL) {}
-        func didFailedToDeleteDocument(error: Error) {}
-        func didOpenDocument(text: String) {}
-        func didFailedToOpenDocument(with error: Error) {}
-        func didSaveDocument() {}
-        func didFailedToSaveDocument(with error: Error) {}
-        func didRename() {}
-        func didFailToRename(with error: Error) {}
-    }
-    
     func testCreateDocument() throws {
+        let document = Document(fileURL: URL(fileURLWithPath: "new file", relativeTo: File.Folder.document("files").url))
         let viewModel = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()),
-                                              title: "new file")
+                                              document: document)
         
         let ex = expectation(description: "save")
-        class TextDelegate: DocumentDelegate {
-            override func didSaveDocument() {
-                ex.fulfill()
-            }
-        }
-        
-        let delegate = TextDelegate(ex: ex)
-        viewModel.delegate = delegate
         viewModel.editorController.string = "123"
         
         viewModel.save { _ in
-            XCTAssertTrue(FileManager.default.fileExists(atPath: File(File.Folder.document("files"), fileName: "new file").filePath))
-            XCTAssertEqual(try! String(contentsOfFile: File(File.Folder.document("files"), fileName: "new file").filePath,
+            ex.fulfill()
+            XCTAssertTrue(FileManager.default.fileExists(atPath: File(File.Folder.document("files"), fileName: "new file.org").filePath))
+            XCTAssertEqual(try! String(contentsOfFile: File(File.Folder.document("files"), fileName: "new file.org").filePath,
                                       encoding: .utf8), "123")
         }
         
@@ -59,9 +38,9 @@ public class DocumentTests: XCTestCase {
     
     func testLoadDocument() {
         let ex = expectation(description: "load")
-        
+        let document = Document(fileURL: URL(fileURLWithPath: "load test", relativeTo: File.Folder.document("files").url))
         let viewModel = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()),
-                                              title: "load test")
+                                              document: document)
         
         viewModel.editorController.string = "testLoadDocument"
         
@@ -69,7 +48,7 @@ public class DocumentTests: XCTestCase {
             
             viewModel.close { _ in
                 let viewModel2 = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()),
-                                                       url: URL(fileURLWithPath: File(File.Folder.document("files"), fileName: "load test").filePath))
+                                                       document: Document(fileURL: URL(fileURLWithPath: "load test", relativeTo: File.Folder.document("files").url)))
                 
                 viewModel2.open { [viewModel2] _ in
                     ex.fulfill()
@@ -83,20 +62,21 @@ public class DocumentTests: XCTestCase {
     }
     
     func testRenameDocument() {
+        let document = Document(fileURL: URL(fileURLWithPath: "rename test", relativeTo: File.Folder.document("files").url))
         let viewModel = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()),
-                                              title: "rename test")
+                                              document: document)
         viewModel.editorController.string = "testRenameDocument"
         
         let ex = expectation(description: "load")
         viewModel.save { [weak viewModel] _ in
             viewModel?.rename(newTitle: "changed test") { _ in
-                viewModel?.close { _ in
-                    let viewModel2 = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()),
-                                                           url: URL(fileURLWithPath: File(File.Folder.document("files"), fileName: "changed test").filePath))
-                    viewModel2.open { [viewModel2] _ in
-                        XCTAssertEqual(viewModel2.editorController.string, "testRenameDocument")
-                        ex.fulfill()
-                    }
+                
+                let document = Document(fileURL: URL(fileURLWithPath: "changed test", relativeTo: File.Folder.document("files").url))
+                let viewModel2 = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()),
+                                                       document: document)
+                viewModel2.open { [viewModel2] _ in
+                    XCTAssertEqual(viewModel2.editorController.string, "testRenameDocument")
+                    ex.fulfill()
                 }
             }
         }
@@ -105,20 +85,19 @@ public class DocumentTests: XCTestCase {
     }
     
     func testDeleteDocument() {
+        let document = Document(fileURL: URL(fileURLWithPath: "delete test", relativeTo: File.Folder.document("files").url))
         let viewModel = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()),
-                                              title: "delete test")
+                                              document: document)
         
         viewModel.editorController.string = "testDeleteDocument"
         viewModel.save { _ in
             
-            XCTAssertEqual(FileManager.default.fileExists(atPath: File(File.Folder.document("files"), fileName: "delete test").filePath), true)
+            XCTAssertEqual(FileManager.default.fileExists(atPath: File(File.Folder.document("files"), fileName: "delete test.org").filePath), true)
             viewModel.delete { _ in
                 
-                XCTAssertEqual(FileManager.default.fileExists(atPath: File(File.Folder.document("files"), fileName: "delete test").filePath), false)
+                XCTAssertEqual(FileManager.default.fileExists(atPath: File(File.Folder.document("files"), fileName: "delete test.org").filePath), false)
             }
         }
-        
-        
     }
     
 }

@@ -21,7 +21,7 @@ public class Application: Coordinator {
     }
     
     public override func start() {
-        let documentCoord = DocumentCoordinator(stack: self.stack, newFileTitle: "new file")
+        let documentCoord = DocumentCoordinator(stack: self.stack)
         self.addChild(documentCoord)
         documentCoord.start()
     }

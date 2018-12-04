@@ -50,7 +50,10 @@
 		E4A46A2D21B410BE00FBDA04 /* DocumentSearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A2C21B410BE00FBDA04 /* DocumentSearchViewModel.swift */; };
 		E4A46A3021B4150A00FBDA04 /* SyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A2F21B4150A00FBDA04 /* SyncManager.swift */; };
 		E4A46A3221B4D07500FBDA04 /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A3121B4D07500FBDA04 /* Document.swift */; };
-		E4A46A3421B4F36800FBDA04 /* DocumentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A3321B4F36800FBDA04 /* DocumentTests.swift */; };
+		E4A46A3421B4F36800FBDA04 /* DocumentEditTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A3321B4F36800FBDA04 /* DocumentEditTests.swift */; };
+		E4A46A3621B646DF00FBDA04 /* DocumentBrowserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A3521B646DF00FBDA04 /* DocumentBrowserViewController.swift */; };
+		E4A46A3821B6470100FBDA04 /* DocumentBrowserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A3721B6470100FBDA04 /* DocumentBrowserViewModel.swift */; };
+		E4A46A3E21B6605C00FBDA04 /* DocumentBrowserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A3D21B6605C00FBDA04 /* DocumentBrowserTests.swift */; };
 		EE260FEBE701F7B91549B9B8 /* Pods_Iceland.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B03B21DC28F546E7D3A966E7 /* Pods_Iceland.framework */; };
 /* End PBXBuildFile section */
 
@@ -163,7 +166,10 @@
 		E4A46A2C21B410BE00FBDA04 /* DocumentSearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentSearchViewModel.swift; sourceTree = "<group>"; };
 		E4A46A2F21B4150A00FBDA04 /* SyncManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncManager.swift; sourceTree = "<group>"; };
 		E4A46A3121B4D07500FBDA04 /* Document.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Document.swift; sourceTree = "<group>"; };
-		E4A46A3321B4F36800FBDA04 /* DocumentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentTests.swift; sourceTree = "<group>"; };
+		E4A46A3321B4F36800FBDA04 /* DocumentEditTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentEditTests.swift; sourceTree = "<group>"; };
+		E4A46A3521B646DF00FBDA04 /* DocumentBrowserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentBrowserViewController.swift; sourceTree = "<group>"; };
+		E4A46A3721B6470100FBDA04 /* DocumentBrowserViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentBrowserViewModel.swift; sourceTree = "<group>"; };
+		E4A46A3D21B6605C00FBDA04 /* DocumentBrowserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentBrowserTests.swift; sourceTree = "<group>"; };
 		FC69118DDC07F2D89DFC636D /* Pods_IcelandTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_IcelandTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -263,6 +269,8 @@
 				E4A46A2C21B410BE00FBDA04 /* DocumentSearchViewModel.swift */,
 				E41FA5742191569C001D8C63 /* DocumentEditController.swift */,
 				E4A46A2821B28ED800FBDA04 /* DocumentEditViewModel.swift */,
+				E4A46A3521B646DF00FBDA04 /* DocumentBrowserViewController.swift */,
+				E4A46A3721B6470100FBDA04 /* DocumentBrowserViewModel.swift */,
 				E4A46A3121B4D07500FBDA04 /* Document.swift */,
 			);
 			path = Document;
@@ -357,7 +365,8 @@
 				E4A46A1621A9A26300FBDA04 /* AttachmentTests.swift */,
 				E43428102121BF6000EC6DC3 /* Info.plist */,
 				E44825AA219AE47000C17568 /* ParseOutlineTests.swift */,
-				E4A46A3321B4F36800FBDA04 /* DocumentTests.swift */,
+				E4A46A3321B4F36800FBDA04 /* DocumentEditTests.swift */,
+				E4A46A3D21B6605C00FBDA04 /* DocumentBrowserTests.swift */,
 				E49FF46321A429F9003A5B3C /* OutlineStorageTests.swift */,
 			);
 			path = IcelandTests;
@@ -743,11 +752,13 @@
 				E41F86C3218EF4BF006C4CDB /* Capture.swift in Sources */,
 				E44825A9219810FF00C17568 /* EditorController.swift in Sources */,
 				E41F86DC219009DD006C4CDB /* Attachment.swift in Sources */,
+				E4A46A3621B646DF00FBDA04 /* DocumentBrowserViewController.swift in Sources */,
 				E4A46A2521B0DA1300FBDA04 /* OutlineAttribute.swift in Sources */,
 				E44825A3219722C300C17568 /* Application.swift in Sources */,
 				E4A46A2B21B4109C00FBDA04 /* DocumentSearchViewController.swift in Sources */,
 				E44825A7219810E100C17568 /* OutlineLayoutManager.swift in Sources */,
 				E41F86C9218EF759006C4CDB /* AgendaService.swift in Sources */,
+				E4A46A3821B6470100FBDA04 /* DocumentBrowserViewModel.swift in Sources */,
 				E4A46A2D21B410BE00FBDA04 /* DocumentSearchViewModel.swift in Sources */,
 				E43427FA2121BF5B00EC6DC3 /* AppDelegate.swift in Sources */,
 				E41FA5752191569C001D8C63 /* DocumentEditController.swift in Sources */,
@@ -774,8 +785,9 @@
 				E49FF46421A429F9003A5B3C /* OutlineStorageTests.swift in Sources */,
 				E44825AB219AE47000C17568 /* ParseOutlineTests.swift in Sources */,
 				E434280F2121BF5F00EC6DC3 /* IcelandTests.swift in Sources */,
+				E4A46A3E21B6605C00FBDA04 /* DocumentBrowserTests.swift in Sources */,
 				E4357B4A21A995DA006DDD72 /* CaptureTests.swift in Sources */,
-				E4A46A3421B4F36800FBDA04 /* DocumentTests.swift in Sources */,
+				E4A46A3421B4F36800FBDA04 /* DocumentEditTests.swift in Sources */,
 				E4A46A1721A9A26300FBDA04 /* AttachmentTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
