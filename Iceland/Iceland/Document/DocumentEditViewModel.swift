@@ -24,6 +24,8 @@ public protocol DocumentEditDelegate: class {
     func didFailToChangeFileTitle(with error: Error)
     func didDeleteDocument(url: URL)
     func didFailedToDeleteDocument(error: Error)
+    func didCloseDocument()
+    func didFailedToCloseDocument()
 }
 
 public class DocumentEditViewModel {
@@ -56,15 +58,31 @@ public class DocumentEditViewModel {
         self.addStatesObservers()
     }
     
-    public func loadDocument() {
+    public func loadDocument(completion:((String) -> Void)? = nil) {
         document.open { [weak self] (isOpenSuccessfully: Bool) in
+            
             guard let strongSelf = self else { return }
             
             strongSelf.editorController.string = strongSelf.document.string
+            
+            completion?(strongSelf.document.string)
+            
             if isOpenSuccessfully {
                 strongSelf.delegate?.didOpenDocument(text: strongSelf.editorController.string)
             } else {
                 strongSelf.delegate?.didFailedToOpenDocument(with: DocumentEditError.failToOpenFile(strongSelf.document.fileURL))
+            }
+        }
+    }
+    
+    public func close(completion:((Bool) -> Void)? = nil) {
+        document.close {
+            completion?($0)
+            
+            if $0 {
+                self.delegate?.didCloseDocument()
+            } else {
+                self.delegate?.didFailedToCloseDocument()
             }
         }
     }
@@ -74,7 +92,7 @@ public class DocumentEditViewModel {
         self.document.close(completionHandler: nil)
     }
     
-    public func changeFileTitle(newTitle: String) {
+    public func changeFileTitle(newTitle: String, completion: ((Bool) -> Void)? = nil) {
         let newURL = URL(fileURLWithPath: File(File.Folder.document("files"), fileName: newTitle).filePath)
         let oldURL = self.document.fileURL
         var error: NSError?
@@ -91,8 +109,10 @@ public class DocumentEditViewModel {
                                             fileCoordinator.item(at: oldURL, willMoveTo: newURL)
                                             try fileManager.moveItem(at: newURL1, to: newURL2)
                                             fileCoordinator.item(at: oldURL, didMoveTo: newURL)
+                                            completion?(true)
                                             self.delegate?.didChangeFileTitle()
                                         } catch {
+                                            completion?(false)
                                             self.delegate?.didFailToChangeFileTitle(with: DocumentEditError.failToChagneFileTitle("\(error)"))
                                         }
                                         
@@ -100,9 +120,11 @@ public class DocumentEditViewModel {
         }
     }
     
-    public func save() {
+    public func save(completion: ((Bool) -> Void)? = nil) {
         document.string = editorController.string
         document.save(to: document.fileURL, for: UIDocument.SaveOperation.forOverwriting) { [weak self] success in
+            completion?(success)
+            
             guard let strongSelf = self else { return }
             if success {
                 self?.delegate?.didSaveDocument()
@@ -113,13 +135,15 @@ public class DocumentEditViewModel {
         }
     }
     
-    public func delete() {
+    public func delete(completion: ((Bool) -> Void)? = nil) {
         do {
             let url = self.document.fileURL
             try FileManager.default.removeItem(at: self.document.fileURL)
+            completion?(true)
             self.delegate?.didDeleteDocument(url: url)
         } catch {
             log.error("failed to delete document: \(error)")
+            completion?(false)
             self.delegate?.didFailedToDeleteDocument(error: error)
         }
     }

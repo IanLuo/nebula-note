@@ -39,6 +39,14 @@ public class DocumentEditViewController: UIViewController {
 }
 
 extension DocumentEditViewController: DocumentEditDelegate {
+    public func didCloseDocument() {
+        
+    }
+    
+    public func didFailedToCloseDocument() {
+        
+    }
+    
     public func didDeleteDocument(url: URL) {
         
     }
