@@ -20,8 +20,8 @@ public protocol DocumentEditDelegate: class {
     func didFailedToOpenDocument(with error: Error)
     func didSaveDocument()
     func didFailedToSaveDocument(with error: Error)
-    func didChangeFileTitle()
-    func didFailToChangeFileTitle(with error: Error)
+    func didRename()
+    func didFailToRename(with error: Error)
     func didDeleteDocument(url: URL)
     func didFailedToDeleteDocument(error: Error)
     func didCloseDocument()
@@ -92,7 +92,7 @@ public class DocumentEditViewModel {
         self.close()
     }
     
-    public func changeFileTitle(newTitle: String, completion: ((Bool) -> Void)? = nil) {
+    public func rename(newTitle: String, completion: ((Bool) -> Void)? = nil) {
         let newURL = URL(fileURLWithPath: File(File.Folder.document("files"), fileName: newTitle).filePath)
         let oldURL = self.document.fileURL
         var error: NSError?
@@ -110,10 +110,10 @@ public class DocumentEditViewModel {
                                             try fileManager.moveItem(at: newURL1, to: newURL2)
                                             fileCoordinator.item(at: oldURL, didMoveTo: newURL)
                                             completion?(true)
-                                            self.delegate?.didChangeFileTitle()
+                                            self.delegate?.didRename()
                                         } catch {
                                             completion?(false)
-                                            self.delegate?.didFailToChangeFileTitle(with: DocumentEditError.failToChagneFileTitle("\(error)"))
+                                            self.delegate?.didFailToRename(with: DocumentEditError.failToChagneFileTitle("\(error)"))
                                         }
                                         
             })

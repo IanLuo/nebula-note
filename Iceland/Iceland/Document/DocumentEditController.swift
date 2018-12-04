@@ -55,11 +55,11 @@ extension DocumentEditViewController: DocumentEditDelegate {
         
     }
     
-    public func didChangeFileTitle() {
+    public func didRename() {
         
     }
     
-    public func didFailToChangeFileTitle(with error: Error) {
+    public func didFailToRename(with error: Error) {
         
     }
     

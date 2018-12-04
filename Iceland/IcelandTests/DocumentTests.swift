@@ -29,8 +29,8 @@ public class DocumentTests: XCTestCase {
         func didFailedToOpenDocument(with error: Error) {}
         func didSaveDocument() {}
         func didFailedToSaveDocument(with error: Error) {}
-        func didChangeFileTitle() {}
-        func didFailToChangeFileTitle(with error: Error) {}
+        func didRename() {}
+        func didFailToRename(with error: Error) {}
     }
     
     func testCreateDocument() throws {
@@ -89,7 +89,7 @@ public class DocumentTests: XCTestCase {
         
         let ex = expectation(description: "load")
         viewModel.save { [weak viewModel] _ in
-            viewModel?.changeFileTitle(newTitle: "changed test") { _ in
+            viewModel?.rename(newTitle: "changed test") { _ in
                 viewModel?.close { _ in
                     let viewModel2 = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()),
                                                            url: URL(fileURLWithPath: File(File.Folder.document("files"), fileName: "changed test").filePath))

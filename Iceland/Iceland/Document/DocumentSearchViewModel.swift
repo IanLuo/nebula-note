@@ -8,9 +8,13 @@
 
 import Foundation
 
+public struct DocumentSearchResult {
+    public let url: URL
+}
+
 public protocol DocumentSearchDelegate: class {
-    func didFoundDocuments(documents: [URL])
-    func didFailToSearchDocument(error: Error)
+    func didFoundResults(documents: [URL])
+    func didFailToSearch(error: Error)
 }
 
 public class DocumentSearchViewModel {
@@ -30,5 +34,9 @@ public class DocumentSearchViewModel {
     
     public func search(deadline: Date) {
         // TODO: search by deadline
+    }
+    
+    private func loadAllFiles() {
+        
     }
 }

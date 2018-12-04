@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 public protocol EditorControllerDelegate: class {
-
+    
 }
 
 public class EditorController: NSObject {
