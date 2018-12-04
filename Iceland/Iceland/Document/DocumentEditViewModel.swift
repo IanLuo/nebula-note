@@ -58,7 +58,7 @@ public class DocumentEditViewModel {
         self.addStatesObservers()
     }
     
-    public func loadDocument(completion:((String) -> Void)? = nil) {
+    public func open(completion:((String) -> Void)? = nil) {
         document.open { [weak self] (isOpenSuccessfully: Bool) in
             
             guard let strongSelf = self else { return }
@@ -89,7 +89,7 @@ public class DocumentEditViewModel {
     
     deinit {
         self.removeObservers()
-        self.document.close(completionHandler: nil)
+        self.close()
     }
     
     public func changeFileTitle(newTitle: String, completion: ((Bool) -> Void)? = nil) {

@@ -21,6 +21,8 @@ public class DocumentTests: XCTestCase {
     class DocumentDelegate: DocumentEditDelegate {
         let ex: XCTestExpectation
         init(ex: XCTestExpectation) { self.ex = ex }
+        func didCloseDocument() {}
+        func didFailedToCloseDocument() {}
         func didDeleteDocument(url: URL) {}
         func didFailedToDeleteDocument(error: Error) {}
         func didOpenDocument(text: String) {}
@@ -69,7 +71,7 @@ public class DocumentTests: XCTestCase {
                 let viewModel2 = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()),
                                                        url: URL(fileURLWithPath: File(File.Folder.document("files"), fileName: "load test").filePath))
                 
-                viewModel2.loadDocument { [viewModel2] _ in
+                viewModel2.open { [viewModel2] _ in
                     ex.fulfill()
                     XCTAssertEqual(viewModel2.editorController.string, "testLoadDocument")
                 }
@@ -91,7 +93,7 @@ public class DocumentTests: XCTestCase {
                 viewModel?.close { _ in
                     let viewModel2 = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()),
                                                            url: URL(fileURLWithPath: File(File.Folder.document("files"), fileName: "changed test").filePath))
-                    viewModel2.loadDocument { [viewModel2] _ in
+                    viewModel2.open { [viewModel2] _ in
                         XCTAssertEqual(viewModel2.editorController.string, "testRenameDocument")
                         ex.fulfill()
                     }

@@ -34,7 +34,7 @@ public class DocumentEditViewController: UIViewController {
         
         viewModel.delegate = self
         
-        viewModel.loadDocument()
+        viewModel.open()
     }
 }
 
