@@ -36,7 +36,7 @@ public class DocumentSearchTests: XCTestCase {
     func testSearchContent() {
         let ex = expectation(description: "search content")
         let viewModel = DocumentSearchViewModel()
-        viewModel.search(contain: "table", resultAdded: { searchResult in
+        viewModel.search(contain: "dribbble", resultAdded: { searchResult in
             searchResult.forEach {
                 print($0.context)
             }

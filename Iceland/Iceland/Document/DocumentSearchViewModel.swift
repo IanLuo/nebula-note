@@ -44,7 +44,7 @@ public class DocumentSearchViewModel {
         
         operation.addExecutionBlock {
             do {
-                let matcher = try NSRegularExpression(pattern: "\(contain)+", options: NSRegularExpression.Options.caseInsensitive)
+                let matcher = try NSRegularExpression(pattern: "\(contain)", options: NSRegularExpression.Options.caseInsensitive)
                 try self.loadAllFiles().forEach { url in
                     let string = try String(contentsOf: url)
                     var item: [DocumentSearchResult] = []
@@ -89,44 +89,28 @@ public class DocumentSearchViewModel {
                        complete: @escaping () -> Void,
                        failed: ((Error) -> Void)?) {
         
-        self.operationQueue.cancelAllOperations()
-        let operation = BlockOperation()
-        
-        operation.completionBlock = {
-            OperationQueue.main.addOperation {
-                complete()
-            }
-        }
-        
-        operation.addExecutionBlock {
-            
-            self.doSearchHeading(failed: failed) { (string: String, url: URL, headings: [[String: NSRange]]) -> Void in
-                                    var searchResults: [DocumentSearchResult] = []
-                                    for heading in headings {
-                                        if let tagsRange = heading[OutlineParser.Key.Element.Heading.tags],
-                                            let headingRange = heading[OutlineParser.Key.Node.heading] {
-                                            let tagString = (string as NSString).substring(with: tagsRange)
-                                            for t in tags {
-                                                let range = (tagString as NSString).range(of: t)
-                                                if range.location != Int.max {
-                                                    searchResults.append(DocumentSearchResult(url: url,
-                                                                                              highlightRange: range,
-                                                                                              context: (string as NSString).substring(with: headingRange)))
-                                                }
+        self.doSearchHeading(resultAdded: resultAdded,
+                             complete: complete,
+                             failed: failed) { (string: String, url: URL, headings: [[String: NSRange]]) -> [DocumentSearchResult] in
+                                var searchResults: [DocumentSearchResult] = []
+                                for heading in headings {
+                                    if let tagsRange = heading[OutlineParser.Key.Element.Heading.tags],
+                                        let headingRange = heading[OutlineParser.Key.Node.heading] {
+                                        let tagString = (string as NSString).substring(with: tagsRange)
+                                        for t in tags {
+                                            let range = (tagString as NSString).range(of: t)
+                                            if range.location != Int.max {
+                                                searchResults.append(DocumentSearchResult(url: url,
+                                                                                          highlightRange: range,
+                                                                                          context: (string as NSString).substring(with: headingRange)))
                                             }
                                         }
                                     }
-                                    
-                                    if searchResults.count > 0 {
-                                        
-                                        OperationQueue.main.addOperation {
-                                            resultAdded(searchResults)
-                                        }
-                                    }
-            }
+                                }
+                                
+                                return searchResults
         }
-        
-        self.operationQueue.addOperation(operation)
+
     }
     
     // MARK: -
@@ -137,44 +121,28 @@ public class DocumentSearchViewModel {
                        failed: ((Error) -> Void)?) {
         let today = Date()
         
-        self.operationQueue.cancelAllOperations()
-        let operation = BlockOperation()
-        
-        operation.completionBlock = {
-            OperationQueue.main.addOperation {
-                complete()
-            }
-        }
-        
-        operation.addExecutionBlock {
-            
-            self.doSearchHeading(failed: failed) { (string: String, url: URL, headings: [[String: NSRange]]) -> Void in
-                                    var searchResults: [DocumentSearchResult] = []
-                                    for heading in headings {
-                                        if let scheduleRange = heading[OutlineParser.Key.Element.Heading.schedule],
-                                            let headingRange = heading[OutlineParser.Key.Node.heading] {
-                                            let headingString = (string as NSString).substring(with: headingRange)
-                                            
-                                            if let scheduleDate = Date.createFromSchedule(headingString) {
-                                                if scheduleDate < today {
-                                                    searchResults.append(DocumentSearchResult(url: url,
-                                                                                              highlightRange: scheduleRange,
-                                                                                              context: (string as NSString).substring(with: headingRange)))
-                                                }
+        self.doSearchHeading(resultAdded: resultAdded,
+                             complete: complete,
+                             failed: failed) { (string: String, url: URL, headings: [[String: NSRange]]) -> [DocumentSearchResult] in
+                                var searchResults: [DocumentSearchResult] = []
+                                for heading in headings {
+                                    if let scheduleRange = heading[OutlineParser.Key.Element.Heading.schedule],
+                                        let headingRange = heading[OutlineParser.Key.Node.heading] {
+                                        let headingString = (string as NSString).substring(with: headingRange)
+                                        
+                                        if let scheduleDate = Date.createFromSchedule(headingString) {
+                                            if scheduleDate < today {
+                                                searchResults.append(DocumentSearchResult(url: url,
+                                                                                          highlightRange: scheduleRange,
+                                                                                          context: (string as NSString).substring(with: headingRange)))
                                             }
                                         }
                                     }
-                                    
-                                    if searchResults.count > 0 {
-                                        OperationQueue.main.addOperation {
-                                            resultAdded(searchResults)
-                                        }
-                                    }
-            }
-            
+                                }
+                                
+                                return searchResults
         }
-        
-        self.operationQueue.addOperation(operation)
+
     }
     
     // MARK: -
@@ -183,44 +151,29 @@ public class DocumentSearchViewModel {
                        complete: @escaping () -> Void,
                        failed: ((Error) -> Void)?) {
         let today = Date()
-        
-        self.operationQueue.cancelAllOperations()
-        let operation = BlockOperation()
-        
-        operation.completionBlock = {
-            OperationQueue.main.addOperation {
-                complete()
-            }
-        }
-        
-        operation.addExecutionBlock {
-            
-            self.doSearchHeading(failed: failed) { (string: String, url: URL, headings: [[String: NSRange]]) -> Void in
-                                    var searchResults: [DocumentSearchResult] = []
-                                    for heading in headings {
-                                        if let dueRange = heading[OutlineParser.Key.Element.Heading.due],
-                                            let headingRange = heading[OutlineParser.Key.Node.heading] {
-                                            let headingString = (string as NSString).substring(with: headingRange)
-                                            
-                                            if let dueDate = Date.createFromDue(headingString) {
-                                                if dueDate <= today {
-                                                    searchResults.append(DocumentSearchResult(url: url,
-                                                                                              highlightRange: dueRange,
-                                                                                              context: (string as NSString).substring(with: headingRange)))
-                                                }
+
+        self.doSearchHeading(resultAdded:resultAdded,
+                             complete: complete,
+                             failed: failed) { (string: String, url: URL, headings: [[String: NSRange]]) -> [DocumentSearchResult] in
+                                var searchResults: [DocumentSearchResult] = []
+                                for heading in headings {
+                                    if let dueRange = heading[OutlineParser.Key.Element.Heading.due],
+                                        let headingRange = heading[OutlineParser.Key.Node.heading] {
+                                        let headingString = (string as NSString).substring(with: headingRange)
+                                        
+                                        if let dueDate = Date.createFromDue(headingString) {
+                                            if dueDate <= today {
+                                                searchResults.append(DocumentSearchResult(url: url,
+                                                                                          highlightRange: dueRange,
+                                                                                          context: (string as NSString).substring(with: headingRange)))
                                             }
                                         }
                                     }
-                                    
-                                    if searchResults.count > 0 {
-                                        OperationQueue.main.addOperation {
-                                            resultAdded(searchResults)
-                                        }
-                                    }
+                                }
+                                
+                                return searchResults
             }
-        }
-        
-        self.operationQueue.addOperation(operation)
+
     }
     
     // MARK: -
@@ -228,7 +181,35 @@ public class DocumentSearchViewModel {
                        resultAdded: @escaping ([DocumentSearchResult]) -> Void,
                        complete: @escaping () -> Void,
                        failed: ((Error) -> Void)?) {
+        
+        self.doSearchHeading(resultAdded:resultAdded,
+                             complete: complete,
+                             failed: failed) { (string: String, url: URL, headings: [[String: NSRange]]) -> [DocumentSearchResult] in
+                                var searchResults: [DocumentSearchResult] = []
+                                for heading in headings {
+                                    if let planningRange = heading[OutlineParser.Key.Element.Heading.planning],
+                                        let headingRange = heading[OutlineParser.Key.Node.heading] {
+                                        let planningString = (string as NSString).substring(with: planningRange)
+                                        
+                                        if plannings.contains(planningString) {
+                                            searchResults.append(DocumentSearchResult(url: url,
+                                                                                      highlightRange: planningRange,
+                                                                                      context: (string as NSString).substring(with: headingRange)))
+                                        }
+                                    }
+                                }
+                                
+                                return searchResults
+        }
 
+    }
+    
+     // MARK: - private
+    private func doSearchHeading(resultAdded: @escaping ([DocumentSearchResult]) -> Void,
+                                 complete: @escaping () -> Void,
+                                 failed: ((Error) -> Void)?,
+                                 onEachHeadingMatch: @escaping (String, URL, [[String: NSRange]]) -> [DocumentSearchResult]) {
+        
         self.operationQueue.cancelAllOperations()
         let operation = BlockOperation()
         
@@ -240,62 +221,42 @@ public class DocumentSearchViewModel {
         
         operation.addExecutionBlock {
             
-            self.doSearchHeading(failed: failed) { (string: String, url: URL, headings: [[String: NSRange]]) -> Void in
-                var searchResults: [DocumentSearchResult] = []
-                for heading in headings {
-                    if let planningRange = heading[OutlineParser.Key.Element.Heading.planning],
-                        let headingRange = heading[OutlineParser.Key.Node.heading] {
-                        let planningString = (string as NSString).substring(with: planningRange)
-                        
-                        if plannings.contains(planningString) {
-                            searchResults.append(DocumentSearchResult(url: url,
-                                                                      highlightRange: planningRange,
-                                                                      context: (string as NSString).substring(with: headingRange)))
+            class ParseDelegate: OutlineParserDelegate {
+                var headings: [[String: NSRange]] = []
+                func didFoundHeadings(text: String,
+                                      headingDataRanges: [[String : NSRange]]) {
+                    self.headings = headingDataRanges
+                }
+            }
+            
+            let parseDelegate = ParseDelegate()
+            let parser = OutlineParser(delegate: parseDelegate)
+            parser.includeParsee = .heading
+            
+            do {
+                try self.loadAllFiles().forEach { url in
+                    let string = try String(contentsOf: url)
+                    parser.parse(str: string)
+                    
+                    if parseDelegate.headings.count > 0 {
+                        let documentSearchResult = onEachHeadingMatch(string, url, parseDelegate.headings)
+                        if documentSearchResult.count > 0 {
+                            OperationQueue.main.addOperation {
+                                resultAdded(documentSearchResult)
+                            }
                         }
+                        
+                        parseDelegate.headings = []
                     }
                 }
-                
-                if searchResults.count > 0 {
-                    OperationQueue.main.addOperation {
-                        resultAdded(searchResults)
-                    }
+            } catch {
+                OperationQueue.main.addOperation {
+                    failed?(error)
                 }
             }
         }
         
-        self.operationQueue.addOperation(operation)
-    }
-    
-     // MARK: - private
-    private func doSearchHeading(failed: ((Error) -> Void)?,
-                                 onEachHeadingMatch: (String, URL, [[String: NSRange]]) -> Void) {
-        class ParseDelegate: OutlineParserDelegate {
-            var headings: [[String: NSRange]] = []
-            func didFoundHeadings(text: String,
-                                  headingDataRanges: [[String : NSRange]]) {
-                self.headings = headingDataRanges
-            }
-        }
-        
-        let parseDelegate = ParseDelegate()
-        let parser = OutlineParser(delegate: parseDelegate)
-        parser.includeParsee = .heading
-        
-        do {
-            try self.loadAllFiles().forEach { url in
-                let string = try String(contentsOf: url)
-                parser.parse(str: string)
-                
-                if parseDelegate.headings.count > 0 {
-                    onEachHeadingMatch(string, url, parseDelegate.headings)
-                    parseDelegate.headings = []
-                }
-            }
-        } catch {
-            OperationQueue.main.addOperation {
-                failed?(error)
-            }
-        }
+        operationQueue.addOperation(operation)
     }
     
     internal func loadAllFiles() -> [URL] {
