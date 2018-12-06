@@ -127,7 +127,7 @@ extension EditorController: OutlineTextViewDelegate {
     public func didTapOnLink(textView: UITextView,
                              characterIndex: Int,
                              linkRange: NSRange) {
-        if let url = OutlineParser.Matcher.Element.url {
+        if let url = OutlineParser.Matcher.Element.link {
             let result: [[String: NSRange]] = url
                 .matches(in: textView.text, options: [], range: linkRange)
                 .map { (result: NSTextCheckingResult) -> [String: NSRange] in

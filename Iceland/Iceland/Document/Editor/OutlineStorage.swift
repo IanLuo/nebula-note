@@ -58,9 +58,9 @@ public class OutlineTextStorage: NSTextStorage {
         public var schedule: NSRange? {
             return data[OutlineParser.Key.Element.Heading.schedule]?.offset(offset)
         }
-        /// 当前 heading 的 deadline
-        public var deadline: NSRange? {
-            return data[OutlineParser.Key.Element.Heading.deadline]?.offset(offset)
+        /// 当前 heading 的 due
+        public var due: NSRange? {
+            return data[OutlineParser.Key.Element.Heading.due]?.offset(offset)
         }
         /// 当前的 heading level
         public var level: Int {
@@ -399,18 +399,18 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 self.addAttribute(NSAttributedString.Key.backgroundColor, value: UIColor.orange, range: scheduleRange)
             }
             
-            if let deadlineRange = $0[OutlineParser.Key.Element.Heading.deadline] {
-                self.addAttribute(OutlineAttribute.Heading.deadline, value: deadlineRange, range: deadlineRange)
-                self.addAttribute(NSAttributedString.Key.backgroundColor, value: UIColor.purple, range: deadlineRange)
+            if let dueRange = $0[OutlineParser.Key.Element.Heading.due] {
+                self.addAttribute(OutlineAttribute.Heading.due, value: dueRange, range: dueRange)
+                self.addAttribute(NSAttributedString.Key.backgroundColor, value: UIColor.purple, range: dueRange)
             }
             
             if let tagsRange = $0[OutlineParser.Key.Element.Heading.tags] {
-                self.addAttribute(OutlineAttribute.Heading.deadline, value: tagsRange, range: tagsRange)
+                self.addAttribute(OutlineAttribute.Heading.due, value: tagsRange, range: tagsRange)
                 self.addAttribute(NSAttributedString.Key.backgroundColor, value: UIColor.cyan, range: tagsRange)
             }
             
             if let planningRange = $0[OutlineParser.Key.Element.Heading.planning] {
-                self.addAttribute(OutlineAttribute.Heading.deadline, value: planningRange, range: planningRange)
+                self.addAttribute(OutlineAttribute.Heading.due, value: planningRange, range: planningRange)
                 self.addAttribute(NSAttributedString.Key.font, value: UIFont.boldSystemFont(ofSize: 12), range: planningRange)
                 self.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.red, range: planningRange)
             }

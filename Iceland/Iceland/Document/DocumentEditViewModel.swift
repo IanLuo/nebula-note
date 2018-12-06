@@ -67,6 +67,25 @@ public class DocumentEditViewModel {
             completion?(false)
         }
     }
+    
+    public func find(target: String, found: @escaping ([NSRange]) -> Void) throws {
+        let matcher = try NSRegularExpression(pattern: "\(target)", options: .caseInsensitive)
+        let string = self.document.string
+        var matchedRanges: [NSRange] = []
+        
+        DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
+            matcher.enumerateMatches(in: string,
+                                     options: [],
+                                     range: NSRange(location: 0, length: string.count)) { (result, flag, stop) in
+                                        guard let range = result?.range else { return }
+                                        matchedRanges.append(range)
+            }
+            
+            DispatchQueue.main.async {
+                found(matchedRanges)
+            }
+        }
+    }
 }
 
 extension DocumentEditViewModel {

@@ -34,17 +34,17 @@ public class ParseOutlineTests: XCTestCase {
         
         let text =
 """
-*** TODO Demo heading DEADLINE:[2018-11-08] SCHEDULE:[2018-11-08]
+*** TODO Demo heading DEADLINE: <2018-12-05 Wed> SCHEDULED: <2018-12-05 Wed>
         asdfsadasafdsaddfasfd
         asdfsadfsa
         fsafsadf
         safdsadfsadfsadfsadfsad
-**** TODO Demo heading DEADLINE:[2018-11-08]
+**** TODO Demo heading DEADLINE: <2018-12-05 Wed 17:30>  SCHEDULED: <2018-12-05 Wed 03:10>
         sdfsafsafsafsadf
         sfsafsafasdfsadf
         sfsadfsasdfds
 
-***** CANCELD Demo heading3 DEADLINE:[2018-11-11] :tag1:tag2:tag3:
+***** CANCELD Demo heading3 DEADLINE: <2018-12-05 Wed> :tag1:tag2:tag3:
         sdfsafsafsafsadf
         sfsafsafasdfsadf
         sfsadfsasdfds * not a heading
@@ -54,21 +54,21 @@ public class ParseOutlineTests: XCTestCase {
             override func didFoundHeadings(text: String, headingDataRanges: [[String : NSRange]]) {
                 XCTAssertEqual(3, headingDataRanges.count)
                 XCTAssertEqual("TODO", (text as NSString).substring(with: headingDataRanges[0][OutlineParser.Key.Element.Heading.planning]!))
-                XCTAssertEqual("DEADLINE:[2018-11-08]", (text as NSString).substring(with: headingDataRanges[0][OutlineParser.Key.Element.Heading.deadline]!))
-                XCTAssertEqual("SCHEDULE:[2018-11-08]", (text as NSString).substring(with: headingDataRanges[0][OutlineParser.Key.Element.Heading.schedule]!))
-                XCTAssertEqual("*** TODO Demo heading DEADLINE:[2018-11-08] SCHEDULE:[2018-11-08]", (text as NSString).substring(with: headingDataRanges[0][OutlineParser.Key.Node.heading]!))
+                XCTAssertEqual("DEADLINE: <2018-12-05 Wed>", (text as NSString).substring(with: headingDataRanges[0][OutlineParser.Key.Element.Heading.due]!))
+                XCTAssertEqual("SCHEDULED: <2018-12-05 Wed>", (text as NSString).substring(with: headingDataRanges[0][OutlineParser.Key.Element.Heading.schedule]!))
+                XCTAssertEqual("*** TODO Demo heading DEADLINE: <2018-12-05 Wed> SCHEDULED: <2018-12-05 Wed>", (text as NSString).substring(with: headingDataRanges[0][OutlineParser.Key.Node.heading]!))
                 XCTAssertEqual("***", (text as NSString).substring(with: headingDataRanges[0][OutlineParser.Key.Element.Heading.level]!))
                 
                 XCTAssertEqual("TODO", (text as NSString).substring(with: headingDataRanges[1][OutlineParser.Key.Element.Heading.planning]!))
-                XCTAssertEqual("DEADLINE:[2018-11-08]", (text as NSString).substring(with: headingDataRanges[1][OutlineParser.Key.Element.Heading.deadline]!))
-                XCTAssertEqual(nil, headingDataRanges[1][OutlineParser.Key.Element.Heading.schedule])
-                XCTAssertEqual("**** TODO Demo heading DEADLINE:[2018-11-08]", (text as NSString).substring(with: headingDataRanges[1][OutlineParser.Key.Node.heading]!))
+                XCTAssertEqual("DEADLINE: <2018-12-05 Wed 17:30>", (text as NSString).substring(with: headingDataRanges[1][OutlineParser.Key.Element.Heading.due]!))
+                XCTAssertEqual("SCHEDULED: <2018-12-05 Wed 03:10>", (text as NSString).substring(with: headingDataRanges[1][OutlineParser.Key.Element.Heading.schedule]!))
+                XCTAssertEqual("**** TODO Demo heading DEADLINE: <2018-12-05 Wed 17:30>  SCHEDULED: <2018-12-05 Wed 03:10>", (text as NSString).substring(with: headingDataRanges[1][OutlineParser.Key.Node.heading]!))
                 XCTAssertEqual("****", (text as NSString).substring(with: headingDataRanges[1][OutlineParser.Key.Element.Heading.level]!))
                 
                 XCTAssertEqual("CANCELD", (text as NSString).substring(with: headingDataRanges[2][OutlineParser.Key.Element.Heading.planning]!))
-                XCTAssertEqual("DEADLINE:[2018-11-11]", (text as NSString).substring(with: headingDataRanges[2][OutlineParser.Key.Element.Heading.deadline]!))
+                XCTAssertEqual("DEADLINE: <2018-12-05 Wed>", (text as NSString).substring(with: headingDataRanges[2][OutlineParser.Key.Element.Heading.due]!))
                 XCTAssertEqual(nil, headingDataRanges[2][OutlineParser.Key.Element.Heading.schedule])
-                XCTAssertEqual("***** CANCELD Demo heading3 DEADLINE:[2018-11-11] :tag1:tag2:tag3:", (text as NSString).substring(with: headingDataRanges[2][OutlineParser.Key.Node.heading]!))
+                XCTAssertEqual("***** CANCELD Demo heading3 DEADLINE: <2018-12-05 Wed> :tag1:tag2:tag3:", (text as NSString).substring(with: headingDataRanges[2][OutlineParser.Key.Node.heading]!))
                 XCTAssertEqual("*****", (text as NSString).substring(with: headingDataRanges[2][OutlineParser.Key.Element.Heading.level]!))
                 XCTAssertEqual(":tag1:tag2:tag3:", (text as NSString).substring(with: headingDataRanges[2][OutlineParser.Key.Element.Heading.tags]!))
                 
@@ -285,9 +285,9 @@ public class ParseOutlineTests: XCTestCase {
         let text = """
         *** some title
         some paragraph
-        [[the title][http://some.domain.com]]
+        [[http://some.domain.com][the title]]
         hahah
-        [[second link title][https://another.domain.cn]]
+        [[https://another.domain.cn][second link title]]
         """
         
         parser.parse(str: text)
@@ -323,5 +323,53 @@ public class ParseOutlineTests: XCTestCase {
         
         parser.parse(str: text)
         XCTAssert(delegate.didHit)
+    }
+    
+    func testParseSchedule() {
+        var string = "**** TODO Demo heading SCHEDULED: <2018-12-05 Wed>"
+        if let date = Date.createFromSchedule(string) {
+            XCTAssertEqual(Calendar.current.component(.year, from: date), 2018)
+            XCTAssertEqual(Calendar.current.component(.month, from: date), 12)
+            XCTAssertEqual(Calendar.current.component(.day, from: date), 5)
+            XCTAssert(true)
+        } else {
+            XCTAssert(false)
+        }
+        
+        string = "** TODO Design                                                     :iceland:\nSCHEDULED: <2018-09-21 Fri 17:30>"
+        if let date = Date.createFromSchedule(string) {
+            XCTAssertEqual(Calendar.current.component(.year, from: date), 2018)
+            XCTAssertEqual(Calendar.current.component(.month, from: date), 9)
+            XCTAssertEqual(Calendar.current.component(.day, from: date), 21)
+            XCTAssertEqual(Calendar.current.component(.hour, from: date), 17)
+            XCTAssertEqual(Calendar.current.component(.minute, from: date), 30)
+            XCTAssert(true)
+        } else {
+            XCTAssert(false)
+        }
+    }
+    
+    func testParseDue() {
+        var string = "**** TODO Demo heading DEADLINE: <2018-12-05 Wed> SCHEDULED: <2018-12-05 Wed>"
+        if let date = Date.createFromDue(string) {
+            XCTAssertEqual(Calendar.current.component(.year, from: date), 2018)
+            XCTAssertEqual(Calendar.current.component(.month, from: date), 12)
+            XCTAssertEqual(Calendar.current.component(.day, from: date), 5)
+            XCTAssert(true)
+        } else {
+            XCTAssert(false)
+        }
+        
+        string = "**** TODO Demo heading DEADLINE: <2018-12-05 Wed 17:30>  SCHEDULED: <2018-12-05 Wed 03:10>"
+        if let date = Date.createFromDue(string) {
+            XCTAssertEqual(Calendar.current.component(.year, from: date), 2018)
+            XCTAssertEqual(Calendar.current.component(.month, from: date), 12)
+            XCTAssertEqual(Calendar.current.component(.day, from: date), 5)
+            XCTAssertEqual(Calendar.current.component(.hour, from: date), 17)
+            XCTAssertEqual(Calendar.current.component(.minute, from: date), 30)
+            XCTAssert(true)
+        } else {
+            XCTAssert(false)
+        }
     }
 }

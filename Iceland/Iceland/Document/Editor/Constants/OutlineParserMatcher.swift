@@ -9,6 +9,25 @@
 import Foundation
 
 extension OutlineParser {
+    public struct ParseeTypes: OptionSet {
+        public init(rawValue: Int) { self.rawValue = rawValue }
+        public let rawValue: Int
+        
+        public static let heading: ParseeTypes = ParseeTypes(rawValue: 1 << 0)
+        public static let checkbox: ParseeTypes = ParseeTypes(rawValue: 1 << 1)
+        public static let orderedList: ParseeTypes = ParseeTypes(rawValue: 1 << 2)
+        public static let unorderedList: ParseeTypes = ParseeTypes(rawValue: 1 << 3)
+        public static let codeBlock: ParseeTypes = ParseeTypes(rawValue: 1 << 4)
+        public static let seperator: ParseeTypes = ParseeTypes(rawValue: 1 << 5)
+        public static let attachment: ParseeTypes = ParseeTypes(rawValue: 1 << 6)
+        public static let link: ParseeTypes = ParseeTypes(rawValue: 1 << 7)
+        public static let quote: ParseeTypes = ParseeTypes(rawValue: 1 << 8) // TOOD:
+        public static let footnote: ParseeTypes = ParseeTypes(rawValue: 1 << 9) // TODO:
+        
+        public static let all: ParseeTypes = [.heading, .checkbox, orderedList, unorderedList, codeBlock, seperator, attachment, link, .quote, .footnote]
+        public static let onlyHeading: ParseeTypes = [.checkbox, orderedList, unorderedList, codeBlock, seperator, attachment, link, .quote, .footnote]
+    }
+    
     public struct Matcher {
         public struct Node {
             public static var heading = try? NSRegularExpression(pattern: RegexPattern.Node.heading, options: [.anchorsMatchLines])
@@ -24,7 +43,7 @@ extension OutlineParser {
             public struct Heading {
                 public static var planning = try? NSRegularExpression(pattern: RegexPattern.Element.Heading.planning, options: [])
                 public static var schedule = try? NSRegularExpression(pattern: RegexPattern.Element.Heading.schedule, options: [])
-                public static var deadline = try? NSRegularExpression(pattern: RegexPattern.Element.Heading.deadline, options: [])
+                public static var due = try? NSRegularExpression(pattern: RegexPattern.Element.Heading.due, options: [])
                 public static var tags = try? NSRegularExpression(pattern: RegexPattern.Element.Heading.tags, options: [])
             }
             
@@ -37,7 +56,7 @@ extension OutlineParser {
                 public static var code = try? NSRegularExpression(pattern: RegexPattern.Element.TextMark.code, options: [])
             }
             
-            public static var url = try? NSRegularExpression(pattern: RegexPattern.Element.link, options: [])
+            public static var link = try? NSRegularExpression(pattern: RegexPattern.Element.link, options: [])
         }
     }
     
@@ -57,7 +76,7 @@ extension OutlineParser {
                 public static let level = "level"
                 public static let planning = "planning"
                 public static let schedule = "schedule"
-                public static let deadline = "deadline"
+                public static let due = "due"
                 public static let tags = "tags"
             }
             
@@ -106,7 +125,7 @@ extension OutlineParser {
     
     public struct RegexPattern {
         public struct Node {
-            public static let heading = "^(\\*+) (.+)"
+            public static let heading = "^(\\*+) (.+)((\n\(Element.Heading.schedule))|(\n\(Element.Heading.due)))?"
             // FIXME: 如果 BEGIN 和 END 内部没有至少一个空行，则无法匹配成功
             public static let codeBlock =       "^[\\t ]*\\#\\+BEGIN\\_SRC( [0-9a-zA-Z\\.]*)?\\n([^\\#\\+END\\_SRC]*)\\n\\s*\\#\\+END\\_SRC[\\t ]*\\n"
             public static let checkBox =        "^[\\t ]*(\\- \\[[x| |\\-]\\]) .*"
@@ -118,10 +137,10 @@ extension OutlineParser {
         
         public struct Element {
             public struct Heading {
-                public static let schedule =    " (SCHEDULE\\:\\[[0-9]{4}\\-[0-9]{1,2}\\-[0-9]{1,2}\\])"
-                public static let deadline =    " (DEADLINE\\:\\[[0-9]{4}\\-[0-9]{1,2}\\-[0-9]{1,2}\\])"
+                public static let schedule =    "(SCHEDULED\\: \\<([0-9]{4}\\-[0-9]{1,2}\\-[0-9]{1,2} [a-zA-Z]{3}( [0-9]{2}\\:[0-9]{1,2})?)\\>)"
+                public static let due =         "(DEADLINE\\: \\<([0-9]{4}\\-[0-9]{1,2}\\-[0-9]{1,2} [a-zA-Z]{3}( [0-9]{2}\\:[0-9]{1,2})?)\\>)"
                 public static let planning =    " (TODO|NEXT|DONE|CANCELD)? "
-                public static let tags =        " (\\:([a-zA-Z0-9]+\\:)+)"
+                public static let tags =        "(\\:([a-zA-Z0-9]+\\:)+)"
             }
             
             public struct TextMark {

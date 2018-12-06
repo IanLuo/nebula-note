@@ -22,7 +22,7 @@ public struct OutlineAttribute {
         public static let level: NSAttributedString.Key = NSAttributedString.Key("heading-level")
         public static let folded: NSAttributedString.Key = NSAttributedString.Key("heading-folded")
         public static let schedule: NSAttributedString.Key = NSAttributedString.Key("heading-schedule")
-        public static let deadline: NSAttributedString.Key = NSAttributedString.Key("heading-deadline")
+        public static let due: NSAttributedString.Key = NSAttributedString.Key("heading-due")
         public static let tags: NSAttributedString.Key = NSAttributedString.Key("heading-tags")
     }
     public static let link: NSAttributedString.Key = NSAttributedString.Key("link")

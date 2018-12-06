@@ -18,7 +18,7 @@ public enum TaskStatus {
 
 public struct Task {
     let schedule: Date?
-    let deadline: Date?
+    let due: Date?
     let effort: Double?
     let ref: Any // TODO: 关联到对应的 document header，要求 document 能够通过 url 关联到 header
     let title: String

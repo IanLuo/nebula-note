@@ -49,7 +49,7 @@ public class OutlineStorageTests: XCTestCase {
         let storage = EditorController(parser: OutlineParser(delegate: nil))
         let textView = UITextView(frame: .zero, textContainer: storage.textContainer)
         textView.text = """
-        * TODO fastlane design SCHEDULE:[2020-12-12] DEADLINE:[2022-12-11] :movie:entertainment:"
+        * TODO fastlane design SCHEDULE:[2020-12-12] DUE:[2022-12-11] :movie:entertainment:"
         fastlane official site
         fastlane docs
         *** DONE iOS platform structure project
@@ -73,7 +73,7 @@ public class OutlineStorageTests: XCTestCase {
         XCTAssertEqual(storage.textStorage.currentHeading?.level, 1)
         XCTAssertEqual((textView.text as NSString).substring(with: storage.textStorage.currentHeading!.planning!), "TODO")
         XCTAssertEqual((textView.text as NSString).substring(with: storage.textStorage.currentHeading!.schedule!), "SCHEDULE:[2020-12-12]")
-        XCTAssertEqual((textView.text as NSString).substring(with: storage.textStorage.currentHeading!.deadline!), "DEADLINE:[2022-12-11]")
+        XCTAssertEqual((textView.text as NSString).substring(with: storage.textStorage.currentHeading!.due!), "DUE:[2022-12-11]")
         XCTAssertEqual((textView.text as NSString).substring(with: storage.textStorage.currentHeading!.tags!), ":movie:entertainment:")
         
         storage.textStorage.currentLocation = 150
@@ -81,7 +81,7 @@ public class OutlineStorageTests: XCTestCase {
         XCTAssertEqual(storage.textStorage.currentHeading?.level, 3)
         XCTAssertEqual((textView.text as NSString).substring(with: storage.textStorage.currentHeading!.planning!), "DONE")
         XCTAssertEqual(storage.textStorage.currentHeading?.schedule, nil)
-        XCTAssertEqual(storage.textStorage.currentHeading?.deadline, nil)
+        XCTAssertEqual(storage.textStorage.currentHeading?.due, nil)
         XCTAssertEqual(storage.textStorage.currentHeading?.tags, nil)
     }
     
@@ -89,7 +89,7 @@ public class OutlineStorageTests: XCTestCase {
         let storage = EditorController(parser: OutlineParser(delegate: nil))
         let textView = UITextView(frame: .zero, textContainer: storage.textContainer)
         textView.text = """
-        * TODO fastlane design SCHEDULE:[2020-12-12] DEADLINE:[2022-12-11] :movie:entertainment:"
+        * TODO fastlane design SCHEDULE:[2020-12-12] DUE:[2022-12-11] :movie:entertainment:"
         fastlane official site
         fastlane docs
         *** DONE iOS platform structure project
@@ -109,11 +109,11 @@ public class OutlineStorageTests: XCTestCase {
         
         XCTAssertEqual(13, storage.textStorage.itemRanges.count)
         XCTAssertEqual(13, storage.textStorage.itemRangeDataMapping.count)
-        XCTAssertEqual("* TODO fastlane design SCHEDULE:[2020-12-12] DEADLINE:[2022-12-11] :movie:entertainment:\"", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[0]))
+        XCTAssertEqual("* TODO fastlane design SCHEDULE:[2020-12-12] DUE:[2022-12-11] :movie:entertainment:\"", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[0]))
         XCTAssertEqual("*", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[1]))
         XCTAssertEqual("TODO", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[2]))
         XCTAssertEqual("SCHEDULE:[2020-12-12]", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[3]))
-        XCTAssertEqual("DEADLINE:[2022-12-11]", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[4]))
+        XCTAssertEqual("DUE:[2022-12-11]", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[4]))
         XCTAssertEqual(":movie:entertainment:", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[5]))
         XCTAssertEqual("*** DONE iOS platform structure project", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[6]))
         XCTAssertEqual("***", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[7]))
@@ -128,7 +128,7 @@ public class OutlineStorageTests: XCTestCase {
         let storage = EditorController(parser: OutlineParser(delegate: nil))
         let textView = UITextView(frame: .zero, textContainer: storage.textContainer)
         textView.text = """
-        * TODO fastlane design SCHEDULE:[2020-12-12] DEADLINE:[2022-12-11] :movie:entertainment:"
+        * TODO fastlane design SCHEDULE:[2020-12-12] DUE:[2022-12-11] :movie:entertainment:"
         fastlane official site
         fastlane docs
         *** DONE iOS platform structure project
@@ -154,11 +154,11 @@ public class OutlineStorageTests: XCTestCase {
         
         
         """
-        XCTAssertEqual("* TODO fastlane design SCHEDULE:[2020-12-12] DEADLINE:[2022-12-11] :movie:entertainment:\"", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[0]))
+        XCTAssertEqual("* TODO fastlane design SCHEDULE:[2020-12-12] DUE:[2022-12-11] :movie:entertainment:\"", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[0]))
         XCTAssertEqual("*", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[1]))
         XCTAssertEqual("TODO", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[2]))
         XCTAssertEqual("SCHEDULE:[2020-12-12]", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[3]))
-        XCTAssertEqual("DEADLINE:[2022-12-11]", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[4]))
+        XCTAssertEqual("DUE:[2022-12-11]", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[4]))
         XCTAssertEqual(":movie:entertainment:", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[5]))
         XCTAssertEqual("*** DONE iOS platform structure project", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[6]))
         XCTAssertEqual("***", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[7]))
@@ -174,11 +174,11 @@ public class OutlineStorageTests: XCTestCase {
         storage.textStorage.updateItemIndexAndRange(delta: 0)
         storage.parser.parse(str: textView.text!, range: storage.textStorage.currentParseRange)
         
-        XCTAssertEqual("* TODO fastlane design SCHEDULE:[2020-12-12] DEADLINE:[2022-12-11] :movie:entertainment:\"", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[0]))
+        XCTAssertEqual("* TODO fastlane design SCHEDULE:[2020-12-12] DUE:[2022-12-11] :movie:entertainment:\"", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[0]))
         XCTAssertEqual("*", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[1]))
         XCTAssertEqual("TODO", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[2]))
         XCTAssertEqual("SCHEDULE:[2020-12-12]", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[3]))
-        XCTAssertEqual("DEADLINE:[2022-12-11]", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[4]))
+        XCTAssertEqual("DUE:[2022-12-11]", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[4]))
         XCTAssertEqual(":movie:entertainment:", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[5]))
         XCTAssertEqual("*** DONE iOS platform structure project", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[6]))
         XCTAssertEqual("***", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[7]))
