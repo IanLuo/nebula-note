@@ -125,7 +125,7 @@ extension OutlineParser {
     
     public struct RegexPattern {
         public struct Node {
-            public static let heading = "^(\\*+) (.+)((\n\(Element.Heading.schedule))|(\n\(Element.Heading.due)))?"
+            public static let heading = "^(\\*+) (.+)((\n\(Element.Heading.schedule))|(\n\(Element.Heading.due))){0,2}"
             // FIXME: 如果 BEGIN 和 END 内部没有至少一个空行，则无法匹配成功
             public static let codeBlock =       "^[\\t ]*\\#\\+BEGIN\\_SRC( [0-9a-zA-Z\\.]*)?\\n([^\\#\\+END\\_SRC]*)\\n\\s*\\#\\+END\\_SRC[\\t ]*\\n"
             public static let checkBox =        "^[\\t ]*(\\- \\[[x| |\\-]\\]) .*"
@@ -139,7 +139,7 @@ extension OutlineParser {
             public struct Heading {
                 public static let schedule =    "(SCHEDULED\\: \\<([0-9]{4}\\-[0-9]{1,2}\\-[0-9]{1,2} [a-zA-Z]{3}( [0-9]{2}\\:[0-9]{1,2})?)\\>)"
                 public static let due =         "(DEADLINE\\: \\<([0-9]{4}\\-[0-9]{1,2}\\-[0-9]{1,2} [a-zA-Z]{3}( [0-9]{2}\\:[0-9]{1,2})?)\\>)"
-                public static let planning =    " (TODO|NEXT|DONE|CANCELD)? "
+                public static let planning =    " (\(Values.Heading.Planning.pattern))? "
                 public static let tags =        "(\\:([a-zA-Z0-9]+\\:)+)"
             }
             
@@ -164,6 +164,18 @@ extension OutlineParser {
             public static let unchecked: String = "- [ ]"
             public static let checked: String = "- [x]"
             public static let halfChecked: String = "- [-]"
+        }
+        
+        public struct Heading {
+            public struct Planning {
+                public static let todo: String = "TODO"
+                public static let next: String = "NEXT"
+                public static let done: String = "DONE"
+                public static let canceled: String = "CANCELED"
+                public static let all: [String] = [todo, next, done, canceled]
+                public static let unfinished: [String] = [todo, next]
+                public static let pattern: String = "\(todo)|\(next)|\(done)|\(canceled)"
+            }
         }
     }
 }

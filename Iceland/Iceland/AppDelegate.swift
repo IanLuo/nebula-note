@@ -21,6 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         
         console.format = "$DHH:mm:ss$d $L $M"
+        console.minLevel = .info
         
         log.addDestination(console)
         

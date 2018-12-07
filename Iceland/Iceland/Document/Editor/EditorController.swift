@@ -61,6 +61,10 @@ extension EditorController {
         // TODO: insert content at the bottom of the paragraph
     }
     
+    public func replace(text: String, in range: NSRange) {
+        
+    }
+    
     public var string: String {
         set { self.textStorage.string = newValue }
         get { return self.textStorage.string }

@@ -33,6 +33,24 @@ public class Document: UIDocument {
 }
 
 extension URL {
+    public func delete(completion: @escaping (Error?) -> Void) {
+        let fileCoordinator = NSFileCoordinator(filePresenter: nil)
+        let fileAccessIntent = NSFileAccessIntent.writingIntent(with: self, options: NSFileCoordinator.WritingOptions.forDeleting)
+        let queue = OperationQueue()
+        queue.qualityOfService = .background
+        fileCoordinator.coordinate(with: [fileAccessIntent], queue: queue) { error in
+            if let error = error {
+                completion(error)
+            } else {
+                do {
+                    try FileManager.default.removeItem(at: fileAccessIntent.url)
+                } catch {
+                    completion(error)
+                }
+            }
+        }
+    }
+    
     public func rename(url: URL, completion: ((Error?) -> Void)?) {
         let oldURL = self
         let newURL = url

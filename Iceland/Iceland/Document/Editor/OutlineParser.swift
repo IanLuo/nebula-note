@@ -49,14 +49,14 @@ public class OutlineParser {
                         [Key.Node.heading: headingRange,
                          Key.Element.Heading.level: result.range(at: 1)]
                     
-                    [(Key.Element.Heading.planning, Matcher.Element.Heading.planning),
-                     (Key.Element.Heading.schedule, Matcher.Element.Heading.schedule),
-                     (Key.Element.Heading.due, Matcher.Element.Heading.due),
-                     (Key.Element.Heading.tags, Matcher.Element.Heading.tags)]
+                    [(Key.Element.Heading.planning, Matcher.Element.Heading.planning, 1),
+                     (Key.Element.Heading.schedule, Matcher.Element.Heading.schedule, 1),
+                     (Key.Element.Heading.due, Matcher.Element.Heading.due, 1),
+                     (Key.Element.Heading.tags, Matcher.Element.Heading.tags, 1)]
                         .forEach {
                             if let matcher = $0.1 {
                                 if let range = matcher.firstMatch(in: headingText, options: [], range: NSRange(location: 0, length: headingText.count))?
-                                    .range(at: 1), range.location != Int.max {
+                                    .range(at: $0.2), range.location != Int.max {
                                     comp[$0.0] = NSRange(location: headingRange.location + range.location, length: range.length)
                                 }
                             }
@@ -256,7 +256,7 @@ extension OutlineParser {
     fileprivate func logResult(_ result: [[String: NSRange]]) {
         for dict in result {
             for (key, value) in dict {
-//                log.verbose(">>> \(key): \(value)")
+                log.verbose(">>> \(key): \(value)")
             }
         }
     }
@@ -289,5 +289,17 @@ extension Date {
         }
         
         return nil
+    }
+    
+    public func toScheduleString(includeTime: Bool) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = includeTime ? "yyyy-MM-dd EEE HH:mm" : "yyyy-MM-dd EEE"
+        return "SCHEDULED: <\(formatter.string(from: self))>"
+    }
+    
+    public func toDueDateString(includeTime: Bool) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = includeTime ? "yyyy-MM-dd EEE HH:mm" : "yyyy-MM-dd EEE"
+        return "DEADLINE: <\(formatter.string(from: self))>"
     }
 }

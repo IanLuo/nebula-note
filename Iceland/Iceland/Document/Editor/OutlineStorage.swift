@@ -26,17 +26,11 @@ public class OutlineTextStorage: NSTextStorage {
         }
         public var name: String
         public var data: [String: NSRange]
-        public var contentLength: Int
         
         public init(range: NSRange, name: String, data: [String: NSRange]) {
             self._range = range
             self.name = name
             self.data = data
-            self.contentLength = 0
-        }
-        
-        public var paragraphRange: NSRange {
-            return NSRange(location: range.location, length: contentLength)
         }
         
         public func offset(_ offset: Int) {
@@ -67,8 +61,14 @@ public class OutlineTextStorage: NSTextStorage {
             return data[OutlineParser.Key.Element.Heading.level]!.length
         }
         
-        public convenience init(range: NSRange, data: [String: NSRange]) {
-            self.init(range: range, name: OutlineParser.Key.Node.heading, data: data)
+        public var contentLength: Int = 0
+        
+        public var paragraphRange: NSRange {
+            return NSRange(location: range.location, length: contentLength)
+        }
+        
+        public convenience init(data: [String: NSRange]) {
+            self.init(range: data[OutlineParser.Key.Node.heading]!, name: OutlineParser.Key.Node.heading, data: data)
             log.verbose("new heading: \(range)")
         }
     }
@@ -227,7 +227,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
     private func updateHeadingIfNeeded(_ newHeadings: [[String: NSRange]]) {
         // 如果已保存的 heading 为空，直接全部添加
         if savedHeadings.count == 0 {
-            self.savedHeadings = newHeadings.map { Heading(range: $0[OutlineParser.Key.Node.heading]!, data: $0) } // OutlineParser.Key.Node.heading 总是存在
+            self.savedHeadings = newHeadings.map { Heading(data: $0) } // OutlineParser.Key.Node.heading 总是存在
         } else {
             // 删除 currentParsingRange 范围内包含的所有 heading, 删除后，将新的 headings 插入删除掉的位置
             if let currentRange = self.currentParseRange {
@@ -244,7 +244,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 }
                 
                 if indexsToRemove.count > 0 {
-                    let newHeadingRanges = newHeadings.map { Heading(range: $0[OutlineParser.Key.Node.heading]!, data: $0) }
+                    let newHeadingRanges = newHeadings.map { Heading(data: $0) }
                     self.savedHeadings.insert(contentsOf: newHeadingRanges, at: indexsToRemove[0])
                 }
             }

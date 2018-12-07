@@ -12,6 +12,7 @@ public struct DocumentSearchResult {
     public let url: URL
     public let highlightRange: NSRange
     public let context: String
+    public let heading: OutlineTextStorage.Heading?
 }
 
 public protocol DocumentSearchDelegate: class {
@@ -64,7 +65,8 @@ public class DocumentSearchViewModel {
                                                 
                                                 item.append(DocumentSearchResult(url: url,
                                                                                  highlightRange: highlightRange,
-                                                                                 context: (string as NSString).substring(with: contextRange)))
+                                                                                 context: (string as NSString).substring(with: contextRange),
+                                                                                 heading: nil))
                     })
                     
                     OperationQueue.main.addOperation {
@@ -102,7 +104,8 @@ public class DocumentSearchViewModel {
                                             if range.location != Int.max {
                                                 searchResults.append(DocumentSearchResult(url: url,
                                                                                           highlightRange: range,
-                                                                                          context: (string as NSString).substring(with: headingRange)))
+                                                                                          context: (string as NSString).substring(with: headingRange),
+                                                                                          heading: OutlineTextStorage.Heading(data: heading)))
                                             }
                                         }
                                     }
@@ -110,7 +113,6 @@ public class DocumentSearchViewModel {
                                 
                                 return searchResults
         }
-
     }
     
     // MARK: -
@@ -134,7 +136,8 @@ public class DocumentSearchViewModel {
                                             if scheduleDate < today {
                                                 searchResults.append(DocumentSearchResult(url: url,
                                                                                           highlightRange: scheduleRange,
-                                                                                          context: (string as NSString).substring(with: headingRange)))
+                                                                                          context: (string as NSString).substring(with: headingRange),
+                                                                                          heading: OutlineTextStorage.Heading(data: heading)))
                                             }
                                         }
                                     }
@@ -165,7 +168,8 @@ public class DocumentSearchViewModel {
                                             if dueDate <= today {
                                                 searchResults.append(DocumentSearchResult(url: url,
                                                                                           highlightRange: dueRange,
-                                                                                          context: (string as NSString).substring(with: headingRange)))
+                                                                                          context: (string as NSString).substring(with: headingRange),
+                                                                                          heading: OutlineTextStorage.Heading(data: heading)))
                                             }
                                         }
                                     }
@@ -194,7 +198,8 @@ public class DocumentSearchViewModel {
                                         if plannings.contains(planningString) {
                                             searchResults.append(DocumentSearchResult(url: url,
                                                                                       highlightRange: planningRange,
-                                                                                      context: (string as NSString).substring(with: headingRange)))
+                                                                                      context: (string as NSString).substring(with: headingRange),
+                                                                                      heading: OutlineTextStorage.Heading(data: heading)))
                                         }
                                     }
                                 }
@@ -224,7 +229,8 @@ public class DocumentSearchViewModel {
             class ParseDelegate: OutlineParserDelegate {
                 var headings: [[String: NSRange]] = []
                 func didFoundHeadings(text: String,
-                                      headingDataRanges: [[String : NSRange]]) {
+                                      headingDataRanges: [[String: NSRange]]) {
+                    
                     self.headings = headingDataRanges
                 }
             }

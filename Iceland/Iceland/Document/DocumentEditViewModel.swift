@@ -9,14 +9,15 @@
 import Foundation
 import Storage
 
-public protocol DocumentEditDelegate: class {
+public protocol DocumentEditViewModelDelegate: class {
     func didClickLink(url: URL)
 }
 
 public class DocumentEditViewModel {
     public let editorController: EditorController
-    public weak var delegate: DocumentEditDelegate?
+    public weak var delegate: DocumentEditViewModelDelegate?
     private var document: Document
+    public var onLoadingLocation: Int = 0
     
     public init(editorController: EditorController,
                 document: Document) {
@@ -24,15 +25,141 @@ public class DocumentEditViewModel {
         self.editorController = editorController
         self.addStatesObservers()
     }
+    
+    deinit {
+        self.removeObservers()
+        self.close()
+    }
+    
+    public func remove(due: Date, headingLocation: Int, completion: @escaping (Bool) -> Void) {
+        guard let heading = self.heading(at: headingLocation) else { return }
         
-    public func open(completion:((String) -> Void)? = nil) {
+        if let dueRange = heading.due {
+            let extendedRange = NSRange(location: dueRange.location - 1, length: dueRange.length + 1)
+            self.editorController.textStorage.replaceCharacters(in: extendedRange, with: "")
+        }
+        
+        document.string = editorController.string
+        self.save(completion: completion) // FIXME: 更好的保存方式
+    }
+    
+    public func remove(schedule: Date, headingLocation: Int, completion: @escaping (Bool) -> Void) {
+        guard let heading = self.heading(at: headingLocation) else { return }
+        
+        if let scheduleRange = heading.schedule {
+            let extendedRange = NSRange(location: scheduleRange.location - 1, length: scheduleRange.length + 1)
+            self.editorController.textStorage.replaceCharacters(in: extendedRange, with: "")
+        }
+        
+        document.string = editorController.string
+        self.save(completion: completion) // FIXME: 更好的保存方式
+    }
+    
+    public func remove(tag: String, headingLocation: Int, completion: @escaping (Bool) -> Void) {
+        guard let heading = self.heading(at: headingLocation) else { return }
+        
+        if let tagsRange = heading.tags {
+            self.editorController.textStorage.replaceCharacters(in: tagsRange, with: "")
+        }
+        
+        document.string = editorController.string
+        self.save(completion: completion) // FIXME: 更好的保存方式
+    }
+    
+    public func remove(planning: String, headingLocation: Int, completion: @escaping (Bool) -> Void) {
+        guard let heading = self.heading(at: headingLocation) else { return }
+        
+        if let planningRange = heading.planning {
+            self.editorController.textStorage.replaceCharacters(in: planningRange, with: "")
+        }
+        
+        document.string = editorController.string
+        self.save(completion: completion) // FIXME: 更好的保存方式
+    }
+    
+    public func update(planning: String, includeTime: Bool, at headingLocation: Int, completion: @escaping (Bool) -> Void) {
+        guard let heading = self.heading(at: headingLocation) else { return }
+        
+        var editRange: NSRange!
+        var replacement: String!
+        // 有旧的 planning，就直接替换这个字符串
+        if let oldPlanningRange = heading.planning {
+            editRange = oldPlanningRange
+            replacement = planning
+        } else {
+            // 没有 planning， 则直接放在 level 之后添加
+            editRange = NSRange(location: heading.level + 1, length: 0)
+            replacement = planning + " "
+        }
+        
+        editorController.textStorage.replaceCharacters(in: editRange, with: replacement)
+        
+        document.string = editorController.string
+        self.save(completion: completion) // FIXME: 更好的保存方式
+    }
+
+    public func update(schedule: Date, includeTime: Bool, at headingLocation: Int, completion: @escaping (Bool) -> Void) {
+        guard let heading = self.heading(at: headingLocation) else { return }
+        
+        var editRange: NSRange!
+        var replacement: String!
+        // 有旧的 schedule，就直接替换这个字符串
+        if let oldScheduleRange = heading.schedule {
+            editRange = oldScheduleRange
+            replacement = schedule.toScheduleString(includeTime: includeTime)
+        } else {
+            // 没有 due date， 则直接放在 heading range 最后，注意要在新的一行
+            editRange = NSRange(location: heading.range.upperBound, length: 0)
+            replacement = "\n" + schedule.toScheduleString(includeTime: includeTime)
+        }
+        
+        editorController.textStorage.replaceCharacters(in: editRange, with: replacement)
+        
+        document.string = editorController.string
+        self.save(completion: completion)// FIXME: 更好的保存方式
+    }
+    
+    public func update(due: Date, includeTime: Bool, at headingLocation: Int, completion: @escaping (Bool) -> Void) {
+        guard let heading = self.heading(at: headingLocation) else { return }
+        
+        var editRange: NSRange!
+        var replacement: String!
+        
+        // 如果有旧的 due date，直接替换就行了
+        // 如果没有，添加到 heading range 的最后，注意要在新的一行
+        if let oldDueDateRange = heading.due {
+            editRange = oldDueDateRange
+            replacement = due.toDueDateString(includeTime: includeTime)
+        } else {
+            editRange = NSRange(location: heading.range.upperBound, length: 0)
+            replacement = "\n" + due.toScheduleString(includeTime: includeTime)
+        }
+        
+        editorController.textStorage.replaceCharacters(in: editRange, with: replacement)
+        document.string = editorController.string
+        self.save(completion: completion)// FIXME: 更好的保存方式
+    }
+        
+    public func open(completion:((String?) -> Void)? = nil) {
         document.open { [weak self] (isOpenSuccessfully: Bool) in
             guard let strongSelf = self else { return }
             
-            strongSelf.editorController.string = strongSelf.document.string
-            
-            completion?(strongSelf.document.string)
+            if isOpenSuccessfully {
+                // 触发解析
+                strongSelf.editorController.string = strongSelf.document.string
+                completion?(strongSelf.document.string)
+            } else {
+                completion?(nil)
+            }
         }
+    }
+    
+    public func insert(content: String, headingLocation: Int, completion: @escaping (Bool) -> Void) {
+        guard let heading = self.heading(at: headingLocation) else { return }
+        
+        editorController.insertToParagraph(at: heading, content: content)
+        document.string = editorController.string
+        self.save(completion: completion)// FIXME: 更好的保存方式
     }
     
     public func close(completion:((Bool) -> Void)? = nil) {
@@ -41,14 +168,9 @@ public class DocumentEditViewModel {
         }
     }
     
-    deinit {
-        self.removeObservers()
-        self.close()
-    }
-    
     public func rename(newTitle: String, completion: ((Error?) -> Void)? = nil) {
         let newURL = self.document.fileURL.deletingLastPathComponent().appendingPathComponent(newTitle).appendingPathExtension(Document.fileExtension)
-        document.fileURL.rename(url: newURL, completion: completion)
+        document.fileURL.rename(url: newURL, completion: completion) // FIXME: any problem？
     }
     
     public func save(completion: ((Bool) -> Void)? = nil) {
@@ -58,13 +180,9 @@ public class DocumentEditViewModel {
         }
     }
     
-    public func delete(completion: ((Bool) -> Void)? = nil) {
-        do {
-            try FileManager.default.removeItem(at: self.document.fileURL)
-            completion?(true)
-        } catch {
-            log.error("failed to delete document: \(error)")
-            completion?(false)
+    public func delete(completion: ((Error?) -> Void)? = nil) {
+        self.document.fileURL.delete {
+            completion?($0)
         }
     }
     
@@ -85,6 +203,15 @@ public class DocumentEditViewModel {
                 found(matchedRanges)
             }
         }
+    }
+    
+    internal func heading(at location: Int) -> OutlineTextStorage.Heading? {
+        for heading in self.editorController.getParagraphs() {
+            if heading.range.location == location {
+                return heading
+            }
+        }
+        return nil
     }
 }
 

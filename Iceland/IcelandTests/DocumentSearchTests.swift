@@ -48,7 +48,7 @@ public class DocumentSearchTests: XCTestCase {
     }
     
     func testSearchTag() {
-        let ex = expectation(description: "search content")
+        let ex = expectation(description: "search tags")
         let viewModel = DocumentSearchViewModel()
         viewModel.search(tags: ["iceland", "ar"], resultAdded: { searchResult in
             searchResult.forEach {

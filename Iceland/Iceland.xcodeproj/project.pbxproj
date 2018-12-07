@@ -10,7 +10,7 @@
 		20B6438499F032D8B24BB28F /* Pods_Storage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58F6ADB9E7BCAC752C4FE4C6 /* Pods_Storage.framework */; };
 		67BA3CC510702431FFD23301 /* Pods_IcelandTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC69118DDC07F2D89DFC636D /* Pods_IcelandTests.framework */; };
 		E41F86C3218EF4BF006C4CDB /* Capture.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F86C2218EF4BF006C4CDB /* Capture.swift */; };
-		E41F86C5218EF4E1006C4CDB /* Agenda.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F86C4218EF4E1006C4CDB /* Agenda.swift */; };
+		E41F86C5218EF4E1006C4CDB /* AgendaCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F86C4218EF4E1006C4CDB /* AgendaCoordinator.swift */; };
 		E41F86C7218EF5D8006C4CDB /* CaptureService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F86C6218EF5D8006C4CDB /* CaptureService.swift */; };
 		E41F86C9218EF759006C4CDB /* AgendaService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F86C8218EF759006C4CDB /* AgendaService.swift */; };
 		E41F86CB218EF7A7006C4CDB /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F86CA218EF7A7006C4CDB /* Task.swift */; };
@@ -38,6 +38,12 @@
 		E44825AB219AE47000C17568 /* ParseOutlineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44825AA219AE47000C17568 /* ParseOutlineTests.swift */; };
 		E44825AD219C1AAA00C17568 /* OutlineParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44825AC219C1AAA00C17568 /* OutlineParser.swift */; };
 		E464BBB121A69C9000D34C88 /* OutlineTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = E464BBB021A69C9000D34C88 /* OutlineTheme.swift */; };
+		E49F3E4421B8EDBD003F468D /* AgendaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49F3E4321B8EDBD003F468D /* AgendaViewController.swift */; };
+		E49F3E4621B8EDC8003F468D /* AgendaViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49F3E4521B8EDC8003F468D /* AgendaViewModel.swift */; };
+		E49F3E4821B9183F003F468D /* SettingsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49F3E4721B9183F003F468D /* SettingsCoordinator.swift */; };
+		E49F3E4A21B9186D003F468D /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49F3E4921B9186D003F468D /* SettingsViewController.swift */; };
+		E49F3E4C21B91885003F468D /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49F3E4B21B91885003F468D /* SettingsViewModel.swift */; };
+		E49F3E4F21B91B2D003F468D /* GeneralUICoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49F3E4E21B91B2D003F468D /* GeneralUICoordinator.swift */; };
 		E49FF46421A429F9003A5B3C /* OutlineStorageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49FF46321A429F9003A5B3C /* OutlineStorageTests.swift */; };
 		E4A46A1721A9A26300FBDA04 /* AttachmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A1621A9A26300FBDA04 /* AttachmentTests.swift */; };
 		E4A46A1921AA8E9F00FBDA04 /* OutlineStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A1821AA8E9F00FBDA04 /* OutlineStorage.swift */; };
@@ -120,7 +126,7 @@
 		AA6BE9F0E63F15EB98E44990 /* Pods-IcelandTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IcelandTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-IcelandTests/Pods-IcelandTests.release.xcconfig"; sourceTree = "<group>"; };
 		B03B21DC28F546E7D3A966E7 /* Pods_Iceland.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Iceland.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E41F86C2218EF4BF006C4CDB /* Capture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Capture.swift; sourceTree = "<group>"; };
-		E41F86C4218EF4E1006C4CDB /* Agenda.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Agenda.swift; sourceTree = "<group>"; };
+		E41F86C4218EF4E1006C4CDB /* AgendaCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgendaCoordinator.swift; sourceTree = "<group>"; };
 		E41F86C6218EF5D8006C4CDB /* CaptureService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureService.swift; sourceTree = "<group>"; };
 		E41F86C8218EF759006C4CDB /* AgendaService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgendaService.swift; sourceTree = "<group>"; };
 		E41F86CA218EF7A7006C4CDB /* Task.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
@@ -155,6 +161,12 @@
 		E44825AA219AE47000C17568 /* ParseOutlineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParseOutlineTests.swift; sourceTree = "<group>"; };
 		E44825AC219C1AAA00C17568 /* OutlineParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineParser.swift; sourceTree = "<group>"; };
 		E464BBB021A69C9000D34C88 /* OutlineTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineTheme.swift; sourceTree = "<group>"; };
+		E49F3E4321B8EDBD003F468D /* AgendaViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgendaViewController.swift; sourceTree = "<group>"; };
+		E49F3E4521B8EDC8003F468D /* AgendaViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgendaViewModel.swift; sourceTree = "<group>"; };
+		E49F3E4721B9183F003F468D /* SettingsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCoordinator.swift; sourceTree = "<group>"; };
+		E49F3E4921B9186D003F468D /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		E49F3E4B21B91885003F468D /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
+		E49F3E4E21B91B2D003F468D /* GeneralUICoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralUICoordinator.swift; sourceTree = "<group>"; };
 		E49FF46321A429F9003A5B3C /* OutlineStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineStorageTests.swift; sourceTree = "<group>"; };
 		E4A46A1621A9A26300FBDA04 /* AttachmentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentTests.swift; sourceTree = "<group>"; };
 		E4A46A1821AA8E9F00FBDA04 /* OutlineStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineStorage.swift; sourceTree = "<group>"; };
@@ -254,7 +266,9 @@
 		E41F86C0218EF4A7006C4CDB /* Agenda */ = {
 			isa = PBXGroup;
 			children = (
-				E41F86C4218EF4E1006C4CDB /* Agenda.swift */,
+				E41F86C4218EF4E1006C4CDB /* AgendaCoordinator.swift */,
+				E49F3E4321B8EDBD003F468D /* AgendaViewController.swift */,
+				E49F3E4521B8EDC8003F468D /* AgendaViewModel.swift */,
 				E41F86C8218EF759006C4CDB /* AgendaService.swift */,
 				E41F86CA218EF7A7006C4CDB /* Task.swift */,
 			);
@@ -290,6 +304,9 @@
 		E41F86DF21902BF3006C4CDB /* Setting */ = {
 			isa = PBXGroup;
 			children = (
+				E49F3E4721B9183F003F468D /* SettingsCoordinator.swift */,
+				E49F3E4921B9186D003F468D /* SettingsViewController.swift */,
+				E49F3E4B21B91885003F468D /* SettingsViewModel.swift */,
 			);
 			path = Setting;
 			sourceTree = "<group>";
@@ -388,6 +405,7 @@
 			isa = PBXGroup;
 			children = (
 				E4A46A1D21AE6CF400FBDA04 /* Image+Generation.swift */,
+				E49F3E4E21B91B2D003F468D /* GeneralUICoordinator.swift */,
 			);
 			path = GeneralUI;
 			sourceTree = "<group>";
@@ -752,6 +770,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E464BBB121A69C9000D34C88 /* OutlineTheme.swift in Sources */,
+				E49F3E4F21B91B2D003F468D /* GeneralUICoordinator.swift in Sources */,
 				E41F86C3218EF4BF006C4CDB /* Capture.swift in Sources */,
 				E44825A9219810FF00C17568 /* EditorController.swift in Sources */,
 				E41F86DC219009DD006C4CDB /* Attachment.swift in Sources */,
@@ -763,21 +782,26 @@
 				E41F86C9218EF759006C4CDB /* AgendaService.swift in Sources */,
 				E4A46A3821B6470100FBDA04 /* DocumentBrowserViewModel.swift in Sources */,
 				E4A46A2D21B410BE00FBDA04 /* DocumentSearchViewModel.swift in Sources */,
+				E49F3E4421B8EDBD003F468D /* AgendaViewController.swift in Sources */,
 				E43427FA2121BF5B00EC6DC3 /* AppDelegate.swift in Sources */,
 				E41FA5752191569C001D8C63 /* DocumentEditController.swift in Sources */,
+				E49F3E4C21B91885003F468D /* SettingsViewModel.swift in Sources */,
 				E41F86C7218EF5D8006C4CDB /* CaptureService.swift in Sources */,
 				E4A46A2921B28ED800FBDA04 /* DocumentEditViewModel.swift in Sources */,
 				E44825A52197E6F600C17568 /* DocumentCoordinator.swift in Sources */,
 				E4A46A1E21AE6CF400FBDA04 /* Image+Generation.swift in Sources */,
 				E4A46A3021B4150A00FBDA04 /* SyncManager.swift in Sources */,
+				E49F3E4A21B9186D003F468D /* SettingsViewController.swift in Sources */,
+				E49F3E4621B8EDC8003F468D /* AgendaViewModel.swift in Sources */,
 				E4A46A2021AF90B200FBDA04 /* OutlineTextView.swift in Sources */,
 				E4A46A2721B0E2D500FBDA04 /* OutlineParserMatcher.swift in Sources */,
 				E4A46A3221B4D07500FBDA04 /* Document.swift in Sources */,
 				E4A46A1921AA8E9F00FBDA04 /* OutlineStorage.swift in Sources */,
+				E49F3E4821B9183F003F468D /* SettingsCoordinator.swift in Sources */,
 				E44825AD219C1AAA00C17568 /* OutlineParser.swift in Sources */,
 				E41F86DE21902BA1006C4CDB /* AttachmentManager.swift in Sources */,
 				E41F86CB218EF7A7006C4CDB /* Task.swift in Sources */,
-				E41F86C5218EF4E1006C4CDB /* Agenda.swift in Sources */,
+				E41F86C5218EF4E1006C4CDB /* AgendaCoordinator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

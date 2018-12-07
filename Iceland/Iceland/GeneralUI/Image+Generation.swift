@@ -25,4 +25,9 @@ extension UIImage {
         
         return image!
     }
+    
+    public func resize(upto: CGSize) -> UIImage {
+        // TODO: resize
+        return self
+    }
 }

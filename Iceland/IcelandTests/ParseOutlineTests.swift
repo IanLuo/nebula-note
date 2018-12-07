@@ -34,17 +34,22 @@ public class ParseOutlineTests: XCTestCase {
         
         let text =
 """
-*** TODO Demo heading DEADLINE: <2018-12-05 Wed> SCHEDULED: <2018-12-05 Wed>
+*** TODO Demo heading
+SCHEDULED: <2018-12-05 Wed>
+DEADLINE: <2018-12-05 Wed>
         asdfsadasafdsaddfasfd
         asdfsadfsa
         fsafsadf
         safdsadfsadfsadfsadfsad
-**** TODO Demo heading DEADLINE: <2018-12-05 Wed 17:30>  SCHEDULED: <2018-12-05 Wed 03:10>
+**** TODO Demo heading
+DEADLINE: <2018-12-05 Wed 17:30>
+SCHEDULED: <2018-12-05 Wed 03:10>
         sdfsafsafsafsadf
         sfsafsafasdfsadf
         sfsadfsasdfds
 
-***** CANCELD Demo heading3 DEADLINE: <2018-12-05 Wed> :tag1:tag2:tag3:
+***** CANCELED Demo heading3 :tag1:tag2:tag3:
+DEADLINE: <2018-12-05 Wed>
         sdfsafsafsafsadf
         sfsafsafasdfsadf
         sfsadfsasdfds * not a heading
@@ -56,19 +61,19 @@ public class ParseOutlineTests: XCTestCase {
                 XCTAssertEqual("TODO", (text as NSString).substring(with: headingDataRanges[0][OutlineParser.Key.Element.Heading.planning]!))
                 XCTAssertEqual("DEADLINE: <2018-12-05 Wed>", (text as NSString).substring(with: headingDataRanges[0][OutlineParser.Key.Element.Heading.due]!))
                 XCTAssertEqual("SCHEDULED: <2018-12-05 Wed>", (text as NSString).substring(with: headingDataRanges[0][OutlineParser.Key.Element.Heading.schedule]!))
-                XCTAssertEqual("*** TODO Demo heading DEADLINE: <2018-12-05 Wed> SCHEDULED: <2018-12-05 Wed>", (text as NSString).substring(with: headingDataRanges[0][OutlineParser.Key.Node.heading]!))
+                XCTAssertEqual("*** TODO Demo heading\nSCHEDULED: <2018-12-05 Wed>\nDEADLINE: <2018-12-05 Wed>", (text as NSString).substring(with: headingDataRanges[0][OutlineParser.Key.Node.heading]!))
                 XCTAssertEqual("***", (text as NSString).substring(with: headingDataRanges[0][OutlineParser.Key.Element.Heading.level]!))
                 
                 XCTAssertEqual("TODO", (text as NSString).substring(with: headingDataRanges[1][OutlineParser.Key.Element.Heading.planning]!))
                 XCTAssertEqual("DEADLINE: <2018-12-05 Wed 17:30>", (text as NSString).substring(with: headingDataRanges[1][OutlineParser.Key.Element.Heading.due]!))
                 XCTAssertEqual("SCHEDULED: <2018-12-05 Wed 03:10>", (text as NSString).substring(with: headingDataRanges[1][OutlineParser.Key.Element.Heading.schedule]!))
-                XCTAssertEqual("**** TODO Demo heading DEADLINE: <2018-12-05 Wed 17:30>  SCHEDULED: <2018-12-05 Wed 03:10>", (text as NSString).substring(with: headingDataRanges[1][OutlineParser.Key.Node.heading]!))
+                XCTAssertEqual("**** TODO Demo heading\nDEADLINE: <2018-12-05 Wed 17:30>\nSCHEDULED: <2018-12-05 Wed 03:10>", (text as NSString).substring(with: headingDataRanges[1][OutlineParser.Key.Node.heading]!))
                 XCTAssertEqual("****", (text as NSString).substring(with: headingDataRanges[1][OutlineParser.Key.Element.Heading.level]!))
                 
-                XCTAssertEqual("CANCELD", (text as NSString).substring(with: headingDataRanges[2][OutlineParser.Key.Element.Heading.planning]!))
+                XCTAssertEqual("CANCELED", (text as NSString).substring(with: headingDataRanges[2][OutlineParser.Key.Element.Heading.planning]!))
                 XCTAssertEqual("DEADLINE: <2018-12-05 Wed>", (text as NSString).substring(with: headingDataRanges[2][OutlineParser.Key.Element.Heading.due]!))
                 XCTAssertEqual(nil, headingDataRanges[2][OutlineParser.Key.Element.Heading.schedule])
-                XCTAssertEqual("***** CANCELD Demo heading3 DEADLINE: <2018-12-05 Wed> :tag1:tag2:tag3:", (text as NSString).substring(with: headingDataRanges[2][OutlineParser.Key.Node.heading]!))
+                XCTAssertEqual("***** CANCELED Demo heading3 :tag1:tag2:tag3:\nDEADLINE: <2018-12-05 Wed>", (text as NSString).substring(with: headingDataRanges[2][OutlineParser.Key.Node.heading]!))
                 XCTAssertEqual("*****", (text as NSString).substring(with: headingDataRanges[2][OutlineParser.Key.Element.Heading.level]!))
                 XCTAssertEqual(":tag1:tag2:tag3:", (text as NSString).substring(with: headingDataRanges[2][OutlineParser.Key.Element.Heading.tags]!))
                 
