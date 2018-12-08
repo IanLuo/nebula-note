@@ -106,11 +106,11 @@ public class DocumentCoordinator: Coordinator {
     }
     
     /// 修改指定位置为 heading 开头的 schedule 日期
-    public func reschedule(newSchedule: Date, includeTime: Bool, url: URL, headingLocation: Int, complete: @escaping () -> Void, failure: @escaping (Error) -> Void) {
+    public func reschedule(newSchedule: DateAndTimeType, url: URL, headingLocation: Int, complete: @escaping () -> Void, failure: @escaping (Error) -> Void) {
         let viewModel = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()), document: Document(fileURL: url))
         viewModel.open { [weak viewModel] in
             if $0 != nil {
-                viewModel?.update(schedule: newSchedule, includeTime: includeTime, at: headingLocation) {
+                viewModel?.update(schedule: newSchedule, at: headingLocation) {
                     if $0 {
                         complete()
                     } else {
@@ -124,11 +124,11 @@ public class DocumentCoordinator: Coordinator {
     }
     
     /// 修改指定位置为 heading 开头的 due 日期
-    public func changeDue(newDue: Date, url: URL, includeTime: Bool, headingLocation: Int, complete: @escaping () -> Void, failure: @escaping (Error) -> Void) {
+    public func changeDue(newDue: DateAndTimeType, url: URL, headingLocation: Int, complete: @escaping () -> Void, failure: @escaping (Error) -> Void) {
         let viewModel = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()), document: Document(fileURL: url))
         viewModel.open { [weak viewModel] in
             if $0 != nil {
-                viewModel?.update(due: newDue, includeTime: includeTime, at: headingLocation) {
+                viewModel?.update(due: newDue, at: headingLocation) {
                     if $0 {
                         complete()
                     } else {

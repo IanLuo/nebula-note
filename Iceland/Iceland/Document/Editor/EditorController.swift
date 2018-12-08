@@ -58,11 +58,13 @@ extension EditorController {
     }
     
     public func insertToParagraph(at heading: OutlineTextStorage.Heading, content: String) {
-        // TODO: insert content at the bottom of the paragraph
+        let location = heading.range.location + heading.contentLength
+        let content = "\n" + content
+        self.textStorage.replaceCharacters(in: NSRange(location: location, length: 0), with: content)
     }
     
     public func replace(text: String, in range: NSRange) {
-        
+        self.textStorage.replaceCharacters(in: range, with: text)
     }
     
     public var string: String {
@@ -213,7 +215,7 @@ extension EditorController: NSLayoutManagerDelegate {
             }
         }
         
-//        log.verbose((self.textStorage.string as NSString).substring(with: glyphRange))
+        log.verbose((self.textStorage.string as NSString).substring(with: glyphRange))
         
         layoutManager.setGlyphs(glyphs,
                                 properties: controlCharProps,

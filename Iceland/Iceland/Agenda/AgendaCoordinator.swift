@@ -6,16 +6,14 @@
 //  Copyright © 2018 wod. All rights reserved.
 //
 
-/*
- 用户的活动中心
- 1. 每天的任务安排显示在此处
- 2. capture 的内容显示在此处
- 
- 不管是任务，还是 capture 的内容，都可以直接编辑，可以使用 document 中的格式，方便临时的任务记录
- */
 import Foundation
 import UIKit
 
+/// 用户的活动中心
+/// 1. 每天的任务安排显示在此处
+/// 2. capture 的内容显示在此处
+
+/// 不管是任务，还是 capture 的内容，都可以直接编辑，可以使用 document 中的格式，方便临时的任务记录
 public class AgendaCoordinator: Coordinator {
     public var viewController: UIViewController
     
@@ -110,10 +108,10 @@ extension AgendaCoordinator: AgendaViewModelDelegate {
         })
     }
     
-    public func reschedule(to: Date, includeTime: Bool, url: URL, headingLocation: Int, complete: @escaping () -> Void, failure: @escaping (Error) -> Void) {
+    public func reschedule(to: DateAndTimeType, url: URL, headingLocation: Int, complete: @escaping () -> Void, failure: @escaping (Error) -> Void) {
         let docCood = DocumentCoordinator(stack: self.stack)
         self.addChild(docCood)
-        docCood.reschedule(newSchedule: to, includeTime: includeTime, url: url, headingLocation: headingLocation, complete: {
+        docCood.reschedule(newSchedule: to, url: url, headingLocation: headingLocation, complete: {
             self.remove(docCood)
             complete()
         }, failure: {
@@ -122,10 +120,10 @@ extension AgendaCoordinator: AgendaViewModelDelegate {
         })
     }
     
-    public func changeDue(to: Date, includeTime: Bool, url: URL, headingLocation: Int, complete: @escaping () -> Void, failure: @escaping (Error) -> Void) {
+    public func changeDue(to: DateAndTimeType, url: URL, headingLocation: Int, complete: @escaping () -> Void, failure: @escaping (Error) -> Void) {
         let docCood = DocumentCoordinator(stack: self.stack)
         self.addChild(docCood)
-        docCood.changeDue(newDue: to, url: url, includeTime: includeTime, headingLocation: headingLocation, complete: {
+        docCood.changeDue(newDue: to, url: url, headingLocation: headingLocation, complete: {
             self.remove(docCood)
             complete()
         }, failure: {

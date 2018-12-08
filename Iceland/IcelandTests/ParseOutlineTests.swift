@@ -30,7 +30,8 @@ public class ParseOutlineTests: XCTestCase {
     
     func testParseHeading() throws {
         let delegate = TestDelegate_()
-        let parser = OutlineParser(delegate: delegate)
+        let parser = OutlineParser()
+        parser.delegate = delegate
         
         let text =
 """
@@ -110,7 +111,8 @@ DEADLINE: <2018-12-05 Wed>
         
         let delegate = TestDelegate_()
         
-        let parser = OutlineParser(delegate: delegate)
+        let parser = OutlineParser()
+        parser.delegate = delegate
         
         let text = """
         *** header 1
@@ -139,7 +141,8 @@ DEADLINE: <2018-12-05 Wed>
         }
         
         let delegate = TestDelegate_()
-        let parser = OutlineParser(delegate: delegate)
+        let parser = OutlineParser()
+        parser.delegate = delegate
         
         let text = """
         #+BEGIN_SRC swiftversion4.2
@@ -179,7 +182,8 @@ DEADLINE: <2018-12-05 Wed>
         }
         
         let delegate = TestDelegate_()
-        let parser = OutlineParser(delegate: delegate)
+        let parser = OutlineParser()
+        parser.delegate = delegate
         
         let text = """
         1. one
@@ -208,7 +212,8 @@ DEADLINE: <2018-12-05 Wed>
         }
         
         let delegate = TestDelegate_()
-        let parser = OutlineParser(delegate: delegate)
+        let parser = OutlineParser()
+        parser.delegate = delegate
         
         let text = """
         - one
@@ -233,7 +238,8 @@ DEADLINE: <2018-12-05 Wed>
         }
         
         let delegate = TestDelegate_()
-        let parser = OutlineParser(delegate: delegate)
+        let parser = OutlineParser()
+        parser.delegate = delegate
         
         let text = """
         sldjflsajdf
@@ -259,7 +265,8 @@ DEADLINE: <2018-12-05 Wed>
         }
         
         let delegate = TestDelegate_()
-        let parser = OutlineParser(delegate: delegate)
+        let parser = OutlineParser()
+        parser.delegate = delegate
 
         let text = """
         *** some title
@@ -285,7 +292,8 @@ DEADLINE: <2018-12-05 Wed>
         }
         
         let delegate = TestDelegate_()
-        let parser = OutlineParser(delegate: delegate)
+        let parser = OutlineParser()
+        parser.delegate = delegate
         
         let text = """
         *** some title
@@ -314,7 +322,8 @@ DEADLINE: <2018-12-05 Wed>
         }
         
         let delegate = TestDelegate_()
-        let parser = OutlineParser(delegate: delegate)
+        let parser = OutlineParser()
+        parser.delegate = delegate
         
         let text = """
         *** some title

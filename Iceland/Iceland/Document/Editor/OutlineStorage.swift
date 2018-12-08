@@ -157,7 +157,7 @@ public class OutlineTextStorage: NSTextStorage {
     private var backingStore: NSMutableAttributedString = NSMutableAttributedString()
     
     public override var string: String {
-        set { backingStore = NSMutableAttributedString(string: newValue) }
+        set { self.replaceCharacters(in: NSRange(location: 0, length: backingStore.string.count), with: newValue) }
         get { return backingStore.string }
     }
     

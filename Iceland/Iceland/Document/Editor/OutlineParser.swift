@@ -28,9 +28,6 @@ public class OutlineParser {
     
     public var includeParsee: ParseeTypes = ParseeTypes.all
     
-    public init(delegate: OutlineParserDelegate? = nil) {
-        self.delegate = delegate
-    }
     
     /// 1. find heading
     /// 2. add attribute for element
@@ -262,27 +259,32 @@ extension OutlineParser {
     }
 }
 
-extension Date {
-    public static func createFromSchedule(_ string: String) -> Date? {
+public struct DateAndTimeType {
+    let date: Date
+    let includeTime: Bool
+}
+
+extension DateAndTimeType {
+    public static func createFromSchedule(_ string: String) -> DateAndTimeType? {
         return createFrom(string: string, matcher: OutlineParser.Matcher.Element.Heading.schedule)
     }
     
-    public static func createFromDue(_ string: String) -> Date? {
+    public static func createFromDue(_ string: String) -> DateAndTimeType? {
         return createFrom(string: string, matcher: OutlineParser.Matcher.Element.Heading.due)
     }
     
-    private static func createFrom(string: String, matcher: NSRegularExpression?) -> Date? {
+    private static func createFrom(string: String, matcher: NSRegularExpression?) -> DateAndTimeType? {
         if let matcher = matcher {
             if let result = matcher.firstMatch(in: string, options: [], range: NSRange(location: 0, length: string.count)) {
                 let formatter = DateFormatter()
                 let dateString = matcher.replacementString(for: result, in: string, offset: 0, template: "$2")
                 formatter.dateFormat = "yyyy-MM-dd EEE HH:mm"
                 if let date = formatter.date(from: dateString) {
-                    return date
+                    return DateAndTimeType(date: date, includeTime: true)
                 } else {
                     formatter.dateFormat = "yyyy-MM-dd EEE"
                     if let date = formatter.date(from: dateString) {
-                        return date
+                        return DateAndTimeType(date: date, includeTime: false)
                     }
                 }
             }
@@ -291,15 +293,15 @@ extension Date {
         return nil
     }
     
-    public func toScheduleString(includeTime: Bool) -> String {
+    public func toScheduleString() -> String {
         let formatter = DateFormatter()
-        formatter.dateFormat = includeTime ? "yyyy-MM-dd EEE HH:mm" : "yyyy-MM-dd EEE"
-        return "SCHEDULED: <\(formatter.string(from: self))>"
+        formatter.dateFormat = self.includeTime ? "yyyy-MM-dd EEE HH:mm" : "yyyy-MM-dd EEE"
+        return "SCHEDULED: <\(formatter.string(from: self.date))>"
     }
     
-    public func toDueDateString(includeTime: Bool) -> String {
+    public func toDueDateString() -> String {
         let formatter = DateFormatter()
-        formatter.dateFormat = includeTime ? "yyyy-MM-dd EEE HH:mm" : "yyyy-MM-dd EEE"
-        return "DEADLINE: <\(formatter.string(from: self))>"
+        formatter.dateFormat = self.includeTime ? "yyyy-MM-dd EEE HH:mm" : "yyyy-MM-dd EEE"
+        return "DEADLINE: <\(formatter.string(from: self.date))>"
     }
 }

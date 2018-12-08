@@ -98,7 +98,7 @@ public class DocumentEditViewModel {
         self.save(completion: completion) // FIXME: 更好的保存方式
     }
 
-    public func update(schedule: Date, includeTime: Bool, at headingLocation: Int, completion: @escaping (Bool) -> Void) {
+    public func update(schedule: DateAndTimeType, at headingLocation: Int, completion: @escaping (Bool) -> Void) {
         guard let heading = self.heading(at: headingLocation) else { return }
         
         var editRange: NSRange!
@@ -106,11 +106,11 @@ public class DocumentEditViewModel {
         // 有旧的 schedule，就直接替换这个字符串
         if let oldScheduleRange = heading.schedule {
             editRange = oldScheduleRange
-            replacement = schedule.toScheduleString(includeTime: includeTime)
+            replacement = schedule.toScheduleString()
         } else {
             // 没有 due date， 则直接放在 heading range 最后，注意要在新的一行
             editRange = NSRange(location: heading.range.upperBound, length: 0)
-            replacement = "\n" + schedule.toScheduleString(includeTime: includeTime)
+            replacement = "\n" + schedule.toScheduleString()
         }
         
         editorController.textStorage.replaceCharacters(in: editRange, with: replacement)
@@ -119,7 +119,7 @@ public class DocumentEditViewModel {
         self.save(completion: completion)// FIXME: 更好的保存方式
     }
     
-    public func update(due: Date, includeTime: Bool, at headingLocation: Int, completion: @escaping (Bool) -> Void) {
+    public func update(due: DateAndTimeType, at headingLocation: Int, completion: @escaping (Bool) -> Void) {
         guard let heading = self.heading(at: headingLocation) else { return }
         
         var editRange: NSRange!
@@ -129,10 +129,10 @@ public class DocumentEditViewModel {
         // 如果没有，添加到 heading range 的最后，注意要在新的一行
         if let oldDueDateRange = heading.due {
             editRange = oldDueDateRange
-            replacement = due.toDueDateString(includeTime: includeTime)
+            replacement = due.toDueDateString()
         } else {
             editRange = NSRange(location: heading.range.upperBound, length: 0)
-            replacement = "\n" + due.toScheduleString(includeTime: includeTime)
+            replacement = "\n" + due.toScheduleString()
         }
         
         editorController.textStorage.replaceCharacters(in: editRange, with: replacement)

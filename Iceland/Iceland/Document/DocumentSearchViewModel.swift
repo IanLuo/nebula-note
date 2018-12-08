@@ -28,9 +28,15 @@ public class DocumentSearchViewModel {
         operationQueue.underlyingQueue = DispatchQueue.global(qos: DispatchQoS.QoSClass.userInteractive)
     }
     
-     // MARK: -
+    // MARK: -
+    /// 搜索包含指定字符串的文件，染回搜索结果
+    /// - parameter contain: 搜索中包含的字符串
+    /// - parameter resultAdded: 每个文件的搜索完成后会调用这个 closure
+    /// - parameter result: 封装的搜索结果, 其中, url 为对应的文件 url，contex 为包含搜索结果的一个字符串，提供搜索结果的上下文, highlightRange 为 context 中搜索结果的 range, heading 为 nil
+    /// - parameter complete: 所有文件搜索完成后调用
+    /// - parameter failed: 有错误产生的时候调用
     public func search(contain: String,
-                       resultAdded: @escaping ([DocumentSearchResult]) -> Void,
+                       resultAdded: @escaping (_ result: [DocumentSearchResult]) -> Void,
                        complete: @escaping () -> Void,
                        failed: ((Error) -> Void)?) {
         
@@ -86,6 +92,12 @@ public class DocumentSearchViewModel {
     }
     
     // MARK: -
+    /// 搜索包含指定 tag 的所有 heading
+    /// - parameter tags, 字符串数组，需要搜索的所有 tag
+    /// - parameter resultAdded: 每个文件的搜索完成后会调用这个 closure
+    /// - parameter result: 封装的搜索结果, 其中, url 为对应的文件 url，context 为整个 heading，提供搜索结果的上下文, highlightRange 为 context 中搜索结果的 range, heading 为 整个 heading 对象
+    /// - parameter complete: 所有文件搜索完成后调用
+    /// - parameter failed: 有错误产生的时候调用
     public func search(tags: [String],
                        resultAdded: @escaping ([DocumentSearchResult]) -> Void,
                        complete: @escaping () -> Void,
@@ -103,7 +115,7 @@ public class DocumentSearchViewModel {
                                             let range = (tagString as NSString).range(of: t)
                                             if range.location != Int.max {
                                                 searchResults.append(DocumentSearchResult(url: url,
-                                                                                          highlightRange: range,
+                                                                                          highlightRange: range.offset(-headingRange.location),
                                                                                           context: (string as NSString).substring(with: headingRange),
                                                                                           heading: OutlineTextStorage.Heading(data: heading)))
                                             }
@@ -116,12 +128,15 @@ public class DocumentSearchViewModel {
     }
     
     // MARK: -
-    
+    /// - parameter schedule: 搜索 schedule 整个日期之前的所有 heading
+    /// - parameter resultAdded: 每个文件的搜索完成后会调用这个 closure
+    /// - parameter result: 封装的搜索结果, 其中, url 为对应的文件 url，context 为整个 heading，提供搜索结果的上下文, highlightRange 为 context 中搜索结果的 range, heading 为 整个 heading 对象
+    /// - parameter complete: 所有文件搜索完成后调用
+    /// - parameter failed: 有错误产生的时候调用
     public func search(schedule: Date,
                        resultAdded: @escaping ([DocumentSearchResult]) -> Void,
                        complete: @escaping () -> Void,
                        failed: ((Error) -> Void)?) {
-        let today = Date()
         
         self.doSearchHeading(resultAdded: resultAdded,
                              complete: complete,
@@ -132,8 +147,8 @@ public class DocumentSearchViewModel {
                                         let headingRange = heading[OutlineParser.Key.Node.heading] {
                                         let headingString = (string as NSString).substring(with: headingRange)
                                         
-                                        if let scheduleDate = Date.createFromSchedule(headingString) {
-                                            if scheduleDate < today {
+                                        if let scheduleDate = DateAndTimeType.createFromSchedule(headingString)?.date {
+                                            if scheduleDate <= schedule {
                                                 searchResults.append(DocumentSearchResult(url: url,
                                                                                           highlightRange: scheduleRange,
                                                                                           context: (string as NSString).substring(with: headingRange),
@@ -149,11 +164,15 @@ public class DocumentSearchViewModel {
     }
     
     // MARK: -
+    /// - parameter schedule: 搜索 due 整个日期之前的所有 heading
+    /// - parameter resultAdded: 每个文件的搜索完成后会调用这个 closure
+    /// - parameter result: 封装的搜索结果, 其中, url 为对应的文件 url，context 为整个 heading，提供搜索结果的上下文, highlightRange 为 context 中搜索结果的 range, heading 为 整个 heading 对象
+    /// - parameter complete: 所有文件搜索完成后调用
+    /// - parameter failed: 有错误产生的时候调用
     public func search(due: Date,
                        resultAdded: @escaping ([DocumentSearchResult]) -> Void,
                        complete: @escaping () -> Void,
                        failed: ((Error) -> Void)?) {
-        let today = Date()
 
         self.doSearchHeading(resultAdded:resultAdded,
                              complete: complete,
@@ -164,8 +183,8 @@ public class DocumentSearchViewModel {
                                         let headingRange = heading[OutlineParser.Key.Node.heading] {
                                         let headingString = (string as NSString).substring(with: headingRange)
                                         
-                                        if let dueDate = Date.createFromDue(headingString) {
-                                            if dueDate <= today {
+                                        if let dueDate = DateAndTimeType.createFromDue(headingString)?.date {
+                                            if dueDate <= due {
                                                 searchResults.append(DocumentSearchResult(url: url,
                                                                                           highlightRange: dueRange,
                                                                                           context: (string as NSString).substring(with: headingRange),
@@ -181,6 +200,11 @@ public class DocumentSearchViewModel {
     }
     
     // MARK: -
+    /// - parameter planning: 搜索包含这些 planning 的所有 heading
+    /// - parameter resultAdded: 每个文件的搜索完成后会调用这个 closure
+    /// - parameter result: 封装的搜索结果, 其中, url 为对应的文件 url，context 为整个 heading，提供搜索结果的上下文, highlightRange 为 context 中搜索结果的 range, heading 为 整个 heading 对象
+    /// - parameter complete: 所有文件搜索完成后调用
+    /// - parameter failed: 有错误产生的时候调用
     public func search(plannings: [String],
                        resultAdded: @escaping ([DocumentSearchResult]) -> Void,
                        complete: @escaping () -> Void,
@@ -236,7 +260,8 @@ public class DocumentSearchViewModel {
             }
             
             let parseDelegate = ParseDelegate()
-            let parser = OutlineParser(delegate: parseDelegate)
+            let parser = OutlineParser()
+            parser.delegate = parseDelegate
             parser.includeParsee = .heading
             
             do {
