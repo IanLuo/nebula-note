@@ -16,12 +16,14 @@ public struct DocumentSearchResult {
 }
 
 public protocol DocumentSearchDelegate: class {
-    func didSelectDocument(url: URL)
+
 }
 
 public class DocumentSearchViewModel {
+    public typealias Dependency = DocumentCoordinator
     public weak var delegate: DocumentSearchDelegate?
     private let operationQueue: OperationQueue
+    public weak var dependency: Dependency?
     
     public init() {
         self.operationQueue = OperationQueue()

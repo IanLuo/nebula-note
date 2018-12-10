@@ -19,9 +19,11 @@ public class AgendaCoordinator: Coordinator {
     
     public override init(stack: UINavigationController) {
         let viewModel = AgendaViewModel()
-        self.viewController = AgendaViewController(viewModel: viewModel)
+        let viewController = AgendaViewController(viewModel: viewModel)
+        self.viewController = viewController
         super.init(stack: stack)
-        viewModel.delegate = self
+        viewModel.delegate = viewController
+        viewModel.dependency = self
     }
     
     public override func start() {
@@ -29,7 +31,7 @@ public class AgendaCoordinator: Coordinator {
     }
 }
 
-extension AgendaCoordinator: AgendaViewModelDelegate {
+extension AgendaCoordinator {
     public func openDocument(url: URL, location: Int) {
         let docCood = DocumentCoordinator(stack: self.stack, url: url, location: location)
         self.addChild(docCood)

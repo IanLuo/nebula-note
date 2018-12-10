@@ -43,4 +43,6 @@ public class DocumentEditViewController: UIViewController {
     }
 }
 
-
+extension DocumentEditViewController: DocumentEditViewModelDelegate {
+    
+}

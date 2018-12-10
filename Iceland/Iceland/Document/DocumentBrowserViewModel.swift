@@ -11,8 +11,6 @@ import UIKit
 import Storage
 
 public protocol DocumentBrowserViewModelDelegate: class {
-    func didSelectDocument(document: Document)
-    func didSelectDocument(document: Document, location: Int)
 }
 
 public class DocumentBrowserViewModel {
@@ -21,7 +19,11 @@ public class DocumentBrowserViewModel {
         static let filesFolder = File.Folder.document(filesFolderName)
     }
     
+    public typealias Dependency = DocumentCoordinator
+    
     public weak var delegate: DocumentBrowserViewModelDelegate?
+    
+    public weak var dependency: Dependency?
     
     public init() {
         Constants.filesFolder.createFolderIfNeeded()

@@ -20,8 +20,7 @@ public class DocumentEditTests: XCTestCase {
     
     func testCreateDocument() throws {
         let document = Document(fileURL: URL(fileURLWithPath: "new file", relativeTo: File.Folder.document("files").url))
-        let viewModel = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()),
-                                              document: document)
+        let viewModel = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()), document: document)
         
         let ex = expectation(description: "save")
         viewModel.editorController.string = "123"
@@ -39,16 +38,14 @@ public class DocumentEditTests: XCTestCase {
     func testLoadDocument() {
         let ex = expectation(description: "load")
         let document = Document(fileURL: URL(fileURLWithPath: "load test", relativeTo: File.Folder.document("files").url))
-        let viewModel = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()),
-                                              document: document)
+        let viewModel = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()), document: document)
         
         viewModel.editorController.string = "testLoadDocument"
         
         viewModel.save { _ in
             
             viewModel.close { _ in
-                let viewModel2 = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()),
-                                                       document: Document(fileURL: URL(fileURLWithPath: "load test", relativeTo: File.Folder.document("files").url)))
+                let viewModel2 = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()), document: Document(fileURL: URL(fileURLWithPath: "load test", relativeTo: File.Folder.document("files").url)))
                 
                 viewModel2.open { [viewModel2] _ in
                     ex.fulfill()
@@ -63,8 +60,7 @@ public class DocumentEditTests: XCTestCase {
     
     func testRenameDocument() {
         let document = Document(fileURL: URL(fileURLWithPath: "rename test", relativeTo: File.Folder.document("files").url))
-        let viewModel = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()),
-                                              document: document)
+        let viewModel = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()), document: document)
         viewModel.editorController.string = "testRenameDocument"
         
         let ex = expectation(description: "load")
@@ -72,8 +68,7 @@ public class DocumentEditTests: XCTestCase {
             viewModel?.rename(newTitle: "changed test") { _ in
                 
                 let document = Document(fileURL: URL(fileURLWithPath: "changed test", relativeTo: File.Folder.document("files").url))
-                let viewModel2 = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()),
-                                                       document: document)
+                let viewModel2 = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()), document: document)
                 viewModel2.open { [viewModel2] _ in
                     XCTAssertEqual(viewModel2.editorController.string, "testRenameDocument")
                     ex.fulfill()
@@ -86,8 +81,7 @@ public class DocumentEditTests: XCTestCase {
     
     func testDeleteDocument() {
         let document = Document(fileURL: URL(fileURLWithPath: "delete test", relativeTo: File.Folder.document("files").url))
-        let viewModel = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()),
-                                              document: document)
+        let viewModel = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()), document: document)
         
         viewModel.editorController.string = "testDeleteDocument"
         viewModel.save { _ in

@@ -31,7 +31,7 @@ public class DocumentCoordinator: Coordinator {
         let viewModel = DocumentBrowserViewModel()
         self.viewController = DocumentBrowserViewController(viewModel: viewModel)
         super.init(stack: stack)
-        viewModel.delegate = self
+        viewModel.dependency = self
     }
     
     /// 初始界面为文件编辑器
@@ -39,7 +39,7 @@ public class DocumentCoordinator: Coordinator {
         let viewModel = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()), document: Document(fileURL: url))
         self.viewController = DocumentEditViewController(viewModel: viewModel)
         super.init(stack: stack)
-        viewModel.delegate = self
+        viewModel.dependency = self
     }
     
     public override func start() {
@@ -51,6 +51,7 @@ public class DocumentCoordinator: Coordinator {
                                complete: @escaping () -> Void,
                                failed: @escaping (Error) -> Void) {
         let viewModel = DocumentSearchViewModel()
+        viewModel.dependency = self
         
         switch by {
         case .due(let date): viewModel.search(due: date, resultAdded: resultAdded, complete: complete, failed: failed)
@@ -63,6 +64,7 @@ public class DocumentCoordinator: Coordinator {
     /// 插入指定字符串到指定位置为 heading 开头的 heading 尾部，新起一行
     public func insert(content: String, url: URL, headingLocation: Int, complete: @escaping () -> Void, failure: @escaping (Error) -> Void) {
         let viewModel = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()), document: Document(fileURL: url))
+        viewModel.dependency = self
         viewModel.open { text in
             if text != nil {
                 viewModel.insert(content: content, headingLocation: headingLocation) { success in
@@ -81,6 +83,7 @@ public class DocumentCoordinator: Coordinator {
     /// 修改指定位置为 heading 开头的 heading 的 planning
     public func changePlanning(to: String, url: URL, completion: () -> Void, failure: @escaping (Error) -> Void) {
         let viewModel = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()), document: Document(fileURL: url))
+        viewModel.dependency = self
         viewModel.open {
             if $0 != nil {
 
@@ -93,6 +96,7 @@ public class DocumentCoordinator: Coordinator {
     /// 查看指定位置为 heading 开头位置的 heading 的内容
     public func peekParagraph(url: URL, headingLocation: Int, complete: @escaping (String) -> Void, failure: @escaping (Error) -> Void) {
         let viewModel = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()), document: Document(fileURL: url))
+        viewModel.dependency = self
         viewModel.open {
             if $0 != nil {
                 if let heading = viewModel.heading(at: headingLocation) {
@@ -108,6 +112,7 @@ public class DocumentCoordinator: Coordinator {
     /// 修改指定位置为 heading 开头的 schedule 日期
     public func reschedule(newSchedule: DateAndTimeType, url: URL, headingLocation: Int, complete: @escaping () -> Void, failure: @escaping (Error) -> Void) {
         let viewModel = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()), document: Document(fileURL: url))
+        viewModel.dependency = self
         viewModel.open { [weak viewModel] in
             if $0 != nil {
                 viewModel?.update(schedule: newSchedule, at: headingLocation) {
@@ -126,6 +131,7 @@ public class DocumentCoordinator: Coordinator {
     /// 修改指定位置为 heading 开头的 due 日期
     public func changeDue(newDue: DateAndTimeType, url: URL, headingLocation: Int, complete: @escaping () -> Void, failure: @escaping (Error) -> Void) {
         let viewModel = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()), document: Document(fileURL: url))
+        viewModel.dependency = self
         viewModel.open { [weak viewModel] in
             if $0 != nil {
                 viewModel?.update(due: newDue, at: headingLocation) {
@@ -148,22 +154,15 @@ public class DocumentCoordinator: Coordinator {
     
     /// 打开文件
     private func openDocument(document: Document, location: Int) {
-        let editViewModel = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()),
-                                                  document: document)
-        editViewModel.delegate = self
+        let editViewModel = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()), document: document)
+        editViewModel.dependency = self
         editViewModel.onLoadingLocation = location
         let viewController = DocumentEditViewController(viewModel: editViewModel)
         stack.pushViewController(viewController, animated: true)
     }
 }
 
-extension DocumentCoordinator: DocumentEditViewModelDelegate {
-    public func didClickLink(url: URL) {
-        // TODO: handle url
-    }
-}
-
-extension DocumentCoordinator: DocumentBrowserViewModelDelegate {
+extension DocumentCoordinator {
     public func didSelectDocument(document: Document, location: Int) {
         self.openDocument(document: document, location: location)
     }

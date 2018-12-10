@@ -10,7 +10,7 @@ import Foundation
 import Storage
 
 public protocol DocumentEditViewModelDelegate: class {
-    func didClickLink(url: URL)
+    
 }
 
 public class DocumentEditViewModel {
@@ -18,6 +18,8 @@ public class DocumentEditViewModel {
     public weak var delegate: DocumentEditViewModelDelegate?
     private var document: Document
     public var onLoadingLocation: Int = 0
+    public typealias Dependency = DocumentCoordinator
+    public weak var dependency: Dependency?
     
     public init(editorController: EditorController,
                 document: Document) {

@@ -26,3 +26,15 @@ public class AgendaViewController: UIViewController {
     }
     
 }
+
+extension AgendaViewController: AgendaViewModelDelegate {
+    public func didLoadData() {
+        
+    }
+    
+    public func didFailed(_ error: Error) {
+        
+    }
+    
+    
+}

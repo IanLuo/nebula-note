@@ -341,7 +341,7 @@ DEADLINE: <2018-12-05 Wed>
     
     func testParseSchedule() {
         var string = "**** TODO Demo heading SCHEDULED: <2018-12-05 Wed>"
-        if let date = Date.createFromSchedule(string) {
+        if let date = DateAndTimeType.createFromSchedule(string)?.date {
             XCTAssertEqual(Calendar.current.component(.year, from: date), 2018)
             XCTAssertEqual(Calendar.current.component(.month, from: date), 12)
             XCTAssertEqual(Calendar.current.component(.day, from: date), 5)
@@ -351,7 +351,7 @@ DEADLINE: <2018-12-05 Wed>
         }
         
         string = "** TODO Design                                                     :iceland:\nSCHEDULED: <2018-09-21 Fri 17:30>"
-        if let date = Date.createFromSchedule(string) {
+        if let date = DateAndTimeType.createFromSchedule(string)?.date {
             XCTAssertEqual(Calendar.current.component(.year, from: date), 2018)
             XCTAssertEqual(Calendar.current.component(.month, from: date), 9)
             XCTAssertEqual(Calendar.current.component(.day, from: date), 21)
@@ -365,7 +365,7 @@ DEADLINE: <2018-12-05 Wed>
     
     func testParseDue() {
         var string = "**** TODO Demo heading DEADLINE: <2018-12-05 Wed> SCHEDULED: <2018-12-05 Wed>"
-        if let date = Date.createFromDue(string) {
+        if let date = DateAndTimeType.createFromDue(string)?.date {
             XCTAssertEqual(Calendar.current.component(.year, from: date), 2018)
             XCTAssertEqual(Calendar.current.component(.month, from: date), 12)
             XCTAssertEqual(Calendar.current.component(.day, from: date), 5)
@@ -375,7 +375,7 @@ DEADLINE: <2018-12-05 Wed>
         }
         
         string = "**** TODO Demo heading DEADLINE: <2018-12-05 Wed 17:30>  SCHEDULED: <2018-12-05 Wed 03:10>"
-        if let date = Date.createFromDue(string) {
+        if let date = DateAndTimeType.createFromDue(string)?.date {
             XCTAssertEqual(Calendar.current.component(.year, from: date), 2018)
             XCTAssertEqual(Calendar.current.component(.month, from: date), 12)
             XCTAssertEqual(Calendar.current.component(.day, from: date), 5)

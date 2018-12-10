@@ -11,13 +11,17 @@ import Foundation
 public class AgendaCellModel {
     
     public var headingText: String
+    public let headingLocation: Int
+    public let url: URL
     public var planning: String? = nil
     public var schedule: DateAndTimeType? = nil
     public var due: DateAndTimeType? = nil
     public var tags: [String]? = nil
     
-    public init(heading: OutlineTextStorage.Heading, text: String) {
+    public init(heading: OutlineTextStorage.Heading, text: String, url: URL) {
         self.headingText = (text as NSString).substring(with: heading.range)
+        self.headingLocation = heading.range.location
+        self.url = url
         
         if let schedule = heading.schedule {
             let dateRange = schedule.offset(-heading.range.location)

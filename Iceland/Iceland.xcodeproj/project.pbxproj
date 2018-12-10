@@ -9,11 +9,9 @@
 /* Begin PBXBuildFile section */
 		20B6438499F032D8B24BB28F /* Pods_Storage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58F6ADB9E7BCAC752C4FE4C6 /* Pods_Storage.framework */; };
 		67BA3CC510702431FFD23301 /* Pods_IcelandTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC69118DDC07F2D89DFC636D /* Pods_IcelandTests.framework */; };
-		E41F86C3218EF4BF006C4CDB /* Capture.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F86C2218EF4BF006C4CDB /* Capture.swift */; };
+		E41F86C3218EF4BF006C4CDB /* CaptureCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F86C2218EF4BF006C4CDB /* CaptureCoordinator.swift */; };
 		E41F86C5218EF4E1006C4CDB /* AgendaCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F86C4218EF4E1006C4CDB /* AgendaCoordinator.swift */; };
 		E41F86C7218EF5D8006C4CDB /* CaptureService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F86C6218EF5D8006C4CDB /* CaptureService.swift */; };
-		E41F86C9218EF759006C4CDB /* AgendaService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F86C8218EF759006C4CDB /* AgendaService.swift */; };
-		E41F86CB218EF7A7006C4CDB /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F86CA218EF7A7006C4CDB /* Task.swift */; };
 		E41F86DC219009DD006C4CDB /* Attachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F86DB219009DD006C4CDB /* Attachment.swift */; };
 		E41F86DE21902BA1006C4CDB /* AttachmentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F86DD21902BA1006C4CDB /* AttachmentManager.swift */; };
 		E41F86EF21902D95006C4CDB /* Storage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E41F86E621902D94006C4CDB /* Storage.framework */; };
@@ -38,6 +36,8 @@
 		E44825AB219AE47000C17568 /* ParseOutlineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44825AA219AE47000C17568 /* ParseOutlineTests.swift */; };
 		E44825AD219C1AAA00C17568 /* OutlineParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44825AC219C1AAA00C17568 /* OutlineParser.swift */; };
 		E464BBB121A69C9000D34C88 /* OutlineTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = E464BBB021A69C9000D34C88 /* OutlineTheme.swift */; };
+		E498AAFF21BBE9B900D2A8EA /* CatpureListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E498AAFE21BBE9B800D2A8EA /* CatpureListViewController.swift */; };
+		E498AB0121BBEBB300D2A8EA /* CaptureListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E498AB0021BBEBB300D2A8EA /* CaptureListViewModel.swift */; };
 		E49F3E4421B8EDBD003F468D /* AgendaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49F3E4321B8EDBD003F468D /* AgendaViewController.swift */; };
 		E49F3E4621B8EDC8003F468D /* AgendaViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49F3E4521B8EDC8003F468D /* AgendaViewModel.swift */; };
 		E49F3E4821B9183F003F468D /* SettingsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49F3E4721B9183F003F468D /* SettingsCoordinator.swift */; };
@@ -126,11 +126,9 @@
 		A8E4EC2FC1088F978E881464 /* Pods-Iceland.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Iceland.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Iceland/Pods-Iceland.debug.xcconfig"; sourceTree = "<group>"; };
 		AA6BE9F0E63F15EB98E44990 /* Pods-IcelandTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IcelandTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-IcelandTests/Pods-IcelandTests.release.xcconfig"; sourceTree = "<group>"; };
 		B03B21DC28F546E7D3A966E7 /* Pods_Iceland.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Iceland.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		E41F86C2218EF4BF006C4CDB /* Capture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Capture.swift; sourceTree = "<group>"; };
+		E41F86C2218EF4BF006C4CDB /* CaptureCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureCoordinator.swift; sourceTree = "<group>"; };
 		E41F86C4218EF4E1006C4CDB /* AgendaCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgendaCoordinator.swift; sourceTree = "<group>"; };
 		E41F86C6218EF5D8006C4CDB /* CaptureService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureService.swift; sourceTree = "<group>"; };
-		E41F86C8218EF759006C4CDB /* AgendaService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgendaService.swift; sourceTree = "<group>"; };
-		E41F86CA218EF7A7006C4CDB /* Task.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
 		E41F86DB219009DD006C4CDB /* Attachment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Attachment.swift; sourceTree = "<group>"; };
 		E41F86DD21902BA1006C4CDB /* AttachmentManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentManager.swift; sourceTree = "<group>"; };
 		E41F86E621902D94006C4CDB /* Storage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Storage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -162,6 +160,8 @@
 		E44825AA219AE47000C17568 /* ParseOutlineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParseOutlineTests.swift; sourceTree = "<group>"; };
 		E44825AC219C1AAA00C17568 /* OutlineParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineParser.swift; sourceTree = "<group>"; };
 		E464BBB021A69C9000D34C88 /* OutlineTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineTheme.swift; sourceTree = "<group>"; };
+		E498AAFE21BBE9B800D2A8EA /* CatpureListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatpureListViewController.swift; sourceTree = "<group>"; };
+		E498AB0021BBEBB300D2A8EA /* CaptureListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureListViewModel.swift; sourceTree = "<group>"; };
 		E49F3E4321B8EDBD003F468D /* AgendaViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgendaViewController.swift; sourceTree = "<group>"; };
 		E49F3E4521B8EDC8003F468D /* AgendaViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgendaViewModel.swift; sourceTree = "<group>"; };
 		E49F3E4721B9183F003F468D /* SettingsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCoordinator.swift; sourceTree = "<group>"; };
@@ -259,7 +259,9 @@
 		E41F86BF218EF4A0006C4CDB /* Capture */ = {
 			isa = PBXGroup;
 			children = (
-				E41F86C2218EF4BF006C4CDB /* Capture.swift */,
+				E41F86C2218EF4BF006C4CDB /* CaptureCoordinator.swift */,
+				E498AAFE21BBE9B800D2A8EA /* CatpureListViewController.swift */,
+				E498AB0021BBEBB300D2A8EA /* CaptureListViewModel.swift */,
 				E41F86C6218EF5D8006C4CDB /* CaptureService.swift */,
 			);
 			path = Capture;
@@ -272,8 +274,6 @@
 				E49F3E4321B8EDBD003F468D /* AgendaViewController.swift */,
 				E49F3E4521B8EDC8003F468D /* AgendaViewModel.swift */,
 				E4C7FB8421BA916D006E3CD8 /* AgendaCellModel.swift */,
-				E41F86C8218EF759006C4CDB /* AgendaService.swift */,
-				E41F86CA218EF7A7006C4CDB /* Task.swift */,
 			);
 			path = Agenda;
 			sourceTree = "<group>";
@@ -774,7 +774,7 @@
 			files = (
 				E464BBB121A69C9000D34C88 /* OutlineTheme.swift in Sources */,
 				E49F3E4F21B91B2D003F468D /* GeneralUICoordinator.swift in Sources */,
-				E41F86C3218EF4BF006C4CDB /* Capture.swift in Sources */,
+				E41F86C3218EF4BF006C4CDB /* CaptureCoordinator.swift in Sources */,
 				E44825A9219810FF00C17568 /* EditorController.swift in Sources */,
 				E41F86DC219009DD006C4CDB /* Attachment.swift in Sources */,
 				E4C7FB8521BA916D006E3CD8 /* AgendaCellModel.swift in Sources */,
@@ -783,7 +783,6 @@
 				E44825A3219722C300C17568 /* Application.swift in Sources */,
 				E4A46A2B21B4109C00FBDA04 /* DocumentSearchViewController.swift in Sources */,
 				E44825A7219810E100C17568 /* OutlineLayoutManager.swift in Sources */,
-				E41F86C9218EF759006C4CDB /* AgendaService.swift in Sources */,
 				E4A46A3821B6470100FBDA04 /* DocumentBrowserViewModel.swift in Sources */,
 				E4A46A2D21B410BE00FBDA04 /* DocumentSearchViewModel.swift in Sources */,
 				E49F3E4421B8EDBD003F468D /* AgendaViewController.swift in Sources */,
@@ -802,9 +801,10 @@
 				E4A46A3221B4D07500FBDA04 /* Document.swift in Sources */,
 				E4A46A1921AA8E9F00FBDA04 /* OutlineStorage.swift in Sources */,
 				E49F3E4821B9183F003F468D /* SettingsCoordinator.swift in Sources */,
+				E498AAFF21BBE9B900D2A8EA /* CatpureListViewController.swift in Sources */,
 				E44825AD219C1AAA00C17568 /* OutlineParser.swift in Sources */,
 				E41F86DE21902BA1006C4CDB /* AttachmentManager.swift in Sources */,
-				E41F86CB218EF7A7006C4CDB /* Task.swift in Sources */,
+				E498AB0121BBEBB300D2A8EA /* CaptureListViewModel.swift in Sources */,
 				E41F86C5218EF4E1006C4CDB /* AgendaCoordinator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
