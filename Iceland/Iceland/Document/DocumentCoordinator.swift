@@ -15,6 +15,7 @@ public class DocumentCoordinator: Coordinator {
         case failToOpenFile
         case failToReschedule
         case failToChangeDueDate
+        case failToChangePlanning
     }
     
     public enum HeadingSearchBy {
@@ -65,7 +66,7 @@ public class DocumentCoordinator: Coordinator {
     public func insert(content: String, url: URL, headingLocation: Int, complete: @escaping () -> Void, failure: @escaping (Error) -> Void) {
         let viewModel = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()), document: Document(fileURL: url))
         viewModel.dependency = self
-        viewModel.open { text in
+        viewModel.open { [unowned viewModel] text in
             if text != nil {
                 viewModel.insert(content: content, headingLocation: headingLocation) { success in
                     if success {
@@ -81,23 +82,33 @@ public class DocumentCoordinator: Coordinator {
     }
     
     /// 修改指定位置为 heading 开头的 heading 的 planning
-    public func changePlanning(to: String, url: URL, completion: () -> Void, failure: @escaping (Error) -> Void) {
+    public func changePlanning(to: String, url: URL, headingLocation: Int, completion: @escaping () -> Void, failure: @escaping (Error) -> Void) {
         let viewModel = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()), document: Document(fileURL: url))
         viewModel.dependency = self
-        viewModel.open {
+        viewModel.open { [unowned viewModel] in
             if $0 != nil {
-
+                viewModel.update(planning: to, at: headingLocation) {
+                    if $0 {
+                        completion()
+                    } else {
+                        failure(DocumentError.failToChangePlanning)
+                    }
+                }
             } else {
                 failure(DocumentError.failToOpenFile)
             }
         }
     }
     
+    public func archive(url: URL, headingLocation: Int,  completion: () -> Void, failure: @escaping (Error) -> Void) {
+        
+    }
+    
     /// 查看指定位置为 heading 开头位置的 heading 的内容
     public func peekParagraph(url: URL, headingLocation: Int, complete: @escaping (String) -> Void, failure: @escaping (Error) -> Void) {
         let viewModel = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()), document: Document(fileURL: url))
         viewModel.dependency = self
-        viewModel.open {
+        viewModel.open { [unowned viewModel] in
             if $0 != nil {
                 if let heading = viewModel.heading(at: headingLocation) {
                     let range = NSRange(location: heading.range.location, length: heading.contentLength)
@@ -113,9 +124,9 @@ public class DocumentCoordinator: Coordinator {
     public func reschedule(newSchedule: DateAndTimeType, url: URL, headingLocation: Int, complete: @escaping () -> Void, failure: @escaping (Error) -> Void) {
         let viewModel = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()), document: Document(fileURL: url))
         viewModel.dependency = self
-        viewModel.open { [weak viewModel] in
+        viewModel.open { [unowned viewModel] in
             if $0 != nil {
-                viewModel?.update(schedule: newSchedule, at: headingLocation) {
+                viewModel.update(schedule: newSchedule, at: headingLocation) {
                     if $0 {
                         complete()
                     } else {
@@ -149,25 +160,10 @@ public class DocumentCoordinator: Coordinator {
     
     /// 打开文件
     public func openDocument(url: URL, location: Int) {
-        self.openDocument(document: Document(fileURL: url), location: location)
-    }
-    
-    /// 打开文件
-    private func openDocument(document: Document, location: Int) {
-        let editViewModel = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()), document: document)
+        let editViewModel = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()), document: Document(fileURL: url))
         editViewModel.dependency = self
         editViewModel.onLoadingLocation = location
         let viewController = DocumentEditViewController(viewModel: editViewModel)
         stack.pushViewController(viewController, animated: true)
-    }
-}
-
-extension DocumentCoordinator {
-    public func didSelectDocument(document: Document, location: Int) {
-        self.openDocument(document: document, location: location)
-    }
-    
-    public func didSelectDocument(document: Document) {
-        self.openDocument(document: document, location: 0)
     }
 }

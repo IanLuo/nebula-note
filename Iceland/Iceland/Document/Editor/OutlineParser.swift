@@ -235,6 +235,10 @@ public protocol OutlineParserDelegate: class {
     func didCompleteParsing(text: String)
 }
 
+public protocol OutlineParserDatasource: class {
+    func customizedPlannings() -> [String]?
+}
+
 extension OutlineParserDelegate {
     func didFoundHeadings(text: String, headingDataRanges: [[String : NSRange]]) {}
     func didFoundCheckbox(text: String, checkboxRanges: [[String : NSRange]]) {}
@@ -247,6 +251,10 @@ extension OutlineParserDelegate {
     func didFoundTextMark(text: String, markRanges: [[String : NSRange]]) {}
     func didStartParsing(text: String) {}
     func didCompleteParsing(text: String) {}
+}
+
+extension OutlineParserDatasource {
+    func customizedPlannings() -> [String]? { return nil }
 }
 
 extension OutlineParser {

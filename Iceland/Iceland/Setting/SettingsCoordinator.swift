@@ -18,6 +18,10 @@ public class SettingsCoordinator: Coordinator {
         super.init(stack: stack)
         viewModel.delegate = self
     }
+    
+    public func getCustomizedPlannings() -> [String: [String]]? {
+        return nil
+    }
 }
 
 extension SettingsCoordinator: SettingsViewModelDelegate {

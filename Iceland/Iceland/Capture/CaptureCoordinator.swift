@@ -10,20 +10,41 @@ import Foundation
 import UIKit.UIImage
 
 public class CaptureCoordinator: Coordinator {
+    public enum CaptureType {
+        case text
+        case link
+        case image
+        case location
+        case sketch
+        case audio
+        case video
+    }
+    
     public let viewController: UIViewController
     
     public override init(stack: UINavigationController) {
         let viewModel = CaptureListViewModel()
-        self.viewController = CatpureListViewController(viewModel: viewModel)
+        let viewController = CatpureListViewController(viewModel: viewModel)
+        self.viewController = viewController
         super.init(stack: stack)
-        viewModel.delegate = self
+        viewModel.delegate = viewController
     }
+    
+    public init(stack: UINavigationController, type: CaptureType) {
+        
+        switch type {
+        case .text:
+            viewController = CaptureTextViewController(viewModel: CaptureViewModel(service: CaptureService()))
+            
+        default:
+            viewController = CaptureTextViewController(viewModel: CaptureViewModel(service: CaptureService()))
+        }
+        
+        super.init(stack: stack)
+    }
+    
     
     public override func start() {
         self.stack.pushViewController(self.viewController, animated: true)
     }
-}
-
-extension CaptureCoordinator: CaptureListViewModelDelegate {
-    
 }

@@ -76,6 +76,7 @@ extension OutlineParser {
                 public static let level = "level"
                 public static let planning = "planning"
                 public static let schedule = "schedule"
+                public static let closed = "closed"
                 public static let due = "due"
                 public static let tags = "tags"
             }
@@ -169,12 +170,28 @@ extension OutlineParser {
         public struct Heading {
             public struct Planning {
                 public static let todo: String = "TODO"
-                public static let next: String = "NEXT"
                 public static let done: String = "DONE"
                 public static let canceled: String = "CANCELED"
-                public static let all: [String] = [todo, next, done, canceled]
-                public static let unfinished: [String] = [todo, next]
-                public static let pattern: String = "\(todo)|\(next)|\(done)|\(canceled)"
+                public static var all: [String] = {
+                    var plannings = [todo, done, canceled]
+                    if let customized = SettingsAccessor.shared.customizedPlannings {
+                        plannings.append(contentsOf: customized)
+                    }
+                    return plannings
+                }()
+                
+                public static var pattern: String = {
+                    var plannings = "\(todo)|\(done)|\(canceled)"
+                    if let customized = SettingsAccessor.shared.customizedPlannings {
+                        plannings.append("|")
+                        plannings.append(customized.joined(separator: "|"))
+                    }
+                    return plannings
+                }()
+            }
+            
+            public struct Tag {
+                public static let archive: String = "ARCHIVE"
             }
         }
     }

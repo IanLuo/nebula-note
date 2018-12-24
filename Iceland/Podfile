@@ -6,6 +6,7 @@ target 'Iceland' do
     pod 'RxSwift'
     pod 'RxCocoa'
     pod 'SwiftyBeaver'
+    pod 'Result'
 end
 
 target 'IcelandTests' do

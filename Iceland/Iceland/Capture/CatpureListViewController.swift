@@ -21,3 +21,13 @@ public class CatpureListViewController: UIViewController {
         fatalError()
     }
 }
+
+extension CatpureListViewController: CaptureListViewModelDelegate {
+    public func didRefileAttachment(index: Int) {
+        
+    }
+    
+    public func didLoadData() {
+        
+    }
+}

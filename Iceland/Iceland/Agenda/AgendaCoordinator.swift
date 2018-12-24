@@ -38,7 +38,10 @@ extension AgendaCoordinator {
         docCood.start()
     }
     
-    public func search(due: Date, resultAdded: @escaping ([DocumentSearchResult]) -> Void, complete: @escaping () -> Void, failure: @escaping (Error) -> Void) {
+    public func search(due: Date,
+                       resultAdded: @escaping ([DocumentSearchResult]) -> Void,
+                       complete: @escaping () -> Void,
+                       failure: @escaping (Error) -> Void) {
         let searchCood = DocumentCoordinator(stack: self.stack)
         self.addChild(searchCood)
         searchCood.searchHeadings(by: .due(due), resultAdded: resultAdded, complete: {
@@ -50,7 +53,10 @@ extension AgendaCoordinator {
         }
     }
     
-    public func search(schedule: Date, resultAdded: @escaping ([DocumentSearchResult]) -> Void, complete: @escaping () -> Void, failure: @escaping (Error) -> Void) {
+    public func search(schedule: Date,
+                       resultAdded: @escaping ([DocumentSearchResult]) -> Void,
+                       complete: @escaping () -> Void,
+                       failure: @escaping (Error) -> Void) {
         let searchCood = DocumentCoordinator(stack: self.stack)
         self.addChild(searchCood)
         searchCood.searchHeadings(by: .schedule(schedule), resultAdded: resultAdded, complete: {
@@ -62,7 +68,10 @@ extension AgendaCoordinator {
         }
     }
     
-    public func search(planning: [String], resultAdded: @escaping ([DocumentSearchResult]) -> Void, complete: @escaping () -> Void, failure: @escaping (Error) -> Void) {
+    public func search(planning: [String],
+                       resultAdded: @escaping ([DocumentSearchResult]) -> Void,
+                       complete: @escaping () -> Void,
+                       failure: @escaping (Error) -> Void) {
         let searchCood = DocumentCoordinator(stack: self.stack)
         self.addChild(searchCood)
         searchCood.searchHeadings(by: .planning(planning), resultAdded: resultAdded, complete: {
@@ -74,7 +83,10 @@ extension AgendaCoordinator {
         }
     }
     
-    public func search(tags: [String], resultAdded: @escaping ([DocumentSearchResult]) -> Void, complete: @escaping () -> Void, failure: @escaping (Error) -> Void) {
+    public func search(tags: [String],
+                       resultAdded: @escaping ([DocumentSearchResult]) -> Void,
+                       complete: @escaping () -> Void,
+                       failure: @escaping (Error) -> Void) {
         let searchCood = DocumentCoordinator(stack: self.stack)
         self.addChild(searchCood)
         searchCood.searchHeadings(by: .tags(tags), resultAdded: resultAdded, complete: {
@@ -86,7 +98,11 @@ extension AgendaCoordinator {
         }
     }
     
-    public func refileTo(url: URL, content: String, headingLocation: Int, complete: @escaping () -> Void, failure: @escaping (Error) -> Void) {
+    public func refileTo(url: URL,
+                         content: String,
+                         headingLocation: Int,
+                         complete: @escaping () -> Void,
+                         failure: @escaping (Error) -> Void) {
         let docCood = DocumentCoordinator(stack: self.stack)
         self.addChild(docCood)
         docCood.insert(content: content, url: url, headingLocation: headingLocation, complete: {
@@ -98,10 +114,14 @@ extension AgendaCoordinator {
         })
     }
     
-    public func changePlanning(to: String, url: URL, headingLocation: Int, complete: @escaping () -> Void, failure: @escaping (Error) -> Void) {
+    public func changePlanning(to: String,
+                               url: URL,
+                               headingLocation: Int,
+                               complete: @escaping () -> Void,
+                               failure: @escaping (Error) -> Void) {
         let docCood = DocumentCoordinator(stack: self.stack)
         self.addChild(docCood)
-        docCood.changePlanning(to: to, url: url, completion: {
+        docCood.changePlanning(to: to, url: url, headingLocation: headingLocation, completion: {
             self.remove(docCood)
             complete()
         }, failure: {
@@ -110,7 +130,11 @@ extension AgendaCoordinator {
         })
     }
     
-    public func reschedule(to: DateAndTimeType, url: URL, headingLocation: Int, complete: @escaping () -> Void, failure: @escaping (Error) -> Void) {
+    public func reschedule(to: DateAndTimeType,
+                           url: URL,
+                           headingLocation: Int,
+                           complete: @escaping () -> Void,
+                           failure: @escaping (Error) -> Void) {
         let docCood = DocumentCoordinator(stack: self.stack)
         self.addChild(docCood)
         docCood.reschedule(newSchedule: to, url: url, headingLocation: headingLocation, complete: {
@@ -122,7 +146,11 @@ extension AgendaCoordinator {
         })
     }
     
-    public func changeDue(to: DateAndTimeType, url: URL, headingLocation: Int, complete: @escaping () -> Void, failure: @escaping (Error) -> Void) {
+    public func changeDue(to: DateAndTimeType,
+                          url: URL,
+                          headingLocation: Int,
+                          complete: @escaping () -> Void,
+                          failure: @escaping (Error) -> Void) {
         let docCood = DocumentCoordinator(stack: self.stack)
         self.addChild(docCood)
         docCood.changeDue(newDue: to, url: url, headingLocation: headingLocation, complete: {

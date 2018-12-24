@@ -34,14 +34,19 @@ public struct Attachment: Codable {
         case key
     }
     
+    /// 附件创建的日期
     public let date: Date
     
+    /// 附件类型
     public let type: Attachment.AttachmentType
     
+    /// 附件位置
     public let url: URL
     
+    /// 附件描述
     public let description: String
     
+    /// 附件在描述文件中的 key
     public var key: String
     
     // MARK: - 序列化反序列化
@@ -73,9 +78,17 @@ extension Attachment {
     /// 附件类型
     /// - Parameter description
     /// 附件描述
-    public static func save(content: String, type: Attachment.AttachmentType, description: String) throws -> String {
+    public static func save(content: String,
+                            type: Attachment.AttachmentType,
+                            description: String,
+                            complete: @escaping (String) -> Void,
+                            failure: @escaping (Error) -> Void) {
         let manager = AttachmentManager()
-        return try manager.insert(content: content, type: type, description: description)
+        manager.insert(content: content,
+                                  type: type,
+                                  description: description,
+                                  complete: complete,
+                                  failure: failure)
     }
     
     /// 删除附件
@@ -84,12 +97,15 @@ extension Attachment {
         try manager.delete(key: key)
     }
     
-    /// 通过保存在 attachment.plist 中的 key 来获取对应的 json 字符串
-    /// 如果 key 为 sampleKey，对应的 json 字符串保存在 sampleKey.json，位于 capture.plist 同一个目录中
+    /// 通过保存在 key 加载附件
+    /// 对于 capture 来说，如果 key 为 sampleKey，对应的 json 字符串保存在 sampleKey.json，位于 capture.plist 同一个目录中
     public static func create(with key: String) throws -> Attachment {
-        let jsonDecoder = JSONDecoder()
-        jsonDecoder.dateDecodingStrategy = .secondsSince1970
-        let json = try Data(contentsOf: URL(fileURLWithPath: key + ".json", relativeTo: AttachmentConstants.folder))
-        return try jsonDecoder.decode(Attachment.self, from: json)
+        let manager = AttachmentManager()
+        return try manager.attachment(with: key)
+    }
+    
+    public func delete() throws {
+        let manager = AttachmentManager()
+        try manager.delete(key: self.key)
     }
 }

@@ -27,6 +27,11 @@ public struct AttachmentConstants {
     public static let folder: URL = URL(fileURLWithPath: File.Folder.document("attachment").path)
 }
 
+public enum AttachmentError: Error {
+    case failToSaveDocument
+    case noSuchFileToSave(String)
+}
+
 public struct AttachmentManager {
     public init() {
         // 确保附件文件夹存在
@@ -44,7 +49,11 @@ public struct AttachmentManager {
     /// - parameter type: 附件的类型
     /// - parameter description: 附件描述
     /// - returns: 保存的附件的 key
-    public func insert(content: String, type: Attachment.AttachmentType, description: String) throws -> String {
+    public func insert(content: String,
+                       type: Attachment.AttachmentType,
+                       description: String,
+                       complete: @escaping (String) throws -> Void,
+                       failure: @escaping (Error) -> Void) rethrows {
         let jsonEncoder = JSONEncoder()
         let newKey = self.newKey()
         
@@ -52,27 +61,61 @@ public struct AttachmentManager {
         let jsonURL = URL(fileURLWithPath: newKey + ".json", relativeTo: AttachmentConstants.folder)
         
         /// 附件内容保存的文件路径
-        let fileURL = URL(fileURLWithPath: newKey, relativeTo: AttachmentConstants.folder)
+        var fileURL: URL!
         
-        let attachment = Attachment(date: Date(),
-                                    url: fileURL,
-                                    key: newKey,
-                                    description: description,
-                                    type: type)
+        // 保存附件信息
+        let saveFileInfo = {
+            let attachment = Attachment(date: Date(),
+                                        url: fileURL,
+                                        key: newKey,
+                                        description: description,
+                                        type: type)
+            
+            jsonEncoder.dateEncodingStrategy = .secondsSince1970
+            let encodedAttachment = try jsonEncoder.encode(attachment)
+            try encodedAttachment.write(to: jsonURL)
+        }
         
-        jsonEncoder.dateEncodingStrategy = .secondsSince1970
-        let encodedAttachment = try jsonEncoder.encode(attachment)
-        
-        try encodedAttachment.write(to: jsonURL)
-        try content.write(to: fileURL, atomically: true, encoding: .utf8)
-        return newKey
+        switch type {
+        case .text: fallthrough
+        case .link:
+            fileURL = URL(fileURLWithPath: newKey + ".txt", relativeTo: AttachmentConstants.folder)
+            do {
+                try content.write(to: fileURL, atomically: true, encoding: .utf8) // FIXME: 改为 Document 的 save  方法
+                try saveFileInfo()
+                try complete(newKey)
+            } catch {
+                failure(error)
+            }
+        default:
+            if let url = URL(string: content) {
+                let ext = url.pathExtension
+                fileURL = URL(fileURLWithPath: newKey + "." + ext, relativeTo: AttachmentConstants.folder)
+                let document = AttachmentFile(fileURL: url)
+                document.save(to: fileURL, for: .forCreating) { result in
+                    if !result {
+                        failure(AttachmentError.failToSaveDocument)
+                    } else {
+                        do {
+                            try saveFileInfo()
+                            try complete(newKey)
+                        } catch {
+                            failure(error)
+                        }
+                    }
+                }
+            } else {
+                failure(AttachmentError.noSuchFileToSave(content))
+            }
+        }
     }
     
     /// 通过附件的 key 来删除附件
     /// - parameter key: 附件的 key
     public func delete(key: String) throws {
+        
         let jsonURL = URL(fileURLWithPath: key + ".json", relativeTo: AttachmentConstants.folder)
-        let fileURL = URL(fileURLWithPath: key, relativeTo: AttachmentConstants.folder)
+        let fileURL = try attachment(with: key).url
         
         try FileManager.default.removeItem(at: jsonURL)
         try FileManager.default.removeItem(at: fileURL)
@@ -80,9 +123,15 @@ public struct AttachmentManager {
     
     /// 已经添加的文档的附件，直接使用 key 来加载
     public func attachment(with key: String) throws -> Attachment {
-        let data = try Data(contentsOf: URL(fileURLWithPath: key + ".json", relativeTo: AttachmentConstants.folder))
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .secondsSince1970
-        return try decoder.decode(Attachment.self, from: data)
+        let jsonDecoder = JSONDecoder()
+        jsonDecoder.dateDecodingStrategy = .secondsSince1970
+        let json = try Data(contentsOf: URL(fileURLWithPath: key + ".json", relativeTo: AttachmentConstants.folder))
+        return try jsonDecoder.decode(Attachment.self, from: json)
+    }
+}
+
+public class AttachmentFile: UIDocument {
+    public override func contents(forType typeName: String) throws -> Any {
+        return try Data(contentsOf: self.fileURL)
     }
 }

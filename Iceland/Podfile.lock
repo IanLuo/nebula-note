@@ -1,5 +1,6 @@
 PODS:
   - KeychainAccess (3.1.1)
+  - Result (4.0.0)
   - RxCocoa (4.3.1):
     - RxSwift (~> 4.0)
   - RxSwift (4.3.1)
@@ -7,6 +8,7 @@ PODS:
 
 DEPENDENCIES:
   - KeychainAccess
+  - Result
   - RxCocoa
   - RxSwift
   - SwiftyBeaver
@@ -14,16 +16,18 @@ DEPENDENCIES:
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - KeychainAccess
+    - Result
     - RxCocoa
     - RxSwift
     - SwiftyBeaver
 
 SPEC CHECKSUMS:
   KeychainAccess: 7bd430028059754a3debab3cfc0bd1fc7fb85df3
+  Result: 7645bb3f50c2ce726dd0ff2fa7b6f42bbe6c3713
   RxCocoa: 78763c7b07d02455598d9fc3c1ad091a28b73635
   RxSwift: fe0fd770a43acdb7d0a53da411c9b892e69bb6e4
   SwiftyBeaver: ccfcdf85a04d429f1633f668650b0ce8020bda3a
 
-PODFILE CHECKSUM: c544e1391101e5ef2e30709247b7be9baa2127b6
+PODFILE CHECKSUM: 3940b5ee390a0e3d23344080d4d98585407a3d88
 
 COCOAPODS: 1.5.3

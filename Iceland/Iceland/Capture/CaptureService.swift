@@ -12,7 +12,9 @@ import RxSwift
 import Storage
 
 public protocol CaptureServiceProtocol {
-    func save(content: String, type: Attachment.AttachmentType, description: String) -> Observable<Void>
+    func save(content: String,
+              type: Attachment.AttachmentType,
+              description: String) -> Observable<Attachment>
     func loadAll() -> Observable<[Attachment]>
     func delete(key: String) -> Observable<Void>
     func load(id: String) -> Observable<Attachment?>
@@ -46,19 +48,28 @@ public struct CaptureService: CaptureServiceProtocol {
     }
     
     /// 创建一个新的 attachment, 并添加到 capture 列表中
-    public func save(content: String, type: Attachment.AttachmentType, description: String) -> Observable<Void> {
-        return Observable<Void>.create { observer in
-            do {
-                let key = try Attachment.save(content: content,
-                                              type: type,
-                                              description: description)
-                let plist = KeyValueStoreFactory.store(type: .plist(.custom("capture")))
-                plist.set(value: Date(), key: key)
-                observer.onNext(())
-                observer.onCompleted()
-            } catch {
-                observer.onError(error)
-            }
+    public func save(content: String,
+                     type: Attachment.AttachmentType,
+                     description: String) -> Observable<Attachment> {
+        return Observable<Attachment>.create { observer in
+            Attachment.save(content: content,
+                            type: type,
+                            description: description,
+                            complete: { key in
+                                let plist = KeyValueStoreFactory.store(type: .plist(.custom("capture")))
+                                plist.set(value: Date(), key: key)
+                                
+                                do {
+                                    let savedAttachment = try Attachment.create(with: key)
+                                    observer.onNext(savedAttachment)
+                                    observer.onCompleted()
+                                } catch {
+                                    observer.onError(error)
+                                }
+            },
+                            failure: { error in
+                                observer.onError(error)
+            })
             
             return Disposables.create()
         }

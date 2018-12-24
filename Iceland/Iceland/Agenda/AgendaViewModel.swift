@@ -22,7 +22,7 @@ public class AgendaViewModel {
         
     public func loadTODOs() {
         var newData: [AgendaCellModel] = []
-        self.dependency?.search(tags: [OutlineParser.Values.Heading.Planning.todo], resultAdded: { (result: [DocumentSearchResult]) in
+        self.dependency?.search(planning: [OutlineParser.Values.Heading.Planning.todo], resultAdded: { (result: [DocumentSearchResult]) in
             newData.append(contentsOf: result.filter { $0.heading != nil }.map { AgendaCellModel(heading: $0.heading!, text: $0.context, url: $0.url) })
         }, complete: { [weak self] in
             self?.data = newData
@@ -31,14 +31,25 @@ public class AgendaViewModel {
         })
     }
     
-    public func loadUnfinished() {
+    public func loadCanceled() {
         var newData: [AgendaCellModel] = []
-        self.dependency?.search(tags: OutlineParser.Values.Heading.Planning.unfinished, resultAdded: { (result: [DocumentSearchResult]) in
+        self.dependency?.search(planning: [OutlineParser.Values.Heading.Planning.canceled], resultAdded: { (result: [DocumentSearchResult]) in
             newData.append(contentsOf: result.filter { $0.heading != nil }.map { AgendaCellModel(heading: $0.heading!, text: $0.context, url: $0.url) })
         }, complete: { [weak self] in
             self?.data = newData
         }, failure: { [weak self] error in
             self?.delegate?.didFailed(error)
+        })
+    }
+    
+    public func loadDone() {
+        var newData: [AgendaCellModel] = []
+        self.dependency?.search(planning: [OutlineParser.Values.Heading.Planning.done], resultAdded: { (result: [DocumentSearchResult]) in
+            newData.append(contentsOf: result.filter { $0.heading != nil }.map { AgendaCellModel(heading: $0.heading!, text: $0.context, url: $0.url) })
+        }, complete: { [weak self] in
+            self?.data = newData
+            }, failure: { [weak self] error in
+                self?.delegate?.didFailed(error)
         })
     }
     

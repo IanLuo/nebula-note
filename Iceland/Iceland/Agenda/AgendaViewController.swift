@@ -23,8 +23,8 @@ public class AgendaViewController: UIViewController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+        self.viewModel.loadTODOs()
     }
-    
 }
 
 extension AgendaViewController: AgendaViewModelDelegate {
@@ -35,6 +35,4 @@ extension AgendaViewController: AgendaViewModelDelegate {
     public func didFailed(_ error: Error) {
         
     }
-    
-    
 }
