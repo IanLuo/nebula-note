@@ -45,7 +45,6 @@
 		E49F3E4821B9183F003F468D /* SettingsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49F3E4721B9183F003F468D /* SettingsCoordinator.swift */; };
 		E49F3E4A21B9186D003F468D /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49F3E4921B9186D003F468D /* SettingsViewController.swift */; };
 		E49F3E4C21B91885003F468D /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49F3E4B21B91885003F468D /* SettingsViewModel.swift */; };
-		E49F3E4F21B91B2D003F468D /* GeneralUICoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49F3E4E21B91B2D003F468D /* GeneralUICoordinator.swift */; };
 		E49FF46421A429F9003A5B3C /* OutlineStorageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49FF46321A429F9003A5B3C /* OutlineStorageTests.swift */; };
 		E4A46A1721A9A26300FBDA04 /* AttachmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A1621A9A26300FBDA04 /* AttachmentTests.swift */; };
 		E4A46A1921AA8E9F00FBDA04 /* OutlineStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A1821AA8E9F00FBDA04 /* OutlineStorage.swift */; };
@@ -66,6 +65,15 @@
 		E4B19AAE21C5010100ED3463 /* SettingsAccessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B19AAD21C5010100ED3463 /* SettingsAccessor.swift */; };
 		E4B19AB021C5363A00ED3463 /* SettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B19AAF21C5363A00ED3463 /* SettingsTests.swift */; };
 		E4C7FB8521BA916D006E3CD8 /* AgendaCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C7FB8421BA916D006E3CD8 /* AgendaCellModel.swift */; };
+		E4EA855621D1DA3D00DD92F9 /* CaptureImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EA855521D1DA3D00DD92F9 /* CaptureImageViewController.swift */; };
+		E4EA855821D1DA8700DD92F9 /* CaptureLinkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EA855721D1DA8700DD92F9 /* CaptureLinkViewController.swift */; };
+		E4EA855A21D1DAAF00DD92F9 /* CaptureAudioViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EA855921D1DAAF00DD92F9 /* CaptureAudioViewController.swift */; };
+		E4EA855C21D1DACE00DD92F9 /* CaptureVideoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EA855B21D1DACE00DD92F9 /* CaptureVideoViewController.swift */; };
+		E4EA855E21D1DAEB00DD92F9 /* CaptureLocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EA855D21D1DAEB00DD92F9 /* CaptureLocationViewController.swift */; };
+		E4EA856021D1DB1400DD92F9 /* CaptureSketchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EA855F21D1DB1400DD92F9 /* CaptureSketchViewController.swift */; };
+		E4EA856321D1F83800DD92F9 /* HeadingsOutlineViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EA856221D1F83800DD92F9 /* HeadingsOutlineViewController.swift */; };
+		E4EA856521D1F8AE00DD92F9 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EA856421D1F8AE00DD92F9 /* CalendarView.swift */; };
+		E4EA856B21D2338800DD92F9 /* RefileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EA856A21D2338800DD92F9 /* RefileViewController.swift */; };
 		EE260FEBE701F7B91549B9B8 /* Pods_Iceland.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B03B21DC28F546E7D3A966E7 /* Pods_Iceland.framework */; };
 /* End PBXBuildFile section */
 
@@ -173,7 +181,6 @@
 		E49F3E4721B9183F003F468D /* SettingsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCoordinator.swift; sourceTree = "<group>"; };
 		E49F3E4921B9186D003F468D /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		E49F3E4B21B91885003F468D /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
-		E49F3E4E21B91B2D003F468D /* GeneralUICoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralUICoordinator.swift; sourceTree = "<group>"; };
 		E49FF46321A429F9003A5B3C /* OutlineStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineStorageTests.swift; sourceTree = "<group>"; };
 		E4A46A1621A9A26300FBDA04 /* AttachmentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentTests.swift; sourceTree = "<group>"; };
 		E4A46A1821AA8E9F00FBDA04 /* OutlineStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineStorage.swift; sourceTree = "<group>"; };
@@ -194,6 +201,15 @@
 		E4B19AAD21C5010100ED3463 /* SettingsAccessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsAccessor.swift; sourceTree = "<group>"; };
 		E4B19AAF21C5363A00ED3463 /* SettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTests.swift; sourceTree = "<group>"; };
 		E4C7FB8421BA916D006E3CD8 /* AgendaCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgendaCellModel.swift; sourceTree = "<group>"; };
+		E4EA855521D1DA3D00DD92F9 /* CaptureImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureImageViewController.swift; sourceTree = "<group>"; };
+		E4EA855721D1DA8700DD92F9 /* CaptureLinkViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureLinkViewController.swift; sourceTree = "<group>"; };
+		E4EA855921D1DAAF00DD92F9 /* CaptureAudioViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureAudioViewController.swift; sourceTree = "<group>"; };
+		E4EA855B21D1DACE00DD92F9 /* CaptureVideoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureVideoViewController.swift; sourceTree = "<group>"; };
+		E4EA855D21D1DAEB00DD92F9 /* CaptureLocationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureLocationViewController.swift; sourceTree = "<group>"; };
+		E4EA855F21D1DB1400DD92F9 /* CaptureSketchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureSketchViewController.swift; sourceTree = "<group>"; };
+		E4EA856221D1F83800DD92F9 /* HeadingsOutlineViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadingsOutlineViewController.swift; sourceTree = "<group>"; };
+		E4EA856421D1F8AE00DD92F9 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
+		E4EA856A21D2338800DD92F9 /* RefileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefileViewController.swift; sourceTree = "<group>"; };
 		FC69118DDC07F2D89DFC636D /* Pods_IcelandTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_IcelandTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -269,10 +285,16 @@
 			children = (
 				E41F86C2218EF4BF006C4CDB /* CaptureCoordinator.swift */,
 				E498AAFE21BBE9B800D2A8EA /* CatpureListViewController.swift */,
-				E42A87FC21CFC9B300151C90 /* CaptureTextViewController.swift */,
 				E498AB0021BBEBB300D2A8EA /* CaptureListViewModel.swift */,
-				E42A87FE21CFCAC500151C90 /* CaptureViewModel.swift */,
 				E41F86C6218EF5D8006C4CDB /* CaptureService.swift */,
+				E42A87FC21CFC9B300151C90 /* CaptureTextViewController.swift */,
+				E4EA855521D1DA3D00DD92F9 /* CaptureImageViewController.swift */,
+				E4EA855721D1DA8700DD92F9 /* CaptureLinkViewController.swift */,
+				E4EA855921D1DAAF00DD92F9 /* CaptureAudioViewController.swift */,
+				E4EA855B21D1DACE00DD92F9 /* CaptureVideoViewController.swift */,
+				E4EA855D21D1DAEB00DD92F9 /* CaptureLocationViewController.swift */,
+				E4EA855F21D1DB1400DD92F9 /* CaptureSketchViewController.swift */,
+				E42A87FE21CFCAC500151C90 /* CaptureViewModel.swift */,
 			);
 			path = Capture;
 			sourceTree = "<group>";
@@ -296,8 +318,6 @@
 				E44825A42197E6F600C17568 /* DocumentCoordinator.swift */,
 				E4A46A2A21B4109C00FBDA04 /* DocumentSearchViewController.swift */,
 				E4A46A2C21B410BE00FBDA04 /* DocumentSearchViewModel.swift */,
-				E41FA5742191569C001D8C63 /* DocumentEditController.swift */,
-				E4A46A2821B28ED800FBDA04 /* DocumentEditViewModel.swift */,
 				E4A46A3521B646DF00FBDA04 /* DocumentBrowserViewController.swift */,
 				E4A46A3721B6470100FBDA04 /* DocumentBrowserViewModel.swift */,
 				E4A46A3121B4D07500FBDA04 /* Document.swift */,
@@ -375,7 +395,7 @@
 		E43427F82121BF5B00EC6DC3 /* Iceland */ = {
 			isa = PBXGroup;
 			children = (
-				E4A46A1C21AE6CDC00FBDA04 /* GeneralUI */,
+				E4A46A1C21AE6CDC00FBDA04 /* UI */,
 				E41F86DF21902BF3006C4CDB /* Setting */,
 				E41F86DA21900902006C4CDB /* Attachment */,
 				E41F86C1218EF4B0006C4CDB /* Document */,
@@ -416,18 +436,19 @@
 			path = IcelandUITests;
 			sourceTree = "<group>";
 		};
-		E4A46A1C21AE6CDC00FBDA04 /* GeneralUI */ = {
+		E4A46A1C21AE6CDC00FBDA04 /* UI */ = {
 			isa = PBXGroup;
 			children = (
 				E4A46A1D21AE6CF400FBDA04 /* Image+Generation.swift */,
-				E49F3E4E21B91B2D003F468D /* GeneralUICoordinator.swift */,
+				E4EA856421D1F8AE00DD92F9 /* CalendarView.swift */,
 			);
-			path = GeneralUI;
+			path = UI;
 			sourceTree = "<group>";
 		};
 		E4A46A2221B0D9AC00FBDA04 /* Editor */ = {
 			isa = PBXGroup;
 			children = (
+				E4EA856621D21F7300DD92F9 /* UI */,
 				E4A46A2321B0D9F900FBDA04 /* Constants */,
 				E44825A6219810E100C17568 /* OutlineLayoutManager.swift */,
 				E44825AC219C1AAA00C17568 /* OutlineParser.swift */,
@@ -454,6 +475,17 @@
 				E4A46A2F21B4150A00FBDA04 /* SyncManager.swift */,
 			);
 			path = Sync;
+			sourceTree = "<group>";
+		};
+		E4EA856621D21F7300DD92F9 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				E4EA856A21D2338800DD92F9 /* RefileViewController.swift */,
+				E41FA5742191569C001D8C63 /* DocumentEditController.swift */,
+				E4EA856221D1F83800DD92F9 /* HeadingsOutlineViewController.swift */,
+				E4A46A2821B28ED800FBDA04 /* DocumentEditViewModel.swift */,
+			);
+			path = UI;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -786,20 +818,25 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E4EA856321D1F83800DD92F9 /* HeadingsOutlineViewController.swift in Sources */,
+				E4EA856B21D2338800DD92F9 /* RefileViewController.swift in Sources */,
 				E464BBB121A69C9000D34C88 /* OutlineTheme.swift in Sources */,
-				E49F3E4F21B91B2D003F468D /* GeneralUICoordinator.swift in Sources */,
 				E41F86C3218EF4BF006C4CDB /* CaptureCoordinator.swift in Sources */,
 				E44825A9219810FF00C17568 /* EditorController.swift in Sources */,
+				E4EA856521D1F8AE00DD92F9 /* CalendarView.swift in Sources */,
 				E41F86DC219009DD006C4CDB /* Attachment.swift in Sources */,
 				E4C7FB8521BA916D006E3CD8 /* AgendaCellModel.swift in Sources */,
 				E4A46A3621B646DF00FBDA04 /* DocumentBrowserViewController.swift in Sources */,
 				E4A46A2521B0DA1300FBDA04 /* OutlineAttribute.swift in Sources */,
+				E4EA855E21D1DAEB00DD92F9 /* CaptureLocationViewController.swift in Sources */,
 				E44825A3219722C300C17568 /* Application.swift in Sources */,
 				E4A46A2B21B4109C00FBDA04 /* DocumentSearchViewController.swift in Sources */,
 				E44825A7219810E100C17568 /* OutlineLayoutManager.swift in Sources */,
 				E4A46A3821B6470100FBDA04 /* DocumentBrowserViewModel.swift in Sources */,
 				E4A46A2D21B410BE00FBDA04 /* DocumentSearchViewModel.swift in Sources */,
 				E49F3E4421B8EDBD003F468D /* AgendaViewController.swift in Sources */,
+				E4EA856021D1DB1400DD92F9 /* CaptureSketchViewController.swift in Sources */,
+				E4EA855621D1DA3D00DD92F9 /* CaptureImageViewController.swift in Sources */,
 				E4B19AAE21C5010100ED3463 /* SettingsAccessor.swift in Sources */,
 				E43427FA2121BF5B00EC6DC3 /* AppDelegate.swift in Sources */,
 				E41FA5752191569C001D8C63 /* DocumentEditController.swift in Sources */,
@@ -807,7 +844,10 @@
 				E42A87FD21CFC9B300151C90 /* CaptureTextViewController.swift in Sources */,
 				E41F86C7218EF5D8006C4CDB /* CaptureService.swift in Sources */,
 				E4A46A2921B28ED800FBDA04 /* DocumentEditViewModel.swift in Sources */,
+				E4EA855C21D1DACE00DD92F9 /* CaptureVideoViewController.swift in Sources */,
 				E44825A52197E6F600C17568 /* DocumentCoordinator.swift in Sources */,
+				E4EA855821D1DA8700DD92F9 /* CaptureLinkViewController.swift in Sources */,
+				E4EA855A21D1DAAF00DD92F9 /* CaptureAudioViewController.swift in Sources */,
 				E4A46A1E21AE6CF400FBDA04 /* Image+Generation.swift in Sources */,
 				E4A46A3021B4150A00FBDA04 /* SyncManager.swift in Sources */,
 				E49F3E4A21B9186D003F468D /* SettingsViewController.swift in Sources */,

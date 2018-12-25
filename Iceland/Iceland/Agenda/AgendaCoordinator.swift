@@ -33,7 +33,7 @@ public class AgendaCoordinator: Coordinator {
 
 extension AgendaCoordinator {
     public func openDocument(url: URL, location: Int) {
-        let docCood = DocumentCoordinator(stack: self.stack, url: url, location: location)
+        let docCood = DocumentCoordinator(stack: self.stack, usage: .editor(url, location))
         self.addChild(docCood)
         docCood.start()
     }
@@ -42,7 +42,7 @@ extension AgendaCoordinator {
                        resultAdded: @escaping ([DocumentSearchResult]) -> Void,
                        complete: @escaping () -> Void,
                        failure: @escaping (Error) -> Void) {
-        let searchCood = DocumentCoordinator(stack: self.stack)
+        let searchCood = DocumentCoordinator(stack: self.stack, usage: .search)
         self.addChild(searchCood)
         searchCood.searchHeadings(by: .due(due), resultAdded: resultAdded, complete: {
             self.remove(searchCood)
@@ -57,7 +57,7 @@ extension AgendaCoordinator {
                        resultAdded: @escaping ([DocumentSearchResult]) -> Void,
                        complete: @escaping () -> Void,
                        failure: @escaping (Error) -> Void) {
-        let searchCood = DocumentCoordinator(stack: self.stack)
+        let searchCood = DocumentCoordinator(stack: self.stack, usage: .search)
         self.addChild(searchCood)
         searchCood.searchHeadings(by: .schedule(schedule), resultAdded: resultAdded, complete: {
             self.remove(searchCood)
@@ -72,7 +72,7 @@ extension AgendaCoordinator {
                        resultAdded: @escaping ([DocumentSearchResult]) -> Void,
                        complete: @escaping () -> Void,
                        failure: @escaping (Error) -> Void) {
-        let searchCood = DocumentCoordinator(stack: self.stack)
+        let searchCood = DocumentCoordinator(stack: self.stack, usage: .search)
         self.addChild(searchCood)
         searchCood.searchHeadings(by: .planning(planning), resultAdded: resultAdded, complete: {
             self.remove(searchCood)
@@ -87,7 +87,7 @@ extension AgendaCoordinator {
                        resultAdded: @escaping ([DocumentSearchResult]) -> Void,
                        complete: @escaping () -> Void,
                        failure: @escaping (Error) -> Void) {
-        let searchCood = DocumentCoordinator(stack: self.stack)
+        let searchCood = DocumentCoordinator(stack: self.stack, usage: .search)
         self.addChild(searchCood)
         searchCood.searchHeadings(by: .tags(tags), resultAdded: resultAdded, complete: {
             self.remove(searchCood)
@@ -103,7 +103,7 @@ extension AgendaCoordinator {
                          headingLocation: Int,
                          complete: @escaping () -> Void,
                          failure: @escaping (Error) -> Void) {
-        let docCood = DocumentCoordinator(stack: self.stack)
+        let docCood = DocumentCoordinator(stack: self.stack, usage: .refile)
         self.addChild(docCood)
         docCood.insert(content: content, url: url, headingLocation: headingLocation, complete: {
             self.remove(docCood)
@@ -119,7 +119,7 @@ extension AgendaCoordinator {
                                headingLocation: Int,
                                complete: @escaping () -> Void,
                                failure: @escaping (Error) -> Void) {
-        let docCood = DocumentCoordinator(stack: self.stack)
+        let docCood = DocumentCoordinator(stack: self.stack, usage: .headless)
         self.addChild(docCood)
         docCood.changePlanning(to: to, url: url, headingLocation: headingLocation, completion: {
             self.remove(docCood)
@@ -135,7 +135,7 @@ extension AgendaCoordinator {
                            headingLocation: Int,
                            complete: @escaping () -> Void,
                            failure: @escaping (Error) -> Void) {
-        let docCood = DocumentCoordinator(stack: self.stack)
+        let docCood = DocumentCoordinator(stack: self.stack, usage: .headless)
         self.addChild(docCood)
         docCood.reschedule(newSchedule: to, url: url, headingLocation: headingLocation, complete: {
             self.remove(docCood)
@@ -151,7 +151,7 @@ extension AgendaCoordinator {
                           headingLocation: Int,
                           complete: @escaping () -> Void,
                           failure: @escaping (Error) -> Void) {
-        let docCood = DocumentCoordinator(stack: self.stack)
+        let docCood = DocumentCoordinator(stack: self.stack, usage: .headless)
         self.addChild(docCood)
         docCood.changeDue(newDue: to, url: url, headingLocation: headingLocation, complete: {
             self.remove(docCood)

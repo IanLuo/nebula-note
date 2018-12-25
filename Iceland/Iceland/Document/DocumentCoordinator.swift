@@ -27,24 +27,51 @@ public class DocumentCoordinator: Coordinator {
     
     public let viewController: UIViewController
     
-    /// 初始界面为文件浏览器
-    public override init(stack: UINavigationController) {
-        let viewModel = DocumentBrowserViewModel()
-        self.viewController = DocumentBrowserViewController(viewModel: viewModel)
-        super.init(stack: stack)
-        viewModel.dependency = self
+    public enum Usage {
+        case refile
+        case pickDocument
+        case search
+        case editor(URL, Int)
+        case headless
     }
     
-    /// 初始界面为文件编辑器
-    public init(stack: UINavigationController, url: URL, location: Int) {
-        let viewModel = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()), document: Document(fileURL: url))
-        self.viewController = DocumentEditViewController(viewModel: viewModel)
-        super.init(stack: stack)
-        viewModel.dependency = self
+    public init(stack: UINavigationController, usage: Usage) {
+        switch usage {
+        case let .editor(url, location):
+            let viewModel = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()), document: Document(fileURL: url))
+            viewModel.onLoadingLocation = location
+            self.viewController = DocumentEditViewController(viewModel: viewModel)
+            super.init(stack: stack)
+            viewModel.dependency = self
+        case .pickDocument:
+            let viewModel = DocumentBrowserViewModel()
+            self.viewController = DocumentBrowserViewController(viewModel: viewModel)
+            super.init(stack: stack)
+            viewModel.dependency = self
+        case .refile:
+            let viewModel = DocumentBrowserViewModel()
+            self.viewController = RefileViewController(viewModel: viewModel)
+            super.init(stack: stack)
+            viewModel.dependency = self
+        case .search:
+            let viewModel = DocumentSearchViewModel()
+            self.viewController = DocumentSearchViewController(viewModel: viewModel)
+            super.init(stack: stack)
+            viewModel.dependency = self
+        case .headless:
+            self.viewController = UIViewController()
+            super.init(stack: stack)
+        }
     }
     
     public override func start() {
         self.stack.pushViewController(self.viewController, animated: true)
+    }
+    
+    public func showHeadingOutlines(url: URL, viewModel: DocumentEditViewModel) {
+        let viewController = HeadingsOutlineViewController(viewModel: viewModel)
+        viewController.modalPresentationStyle = .overCurrentContext
+        self.stack.topViewController?.present(viewController, animated: true, completion: nil)
     }
     
     public func searchHeadings(by: HeadingSearchBy,
@@ -101,7 +128,7 @@ public class DocumentCoordinator: Coordinator {
     }
     
     public func archive(url: URL, headingLocation: Int,  completion: () -> Void, failure: @escaping (Error) -> Void) {
-        
+        // TODO: archive
     }
     
     /// 查看指定位置为 heading 开头位置的 heading 的内容

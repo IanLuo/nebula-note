@@ -40,7 +40,7 @@ public class OutlineTextStorage: NSTextStorage {
     }
     
     public class Heading: Item {
-        /// 当前的 heading 的 planning TODO|NEXT|DONE|CANCELD 等
+        /// 当前的 heading 的 planning TODO|DONE|CANCELD 等
         public var planning: NSRange? {
             return data[OutlineParser.Key.Element.Heading.planning]?.offset(offset)
         }

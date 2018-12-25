@@ -237,6 +237,10 @@ public class DocumentEditViewModel {
         }
         return nil
     }
+    
+    internal func headingList() -> [OutlineTextStorage.Heading] {
+        return self.editorController.getParagraphs()
+    }
 }
 
 extension DocumentEditViewModel {

@@ -41,7 +41,7 @@ public class DocumentBrowserTests: XCTestCase {
             XCTAssertTrue(fm.fileExists(atPath: File(File.Folder.document("files"), fileName: "test create document.org").filePath))
             
             viewModel.createDocument(title: "test add document below the first one", below: url) { _ in
-                let path = File(File.Folder.document("files/_test create document"), fileName: "test add document below the first one.org").filePath
+                let path = File(File.Folder.document("files/test create document__"), fileName: "test add document below the first one.org").filePath
                 print(path)
                 XCTAssertTrue(fm.fileExists(atPath: path))
                 
@@ -61,8 +61,8 @@ public class DocumentBrowserTests: XCTestCase {
                 
                 viewModel.createDocument(title: "tuesday", below: url) { _ in
                     
-                    XCTAssertEqual(try! viewModel.findDocuments(below: nil).count, 1)
-                    XCTAssertEqual(try! viewModel.findDocuments(below: url).count, 2)
+                    XCTAssertEqual(try! viewModel.findDocuments(under: nil).count, 1)
+                    XCTAssertEqual(try! viewModel.findDocuments(under: url).count, 2)
                     
                     ex.fulfill()
                 }

@@ -11,6 +11,8 @@ import UIKit
 import Storage
 
 public protocol DocumentBrowserViewModelDelegate: class {
+    func didSelectDocument(url: URL)
+    func didSelectDocumentHeading(url: URL, headingLocation: Int)
 }
 
 public class DocumentBrowserViewModel {
@@ -29,9 +31,9 @@ public class DocumentBrowserViewModel {
         Constants.filesFolder.createFolderIfNeeded()
     }
     
-    func findDocuments(below: URL?) throws -> [URL] {
-        if let below = below {
-            return try findDocument(in: below.convertoFolderURL)
+    func findDocuments(under: URL?) throws -> [URL] {
+        if let under = under {
+            return try findDocument(in: under.convertoFolderURL)
         } else {
             return try findDocument(in: URL.filesFolder)
         }
@@ -53,7 +55,7 @@ public class DocumentBrowserViewModel {
             newURL = below.convertoFolderURL.appendingPathComponent(title).appendingPathExtension(Document.fileExtension)
         }
         let document = Document.init(fileURL: newURL)
-        document.string = ""
+        document.string = "" // 新文档的内容为空字符串
         document.save(to: newURL, for: UIDocument.SaveOperation.forCreating) { success in
             if success {
                 completion?(newURL)
@@ -66,7 +68,8 @@ public class DocumentBrowserViewModel {
     func deleteDocument(url: URL,
                         completion: ((Error?) -> Void)? = nil) {
         do {
-            try FileManager.default.removeItem(at: url)
+            // TODO: 删除子文件
+            try FileManager.default.removeItem(at: url) // FIXME: use Filecorrdinator
             completion?(nil)
         } catch {
             log.error("failed to delete document: \(error)")
@@ -90,10 +93,11 @@ public class DocumentBrowserViewModel {
 }
 
 extension URL {
+    /// 一个文件，可以包含子文件，方法是，创建一个以该文件同名的文件夹(以'__'结尾)，放在同一目录
     public var convertoFolderURL: URL {
         let path = self.deletingPathExtension().path.replacingOccurrences(of: URL.filesFolderPath, with: "")
             .components(separatedBy: "/")
-            .map { "_" + $0 }
+            .map { $0 + "__" }
             .joined()
         let folder = File.Folder.document(DocumentBrowserViewModel.Constants.filesFolderName + "/" + path)
         folder.createFolderIfNeeded()

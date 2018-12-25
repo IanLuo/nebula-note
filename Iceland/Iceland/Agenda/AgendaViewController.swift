@@ -23,7 +23,6 @@ public class AgendaViewController: UIViewController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        self.viewModel.loadTODOs()
     }
 }
 

@@ -23,6 +23,22 @@ public class CatpureListViewController: UIViewController {
 }
 
 extension CatpureListViewController: CaptureListViewModelDelegate {
+    public func didDeleteCapture(index: Int) {
+        
+    }
+    
+    public func didFail(error: Error) {
+        
+    }
+    
+    public func didRefileFile(index: Int) {
+        
+    }
+    
+    public func didFailToLoadCaptureList(error: Error) {
+        
+    }
+    
     public func didRefileAttachment(index: Int) {
         
     }
