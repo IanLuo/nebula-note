@@ -34,7 +34,8 @@ public class DocumentEditViewModel {
         self.close()
     }
     
-    public func remove(due: Date, at headingLocation: Int, completion: @escaping (Bool) -> Void) {
+    /// 删除 due date
+    public func remove(due: Date, at headingLocation: Int) {
         guard let heading = self.heading(at: headingLocation) else { return }
         
         if let dueRange = heading.due {
@@ -42,11 +43,10 @@ public class DocumentEditViewModel {
             self.editorController.textStorage.replaceCharacters(in: extendedRange, with: "")
         }
         
-        document.string = editorController.string
-        self.save(completion: completion) // FIXME: 更好的保存方式
+        self.save() // FIXME: 更好的保存方式
     }
     
-    public func remove(schedule: Date, at headingLocation: Int, completion: @escaping (Bool) -> Void) {
+    public func remove(schedule: Date, at headingLocation: Int) {
         guard let heading = self.heading(at: headingLocation) else { return }
         
         if let scheduleRange = heading.schedule {
@@ -54,26 +54,32 @@ public class DocumentEditViewModel {
             self.editorController.textStorage.replaceCharacters(in: extendedRange, with: "")
         }
         
-        document.string = editorController.string
-        self.save(completion: completion) // FIXME: 更好的保存方式
+        self.save() // FIXME: 更好的保存方式
     }
     
-    public func remove(tag: String, at headingLocation: Int, completion: @escaping (Bool) -> Void) {
+    public func remove(tag: String, at headingLocation: Int) {
         guard let heading = self.heading(at: headingLocation) else { return }
         
         if let tagsRange = heading.tags {
-            for t in (document.string as NSString).substring(with: tagsRange).components(separatedBy: ":").filter({ $0.count > 0 }) {
+            var newTags = document.string.subString(tagsRange)
+            for t in document.string.subString(tagsRange).components(separatedBy: ":").filter({ $0.count > 0 }) {
                 if t == tag {
-                    self.editorController.textStorage.replaceCharacters(in: tagsRange, with: "")
+                    newTags = newTags.replacingOccurrences(of: t, with: "")
+                    if newTags == "::" {
+                        newTags = ""
+                    } else {
+                        newTags = newTags.replacingOccurrences(of: "::", with: ":")
+                    }
+                    self.editorController.replace(text: newTags, in: tagsRange)
+                    break
                 }
             }
         }
         
-        document.string = editorController.string
-        self.save(completion: completion) // FIXME: 更好的保存方式
+        self.save() // FIXME: 更好的保存方式
     }
     
-    public func remove(planning: String, at headingLocation: Int, completion: @escaping (Bool) -> Void) {
+    public func remove(planning: String, at headingLocation: Int) {
         guard let heading = self.heading(at: headingLocation) else { return }
         
         if let planningRange = heading.planning {
@@ -82,11 +88,10 @@ public class DocumentEditViewModel {
             }
         }
         
-        document.string = editorController.string
-        self.save(completion: completion) // FIXME: 更好的保存方式
+        self.save() // FIXME: 更好的保存方式
     }
     
-    public func update(planning: String, at headingLocation: Int, completion: @escaping (Bool) -> Void) {
+    public func update(planning: String, at headingLocation: Int) {
         guard let heading = self.heading(at: headingLocation) else { return }
         
         var editRange: NSRange!
@@ -103,11 +108,10 @@ public class DocumentEditViewModel {
         
         editorController.textStorage.replaceCharacters(in: editRange, with: replacement)
         
-        document.string = editorController.string
-        self.save(completion: completion) // FIXME: 更好的保存方式
+        self.save() // FIXME: 更好的保存方式
     }
 
-    public func update(schedule: DateAndTimeType, at headingLocation: Int, completion: @escaping (Bool) -> Void) {
+    public func update(schedule: DateAndTimeType, at headingLocation: Int) {
         guard let heading = self.heading(at: headingLocation) else { return }
         
         var editRange: NSRange!
@@ -124,11 +128,10 @@ public class DocumentEditViewModel {
         
         editorController.textStorage.replaceCharacters(in: editRange, with: replacement)
         
-        document.string = editorController.string
-        self.save(completion: completion)// FIXME: 更好的保存方式
+        self.save()// FIXME: 更好的保存方式
     }
     
-    public func update(due: DateAndTimeType, at headingLocation: Int, completion: @escaping (Bool) -> Void) {
+    public func update(due: DateAndTimeType, at headingLocation: Int) {
         guard let heading = self.heading(at: headingLocation) else { return }
         
         var editRange: NSRange!
@@ -145,12 +148,12 @@ public class DocumentEditViewModel {
         }
         
         editorController.textStorage.replaceCharacters(in: editRange, with: replacement)
-        document.string = editorController.string
-        self.save(completion: completion)// FIXME: 更好的保存方式
+
+        self.save()// FIXME: 更好的保存方式
     }
     
     /// 添加 tag 到 heading
-    public func add(tag: String, at headingLocation: Int, completion: @escaping (Bool) -> Void) {
+    public func add(tag: String, at headingLocation: Int) {
         guard let heading = self.heading(at: headingLocation) else { return }
         
         if let tagsRange = heading.tags {
@@ -158,18 +161,16 @@ public class DocumentEditViewModel {
         } else {
             editorController.insert(string: " :\(tag):", at: heading.tagLocation)
         }
-        document.string = editorController.string
-        
-        completion(true)
+
         self.save()// FIXME: 更好的保存方式
     }
     
-    public func archive(headingLocation: Int, competion: @escaping (Bool) -> Void) {
-        self.add(tag: OutlineParser.Values.Heading.Tag.archive, at: headingLocation, completion: competion)
+    public func archive(headingLocation: Int) {
+        self.add(tag: OutlineParser.Values.Heading.Tag.archive, at: headingLocation)
     }
     
-    public func unArchive(headingLocation: Int, competion: @escaping (Bool) -> Void) {
-        self.remove(tag: OutlineParser.Values.Heading.Tag.archive, at: headingLocation, completion: competion)
+    public func unArchive(headingLocation: Int) {
+        self.remove(tag: OutlineParser.Values.Heading.Tag.archive, at: headingLocation)
     }
         
     public func open(completion:((String?) -> Void)? = nil) {
@@ -185,12 +186,12 @@ public class DocumentEditViewModel {
         }
     }
     
-    public func insert(content: String, headingLocation: Int, completion: @escaping (Bool) -> Void) {
+    public func insert(content: String, headingLocation: Int) {
         guard let heading = self.heading(at: headingLocation) else { return }
         
         editorController.insertToParagraph(at: heading, content: content)
-        document.string = editorController.string
-        self.save(completion: completion)// FIXME: 更好的保存方式
+
+        self.save()// FIXME: 更好的保存方式
     }
     
     public func close(completion:((Bool) -> Void)? = nil) {
@@ -236,9 +237,10 @@ public class DocumentEditViewModel {
         }
     }
     
+    // 返回 location 所在的 heading
     internal func heading(at location: Int) -> OutlineTextStorage.Heading? {
             for heading in self.editorController.getParagraphs() {
-                if heading.range.location == location {
+                if heading.paragraphRange.contains(location) {
                     return heading
                 }
             }

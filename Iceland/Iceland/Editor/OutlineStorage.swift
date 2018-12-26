@@ -262,8 +262,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
             if let currentRange = self.currentParseRange {
                 var indexsToRemove: [Int] = []
                 for (index, heading) in self.savedHeadings.enumerated() {
-                    if heading.range.location >= currentRange.location
-                        && heading.range.upperBound <= currentRange.upperBound {
+                    if heading.range.intersection(currentRange) != nil {
                         indexsToRemove.append(index)
                     }
                 }
