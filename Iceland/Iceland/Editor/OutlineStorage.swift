@@ -9,6 +9,10 @@
 import Foundation
 import UIKit
 
+public protocol OutlineTextStorageDelegate: class {
+    func didSetHeading(newHeading: OutlineTextStorage.Heading?, oldHeading: OutlineTextStorage.Heading?)
+}
+
 public class OutlineTextStorage: NSTextStorage {
     /// Node 和 element 都是 Item
     public class Item {
@@ -61,6 +65,26 @@ public class OutlineTextStorage: NSTextStorage {
             return data[OutlineParser.Key.Element.Heading.level]!.length
         }
         
+        public var tagLocation: Int {
+            if let tags = self.tags {
+                return tags.location
+            }
+            
+            if let schedule = self.schedule, let due = self.due {
+                return min(schedule.location, due.location)
+            }
+            
+            if let schedule = self.schedule {
+                return schedule.location
+            }
+            
+            if let due = self.due {
+                return due.location
+            }
+            
+            return range.upperBound
+        }
+        
         public var contentLength: Int = 0
         
         public var paragraphRange: NSRange {
@@ -74,6 +98,8 @@ public class OutlineTextStorage: NSTextStorage {
     }
     
     public var theme: OutlineTheme = OutlineTheme()
+    
+    public weak var outlineDelegate: OutlineTextStorageDelegate?
     
     /// 用于保存已经找到的 heading
     public var savedHeadings: [Heading] = []
@@ -213,10 +239,13 @@ public class OutlineTextStorage: NSTextStorage {
         return index
     }
     
+    /// 更新和当前位置相关的其他信息
     public func updateCurrentInfo() {
         guard self.savedHeadings.count > 0 else { return }
         
+        let oldHeading = self.currentHeading
         self.currentHeading = self.savedHeadings[self.headingIndex(at: self.currentLocation)]
+        self.outlineDelegate?.didSetHeading(newHeading: self.currentHeading, oldHeading: oldHeading)
     }
 }
 

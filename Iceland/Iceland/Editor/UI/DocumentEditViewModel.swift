@@ -10,7 +10,7 @@ import Foundation
 import Storage
 
 public protocol DocumentEditViewModelDelegate: class {
-    
+    func didChangeHeading()
 }
 
 public class DocumentEditViewModel {
@@ -25,6 +25,7 @@ public class DocumentEditViewModel {
                 document: Document) {
         self.document = document
         self.editorController = editorController
+        self.editorController.delegate = self
         self.addStatesObservers()
     }
     
@@ -148,12 +149,19 @@ public class DocumentEditViewModel {
         self.save(completion: completion)// FIXME: 更好的保存方式
     }
     
+    /// 添加 tag 到 heading
     public func add(tag: String, at headingLocation: Int, completion: @escaping (Bool) -> Void) {
-        if let tagsRange = self.heading(at: headingLocation)?.tags {
-            // TODO:
+        guard let heading = self.heading(at: headingLocation) else { return }
+        
+        if let tagsRange = heading.tags {
+            editorController.insert(string: "\(tag):", at: tagsRange.upperBound)
         } else {
-            // TODO:
+            editorController.insert(string: " :\(tag):", at: heading.tagLocation)
         }
+        document.string = editorController.string
+        
+        completion(true)
+        self.save()// FIXME: 更好的保存方式
     }
     
     public func archive(headingLocation: Int, competion: @escaping (Bool) -> Void) {
@@ -169,8 +177,7 @@ public class DocumentEditViewModel {
             guard let strongSelf = self else { return }
             
             if isOpenSuccessfully {
-                // 触发解析
-                strongSelf.editorController.string = strongSelf.document.string
+                strongSelf.editorController.string = strongSelf.document.string // 触发解析
                 completion?(strongSelf.document.string)
             } else {
                 completion?(nil)
@@ -230,16 +237,23 @@ public class DocumentEditViewModel {
     }
     
     internal func heading(at location: Int) -> OutlineTextStorage.Heading? {
-        for heading in self.editorController.getParagraphs() {
-            if heading.range.location == location {
-                return heading
+            for heading in self.editorController.getParagraphs() {
+                if heading.range.location == location {
+                    return heading
+                }
             }
-        }
-        return nil
+            return nil
     }
     
     internal func headingList() -> [OutlineTextStorage.Heading] {
         return self.editorController.getParagraphs()
+    }
+}
+
+// MARK: - EditorControllerDelegate
+extension DocumentEditViewModel: EditorControllerDelegate {
+    public func currentHeadingDidChnage(heading: OutlineTextStorage.Heading?) {
+        self.delegate?.didChangeHeading()
     }
 }
 

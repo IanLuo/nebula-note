@@ -11,6 +11,9 @@ import UIKit
 
 public class Application: Coordinator {
     weak var window: UIWindow?
+    
+    private let documentManager = DocumentManager()
+    private let documentSearchManager = DocumentSearchManager()
 
     public init(window: UIWindow) {
         self.window = window
@@ -21,7 +24,10 @@ public class Application: Coordinator {
     }
     
     public override func start() {
-        let documentCoord = DocumentCoordinator(stack: self.stack, usage: .pickDocument)
+        let documentCoord = DocumentCoordinator(stack: self.stack,
+                                                usage: .pickDocument,
+                                                documentManager: documentManager,
+                                                documentSearchManager: documentSearchManager)
         self.addChild(documentCoord)
         documentCoord.start()
     }

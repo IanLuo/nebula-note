@@ -73,7 +73,8 @@
 		E4EA856021D1DB1400DD92F9 /* CaptureSketchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EA855F21D1DB1400DD92F9 /* CaptureSketchViewController.swift */; };
 		E4EA856321D1F83800DD92F9 /* HeadingsOutlineViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EA856221D1F83800DD92F9 /* HeadingsOutlineViewController.swift */; };
 		E4EA856521D1F8AE00DD92F9 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EA856421D1F8AE00DD92F9 /* CalendarView.swift */; };
-		E4EA856B21D2338800DD92F9 /* RefileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EA856A21D2338800DD92F9 /* RefileViewController.swift */; };
+		E4EA857021D279A500DD92F9 /* DocumentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EA856F21D279A500DD92F9 /* DocumentManager.swift */; };
+		E4EA857221D27C3600DD92F9 /* DocumentSearchManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EA857121D27C3600DD92F9 /* DocumentSearchManager.swift */; };
 		EE260FEBE701F7B91549B9B8 /* Pods_Iceland.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B03B21DC28F546E7D3A966E7 /* Pods_Iceland.framework */; };
 /* End PBXBuildFile section */
 
@@ -209,7 +210,8 @@
 		E4EA855F21D1DB1400DD92F9 /* CaptureSketchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureSketchViewController.swift; sourceTree = "<group>"; };
 		E4EA856221D1F83800DD92F9 /* HeadingsOutlineViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadingsOutlineViewController.swift; sourceTree = "<group>"; };
 		E4EA856421D1F8AE00DD92F9 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
-		E4EA856A21D2338800DD92F9 /* RefileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefileViewController.swift; sourceTree = "<group>"; };
+		E4EA856F21D279A500DD92F9 /* DocumentManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentManager.swift; sourceTree = "<group>"; };
+		E4EA857121D27C3600DD92F9 /* DocumentSearchManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentSearchManager.swift; sourceTree = "<group>"; };
 		FC69118DDC07F2D89DFC636D /* Pods_IcelandTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_IcelandTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -313,14 +315,11 @@
 		E41F86C1218EF4B0006C4CDB /* Document */ = {
 			isa = PBXGroup;
 			children = (
-				E4A46A2E21B414FA00FBDA04 /* Sync */,
-				E4A46A2221B0D9AC00FBDA04 /* Editor */,
 				E44825A42197E6F600C17568 /* DocumentCoordinator.swift */,
 				E4A46A2A21B4109C00FBDA04 /* DocumentSearchViewController.swift */,
 				E4A46A2C21B410BE00FBDA04 /* DocumentSearchViewModel.swift */,
 				E4A46A3521B646DF00FBDA04 /* DocumentBrowserViewController.swift */,
 				E4A46A3721B6470100FBDA04 /* DocumentBrowserViewModel.swift */,
-				E4A46A3121B4D07500FBDA04 /* Document.swift */,
 			);
 			path = Document;
 			sourceTree = "<group>";
@@ -395,6 +394,8 @@
 		E43427F82121BF5B00EC6DC3 /* Iceland */ = {
 			isa = PBXGroup;
 			children = (
+				E4A46A2221B0D9AC00FBDA04 /* Editor */,
+				E4EA856E21D2790C00DD92F9 /* DocumentManager */,
 				E4A46A1C21AE6CDC00FBDA04 /* UI */,
 				E41F86DF21902BF3006C4CDB /* Setting */,
 				E41F86DA21900902006C4CDB /* Attachment */,
@@ -469,23 +470,25 @@
 			path = Constants;
 			sourceTree = "<group>";
 		};
-		E4A46A2E21B414FA00FBDA04 /* Sync */ = {
-			isa = PBXGroup;
-			children = (
-				E4A46A2F21B4150A00FBDA04 /* SyncManager.swift */,
-			);
-			path = Sync;
-			sourceTree = "<group>";
-		};
 		E4EA856621D21F7300DD92F9 /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				E4EA856A21D2338800DD92F9 /* RefileViewController.swift */,
 				E41FA5742191569C001D8C63 /* DocumentEditController.swift */,
 				E4EA856221D1F83800DD92F9 /* HeadingsOutlineViewController.swift */,
 				E4A46A2821B28ED800FBDA04 /* DocumentEditViewModel.swift */,
 			);
 			path = UI;
+			sourceTree = "<group>";
+		};
+		E4EA856E21D2790C00DD92F9 /* DocumentManager */ = {
+			isa = PBXGroup;
+			children = (
+				E4A46A2F21B4150A00FBDA04 /* SyncManager.swift */,
+				E4A46A3121B4D07500FBDA04 /* Document.swift */,
+				E4EA856F21D279A500DD92F9 /* DocumentManager.swift */,
+				E4EA857121D27C3600DD92F9 /* DocumentSearchManager.swift */,
+			);
+			path = DocumentManager;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -819,7 +822,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				E4EA856321D1F83800DD92F9 /* HeadingsOutlineViewController.swift in Sources */,
-				E4EA856B21D2338800DD92F9 /* RefileViewController.swift in Sources */,
 				E464BBB121A69C9000D34C88 /* OutlineTheme.swift in Sources */,
 				E41F86C3218EF4BF006C4CDB /* CaptureCoordinator.swift in Sources */,
 				E44825A9219810FF00C17568 /* EditorController.swift in Sources */,
@@ -860,6 +862,8 @@
 				E49F3E4821B9183F003F468D /* SettingsCoordinator.swift in Sources */,
 				E498AAFF21BBE9B900D2A8EA /* CatpureListViewController.swift in Sources */,
 				E44825AD219C1AAA00C17568 /* OutlineParser.swift in Sources */,
+				E4EA857221D27C3600DD92F9 /* DocumentSearchManager.swift in Sources */,
+				E4EA857021D279A500DD92F9 /* DocumentManager.swift in Sources */,
 				E41F86DE21902BA1006C4CDB /* AttachmentManager.swift in Sources */,
 				E498AB0121BBEBB300D2A8EA /* CaptureListViewModel.swift in Sources */,
 				E41F86C5218EF4E1006C4CDB /* AgendaCoordinator.swift in Sources */,

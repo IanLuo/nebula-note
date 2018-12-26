@@ -154,4 +154,117 @@ content in third
         XCTAssertEqual((editorController.string as NSString).substring(with: paragraphs2[1].paragraphRange), "** second heading\ncontent in second\nsecond added content")
         XCTAssertEqual((editorController.string as NSString).substring(with: paragraphs2[2].paragraphRange), "*** third heading\ncontent in third\nthird added content")
     }
+    
+    func testAddTag() {
+        let text = """
+* first heading
+content in first
+** second heading
+SCHEDULE:[2018-12-11]
+content in second
+*** third heading
+SCHEDULE:[2018-12-11]
+DEADLINE:[2018-12-11]
+content in third
+"""
+        let ex = expectation(description: "add tag")
+        let folder = File.Folder.temp("test")
+        folder.createFolderIfNeeded()
+        let tempURL = File(folder, fileName: "text.org").url
+        
+        let document = Document(fileURL: tempURL)
+        document.string = text
+        document.save(to: tempURL, for: UIDocument.SaveOperation.forCreating) {
+            if $0 == false {
+                XCTAssert(false)
+            } else {
+                let viewModel = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()), document: document)
+                
+                viewModel.open {
+                    XCTAssert($0 != nil)
+                    var isHit = false
+                    viewModel.add(tag: "test", at: viewModel.headingList()[0].range.location, completion: {
+                        XCTAssert($0)
+                        if let tags = viewModel.headingList()[0].tags {
+                            XCTAssertEqual(document.string.subString(tags), ":test:")
+                            isHit = true
+                        }
+                    })
+                    
+                    XCTAssertTrue(isHit)
+                    isHit = false
+                    
+                    viewModel.add(tag: "test2", at: viewModel.headingList()[0].range.location, completion: {
+                        XCTAssert($0)
+                        if let tags = viewModel.headingList()[0].tags {
+                            XCTAssertEqual(document.string.subString(tags), ":test:test2:")
+                            isHit = true
+                        }
+                    })
+                    
+                    XCTAssertTrue(isHit)
+                    isHit = false
+                    
+                    let heading = viewModel.heading(at: viewModel.headingList()[0].range.location)!
+                    
+                    XCTAssertEqual(document.string.subString(heading.range), "* first heading :test:test2:")
+                    
+                    viewModel.add(tag: "test3", at: viewModel.headingList()[1].range.location, completion: {
+                        XCTAssert($0)
+                        if let tags = viewModel.headingList()[1].tags {
+                            XCTAssertEqual(document.string.subString(tags), ":test3:")
+                            isHit = true
+                        }
+                    })
+                    
+                    XCTAssertTrue(isHit)
+                    isHit = false
+                    
+                    viewModel.add(tag: "test4", at: viewModel.headingList()[1].range.location, completion: {
+                        XCTAssert($0)
+                        if let tags = viewModel.headingList()[1].tags {
+                            XCTAssertEqual(document.string.subString(tags), ":test3:test4:")
+                            isHit = true
+                        }
+                    })
+                    
+                    XCTAssertTrue(isHit)
+                    isHit = false
+                    
+                    let heading1 = viewModel.heading(at: viewModel.headingList()[1].range.location)!
+                    
+                    XCTAssertEqual(document.string.subString(heading1.range), "** second heading :test3:test4:")
+                    
+                    viewModel.add(tag: "test5", at: viewModel.headingList()[2].range.location, completion: {
+                        XCTAssert($0)
+                        if let tags = viewModel.headingList()[2].tags {
+                            XCTAssertEqual(document.string.subString(tags), ":test5:")
+                            isHit = true
+                        }
+                    })
+                    
+                    XCTAssertTrue(isHit)
+                    isHit = false
+                    
+                    viewModel.add(tag: "test6", at: viewModel.headingList()[2].range.location, completion: {
+                        XCTAssert($0)
+                        if let tags = viewModel.headingList()[2].tags {
+                            XCTAssertEqual(document.string.subString(tags), ":test5:test6:")
+                            isHit = true
+                        }
+                    })
+                    
+                    XCTAssertTrue(isHit)
+                    
+                    let heading2 = viewModel.heading(at: viewModel.headingList()[2].range.location)!
+                    
+                    XCTAssertEqual(document.string.subString(heading2.range), "*** third heading :test5:test6:")
+                    
+                    ex.fulfill()
+                }
+            }
+        }
+        
+        wait(for: [ex], timeout: 5)
+    }
 }

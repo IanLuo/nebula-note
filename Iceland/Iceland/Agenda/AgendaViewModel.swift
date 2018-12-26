@@ -14,49 +14,60 @@ public protocol AgendaViewModelDelegate: class {
 }
 
 public class AgendaViewModel {
-    public typealias Denpendency = AgendaCoordinator
     public weak var delegate: AgendaViewModelDelegate?
-    public weak var dependency: Denpendency?
+    public weak var dependency: AgendaCoordinator?
+    private let documentSearchManager: DocumentSearchManager
     
-    public var data: [AgendaCellModel] = [] { didSet { self.delegate?.didLoadData() } }
+    public init(documentSearchManager: DocumentSearchManager) {
+        self.documentSearchManager = documentSearchManager
+    }
+    
+    public var data: [AgendaCellModel] = [] {
+        didSet {
+            self.delegate?.didLoadData()
+        }
+    }
     
     public func load(plannings: [String]) {
         var newData: [AgendaCellModel] = []
-        self.dependency?.search(planning: plannings, resultAdded: { (result: [DocumentSearchResult]) in
-            newData.append(contentsOf: result
-                .filter {
-                    $0.heading != nil
-                }
-                .map {
-                    AgendaCellModel(heading: $0.heading!, text: $0.context, url: $0.url)
-                }
-            )
-        }, complete: { [weak self] in
-            self?.data = newData
-            }, failure: { [weak self] error in
-                self?.delegate?.didFailed(error)
-            }
-        )
+        self.documentSearchManager
+            .search(plannings: plannings,
+                    resultAdded: { (result) in
+                        newData.append(contentsOf: result
+                            .filter {
+                                $0.heading != nil
+                            }
+                            .map {
+                                AgendaCellModel(heading: $0.heading!, text: $0.context, url: $0.url)
+                            }
+                        )
+            }, complete: { [weak self] in
+                self?.data = newData
+                }, failed: { [weak self] error in
+                    self?.delegate?.didFailed(error)
+            })
     }
     
     public func loadOverDue() {
         let calendar = Calendar.current
         let beforeToday = calendar.date(from: calendar.dateComponents([.year, .month, .day], from: Date()))!
         var newData: [AgendaCellModel] = []
-        self.dependency?.search(due: beforeToday, resultAdded: { (result) in
-            newData.append(contentsOf: result
-                .filter {
-                    $0.heading != nil
-                }.map {
-                    AgendaCellModel(heading: $0.heading!, text: $0.context, url: $0.url)
-                }
-            )
-        }, complete: { [weak self] in
-            self?.data = newData
-            }, failure: { [weak self] error in
-                self?.delegate?.didFailed(error)
-            }
-        )
+        self.documentSearchManager
+            .search(due: beforeToday,
+                    resultAdded: { (result) in
+                        newData.append(contentsOf: result
+                            .filter {
+                                $0.heading != nil
+                            }
+                            .map {
+                                AgendaCellModel(heading: $0.heading!, text: $0.context, url: $0.url)
+                            }
+                        )
+            }, complete: { [weak self] in
+                self?.data = newData
+                }, failed: { [weak self] error in
+                    self?.delegate?.didFailed(error)
+            })
     }
     
     public func loadOverDueToday() {
@@ -67,62 +78,66 @@ public class AgendaViewModel {
         components.setValue(59, for: Calendar.Component.second)
         let endOfToday = calendar.date(from: components)!
         var newData: [AgendaCellModel] = []
-        self.dependency?.search(due: endOfToday, resultAdded: { (result) in
-            newData.append(contentsOf: result
-                .filter {
-                    $0.heading != nil
-                }
-                .map {
-                    AgendaCellModel(heading: $0.heading!, text: $0.context, url: $0.url)
-                }
-            )
-        }, complete: { [weak self] in
-            self?.data = newData
-            }, failure: { [weak self] error in
-                self?.delegate?.didFailed(error)
-            }
-        )
+        self.documentSearchManager
+            .search(due: endOfToday,
+                    resultAdded: { (result) in
+                        newData.append(contentsOf: result
+                            .filter {
+                                $0.heading != nil
+                            }
+                            .map {
+                                AgendaCellModel(heading: $0.heading!, text: $0.context, url: $0.url)
+                            }
+                        )
+            }, complete: { [weak self] in
+                self?.data = newData
+                }, failed: { [weak self] error in
+                    self?.delegate?.didFailed(error)
+            })
     }
     
     public func loadHasDueDate() {
         var newData: [AgendaCellModel] = []
-        self.dependency?.search(due: Date.distantFuture, resultAdded: { (result) in
-            newData.append(contentsOf: result
-                .filter {
-                    $0.heading != nil
-                }
-                .map {
-                    AgendaCellModel(heading: $0.heading!, text: $0.context, url: $0.url)
-                }
-            )
-        }, complete: { [weak self] in
-            self?.data = newData
-            }, failure: { [weak self] error in
-                self?.delegate?.didFailed(error)
-            }
-        )
+        self.documentSearchManager
+            .search(due: Date.distantFuture,
+                    resultAdded: { (result) in
+                        newData.append(contentsOf: result
+                            .filter {
+                                $0.heading != nil
+                            }
+                            .map {
+                                AgendaCellModel(heading: $0.heading!, text: $0.context, url: $0.url)
+                            }
+                        )
+            }, complete: { [weak self] in
+                self?.data = newData
+                }, failed: { [weak self] error in
+                    self?.delegate?.didFailed(error)
+            })
     }
     
     public func loadScheduled() {
         var newData: [AgendaCellModel] = []
-        self.dependency?.search(schedule: Date.distantFuture, resultAdded: { (result) in
-            newData.append(contentsOf: result
-                .filter {
-                    $0.heading != nil
-                }
-                .map {
-                    AgendaCellModel(heading: $0.heading!, text: $0.context, url: $0.url)
-                }
-            )
-        }, complete: { [weak self] in
-            self?.data = newData
-            }, failure: { [weak self] error in
-                self?.delegate?.didFailed(error)
-            }
-        )
+        self.documentSearchManager
+            .search(schedule: Date.distantFuture,
+                    resultAdded: { (result) in
+                        newData.append(contentsOf: result
+                            .filter {
+                                $0.heading != nil
+                            }
+                            .map {
+                                AgendaCellModel(heading: $0.heading!, text: $0.context, url: $0.url)
+                            }
+                        )
+            }, complete: { [weak self] in
+                self?.data = newData
+                }, failed: { [weak self] error in
+                    self?.delegate?.didFailed(error)
+            })
     }
     
     public func openDocument(index: Int) {
-        self.dependency?.openDocument(url: self.data[index].url, location: self.data[index].headingLocation)
+        self.dependency?.openDocument(url: self.data[index].url,
+                                      location: self.data[index].headingLocation)
     }
 }

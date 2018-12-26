@@ -16,10 +16,16 @@ import UIKit
 /// 不管是任务，还是 capture 的内容，都可以直接编辑，可以使用 document 中的格式，方便临时的任务记录
 public class AgendaCoordinator: Coordinator {
     public var viewController: UIViewController
+    private let documentManager: DocumentManager
+    private let documentSearchManager: DocumentSearchManager
     
-    public override init(stack: UINavigationController) {
-        let viewModel = AgendaViewModel()
+    public init(stack: UINavigationController,
+                documentSearchManager: DocumentSearchManager,
+                documentManager: DocumentManager) {
+        let viewModel = AgendaViewModel(documentSearchManager: documentSearchManager)
         let viewController = AgendaViewController(viewModel: viewModel)
+        self.documentManager = documentManager
+        self.documentSearchManager = documentSearchManager
         self.viewController = viewController
         super.init(stack: stack)
         viewModel.delegate = viewController
@@ -33,132 +39,11 @@ public class AgendaCoordinator: Coordinator {
 
 extension AgendaCoordinator {
     public func openDocument(url: URL, location: Int) {
-        let docCood = DocumentCoordinator(stack: self.stack, usage: .editor(url, location))
+        let docCood = DocumentCoordinator(stack: self.stack,
+                                          usage: .editor(url, location),
+                                          documentManager: self.documentManager,
+                                          documentSearchManager: self.documentSearchManager)
         self.addChild(docCood)
         docCood.start()
-    }
-    
-    public func search(due: Date,
-                       resultAdded: @escaping ([DocumentSearchResult]) -> Void,
-                       complete: @escaping () -> Void,
-                       failure: @escaping (Error) -> Void) {
-        let searchCood = DocumentCoordinator(stack: self.stack, usage: .search)
-        self.addChild(searchCood)
-        searchCood.searchHeadings(by: .due(due), resultAdded: resultAdded, complete: {
-            self.remove(searchCood)
-            complete()
-        }) {
-            self.remove(searchCood)
-            failure($0)
-        }
-    }
-    
-    public func search(schedule: Date,
-                       resultAdded: @escaping ([DocumentSearchResult]) -> Void,
-                       complete: @escaping () -> Void,
-                       failure: @escaping (Error) -> Void) {
-        let searchCood = DocumentCoordinator(stack: self.stack, usage: .search)
-        self.addChild(searchCood)
-        searchCood.searchHeadings(by: .schedule(schedule), resultAdded: resultAdded, complete: {
-            self.remove(searchCood)
-            complete()
-        }) {
-            self.remove(searchCood)
-            failure($0)
-        }
-    }
-    
-    public func search(planning: [String],
-                       resultAdded: @escaping ([DocumentSearchResult]) -> Void,
-                       complete: @escaping () -> Void,
-                       failure: @escaping (Error) -> Void) {
-        let searchCood = DocumentCoordinator(stack: self.stack, usage: .search)
-        self.addChild(searchCood)
-        searchCood.searchHeadings(by: .planning(planning), resultAdded: resultAdded, complete: {
-            self.remove(searchCood)
-            complete()
-        }) {
-            self.remove(searchCood)
-            failure($0)
-        }
-    }
-    
-    public func search(tags: [String],
-                       resultAdded: @escaping ([DocumentSearchResult]) -> Void,
-                       complete: @escaping () -> Void,
-                       failure: @escaping (Error) -> Void) {
-        let searchCood = DocumentCoordinator(stack: self.stack, usage: .search)
-        self.addChild(searchCood)
-        searchCood.searchHeadings(by: .tags(tags), resultAdded: resultAdded, complete: {
-            self.remove(searchCood)
-            complete()
-        }) {
-            self.remove(searchCood)
-            failure($0)
-        }
-    }
-    
-    public func refileTo(url: URL,
-                         content: String,
-                         headingLocation: Int,
-                         complete: @escaping () -> Void,
-                         failure: @escaping (Error) -> Void) {
-        let docCood = DocumentCoordinator(stack: self.stack, usage: .refile)
-        self.addChild(docCood)
-        docCood.insert(content: content, url: url, headingLocation: headingLocation, complete: {
-            self.remove(docCood)
-            complete()
-        }, failure: {
-            self.remove(docCood)
-            failure($0)
-        })
-    }
-    
-    public func changePlanning(to: String,
-                               url: URL,
-                               headingLocation: Int,
-                               complete: @escaping () -> Void,
-                               failure: @escaping (Error) -> Void) {
-        let docCood = DocumentCoordinator(stack: self.stack, usage: .headless)
-        self.addChild(docCood)
-        docCood.changePlanning(to: to, url: url, headingLocation: headingLocation, completion: {
-            self.remove(docCood)
-            complete()
-        }, failure: {
-            self.remove(docCood)
-            failure($0)
-        })
-    }
-    
-    public func reschedule(to: DateAndTimeType,
-                           url: URL,
-                           headingLocation: Int,
-                           complete: @escaping () -> Void,
-                           failure: @escaping (Error) -> Void) {
-        let docCood = DocumentCoordinator(stack: self.stack, usage: .headless)
-        self.addChild(docCood)
-        docCood.reschedule(newSchedule: to, url: url, headingLocation: headingLocation, complete: {
-            self.remove(docCood)
-            complete()
-        }, failure: {
-            self.remove(docCood)
-            failure($0)
-        })
-    }
-    
-    public func changeDue(to: DateAndTimeType,
-                          url: URL,
-                          headingLocation: Int,
-                          complete: @escaping () -> Void,
-                          failure: @escaping (Error) -> Void) {
-        let docCood = DocumentCoordinator(stack: self.stack, usage: .headless)
-        self.addChild(docCood)
-        docCood.changeDue(newDue: to, url: url, headingLocation: headingLocation, complete: {
-            self.remove(docCood)
-            complete()
-        }, failure: {
-            self.remove(docCood)
-            failure($0)
-        })
     }
 }

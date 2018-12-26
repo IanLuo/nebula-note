@@ -19,7 +19,7 @@ public class DocumentBrowserTests: XCTestCase {
     }
     
     func testCreateDocument() {
-        let viewModel = DocumentBrowserViewModel()
+        let viewModel = DocumentBrowserViewModel(documentManager: DocumentManager())
         let ex = expectation(description: "create")
         viewModel.createDocument(title: "test create document", below: nil) { document in
             let fm = FileManager.default
@@ -33,7 +33,7 @@ public class DocumentBrowserTests: XCTestCase {
     }
     
     func testRenameFileBelowAnotherDocument() {
-        let viewModel = DocumentBrowserViewModel()
+        let viewModel = DocumentBrowserViewModel(documentManager: DocumentManager())
         let ex = expectation(description: "testRenameFileBelowAnotherDocument")
         viewModel.createDocument(title: "test create document", below: nil) { url in
             let fm = FileManager.default
@@ -53,7 +53,7 @@ public class DocumentBrowserTests: XCTestCase {
     }
     
     func testFindDocuments() throws {
-        let viewModel = DocumentBrowserViewModel()
+        let viewModel = DocumentBrowserViewModel(documentManager: DocumentManager())
         let ex = expectation(description: "testFindDocuments")
         viewModel.createDocument(title: "my jorney", below: nil) { url in
             

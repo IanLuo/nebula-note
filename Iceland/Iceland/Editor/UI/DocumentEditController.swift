@@ -44,5 +44,7 @@ public class DocumentEditViewController: UIViewController {
 }
 
 extension DocumentEditViewController: DocumentEditViewModelDelegate {
-    
+    public func didChangeHeading() {
+        
+    }
 }

@@ -82,3 +82,10 @@ extension URL {
         }
     }
 }
+
+
+extension String {
+    public func subString(_ range: NSRange) -> String {
+        return (self as NSString).substring(with: range)
+    }
+}

@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 public protocol EditorControllerDelegate: class {
-    
+    func currentHeadingDidChnage(heading: OutlineTextStorage.Heading?)
 }
 
 public class EditorController: NSObject {
@@ -39,6 +39,7 @@ public class EditorController: NSObject {
         super.init()
         
         self.textStorage.delegate = self
+        self.textStorage.outlineDelegate = self
         self.textStorage.addLayoutManager(layoutManager)
         self.layoutManager.delegate = self
         layoutManager.allowsNonContiguousLayout = true
@@ -52,6 +53,7 @@ public class EditorController: NSObject {
     }
 }
 
+/// API
 extension EditorController {
     public func getParagraphs() -> [OutlineTextStorage.Heading] {
         return self.textStorage.savedHeadings // FIXME: may be not the best way, this function should be called on Agenda to load content of heading
@@ -67,9 +69,21 @@ extension EditorController {
         self.textStorage.replaceCharacters(in: range, with: text)
     }
     
+    public func insert(string: String, at location: Int) {
+        self.textStorage.replaceCharacters(in: NSRange(location: location, length: 0), with: string)
+    }
+    
     public var string: String {
         set { self.textStorage.string = newValue }
         get { return self.textStorage.string }
+    }
+}
+
+extension EditorController: OutlineTextStorageDelegate {
+    public func didSetHeading(newHeading: OutlineTextStorage.Heading?, oldHeading: OutlineTextStorage.Heading?) {
+        if oldHeading?.range.location != newHeading?.range.location {
+            self.delegate?.currentHeadingDidChnage(heading: newHeading)
+        }
     }
 }
 
