@@ -20,7 +20,7 @@ public protocol DocumentSearchViewModelDelegate: class {
 }
 
 public class DocumentSearchViewModel {
-    public typealias Dependency = DocumentCoordinator
+    public typealias Dependency = DocumentManagementCoordinator
     public weak var delegate: DocumentSearchViewModelDelegate?
     public weak var dependency: Dependency?
     

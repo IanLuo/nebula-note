@@ -23,38 +23,38 @@ public class CaptureTests: XCTestCase {
     func testInsertCapture() throws {
         let service = CaptureService()
         
-        let disposeBag = DisposeBag()
-        service.save(content: "some text", type: .text, description: "text").subscribe().disposed(by: disposeBag)
-        
         let ex = expectation(description: "")
         
-        service.loadAll().subscribe(onNext: {
-            XCTAssert($0.count == 1)
-            ex.fulfill()
-        }, onError: { _ in
+        service.save(content: "some text", type: .text, description: "text", completion: { _ in
+            service.loadAll(completion:{
+                XCTAssert($0.count == 1)
+                ex.fulfill()
+            }, failure: { _ in
+                XCTAssert(false)
+            })
+        }, failure: { _ in
             XCTAssert(false)
-        }).disposed(by: disposeBag)
+        })
         
         wait(for: [ex], timeout: 5)
     }
     
     func testLoadCapture() {
         let service = CaptureService()
-        let disposeBag = DisposeBag()
         
-        service.save(content: "some text", type: .text, description: "text").subscribe().disposed(by: disposeBag)
-        service.save(content: "some text", type: .text, description: "text").subscribe().disposed(by: disposeBag)
-        service.save(content: "some text", type: .text, description: "text").subscribe().disposed(by: disposeBag)
-        service.save(content: "some text", type: .text, description: "text").subscribe().disposed(by: disposeBag)
+        service.save(content: "some text", type: .text, description: "text", completion: { _ in }, failure: { _ in })
+        service.save(content: "some text", type: .text, description: "text", completion: { _ in }, failure: { _ in })
+        service.save(content: "some text", type: .text, description: "text", completion: { _ in }, failure: { _ in })
+        service.save(content: "some text", type: .text, description: "text", completion: { _ in }, failure: { _ in })
         
         let ex = expectation(description: "")
         
-        service.loadAll().subscribe(onNext: {
+        service.loadAll(completion: {
             XCTAssert($0.count == 4)
             ex.fulfill()
-        }, onError: { _ in
+        }, failure: { _ in
             XCTAssert(false)
-        }).disposed(by: disposeBag)
+        })
         
         wait(for: [ex], timeout: 5)
     }
@@ -62,29 +62,28 @@ public class CaptureTests: XCTestCase {
     
     func testRemoveCapture() {
         let service = CaptureService()
-        let disposeBag = DisposeBag()
         
-        service.save(content: "some text", type: .text, description: "text").subscribe().disposed(by: disposeBag)
-        service.save(content: "some text", type: .text, description: "text").subscribe().disposed(by: disposeBag)
-        service.save(content: "some text", type: .text, description: "text").subscribe().disposed(by: disposeBag)
-        service.save(content: "some text", type: .text, description: "text").subscribe().disposed(by: disposeBag)
+        service.save(content: "some text", type: .text, description: "text", completion: { _ in }, failure: { _ in })
+        service.save(content: "some text", type: .text, description: "text", completion: { _ in }, failure: { _ in })
+        service.save(content: "some text", type: .text, description: "text", completion: { _ in }, failure: { _ in })
+        service.save(content: "some text", type: .text, description: "text", completion: { _ in }, failure: { _ in })
         
         let ex = expectation(description: "")
         
-        service.loadAll().subscribe(onNext: {
+        service.loadAll(completion: {
             $0.forEach {
-                service.delete(key: $0.key).subscribe().disposed(by: disposeBag)
+                service.delete(key: $0.key)
             }
-        }, onError: { _ in
+        }, failure: { _ in
             XCTAssert(false)
-        }).disposed(by: disposeBag)
+        })
         
-        service.loadAll().subscribe(onNext: {
+        service.loadAll(completion: {
             XCTAssert($0.count == 0)
             ex.fulfill()
-        }, onError: { _ in
+        }, failure: { (_) in
             XCTAssert(false)
-        }).disposed(by: disposeBag)
+        })
         
         wait(for: [ex], timeout: 5)
     }

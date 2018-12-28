@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import RxSwift
 
 public protocol CaptureListViewModelDelegate: class {
     func didLoadData()
@@ -23,8 +22,6 @@ public class CaptureListViewModel {
     public weak var dependency: Dependency?
     
     private let service: CaptureServiceProtocol
-    
-    private let disposeBag: DisposeBag = DisposeBag()
     
     public var data: [Attachment] = []
     
@@ -50,6 +47,8 @@ public class CaptureListViewModel {
         editViewModel.insert(content: content, headingLocation: heading.range.location)
         
         self.currentIndex = nil
+        
+        self.service.delete(key: attachment.key)
     }
     
     public func completeRefile(error: Error?) {
@@ -63,30 +62,17 @@ public class CaptureListViewModel {
     
     public func loadAllCapturedData() {
         self.service
-            .loadAll()
-            .subscribe(onNext: { [weak self] data in
+            .loadAll(completion: { [weak self] attachments in
                 self?.data = data
                 self?.delegate?.didLoadData()
-            }, onError: { [weak self] error in
+            }, failure: { [weak self] error in
                 self?.delegate?.didFail(error: error)
-            }
-        ).disposed(by: self.disposeBag)
+            })
     }
     
     public func delete(index: Int) {
         self.service
             .delete(key: self.data[index].key)
-            .subscribe(onNext: { [weak self] in
-                self?.delegate?.didDeleteCapture(index: index)
-                }, onError: { [weak self] error in
-                    self?.delegate?.didFail(error: error)
-                }
-            )
-            .disposed(by: self.disposeBag)
-    }
-    
-    public func refile(url: URL, heading: OutlineTextStorage.Heading) {
-        
     }
     
     public func refile(index: Int) {

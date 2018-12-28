@@ -20,7 +20,7 @@ public class DocumentEditViewModel {
     public weak var delegate: DocumentEditViewModelDelegate?
     private var document: Document
     public var onLoadingLocation: Int = 0 // 打开文档的时候默认的位置
-    public weak var dependency: DocumentCoordinator?
+    public weak var dependency: DocumentManagementCoordinator?
     
     public init(editorController: EditorController,
                 document: Document) {

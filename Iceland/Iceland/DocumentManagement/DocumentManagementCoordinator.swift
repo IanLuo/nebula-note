@@ -9,12 +9,12 @@
 import Foundation
 import UIKit
 
-public protocol DocumentCoordinatorDelegate: class {
-    func didPickDocument(url: URL, location: Int, from: DocumentCoordinator)
-    func didPickHeading(url: URL, heading: OutlineTextStorage.Heading, from: DocumentCoordinator)
+public protocol DocumentManagementCoordinatorDelegate: class {
+    func didPickDocument(url: URL, location: Int)
+    func didPickHeading(url: URL, heading: OutlineTextStorage.Heading)
 }
 
-public class DocumentCoordinator: Coordinator {
+public class DocumentManagementCoordinator: Coordinator {
     public enum DocumentError: Error {
         case failToInsert
         case failToOpenFile
@@ -33,7 +33,7 @@ public class DocumentCoordinator: Coordinator {
     private let documentSearchManager: DocumentSearchManager
     public let usage: Usage
     
-    public weak var delegate: DocumentCoordinatorDelegate?
+    public weak var delegate: DocumentManagementCoordinatorDelegate?
     
     public init(stack: UINavigationController,
                 usage: Usage,
@@ -88,7 +88,7 @@ public class DocumentCoordinator: Coordinator {
     }
 }
 
-extension DocumentCoordinator: DocumentBrowserViewControllerDelegate {
+extension DocumentManagementCoordinator: DocumentBrowserViewControllerDelegate {
     public func didSelectDocument(url: URL) {
         
     }
@@ -98,10 +98,10 @@ extension DocumentCoordinator: DocumentBrowserViewControllerDelegate {
     }
 }
 
-extension DocumentCoordinator: EditorCoordinatorDelegate {
+extension DocumentManagementCoordinator: EditorCoordinatorDelegate {
     public func didFinishRefiling() {}
 }
 
-extension DocumentCoordinator: DocumentSearchViewControllerDelegate {
+extension DocumentManagementCoordinator: DocumentSearchViewControllerDelegate {
     
 }

@@ -99,7 +99,7 @@ extension Attachment {
     
     /// 通过保存在 key 加载附件
     /// 对于 capture 来说，如果 key 为 sampleKey，对应的 json 字符串保存在 sampleKey.json，位于 capture.plist 同一个目录中
-    public static func create(with key: String) throws -> Attachment {
+    public static func load(with key: String) throws -> Attachment {
         let manager = AttachmentManager()
         return try manager.attachment(with: key)
     }

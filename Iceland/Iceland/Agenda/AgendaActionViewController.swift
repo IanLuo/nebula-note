@@ -28,5 +28,7 @@ public class AgendaActionViewController: UIViewController {
 }
 
 extension AgendaActionViewController: AgendaActionViewModelDelegate {
-    
+    public func didUpdated() {
+        
+    }
 }

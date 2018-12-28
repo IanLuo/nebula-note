@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import RxSwift
 
 public protocol CaptureViewModelDelegate: class {
     func didCompleteCapture(attachment: Attachment)
@@ -18,8 +17,6 @@ public class CaptureViewModel {
     private let service: CaptureServiceProtocol
     public weak var delegate: CaptureViewModelDelegate?
     
-    private let disposeBag: DisposeBag = DisposeBag()
-    
     public init(service: CaptureServiceProtocol) {
         self.service = service
     }
@@ -28,16 +25,14 @@ public class CaptureViewModel {
                      type: Attachment.AttachmentType,
                      description: String) {
         self.service
-            .save(content: content, type: type, description: description)
-            .subscribe(onNext: { [weak self] (attachment: Attachment) -> Void in
+            .save(content: content, type: type, description: description, completion: { [weak self] attachment in
                 self?.delegate?.didCompleteCapture(attachment: attachment)
-            }, onError: { [weak self] (error: Error) -> Void in
+            }, failure: { [weak self] error in
                 self?.delegate?.didFailToSave(error: error,
                                               content: content,
                                               type: type,
                                               descritpion: description)
             })
-            .disposed(by: self.disposeBag)
     }
 
 }

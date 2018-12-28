@@ -17,7 +17,7 @@ public protocol DocumentBrowserViewModelDelegate: class {
 public class DocumentBrowserViewModel {
     public weak var delegate: DocumentBrowserViewModelDelegate?
     
-    public weak var dependency: DocumentCoordinator?
+    public weak var dependency: DocumentManagementCoordinator?
     
     private let documentManager: DocumentManager
     

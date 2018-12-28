@@ -56,7 +56,7 @@ public class CaptureCoordinator: Coordinator {
     }
     
     public func chooseDocumentHeadingForRefiling() {
-        let documentCood = DocumentCoordinator(stack: self.stack,
+        let documentCood = DocumentManagementCoordinator(stack: self.stack,
                                              usage: .pickHeading,
                                              documentManager: self.documentManager,
                                              documentSearchManager: self.documentSearchManager)
@@ -66,12 +66,12 @@ public class CaptureCoordinator: Coordinator {
     }
 }
 
-extension CaptureCoordinator: DocumentCoordinatorDelegate {
-    public func didPickDocument(url: URL, location: Int, from: DocumentCoordinator) {
+extension CaptureCoordinator: DocumentManagementCoordinatorDelegate {
+    public func didPickDocument(url: URL, location: Int) {
         // ignore
     }
     
-    public func didPickHeading(url: URL, heading: OutlineTextStorage.Heading, from: DocumentCoordinator) {
+    public func didPickHeading(url: URL, heading: OutlineTextStorage.Heading) {
         // FIXME: 添加缓存提高多次 refile 的性能
         listViewModel?.refile(editViewModel: DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()),
                                                                    document: Document(fileURL: url)),

@@ -35,7 +35,7 @@
 		E434281A2121BF6000EC6DC3 /* IcelandUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43428192121BF6000EC6DC3 /* IcelandUITests.swift */; };
 		E4357B4A21A995DA006DDD72 /* CaptureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4357B4921A995DA006DDD72 /* CaptureTests.swift */; };
 		E44825A3219722C300C17568 /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44825A2219722C300C17568 /* Application.swift */; };
-		E44825A52197E6F600C17568 /* DocumentCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44825A42197E6F600C17568 /* DocumentCoordinator.swift */; };
+		E44825A52197E6F600C17568 /* DocumentManagementCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44825A42197E6F600C17568 /* DocumentManagementCoordinator.swift */; };
 		E44825A7219810E100C17568 /* OutlineLayoutManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44825A6219810E100C17568 /* OutlineLayoutManager.swift */; };
 		E44825A9219810FF00C17568 /* EditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44825A8219810FF00C17568 /* EditorController.swift */; };
 		E44825AB219AE47000C17568 /* ParseOutlineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44825AA219AE47000C17568 /* ParseOutlineTests.swift */; };
@@ -177,7 +177,7 @@
 		E434281B2121BF6000EC6DC3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E4357B4921A995DA006DDD72 /* CaptureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureTests.swift; sourceTree = "<group>"; };
 		E44825A2219722C300C17568 /* Application.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Application.swift; sourceTree = "<group>"; };
-		E44825A42197E6F600C17568 /* DocumentCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentCoordinator.swift; sourceTree = "<group>"; };
+		E44825A42197E6F600C17568 /* DocumentManagementCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentManagementCoordinator.swift; sourceTree = "<group>"; };
 		E44825A6219810E100C17568 /* OutlineLayoutManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineLayoutManager.swift; sourceTree = "<group>"; };
 		E44825A8219810FF00C17568 /* EditorController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorController.swift; sourceTree = "<group>"; };
 		E44825AA219AE47000C17568 /* ParseOutlineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParseOutlineTests.swift; sourceTree = "<group>"; };
@@ -354,16 +354,16 @@
 			path = Agenda;
 			sourceTree = "<group>";
 		};
-		E41F86C1218EF4B0006C4CDB /* Document */ = {
+		E41F86C1218EF4B0006C4CDB /* DocumentManagement */ = {
 			isa = PBXGroup;
 			children = (
-				E44825A42197E6F600C17568 /* DocumentCoordinator.swift */,
+				E44825A42197E6F600C17568 /* DocumentManagementCoordinator.swift */,
 				E4A46A2A21B4109C00FBDA04 /* DocumentSearchViewController.swift */,
 				E4A46A2C21B410BE00FBDA04 /* DocumentSearchViewModel.swift */,
 				E4A46A3521B646DF00FBDA04 /* DocumentBrowserViewController.swift */,
 				E4A46A3721B6470100FBDA04 /* DocumentBrowserViewModel.swift */,
 			);
-			path = Document;
+			path = DocumentManagement;
 			sourceTree = "<group>";
 		};
 		E41F86DA21900902006C4CDB /* Attachment */ = {
@@ -441,7 +441,7 @@
 				E4A46A1C21AE6CDC00FBDA04 /* UI */,
 				E41F86DF21902BF3006C4CDB /* Setting */,
 				E41F86DA21900902006C4CDB /* Attachment */,
-				E41F86C1218EF4B0006C4CDB /* Document */,
+				E41F86C1218EF4B0006C4CDB /* DocumentManagement */,
 				E41F86C0218EF4A7006C4CDB /* Agenda */,
 				E41F86BF218EF4A0006C4CDB /* Capture */,
 				E43427F92121BF5B00EC6DC3 /* AppDelegate.swift */,
@@ -881,7 +881,7 @@
 				E4EA857521D3AF0D00DD92F9 /* BesideDatesView.swift in Sources */,
 				E4A46A2921B28ED800FBDA04 /* DocumentEditViewModel.swift in Sources */,
 				E4EA855C21D1DACE00DD92F9 /* CaptureVideoViewController.swift in Sources */,
-				E44825A52197E6F600C17568 /* DocumentCoordinator.swift in Sources */,
+				E44825A52197E6F600C17568 /* DocumentManagementCoordinator.swift in Sources */,
 				E4EA855821D1DA8700DD92F9 /* CaptureLinkViewController.swift in Sources */,
 				E4EA855A21D1DAAF00DD92F9 /* CaptureAudioViewController.swift in Sources */,
 				E4A46A1E21AE6CF400FBDA04 /* Image+Generation.swift in Sources */,

@@ -24,7 +24,7 @@ public class Application: Coordinator {
     }
     
     public override func start(from: Coordinator?) {
-        let documentCoord = DocumentCoordinator(stack: self.stack,
+        let documentCoord = DocumentManagementCoordinator(stack: self.stack,
                                                 usage: .pickDocument,
                                                 documentManager: documentManager,
                                                 documentSearchManager: documentSearchManager)

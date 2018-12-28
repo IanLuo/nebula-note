@@ -8,110 +8,77 @@
 
 import Foundation
 import UIKit.UIImage
-import RxSwift
 import Storage
 
 public protocol CaptureServiceProtocol {
     func save(content: String,
               type: Attachment.AttachmentType,
-              description: String) -> Observable<Attachment>
-    func loadAll() -> Observable<[Attachment]>
-    func delete(key: String) -> Observable<Void>
-    func load(id: String) -> Observable<Attachment?>
+              description: String,
+              completion: @escaping (Attachment) -> Void,
+              failure: @escaping (Error) -> Void)
+    func loadAll(completion: ([Attachment]) -> Void, failure: (Error) -> Void)
+    func delete(key: String)
+    func load(id: String) throws -> Attachment?
 }
 
 public struct CaptureService: CaptureServiceProtocol {
-    /// 从 capture 列表中获取全部未处理的附件
-    public func load(id: String) -> Observable<Attachment?> {
-        return Observable<Attachment?>.create { observer in
-            let plist = KeyValueStoreFactory.store(type: .plist(.custom("capture")))
-            
-            do {
-                if let attachmentKey = plist.get(key: id) as? String {
-                    let attachment = try Attachment.create(with: attachmentKey)
-                    observer.onNext(attachment)
-                } else {
-                    observer.onNext(nil)
-                }
-                
-                observer.onCompleted()
-            } catch {
-                observer.onError(error)
-            }
-            
-            return Disposables.create()
+    public func load(id: String) throws -> Attachment? {
+        let plist = KeyValueStoreFactory.store(type: .plist(.custom("capture")))
+        
+        if let attachmentKey = plist.get(key: id) as? String {
+            return try Attachment.load(with: attachmentKey)
+        } else {
+            return nil
         }
     }
     
     /// 创建一个新的 attachment, 并添加到 capture 列表中
     public func save(content: String,
                      type: Attachment.AttachmentType,
-                     description: String) -> Observable<Attachment> {
-        return Observable<Attachment>.create { observer in
-            Attachment.save(content: content,
-                            type: type,
-                            description: description,
-                            complete: { key in
-                                let plist = KeyValueStoreFactory.store(type: .plist(.custom("capture")))
-                                plist.set(value: Date(), key: key)
-                                
-                                do {
-                                    let savedAttachment = try Attachment.create(with: key)
-                                    observer.onNext(savedAttachment)
-                                    observer.onCompleted()
-                                } catch {
-                                    observer.onError(error)
-                                }
-            },
-                            failure: { error in
-                                observer.onError(error)
-            })
-            
-            return Disposables.create()
-        }
+                     description: String,
+                     completion: @escaping (Attachment) -> Void,
+                     failure: @escaping (Error) -> Void) {
+        Attachment.save(content: content,
+                        type: type,
+                        description: description,
+                        complete: { key in
+                            let plist = KeyValueStoreFactory.store(type: .plist(.custom("capture")))
+                            plist.set(value: "", key: key) // value 没有用
+                            do {
+                                let savedAttachment = try Attachment.load(with: key)
+                                completion(savedAttachment)
+                            } catch {
+                                failure(error)
+                            }
+        }, failure: {
+            failure($0)
+        })
     }
     
     /// 删除 capture 中的 attachment
-    public func delete(key: String) -> Observable<Void> {
+    public func delete(key: String) {
         let plist = KeyValueStoreFactory.store(type: .plist(.custom("capture")))
         plist.remove(key: key)
-        
-        return Observable.just(())
     }
     
     /// 删除 capture 中的 attachment，并且删除磁盘上的 attachment
-    public func deleteWithAttachment(key: String) -> Observable<Void> {
+    public func deleteWithAttachment(key: String) {
         let plist = KeyValueStoreFactory.store(type: .plist(.custom("capture")))
         plist.remove(key: key)
-        
-        return Observable.create { observer in
-            do {
-                try AttachmentManager().delete(key: key)
-                observer.onNext(())
-                observer.onCompleted()
-            } catch { observer.onError(error) }
-            
-            return Disposables.create()
-        }
     }
     
     /// 从 capture 中找到对应的 attahcment 并返回
-    public func loadAll() -> Observable<[Attachment]> {
+    public func loadAll(completion: ([Attachment]) -> Void, failure: (Error) -> Void) {
         let plist = KeyValueStoreFactory.store(type: .plist(.custom("capture")))
         
-        return Observable<[Attachment]>.create { observer in
-            do {
-                let attachments: [Attachment] = try plist.allKeys().map {
-                    try Attachment.create(with: $0)
-                }
-                
-                observer.onNext(attachments)
-                observer.onCompleted()
-            } catch {
-                observer.onError(error)
+        do {
+            let attachments = try plist.allKeys().map {
+                try Attachment.load(with: $0)
             }
             
-            return Disposables.create()
+            completion(attachments)
+        } catch {
+            failure(error)
         }
     }
 }

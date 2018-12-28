@@ -9,7 +9,7 @@
 import Foundation
 
 public protocol AgendaActionViewModelDelegate: class {
-    
+    func didUpdated()
 }
 
 public class AgendaActionViewModel {

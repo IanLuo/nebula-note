@@ -11,7 +11,6 @@ import UIKit
 
 /// 用户的活动中心
 /// 每天的任务安排显示在此处
-
 public class AgendaCoordinator: Coordinator {
     private let documentManager: DocumentManager
     private let documentSearchManager: DocumentSearchManager
