@@ -13,7 +13,6 @@ public protocol CaptureListViewModelDelegate: class {
     func didDeleteCapture(index: Int)
     func didFail(error: Error)
     func didRefileAttachment(index: Int)
-    func didRefileFile(index: Int)
 }
 
 public class CaptureListViewModel {
@@ -39,24 +38,28 @@ public class CaptureListViewModel {
         }
     }
     
-    public func refile(editViewModel: DocumentEditViewModel, heading: OutlineTextStorage.Heading) {
-        guard let attachment = self.currentCapture else { return }
+    public func refile(editViewModel: DocumentEditViewModel,
+                       heading: OutlineTextStorage.Heading) {
         
-        let content = OutlineParser.Values.Attachment.serialize(attachment: attachment)
-        
-        editViewModel.insert(content: content, headingLocation: heading.range.location)
-        
-        self.currentIndex = nil
-        
-        self.service.delete(key: attachment.key)
-    }
-    
-    public func completeRefile(error: Error?) {
-        if let error = error {
-            self.delegate?.didFail(error: error)
-        } else {
-            self.delegate?.didRefileFile(index: self.currentIndex!)
-            self.currentIndex = nil
+        DispatchQueue.global(qos: DispatchQoS.QoSClass.userInteractive).async {
+            guard let attachment = self.currentCapture else { return }
+            
+            let content = OutlineParser.Values.Attachment.serialize(attachment: attachment)
+            
+            editViewModel.insert(content: content, headingLocation: heading.range.location) // 添加字符串到对应的 heading 中
+            
+            self.currentIndex = nil // 移除当前选中的 attachment
+            
+            self.service.delete(key: attachment.key) // 删除 capture 中的 attachment 记录
+            
+            DispatchQueue.main.async {
+                for (index, attachment) in self.data.enumerated() {
+                    if attachment.url == editViewModel.url {
+                        self.delegate?.didRefileAttachment(index: index)
+                        self.delegate?.didDeleteCapture(index: index)
+                    }
+                }
+            }
         }
     }
     
@@ -73,9 +76,15 @@ public class CaptureListViewModel {
     public func delete(index: Int) {
         self.service
             .delete(key: self.data[index].key)
+        
+        self.delegate?.didDeleteCapture(index: index)
+        
+        if index == self.currentIndex {
+            self.currentIndex = nil
+        }
     }
     
-    public func refile(index: Int) {
+    public func prepareForRefile(index: Int) {
         self.currentIndex = index
         self.dependency?.chooseDocumentHeadingForRefiling()
     }

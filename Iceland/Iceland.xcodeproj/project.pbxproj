@@ -12,6 +12,8 @@
 		E41A538621D4C577002B11E9 /* AgendaTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41A538521D4C577002B11E9 /* AgendaTableCell.swift */; };
 		E41A538821D4CE1C002B11E9 /* AgendaActionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41A538721D4CE1C002B11E9 /* AgendaActionViewController.swift */; };
 		E41A538A21D4CE43002B11E9 /* AgendaActionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41A538921D4CE42002B11E9 /* AgendaActionViewModel.swift */; };
+		E41A538D21D5F629002B11E9 /* CaptureTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41A538C21D5F629002B11E9 /* CaptureTableCell.swift */; };
+		E41A539121D62095002B11E9 /* EditorServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41A539021D62095002B11E9 /* EditorServer.swift */; };
 		E41F86C3218EF4BF006C4CDB /* CaptureCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F86C2218EF4BF006C4CDB /* CaptureCoordinator.swift */; };
 		E41F86C5218EF4E1006C4CDB /* AgendaCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F86C4218EF4E1006C4CDB /* AgendaCoordinator.swift */; };
 		E41F86C7218EF5D8006C4CDB /* CaptureService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F86C6218EF5D8006C4CDB /* CaptureService.swift */; };
@@ -41,7 +43,7 @@
 		E44825AB219AE47000C17568 /* ParseOutlineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44825AA219AE47000C17568 /* ParseOutlineTests.swift */; };
 		E44825AD219C1AAA00C17568 /* OutlineParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44825AC219C1AAA00C17568 /* OutlineParser.swift */; };
 		E464BBB121A69C9000D34C88 /* OutlineTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = E464BBB021A69C9000D34C88 /* OutlineTheme.swift */; };
-		E498AAFF21BBE9B900D2A8EA /* CatpureListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E498AAFE21BBE9B800D2A8EA /* CatpureListViewController.swift */; };
+		E498AAFF21BBE9B900D2A8EA /* CaptureListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E498AAFE21BBE9B800D2A8EA /* CaptureListViewController.swift */; };
 		E498AB0121BBEBB300D2A8EA /* CaptureListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E498AB0021BBEBB300D2A8EA /* CaptureListViewModel.swift */; };
 		E49F3E4421B8EDBD003F468D /* AgendaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49F3E4321B8EDBD003F468D /* AgendaViewController.swift */; };
 		E49F3E4621B8EDC8003F468D /* AgendaViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49F3E4521B8EDC8003F468D /* AgendaViewModel.swift */; };
@@ -147,6 +149,8 @@
 		E41A538521D4C577002B11E9 /* AgendaTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgendaTableCell.swift; sourceTree = "<group>"; };
 		E41A538721D4CE1C002B11E9 /* AgendaActionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgendaActionViewController.swift; sourceTree = "<group>"; };
 		E41A538921D4CE42002B11E9 /* AgendaActionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgendaActionViewModel.swift; sourceTree = "<group>"; };
+		E41A538C21D5F629002B11E9 /* CaptureTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureTableCell.swift; sourceTree = "<group>"; };
+		E41A539021D62095002B11E9 /* EditorServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorServer.swift; sourceTree = "<group>"; };
 		E41F86C2218EF4BF006C4CDB /* CaptureCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureCoordinator.swift; sourceTree = "<group>"; };
 		E41F86C4218EF4E1006C4CDB /* AgendaCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgendaCoordinator.swift; sourceTree = "<group>"; };
 		E41F86C6218EF5D8006C4CDB /* CaptureService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureService.swift; sourceTree = "<group>"; };
@@ -183,7 +187,7 @@
 		E44825AA219AE47000C17568 /* ParseOutlineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParseOutlineTests.swift; sourceTree = "<group>"; };
 		E44825AC219C1AAA00C17568 /* OutlineParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineParser.swift; sourceTree = "<group>"; };
 		E464BBB021A69C9000D34C88 /* OutlineTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineTheme.swift; sourceTree = "<group>"; };
-		E498AAFE21BBE9B800D2A8EA /* CatpureListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatpureListViewController.swift; sourceTree = "<group>"; };
+		E498AAFE21BBE9B800D2A8EA /* CaptureListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureListViewController.swift; sourceTree = "<group>"; };
 		E498AB0021BBEBB300D2A8EA /* CaptureListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureListViewModel.swift; sourceTree = "<group>"; };
 		E49F3E4321B8EDBD003F468D /* AgendaViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgendaViewController.swift; sourceTree = "<group>"; };
 		E49F3E4521B8EDC8003F468D /* AgendaViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgendaViewModel.swift; sourceTree = "<group>"; };
@@ -320,13 +324,9 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
-		E41F86BF218EF4A0006C4CDB /* Capture */ = {
+		E41A538B21D5F5B8002B11E9 /* CaptureUI */ = {
 			isa = PBXGroup;
 			children = (
-				E41F86C2218EF4BF006C4CDB /* CaptureCoordinator.swift */,
-				E498AAFE21BBE9B800D2A8EA /* CatpureListViewController.swift */,
-				E498AB0021BBEBB300D2A8EA /* CaptureListViewModel.swift */,
-				E41F86C6218EF5D8006C4CDB /* CaptureService.swift */,
 				E42A87FC21CFC9B300151C90 /* CaptureTextViewController.swift */,
 				E4EA855521D1DA3D00DD92F9 /* CaptureImageViewController.swift */,
 				E4EA855721D1DA8700DD92F9 /* CaptureLinkViewController.swift */,
@@ -334,6 +334,19 @@
 				E4EA855B21D1DACE00DD92F9 /* CaptureVideoViewController.swift */,
 				E4EA855D21D1DAEB00DD92F9 /* CaptureLocationViewController.swift */,
 				E4EA855F21D1DB1400DD92F9 /* CaptureSketchViewController.swift */,
+			);
+			path = CaptureUI;
+			sourceTree = "<group>";
+		};
+		E41F86BF218EF4A0006C4CDB /* Capture */ = {
+			isa = PBXGroup;
+			children = (
+				E41A538B21D5F5B8002B11E9 /* CaptureUI */,
+				E41F86C2218EF4BF006C4CDB /* CaptureCoordinator.swift */,
+				E498AAFE21BBE9B800D2A8EA /* CaptureListViewController.swift */,
+				E41A538C21D5F629002B11E9 /* CaptureTableCell.swift */,
+				E498AB0021BBEBB300D2A8EA /* CaptureListViewModel.swift */,
+				E41F86C6218EF5D8006C4CDB /* CaptureService.swift */,
 				E42A87FE21CFCAC500151C90 /* CaptureViewModel.swift */,
 			);
 			path = Capture;
@@ -509,6 +522,7 @@
 				E4A46A2F21B4150A00FBDA04 /* SyncManager.swift */,
 				E4EA856F21D279A500DD92F9 /* DocumentManager.swift */,
 				E4EA857121D27C3600DD92F9 /* DocumentSearchManager.swift */,
+				E41A539021D62095002B11E9 /* EditorServer.swift */,
 			);
 			path = DocumentCore;
 			sourceTree = "<group>";
@@ -857,6 +871,8 @@
 				E41F86C3218EF4BF006C4CDB /* CaptureCoordinator.swift in Sources */,
 				E44825A9219810FF00C17568 /* EditorController.swift in Sources */,
 				E4EA856521D1F8AE00DD92F9 /* CalendarView.swift in Sources */,
+				E41A539121D62095002B11E9 /* EditorServer.swift in Sources */,
+				E41A538D21D5F629002B11E9 /* CaptureTableCell.swift in Sources */,
 				E41F86DC219009DD006C4CDB /* Attachment.swift in Sources */,
 				E4C7FB8521BA916D006E3CD8 /* AgendaCellModel.swift in Sources */,
 				E4A46A3621B646DF00FBDA04 /* DocumentBrowserViewController.swift in Sources */,
@@ -894,7 +910,7 @@
 				E4A46A3221B4D07500FBDA04 /* Document.swift in Sources */,
 				E4A46A1921AA8E9F00FBDA04 /* OutlineStorage.swift in Sources */,
 				E49F3E4821B9183F003F468D /* SettingsCoordinator.swift in Sources */,
-				E498AAFF21BBE9B900D2A8EA /* CatpureListViewController.swift in Sources */,
+				E498AAFF21BBE9B900D2A8EA /* CaptureListViewController.swift in Sources */,
 				E44825AD219C1AAA00C17568 /* OutlineParser.swift in Sources */,
 				E4EA857221D27C3600DD92F9 /* DocumentSearchManager.swift in Sources */,
 				E4EA857021D279A500DD92F9 /* DocumentManager.swift in Sources */,

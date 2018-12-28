@@ -14,5 +14,5 @@ public protocol BesideDatesViewDelegate: class {
 }
 
 public class BesideDatesView: UIView {
-    
+    public weak var delegate: BesideDatesViewDelegate?
 }

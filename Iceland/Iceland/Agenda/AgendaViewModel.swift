@@ -28,6 +28,16 @@ public class AgendaViewModel {
         }
     }
     
+    private var allData: [OutlineTextStorage.Heading] = []
+    
+    public func load(date: Date) {
+        
+    }
+    
+    public func showActions(index: Int) {
+        dependency?.openAgendaActions(url: self.data[index].url, heading: self.data[index].heading)
+    }
+    
     public func load(plannings: [String]) {
         var newData: [AgendaCellModel] = []
         self.documentSearchManager

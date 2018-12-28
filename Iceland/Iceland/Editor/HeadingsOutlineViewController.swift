@@ -30,6 +30,10 @@ public class HeadingsOutlineViewController: UIViewController {
 }
 
 extension HeadingsOutlineViewController: DocumentEditViewModelDelegate {
+    public func didReadToEdit() {
+        
+    }
+    
     public func documentStatesChange(state: UIDocument.State) {
         
     }

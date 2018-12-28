@@ -18,7 +18,7 @@ public class AgendaTableCell: UITableViewCell {
     
     public weak var delegate: AgendaTableCellDelegate?
     
-    private var cellModel: AgendaCellModel? {
+    public var cellModel: AgendaCellModel? {
         didSet {
             self.setupUI()
         }

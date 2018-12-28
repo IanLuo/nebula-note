@@ -23,8 +23,8 @@ public class DocumentEditViewController: UIViewController {
     public init(viewModel: DocumentEditViewModel) {
         self.viewModel = viewModel
         self.textView = OutlineTextView(frame: .zero,
-                                        textContainer: viewModel.editorController.textContainer)
-        self.textView.outlineDelegate = viewModel.editorController
+                                        textContainer: viewModel.container)
+        self.textView.outlineDelegate = viewModel.outlineStorageDelegate
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -40,17 +40,15 @@ public class DocumentEditViewController: UIViewController {
         
         self.view.addSubview(self.textView)
         
-        viewModel.open { [weak self] _ in
-            guard let strongSelf = self else { return }
-            
-            strongSelf.textView.selectedRange = NSRange(location: strongSelf.viewModel.onLoadingLocation,
-                                                        length: 0)
-        }
-        
     }
 }
 
 extension DocumentEditViewController: DocumentEditViewModelDelegate {
+    public func didReadToEdit() {
+        self.textView.selectedRange = NSRange(location: self.viewModel.onLoadingLocation,
+                                                    length: 0)
+    }
+    
     public func documentStatesChange(state: UIDocument.State) {
         
     }

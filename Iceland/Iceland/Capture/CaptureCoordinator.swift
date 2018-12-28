@@ -20,7 +20,7 @@ public class CaptureCoordinator: Coordinator {
     
     public init(stack: UINavigationController, documentManager: DocumentManager, documentSearchManager: DocumentSearchManager) {
         let listViewModel = CaptureListViewModel(service: self.captureService)
-        let viewController = CatpureListViewController(viewModel: listViewModel)
+        let viewController = CaptureListViewController(viewModel: listViewModel)
         
         self.documentManager = documentManager
         self.documentSearchManager = documentSearchManager
@@ -73,8 +73,7 @@ extension CaptureCoordinator: DocumentManagementCoordinatorDelegate {
     
     public func didPickHeading(url: URL, heading: OutlineTextStorage.Heading) {
         // FIXME: 添加缓存提高多次 refile 的性能
-        listViewModel?.refile(editViewModel: DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()),
-                                                                   document: Document(fileURL: url)),
+        listViewModel?.refile(editViewModel: DocumentEditViewModel(editorService: OutlineEditorServer.request(url: url)),
                               heading: heading)
     }
 }
