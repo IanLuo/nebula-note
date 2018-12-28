@@ -10,16 +10,17 @@ import Foundation
 import Storage
 
 public protocol DocumentEditViewModelDelegate: class {
-    func didChangeHeading()
+    func showLink(url: URL)
+    func updateHeadingInfo(heading: OutlineTextStorage.Heading?)
+    func documentStatesChange(state: UIDocument.State)
 }
 
 public class DocumentEditViewModel {
     public let editorController: EditorController
     public weak var delegate: DocumentEditViewModelDelegate?
     private var document: Document
-    public var onLoadingLocation: Int = 0
-    public typealias Dependency = DocumentCoordinator
-    public weak var dependency: Dependency?
+    public var onLoadingLocation: Int = 0 // 打开文档的时候默认的位置
+    public weak var dependency: DocumentCoordinator?
     
     public init(editorController: EditorController,
                 document: Document) {
@@ -250,12 +251,25 @@ public class DocumentEditViewModel {
     internal func headingList() -> [OutlineTextStorage.Heading] {
         return self.editorController.getParagraphs()
     }
+    
+    /// 交换两个 paragraph 的内容
+    public func replace(heading: OutlineTextStorage.Heading, with: OutlineTextStorage.Heading) {
+        let temp = self.editorController.string.subString(heading.paragraphRange)
+        self.editorController.replace(text: self.editorController.string.subString(with.paragraphRange), in: heading.paragraphRange)
+        self.editorController.replace(text: temp, in: with.paragraphRange)
+    }
 }
 
 // MARK: - EditorControllerDelegate
 extension DocumentEditViewModel: EditorControllerDelegate {
+    public func didTapLink(url: String, title: String, point: CGPoint) {
+        if let url = URL(string: url) {
+            self.delegate?.showLink(url: url)
+        }
+    }
+    
     public func currentHeadingDidChnage(heading: OutlineTextStorage.Heading?) {
-        self.delegate?.didChangeHeading()
+        self.delegate?.updateHeadingInfo(heading: heading)
     }
 }
 
@@ -273,8 +287,7 @@ extension DocumentEditViewModel {
     
     @objc func handleStatesChanges(notification: Notification) {
         if let state = notification.object as? UIDocument.State {
-            if state.contains(.savingError) {
-            }
+            self.delegate?.documentStatesChange(state: state)
         }
     }
 }

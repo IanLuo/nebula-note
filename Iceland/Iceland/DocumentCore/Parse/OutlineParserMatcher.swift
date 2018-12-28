@@ -161,6 +161,19 @@ extension OutlineParser {
     }
     
     public struct Values {
+        public struct Attachment {
+            public static func serialize(attachment: Iceland.Attachment) -> String {
+                switch attachment.type {
+                case .text: fallthrough
+                case .link:
+                    do { return try String(contentsOf: attachment.url) }
+                    catch { return "\(error)" }
+                default:
+                    return "//Attachment:\(attachment.type.rawValue)=\(attachment.url.absoluteString)"
+                }
+            }
+        }
+        
         public struct Checkbox {
             public static let unchecked: String = "- [ ]"
             public static let checked: String = "- [x]"

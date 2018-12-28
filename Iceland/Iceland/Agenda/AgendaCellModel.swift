@@ -9,7 +9,6 @@
 import Foundation
 
 public class AgendaCellModel {
-    
     public var headingText: String
     public let headingLocation: Int
     public let url: URL
@@ -50,6 +49,5 @@ public class AgendaCellModel {
             
             self.headingText = (self.headingText as NSString).replacingCharacters(in: tagsRange, with: "")
         }
-        
     }
 }

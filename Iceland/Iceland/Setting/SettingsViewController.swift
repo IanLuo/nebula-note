@@ -9,6 +9,10 @@
 import Foundation
 import UIKit
 
+public protocol SettingsViewControllerDelegate: class {
+    
+}
+
 public class SettingsViewController: UIViewController {
     private let viewModel: SettingsViewModel
     
@@ -20,4 +24,8 @@ public class SettingsViewController: UIViewController {
     public required init?(coder aDecoder: NSCoder) {
         fatalError()
     }
+}
+
+extension SettingsViewController: SettingsViewModelDelegate {
+    
 }

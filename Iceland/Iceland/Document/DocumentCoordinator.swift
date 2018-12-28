@@ -9,6 +9,11 @@
 import Foundation
 import UIKit
 
+public protocol DocumentCoordinatorDelegate: class {
+    func didPickDocument(url: URL, location: Int, from: DocumentCoordinator)
+    func didPickHeading(url: URL, heading: OutlineTextStorage.Heading, from: DocumentCoordinator)
+}
+
 public class DocumentCoordinator: Coordinator {
     public enum DocumentError: Error {
         case failToInsert
@@ -17,27 +22,18 @@ public class DocumentCoordinator: Coordinator {
         case failToChangeDueDate
         case failToChangePlanning
     }
-    
-    public enum HeadingSearchBy {
-        case planning([String])
-        case tags([String])
-        case schedule(Date)
-        case due(Date)
-    }
-    
-    public let viewController: UIViewController
-    
+
     public enum Usage {
-        case refile
+        case pickHeading
         case pickDocument
         case search
-        case editor(URL, Int)
-        case headless
     }
     
     private let documentManager: DocumentManager
     private let documentSearchManager: DocumentSearchManager
     public let usage: Usage
+    
+    public weak var delegate: DocumentCoordinatorDelegate?
     
     public init(stack: UINavigationController,
                 usage: Usage,
@@ -47,39 +43,36 @@ public class DocumentCoordinator: Coordinator {
         self.usage = usage
         self.documentManager = documentManager
         self.documentSearchManager = documentSearchManager
-        
+        super.init(stack: stack)
+
         switch usage {
-        case let .editor(url, location):
-            let viewModel = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()), document: Document(fileURL: url))
-            viewModel.onLoadingLocation = location
-            self.viewController = DocumentEditViewController(viewModel: viewModel)
-            super.init(stack: stack)
-            viewModel.dependency = self
         case .pickDocument:
             let viewModel = DocumentBrowserViewModel(documentManager: documentManager)
-            self.viewController = DocumentBrowserViewController(viewModel: viewModel)
-            super.init(stack: stack)
+            let viewController = DocumentBrowserViewController(viewModel: viewModel)
+            
+            viewModel.delegate = viewController
             viewModel.dependency = self
-        case .refile:
+            viewController.delegate = self
+            self.viewController = viewController
+        case .pickHeading:
             let viewModel = DocumentBrowserViewModel(documentManager: documentManager)
-            self.viewController = DocumentBrowserViewController(viewModel: viewModel)
-            super.init(stack: stack)
+            let viewController = DocumentBrowserViewController(viewModel: viewModel)
+
+            viewModel.delegate = viewController
             viewModel.dependency = self
+            viewController.delegate = self
+            self.viewController = viewController
         case .search:
             let viewModel = DocumentSearchViewModel(documentSearchManager: documentSearchManager)
-            self.viewController = DocumentSearchViewController(viewModel: viewModel)
-            super.init(stack: stack)
+            let viewController = DocumentSearchViewController(viewModel: viewModel)
+            
+            viewModel.delegate = viewController
             viewModel.dependency = self
-        case .headless:
-            self.viewController = UIViewController()
-            super.init(stack: stack)
+            viewController.delegate = self
+            self.viewController = viewController
         }
     }
-    
-    public override func start() {
-        self.stack.pushViewController(self.viewController, animated: true)
-    }
-    
+        
     public func showHeadingOutlines(viewModel: DocumentEditViewModel) {
         let viewController = HeadingsOutlineViewController(viewModel: viewModel)
         viewController.modalPresentationStyle = .overCurrentContext
@@ -88,10 +81,27 @@ public class DocumentCoordinator: Coordinator {
     
     /// 打开文件
     public func openDocument(url: URL, location: Int) {
-        let editViewModel = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()), document: Document(fileURL: url))
-        editViewModel.dependency = self
-        editViewModel.onLoadingLocation = location
-        let viewController = DocumentEditViewController(viewModel: editViewModel)
-        stack.pushViewController(viewController, animated: true)
+        let editorCood = EditorCoordinator(stack: self.stack, usage: .editor(url, location))
+        editorCood.delegate = self
+
+        editorCood.start(from: self)
     }
+}
+
+extension DocumentCoordinator: DocumentBrowserViewControllerDelegate {
+    public func didSelectDocument(url: URL) {
+        
+    }
+    
+    public func didSelectDocumentHeading(url: URL, heading: OutlineTextStorage.Heading) {
+        
+    }
+}
+
+extension DocumentCoordinator: EditorCoordinatorDelegate {
+    public func didFinishRefiling() {}
+}
+
+extension DocumentCoordinator: DocumentSearchViewControllerDelegate {
+    
 }

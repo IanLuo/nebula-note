@@ -65,6 +65,7 @@ public class OutlineTextStorage: NSTextStorage {
             return data[OutlineParser.Key.Element.Heading.level]!.length
         }
         
+        /// tag 的位置，如果没有 tag，则为应该放 tag 的位置
         public var tagLocation: Int {
             if let tags = self.tags {
                 return tags.location

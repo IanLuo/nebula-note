@@ -9,8 +9,14 @@
 import Foundation
 import UIKit
 
+public protocol HeadingsOutlineViewControllerDelegate: class {
+    
+}
+
 public class HeadingsOutlineViewController: UIViewController {
     private let viewModel: DocumentEditViewModel
+    
+    public weak var delegate: HeadingsOutlineViewControllerDelegate?
     
     public init(viewModel: DocumentEditViewModel) {
         self.viewModel = viewModel
@@ -20,5 +26,19 @@ public class HeadingsOutlineViewController: UIViewController {
     
     public required init?(coder aDecoder: NSCoder) {
         fatalError()
+    }
+}
+
+extension HeadingsOutlineViewController: DocumentEditViewModelDelegate {
+    public func documentStatesChange(state: UIDocument.State) {
+        
+    }
+    
+    public func showLink(url: URL) {
+        
+    }
+    
+    public func updateHeadingInfo(heading: OutlineTextStorage.Heading?) {
+        
     }
 }

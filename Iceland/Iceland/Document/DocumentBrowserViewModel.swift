@@ -11,8 +11,7 @@ import UIKit
 import Storage
 
 public protocol DocumentBrowserViewModelDelegate: class {
-    func didSelectDocument(url: URL)
-    func didSelectDocumentHeading(url: URL, headingLocation: Int)
+
 }
 
 public class DocumentBrowserViewModel {

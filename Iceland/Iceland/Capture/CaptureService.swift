@@ -20,10 +20,6 @@ public protocol CaptureServiceProtocol {
     func load(id: String) -> Observable<Attachment?>
 }
 
-private struct CaptureConstants {
-    public static let captureAttachmentListFilePath: URL = URL(string: "")!
-}
-
 public struct CaptureService: CaptureServiceProtocol {
     /// 从 capture 列表中获取全部未处理的附件
     public func load(id: String) -> Observable<Attachment?> {

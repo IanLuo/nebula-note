@@ -9,8 +9,14 @@
 import Foundation
 import UIKit
 
+public protocol DocumentSearchViewControllerDelegate: class {
+    
+}
+
 public class DocumentSearchViewController: UIViewController {
     private let viewModel: DocumentSearchViewModel
+    
+    public weak var delegate: DocumentSearchViewControllerDelegate?
     
     public init(viewModel: DocumentSearchViewModel) {
         self.viewModel = viewModel
@@ -20,4 +26,8 @@ public class DocumentSearchViewController: UIViewController {
     public required init?(coder aDecoder: NSCoder) {
         fatalError()
     }
+}
+
+extension DocumentSearchViewController: DocumentSearchViewModelDelegate {
+    
 }

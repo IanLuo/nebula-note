@@ -15,13 +15,13 @@ public struct DocumentSearchResult {
     public let heading: OutlineTextStorage.Heading?
 }
 
-public protocol DocumentSearchDelegate: class {
+public protocol DocumentSearchViewModelDelegate: class {
 
 }
 
 public class DocumentSearchViewModel {
     public typealias Dependency = DocumentCoordinator
-    public weak var delegate: DocumentSearchDelegate?
+    public weak var delegate: DocumentSearchViewModelDelegate?
     public weak var dependency: Dependency?
     
     private let documentSearchManager: DocumentSearchManager

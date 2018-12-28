@@ -28,8 +28,37 @@ public class CaptureListViewModel {
     
     public var data: [Attachment] = []
     
+    private var currentIndex: Int?
+    
     public init(service: CaptureServiceProtocol) {
         self.service = service
+    }
+    
+    public var currentCapture: Attachment? {
+        switch self.currentIndex {
+        case .none: return nil
+        case .some(let index):
+            return self.data[index]
+        }
+    }
+    
+    public func refile(editViewModel: DocumentEditViewModel, heading: OutlineTextStorage.Heading) {
+        guard let attachment = self.currentCapture else { return }
+        
+        let content = OutlineParser.Values.Attachment.serialize(attachment: attachment)
+        
+        editViewModel.insert(content: content, headingLocation: heading.range.location)
+        
+        self.currentIndex = nil
+    }
+    
+    public func completeRefile(error: Error?) {
+        if let error = error {
+            self.delegate?.didFail(error: error)
+        } else {
+            self.delegate?.didRefileFile(index: self.currentIndex!)
+            self.currentIndex = nil
+        }
     }
     
     public func loadAllCapturedData() {
@@ -56,7 +85,12 @@ public class CaptureListViewModel {
             .disposed(by: self.disposeBag)
     }
     
-    public func refile(attachmentIndex: Int) {
-        self.dependency?.openDocumentBrowserForRefile()
+    public func refile(url: URL, heading: OutlineTextStorage.Heading) {
+        
+    }
+    
+    public func refile(index: Int) {
+        self.currentIndex = index
+        self.dependency?.chooseDocumentHeadingForRefiling()
     }
 }

@@ -10,43 +10,71 @@ import Foundation
 import UIKit.UIImage
 
 public class CaptureCoordinator: Coordinator {
-    public let viewController: UIViewController
+    private let documentManager: DocumentManager
+    private let documentSearchManager: DocumentSearchManager
     
-    public override init(stack: UINavigationController) {
-        let viewModel = CaptureListViewModel(service: CaptureService())
-        let viewController = CatpureListViewController(viewModel: viewModel)
-        self.viewController = viewController
+    private let captureService = CaptureService()
+    
+    private var listViewModel: CaptureListViewModel?
+    private var captureViewModel: CaptureViewModel?
+    
+    public init(stack: UINavigationController, documentManager: DocumentManager, documentSearchManager: DocumentSearchManager) {
+        let listViewModel = CaptureListViewModel(service: self.captureService)
+        let viewController = CatpureListViewController(viewModel: listViewModel)
+        
+        self.documentManager = documentManager
+        self.documentSearchManager = documentSearchManager
+        self.listViewModel = listViewModel
         super.init(stack: stack)
-        viewModel.delegate = viewController
+        self.viewController = viewController
     }
     
-    public init(stack: UINavigationController, type: Attachment.AttachmentType) {
+    public init(stack: UINavigationController, type: Attachment.AttachmentType, documentManager: DocumentManager, documentSearchManager: DocumentSearchManager) {
+        self.documentManager = documentManager
+        self.documentSearchManager = documentSearchManager
         
+        let captureViewModel = CaptureViewModel(service: self.captureService)
+        
+        super.init(stack: stack)
+
         switch type {
         case .text:
-            viewController = CaptureTextViewController(viewModel: CaptureViewModel(service: CaptureService()))
+            viewController = CaptureTextViewController(viewModel: captureViewModel)
         case .link:
-            viewController = CaptureLinkViewController(viewModel: CaptureViewModel(service: CaptureService()))
+            viewController = CaptureLinkViewController(viewModel: captureViewModel)
         case .image:
-            viewController = CaptureImageViewController(viewModel: CaptureViewModel(service: CaptureService()))
+            viewController = CaptureImageViewController(viewModel: captureViewModel)
         case .sketch:
-            viewController = CaptureSketchViewController(viewModel: CaptureViewModel(service: CaptureService()))
+            viewController = CaptureSketchViewController(viewModel: captureViewModel)
         case .location:
-            viewController = CaptureLocationViewController(viewModel: CaptureViewModel(service: CaptureService()))
+            viewController = CaptureLocationViewController(viewModel: captureViewModel)
         case .audio:
-            viewController = CaptureAudioViewController(viewModel: CaptureViewModel(service: CaptureService()))
+            viewController = CaptureAudioViewController(viewModel: captureViewModel)
         case .video:
-            viewController = CaptureVideoViewController(viewModel: CaptureViewModel(service: CaptureService()))
+            viewController = CaptureVideoViewController(viewModel: captureViewModel)
         }
-        
-        super.init(stack: stack)
     }
     
-    public override func start() {
-        self.stack.pushViewController(self.viewController, animated: true)
+    public func chooseDocumentHeadingForRefiling() {
+        let documentCood = DocumentCoordinator(stack: self.stack,
+                                             usage: .pickHeading,
+                                             documentManager: self.documentManager,
+                                             documentSearchManager: self.documentSearchManager)
+        documentCood.delegate = self
+
+        documentCood.start(from: self)
+    }
+}
+
+extension CaptureCoordinator: DocumentCoordinatorDelegate {
+    public func didPickDocument(url: URL, location: Int, from: DocumentCoordinator) {
+        // ignore
     }
     
-    public func openDocumentBrowserForRefile() {
-        
+    public func didPickHeading(url: URL, heading: OutlineTextStorage.Heading, from: DocumentCoordinator) {
+        // FIXME: 添加缓存提高多次 refile 的性能
+        listViewModel?.refile(editViewModel: DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()),
+                                                                   document: Document(fileURL: url)),
+                              heading: heading)
     }
 }

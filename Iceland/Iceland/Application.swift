@@ -23,13 +23,12 @@ public class Application: Coordinator {
         self.window?.rootViewController = self.stack
     }
     
-    public override func start() {
+    public override func start(from: Coordinator?) {
         let documentCoord = DocumentCoordinator(stack: self.stack,
                                                 usage: .pickDocument,
                                                 documentManager: documentManager,
                                                 documentSearchManager: documentSearchManager)
-        self.addChild(documentCoord)
-        documentCoord.start()
+        documentCoord.start(from: self)
     }
 }
 
@@ -38,12 +37,17 @@ public class Coordinator {
     private var children: [Coordinator] = []
     public let stack: UINavigationController
     
+    public var viewController: UIViewController?
+    
+    public weak var parent: Coordinator?
+    
     public init(stack: UINavigationController) {
         self.stack = stack
     }
     
     public func addChild(_ coord: Coordinator) {
         self.children.append(coord)
+        coord.parent = self
     }
     
     public func remove(_ coord: Coordinator) {
@@ -54,5 +58,26 @@ public class Coordinator {
         }
     }
     
-    public func start() { fatalError("子类必须重载这个方法") }
+    open func moveOut() {
+        self.viewController?.navigationController?.popViewController(animated: true)
+    }
+    
+    open func moveIn() {
+        if let viewController = self.viewController {
+            self.stack.pushViewController(viewController, animated: true)
+        }
+    }
+    
+    public func stop() {
+        self.moveOut()
+        self.parent?.remove(self)
+    }
+    
+    open func start(from: Coordinator?) {
+        if let parant = from {
+            parant.addChild(self)
+        }
+        
+        self.moveIn()
+    }
 }

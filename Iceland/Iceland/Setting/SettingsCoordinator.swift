@@ -10,20 +10,15 @@ import Foundation
 import UIKit
 
 public class SettingsCoordinator: Coordinator {
-    public let viewController: UIViewController
-    
     public override init(stack: UINavigationController) {
         let viewModel = SettingsViewModel()
-        self.viewController = SettingsViewController(viewModel: viewModel)
         super.init(stack: stack)
-        viewModel.delegate = self
+        let viewController = SettingsViewController(viewModel: viewModel)
+        viewModel.delegate = viewController
+        self.viewController = viewController
     }
     
     public func getCustomizedPlannings() -> [String: [String]]? {
         return nil
     }
-}
-
-extension SettingsCoordinator: SettingsViewModelDelegate {
-    
 }

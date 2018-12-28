@@ -18,7 +18,7 @@ public class AgendaViewModel {
     public weak var dependency: AgendaCoordinator?
     private let documentSearchManager: DocumentSearchManager
     
-    public init(documentSearchManager: DocumentSearchManager) {
+    public init(documentSearchManager: DocumentSearchManager, editorController: EditorController) {
         self.documentSearchManager = documentSearchManager
     }
     
@@ -43,9 +43,10 @@ public class AgendaViewModel {
                         )
             }, complete: { [weak self] in
                 self?.data = newData
-                }, failed: { [weak self] error in
-                    self?.delegate?.didFailed(error)
-            })
+            }, failed: { [weak self] error in
+                self?.delegate?.didFailed(error)
+            }
+        )
     }
     
     public func loadOverDue() {
@@ -134,6 +135,10 @@ public class AgendaViewModel {
                 }, failed: { [weak self] error in
                     self?.delegate?.didFailed(error)
             })
+    }
+    
+    public func saveToCalendar(index: Int) {
+        // TODO: save to calendar
     }
     
     public func openDocument(index: Int) {

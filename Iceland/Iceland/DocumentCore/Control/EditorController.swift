@@ -11,6 +11,7 @@ import UIKit
 
 public protocol EditorControllerDelegate: class {
     func currentHeadingDidChnage(heading: OutlineTextStorage.Heading?)
+    func didTapLink(url: String, title: String, point: CGPoint)
 }
 
 public class EditorController: NSObject {
@@ -89,7 +90,8 @@ extension EditorController: OutlineTextStorageDelegate {
 
 extension EditorController: OutlineTextViewDelegate {
     public func didTapOnLevel(textView: UITextView,
-                              chracterIndex: Int) {
+                              chracterIndex: Int,
+                              point: CGPoint) {
         for heading in self.textStorage.savedHeadings {
             let range = heading.paragraphRange
             
@@ -128,7 +130,8 @@ extension EditorController: OutlineTextViewDelegate {
     
     public func didTapOnCheckbox(textView: UITextView,
                                  characterIndex: Int,
-                                 statusRange: NSRange) {
+                                 statusRange: NSRange,
+                                 point: CGPoint) {
         var replacement: String = ""
         let offsetedRange = statusRange.offset(statusRange.location - characterIndex)
         
@@ -146,7 +149,8 @@ extension EditorController: OutlineTextViewDelegate {
     
     public func didTapOnLink(textView: UITextView,
                              characterIndex: Int,
-                             linkRange: NSRange) {
+                             linkRange: NSRange,
+                             point: CGPoint) {
         if let url = OutlineParser.Matcher.Element.link {
             let result: [[String: NSRange]] = url
                 .matches(in: textView.text, options: [], range: linkRange)
@@ -160,10 +164,15 @@ extension EditorController: OutlineTextViewDelegate {
             }
             
             if let result = result.first {
-                log.info((textView.text as NSString).substring(with: result[OutlineParser.Key.Element.Link.url]!))
-                log.info((textView.text as NSString).substring(with: result[OutlineParser.Key.Element.Link.title]!))
-                log.info((textView.text as NSString).substring(with: result[OutlineParser.Key.Element.Link.scheme]!))
+                log.info(string.subString(result[OutlineParser.Key.Element.Link.url]!))
+                log.info(string.subString(result[OutlineParser.Key.Element.Link.title]!))
+                log.info(string.subString(result[OutlineParser.Key.Element.Link.scheme]!))
+                
+                self.delegate?.didTapLink(url: string.subString(result[OutlineParser.Key.Element.Link.url]!),
+                                          title: string.subString(result[OutlineParser.Key.Element.Link.title]!),
+                                          point: point)
             }
+            
         }
     }
 }
