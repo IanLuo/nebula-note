@@ -16,7 +16,8 @@ public class Document: UIDocument {
     var title: String = ""
     
     public override init(fileURL url: URL) {
-        super.init(fileURL: url.appendingPathExtension(Document.fileExtension))
+        let ext = url.absoluteString.hasSuffix(Document.fileExtension) ? "" : Document.fileExtension
+        super.init(fileURL: url.appendingPathExtension(ext))
     }
     
     public override var fileType: String? { return "txt" }
@@ -44,6 +45,7 @@ extension URL {
             } else {
                 do {
                     try FileManager.default.removeItem(at: fileAccessIntent.url)
+                    completion(nil)
                 } catch {
                     completion(error)
                 }

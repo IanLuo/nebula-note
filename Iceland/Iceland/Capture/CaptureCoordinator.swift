@@ -72,8 +72,7 @@ extension CaptureCoordinator: DocumentManagementCoordinatorDelegate {
     }
     
     public func didPickHeading(url: URL, heading: OutlineTextStorage.Heading) {
-        // FIXME: 添加缓存提高多次 refile 的性能
-        listViewModel?.refile(editViewModel: DocumentEditViewModel(editorService: OutlineEditorServer.request(url: url)),
+        listViewModel?.refile(editorService: OutlineEditorServer.request(url: url),
                               heading: heading)
     }
 }

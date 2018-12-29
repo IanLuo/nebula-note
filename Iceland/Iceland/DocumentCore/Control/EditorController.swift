@@ -202,21 +202,38 @@ extension EditorController: NSTextStorageDelegate {
         
         log.info("editing in range: \(editedRange)")
         
+        guard delta != 0 else { return } // 如果是设置 attribute 引起的调用，则忽略
+        
         /// 当前交互的位置
         self.textStorage.currentLocation = editedRange.location
         
-        // 扩大需要解析的字符串范围
-        self.textStorage.currentParseRange = editedRange.expandFoward(string: textStorage.string)
-        self.textStorage.currentParseRange = self.textStorage.currentParseRange?.expandBackward(string: textStorage.string)
+        // 调整需要解析的字符串范围
+        self.adjustParseRange(editedRange)
         
         // 更新 item 索引缓存
         self.textStorage.updateItemIndexAndRange(delta: delta)
         
         parser.parse(str: textStorage.string,
                      range: self.textStorage.currentParseRange!)
-
+        
         // 更新当前状态缓存
         self.textStorage.updateCurrentInfo()
+    }
+    
+    internal func adjustParseRange(_ range: NSRange) {
+        self.textStorage.currentParseRange = range.expandFoward(string: textStorage.string)
+        self.textStorage.currentParseRange = self.textStorage.currentParseRange?.expandBackward(string: textStorage.string)
+        
+        // 如果范围在某个 item 内，并且小于这个 item 原来的范围，则扩大至这个 item 原来的范围
+        if let currrentParseRange = self.textStorage.currentParseRange {
+            for item in self.textStorage.itemRanges {
+                if item.location <= currrentParseRange.location &&
+                    item.upperBound >= currrentParseRange.upperBound {
+                    self.textStorage.currentParseRange = item
+                    return
+                }
+            }
+        }
     }
 }
 
@@ -274,7 +291,7 @@ extension NSRange {
         }
         
         if extendedRange.upperBound >= string.count - 1 {
-            return NSRange(location: extendedRange.location, length: string.count - extendedRange.location - 1)
+            return NSRange(location: extendedRange.location, length: max(0, string.count - extendedRange.location - 1))
         }
         
         return NSRange(location: extendedRange.location, length: extendedRange.length + 1)

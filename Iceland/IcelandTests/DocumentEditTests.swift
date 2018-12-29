@@ -19,76 +19,73 @@ public class DocumentEditTests: XCTestCase {
     }
     
     func testCreateDocument() throws {
-        let document = Document(fileURL: URL(fileURLWithPath: "new file", relativeTo: File.Folder.document("files").url))
-        let viewModel = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()), document: document)
-        
-        let ex = expectation(description: "save")
-        viewModel.editorController.string = "123"
-        
-        viewModel.save { _ in
-            ex.fulfill()
-            XCTAssertTrue(FileManager.default.fileExists(atPath: File(File.Folder.document("files"), fileName: "new file.org").filePath))
-            XCTAssertEqual(try! String(contentsOfFile: File(File.Folder.document("files"), fileName: "new file.org").filePath,
-                                      encoding: .utf8), "123")
+        let url = URL(fileURLWithPath: "testCreateDocument.org", relativeTo: File.Folder.document("files").url)
+        try "1".write(to: url, atomically: true, encoding: .utf8)
+        let service = OutlineEditorServer.request(url: url)
+        let ex = expectation(description: "")
+        service.start { isOpen, s in
+            XCTAssert(isOpen)
+            s.string = "123"
+            s.save {
+                XCTAssert($0)
+                XCTAssertTrue(FileManager.default.fileExists(atPath: url.path))
+                XCTAssertEqual(try! String(contentsOf: url), "123")
+                ex.fulfill()
+            }
         }
         
-        wait(for: [ex], timeout: 1)
+        wait(for: [ex], timeout: 2)
     }
     
     func testLoadDocument() {
         let ex = expectation(description: "load")
-        let document = Document(fileURL: URL(fileURLWithPath: "load test", relativeTo: File.Folder.document("files").url))
-        let viewModel = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()), document: document)
+        let service = OutlineEditorServer.request(url: URL(fileURLWithPath: "load test.org", relativeTo: File.Folder.document("files").url))
         
-        viewModel.editorController.string = "testLoadDocument"
-        
-        viewModel.save { _ in
+        service.start {_, s in
+            s.replace(text: "testLoadDocument", range: NSRange(location: 0, length: 0))
+            s.close()
             
-            viewModel.close { _ in
-                let viewModel2 = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()), document: Document(fileURL: URL(fileURLWithPath: "load test", relativeTo: File.Folder.document("files").url)))
-                
-                viewModel2.open { [viewModel2] _ in
-                    ex.fulfill()
-                    XCTAssertEqual(viewModel2.editorController.string, "testLoadDocument")
-                }
-            }
-            
+            s.start(complete: {_, s in
+                ex.fulfill()
+                XCTAssertEqual(s.string, "testLoadDocument")
+            })
         }
-        
+
         wait(for: [ex], timeout: 1)
     }
     
     func testRenameDocument() {
-        let document = Document(fileURL: URL(fileURLWithPath: "rename test", relativeTo: File.Folder.document("files").url))
-        let viewModel = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()), document: document)
-        viewModel.editorController.string = "testRenameDocument"
-        
-        let ex = expectation(description: "load")
-        viewModel.save { [weak viewModel] _ in
-            viewModel?.rename(newTitle: "changed test") { _ in
-                
-                let document = Document(fileURL: URL(fileURLWithPath: "changed test", relativeTo: File.Folder.document("files").url))
-                let viewModel2 = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()), document: document)
-                viewModel2.open { [viewModel2] _ in
-                    XCTAssertEqual(viewModel2.editorController.string, "testRenameDocument")
-                    ex.fulfill()
+        let ex = expectation(description: "")
+        OutlineEditorServer.request(url: URL(fileURLWithPath: "rename test", relativeTo: File.Folder.document("files").url))
+            .start {_, s in
+                s.string = "testRenameDocument"
+                s.rename(newTitle: "changed test") { _ in
+                    OutlineEditorServer.request(url: URL(fileURLWithPath: "changed test", relativeTo: File.Folder.document("files").url))
+                        .start {_, s in
+                            XCTAssertEqual(s.string, "testRenameDocument")
+                            ex.fulfill()
+                    }
                 }
-            }
         }
         
         wait(for: [ex], timeout: 3)
     }
     
-    func testDeleteDocument() {
-        let document = Document(fileURL: URL(fileURLWithPath: "delete test.org", relativeTo: File.Folder.document("files").url))
-        let viewModel = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()), document: document)
-        
-        viewModel.editorController.string = "testDeleteDocument"
-        viewModel.save { _ in
-            XCTAssertEqual(FileManager.default.fileExists(atPath: File(File.Folder.document("files"), fileName: "delete test.org").filePath), true)
-            viewModel.delete()
-            XCTAssertEqual(FileManager.default.fileExists(atPath: File(File.Folder.document("files"), fileName: "delete test.org").filePath), false)
+    func testDeleteDocument() throws {
+        let ex = expectation(description: "")
+        let url = URL(fileURLWithPath: "delete test.org", relativeTo: File.Folder.document("files").url)
+        try "1".write(to: url, atomically: true, encoding: .utf8)
+        XCTAssertEqual(FileManager.default.fileExists(atPath: url.path), true)
+        OutlineEditorServer.request(url: url)
+            .start {_, s in
+                s.string = "testDeleteDocument"
+                s.delete { _ in
+                    XCTAssertEqual(FileManager.default.fileExists(atPath: url.path), false)
+                    ex.fulfill()
+                }
         }
+        
+        wait(for: [ex], timeout: 5)
     }
     
     func testGetParagraph() {
@@ -155,9 +152,10 @@ content in third
     private func createDocumentForTest(text: String, complete: @escaping (Document?) -> Void) {
         let folder = File.Folder.temp("test")
         folder.createFolderIfNeeded()
-        let tempURL = File(folder, fileName: "text.org").url
+        let tempURL = File(folder, fileName: "\(UUID().uuidString).org").url
         
         let document = Document(fileURL: tempURL)
+        OutlineEditorServer.request(url: document.fileURL).close()
         document.string = text
         document.save(to: tempURL, for: UIDocument.SaveOperation.forCreating) {
             if $0 {
@@ -166,6 +164,7 @@ content in third
                 complete(nil)
             }
         }
+        
     }
     
     func testAddTag() {
@@ -184,75 +183,72 @@ content in third
         createDocumentForTest(text: text) { document in
             guard let document = document else { XCTAssert(false); return }
             
-            let viewModel = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()), document: document)
-            
-            viewModel.open {
-                XCTAssert($0 != nil)
+            OutlineEditorServer.request(url: document.fileURL).start {_, s in
                 var isHit = false
-                viewModel.add(tag: "test", at: viewModel.headingList()[0].range.location)
-                if let tags = viewModel.headingList()[0].tags {
-                    XCTAssertEqual(document.string.subString(tags), ":test:")
+                s.add(tag: "test", at: s.headingList()[0].range.location)
+                if let tags = s.headingList()[0].tags {
+                    XCTAssertEqual(s.string.subString(tags), ":test:")
                     isHit = true
                 }
                 
                 XCTAssertTrue(isHit)
                 isHit = false
                 
-                viewModel.add(tag: "test2", at: viewModel.headingList()[0].range.location)
-                if let tags = viewModel.headingList()[0].tags {
-                    XCTAssertEqual(document.string.subString(tags), ":test:test2:")
+                s.add(tag: "test2", at: s.headingList()[0].range.location)
+                if let tags = s.headingList()[0].tags {
+                    XCTAssertEqual(s.string.subString(tags), ":test:test2:")
                     isHit = true
                 }
                 
                 XCTAssertTrue(isHit)
                 isHit = false
                 
-                let heading = viewModel.heading(at: viewModel.headingList()[0].range.location)!
+                let heading = s.heading(at: s.headingList()[0].range.location)!
                 
-                XCTAssertEqual(document.string.subString(heading.range), "* first heading :test:test2:")
+                XCTAssertEqual(s.string.subString(heading.range), "* first heading :test:test2:")
                 
-                viewModel.add(tag: "test3", at: viewModel.headingList()[1].range.location)
-                if let tags = viewModel.headingList()[1].tags {
-                    XCTAssertEqual(document.string.subString(tags), ":test3:")
+                s.add(tag: "test3", at: s.headingList()[1].range.location)
+                if let tags = s.headingList()[1].tags {
+                    XCTAssertEqual(s.string.subString(tags), ":test3:")
                     isHit = true
                 }
                 
                 XCTAssertTrue(isHit)
                 isHit = false
                 
-                viewModel.add(tag: "test4", at: viewModel.headingList()[1].range.location)
-                if let tags = viewModel.headingList()[1].tags {
-                    XCTAssertEqual(document.string.subString(tags), ":test3:test4:")
+                s.add(tag: "test4", at: s.headingList()[1].range.location)
+                if let tags = s.headingList()[1].tags {
+                    XCTAssertEqual(s.string.subString(tags), ":test3:test4:")
                     isHit = true
                 }
                 
                 XCTAssertTrue(isHit)
                 isHit = false
                 
-                let heading1 = viewModel.heading(at: viewModel.headingList()[1].range.location)!
+                let heading1 = s.heading(at: s.headingList()[1].range.location)!
                 
-                XCTAssertEqual(document.string.subString(heading1.range), "** second heading :test3:test4:")
+                XCTAssertEqual(s.string.subString(heading1.range), "** second heading :test3:test4:")
                 
-                viewModel.add(tag: "test5", at: viewModel.headingList()[2].range.location)
-                if let tags = viewModel.headingList()[2].tags {
-                    XCTAssertEqual(document.string.subString(tags), ":test5:")
+                s.add(tag: "test5", at: s.headingList()[2].range.location)
+                if let tags = s.headingList()[2].tags {
+                    XCTAssertEqual(s.string.subString(tags), ":test5:")
                     isHit = true
                 }
                 
                 XCTAssertTrue(isHit)
                 isHit = false
                 
-                viewModel.add(tag: "test6", at: viewModel.headingList()[2].range.location)
-                if let tags = viewModel.headingList()[2].tags {
-                    XCTAssertEqual(document.string.subString(tags), ":test5:test6:")
+                s.add(tag: "test6", at: s.headingList()[2].range.location)
+                if let tags = s.headingList()[2].tags {
+                    XCTAssertEqual(s.string.subString(tags), ":test5:test6:")
                     isHit = true
                 }
                 
                 XCTAssertTrue(isHit)
                 
-                let heading2 = viewModel.heading(at: viewModel.headingList()[2].range.location)!
+                let heading2 = s.heading(at: s.headingList()[2].range.location)!
                 
-                XCTAssertEqual(document.string.subString(heading2.range), "*** third heading :test5:test6:")
+                XCTAssertEqual(s.string.subString(heading2.range), "*** third heading :test5:test6:")
                 
                 ex.fulfill()
             }
@@ -276,21 +272,18 @@ content in third
         
         let ex = expectation(description: "test remove tag")
         createDocumentForTest(text: text) { (document) in
-            guard let document = document else { XCTAssert(false); return }
             
-            let viewModel = DocumentEditViewModel(editorController: EditorController(parser: OutlineParser()), document: document)
-            
-            viewModel.open {
+            guard let document = document else {  XCTAssert(false);return }
+            OutlineEditorServer.request(url: document.fileURL).start {_, s in
                 
-                XCTAssert($0 != nil)
                 
-                viewModel.remove(tag: "test", at: viewModel.headingList()[0].range.location)
+                s.remove(tag: "test", at: s.headingList()[0].range.location)
                 
-                XCTAssertEqual("* first heading ", document.string.subString(viewModel.headingList()[0].range))
+                XCTAssertEqual("* first heading ", s.string.subString(s.headingList()[0].range))
                 
-                viewModel.remove(tag: "tag2", at: viewModel.headingList()[1].range.location)
+                s.remove(tag: "tag2", at: s.headingList()[1].range.location)
                 
-                XCTAssertEqual("** second heading :tag1:", document.string.subString(viewModel.headingList()[1].range))
+                XCTAssertEqual("** second heading :tag1:", s.string.subString(s.headingList()[1].range))
                 
                 ex.fulfill()
             }

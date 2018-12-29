@@ -9,7 +9,7 @@
 import Foundation
 import UIKit.UIDocument
 
-public class OutlineEditorServer {
+public class OutlineEditorServer: EditorServiceDelegate {
     private init() {}
     private static let _instance = OutlineEditorServer()
     
@@ -21,15 +21,26 @@ public class OutlineEditorServer {
         if let editorInstance = OutlineEditorServer._instance.instances[url] {
             return editorInstance
         } else {
-            OutlineEditorServer._instance.instances[url] = EditorService.connect(url: url, queue: OutlineEditorServer._instance.editingQueue)
+            let newService = EditorService.connect(url: url, queue: OutlineEditorServer._instance.editingQueue)
+            OutlineEditorServer._instance.instances[url] = newService
             return self.request(url: url)
         }
     }
+    
+    /// 当重命名后，将缓存中的旧文件名指向新的
+    func didChangeFileName(to url: URL, old: URL) {
+        instances[old] = instances[url]
+    }
+}
+
+fileprivate protocol EditorServiceDelegate: class {
+    func didChangeFileName(to url: URL, old: URL)
 }
 
 public class EditorService {
     private let editorController = EditorController(parser: OutlineParser())
     private var document: Document!
+    fileprivate weak var delegate: EditorServiceDelegate?
     
     fileprivate init() {}
     
@@ -43,20 +54,37 @@ public class EditorService {
         return editorController
     }
     
-    fileprivate func open(complete: @escaping () -> Void) {
-        queue.async { [weak self] in
-            self?.document.open {
-                if $0 {
-                    if let string = self?.document.string {
-                        self?.editorController.string = string
+    public func start(complete: @escaping (Bool, EditorService) -> Void) {
+        queue.async { [unowned self] in
+            if self.document.documentState == UIDocument.State.normal {
+                complete(true, self)
+            } else {
+                self.document.open {
+                    if $0 {
+                        self.editorController.string = self.document.string
+                        DispatchQueue.main.async {
+                            complete(true, self)
+                        }
+                    } else {
+                        DispatchQueue.main.async {
+                            complete(false, self)
+                        }
                     }
                     
-                    DispatchQueue.main.async {
-                        complete()
-                    }
                 }
             }
         }
+    }
+    
+    public var string: String {
+        get { return editorController.string }
+        set { self.replace(text: newValue, range: NSRange(location: 0, length: editorController.string.count)) }
+        
+    }
+    
+    public func replace(text: String, range: NSRange) {
+        self.editorController.replace(text: text, in: range)
+        self.save()
     }
     
     fileprivate static func connect(url: URL, queue: DispatchQueue) -> EditorService {
@@ -235,8 +263,11 @@ public class EditorService {
     }
     
     public func rename(newTitle: String, completion: ((Error?) -> Void)? = nil) {
+        let oldURL = self.fileURL
         let newURL = self.document.fileURL.deletingLastPathComponent().appendingPathComponent(newTitle).appendingPathExtension(Document.fileExtension)
-        document.fileURL.rename(url: newURL, completion: completion) // FIXME: any problem？
+        document.fileURL.rename(url: newURL, completion: completion)
+        
+        self.delegate?.didChangeFileName(to: newURL, old:oldURL)
     }
     
     public func save(completion: ((Bool) -> Void)? = nil) {

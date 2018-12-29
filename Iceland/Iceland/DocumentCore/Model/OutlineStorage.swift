@@ -230,6 +230,7 @@ public class OutlineTextStorage: NSTextStorage {
     
     public func headingIndex(at characterIndex: Int) -> Int {
         var index: Int = 0
+        // FIXME: 提高查找效率，目前是 O(n)
         for (i, heading) in self.savedHeadings.reversed().enumerated() {
             if heading.range.location <= characterIndex {
                 index = self.savedHeadings.count - 1 - i

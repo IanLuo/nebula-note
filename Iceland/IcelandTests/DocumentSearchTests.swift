@@ -12,10 +12,10 @@ import XCTest
 import Storage
 
 public class DocumentSearchTests: XCTestCase {
-    public override func tearDown() {
-//        try? FileManager.default.contentsOfDirectory(atPath: File.Folder.document("files").path).forEach {
-//            try? FileManager.default.removeItem(atPath: "\(File.Folder.document("files").path)/\($0)")
-//        }
+    public override func setUp() {
+        try? FileManager.default.contentsOfDirectory(atPath: File.Folder.document("files").path).forEach {
+            try? FileManager.default.removeItem(atPath: "\(File.Folder.document("files").path)/\($0)")
+        }
     }
     
     func testFindAllFiles() throws {        

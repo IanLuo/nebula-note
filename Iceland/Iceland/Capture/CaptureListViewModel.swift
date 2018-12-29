@@ -38,26 +38,22 @@ public class CaptureListViewModel {
         }
     }
     
-    public func refile(editViewModel: DocumentEditViewModel,
+    public func refile(editorService: EditorService,
                        heading: OutlineTextStorage.Heading) {
         
-        DispatchQueue.global(qos: DispatchQoS.QoSClass.userInteractive).async {
-            guard let attachment = self.currentCapture else { return }
+        guard let attachment = self.currentCapture else { return }
+        
+        editorService.start { isOpen, service in
+            guard isOpen else { return }
             
             let content = OutlineParser.Values.Attachment.serialize(attachment: attachment)
-            
-            editViewModel.insert(content: content, headingLocation: heading.range.location) // 添加字符串到对应的 heading 中
-            
-            self.currentIndex = nil // 移除当前选中的 attachment
-            
+            service.insert(content: content, headingLocation: heading.range.location) // 添加字符串到对应的 heading 中
+            self.currentIndex = nil // 移除当前选中的
             self.service.delete(key: attachment.key) // 删除 capture 中的 attachment 记录
-            
-            DispatchQueue.main.async {
-                for (index, attachment) in self.data.enumerated() {
-                    if attachment.url == editViewModel.url {
-                        self.delegate?.didRefileAttachment(index: index)
-                        self.delegate?.didDeleteCapture(index: index)
-                    }
+            for (index, attachment) in self.data.enumerated() {
+                if attachment.url == editorService.fileURL {
+                    self.delegate?.didRefileAttachment(index: index)
+                    self.delegate?.didDeleteCapture(index: index)
                 }
             }
         }
@@ -74,9 +70,7 @@ public class CaptureListViewModel {
     }
     
     public func delete(index: Int) {
-        self.service
-            .delete(key: self.data[index].key)
-        
+        self.service.delete(key: self.data[index].key)
         self.delegate?.didDeleteCapture(index: index)
         
         if index == self.currentIndex {
