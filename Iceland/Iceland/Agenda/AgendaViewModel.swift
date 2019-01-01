@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Business
 
 public protocol AgendaViewModelDelegate: class {
     func didLoadData()
@@ -18,7 +19,7 @@ public class AgendaViewModel {
     public weak var dependency: AgendaCoordinator?
     private let documentSearchManager: DocumentSearchManager
     
-    public init(documentSearchManager: DocumentSearchManager, editorController: EditorController) {
+    public init(documentSearchManager: DocumentSearchManager) {
         self.documentSearchManager = documentSearchManager
     }
     

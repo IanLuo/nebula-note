@@ -8,9 +8,10 @@
 
 import Foundation
 import UIKit
+import Business
 
 public protocol EditorCoordinatorDelegate: class {
-    func didFinishRefiling()
+    func didSelectHeading(url: URL, heading: OutlineTextStorage.Heading)
 }
 
 public class EditorCoordinator: Coordinator {
@@ -51,12 +52,10 @@ extension EditorCoordinator: DocumentEditViewControllerDelegate {
     public func didTapLink(url: URL, title: String, point: CGPoint) {
         
     }
-    
-    public func didChooseHeading(heading: OutlineTextStorage.Heading) {
-
-    }
 }
 
 extension EditorCoordinator: HeadingsOutlineViewControllerDelegate {
-    
+    public func didSelectHeading(url: URL, heading: OutlineTextStorage.Heading) {
+        self.delegate?.didSelectHeading(url: url, heading: heading)
+    }
 }

@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import Business
 
 /// 用户的活动中心
 /// 每天的任务安排显示在此处
@@ -18,7 +19,7 @@ public class AgendaCoordinator: Coordinator {
     public init(stack: UINavigationController,
                 documentSearchManager: DocumentSearchManager,
                 documentManager: DocumentManager) {
-        let viewModel = AgendaViewModel(documentSearchManager: documentSearchManager, editorController: EditorController(parser: OutlineParser()))
+        let viewModel = AgendaViewModel(documentSearchManager: documentSearchManager)
         let viewController = AgendaViewController(viewModel: viewModel)
         self.documentManager = documentManager
         self.documentSearchManager = documentSearchManager

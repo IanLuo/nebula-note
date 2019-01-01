@@ -8,10 +8,10 @@
 
 import Foundation
 import UIKit
+import Business
 
 public protocol DocumentEditViewControllerDelegate: class {
     func didTapLink(url: URL, title: String, point: CGPoint)
-    func didChooseHeading(heading: OutlineTextStorage.Heading)
 }
 
 public class DocumentEditViewController: UIViewController {

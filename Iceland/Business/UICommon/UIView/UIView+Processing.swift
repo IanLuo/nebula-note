@@ -1,0 +1,64 @@
+//
+//  UIView+Processing.swift
+//  Business
+//
+//  Created by ian luo on 2018/12/30.
+//  Copyright © 2018 wod. All rights reserved.
+//
+
+import Foundation
+import UIKit
+
+private class ProcessingView: UIView {
+    private let indicator = UIActivityIndicatorView(style: UIActivityIndicatorView.Style.white)
+
+    public func start() {
+        if indicator.superview == nil {
+            self.addSubview(self.indicator)
+            indicator.translatesAutoresizingMaskIntoConstraints = false
+            indicator.centerAnchors(position: [.centerX, .centerY], to: self)
+        }
+        
+        self.backgroundColor = UIColor.black.withAlphaComponent(0.7)
+        
+        self.isUserInteractionEnabled = false
+        
+        indicator.startAnimating()
+    }
+}
+
+extension UIView {
+    public func showProcessingAnimation() {
+        let view = self.createProcessingAnimationView()
+        view.start()
+        self.addSubview(view)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.allSidesAnchors(to: self, edgeInsets: .zero)
+        view.alpha = 0
+        
+        UIView.animate(withDuration: 0.25) {
+            view.alpha = 1
+        }
+    }
+    
+    public func hideProcessingAnimation() {
+        if let view = self.getPrecessingAnimationView() {
+            UIView.animate(withDuration: 0.25, animations: {
+                view.alpha = 0
+            }, completion: {
+                if $0 {
+                    view.removeFromSuperview()
+                }
+            })
+        }
+    }
+    
+    private func getPrecessingAnimationView() -> ProcessingView? {
+        return self.subviews.filter { ($0 as? ProcessingView) != nil }.first as? ProcessingView
+    }
+    
+    private func createProcessingAnimationView() -> ProcessingView {
+        let view = ProcessingView()
+        return view
+    }
+}

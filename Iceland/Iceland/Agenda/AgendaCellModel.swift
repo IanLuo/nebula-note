@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Business
 
 public class AgendaCellModel {
     public var headingText: String

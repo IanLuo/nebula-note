@@ -8,9 +8,10 @@
 
 import Foundation
 import UIKit
+import Business
 
 public protocol HeadingsOutlineViewControllerDelegate: class {
-    
+    func didSelectHeading(url: URL, heading: OutlineTextStorage.Heading)
 }
 
 public class HeadingsOutlineViewController: UIViewController {

@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import Business
 
 public class Application: Coordinator {
     weak var window: UIWindow?
@@ -24,11 +25,8 @@ public class Application: Coordinator {
     }
     
     public override func start(from: Coordinator?) {
-        let documentCoord = DocumentManagementCoordinator(stack: self.stack,
-                                                usage: .pickDocument,
-                                                documentManager: documentManager,
-                                                documentSearchManager: documentSearchManager)
-        documentCoord.start(from: self)
+        let homeCoord = HomeCoordinator(stack: self.stack)
+        homeCoord.start(from: self)
     }
 }
 

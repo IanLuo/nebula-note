@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import Storage
+import Business
 
 public protocol DocumentEditViewModelDelegate: class {
     func showLink(url: URL)
@@ -19,7 +19,7 @@ public protocol DocumentEditViewModelDelegate: class {
 public class DocumentEditViewModel {
     public weak var delegate: DocumentEditViewModelDelegate?
     public var onLoadingLocation: Int = 0 // 打开文档的时候默认的位置
-    public weak var dependency: DocumentManagementCoordinator?
+    public weak var dependency: EditorCoordinator?
     private let editorService: EditorService
     public var isReadyToEdit: Bool = false {
         didSet {

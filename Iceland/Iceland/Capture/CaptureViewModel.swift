@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Business
 
 public protocol CaptureViewModelDelegate: class {
     func didCompleteCapture(attachment: Attachment)

@@ -78,6 +78,26 @@
                ReferencedContainer = "container:Iceland.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "E41CB17121D88B7100EF0A3C"
+               BuildableName = "DocumentCoreTests.xctest"
+               BlueprintName = "DocumentCoreTests"
+               ReferencedContainer = "container:Iceland.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "E41CB1A221D88D9400EF0A3C"
+               BuildableName = "BusinessTests.xctest"
+               BlueprintName = "BusinessTests"
+               ReferencedContainer = "container:Iceland.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference

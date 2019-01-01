@@ -9,6 +9,7 @@
 import Foundation
 import XCTest
 @testable import Iceland
+import Business
 
 public class SettingsTests: XCTestCase {
     func testUnfinishedCustomizedPlannings() {

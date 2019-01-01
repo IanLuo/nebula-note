@@ -8,35 +8,22 @@
 
 import Foundation
 import UIKit.UIImage
+import Business
+
+public protocol CaptureCoordinatorDelegate: class {
+    func didSaveCapture(attachment: Attachment)
+}
 
 public class CaptureCoordinator: Coordinator {
-    private let documentManager: DocumentManager
-    private let documentSearchManager: DocumentSearchManager
+    public weak var delegate: CaptureCoordinatorDelegate?
     
-    private let captureService = CaptureService()
-    
-    private var listViewModel: CaptureListViewModel?
-    private var captureViewModel: CaptureViewModel?
-    
-    public init(stack: UINavigationController, documentManager: DocumentManager, documentSearchManager: DocumentSearchManager) {
-        let listViewModel = CaptureListViewModel(service: self.captureService)
-        let viewController = CaptureListViewController(viewModel: listViewModel)
-        
-        self.documentManager = documentManager
-        self.documentSearchManager = documentSearchManager
-        self.listViewModel = listViewModel
-        super.init(stack: stack)
-        self.viewController = viewController
-    }
-    
-    public init(stack: UINavigationController, type: Attachment.AttachmentType, documentManager: DocumentManager, documentSearchManager: DocumentSearchManager) {
-        self.documentManager = documentManager
-        self.documentSearchManager = documentSearchManager
-        
-        let captureViewModel = CaptureViewModel(service: self.captureService)
+    public init(stack: UINavigationController, type: Attachment.AttachmentType) {
+
+        let captureViewModel = CaptureViewModel(service: CaptureService())
         
         super.init(stack: stack)
 
+        let viewController: CaptureViewController!
         switch type {
         case .text:
             viewController = CaptureTextViewController(viewModel: captureViewModel)
@@ -53,26 +40,15 @@ public class CaptureCoordinator: Coordinator {
         case .video:
             viewController = CaptureVideoViewController(viewModel: captureViewModel)
         }
-    }
-    
-    public func chooseDocumentHeadingForRefiling() {
-        let documentCood = DocumentManagementCoordinator(stack: self.stack,
-                                             usage: .pickHeading,
-                                             documentManager: self.documentManager,
-                                             documentSearchManager: self.documentSearchManager)
-        documentCood.delegate = self
 
-        documentCood.start(from: self)
+        viewController.delegate = self
+        
+        self.viewController = viewController
     }
 }
 
-extension CaptureCoordinator: DocumentManagementCoordinatorDelegate {
-    public func didPickDocument(url: URL, location: Int) {
-        // ignore
-    }
-    
-    public func didPickHeading(url: URL, heading: OutlineTextStorage.Heading) {
-        listViewModel?.refile(editorService: OutlineEditorServer.request(url: url),
-                              heading: heading)
+extension CaptureCoordinator: CaptureViewControllerDelegate {
+    public func didSaveCapture(attachment: Attachment) {
+        self.delegate?.didSaveCapture(attachment: attachment)
     }
 }

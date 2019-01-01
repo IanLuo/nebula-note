@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Business
 
 public protocol AgendaActionViewModelDelegate: class {
     func didUpdated()
