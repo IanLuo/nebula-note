@@ -23,7 +23,7 @@ public enum Action: String {
 public protocol URLHandler {
     var sourceApp: String { get }
     var url: URL { get }
-    func execute(documentManager: DocumentManager) -> Bool
+    func execute(documentManager: DocumentManager, eventObserver: EventObserver) -> Bool
 }
 
 public struct URLSchemeHandler: URLHandler {
@@ -37,14 +37,19 @@ public struct URLSchemeHandler: URLHandler {
     // icenote://capture?location={101.234234, 23.343434}
     // icenote://capture?audio=file://audiolocation
     // icenote://capture?video=file://videolocation
-    public func execute(documentManager: DocumentManager) -> Bool  {
+    public func execute(documentManager: DocumentManager, eventObserver: EventObserver) -> Bool  {
         guard let scheme = url.scheme else { return false }
         
         let importManager = ImportManager(documentManager: documentManager)
         
         if scheme == "file" {
             importManager.importFile(url: url) { (result) in
-                // TODO:
+                switch result {
+                case .success(let url):
+                    // send notification
+                    eventObserver.emit(ImportFileEvent(url: url))
+                default: break
+                }
             }
             return true
         }
@@ -95,7 +100,7 @@ public struct XCallbackURLlHandler: URLHandler {
     public let sourceApp: String
     public let url: URL
     
-    public func execute(documentManager: DocumentManager) -> Bool  {
+    public func execute(documentManager: DocumentManager, eventObserver: EventObserver) -> Bool  {
         return false
     }
 }

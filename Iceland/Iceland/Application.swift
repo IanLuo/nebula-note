@@ -46,7 +46,8 @@ public class Application: Coordinator {
                                           settingAccessor: SettingsAccessor.shared,
                                           syncManager: syncManager,
                                           attachmentManager: AttachmentManager(),
-                                          urlHandlerManager: URLHandlerManager(documentManager: documentManager),
+                                          urlHandlerManager: URLHandlerManager(documentManager: documentManager,
+                                                                               eventObserver: eventObserver),
                                           globalCaptureEntryWindow: _entranceWindow))
         
         self.window?.rootViewController = self.stack
@@ -54,6 +55,18 @@ public class Application: Coordinator {
         _entranceWindow.entryAction = { [weak self] in
             self?.showCaptureEntrance()
         }
+        
+        self._setupObservers()
+    }
+    
+    private func _setupObservers() {
+        self.dependency.eventObserver.registerForEvent(on: self, eventType: ImportFileEvent.self, queue: nil) { [weak self] (event: ImportFileEvent) -> Void in
+            self?.topCoordinator?.openDocument(url: event.url, location: 0)
+        }
+    }
+    
+    deinit {
+        self.dependency.eventObserver.unregister(for: self, eventType: nil)
     }
     
     public override func start(from: Coordinator?, animated: Bool) {

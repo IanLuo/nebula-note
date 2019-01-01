@@ -14,16 +14,19 @@ public class URLHandlerManager {
     
     private let documentManager: DocumentManager
     
-    public init(documentManager: DocumentManager) {
+    private let eventObserver: EventObserver
+    
+    public init(documentManager: DocumentManager, eventObserver: EventObserver) {
         self.documentManager = documentManager
+        self.eventObserver = eventObserver
     }
     
     public func handle(url: URL, sourceApp: String) -> Bool {
         let urlSchemeHandler = URLSchemeHandler(sourceApp: sourceApp, url: url)
         
-        if !urlSchemeHandler.execute(documentManager: self.documentManager) {
+        if !urlSchemeHandler.execute(documentManager: self.documentManager, eventObserver: self.eventObserver) {
             let xCallbackURLHandler = XCallbackURLlHandler(sourceApp: sourceApp, url: url)
-            return xCallbackURLHandler.execute(documentManager: self.documentManager)
+            return xCallbackURLHandler.execute(documentManager: self.documentManager, eventObserver: self.eventObserver)
         } else {
             return true
         }

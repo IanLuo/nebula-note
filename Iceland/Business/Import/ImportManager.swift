@@ -46,6 +46,8 @@ public struct ImportManager {
     public func importFile(url: URL, completion: @escaping (Result<URL, ImportError>) -> Void) {
         guard let type = ImportType(rawValue: url.pathExtension) else { completion(Result.failure(ImportError.wrongTypeOfFile)); return }
         
-        type.importer(url: url).createDocument(documentManager: self.documentManager, completion: completion)
+        type.importer(url: url).createDocument(documentManager: self.documentManager, completion: { result in
+            completion(result)
+        })
     }
 }
