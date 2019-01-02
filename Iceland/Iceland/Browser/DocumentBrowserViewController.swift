@@ -23,6 +23,8 @@ public class DocumentBrowserViewController: UIViewController {
         tableView.register(DocumentBrowserCell.self, forCellReuseIdentifier: DocumentBrowserCell.reuseIdentifier)
         tableView.backgroundColor = InterfaceTheme.Color.background1
         tableView.tableFooterView = UIView()
+        tableView.separatorStyle = .none
+        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 60, right: 0)
         return tableView
     }()
     
@@ -49,6 +51,7 @@ public class DocumentBrowserViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         self.setupUI()
+        self.viewModel.loadData()
     }
     
     private func setupUI() {
@@ -74,6 +77,7 @@ extension DocumentBrowserViewController: UITableViewDataSource {
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: DocumentBrowserCell.reuseIdentifier, for: indexPath) as! DocumentBrowserCell
+        cell.delegate = self
         cell.cellModel = self.viewModel.data[indexPath.row]
         return cell
     }
@@ -85,22 +89,22 @@ extension DocumentBrowserViewController: UITableViewDataSource {
 
 extension DocumentBrowserViewController: UITableViewDelegate {
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        actionSheet.addAction(UIAlertAction(title: "add new documnet", style: .default, handler: { _ in
-            self.viewModel.createDocument(below: self.viewModel.data[indexPath.row].url)
-        }))
-        
-        self.present(actionSheet, animated: true, completion: nil)
+        self.delegate?.didSelectDocument(url: self.viewModel.data[indexPath.row].url)
+        tableView.deselectRow(at: indexPath, animated: true)
     }
 }
 
 extension DocumentBrowserViewController: DocumentBrowserViewModelDelegate {
+    public func didLoadData() {
+        self.tableView.reloadData()
+    }
+    
     public func didAddDocument(index: Int, count: Int) {
         var indexPaths: [IndexPath] = []
         for index in index..<index + count {
             indexPaths.append(IndexPath(row: index, section: 0))
         }
-        self.tableView.insertRows(at: indexPaths, with: .right)
+        self.tableView.insertRows(at: indexPaths, with: .fade)
     }
     
     public func didRemoveDocument(index: Int, count: Int) {
@@ -108,25 +112,38 @@ extension DocumentBrowserViewController: DocumentBrowserViewModelDelegate {
         for index in index..<index + count {
             indexPaths.append(IndexPath(row: index, section: 0))
         }
-        self.tableView.deleteRows(at: indexPaths, with: .left)
+        self.tableView.deleteRows(at: indexPaths, with: .fade)
     }
     
     public func didRenameDocument(index: Int) {
-        
+        self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .fade)
     }
 }
 
 extension DocumentBrowserViewController: DocumentBrowserCellDelegate {
-    public func didTapAdd(url: URL) {
-        self.viewModel.createDocument(below: url)
+    public func didUpdate(index: Int) {
+        self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .none)
     }
     
-    public func didTapRemove(url: URL) {
-        
-    }
-    
-    public func didTapRanme(url: URL) {
-
+    public func didTapActions(url: URL) {
+        if let index = self.viewModel.index(of: url) {
+            let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+            actionSheet.addAction(UIAlertAction(title: "add new documnet", style: .default, handler: { _ in
+                self.viewModel.createDocument(below: self.viewModel.data[index].url)
+            }))
+            
+            actionSheet.addAction(UIAlertAction(title: "rename", style: .default, handler: { _ in
+                self.viewModel.rename(index: index, to: "new name")
+            }))
+            
+            actionSheet.addAction(UIAlertAction(title: "delete", style: .default, handler: { _ in
+                self.viewModel.deleteDocument(index: index)
+            }))
+            
+            actionSheet.addAction(UIAlertAction(title: "cancel", style: UIAlertAction.Style.cancel, handler: nil))
+            
+            self.present(actionSheet, animated: true, completion: nil)
+        }
     }
     
     public func didTapUnfold(url: URL) {
@@ -135,13 +152,5 @@ extension DocumentBrowserViewController: DocumentBrowserCellDelegate {
     
     public func didTapFold(url: URL) {
         self.viewModel.fold(url: url)
-    }
-    
-    public func didTapUnfoldAll(url: URL) {
-        
-    }
-    
-    public func didTap(url: URL) {
-        
     }
 }

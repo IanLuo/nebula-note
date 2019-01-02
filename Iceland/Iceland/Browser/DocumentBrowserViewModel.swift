@@ -14,6 +14,8 @@ public protocol DocumentBrowserViewModelDelegate: class {
     func didAddDocument(index: Int, count: Int)
     func didRemoveDocument(index: Int, count: Int)
     func didRenameDocument(index: Int)
+    func didLoadData()
+    func didUpdate(index: Int)
 }
 
 public class DocumentBrowserViewModel {
@@ -27,36 +29,77 @@ public class DocumentBrowserViewModel {
         self.documentManager = documentManager
     }
     
+    public func loadData() {
+        do {
+            self.data = try self.documentManager.query(in: URL.filesFolder).map { DocumentBrowserCellModel(url: $0) }
+            self.delegate?.didLoadData()
+        } catch {
+            log.error(error)
+        }
+    }
+    
     public func unfold(url: URL) {
         if let index = self.index(of: url) {
             do {
-                let subDocuments = try self.documentManager.query(in: url)
+                // 读取所有当前文件的子文件
+                let subDocuments = try self.documentManager.query(in: url.convertoFolderURL)
                     .map { DocumentBrowserCellModel(url: $0) }
-                data.insert(contentsOf: subDocuments, at: index)
-                self.delegate?.didAddDocument(index: index, count: subDocuments.count)
+
+                // 设置当前 cell 的状态为 unfoled
+                self.data[index].isFolded = false
+
+                // 插入文件数据
+                data.insert(contentsOf: subDocuments, at: index + 1)
+                
+                // 更新新插入的数据
+                self.delegate?.didAddDocument(index: index + 1, count: subDocuments.count)
+                
+                // 更新当前 cell 状态
+                self.delegate?.didUpdate(index: index)
             } catch {
-                // ignore
+                log.error(error)
             }
         }
     }
     
     public func fold(url: URL) {
         if let index = self.index(of: url) {
-            let count = self.subDocumentcount(index: index)
-            for i in 0..<count {
-                self.data.remove(at: i)
+            // 计算所选位置的所有子文件，包括子文件的子文件
+            let count = self.subDocumentcount(index: index, recursively: true)
+            for _ in 0..<count {
+                // 从显示的数据中移除被 fold 的数据
+                self.data.remove(at: index + 1)
             }
-            self.delegate?.didRemoveDocument(index: index, count: count)
+            
+            // 标记当前 cell 的状态
+            self.data[index].isFolded = true
+
+            // 耿直界面移除删除掉的数据
+            self.delegate?.didRemoveDocument(index: index + 1, count: count)
+            
+            // 更新当前 cell
+            self.delegate?.didUpdate(index: index)
         }
     }
     
-    private func subDocumentcount(index: Int) -> Int {
+    /// 计算子文件夹中的文件数量
+    /// - parameter index: 需要计算的子文件夹的位置
+    /// - parameter recursively: 是否计算子文件的子文件
+    private func subDocumentcount(index: Int, recursively: Bool = false) -> Int {
         guard index < self.data.count - 1 else { return 0 }
         
+        let currentLevel = self.data[index].levelFromRoot
         var subDocumentCount: Int = 0
+        
+        var condition: (DocumentBrowserCellModel) -> Bool
+        if recursively {
+            condition = { return currentLevel < $0.levelFromRoot }
+        } else {
+            condition = { return $0.levelFromRoot - currentLevel == 1 }
+        }
+        
         for i in index + 1..<self.data.count {
-            let cellModel = self.data[i]
-            if cellModel.parent == self.data[index].url {
+            if condition(self.data[i]) {
                 subDocumentCount += 1
             } else {
                 return subDocumentCount
@@ -66,7 +109,7 @@ public class DocumentBrowserViewModel {
         return subDocumentCount
     }
     
-    private func index(of url: URL) -> Int? {
+    public func index(of url: URL) -> Int? {
         for (index, cellModel) in self.data.enumerated() {
             if cellModel.url == url {
                 return index
@@ -76,40 +119,64 @@ public class DocumentBrowserViewModel {
         return nil
     }
     
-    func findDocuments(under: URL?) throws -> [URL] {
-        if let under = under {
-            return try self.documentManager.query(in: under.convertoFolderURL)
-        } else {
-            return try self.documentManager.query(in: URL.filesFolder)
-        }
-    }
-    
     func createDocument(below: URL?) {
         self.documentManager.add(title: "untitled", below: below) { url in
             if let url = url {
                 var index: Int = self.data.count
                 if let below = below {
                     if let i = self.index(of: below) {
-                        let subCount = self.subDocumentcount(index: i)
+                        let subCount = self.subDocumentcount(index: i) // 计算子文件的数量，将新文件插入到子文件的末尾
                         index = subCount + i + 1
                     }
                 }
                 
+                // 插入新的 cell 并更新界面
                 self.data.insert(DocumentBrowserCellModel(url: url), at: index)
                 self.delegate?.didAddDocument(index: index, count: 1)
+                
+                // 更新父 cell 的状态
+                if below != nil {
+                    self.data[index - 1].isFolded = false
+                    self.delegate?.didUpdate(index: index - 1)
+                }
             }
         }
     }
     
-    func deleteDocument(url: URL,
-                        completion: ((Error?) -> Void)? = nil) {
-        self.documentManager.delete(url: url, completion: completion)
+    func deleteDocument(index: Int) {
+        self.documentManager.delete(url: self.data[index].url) { error in
+            if let error = error {
+                log.error(error)
+            } else {
+                // 当前显示的子文件个数
+                let subcount = self.subDocumentcount(index: index, recursively: true)
+                // 一次删除当前文件以及子文件
+                for _ in 0..<subcount + 1 {
+                    self.data.remove(at: index)
+                }
+                // 通知界面更新
+                self.delegate?.didRemoveDocument(index: index, count: subcount + 1)
+            }
+        }
     }
     
-    func rename(url: URL,
-                to: String,
-                below: URL?,
-                completion: ((Error?) -> Void)? = nil) {
-        self.documentManager.rename(url: url, to: to, below: below, completion: completion)
+    func rename(index: Int,
+                to: String) {
+        let url = self.data[index].url
+        self.documentManager.rename(url: url,
+                                    to: "new name",
+                                    below: nil,
+                                    completion: { url in
+                                        self.data[index].url = url
+                                        for i in index..<index + self.subDocumentcount(index: index, recursively: true) {
+                                            self.data[i].parent = url
+                                        }
+                                        self.delegate?.didRenameDocument(index: index)
+                                        self.delegate?.didUpdate(index: index)
+                                        
+        },
+                                    failure: { error in
+                                        log.error(error)
+        })
     }
 }

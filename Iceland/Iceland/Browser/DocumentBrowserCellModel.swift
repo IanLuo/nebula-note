@@ -18,7 +18,7 @@ public class DocumentBrowserCellModel {
     public init(url: URL) {
         self.url = url
         self.parent = url.parentDocumentURL
-        self.levelFromRoot = url.convertoFolderURL.urlReleatedToRoot.deletingLastPathComponent().pathComponents.filter { $0 != "." }.count
+        self.levelFromRoot = url.pathReleatedToRoot.components(separatedBy: "/").filter { $0.count > 0 }.count
     }
     
     public var hasSubDocuments: Bool {

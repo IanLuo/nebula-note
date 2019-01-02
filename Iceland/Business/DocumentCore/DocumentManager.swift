@@ -19,7 +19,16 @@ public struct DocumentManager {
                                                            includingPropertiesForKeys: nil,
                                                            options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
             .filter { $0.pathExtension == Document.fileExtension }
-            .map { folder.appendingPathComponent($0.path) }
+    }
+    
+    private func createFolderIfNeeded(url: URL) -> URL {
+        let folderURL = url.convertoFolderURL
+        var isDIR = ObjCBool(true)
+        if !Foundation.FileManager.default.fileExists(atPath: folderURL.path, isDirectory: &isDIR) {
+            do { try Foundation.FileManager.default.createDirectory(atPath: folderURL.path, withIntermediateDirectories: true, attributes: nil) }
+            catch { print("Error when touching dir for path: \(folderURL.path): error") }
+        }
+        return folderURL
     }
     
     public func add(title: String,
@@ -27,12 +36,7 @@ public struct DocumentManager {
                         completion: ((URL?) -> Void)? = nil) {
         var newURL: URL = URL.filesFolder.appendingPathComponent(title).appendingPathExtension(Document.fileExtension)
         if let below = below {
-            let folderURL = below.convertoFolderURL
-            var isDIR = ObjCBool(true)
-            if !Foundation.FileManager.default.fileExists(atPath: folderURL.path, isDirectory: &isDIR) {
-                do { try Foundation.FileManager.default.createDirectory(atPath: folderURL.path, withIntermediateDirectories: true, attributes: nil) }
-                catch { print("Error when touching dir for path: \(folderURL.path): error") }
-            }
+            let folderURL = self.createFolderIfNeeded(url: below)
             newURL = folderURL.appendingPathComponent(title).appendingPathExtension(Document.fileExtension)
         }
         
@@ -59,8 +63,14 @@ public struct DocumentManager {
                        completion: ((Error?) -> Void)? = nil) {
         do {
             // 1. 如果有子文件, 一并删除
+            let fm = FileManager.default
+            let subFolder = url.convertoFolderURL
+            var isDir = ObjCBool(true)
+            if fm.fileExists(atPath: subFolder.path, isDirectory: &isDir) {
+                try fm.removeItem(at: subFolder)
+            }
             // 2. 如果删除之后文件夹为空，将空文件夹一并删除
-            try FileManager.default.removeItem(at: url) // FIXME: use Filecorrdinator
+            try fm.removeItem(at: url) // FIXME: use Filecorrdinator
             completion?(nil)
         } catch {
             log.error("failed to delete document: \(error)")
@@ -71,15 +81,35 @@ public struct DocumentManager {
     public func rename(url: URL,
                 to: String,
                 below: URL?,
-                completion: ((Error?) -> Void)? = nil) {
+                completion: @escaping (URL) -> Void,
+                failure: @escaping (Error) -> Void) {
         var newURL: URL = url
         if let below = below {
-            newURL = below.convertoFolderURL.appendingPathComponent(to).appendingPathExtension(Document.fileExtension)
+            let folderURL = self.createFolderIfNeeded(url: below)
+            newURL = folderURL.appendingPathComponent(to).appendingPathExtension(Document.fileExtension)
         } else {
             newURL.deleteLastPathComponent()
-            newURL.appendPathComponent(to)
+            newURL = newURL.appendingPathComponent(to).appendingPathExtension(Document.fileExtension)
         }
-        url.rename(url: newURL, completion: completion)
+        url.rename(url: newURL) { error in
+            if let error = error {
+                failure(error)
+            } else {
+                let subdocumentFolder = url.convertoFolderURL
+                var isDir = ObjCBool(true)
+                if FileManager.default.fileExists(atPath: subdocumentFolder.path, isDirectory: &isDir) {
+                    subdocumentFolder.rename(url: newURL.convertoFolderURL) { error in
+                        if let error = error {
+                            failure(error)
+                        } else {
+                            completion(newURL)
+                        }
+                    }
+                } else {
+                    completion(newURL)
+                }
+            }
+        }
     }
 }
 
@@ -106,10 +136,6 @@ extension URL {
     
     public var pathReleatedToRoot: String {
         return self.deletingPathExtension().path.replacingOccurrences(of: URL.filesFolderPath, with: "")
-    }
-    
-    public var urlReleatedToRoot: URL {
-        return URL(string: self.deletingPathExtension().path.replacingOccurrences(of: URL.filesFolderPath, with: ""))!
     }
     
     public var parentDir: URL {

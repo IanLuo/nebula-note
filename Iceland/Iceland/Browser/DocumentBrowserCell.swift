@@ -11,26 +11,27 @@ import UIKit
 import Business
 
 public protocol DocumentBrowserCellDelegate: class {
-    func didTapAdd(url: URL)
-    func didTapRemove(url: URL)
-    func didTapRanme(url: URL)
     func didTapUnfold(url: URL)
     func didTapFold(url: URL)
-    func didTapUnfoldAll(url: URL)
-    func didTap(url: URL)
+    func didTapActions(url: URL)
 }
 
 public class DocumentBrowserCell: UITableViewCell {
     public static let reuseIdentifier: String = "DocumentBrowserCell"
-    private let arrowImageView: UIImageView = UIImageView()
+    private let arrowButton: UIButton = {
+        let button = UIButton()
+        return button
+    }()
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.font = InterfaceTheme.Font.subTitle
         label.textColor = InterfaceTheme.Color.interactive
+        label.textAlignment = .left
         return label
     }()
     private let actionButton: UIButton = {
         let button = UIButton()
+        button.setTitle("◦◦◦", for: .normal)
         return button
     }()
     
@@ -39,26 +40,51 @@ public class DocumentBrowserCell: UITableViewCell {
         didSet {
             if let cellModel = cellModel {
                 setupUI(cellModel: cellModel)
+                
+                self.arrowButton.addTarget(self, action: #selector(didTapArrow), for: .touchUpInside)
+                self.actionButton.addTarget(self, action: #selector(didTapAction), for: .touchUpInside)
             }
+        }
+    }
+    
+    @objc func didTapAction() {
+        if let url = self.cellModel?.url {
+            self.delegate?.didTapActions(url: url)
+        }
+    }
+    
+    @objc func didTapArrow() {
+        guard let cellModel = self.cellModel else { return }
+        if cellModel.isFolded {
+            self.delegate?.didTapUnfold(url: cellModel.url)
+        } else {
+            self.delegate?.didTapFold(url: cellModel.url)
         }
     }
     
     public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        self.contentView.addSubview(self.arrowImageView)
+        self.selectionStyle = .none
+        
+        self.contentView.addSubview(self.arrowButton)
         self.contentView.addSubview(self.titleLabel)
         self.contentView.addSubview(self.actionButton)
         
-        self.arrowImageView.translatesAutoresizingMaskIntoConstraints = false
+        self.arrowButton.translatesAutoresizingMaskIntoConstraints = false
         self.titleLabel.translatesAutoresizingMaskIntoConstraints = false
         self.actionButton.translatesAutoresizingMaskIntoConstraints = false
         
-        self.arrowImageView.sideAnchor(for: [.left, .top, .bottom], to: self.contentView, edgeInsets: .zero)
-        self.titleLabel.leftAnchor.constraint(equalTo: self.arrowImageView.leftAnchor, constant: 10).isActive = true
-        self.titleLabel.rightAnchor.constraint(equalTo: self.contentView.rightAnchor, constant: -10).isActive = true
+        self.arrowButton.sideAnchor(for: [.left], to: self.contentView, edgeInsets: .zero)
+        self.arrowButton.centerAnchors(position: [.centerY], to: self.contentView)
+        self.arrowButton.heightAnchor.constraint(equalToConstant: 44).isActive = true
+        self.arrowButton.widthAnchor.constraint(equalToConstant: 44).isActive = true
+
+        self.titleLabel.leftAnchor.constraint(equalTo: self.arrowButton.rightAnchor, constant: 10).isActive = true
+        self.titleLabel.rightAnchor.constraint(equalTo: self.contentView.rightAnchor, constant: 10).isActive = true
         self.titleLabel.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor).isActive = true
-        self.actionButton.rightAnchor.constraint(equalTo: self.rightAnchor).isActive = true
+        
+        self.actionButton.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -10).isActive = true
         self.actionButton.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor).isActive = true
         
         self.contentView.backgroundColor = InterfaceTheme.Color.background1
@@ -69,8 +95,18 @@ public class DocumentBrowserCell: UITableViewCell {
     }
     
     private func setupUI(cellModel: DocumentBrowserCellModel) {
-        self.arrowImageView.constraint(for: .left)?.constant = CGFloat(cellModel.levelFromRoot * 10 + 10)
+        self.arrowButton.constraint(for: .left)?.constant = CGFloat(cellModel.levelFromRoot * 10 + 10)
         
         self.titleLabel.text = self.cellModel?.url.deletingPathExtension().lastPathComponent
+        
+        if cellModel.hasSubDocuments {
+            if cellModel.isFolded {
+                self.arrowButton.setTitle("+", for: .normal)
+            } else {
+                self.arrowButton.setTitle("-", for: .normal)
+            }
+        } else {
+            self.arrowButton.setTitle("", for: .normal)
+        }
     }
 }
