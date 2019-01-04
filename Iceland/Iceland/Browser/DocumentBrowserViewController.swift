@@ -140,6 +140,10 @@ extension DocumentBrowserViewController: DocumentBrowserCellDelegate {
                 self.viewModel.deleteDocument(index: index)
             }))
             
+            actionSheet.addAction(UIAlertAction(title: "duplicate", style: .default, handler: { _ in
+                self.viewModel.duplicate(index: index)
+            }))
+            
             actionSheet.addAction(UIAlertAction(title: "cancel", style: UIAlertAction.Style.cancel, handler: nil))
             
             self.present(actionSheet, animated: true, completion: nil)

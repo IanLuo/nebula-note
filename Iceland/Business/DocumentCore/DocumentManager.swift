@@ -111,6 +111,10 @@ public struct DocumentManager {
             }
         }
     }
+    
+    public func duplicate(url: URL, complete: () -> Void, failure: (Error) -> Void) {
+        // TODO: duplicate
+    }
 }
 
 fileprivate struct Constants {

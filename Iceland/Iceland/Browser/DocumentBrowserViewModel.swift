@@ -179,4 +179,13 @@ public class DocumentBrowserViewModel {
                                         log.error(error)
         })
     }
+    
+    public func duplicate(index: Int) {
+        self.documentManager.duplicate(url: self.data[index].url,
+                                       complete: { [weak self] in
+                                        self?.delegate?.didAddDocument(index: index + 1, count: 1)
+            }, failure: { error in
+                log.error(error)
+        })
+    }
 }
