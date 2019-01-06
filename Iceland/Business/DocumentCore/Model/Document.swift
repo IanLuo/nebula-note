@@ -90,4 +90,8 @@ extension String {
     public func substring(_ range: NSRange) -> String {
         return (self as NSString).substring(with: range)
     }
+    
+    public func removing(_ range: NSRange) -> String {
+        return self.replacingOccurrences(of: self.substring(range), with: "")
+    }
 }

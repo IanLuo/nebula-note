@@ -106,6 +106,8 @@ extension OutlineParser {
             }
             
             public struct TextMark {
+                public static let content = "content"
+                public static let mark = "mark"
                 public static let bold = "bold"
                 public static let italic = "italic"
                 public static let underscore = "underscore"
@@ -147,15 +149,15 @@ extension OutlineParser {
             public struct TextMark {
                 private static let pre =            "[ \\(\\{\\'\\\"]?"
                 private static let post =           "[ \\-\\.\\,\\:\\!\\?\\'\\)\\}\\\"]?"
-                public static let bold =            "\(pre)(\\*[^\\n\\,\\'\\\"\\*]+\\*)\(post)"
-                public static let italic =          "\(pre)(\\/[^\\n\\,\\'\\\"\\/]+\\/)\(post)"
-                public static let underscore =      "\(pre)(\\_[^\\n\\,\\'\\\"\\_]+\\_)\(post)"
-                public static let strikeThough =    "\(pre)(\\+[^\\n\\,\\'\\\"\\+]+\\+)\(post)"
-                public static let verbatim =        "\(pre)(\\=[^\\n\\,\\'\\\"\\=]+\\=)\(post)"
-                public static let code =            "\(pre)(\\~[^\\n\\,\\'\\\"\\~]+\\~)\(post)"
+                public static let bold =            "\(pre)(\\*([^\\n\\,\\'\\\"\\*]+)\\*)\(post)"
+                public static let italic =          "\(pre)(\\/([^\\n\\,\\'\\\"\\/]+)\\/)\(post)"
+                public static let underscore =      "\(pre)(\\_([^\\n\\,\\'\\\"\\_]+)\\_)\(post)"
+                public static let strikeThough =    "\(pre)(\\+([^\\n\\,\\'\\\"\\+]+)\\+)\(post)"
+                public static let verbatim =        "\(pre)(\\=([^\\n\\,\\'\\\"\\=]+)\\=)\(post)"
+                public static let code =            "\(pre)(\\~([^\\n\\,\\'\\\"\\~]+)\\~)\(post)"
             }
             
-            public static let link = "\\[\\[((http|https)\\:\\/\\/.*)\\]\\[(.*)\\]\\]"
+            public static let link = "\\[\\[((http|https|file)\\:.*)\\]\\[(.*)\\]\\]"
         }
         
     }

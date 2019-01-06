@@ -16,6 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     let console = ConsoleDestination()
+    var application: Application?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
@@ -27,11 +28,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         window = UIWindow(frame: UIScreen.main.bounds)
         
-        let application = Application(window: window!)
+        self.application = Application(window: window!)
         
         window?.makeKeyAndVisible()
         
-        application.start(from: nil)
+        self.application?.start(from: nil)
         
         return true
     }

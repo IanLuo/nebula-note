@@ -42,6 +42,7 @@ public class DocumentBrowserViewController: UIViewController {
     public init(viewModel: DocumentBrowserViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
+        viewModel.delegate = self
     }
     
     required init?(coder aDecoder: NSCoder) {

@@ -82,6 +82,7 @@
 		E434281A2121BF6000EC6DC3 /* IcelandUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43428192121BF6000EC6DC3 /* IcelandUITests.swift */; };
 		E4357B4A21A995DA006DDD72 /* CaptureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4357B4921A995DA006DDD72 /* CaptureTests.swift */; };
 		E44825A3219722C300C17568 /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44825A2219722C300C17568 /* Application.swift */; };
+		E455868A21DF643F00381FA8 /* HeadingOutlineTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E455868921DF643F00381FA8 /* HeadingOutlineTableViewCell.swift */; };
 		E4895FF721D9244000D2B19D /* Record.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4895FF621D9244000D2B19D /* Record.swift */; };
 		E489600021DB065000D2B19D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E4895FFF21DB065000D2B19D /* Localizable.strings */; };
 		E489600221DB06C800D2B19D /* Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = E489600121DB06C800D2B19D /* Localization.swift */; };
@@ -223,7 +224,6 @@
 		E41CB15E21D887D500EF0A3C /* CaptureViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureViewController.swift; sourceTree = "<group>"; };
 		E41CB16121D8897400EF0A3C /* HomeCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCoordinator.swift; sourceTree = "<group>"; };
 		E41CB16321D8899200EF0A3C /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
-		E41CB16C21D88B7100EF0A3C /* DocumentCore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DocumentCore.h; sourceTree = "<group>"; };
 		E41CB19B21D88D9300EF0A3C /* Business.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Business.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E41CB19D21D88D9300EF0A3C /* Business.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Business.h; sourceTree = "<group>"; };
 		E41CB19E21D88D9300EF0A3C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -266,6 +266,7 @@
 		E44825A8219810FF00C17568 /* EditorController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorController.swift; sourceTree = "<group>"; };
 		E44825AA219AE47000C17568 /* ParseOutlineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParseOutlineTests.swift; sourceTree = "<group>"; };
 		E44825AC219C1AAA00C17568 /* OutlineParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineParser.swift; sourceTree = "<group>"; };
+		E455868921DF643F00381FA8 /* HeadingOutlineTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadingOutlineTableViewCell.swift; sourceTree = "<group>"; };
 		E464BBB021A69C9000D34C88 /* OutlineTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineTheme.swift; sourceTree = "<group>"; };
 		E4895FF621D9244000D2B19D /* Record.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Record.swift; sourceTree = "<group>"; };
 		E4895FFF21DB065000D2B19D /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
@@ -511,7 +512,6 @@
 				E4EA856F21D279A500DD92F9 /* DocumentManager.swift */,
 				E4EA857121D27C3600DD92F9 /* DocumentSearchManager.swift */,
 				E41A539021D62095002B11E9 /* EditorServer.swift */,
-				E41CB16C21D88B7100EF0A3C /* DocumentCore.h */,
 			);
 			path = DocumentCore;
 			sourceTree = "<group>";
@@ -711,6 +711,7 @@
 			isa = PBXGroup;
 			children = (
 				E4A46A2821B28ED800FBDA04 /* DocumentEditViewModel.swift */,
+				E455868921DF643F00381FA8 /* HeadingOutlineTableViewCell.swift */,
 				E41FA5742191569C001D8C63 /* DocumentEditController.swift */,
 				E4EA856221D1F83800DD92F9 /* HeadingsOutlineViewController.swift */,
 				E4EA857621D3B0AC00DD92F9 /* EditorCoordinator.swift */,
@@ -1250,6 +1251,7 @@
 				E4EA857521D3AF0D00DD92F9 /* BesideDatesView.swift in Sources */,
 				E4A46A2921B28ED800FBDA04 /* DocumentEditViewModel.swift in Sources */,
 				E4F3029C21D74E8700BDE178 /* CaptureTableCellModel.swift in Sources */,
+				E455868A21DF643F00381FA8 /* HeadingOutlineTableViewCell.swift in Sources */,
 				E41CB15921D87CD100EF0A3C /* BrowserCoordinator.swift in Sources */,
 				E4EA855C21D1DACE00DD92F9 /* CaptureVideoViewController.swift in Sources */,
 				E4EA855821D1DA8700DD92F9 /* CaptureLinkViewController.swift in Sources */,

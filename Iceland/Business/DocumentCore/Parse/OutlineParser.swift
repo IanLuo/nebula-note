@@ -201,7 +201,9 @@ public class OutlineParser {
                     if let matcher = matcher {
                         let r = matcher.matches(in: str, options: [], range: totalRange)
                             .map { (result: NSTextCheckingResult) -> [String: NSRange] in
-                                [key: result.range(at: 1)]
+                                [key: result.range(at: 1),
+                                 Key.Element.TextMark.mark: result.range(at: 1),
+                                 Key.Element.TextMark.content: result.range(at: 2)]
                         }
                         
                         result.append(contentsOf: r)
@@ -240,17 +242,17 @@ public protocol OutlineParserDatasource: class {
 }
 
 extension OutlineParserDelegate {
-    func didFoundHeadings(text: String, headingDataRanges: [[String : NSRange]]) {}
-    func didFoundCheckbox(text: String, checkboxRanges: [[String : NSRange]]) {}
-    func didFoundOrderedList(text: String, orderedListRnages: [[String : NSRange]]) {}
-    func didFoundUnOrderedList(text: String, unOrderedListRnages: [[String : NSRange]]) {}
-    func didFoundSeperator(text: String, seperatorRanges: [[String : NSRange]]) {}
-    func didFoundCodeBlock(text: String, codeBlockRanges: [[String : NSRange]]) {}
-    func didFoundAttachment(text: String, attachmentRanges: [[String : NSRange]]) {}
-    func didFoundLink(text: String, urlRanges: [[String : NSRange]]) {}
-    func didFoundTextMark(text: String, markRanges: [[String : NSRange]]) {}
-    func didStartParsing(text: String) {}
-    func didCompleteParsing(text: String) {}
+    public func didFoundHeadings(text: String, headingDataRanges: [[String : NSRange]]) {}
+    public func didFoundCheckbox(text: String, checkboxRanges: [[String : NSRange]]) {}
+    public func didFoundOrderedList(text: String, orderedListRnages: [[String : NSRange]]) {}
+    public func didFoundUnOrderedList(text: String, unOrderedListRnages: [[String : NSRange]]) {}
+    public func didFoundSeperator(text: String, seperatorRanges: [[String : NSRange]]) {}
+    public func didFoundCodeBlock(text: String, codeBlockRanges: [[String : NSRange]]) {}
+    public func didFoundAttachment(text: String, attachmentRanges: [[String : NSRange]]) {}
+    public func didFoundLink(text: String, urlRanges: [[String : NSRange]]) {}
+    public func didFoundTextMark(text: String, markRanges: [[String : NSRange]]) {}
+    public func didStartParsing(text: String) {}
+    public func didCompleteParsing(text: String) {}
 }
 
 extension OutlineParserDatasource {

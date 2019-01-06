@@ -53,6 +53,27 @@ public class DocumentEditViewModel {
         return self.editorService.outlineDelegate
     }
     
+    public var headings: [OutlineTextStorage.Heading] {
+        return self.editorService.headings
+    }
+    
+    public func headingString(index: Int) -> String {
+        let heading = self.headings[index]
+        let length = [heading.tags, heading.due, heading.schedule]
+            .map { $0?.location ?? Int.max }
+            .reduce(heading.range.upperBound, min) - heading.range.location
+        
+        let location = [heading.range.location + heading.level, heading.planning?.upperBound]
+            .map { $0 ?? -Int.max }
+            .reduce(heading.range.location, max)
+        
+        return self.editorService.trim(string: self.editorService.string, range: NSRange(location: location, length: length))
+    }
+    
+    public func level(index: Int) -> Int {
+        return self.headings[index].level
+    }
+    
     /// 删除 due date
     public func removeDue(at headingLocation: Int) {
         self.editorService.removeDue(at: headingLocation)

@@ -72,8 +72,8 @@ public class Coordinator {
     }
     
     open func start(from: Coordinator?) {
-        if let parant = from {
-            parant.addChild(self)
+        if let f = from {
+            f.addChild(self)
         }
         
         self.moveIn()

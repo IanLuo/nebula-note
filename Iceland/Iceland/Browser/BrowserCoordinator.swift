@@ -31,7 +31,6 @@ public class BrowserCoordinator: Coordinator {
         let viewController = DocumentBrowserViewController(viewModel: viewModel)
         self.usage = usage
         super.init(stack: stack)
-        viewModel.delegate = viewController
         viewController.delegate = self
         self.viewController = viewController
     }
