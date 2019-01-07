@@ -56,26 +56,29 @@ public class Coordinator {
         }
     }
     
-    open func moveOut() {
-        self.viewController?.navigationController?.popViewController(animated: true)
+    open func moveOut(from: UIViewController) {
+        from.navigationController?.popViewController(animated: true)
     }
     
-    open func moveIn() {
+    open func moveIn(from: UIViewController?) {
         if let viewController = self.viewController {
             self.stack.pushViewController(viewController, animated: true)
         }
     }
     
     public func stop() {
-        self.moveOut()
+        if let viewController = self.viewController {
+            self.moveOut(from: viewController)
+        }
         self.parent?.remove(self)
     }
     
     open func start(from: Coordinator?) {
         if let f = from {
             f.addChild(self)
+            
+            self.moveIn(from: f.viewController)
         }
         
-        self.moveIn()
     }
 }

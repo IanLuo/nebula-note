@@ -55,7 +55,9 @@ public struct Attachment: Codable {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         type = try Attachment.AttachmentType(rawValue: values.decode(String.self, forKey: .type))!
         date = try values.decode(Date.self, forKey: .date)
-        url = try values.decode(URL.self, forKey: .url)
+        
+        let fileName = try values.decode(String.self, forKey: .url)
+        url = AttachmentConstants.folder.appendingPathComponent(fileName)
         description = try values.decode(String.self, forKey: .description)
         key = try values.decode(String.self, forKey: .key)
     }
@@ -63,7 +65,9 @@ public struct Attachment: Codable {
     public func encode(to encoder: Encoder) throws {
         var encoder = encoder.container(keyedBy: CodingKeys.self)
         try encoder.encode(type.rawValue, forKey: .type)
-        try encoder.encode(url, forKey: .url)
+        
+        let relativeFileURL = url.lastPathComponent // 只保存文件名的部分，文件的位置在同步之后会改变
+        try encoder.encode(relativeFileURL, forKey: .url)
         try encoder.encode(date, forKey: .date)
         try encoder.encode(description, forKey: .description)
         try encoder.encode(key, forKey: .key)

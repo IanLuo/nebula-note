@@ -124,7 +124,10 @@ public struct File {
         }
     }
     
-    public init(_ folder: File.Folder, fileName: String) {
+    public init(_ folder: File.Folder, fileName: String, createFolderIfNeeded: Bool = false) {
+        if createFolderIfNeeded {
+            folder.createFolderIfNeeded()
+        }
         self.folder = folder
         self.fileName = fileName
     }

@@ -88,24 +88,20 @@ public struct AttachmentManager {
                 failure(error)
             }
         default:
-            if let url = URL(string: content) {
-                let ext = url.pathExtension
-                fileURL = URL(fileURLWithPath: newKey + "." + ext, relativeTo: AttachmentConstants.folder)
-                let document = AttachmentFile(fileURL: url)
-                document.save(to: fileURL, for: .forCreating) { result in
-                    if !result {
-                        failure(AttachmentError.failToSaveDocument)
-                    } else {
-                        do {
-                            try saveFileInfo()
-                            try complete(newKey)
-                        } catch {
-                            failure(error)
-                        }
+            let url = URL(fileURLWithPath: content)
+            fileURL =  AttachmentConstants.folder.appendingPathComponent(newKey).appendingPathExtension(url.pathExtension)
+            let document = AttachmentFile(fileURL: url)
+            document.save(to: fileURL, for: .forCreating) { result in
+                if !result {
+                    failure(AttachmentError.failToSaveDocument)
+                } else {
+                    do {
+                        try saveFileInfo()
+                        try complete(newKey)
+                    } catch {
+                        failure(error)
                     }
                 }
-            } else {
-                failure(AttachmentError.noSuchFileToSave(content))
             }
         }
     }

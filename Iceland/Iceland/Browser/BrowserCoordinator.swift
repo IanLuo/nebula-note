@@ -35,6 +35,16 @@ public class BrowserCoordinator: Coordinator {
         self.viewController = viewController
     }
     
+    public override func moveIn(from: UIViewController?) {
+        guard let viewController = self.viewController else { return }
+        
+        from?.present(viewController, animated: true, completion: nil)
+    }
+    
+    public override func moveOut(from: UIViewController) {
+        self.viewController?.dismiss(animated: true, completion: nil)
+    }
+    
     public func showOutlineHeadings(url: URL) {
         let editorCoord = EditorCoordinator(stack: self.stack, usage: .outline(url))
         editorCoord.delegate = self
@@ -56,5 +66,6 @@ extension BrowserCoordinator: DocumentBrowserViewControllerDelegate {
 extension BrowserCoordinator: EditorCoordinatorDelegate {
     public func didSelectHeading(url: URL, heading: OutlineTextStorage.Heading) {
         self.delegate?.didSelectHeading(url: url, heading: heading)
+        self.stop()
     }
 }

@@ -22,6 +22,8 @@ public class CaptureCoordinator: Coordinator {
         let captureViewModel = CaptureViewModel(service: CaptureService())
         
         super.init(stack: stack)
+        
+        captureViewModel.dependency = self
 
         let viewController: CaptureViewController!
         switch type {
@@ -45,10 +47,21 @@ public class CaptureCoordinator: Coordinator {
         
         self.viewController = viewController
     }
+    
+    public override func moveIn(from: UIViewController?) {
+        guard let viewController = self.viewController else { return }
+        viewController.modalPresentationStyle = .overCurrentContext
+        from?.present(viewController, animated: true, completion: nil)
+    }
+    
+    public override func moveOut(from: UIViewController) {
+        self.viewController?.dismiss(animated: true, completion: nil)
+    }
 }
 
 extension CaptureCoordinator: CaptureViewControllerDelegate {
     public func didSaveCapture(attachment: Attachment) {
         self.delegate?.didSaveCapture(attachment: attachment)
+        self.stop()
     }
 }

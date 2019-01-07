@@ -15,13 +15,14 @@ public protocol CaptureViewControllerDelegate: class {
 }
 
 public class CaptureViewController: UIViewController {
-    private let viewModel: CaptureViewModel
+    public let viewModel: CaptureViewModel
     public weak var delegate: CaptureViewControllerDelegate?
     
     public init(viewModel: CaptureViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
         viewModel.delegate = self
+        self.view.backgroundColor = .clear
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -35,6 +36,6 @@ extension CaptureViewController: CaptureViewModelDelegate {
     }
     
     public func didFailToSave(error: Error, content: String, type: Attachment.AttachmentType, descritpion: String) {
-        
+        log.error(error)
     }
 }

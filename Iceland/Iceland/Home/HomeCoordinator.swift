@@ -11,11 +11,30 @@ import UIKit
 import Business
 
 public class HomeCoordinator: Coordinator {
-    public override func start(from: Coordinator?) {
+    public override init(stack: UINavigationController) {
+        let viewModel = HomeViewModel()
+        let viewController = HomeViewController(viewModel: viewModel)
+        super.init(stack: stack)
+        viewModel.dependency = self
+        self.viewController = viewController
+    }
+
+    public func showBrowser() {
         let coord = BrowserCoordinator(stack: self.stack, documentManager: DocumentManager(), usage: BrowserCoordinator.Usage.chooseHeading)
         coord.delegate = self
-        coord.start(from: from)
-        from?.addChild(self)
+        coord.start(from: self)
+    }
+    
+    public func showImageCapture() {
+        let captureImage = CaptureCoordinator(stack: self.stack, type: .image)
+        captureImage.delegate = self
+        captureImage.start(from: self)
+    }
+}
+
+extension HomeCoordinator: CaptureCoordinatorDelegate {
+    public func didSaveCapture(attachment: Attachment) {
+        
     }
 }
 

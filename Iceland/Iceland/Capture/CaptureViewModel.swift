@@ -17,6 +17,7 @@ public protocol CaptureViewModelDelegate: class {
 public class CaptureViewModel {
     private let service: CaptureServiceProtocol
     public weak var delegate: CaptureViewModelDelegate?
+    public weak var dependency: CaptureCoordinator?
     
     public init(service: CaptureServiceProtocol) {
         self.service = service
@@ -28,11 +29,13 @@ public class CaptureViewModel {
         self.service
             .save(content: content, type: type, description: description, completion: { [weak self] attachment in
                 self?.delegate?.didCompleteCapture(attachment: attachment)
+                self?.dependency?.stop()
             }, failure: { [weak self] error in
                 self?.delegate?.didFailToSave(error: error,
                                               content: content,
                                               type: type,
                                               descritpion: description)
+                self?.dependency?.stop()
             })
     }
 

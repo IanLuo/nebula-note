@@ -14,6 +14,9 @@
 		E41A538821D4CE1C002B11E9 /* AgendaActionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41A538721D4CE1C002B11E9 /* AgendaActionViewController.swift */; };
 		E41A538A21D4CE43002B11E9 /* AgendaActionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41A538921D4CE42002B11E9 /* AgendaActionViewModel.swift */; };
 		E41A538D21D5F629002B11E9 /* CaptureTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41A538C21D5F629002B11E9 /* CaptureTableCell.swift */; };
+		E41B892221E2F19B009C5AD7 /* ActionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41B892121E2F19B009C5AD7 /* ActionsViewController.swift */; };
+		E41B892421E2F1C1009C5AD7 /* SelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41B892321E2F1C1009C5AD7 /* SelectorViewController.swift */; };
+		E41B892621E31B07009C5AD7 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41B892521E31B07009C5AD7 /* HomeViewModel.swift */; };
 		E41CB15421D7E0F200EF0A3C /* DocumentBrowserCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41CB15221D7E0F200EF0A3C /* DocumentBrowserCellModel.swift */; };
 		E41CB15521D7E0F200EF0A3C /* DocumentBrowserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41CB15321D7E0F200EF0A3C /* DocumentBrowserCell.swift */; };
 		E41CB15921D87CD100EF0A3C /* BrowserCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41CB15821D87CD100EF0A3C /* BrowserCoordinator.swift */; };
@@ -215,6 +218,9 @@
 		E41A538921D4CE42002B11E9 /* AgendaActionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgendaActionViewModel.swift; sourceTree = "<group>"; };
 		E41A538C21D5F629002B11E9 /* CaptureTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureTableCell.swift; sourceTree = "<group>"; };
 		E41A539021D62095002B11E9 /* EditorServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorServer.swift; sourceTree = "<group>"; };
+		E41B892121E2F19B009C5AD7 /* ActionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionsViewController.swift; sourceTree = "<group>"; };
+		E41B892321E2F1C1009C5AD7 /* SelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectorViewController.swift; sourceTree = "<group>"; };
+		E41B892521E31B07009C5AD7 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		E41CB14A21D78E5B00EF0A3C /* Border.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Border.swift; sourceTree = "<group>"; };
 		E41CB15221D7E0F200EF0A3C /* DocumentBrowserCellModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentBrowserCellModel.swift; sourceTree = "<group>"; };
 		E41CB15321D7E0F200EF0A3C /* DocumentBrowserCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentBrowserCell.swift; sourceTree = "<group>"; };
@@ -469,6 +475,7 @@
 			children = (
 				E41CB16121D8897400EF0A3C /* HomeCoordinator.swift */,
 				E41CB16321D8899200EF0A3C /* HomeViewController.swift */,
+				E41B892521E31B07009C5AD7 /* HomeViewModel.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -673,6 +680,8 @@
 		E4895FF421D91D5A00D2B19D /* UIViewController */ = {
 			isa = PBXGroup;
 			children = (
+				E41B892121E2F19B009C5AD7 /* ActionsViewController.swift */,
+				E41B892321E2F1C1009C5AD7 /* SelectorViewController.swift */,
 			);
 			path = UIViewController;
 			sourceTree = "<group>";
@@ -1161,6 +1170,7 @@
 				E41CB1BC21D88DD100EF0A3C /* OutlineTextView.swift in Sources */,
 				E41CB1CA21D890DD00EF0A3C /* ImageAttachmentView.swift in Sources */,
 				E41CB1C121D88DD700EF0A3C /* OutlineParser.swift in Sources */,
+				E41B892421E2F1C1009C5AD7 /* SelectorViewController.swift in Sources */,
 				E41CB1BA21D88DCE00EF0A3C /* Document.swift in Sources */,
 				E41CB1C521D88DD700EF0A3C /* EditorServer.swift in Sources */,
 				E41CB1BE21D88DD100EF0A3C /* OutlineLayoutManager.swift in Sources */,
@@ -1182,6 +1192,7 @@
 				E41CB1C621D88DFD00EF0A3C /* Attachment.swift in Sources */,
 				E489600221DB06C800D2B19D /* Localization.swift in Sources */,
 				E41CB1C221D88DD700EF0A3C /* SyncManager.swift in Sources */,
+				E41B892221E2F19B009C5AD7 /* ActionsViewController.swift in Sources */,
 				E41CB1DB21D8953F00EF0A3C /* DocumentSearchManager.swift in Sources */,
 				E41CB1CF21D890DD00EF0A3C /* SketchAttachmentView.swift in Sources */,
 				E41CB1BD21D88DD100EF0A3C /* OutlineTheme.swift in Sources */,
@@ -1254,6 +1265,7 @@
 				E455868A21DF643F00381FA8 /* HeadingOutlineTableViewCell.swift in Sources */,
 				E41CB15921D87CD100EF0A3C /* BrowserCoordinator.swift in Sources */,
 				E4EA855C21D1DACE00DD92F9 /* CaptureVideoViewController.swift in Sources */,
+				E41B892621E31B07009C5AD7 /* HomeViewModel.swift in Sources */,
 				E4EA855821D1DA8700DD92F9 /* CaptureLinkViewController.swift in Sources */,
 				E4EA855A21D1DAAF00DD92F9 /* CaptureAudioViewController.swift in Sources */,
 				E41CB15521D7E0F200EF0A3C /* DocumentBrowserCell.swift in Sources */,
