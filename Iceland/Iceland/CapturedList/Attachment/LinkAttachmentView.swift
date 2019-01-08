@@ -1,5 +1,5 @@
 //
-//  AudioAttachmentView.swift
+//  LinkAttachmentView.swift
 //  Iceland
 //
 //  Created by ian luo on 2018/12/29.
@@ -8,10 +8,14 @@
 
 import Foundation
 import UIKit
+import Business
 
-public class AudioAttachmentView: UIView, AttachmentViewProtocol {
+public class LinkAttachmentView: UIView, AttachmentViewProtocol {
     public func size(for width: CGFloat) -> CGSize {
-        return CGSize(width: width, height: width / 2)
+        let attributes: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: self.label.font]
+        let attString = NSAttributedString(string: self.label.text ?? "", attributes: attributes)
+        let framesetter = CTFramesetterCreateWithAttributedString(attString)
+        return CTFramesetterSuggestFrameSizeWithConstraints(framesetter, CFRange(location: 0,length: 0), nil, CGSize(width: width, height: CGFloat.greatestFiniteMagnitude), nil)
     }
     
     public let label: UILabel = UILabel()

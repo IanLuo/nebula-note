@@ -10,12 +10,4 @@ import Foundation
 
 public class HomeViewModel {
     public weak var dependency: HomeCoordinator?
-    
-    public func showbrowser() {
-        dependency?.showBrowser()
-    }
-    
-    public func showCaptureImage() {
-        dependency?.showImageCapture()
-    }
 }

@@ -1,5 +1,5 @@
 //
-//  VideoAttachmentView.swift
+//  SketchAttachmentView.swift
 //  Iceland
 //
 //  Created by ian luo on 2018/12/29.
@@ -8,8 +8,9 @@
 
 import Foundation
 import UIKit
+import Business
 
-public class VideoAttachmentView: UIView, AttachmentViewProtocol {
+public class SketchAttachmentView: UIView, AttachmentViewProtocol {
     public func size(for width: CGFloat) -> CGSize {
         return CGSize(width: width, height: width)
     }

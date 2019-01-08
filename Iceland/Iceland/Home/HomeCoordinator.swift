@@ -30,6 +30,12 @@ public class HomeCoordinator: Coordinator {
         captureImage.delegate = self
         captureImage.start(from: self)
     }
+    
+    public func showAudioRecorder() {
+        let captureAudio = CaptureCoordinator(stack: self.stack, type: .audio)
+        captureAudio.delegate = self
+        captureAudio.start(from: self)
+    }
 }
 
 extension HomeCoordinator: CaptureCoordinatorDelegate {

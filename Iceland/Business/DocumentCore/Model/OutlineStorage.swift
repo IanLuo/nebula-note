@@ -13,6 +13,11 @@ public protocol OutlineTextStorageDelegate: class {
     func didSetHeading(newHeading: OutlineTextStorage.Heading?, oldHeading: OutlineTextStorage.Heading?)
 }
 
+/// 提供渲染的对象，如 attachment, checkbox 等
+public protocol OutlineTextStorageDataSource: class {
+    // TODO: outline text storage data source
+}
+
 public class OutlineTextStorage: NSTextStorage {
     /// Node 和 element 都是 Item
     public class Item {
@@ -371,6 +376,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
     
     public func didFoundAttachment(text: String, attachmentRanges: [[String : NSRange]]) {
         self.tempParsingResult.append(contentsOf: attachmentRanges)
+        // TODO:
     }
     
     public func didFoundCheckbox(text: String, checkboxRanges: [[String : NSRange]]) {
@@ -382,7 +388,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
                     let attachment = NSTextAttachment()
                     attachment.bounds = CGRect(origin: .zero, size: CGSize(width: 24, height: 24))
                     let status = (self.string as NSString).substring(with: range)
-                    let color = status == OutlineParser.Values.Checkbox.unchecked
+                    let color = status == OutlineParser.Values.Checkbox.unchecked // TODO:
                         ? UIColor.green
                         : status == OutlineParser.Values.Checkbox.checked ? UIColor.red : UIColor.lightGray
                     

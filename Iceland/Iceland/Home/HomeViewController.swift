@@ -31,22 +31,35 @@ public class HomeViewController: UIViewController {
         imageCaptureButton.setTitle("capture image", for: .normal)
         imageCaptureButton.addTarget(self, action: #selector(showImageCapture), for: .touchUpInside)
         
+        let audioRecordButton = UIButton()
+        audioRecordButton.setTitle("record audio", for: .normal)
+        audioRecordButton.addTarget(self, action: #selector(showAudioRecorder), for: .touchUpInside)
+        
         self.view.addSubview(browserButton)
         self.view.addSubview(imageCaptureButton)
+        self.view.addSubview(audioRecordButton)
         
         browserButton.translatesAutoresizingMaskIntoConstraints = false
         imageCaptureButton.translatesAutoresizingMaskIntoConstraints = false
+        audioRecordButton.translatesAutoresizingMaskIntoConstraints = false
         
         browserButton.centerAnchors(position: [.centerX, .centerY], to: self.view)
-        imageCaptureButton.centerAnchors(position: .centerY, to: self.view)
-        imageCaptureButton.sideAnchor(for: .top, to: browserButton, edgeInsets: .init(top: 10, left: 0, bottom: 0, right: 0))
+        imageCaptureButton.centerAnchors(position: .centerX, to: self.view)
+        imageCaptureButton.topAnchor.constraint(equalTo: browserButton.bottomAnchor, constant: 10).isActive = true
+        
+        audioRecordButton.centerAnchors(position: .centerX, to: self.view)
+        audioRecordButton.topAnchor.constraint(equalTo: imageCaptureButton.bottomAnchor, constant: 10).isActive = true
     }
     
     @objc private func showBrowser() {
-        self.viewModel?.showbrowser()
+        self.viewModel?.dependency?.showBrowser()
     }
     
     @objc private func showImageCapture() {
-        self.viewModel?.showCaptureImage()
+        self.viewModel?.dependency?.showImageCapture()
+    }
+    
+    @objc private func showAudioRecorder() {
+        self.viewModel?.dependency?.showAudioRecorder()
     }
 }

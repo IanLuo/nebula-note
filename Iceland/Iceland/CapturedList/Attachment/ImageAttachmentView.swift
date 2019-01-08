@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import Business
 
 public class ImageAttachmentView: UIView, AttachmentViewProtocol {
     public func size(for width: CGFloat) -> CGSize {

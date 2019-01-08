@@ -23,6 +23,7 @@ public struct Position: OptionSet {
     public static let centerY: Position = Position(rawValue: 1 << 5)
     public static let width: Position = Position(rawValue: 1 << 6)
     public static let height: Position = Position(rawValue: 1 << 7)
+    public static let ratio: Position = Position(rawValue: 1 << 8)
     
     public func identifier(for view: UIView) -> String {
         return "\(self) @\(view)"
@@ -48,6 +49,10 @@ extension UIView {
         self.sideAnchor(for: [.left, .top, .right, .bottom], to: view, edgeInsets: edgeInsets)
     }
     
+    public func allSidesAnchors(to view: UIView, edgeInset: CGFloat) {
+        self.sideAnchor(for: [.left, .top, .right, .bottom], to: view, edgeInset: edgeInset)
+    }
+    
     public func sizeAnchor(width: CGFloat? = nil, height: CGFloat? = nil) {
         if let width = width {
             let width = self.widthAnchor.constraint(equalToConstant: width)
@@ -60,6 +65,16 @@ extension UIView {
             height.identifier = Position.height.identifier(for: self)
             height.isActive = true
         }
+    }
+    
+    public func sideAnchor(for position: Position, to view: UIView, edgeInset: CGFloat) {
+        self.sideAnchor(for: position, to: view, edgeInsets: UIEdgeInsets(top: edgeInset, left: edgeInset, bottom: edgeInset, right: edgeInset))
+    }
+    
+    public func ratioAnchor(_ ratio: CGFloat) {
+        let width = self.widthAnchor.constraint(equalTo: self.heightAnchor, multiplier: ratio)
+        width.identifier = Position.ratio.identifier(for: self)
+        width.isActive = true
     }
     
     public func sideAnchor(for position: Position, to view: UIView, edgeInsets: UIEdgeInsets) {

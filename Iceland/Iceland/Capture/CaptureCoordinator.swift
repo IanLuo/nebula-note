@@ -51,11 +51,13 @@ public class CaptureCoordinator: Coordinator {
     public override func moveIn(from: UIViewController?) {
         guard let viewController = self.viewController else { return }
         viewController.modalPresentationStyle = .overCurrentContext
-        from?.present(viewController, animated: true, completion: nil)
+        from?.present(viewController, animated: false, completion: nil)
     }
     
     public override func moveOut(from: UIViewController) {
-        self.viewController?.dismiss(animated: true, completion: nil)
+        (self.viewController as? CaptureViewController)?.animateHideBackground { [weak self] in
+            self?.viewController?.dismiss(animated: false, completion: nil)
+        }
     }
 }
 

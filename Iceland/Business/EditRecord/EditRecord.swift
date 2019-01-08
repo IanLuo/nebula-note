@@ -1,5 +1,5 @@
 //
-//  Record.swift
+//  EditRecord.swift
 //  Business
 //
 //  Created by ian luo on 2018/12/31.
@@ -8,6 +8,6 @@
 
 import Foundation
 
-public struct Record {
+public struct EditRecord {
     
 }

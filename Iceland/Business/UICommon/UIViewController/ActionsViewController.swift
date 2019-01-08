@@ -12,6 +12,40 @@ import UIKit
 public class ActionsViewController: UIViewController {
     public func addAction(icon: UIImage?, title: String, action: @escaping () -> Void) {
         self.items.append(Item(icon: icon, title: title, action: action))
+        
+        if self.isInitialized {
+            if let last = self.items.last {
+                let itemView = ItemView(item: last)
+                itemView.tag = self.items.count - 1
+                self.stackView.addArrangedSubview(itemView)
+            }
+        }
+    }
+    
+    public func removeAction(with title: String) {
+        var index = -1
+        for (i, item) in self.items.enumerated() {
+            if item.title == title {
+                index = i
+                break
+            }
+        }
+        
+        guard index >= 0 else { return }
+        
+        self.items.remove(at: index)
+        
+        if self.isInitialized {
+            for (i, view) in self.stackView.arrangedSubviews.enumerated() {
+                if index == i {
+                    self.stackView.removeArrangedSubview(view)
+                }
+            }
+        }
+    }
+    
+    public func addCancel(action: @escaping (UIViewController) -> Void) {
+        self.cancelAction = action
     }
     
     public override func viewDidLoad() {
@@ -21,21 +55,58 @@ public class ActionsViewController: UIViewController {
     
     private var items: [Item] = []
     
-    private func setupUI() {
+    private var isInitialized: Bool = false
+    
+    private var cancelAction: ((UIViewController) -> Void)?
+    
+    public var accessoryView: UIView? {
+        didSet {
+            // 如果没有，则隐藏 accessoryViewContainer
+            accessoryViewContainer.isHidden = accessoryView == nil
+            
+            if let accessoryView = accessoryView {
+                accessoryViewContainer.addSubview(accessoryView)
+            }
+        }
+    }
+    
+    private let accessoryViewContainer: UIView = UIView()
+    
+    private let stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
+        return stackView
+    }()
+    
+    private func setupUI() {
+        self.accessoryViewContainer.translatesAutoresizingMaskIntoConstraints = false
+        self.stackView.translatesAutoresizingMaskIntoConstraints = false
         
-        stackView.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(stackView)
-        
-        stackView.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInsets: .zero)
-        
-        self.items.forEach {
-            let itemView = ItemView(item: $0)
-            itemView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapped(tap:))))
+        self.view.addSubview(self.accessoryViewContainer)
 
-            stackView.addArrangedSubview(itemView)
+        self.accessoryViewContainer.sideAnchor(for: [.left, .right], to: self.view, edgeInset: 0)
+        self.accessoryViewContainer.sideAnchor(for: .bottom, to: self.stackView, edgeInset: 1)
+        
+        self.stackView.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInsets: .zero)
+        
+        for (index, item) in self.items.enumerated() {
+            let itemView = ItemView(item: item)
+            itemView.tag = index
+            itemView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapped(tap:))))
+            self.stackView.addArrangedSubview(itemView)
         }
+        
+        // 点击屏幕其他位置，则关闭
+        let tap = UITapGestureRecognizer(target: self, action: #selector(cancel))
+        tap.delegate = self
+        self.view.addGestureRecognizer(tap)
+        
+        self.isInitialized = true
+    }
+    
+    @objc func cancel() {
+        self.cancelAction?(self)
     }
     
     @objc func tapped(tap: UITapGestureRecognizer) {
@@ -104,5 +175,11 @@ public class ActionsViewController: UIViewController {
             self.translatesAutoresizingMaskIntoConstraints = false
             self.sizeAnchor(height: 60)
         }
+    }
+}
+
+extension ActionsViewController: UIGestureRecognizerDelegate {
+    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        return touch.view == self.view
     }
 }

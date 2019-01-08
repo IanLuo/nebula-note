@@ -69,8 +69,10 @@ public class Coordinator {
     public func stop() {
         if let viewController = self.viewController {
             self.moveOut(from: viewController)
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.25) {
+                self.parent?.remove(self)
+            }
         }
-        self.parent?.remove(self)
     }
     
     open func start(from: Coordinator?) {

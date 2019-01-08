@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import Business
 
 public class LocationAttachmentView: UIView, AttachmentViewProtocol {
     public func size(for width: CGFloat) -> CGSize {

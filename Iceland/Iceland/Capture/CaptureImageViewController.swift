@@ -58,13 +58,22 @@ public class CaptureImageViewController: CaptureViewController {
             self.showImageLibrary()
         })
         
+        actionsViewController.addCancel { viewController in
+            // 两个动画同时开始
+            viewController.dismiss(animated: true, completion: {})
+            self.viewModel.dependency?.stop()
+        }
+        
+        actionsViewController.modalPresentationStyle = .overCurrentContext
         self.present(actionsViewController, animated: true, completion: nil)
     }
 }
 
 extension CaptureImageViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     public func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        self.viewModel.dependency?.stop()
+        picker.dismiss(animated: true) {
+            self.viewModel.dependency?.stop()
+        }
     }
     
     public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
