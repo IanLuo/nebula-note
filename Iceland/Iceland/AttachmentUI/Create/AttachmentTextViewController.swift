@@ -1,5 +1,5 @@
 //
-//  CaptureTextViewController.swift
+//  AttachmentTextViewController.swift
 //  Iceland
 //
 //  Created by ian luo on 2018/12/23.
@@ -9,6 +9,6 @@
 import Foundation
 import UIKit
 
-public class CaptureTextViewController: CaptureViewController {
+public class AttachmentTextViewController: AttachmentViewController {
 
 }

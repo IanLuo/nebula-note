@@ -1,5 +1,5 @@
 //
-//  CaptureVideoViewController.swift
+//  AttachmentVideoViewController.swift
 //  Iceland
 //
 //  Created by ian luo on 2018/12/25.
@@ -9,6 +9,6 @@
 import Foundation
 import UIKit
 
-public class CaptureVideoViewController: CaptureViewController {
+public class AttachmentVideoViewController: AttachmentViewController {
 
 }

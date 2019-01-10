@@ -1,5 +1,5 @@
 //
-//  CaptureViewModel.swift
+//  AttachmentViewModel.swift
 //  Iceland
 //
 //  Created by ian luo on 2018/12/23.
@@ -9,33 +9,32 @@
 import Foundation
 import Business
 
-public protocol CaptureViewModelDelegate: class {
-    func didCompleteCapture(attachment: Attachment)
+public protocol AttachmentViewModelDelegate: class {
+    func didSaveAttachment(key: String)
     func didFailToSave(error: Error, content: String, type: Attachment.AttachmentType, descritpion: String)
 }
 
-public class CaptureViewModel {
-    private let service: CaptureServiceProtocol
-    public weak var delegate: CaptureViewModelDelegate?
-    public weak var dependency: CaptureCoordinator?
+public class AttachmentViewModel {
+    public weak var delegate: AttachmentViewModelDelegate?
+    public weak var dependency: AttachmentCoordinator?
+    private var attachmentManager: AttachmentManager
     
-    public init(service: CaptureServiceProtocol) {
-        self.service = service
+    public init(attachmentManager: AttachmentManager) {
+        self.attachmentManager = attachmentManager
     }
     
     public func save(content: String,
                      type: Attachment.AttachmentType,
                      description: String) {
-        self.service
-            .save(content: content, type: type, description: description, completion: { [weak self] attachment in
-                self?.delegate?.didCompleteCapture(attachment: attachment)
+        self.attachmentManager
+            .insert(content: content, type: type, description: description, complete: { [weak self] key in
+                self?.delegate?.didSaveAttachment(key: key)
                 self?.dependency?.stop()
             }, failure: { [weak self] error in
                 self?.delegate?.didFailToSave(error: error,
                                               content: content,
                                               type: type,
                                               descritpion: description)
-                self?.dependency?.stop()
             })
     }
 

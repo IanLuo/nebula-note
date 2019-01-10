@@ -1,5 +1,5 @@
 //
-//  CaptureSketchViewController.swift
+//  AttachmentLinkViewController.swift
 //  Iceland
 //
 //  Created by ian luo on 2018/12/25.
@@ -9,6 +9,6 @@
 import Foundation
 import UIKit
 
-public class CaptureSketchViewController: CaptureViewController {
+public class AttachmentLinkViewController: AttachmentViewController {
 
 }

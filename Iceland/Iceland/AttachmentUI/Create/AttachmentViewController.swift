@@ -10,15 +10,15 @@ import Foundation
 import UIKit
 import Business
 
-public protocol CaptureViewControllerDelegate: class {
-    func didSaveCapture(attachment: Attachment)
+public protocol AttachmentViewControllerDelegate: class {
+    func didSaveAttachment(key: String)
 }
 
-public class CaptureViewController: UIViewController {
-    public let viewModel: CaptureViewModel
-    public weak var delegate: CaptureViewControllerDelegate?
+public class AttachmentViewController: UIViewController {
+    public let viewModel: AttachmentViewModel
+    public weak var delegate: AttachmentViewControllerDelegate?
     
-    public init(viewModel: CaptureViewModel) {
+    public init(viewModel: AttachmentViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
         viewModel.delegate = self
@@ -64,15 +64,15 @@ public class CaptureViewController: UIViewController {
     }
 }
 
-extension CaptureViewController: UIGestureRecognizerDelegate {
+extension AttachmentViewController: UIGestureRecognizerDelegate {
     public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
         return touch.view == self.view
     }
 }
 
-extension CaptureViewController: CaptureViewModelDelegate {
-    public func didCompleteCapture(attachment: Attachment) {
-        self.delegate?.didSaveCapture(attachment: attachment)
+extension AttachmentViewController: AttachmentViewModelDelegate {
+    public func didSaveAttachment(key: String) {
+        self.delegate?.didSaveAttachment(key: key)
     }
     
     public func didFailToSave(error: Error, content: String, type: Attachment.AttachmentType, descritpion: String) {

@@ -33,7 +33,7 @@
 		E41CB15921D87CD100EF0A3C /* BrowserCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41CB15821D87CD100EF0A3C /* BrowserCoordinator.swift */; };
 		E41CB15B21D87CDD00EF0A3C /* SearchCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41CB15A21D87CDD00EF0A3C /* SearchCoordinator.swift */; };
 		E41CB15D21D8844000EF0A3C /* CaptureListCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41CB15C21D8844000EF0A3C /* CaptureListCoordinator.swift */; };
-		E41CB15F21D887D500EF0A3C /* CaptureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41CB15E21D887D500EF0A3C /* CaptureViewController.swift */; };
+		E41CB15F21D887D500EF0A3C /* AttachmentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41CB15E21D887D500EF0A3C /* AttachmentViewController.swift */; };
 		E41CB16221D8897400EF0A3C /* HomeCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41CB16121D8897400EF0A3C /* HomeCoordinator.swift */; };
 		E41CB16421D8899200EF0A3C /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41CB16321D8899200EF0A3C /* HomeViewController.swift */; };
 		E41CB1A421D88D9400EF0A3C /* Business.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E41CB19B21D88D9300EF0A3C /* Business.framework */; };
@@ -67,7 +67,7 @@
 		E41CB1DB21D8953F00EF0A3C /* DocumentSearchManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EA857121D27C3600DD92F9 /* DocumentSearchManager.swift */; };
 		E41CB1DF21D896A300EF0A3C /* DocumentSearchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A3F21B6891700FBDA04 /* DocumentSearchTests.swift */; };
 		E41CB1E221D8BD9B00EF0A3C /* UIView+Processing.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41CB1E121D8BD9B00EF0A3C /* UIView+Processing.swift */; };
-		E41F86C3218EF4BF006C4CDB /* CaptureCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F86C2218EF4BF006C4CDB /* CaptureCoordinator.swift */; };
+		E41F86C3218EF4BF006C4CDB /* AttachmentCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F86C2218EF4BF006C4CDB /* AttachmentCoordinator.swift */; };
 		E41F86C5218EF4E1006C4CDB /* AgendaCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F86C4218EF4E1006C4CDB /* AgendaCoordinator.swift */; };
 		E41F86C7218EF5D8006C4CDB /* CaptureService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F86C6218EF5D8006C4CDB /* CaptureService.swift */; };
 		E41F86EF21902D95006C4CDB /* Storage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E41F86E621902D94006C4CDB /* Storage.framework */; };
@@ -79,8 +79,8 @@
 		E41F870621902E47006C4CDB /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F870521902E47006C4CDB /* File.swift */; };
 		E41F870821902E7A006C4CDB /* Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F870721902E7A006C4CDB /* Storage.swift */; };
 		E41FA5752191569C001D8C63 /* DocumentEditController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41FA5742191569C001D8C63 /* DocumentEditController.swift */; };
-		E42A87FD21CFC9B300151C90 /* CaptureTextViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E42A87FC21CFC9B300151C90 /* CaptureTextViewController.swift */; };
-		E42A87FF21CFCAC500151C90 /* CaptureViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E42A87FE21CFCAC500151C90 /* CaptureViewModel.swift */; };
+		E42A87FD21CFC9B300151C90 /* AttachmentTextViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E42A87FC21CFC9B300151C90 /* AttachmentTextViewController.swift */; };
+		E42A87FF21CFCAC500151C90 /* AttachmentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E42A87FE21CFCAC500151C90 /* AttachmentViewModel.swift */; };
 		E43427FA2121BF5B00EC6DC3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43427F92121BF5B00EC6DC3 /* AppDelegate.swift */; };
 		E43428012121BF5F00EC6DC3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E43428002121BF5F00EC6DC3 /* Assets.xcassets */; };
 		E43428042121BF5F00EC6DC3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E43428022121BF5F00EC6DC3 /* LaunchScreen.storyboard */; };
@@ -108,12 +108,12 @@
 		E4A46A3E21B6605C00FBDA04 /* DocumentBrowserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A3D21B6605C00FBDA04 /* DocumentBrowserTests.swift */; };
 		E4B19AB021C5363A00ED3463 /* SettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B19AAF21C5363A00ED3463 /* SettingsTests.swift */; };
 		E4C7FB8521BA916D006E3CD8 /* AgendaCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C7FB8421BA916D006E3CD8 /* AgendaCellModel.swift */; };
-		E4EA855621D1DA3D00DD92F9 /* CaptureImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EA855521D1DA3D00DD92F9 /* CaptureImageViewController.swift */; };
-		E4EA855821D1DA8700DD92F9 /* CaptureLinkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EA855721D1DA8700DD92F9 /* CaptureLinkViewController.swift */; };
-		E4EA855A21D1DAAF00DD92F9 /* CaptureAudioViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EA855921D1DAAF00DD92F9 /* CaptureAudioViewController.swift */; };
-		E4EA855C21D1DACE00DD92F9 /* CaptureVideoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EA855B21D1DACE00DD92F9 /* CaptureVideoViewController.swift */; };
-		E4EA855E21D1DAEB00DD92F9 /* CaptureLocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EA855D21D1DAEB00DD92F9 /* CaptureLocationViewController.swift */; };
-		E4EA856021D1DB1400DD92F9 /* CaptureSketchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EA855F21D1DB1400DD92F9 /* CaptureSketchViewController.swift */; };
+		E4EA855621D1DA3D00DD92F9 /* AttachmentImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EA855521D1DA3D00DD92F9 /* AttachmentImageViewController.swift */; };
+		E4EA855821D1DA8700DD92F9 /* AttachmentLinkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EA855721D1DA8700DD92F9 /* AttachmentLinkViewController.swift */; };
+		E4EA855A21D1DAAF00DD92F9 /* AttachmentAudioViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EA855921D1DAAF00DD92F9 /* AttachmentAudioViewController.swift */; };
+		E4EA855C21D1DACE00DD92F9 /* AttachmentVideoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EA855B21D1DACE00DD92F9 /* AttachmentVideoViewController.swift */; };
+		E4EA855E21D1DAEB00DD92F9 /* AttachmentLocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EA855D21D1DAEB00DD92F9 /* AttachmentLocationViewController.swift */; };
+		E4EA856021D1DB1400DD92F9 /* AttachmentSketchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EA855F21D1DB1400DD92F9 /* AttachmentSketchViewController.swift */; };
 		E4EA856321D1F83800DD92F9 /* HeadingsOutlineViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EA856221D1F83800DD92F9 /* HeadingsOutlineViewController.swift */; };
 		E4EA857521D3AF0D00DD92F9 /* BesideDatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EA857421D3AF0D00DD92F9 /* BesideDatesView.swift */; };
 		E4EA857721D3B0AC00DD92F9 /* EditorCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EA857621D3B0AC00DD92F9 /* EditorCoordinator.swift */; };
@@ -233,7 +233,7 @@
 		E41CB15821D87CD100EF0A3C /* BrowserCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserCoordinator.swift; sourceTree = "<group>"; };
 		E41CB15A21D87CDD00EF0A3C /* SearchCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchCoordinator.swift; sourceTree = "<group>"; };
 		E41CB15C21D8844000EF0A3C /* CaptureListCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureListCoordinator.swift; sourceTree = "<group>"; };
-		E41CB15E21D887D500EF0A3C /* CaptureViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureViewController.swift; sourceTree = "<group>"; };
+		E41CB15E21D887D500EF0A3C /* AttachmentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentViewController.swift; sourceTree = "<group>"; };
 		E41CB16121D8897400EF0A3C /* HomeCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCoordinator.swift; sourceTree = "<group>"; };
 		E41CB16321D8899200EF0A3C /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		E41CB19B21D88D9300EF0A3C /* Business.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Business.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -244,7 +244,7 @@
 		E41CB1AC21D88D9400EF0A3C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E41CB1C821D88E2200EF0A3C /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		E41CB1E121D8BD9B00EF0A3C /* UIView+Processing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Processing.swift"; sourceTree = "<group>"; };
-		E41F86C2218EF4BF006C4CDB /* CaptureCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureCoordinator.swift; sourceTree = "<group>"; };
+		E41F86C2218EF4BF006C4CDB /* AttachmentCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentCoordinator.swift; sourceTree = "<group>"; };
 		E41F86C4218EF4E1006C4CDB /* AgendaCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgendaCoordinator.swift; sourceTree = "<group>"; };
 		E41F86C6218EF5D8006C4CDB /* CaptureService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureService.swift; sourceTree = "<group>"; };
 		E41F86DB219009DD006C4CDB /* Attachment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Attachment.swift; sourceTree = "<group>"; };
@@ -259,8 +259,8 @@
 		E41F870521902E47006C4CDB /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		E41F870721902E7A006C4CDB /* Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storage.swift; sourceTree = "<group>"; };
 		E41FA5742191569C001D8C63 /* DocumentEditController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentEditController.swift; sourceTree = "<group>"; };
-		E42A87FC21CFC9B300151C90 /* CaptureTextViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureTextViewController.swift; sourceTree = "<group>"; };
-		E42A87FE21CFCAC500151C90 /* CaptureViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureViewModel.swift; sourceTree = "<group>"; };
+		E42A87FC21CFC9B300151C90 /* AttachmentTextViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentTextViewController.swift; sourceTree = "<group>"; };
+		E42A87FE21CFCAC500151C90 /* AttachmentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentViewModel.swift; sourceTree = "<group>"; };
 		E43427F62121BF5B00EC6DC3 /* Iceland.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Iceland.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E43427F92121BF5B00EC6DC3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E43428002121BF5F00EC6DC3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -310,12 +310,12 @@
 		E4B19AAD21C5010100ED3463 /* SettingsAccessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsAccessor.swift; sourceTree = "<group>"; };
 		E4B19AAF21C5363A00ED3463 /* SettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTests.swift; sourceTree = "<group>"; };
 		E4C7FB8421BA916D006E3CD8 /* AgendaCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgendaCellModel.swift; sourceTree = "<group>"; };
-		E4EA855521D1DA3D00DD92F9 /* CaptureImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureImageViewController.swift; sourceTree = "<group>"; };
-		E4EA855721D1DA8700DD92F9 /* CaptureLinkViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureLinkViewController.swift; sourceTree = "<group>"; };
-		E4EA855921D1DAAF00DD92F9 /* CaptureAudioViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureAudioViewController.swift; sourceTree = "<group>"; };
-		E4EA855B21D1DACE00DD92F9 /* CaptureVideoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureVideoViewController.swift; sourceTree = "<group>"; };
-		E4EA855D21D1DAEB00DD92F9 /* CaptureLocationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureLocationViewController.swift; sourceTree = "<group>"; };
-		E4EA855F21D1DB1400DD92F9 /* CaptureSketchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureSketchViewController.swift; sourceTree = "<group>"; };
+		E4EA855521D1DA3D00DD92F9 /* AttachmentImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentImageViewController.swift; sourceTree = "<group>"; };
+		E4EA855721D1DA8700DD92F9 /* AttachmentLinkViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentLinkViewController.swift; sourceTree = "<group>"; };
+		E4EA855921D1DAAF00DD92F9 /* AttachmentAudioViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentAudioViewController.swift; sourceTree = "<group>"; };
+		E4EA855B21D1DACE00DD92F9 /* AttachmentVideoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentVideoViewController.swift; sourceTree = "<group>"; };
+		E4EA855D21D1DAEB00DD92F9 /* AttachmentLocationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentLocationViewController.swift; sourceTree = "<group>"; };
+		E4EA855F21D1DB1400DD92F9 /* AttachmentSketchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentSketchViewController.swift; sourceTree = "<group>"; };
 		E4EA856221D1F83800DD92F9 /* HeadingsOutlineViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadingsOutlineViewController.swift; sourceTree = "<group>"; };
 		E4EA856421D1F8AE00DD92F9 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 		E4EA856F21D279A500DD92F9 /* DocumentManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentManager.swift; sourceTree = "<group>"; };
@@ -426,6 +426,36 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		E410D39421E709CC00525923 /* Present */ = {
+			isa = PBXGroup;
+			children = (
+				E4F3028B21D7397900BDE178 /* ImageAttachmentView.swift */,
+				E4F3028D21D73D9800BDE178 /* TextAttachmentView.swift */,
+				E4F3029121D7447200BDE178 /* LinkAttachmentView.swift */,
+				E4F3029321D7448B00BDE178 /* AudioAttachmentView.swift */,
+				E4F3029521D744A500BDE178 /* VideoAttachmentView.swift */,
+				E4F3029721D744B800BDE178 /* SketchAttachmentView.swift */,
+				E4F3029921D744CD00BDE178 /* LocationAttachmentView.swift */,
+				E4F3028F21D73DC500BDE178 /* AttachmentView.swift */,
+			);
+			path = Present;
+			sourceTree = "<group>";
+		};
+		E410D39521E709EC00525923 /* Create */ = {
+			isa = PBXGroup;
+			children = (
+				E41CB15E21D887D500EF0A3C /* AttachmentViewController.swift */,
+				E42A87FC21CFC9B300151C90 /* AttachmentTextViewController.swift */,
+				E4EA855521D1DA3D00DD92F9 /* AttachmentImageViewController.swift */,
+				E4EA855721D1DA8700DD92F9 /* AttachmentLinkViewController.swift */,
+				E4EA855921D1DAAF00DD92F9 /* AttachmentAudioViewController.swift */,
+				E4EA855B21D1DACE00DD92F9 /* AttachmentVideoViewController.swift */,
+				E4EA855D21D1DAEB00DD92F9 /* AttachmentLocationViewController.swift */,
+				E4EA855F21D1DB1400DD92F9 /* AttachmentSketchViewController.swift */,
+			);
+			path = Create;
+			sourceTree = "<group>";
+		};
 		E41A538221D4AE41002B11E9 /* Control */ = {
 			isa = PBXGroup;
 			children = (
@@ -510,7 +540,7 @@
 				E4895FF821D9245A00D2B19D /* Settings */,
 				E4895FF521D9241100D2B19D /* EditRecord */,
 				E4A46A1C21AE6CDC00FBDA04 /* UICommon */,
-				E41F86DA21900902006C4CDB /* Attachment */,
+				E41F86DA21900902006C4CDB /* AttachmentModel */,
 				E41CB1B821D88DA200EF0A3C /* DocumentCore */,
 				E41CB19D21D88D9300EF0A3C /* Business.h */,
 				E41CB19E21D88D9300EF0A3C /* Info.plist */,
@@ -555,21 +585,15 @@
 			path = UIView;
 			sourceTree = "<group>";
 		};
-		E41F86BF218EF4A0006C4CDB /* Capture */ = {
+		E41F86BF218EF4A0006C4CDB /* AttachmentUI */ = {
 			isa = PBXGroup;
 			children = (
-				E41F86C2218EF4BF006C4CDB /* CaptureCoordinator.swift */,
-				E41CB15E21D887D500EF0A3C /* CaptureViewController.swift */,
-				E42A87FE21CFCAC500151C90 /* CaptureViewModel.swift */,
-				E42A87FC21CFC9B300151C90 /* CaptureTextViewController.swift */,
-				E4EA855521D1DA3D00DD92F9 /* CaptureImageViewController.swift */,
-				E4EA855721D1DA8700DD92F9 /* CaptureLinkViewController.swift */,
-				E4EA855921D1DAAF00DD92F9 /* CaptureAudioViewController.swift */,
-				E4EA855B21D1DACE00DD92F9 /* CaptureVideoViewController.swift */,
-				E4EA855D21D1DAEB00DD92F9 /* CaptureLocationViewController.swift */,
-				E4EA855F21D1DB1400DD92F9 /* CaptureSketchViewController.swift */,
+				E41F86C2218EF4BF006C4CDB /* AttachmentCoordinator.swift */,
+				E42A87FE21CFCAC500151C90 /* AttachmentViewModel.swift */,
+				E410D39521E709EC00525923 /* Create */,
+				E410D39421E709CC00525923 /* Present */,
 			);
-			path = Capture;
+			path = AttachmentUI;
 			sourceTree = "<group>";
 		};
 		E41F86C0218EF4A7006C4CDB /* Agenda */ = {
@@ -587,13 +611,13 @@
 			path = Agenda;
 			sourceTree = "<group>";
 		};
-		E41F86DA21900902006C4CDB /* Attachment */ = {
+		E41F86DA21900902006C4CDB /* AttachmentModel */ = {
 			isa = PBXGroup;
 			children = (
 				E41F86DB219009DD006C4CDB /* Attachment.swift */,
 				E41F86DD21902BA1006C4CDB /* AttachmentManager.swift */,
 			);
-			path = Attachment;
+			path = AttachmentModel;
 			sourceTree = "<group>";
 		};
 		E41F86DF21902BF3006C4CDB /* Setting */ = {
@@ -667,7 +691,7 @@
 				E41CB15621D7E24200EF0A3C /* Browser */,
 				E41F86C0218EF4A7006C4CDB /* Agenda */,
 				E4F3028921D738D200BDE178 /* CapturedList */,
-				E41F86BF218EF4A0006C4CDB /* Capture */,
+				E41F86BF218EF4A0006C4CDB /* AttachmentUI */,
 				E43427F92121BF5B00EC6DC3 /* AppDelegate.swift */,
 				E44825A2219722C300C17568 /* Application.swift */,
 				E4895FFF21DB065000D2B19D /* Localizable.strings */,
@@ -764,7 +788,6 @@
 		E4F3028921D738D200BDE178 /* CapturedList */ = {
 			isa = PBXGroup;
 			children = (
-				E4F3028A21D7390E00BDE178 /* Attachment */,
 				E41CB15C21D8844000EF0A3C /* CaptureListCoordinator.swift */,
 				E498AAFE21BBE9B800D2A8EA /* CaptureListViewController.swift */,
 				E498AB0021BBEBB300D2A8EA /* CaptureListViewModel.swift */,
@@ -773,21 +796,6 @@
 				E4F3029B21D74E8700BDE178 /* CaptureTableCellModel.swift */,
 			);
 			path = CapturedList;
-			sourceTree = "<group>";
-		};
-		E4F3028A21D7390E00BDE178 /* Attachment */ = {
-			isa = PBXGroup;
-			children = (
-				E4F3028B21D7397900BDE178 /* ImageAttachmentView.swift */,
-				E4F3028D21D73D9800BDE178 /* TextAttachmentView.swift */,
-				E4F3029121D7447200BDE178 /* LinkAttachmentView.swift */,
-				E4F3029321D7448B00BDE178 /* AudioAttachmentView.swift */,
-				E4F3029521D744A500BDE178 /* VideoAttachmentView.swift */,
-				E4F3029721D744B800BDE178 /* SketchAttachmentView.swift */,
-				E4F3029921D744CD00BDE178 /* LocationAttachmentView.swift */,
-				E4F3028F21D73DC500BDE178 /* AttachmentView.swift */,
-			);
-			path = Attachment;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1092,11 +1100,13 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-IcelandTests/Pods-IcelandTests-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/RxAtomic/RxAtomic.framework",
 				"${BUILT_PRODUCTS_DIR}/RxCocoa/RxCocoa.framework",
 				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxAtomic.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxCocoa.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
 			);
@@ -1130,7 +1140,10 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-Iceland/Pods-Iceland-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Drawsana/Drawsana.framework",
+				"${BUILT_PRODUCTS_DIR}/Haptico/Haptico.framework",
 				"${BUILT_PRODUCTS_DIR}/Result/Result.framework",
+				"${BUILT_PRODUCTS_DIR}/RxAtomic/RxAtomic.framework",
 				"${BUILT_PRODUCTS_DIR}/RxCocoa/RxCocoa.framework",
 				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyBeaver/SwiftyBeaver.framework",
@@ -1138,7 +1151,10 @@
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Drawsana.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Haptico.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Result.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxAtomic.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxCocoa.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyBeaver.framework",
@@ -1258,13 +1274,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				E4EA856321D1F83800DD92F9 /* HeadingsOutlineViewController.swift in Sources */,
-				E41F86C3218EF4BF006C4CDB /* CaptureCoordinator.swift in Sources */,
-				E41CB15F21D887D500EF0A3C /* CaptureViewController.swift in Sources */,
+				E41F86C3218EF4BF006C4CDB /* AttachmentCoordinator.swift in Sources */,
+				E41CB15F21D887D500EF0A3C /* AttachmentViewController.swift in Sources */,
 				E41A538D21D5F629002B11E9 /* CaptureTableCell.swift in Sources */,
 				E41B893721E3497D009C5AD7 /* SketchAttachmentView.swift in Sources */,
 				E4C7FB8521BA916D006E3CD8 /* AgendaCellModel.swift in Sources */,
 				E4A46A3621B646DF00FBDA04 /* DocumentBrowserViewController.swift in Sources */,
-				E4EA855E21D1DAEB00DD92F9 /* CaptureLocationViewController.swift in Sources */,
+				E4EA855E21D1DAEB00DD92F9 /* AttachmentLocationViewController.swift in Sources */,
 				E44825A3219722C300C17568 /* Application.swift in Sources */,
 				E41A538A21D4CE43002B11E9 /* AgendaActionViewModel.swift in Sources */,
 				E41B893221E3497D009C5AD7 /* ImageAttachmentView.swift in Sources */,
@@ -1272,8 +1288,8 @@
 				E4A46A3821B6470100FBDA04 /* DocumentBrowserViewModel.swift in Sources */,
 				E4A46A2D21B410BE00FBDA04 /* DocumentSearchViewModel.swift in Sources */,
 				E49F3E4421B8EDBD003F468D /* AgendaViewController.swift in Sources */,
-				E4EA856021D1DB1400DD92F9 /* CaptureSketchViewController.swift in Sources */,
-				E4EA855621D1DA3D00DD92F9 /* CaptureImageViewController.swift in Sources */,
+				E4EA856021D1DB1400DD92F9 /* AttachmentSketchViewController.swift in Sources */,
+				E4EA855621D1DA3D00DD92F9 /* AttachmentImageViewController.swift in Sources */,
 				E43427FA2121BF5B00EC6DC3 /* AppDelegate.swift in Sources */,
 				E41FA5752191569C001D8C63 /* DocumentEditController.swift in Sources */,
 				E49F3E4C21B91885003F468D /* SettingsViewModel.swift in Sources */,
@@ -1282,7 +1298,7 @@
 				E41B893921E3497D009C5AD7 /* AttachmentView.swift in Sources */,
 				E41CB15B21D87CDD00EF0A3C /* SearchCoordinator.swift in Sources */,
 				E41B893421E3497D009C5AD7 /* LinkAttachmentView.swift in Sources */,
-				E42A87FD21CFC9B300151C90 /* CaptureTextViewController.swift in Sources */,
+				E42A87FD21CFC9B300151C90 /* AttachmentTextViewController.swift in Sources */,
 				E41F86C7218EF5D8006C4CDB /* CaptureService.swift in Sources */,
 				E4EA857521D3AF0D00DD92F9 /* BesideDatesView.swift in Sources */,
 				E4A46A2921B28ED800FBDA04 /* DocumentEditViewModel.swift in Sources */,
@@ -1290,15 +1306,15 @@
 				E455868A21DF643F00381FA8 /* HeadingOutlineTableViewCell.swift in Sources */,
 				E41CB15921D87CD100EF0A3C /* BrowserCoordinator.swift in Sources */,
 				E41B893621E3497D009C5AD7 /* VideoAttachmentView.swift in Sources */,
-				E4EA855C21D1DACE00DD92F9 /* CaptureVideoViewController.swift in Sources */,
+				E4EA855C21D1DACE00DD92F9 /* AttachmentVideoViewController.swift in Sources */,
 				E41B892621E31B07009C5AD7 /* HomeViewModel.swift in Sources */,
-				E4EA855821D1DA8700DD92F9 /* CaptureLinkViewController.swift in Sources */,
-				E4EA855A21D1DAAF00DD92F9 /* CaptureAudioViewController.swift in Sources */,
+				E4EA855821D1DA8700DD92F9 /* AttachmentLinkViewController.swift in Sources */,
+				E4EA855A21D1DAAF00DD92F9 /* AttachmentAudioViewController.swift in Sources */,
 				E41CB15521D7E0F200EF0A3C /* DocumentBrowserCell.swift in Sources */,
 				E49F3E4A21B9186D003F468D /* SettingsViewController.swift in Sources */,
 				E41CB16221D8897400EF0A3C /* HomeCoordinator.swift in Sources */,
 				E49F3E4621B8EDC8003F468D /* AgendaViewModel.swift in Sources */,
-				E42A87FF21CFCAC500151C90 /* CaptureViewModel.swift in Sources */,
+				E42A87FF21CFCAC500151C90 /* AttachmentViewModel.swift in Sources */,
 				E49F3E4821B9183F003F468D /* SettingsCoordinator.swift in Sources */,
 				E498AAFF21BBE9B900D2A8EA /* CaptureListViewController.swift in Sources */,
 				E41CB16421D8899200EF0A3C /* HomeViewController.swift in Sources */,

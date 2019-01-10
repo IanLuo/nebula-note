@@ -1,5 +1,5 @@
 //
-//  CaptureAudioViewController.swift
+//  AttachmentAudioViewController.swift
 //  Iceland
 //
 //  Created by ian luo on 2018/12/25.
@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import Business
 
-public class CaptureAudioViewController: CaptureViewController {
+public class AttachmentAudioViewController: AttachmentViewController {
     private lazy var recorder: AudioRecorder = {
         let recorder = AudioRecorder()
         recorder.delegate = self
@@ -68,18 +68,27 @@ public class CaptureAudioViewController: CaptureViewController {
     }
 }
 
-extension CaptureAudioViewController: AudioRecorderDelegate {
+extension AttachmentAudioViewController: AudioRecorderDelegate {
     public func recorderDidReadyToRecord() {
         self.recorderView.status = .readyToRecord
     }
     
     public func recorderDidStartRecording() {
         self.recorderView.status = .recording
+        
+        // 移除保存按钮
+        self.actionsViewController.removeAction(with: "save".localizable)
     }
     
     public func recorderDidStopRecording(url: URL) {
         self.recorderView.status = .stopped
         
+        // 显示保存按钮
+        self.actionsViewController.addAction(icon: nil, title: "save".localizable) { [unowned self] (actionController) in
+            self.viewModel.save(content: url.path, type: .audio, description: "recorded voice")
+        }
+        
+        // 初始化播放器
         self.player.url = url
         self.player.getReady()
     }
@@ -95,6 +104,7 @@ extension CaptureAudioViewController: AudioRecorderDelegate {
     
     public func recorderDidMeterChanged(meter: Float) {
         // TODO: metring did change
+        log.info("metering: \(meter)")
     }
     
     public func recorderDidPaused() {
@@ -102,7 +112,7 @@ extension CaptureAudioViewController: AudioRecorderDelegate {
     }
 }
 
-extension CaptureAudioViewController: AudioPlayerDelegate {
+extension AttachmentAudioViewController: AudioPlayerDelegate {
     public func playerDidReadyToPlay() {
         self.recorderView.status = .readyToPlay
     }
@@ -124,7 +134,7 @@ extension CaptureAudioViewController: AudioPlayerDelegate {
     }
 }
 
-extension CaptureAudioViewController: RecorderViewDelegate {
+extension AttachmentAudioViewController: RecorderViewDelegate {
     public func tappedPlay() {
         self.player.start()
     }
@@ -308,7 +318,6 @@ public class RecorderView: UIView {
         
         switch self.status {
         case .initing:
-//            self.recordButton.isEnabled = false
             self.recordButton.isHidden = false
         case .readyToRecord:
             self.recordButton.isEnabled = true
@@ -321,7 +330,6 @@ public class RecorderView: UIView {
         case .stopped:
             self.reRecordButton.isHidden = false
             self.playButton.isHidden = false
-//            self.playButton.isEnabled = false
         case .readyToPlay:
             self.reRecordButton.isHidden = false
             self.playButton.isHidden = false

@@ -7,9 +7,8 @@ target 'Iceland' do
     pod 'RxCocoa'
     pod 'SwiftyBeaver'
     pod 'Result'
-    pod 'Panels' # https://github.com/antoniocasero/Panels
-    pod 'Arrows' # https://github.com/antoniocasero/Arrows
     pod 'Haptico' # https://github.com/iSapozhnik/Haptico
+    pod 'Drawsana' # https://github.com/Asana/Drawsana
 end
 
 target 'IcelandTests' do

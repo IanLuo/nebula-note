@@ -10,16 +10,19 @@ import Foundation
 import UIKit
 
 public class ActionsViewController: UIViewController {
+    private struct Constants {
+        static let rowHeight = 80
+    }
+    
     public func addAction(icon: UIImage?, title: String, action: @escaping (ActionsViewController) -> Void) {
         self.items.append(Item(icon: icon, title: title, action: action))
         
         if self.isInitialized {
-            if let last = self.items.last {
-                let itemView = ItemView(item: last)
-                itemView.tag = self.items.count - 1
-                itemView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapped(tap:))))
-                self.stackView.addArrangedSubview(itemView)
-            }
+            self.tableView.insertRows(at: [IndexPath(row: self.items.count - 1, section: 0)], with: UITableView.RowAnimation.none)
+            UIView.animate(withDuration: 0.25, animations: {
+                self.tableView.constraint(for: Position.height)?.constant = CGFloat(self.items.count * Constants.rowHeight)
+                self.view.layoutIfNeeded()
+            })
         }
     }
     
@@ -37,12 +40,14 @@ public class ActionsViewController: UIViewController {
         self.items.remove(at: index)
         
         if self.isInitialized {
-            for (i, view) in self.stackView.arrangedSubviews.enumerated() {
-                if index == i {
-                    self.stackView.removeArrangedSubview(view)
-                    view.removeFromSuperview()
+            UIView.animate(withDuration: 0.25, animations: {
+                self.tableView.constraint(for: Position.height)?.constant = CGFloat(self.items.count * Constants.rowHeight)
+                self.view.layoutIfNeeded()
+            }, completion: {
+                if $0 {
+                    self.tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: UITableView.RowAnimation.bottom)
                 }
-            }
+            })
         }
     }
     
@@ -93,21 +98,26 @@ public class ActionsViewController: UIViewController {
         return button
     }()
     
-    private let stackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        return stackView
+    private lazy var tableView: UITableView = {
+        let tableView = UITableView()
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.alwaysBounceVertical = false
+        tableView.backgroundColor = InterfaceTheme.Color.background2
+        tableView.separatorStyle = .none
+        tableView.register(ActionCell.self, forCellReuseIdentifier: ActionCell.reuseIdentifier)
+        return tableView
     }()
     
     private func setupUI() {
         self.contentView.translatesAutoresizingMaskIntoConstraints = false
         self.accessoryViewContainer.translatesAutoresizingMaskIntoConstraints = false
-        self.stackView.translatesAutoresizingMaskIntoConstraints = false
+        self.tableView.translatesAutoresizingMaskIntoConstraints = false
         self.cancelButton.translatesAutoresizingMaskIntoConstraints = false
         
         self.view.addSubview(self.contentView)
         
-        self.contentView.addSubview(self.stackView)
+        self.contentView.addSubview(self.tableView)
         self.contentView.addSubview(self.accessoryViewContainer)
         self.contentView.addSubview(self.cancelButton)
         
@@ -118,15 +128,10 @@ public class ActionsViewController: UIViewController {
         self.cancelButton.sizeAnchor(width: 44, height: 44)
         
         self.accessoryViewContainer.sideAnchor(for: [.left, .right], to: self.contentView, edgeInset: 0)
-        self.accessoryViewContainer.columnAnchor(view: self.stackView)
+        self.accessoryViewContainer.columnAnchor(view: self.tableView)
         
-        self.stackView.sideAnchor(for: [.left, .right, .bottom], to: self.contentView, edgeInsets: .init(top: 0, left: 0, bottom: -20, right: 0))
-        
-        for item in self.items {
-            let itemView = ItemView(item: item)
-            itemView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapped(tap:))))
-            self.stackView.addArrangedSubview(itemView)
-        }
+        self.tableView.sizeAnchor(height: CGFloat(self.items.count * Constants.rowHeight))
+        self.tableView.sideAnchor(for: [.left, .right, .bottom], to: self.contentView, edgeInsets: .init(top: 0, left: 0, bottom: -20, right: 0))
         
         self.isInitialized = true
     }
@@ -135,67 +140,69 @@ public class ActionsViewController: UIViewController {
         self.cancelAction?(self)
     }
     
-    @objc func tapped(tap: UITapGestureRecognizer) {
-        
-        if let view = tap.view {
-            for (index, v) in self.stackView.arrangedSubviews.enumerated() {
-                if view == v {
-                    self.items[index].action(self)
-                }
-            }
-        }
-    }
-    
     private struct Item {
         let icon: UIImage?
         let title: String
         let action: (ActionsViewController) -> Void
     }
+}
+
+extension ActionsViewController: UITableViewDataSource, UITableViewDelegate {
+    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return self.items.count
+    }
     
-    private class ItemView: UIView {
-        convenience init(item: Item) {
-            self.init(frame: .zero)
-            self.item = item
-            self.setupUI()
-        }
+    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: ActionCell.reuseIdentifier, for: indexPath) as! ActionCell
         
-        private var item: Item!
-        private let iconView: UIImageView = {
-            let iv = UIImageView()
-            iv.tintColor = InterfaceTheme.Color.descriptive
-            return iv
-        }()
-        private let titleLabel: UILabel = {
-            let label = UILabel()
-            label.textColor = InterfaceTheme.Color.interactive
-            label.font = InterfaceTheme.Font.subTitle
-            return label
-        }()
+        let item = self.items[indexPath.row]
+        cell.iconView.image = item.icon
+        cell.titleLabel.text = item.title
+        return cell
+    }
+    
+    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        return self.items[indexPath.row].action(self)
+    }
+    
+    public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return CGFloat(Constants.rowHeight)
+    }
+}
+
+fileprivate class ActionCell: UITableViewCell {
+    static let reuseIdentifier = "ActionCell"
+    let iconView: UIImageView = {
+        let imageView = UIImageView()
+        return imageView
+    }()
+    
+    let titleLabel: UILabel = {
+        let label = UILabel()
+        label.font = InterfaceTheme.Font.title
+        label.textColor = InterfaceTheme.Color.interactive
+        return label
+    }()
+    
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        private func setupUI() {
-            self.addSubview(self.iconView)
-            self.addSubview(self.titleLabel)
-            
-            self.iconView.translatesAutoresizingMaskIntoConstraints = false
-            self.titleLabel.translatesAutoresizingMaskIntoConstraints = false
-            
-            if let icon = item.icon {
-                self.iconView.image = icon
-            } else {
-                self.iconView.isHidden = true
-            }
-            
-            self.titleLabel.text = item.title
-            
-            self.iconView.sideAnchor(for: .left, to: self, edgeInset: 30)
-            self.iconView.centerAnchors(position: .centerY, to: self)
-            
-            self.titleLabel.centerAnchors(position: [.centerY, .centerX], to: self)
-            
-            self.backgroundColor = InterfaceTheme.Color.background2
-            
-            self.translatesAutoresizingMaskIntoConstraints = false
-            self.sizeAnchor(height: 60)
-        }
+        self.backgroundColor = InterfaceTheme.Color.background2
+        
+        self.iconView.translatesAutoresizingMaskIntoConstraints = false
+        self.titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        self.contentView.addSubview(self.iconView)
+        self.contentView.addSubview(self.titleLabel)
+        
+        self.iconView.sideAnchor(for: .left, to: self.contentView, edgeInset: 30)
+        self.iconView.centerAnchors(position: .centerY, to: self.contentView)
+        
+        self.titleLabel.centerAnchors(position: [.centerX, .centerY], to: self.contentView)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }

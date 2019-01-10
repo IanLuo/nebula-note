@@ -25,21 +25,15 @@ public class HomeCoordinator: Coordinator {
         coord.start(from: self)
     }
     
-    public func showImageCapture() {
-        let captureImage = CaptureCoordinator(stack: self.stack, type: .image)
+    public func showAttachmentCreator(type: Attachment.AttachmentType) {
+        let captureImage = AttachmentCoordinator(stack: self.stack, type: type)
         captureImage.delegate = self
         captureImage.start(from: self)
     }
-    
-    public func showAudioRecorder() {
-        let captureAudio = CaptureCoordinator(stack: self.stack, type: .audio)
-        captureAudio.delegate = self
-        captureAudio.start(from: self)
-    }
 }
 
-extension HomeCoordinator: CaptureCoordinatorDelegate {
-    public func didSaveCapture(attachment: Attachment) {
+extension HomeCoordinator: AttachmentCoordinatorDelegate {
+    public func didSaveAttachment(key: String) {
         
     }
 }

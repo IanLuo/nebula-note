@@ -1,5 +1,5 @@
 //
-//  CaptureImageViewController.swift
+//  AttachmentImageViewController.swift
 //  Iceland
 //
 //  Created by ian luo on 2018/12/25.
@@ -11,7 +11,7 @@ import UIKit
 import Business
 import Storage
 
-public class CaptureImageViewController: CaptureViewController {
+public class AttachmentImageViewController: AttachmentViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -73,7 +73,7 @@ public class CaptureImageViewController: CaptureViewController {
     }
 }
 
-extension CaptureImageViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+extension AttachmentImageViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     public func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true) {
             self.viewModel.dependency?.stop()

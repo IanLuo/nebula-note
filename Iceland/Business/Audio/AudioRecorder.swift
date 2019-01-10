@@ -53,14 +53,16 @@ public class AudioRecorder: NSObject {
     }
     
     public func startUpdateMetering() {
+        self.recorder.isMeteringEnabled = true
         self.meteringTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: { _ in
             self.recorder.updateMeters()
-            let power = -max(0, self.recorder.peakPower(forChannel: 0))
+            let power = self.recorder.averagePower(forChannel: 0)
             self.delegate?.recorderDidMeterChanged(meter: power)
         })
     }
     
     private func stopUpdateMetering() {
+        self.recorder.isMeteringEnabled = false
         self.meteringTimer?.invalidate()
         self.meteringTimer = nil
     }
@@ -111,12 +113,14 @@ public class AudioRecorder: NSObject {
     
     public func pause() {
         if self.recorder.isRecording {
+            self.stopUpdateMetering()
             self.recorder.pause()
             self.delegate?.recorderDidPaused()
         }
     }
     
     public func stop() {
+        self.stopUpdateMetering()
         self.recorder.stop()
     }
 }
@@ -147,9 +151,8 @@ extension AudioRecorder: AVAudioRecorderDelegate {
     
     public func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
         self.stopUpdateMetering()
-        if flag {
-            self.delegate?.recorderDidStopRecording(url: self.url)
-        } else {
+        self.delegate?.recorderDidStopRecording(url: self.url)
+        if !flag {
             self.delegate?.recorderDidFail(with: AudioRecorderError.audioEndFailed)
         }
     }

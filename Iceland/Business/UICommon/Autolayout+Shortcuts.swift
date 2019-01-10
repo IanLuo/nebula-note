@@ -26,7 +26,7 @@ public struct Position: OptionSet {
     public static let ratio: Position = Position(rawValue: 1 << 8)
     
     public func identifier(for view: UIView) -> String {
-        return "\(self) @\(view)"
+        return "\(self) @\(view.hash)-\(type(of: view))"
     }
 }
 

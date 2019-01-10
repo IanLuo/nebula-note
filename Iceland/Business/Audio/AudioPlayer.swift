@@ -69,19 +69,25 @@ public class AudioPlayer: NSObject {
     public func start() {
         if !self.player.isPlaying {
             self.player.play()
+            self.delegate?.playerDidStartPlaying()
         }
     }
     
     public func pause() {
         if self.player.isPlaying {
             self.player.pause()
+            self.delegate?.playerDidPaused()
         }
     }
     
     public func stop() {
         if self.player.isPlaying {
-            self.player.stop()
+            self.player.pause()
         }
+        
+        self.player.stop()
+        self.player.currentTime = 0
+        self.delegate?.playerDidStopPlaying()
     }
 }
 
@@ -104,7 +110,7 @@ extension AudioPlayer: AVAudioPlayerDelegate {
                 } else {
                     // Interruption Ended - playback should NOT resume
                 }
-                self.delegate?.playerDidStartPlaying()
+                self.delegate?.playerDidStopPlaying()
             }
         }
     }
@@ -116,9 +122,9 @@ extension AudioPlayer: AVAudioPlayerDelegate {
     }
     
     public func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
-        if flag {
-            self.delegate?.playerDidStopPlaying()
-        } else {
+        self.player.stop()
+        self.delegate?.playerDidStopPlaying()
+        if !flag {
             self.delegate?.playerDidFail(with: AudioPlayerError.failToEnd)
         }
     }

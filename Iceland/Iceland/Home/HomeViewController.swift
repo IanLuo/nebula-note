@@ -28,27 +28,37 @@ public class HomeViewController: UIViewController {
         browserButton.addTarget(self, action: #selector(showBrowser), for: .touchUpInside)
         
         let imageCaptureButton = UIButton()
-        imageCaptureButton.setTitle("capture image", for: .normal)
+        imageCaptureButton.setTitle("add image", for: .normal)
         imageCaptureButton.addTarget(self, action: #selector(showImageCapture), for: .touchUpInside)
         
         let audioRecordButton = UIButton()
         audioRecordButton.setTitle("record audio", for: .normal)
         audioRecordButton.addTarget(self, action: #selector(showAudioRecorder), for: .touchUpInside)
         
+        let sketchButton = UIButton()
+        sketchButton.setTitle("sketch", for: .normal)
+        sketchButton.addTarget(self, action: #selector(showSketch), for: .touchUpInside)
+        
         self.view.addSubview(browserButton)
         self.view.addSubview(imageCaptureButton)
         self.view.addSubview(audioRecordButton)
+        self.view.addSubview(sketchButton)
         
         browserButton.translatesAutoresizingMaskIntoConstraints = false
         imageCaptureButton.translatesAutoresizingMaskIntoConstraints = false
         audioRecordButton.translatesAutoresizingMaskIntoConstraints = false
+        sketchButton.translatesAutoresizingMaskIntoConstraints = false
         
         browserButton.centerAnchors(position: [.centerX, .centerY], to: self.view)
+        
         imageCaptureButton.centerAnchors(position: .centerX, to: self.view)
         imageCaptureButton.topAnchor.constraint(equalTo: browserButton.bottomAnchor, constant: 10).isActive = true
         
         audioRecordButton.centerAnchors(position: .centerX, to: self.view)
         audioRecordButton.topAnchor.constraint(equalTo: imageCaptureButton.bottomAnchor, constant: 10).isActive = true
+        
+        sketchButton.centerAnchors(position: .centerX, to: self.view)
+        sketchButton.topAnchor.constraint(equalTo: audioRecordButton.bottomAnchor, constant: 10).isActive = true
     }
     
     @objc private func showBrowser() {
@@ -56,10 +66,14 @@ public class HomeViewController: UIViewController {
     }
     
     @objc private func showImageCapture() {
-        self.viewModel?.dependency?.showImageCapture()
+        self.viewModel?.dependency?.showAttachmentCreator(type: .image)
     }
     
     @objc private func showAudioRecorder() {
-        self.viewModel?.dependency?.showAudioRecorder()
+        self.viewModel?.dependency?.showAttachmentCreator(type: .audio)
+    }
+    
+    @objc private func showSketch() {
+        self.viewModel?.dependency?.showAttachmentCreator(type: .sketch)
     }
 }
