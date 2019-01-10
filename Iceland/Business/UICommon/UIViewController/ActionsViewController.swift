@@ -10,13 +10,14 @@ import Foundation
 import UIKit
 
 public class ActionsViewController: UIViewController {
-    public func addAction(icon: UIImage?, title: String, action: @escaping () -> Void) {
+    public func addAction(icon: UIImage?, title: String, action: @escaping (ActionsViewController) -> Void) {
         self.items.append(Item(icon: icon, title: title, action: action))
         
         if self.isInitialized {
             if let last = self.items.last {
                 let itemView = ItemView(item: last)
                 itemView.tag = self.items.count - 1
+                itemView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapped(tap:))))
                 self.stackView.addArrangedSubview(itemView)
             }
         }
@@ -39,6 +40,7 @@ public class ActionsViewController: UIViewController {
             for (i, view) in self.stackView.arrangedSubviews.enumerated() {
                 if index == i {
                     self.stackView.removeArrangedSubview(view)
+                    view.removeFromSuperview()
                 }
             }
         }
@@ -65,12 +67,31 @@ public class ActionsViewController: UIViewController {
             accessoryViewContainer.isHidden = accessoryView == nil
             
             if let accessoryView = accessoryView {
+                accessoryViewContainer.subviews.forEach { $0.removeFromSuperview() }
                 accessoryViewContainer.addSubview(accessoryView)
+            } else {
+                let emptyView = UIView()
+                accessoryViewContainer.addSubview(emptyView)
+                emptyView.sizeAnchor(height: 0)
+                emptyView.allSidesAnchors(to: accessoryViewContainer, edgeInset: 0)
             }
         }
     }
     
     private let accessoryViewContainer: UIView = UIView()
+    
+    private let contentView: UIView = {
+        let view = UIView()
+        view.backgroundColor = InterfaceTheme.Color.background2
+        return view
+    }()
+    
+    private lazy var cancelButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("x", for: .normal)
+        button.addTarget(self, action: #selector(cancel), for: .touchUpInside)
+        return button
+    }()
     
     private let stackView: UIStackView = {
         let stackView = UIStackView()
@@ -79,28 +100,33 @@ public class ActionsViewController: UIViewController {
     }()
     
     private func setupUI() {
+        self.contentView.translatesAutoresizingMaskIntoConstraints = false
         self.accessoryViewContainer.translatesAutoresizingMaskIntoConstraints = false
         self.stackView.translatesAutoresizingMaskIntoConstraints = false
+        self.cancelButton.translatesAutoresizingMaskIntoConstraints = false
         
-        self.view.addSubview(stackView)
-        self.view.addSubview(self.accessoryViewContainer)
-
-        self.accessoryViewContainer.sideAnchor(for: [.left, .right], to: self.view, edgeInset: 0)
-        self.accessoryViewContainer.sideAnchor(for: .bottom, to: self.stackView, edgeInset: 1)
+        self.view.addSubview(self.contentView)
         
-        self.stackView.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInsets: .zero)
+        self.contentView.addSubview(self.stackView)
+        self.contentView.addSubview(self.accessoryViewContainer)
+        self.contentView.addSubview(self.cancelButton)
         
-        for (index, item) in self.items.enumerated() {
+        self.contentView.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 0)
+        
+        self.cancelButton.sideAnchor(for: [.top, .right], to: self.contentView, edgeInset: 0)
+        self.cancelButton.columnAnchor(view: self.accessoryViewContainer, space: 10)
+        self.cancelButton.sizeAnchor(width: 44, height: 44)
+        
+        self.accessoryViewContainer.sideAnchor(for: [.left, .right], to: self.contentView, edgeInset: 0)
+        self.accessoryViewContainer.columnAnchor(view: self.stackView)
+        
+        self.stackView.sideAnchor(for: [.left, .right, .bottom], to: self.contentView, edgeInsets: .init(top: 0, left: 0, bottom: -20, right: 0))
+        
+        for item in self.items {
             let itemView = ItemView(item: item)
-            itemView.tag = index
             itemView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapped(tap:))))
             self.stackView.addArrangedSubview(itemView)
         }
-        
-        // 点击屏幕其他位置，则关闭
-        let tap = UITapGestureRecognizer(target: self, action: #selector(cancel))
-        tap.delegate = self
-        self.view.addGestureRecognizer(tap)
         
         self.isInitialized = true
     }
@@ -110,12 +136,11 @@ public class ActionsViewController: UIViewController {
     }
     
     @objc func tapped(tap: UITapGestureRecognizer) {
+        
         if let view = tap.view {
-            for (index, item) in self.items.enumerated() {
-                if index == view.tag {
-                    self.dismiss(animated: true) {
-                        item.action()
-                    }
+            for (index, v) in self.stackView.arrangedSubviews.enumerated() {
+                if view == v {
+                    self.items[index].action(self)
                 }
             }
         }
@@ -124,7 +149,7 @@ public class ActionsViewController: UIViewController {
     private struct Item {
         let icon: UIImage?
         let title: String
-        let action: () -> Void
+        let action: (ActionsViewController) -> Void
     }
     
     private class ItemView: UIView {
@@ -162,24 +187,15 @@ public class ActionsViewController: UIViewController {
             
             self.titleLabel.text = item.title
             
-            self.iconView.sideAnchor(for: .left, to: self, edgeInsets: .init(top: 0, left: 10, bottom: 0, right: 0))
+            self.iconView.sideAnchor(for: .left, to: self, edgeInset: 30)
             self.iconView.centerAnchors(position: .centerY, to: self)
             
-            self.titleLabel.sideAnchor(for: .left, to: self.iconView, edgeInsets: .init(top: 0, left: 10, bottom: 0, right: 0))
-            self.titleLabel.sideAnchor(for: .right, to: self.iconView, edgeInsets: .init(top: 0, left: 0, bottom: 0, right: 10))
-            self.titleLabel.centerAnchors(position: .centerY, to: self)
+            self.titleLabel.centerAnchors(position: [.centerY, .centerX], to: self)
             
             self.backgroundColor = InterfaceTheme.Color.background2
-            self.setBorder(position: .bottom, color: InterfaceTheme.Color.background3, width: 1)
             
             self.translatesAutoresizingMaskIntoConstraints = false
             self.sizeAnchor(height: 60)
         }
-    }
-}
-
-extension ActionsViewController: UIGestureRecognizerDelegate {
-    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
-        return touch.view == self.view
     }
 }

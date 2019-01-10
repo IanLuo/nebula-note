@@ -11,18 +11,31 @@ import UIKit
 import Business
 
 public class CaptureAudioViewController: CaptureViewController {
-    private let recorder: AudioRecorder = AudioRecorder()
-    private let player: AudioPlayer = AudioPlayer()
+    private lazy var recorder: AudioRecorder = {
+        let recorder = AudioRecorder()
+        recorder.delegate = self
+        return recorder
+    }()
+    
+    private lazy var player: AudioPlayer = {
+        let player = AudioPlayer()
+        player.delegate = self
+        return player
+    }()
+    
     private lazy var recorderView: RecorderView = {
         let recorderView = RecorderView()
         recorderView.delegate = self
         return recorderView
     }()
     
+    // 用来显示界面，当前 viewController 并不显示 UI，只是协调和保存文件
     private lazy var actionsViewController = ActionsViewController()
 
     public override func viewDidLoad() {
         super.viewDidLoad()
+        self.recorderView.status = .initing
+        self.recorder.getReady()
     }
     
     private var isFirstLoad: Bool = true
@@ -56,38 +69,54 @@ public class CaptureAudioViewController: CaptureViewController {
 }
 
 extension CaptureAudioViewController: AudioRecorderDelegate {
+    public func recorderDidReadyToRecord() {
+        self.recorderView.status = .readyToRecord
+    }
+    
     public func recorderDidStartRecording() {
-        
+        self.recorderView.status = .recording
     }
     
     public func recorderDidStopRecording(url: URL) {
+        self.recorderView.status = .stopped
         
+        self.player.url = url
+        self.player.getReady()
     }
     
-    public func recorderDidFail(with error: Error) {
-        
+    public func recorderDidFail(with error: AudioRecorderError) {
+        switch error {
+        case .unauthorized:
+            log.error(error)
+        default:
+            log.error(error)
+        }
     }
     
     public func recorderDidMeterChanged(meter: Float) {
-        
+        // TODO: metring did change
     }
     
     public func recorderDidPaused() {
-        
+        self.recorderView.status = .recordingPaused
     }
 }
 
 extension CaptureAudioViewController: AudioPlayerDelegate {
+    public func playerDidReadyToPlay() {
+        self.recorderView.status = .readyToPlay
+    }
+    
+    public func playerDidFail(with error: AudioPlayerError) {
+        log.error(error)
+    }
+    
     public func playerDidStartPlaying() {
-        
+        self.recorderView.status = .playing
     }
     
     public func playerDidStopPlaying() {
-        
-    }
-    
-    public func playerDidFail(with error: Error) {
-        
+        self.recorderView.status = .readyToPlay
     }
     
     public func playerDidPaused() {
@@ -96,56 +125,209 @@ extension CaptureAudioViewController: AudioPlayerDelegate {
 }
 
 extension CaptureAudioViewController: RecorderViewDelegate {
-    public func tappedPlaying() {
-        
+    public func tappedPlay() {
+        self.player.start()
     }
     
-    public func tappedStart() {
-        
+    public func tappedPause() {
+        self.recorder.pause()
     }
     
-    public func tappedPaused() {
-        
+    public func tappedStopPlaying() {
+        self.player.stop()
     }
     
-    public func tappedStop() {
-        
+    public func tappedStopRecording() {
+        self.recorder.stop()
     }
     
-    public func tappedSave() {
-        
+    public func tappedRecord() {
+        self.recorder.start()
+    }
+    
+    public func tappedResumRecording() {
+        self.recorder.start()
     }
 }
 
 public protocol RecorderViewDelegate: class {
-    func tappedStart()
-    func tappedPaused()
-    func tappedStop()
-    func tappedSave()
-    func tappedPlaying()
+    func tappedPause()
+    func tappedPlay()
+    func tappedStopPlaying()
+    func tappedStopRecording()
+    func tappedRecord()
+    func tappedResumRecording()
 }
 
 public class RecorderView: UIView {
     public enum Status {
         case initing
-        case ready
+        case readyToRecord
         case recording
         case recordingPaused
         case stopped
+        case readyToPlay
         case playing
     }
     
     public weak var delegate: RecorderViewDelegate?
     
-    public var status: Status = .initing
+    public var status: Status = .initing {
+        didSet {
+            self.updateUI()
+        }
+    }
+    
+    private lazy var playButton: RoundButton = {
+        let button = RoundButton()
+        button.setTitle("play".localizable)
+        button.tapped { _ in
+            self.delegate?.tappedPlay()
+        }
+        return button
+    }()
+    
+    private lazy var recordButton: RoundButton = {
+        let button = RoundButton()
+        button.setTitle("start".localizable)
+        button.tapped { _ in
+            self.delegate?.tappedRecord()
+        }
+        return button
+    }()
+    
+    private lazy var pauseRecordingButton: RoundButton = {
+        let button = RoundButton()
+        button.setTitle("pause".localizable)
+        button.tapped { _ in
+            self.delegate?.tappedPause()
+        }
+        return button
+    }()
+    
+    private lazy var stopRecordingButton: RoundButton = {
+        let button = RoundButton()
+        button.setTitle("stop".localizable)
+        button.tapped { _ in
+            self.delegate?.tappedStopRecording()
+        }
+        return button
+    }()
+    
+    private lazy var stopPlayingButton: RoundButton = {
+        let button = RoundButton()
+        button.setTitle("stop".localizable)
+        button.tapped { _ in
+            self.delegate?.tappedStopPlaying()
+        }
+        return button
+    }()
+    
+    private lazy var reRecordButton: RoundButton = {
+        let button = RoundButton()
+        button.setTitle("restart".localizable)
+        button.tapped { _ in
+            self.delegate?.tappedRecord()
+        }
+        return button
+    }()
+    
+    private lazy var continueRecordingButton: RoundButton = {
+        let button = RoundButton()
+        button.setTitle("continue".localizable)
+        button.tapped { _ in
+            self.delegate?.tappedResumRecording()
+        }
+        return button
+    }()
     
     public init() {
         super.init(frame: .zero)
-        
-        self.backgroundColor = InterfaceTheme.Color.background2
+        self.setupUI()
     }
     
     public required init?(coder aDecoder: NSCoder) {
         fatalError()
+    }
+    
+    private func setupUI() {
+        self.backgroundColor = InterfaceTheme.Color.background2
+        
+        self.playButton.translatesAutoresizingMaskIntoConstraints = false
+        self.recordButton.translatesAutoresizingMaskIntoConstraints = false
+        self.pauseRecordingButton.translatesAutoresizingMaskIntoConstraints = false
+        self.stopRecordingButton.translatesAutoresizingMaskIntoConstraints = false
+        self.stopPlayingButton.translatesAutoresizingMaskIntoConstraints = false
+        self.reRecordButton.translatesAutoresizingMaskIntoConstraints = false
+        self.continueRecordingButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        self.addSubview(self.playButton)
+        self.addSubview(self.recordButton)
+        self.addSubview(self.pauseRecordingButton)
+        self.addSubview(self.stopRecordingButton)
+        self.addSubview(self.stopPlayingButton)
+        self.addSubview(self.reRecordButton)
+        self.addSubview(self.continueRecordingButton)
+        
+        // 单独显示的按钮
+        self.recordButton.centerAnchors(position: [.centerX, .centerY], to: self)
+        self.recordButton.sizeAnchor(width: 80)
+        self.stopPlayingButton.centerAnchors(position: [.centerX, .centerY], to: self)
+        self.stopPlayingButton.sizeAnchor(width: 80)
+        self.pauseRecordingButton.centerAnchors(position: [.centerX, .centerY], to: self)
+        self.pauseRecordingButton.sizeAnchor(width: 80)
+        
+        // 在一起显示的按钮
+        self.reRecordButton.sizeAnchor(width: 50)
+        self.reRecordButton.centerAnchors(position: .centerY, to: self)
+        self.reRecordButton.centerAnchors(position: .centerX, to: self, multiplier: 0.5)
+
+        self.playButton.sizeAnchor(width: 70)
+        self.playButton.centerAnchors(position: .centerY, to: self)
+        self.playButton.centerAnchors(position: .centerX, to: self, multiplier: 1.5)
+        
+        // --
+        
+        self.continueRecordingButton.sizeAnchor(width: 70)
+        self.continueRecordingButton.centerAnchors(position: .centerY, to: self)
+        self.continueRecordingButton.centerAnchors(position: .centerX, to: self, multiplier: 0.5)
+        
+        self.stopRecordingButton.sizeAnchor(width: 50)
+        self.stopRecordingButton.centerAnchors(position: .centerY, to: self)
+        self.stopRecordingButton.centerAnchors(position: .centerX, to: self, multiplier: 1.5)
+    }
+    
+    private func updateUI() {
+        self.playButton.isHidden = true
+        self.recordButton.isHidden = true
+        self.pauseRecordingButton.isHidden = true
+        self.stopRecordingButton.isHidden = true
+        self.stopPlayingButton.isHidden = true
+        self.reRecordButton.isHidden = true
+        self.continueRecordingButton.isHidden = true
+        
+        switch self.status {
+        case .initing:
+//            self.recordButton.isEnabled = false
+            self.recordButton.isHidden = false
+        case .readyToRecord:
+            self.recordButton.isEnabled = true
+            self.recordButton.isHidden = false
+        case .recording:
+            self.pauseRecordingButton.isHidden = false
+        case .recordingPaused:
+            self.continueRecordingButton.isHidden = false
+            self.stopRecordingButton.isHidden = false
+        case .stopped:
+            self.reRecordButton.isHidden = false
+            self.playButton.isHidden = false
+//            self.playButton.isEnabled = false
+        case .readyToPlay:
+            self.reRecordButton.isHidden = false
+            self.playButton.isHidden = false
+            self.playButton.isEnabled = true
+        case .playing:
+            self.stopPlayingButton.isHidden = false
+        }
     }
 }

@@ -10,10 +10,18 @@ import Foundation
 import UIKit
 
 public class RoundButton: UIView {
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        button.layer.cornerRadius = button.bounds.width / 2
+    }
+    
     private let button: UIButton = {
         let button = UIButton()
+        button.layer.masksToBounds = true
         button.titleLabel?.font = InterfaceTheme.Font.subTitle
         button.setTitleColor(InterfaceTheme.Color.descriptive, for: .normal)
+        button.addTarget(self, action: #selector(tapped_), for: .touchUpInside)
         return button
     }()
     
@@ -27,6 +35,11 @@ public class RoundButton: UIView {
     public func setTitle(_ title: String?) {
         self.titleLabel.text = title
         self.updateUI()
+    }
+    
+    public var isEnabled: Bool {
+        get { return self.button.isEnabled }
+        set { self.button.isEnabled = newValue }
     }
     
     public func setBorder(color: UIColor?) {
@@ -44,6 +57,15 @@ public class RoundButton: UIView {
     
     public func setIcon(_ image: UIImage?, for state: UIControl.State) {
         self.button.setImage(image, for: state)
+    }
+    
+    public func tapped(_ action: @escaping (RoundButton) -> Void) {
+        self.tappedAction = action
+    }
+    
+    private var tappedAction: ((RoundButton) -> Void)?
+    @objc private func tapped_() {
+        self.tappedAction?(self)
     }
     
     public init() {
@@ -69,9 +91,10 @@ public class RoundButton: UIView {
         
         self.button.sideAnchor(for: [.top, .left, .right], to: self, edgeInsets: .zero)
         self.button.ratioAnchor(1)
-        self.button.sideAnchor(for: .bottom, to: self.titleLabel, edgeInset: 5)
+        self.button.columnAnchor(view: self.titleLabel, space: 5)
         
-        self.titleLabel.sideAnchor(for: [.left, .right, .bottom], to: self, edgeInsets: .zero)
+        self.titleLabel.sideAnchor(for: .bottom, to: self, edgeInset: 0)
+        self.titleLabel.centerAnchors(position: .centerX, to: self)
         
         self.setBackgroundColor(InterfaceTheme.Color.background1, for: .normal)
         self.setBorder(color: InterfaceTheme.Color.background2)

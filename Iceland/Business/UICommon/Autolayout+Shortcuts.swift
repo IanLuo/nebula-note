@@ -31,17 +31,19 @@ public struct Position: OptionSet {
 }
 
 extension UIView {
-    public func centerAnchors(position: Position, to view: UIView, offset: CGFloat = 0) {
+    public func centerAnchors(position: Position, to view: UIView, constaint: CGFloat = 0, multiplier: CGFloat = 1) {
         if position.contains(Position.centerX) {
-            let left = self.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: offset)
-            left.identifier = Position.centerX.identifier(for: self)
-            left.isActive = true
+            let centerX = NSLayoutConstraint(item: self, attribute: NSLayoutConstraint.Attribute.centerX, relatedBy: NSLayoutConstraint.Relation.equal, toItem: view, attribute: NSLayoutConstraint.Attribute.centerX, multiplier: multiplier, constant: constaint)
+            centerX.identifier = Position.centerX.identifier(for: self)
+            centerX.isActive = true
+            view.addConstraint(centerX)
         }
         
         if position.contains(Position.centerY) {
-            let left = self.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: offset)
-            left.identifier = Position.centerY.identifier(for: self)
-            left.isActive = true
+            let centerY = NSLayoutConstraint(item: self, attribute: NSLayoutConstraint.Attribute.centerY, relatedBy: NSLayoutConstraint.Relation.equal, toItem: view, attribute: NSLayoutConstraint.Attribute.centerY, multiplier: multiplier, constant: constaint)
+            centerY.identifier = Position.centerX.identifier(for: self)
+            centerY.isActive = true
+            view.addConstraint(centerY)
         }
     }
     
@@ -68,13 +70,25 @@ extension UIView {
     }
     
     public func sideAnchor(for position: Position, to view: UIView, edgeInset: CGFloat) {
-        self.sideAnchor(for: position, to: view, edgeInsets: UIEdgeInsets(top: edgeInset, left: edgeInset, bottom: edgeInset, right: edgeInset))
+        self.sideAnchor(for: position, to: view, edgeInsets: UIEdgeInsets(top: edgeInset, left: edgeInset, bottom: -edgeInset, right: -edgeInset))
     }
     
     public func ratioAnchor(_ ratio: CGFloat) {
         let width = self.widthAnchor.constraint(equalTo: self.heightAnchor, multiplier: ratio)
         width.identifier = Position.ratio.identifier(for: self)
         width.isActive = true
+    }
+    
+    public func rowAnchor(view: UIView, space: CGFloat = 0) {
+        let right = self.rightAnchor.constraint(equalTo: view.leftAnchor, constant: -space)
+        right.identifier = Position.right.identifier(for: self)
+        right.isActive = true
+    }
+    
+    public func columnAnchor(view: UIView, space: CGFloat = 0) {
+        let bottom = self.bottomAnchor.constraint(equalTo: view.topAnchor, constant: -space)
+        bottom.identifier = Position.bottom.identifier(for: self)
+        bottom.isActive = true
     }
     
     public func sideAnchor(for position: Position, to view: UIView, edgeInsets: UIEdgeInsets) {
@@ -110,12 +124,32 @@ extension UIView {
     }
     
     public func constraint(for position: Position) -> NSLayoutConstraint? {
+        // 先检查父 view
         for case let constraint in self.superview?.constraints ?? []
             where constraint.identifier == position.identifier(for: self)
             && (constraint.firstItem as? UIView) == self {
             return constraint
         }
         
+        // 再检查自己
+        for case let constraint in self.constraints
+            where constraint.identifier == position.identifier(for: self)
+                && (constraint.firstItem as? UIView) == self {
+                    return constraint
+        }
+        
         return nil
+    }
+}
+
+extension Array {
+    public func forPair(_ action: (Element, Element) -> Void) {
+        guard self.count >= 2 else { return }
+        
+        for (index, _) in self.enumerated() {
+            if index + 1 <= self.count - 1 {
+                action(self[index], self[index + 1])
+            }
+        }
     }
 }

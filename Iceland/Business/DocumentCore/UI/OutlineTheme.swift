@@ -39,7 +39,7 @@ public struct InterfaceTheme {
         public static let spotLight: UIColor = .green
         public static let background1: UIColor = .black
         public static let background2: UIColor = UIColor(red: 33.0/255.0, green: 33.0/255.0, blue: 33.0/255.0, alpha: 1.0)
-        public static let background3: UIColor = UIColor.black.withAlphaComponent(0.3)
+        public static let background3: UIColor = UIColor(red: 22.0/255.0, green: 22.0/255.0, blue: 22.0/255.0, alpha: 1.0)
     }
 }
 

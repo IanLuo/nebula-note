@@ -49,13 +49,17 @@ public class CaptureImageViewController: CaptureViewController {
         let actionsViewController = ActionsViewController()
         
         if UIImagePickerController.isSourceTypeAvailable(UIImagePickerController.SourceType.camera) {
-            actionsViewController.addAction(icon: nil, title: "Camera".localizable, action: {
-                self.showCamera()
+            actionsViewController.addAction(icon: nil, title: "Camera".localizable, action: { vc in
+                vc.dismiss(animated: true, completion: {
+                    self.showCamera()
+                })
             })
         }
         
-        actionsViewController.addAction(icon: nil, title: "Image Library".localizable, action: {
-            self.showImageLibrary()
+        actionsViewController.addAction(icon: nil, title: "Image Library".localizable, action: { vc in
+            vc.dismiss(animated: true, completion: {
+                self.showImageLibrary()
+            })
         })
         
         actionsViewController.addCancel { viewController in
