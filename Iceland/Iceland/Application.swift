@@ -66,7 +66,7 @@ public class Coordinator {
         }
     }
     
-    public func stop() {
+    @objc public func stop() {
         if let viewController = self.viewController {
             self.moveOut(from: viewController)
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.25) {

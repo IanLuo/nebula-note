@@ -24,6 +24,8 @@ public struct Position: OptionSet {
     public static let width: Position = Position(rawValue: 1 << 6)
     public static let height: Position = Position(rawValue: 1 << 7)
     public static let ratio: Position = Position(rawValue: 1 << 8)
+    public static let widthDependency: Position = Position(rawValue: 1 << 9)
+    public static let heightDependency: Position = Position(rawValue: 1 << 10)
     
     public func identifier(for view: UIView) -> String {
         return "\(self) @\(view.hash)-\(type(of: view))"
@@ -79,16 +81,36 @@ extension UIView {
         width.isActive = true
     }
     
-    public func rowAnchor(view: UIView, space: CGFloat = 0) {
+    public func rowAnchor(view: UIView, space: CGFloat = 0, widthRatio: CGFloat? = nil) {
         let right = self.rightAnchor.constraint(equalTo: view.leftAnchor, constant: -space)
         right.identifier = Position.right.identifier(for: self)
         right.isActive = true
+        
+        if let widthRatio = widthRatio {
+            self.widthDependencyAnchor(view: view, widthRatio: widthRatio)
+        }
     }
     
-    public func columnAnchor(view: UIView, space: CGFloat = 0) {
+    public func columnAnchor(view: UIView, space: CGFloat = 0, heightRatio: CGFloat? = nil) {
         let bottom = self.bottomAnchor.constraint(equalTo: view.topAnchor, constant: -space)
         bottom.identifier = Position.bottom.identifier(for: self)
         bottom.isActive = true
+        
+        if let heightRatio = heightRatio {
+            self.heightDependencyAnchor(view: view, heightRatio: heightRatio)
+        }
+    }
+    
+    public func widthDependencyAnchor(view: UIView, widthRatio: CGFloat) {
+        let widthDependency = self.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: widthRatio)
+        widthDependency.identifier = Position.widthDependency.identifier(for: self)
+        widthDependency.isActive = true
+    }
+    
+    public func heightDependencyAnchor(view: UIView, heightRatio: CGFloat) {
+        let heightDependency = self.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: heightRatio)
+        heightDependency.identifier = Position.widthDependency.identifier(for: self)
+        heightDependency.isActive = true
     }
     
     public func sideAnchor(for position: Position, to view: UIView, edgeInsets: UIEdgeInsets) {
@@ -105,9 +127,15 @@ extension UIView {
         }
         
         if position.contains(Position.top) {
-            let top = self.topAnchor.constraint(equalTo: view.topAnchor, constant: edgeInsets.top)
-            top.identifier = Position.top.identifier(for: self)
-            top.isActive = true
+            if #available(iOS 11, *) {
+                let top = self.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: edgeInsets.top)
+                top.identifier = Position.top.identifier(for: self)
+                top.isActive = true
+            } else {
+                let top = self.topAnchor.constraint(equalTo: view.topAnchor, constant: edgeInsets.top)
+                top.identifier = Position.top.identifier(for: self)
+                top.isActive = true
+            }
         }
         
         if position.contains(Position.bottom) {
@@ -146,9 +174,9 @@ extension Array {
     public func forPair(_ action: (Element, Element) -> Void) {
         guard self.count >= 2 else { return }
         
-        for (index, _) in self.enumerated() {
+        for (index, item) in self.enumerated() {
             if index + 1 <= self.count - 1 {
-                action(self[index], self[index + 1])
+                action(item, self[index + 1])
             }
         }
     }

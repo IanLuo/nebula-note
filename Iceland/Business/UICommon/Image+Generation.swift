@@ -9,14 +9,32 @@
 import Foundation
 import UIKit.UIImage
 
+public enum UIImageStyle {
+    case squre
+    case circle
+}
+
 extension UIImage {
-    public static func create(with color: UIColor, size: CGSize) -> UIImage {
-        UIGraphicsBeginImageContextWithOptions(size, true, 0)
+    public static func create(with color: UIColor, size: CGSize, style: UIImageStyle = .squre) -> UIImage {
+        var isOpaque = true
+        switch style {
+        case .squre:
+            break
+        case .circle:
+            isOpaque = false
+        }
+        
+        UIGraphicsBeginImageContextWithOptions(size, isOpaque, 0)
         
         var image: UIImage?
         if let context = UIGraphicsGetCurrentContext() {
             context.setFillColor(color.cgColor)
-            context.fill(CGRect(origin: .zero, size: size))
+            switch style {
+            case .squre:
+                context.fill(CGRect(origin: .zero, size: size))
+            case .circle:
+                context.fillEllipse(in: CGRect(origin: .zero, size: size))
+            }
         }
         
         image = UIGraphicsGetImageFromCurrentImageContext()
@@ -29,6 +47,21 @@ extension UIImage {
     public func resize(upto: CGSize) -> UIImage {
         // TODO: resize
         return self
+    }
+}
+
+extension UIView {
+    public var snapshot: UIImage? {
+        var image: UIImage?
+        UIGraphicsBeginImageContextWithOptions(self.bounds.size, true, 0)
+        if let context = UIGraphicsGetCurrentContext() {
+            self.layer.render(in: context)
+            image = UIGraphicsGetImageFromCurrentImageContext()
+        }
+
+        UIGraphicsEndImageContext()
+        
+        return image
     }
 }
 

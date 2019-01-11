@@ -51,7 +51,7 @@ public class ActionsViewController: UIViewController {
         }
     }
     
-    public func addCancel(action: @escaping (UIViewController) -> Void) {
+    public func setCancel(action: @escaping (UIViewController) -> Void) {
         self.cancelAction = action
     }
     
@@ -163,7 +163,7 @@ extension ActionsViewController: UITableViewDataSource, UITableViewDelegate {
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        return self.items[indexPath.row].action(self)
+        self.items[indexPath.row].action(self)
     }
     
     public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -175,6 +175,7 @@ fileprivate class ActionCell: UITableViewCell {
     static let reuseIdentifier = "ActionCell"
     let iconView: UIImageView = {
         let imageView = UIImageView()
+        imageView.contentMode = .center
         return imageView
     }()
     

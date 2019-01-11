@@ -22,51 +22,11 @@ public class AttachmentViewController: UIViewController {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
         viewModel.delegate = self
-        self.view.backgroundColor = InterfaceTheme.Color.background1.withAlphaComponent(0.0)
+        self.view.backgroundColor = InterfaceTheme.Color.background1
+    }
         
-        let tap = UITapGestureRecognizer(target: self, action: #selector(cancel))
-        tap.delegate = self
-        self.view.addGestureRecognizer(tap)
-    }
-    
-    @objc func cancel() {
-        self.viewModel.dependency?.stop()
-    }
-    
-    private var isFirstLoad = true
-    public override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        if isFirstLoad {
-            self.animateShowBackground()
-            isFirstLoad = false
-        }
-    }
-    
-    public func animateShowBackground() {
-        UIView.animate(withDuration: 0.2) {
-            self.view.backgroundColor = InterfaceTheme.Color.background1.withAlphaComponent(0.5)
-        }
-    }
-    
-    public func animateHideBackground(complete: @escaping () -> Void) {
-        UIView.animate(withDuration: 0.2, animations: {
-            self.view.backgroundColor = InterfaceTheme.Color.background1.withAlphaComponent(0.0)
-        }) {
-            if $0 {
-                complete()
-            }
-        }
-    }
-    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-}
-
-extension AttachmentViewController: UIGestureRecognizerDelegate {
-    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
-        return touch.view == self.view
     }
 }
 

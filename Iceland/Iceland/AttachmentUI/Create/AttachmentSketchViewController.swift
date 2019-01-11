@@ -9,38 +9,167 @@
 import Foundation
 import UIKit
 import Drawsana
+import Business
 
 public class AttachmentSketchViewController: AttachmentViewController {
     private lazy var drawingView: DrawsanaView = {
         let drawingView = DrawsanaView()
         drawingView.delegate = self
         drawingView.operationStack.delegate = self
+        drawingView.backgroundColor = .white
+        drawingView.setBorder(position: [.left, .right, .top, .bottom], color: InterfaceTheme.Color.background3, width: 1)
         return drawingView
     }()
     
     private let undoButton: UIButton = {
         let button = UIButton()
+        button.setTitle("↶", for: .normal)
+        button.titleLabel?.font = InterfaceTheme.Font.title
+        button.setTitleColor(InterfaceTheme.Color.interactive, for: .normal)
         return button
     }()
     
     private let redoButton: UIButton = {
         let button = UIButton()
+        button.setTitle("↷", for: .normal)
+        button.titleLabel?.font = InterfaceTheme.Font.title
+        button.setTitleColor(InterfaceTheme.Color.interactive, for: .normal)
         return button
     }()
     
-    private let exitButton: UIButton = {
+    private lazy var exitButton: UIButton = {
         let button = UIButton()
+        button.addTarget(self, action: #selector(cancel), for: .touchUpInside)
+        button.setTitle("x", for: .normal)
         return button
+    }()
+    
+    private let controlsView: UIView = {
+        let view = UIView()
+         view.setBorder(position: [.top, .bottom, .centerV], color: InterfaceTheme.Color.background3, width: 1)
+        return view
+    }()
+    
+    private lazy var pickColorButton: RoundButton = {
+        let pickColorButton = RoundButton(style: RoundButton.Style.horizontal)
+        pickColorButton.tapped { button in
+            self.showColorPicker(button: button)
+        }
+        return pickColorButton
+    }()
+    
+    private lazy var pickBrushButton: RoundButton = {
+        let pickBrushButton = RoundButton(style: RoundButton.Style.horizontal)
+        pickBrushButton.setBorder(color: nil)
+        pickBrushButton.tapped { button in
+            self.showBrushPicker(button: button)
+        }
+        return pickBrushButton
     }()
     
     public override func viewDidLoad() {
         super.viewDidLoad()
         
         self.setupUI()
+        
+        self.drawingView.set(tool: PenTool())
+        self.setColor(index: 0)
+        self.setBrush(self.brushWidth[10])
     }
     
+    @objc private func cancel() {
+        self.viewModel.dependency?.stop()
+    }
+    
+    private let colors: [(String, UIColor)] = [("dard gray", .darkGray), ("black", .black), ("red", .red), ("blue", .blue), ("cyan", .cyan), ("orange", .orange), ("brown", .brown), ("gray", .gray), ("yellow", .yellow)]
+    private let brushWidth: [CGFloat] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 30, 40]
+    
     private func setupUI() {
+        self.view.addSubview(self.exitButton)
+        self.exitButton.translatesAutoresizingMaskIntoConstraints = false
+        self.exitButton.sideAnchor(for: [.top, .right], to: self.view, edgeInsets: .init(top: 10, left: 0, bottom: 0, right: -30))
+        self.exitButton.sizeAnchor(width: 44, height: 44)
         
+        self.view.addSubview(self.undoButton)
+        self.view.addSubview(self.redoButton)
+        self.undoButton.translatesAutoresizingMaskIntoConstraints = false
+        self.redoButton.translatesAutoresizingMaskIntoConstraints = false
+
+        self.undoButton.sideAnchor(for: [.left, .top], to: self.view, edgeInsets: .init(top: 10, left: 30, bottom: 0, right: 0))
+        self.undoButton.rowAnchor(view: self.redoButton, space: 20)
+        self.undoButton.sizeAnchor(width: 44, height: 44)
+        self.redoButton.sizeAnchor(width: 44, height: 44)
+        self.redoButton.sideAnchor(for: .top, to: self.view, edgeInset: 10)
+        
+        self.view.addSubview(self.drawingView)
+        self.drawingView.translatesAutoresizingMaskIntoConstraints = false
+        self.drawingView.sideAnchor(for: [.left, .right], to: self.view, edgeInset: 30)
+        self.drawingView.ratioAnchor(1)
+
+        self.exitButton.columnAnchor(view: self.drawingView, space: 10)
+        
+        self.view.addSubview(self.controlsView)
+
+        self.controlsView.addSubview(self.pickColorButton)
+        self.controlsView.addSubview(self.pickBrushButton)
+        
+        self.controlsView.translatesAutoresizingMaskIntoConstraints = false
+        self.pickColorButton.translatesAutoresizingMaskIntoConstraints = false
+        self.pickBrushButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        self.controlsView.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 0)
+        self.controlsView.sizeAnchor(height: 80)
+        
+        self.pickColorButton.sideAnchor(for: [.left, .top, .bottom], to: self.controlsView, edgeInsets: .init(top: 0, left: 20, bottom: 0, right: 0))
+        self.pickBrushButton.sideAnchor(for: [.right, .top, .bottom], to: self.controlsView, edgeInsets: .init(top: 0, left: 20, bottom: 0, right: 0))
+        self.pickColorButton.rowAnchor(view: self.pickBrushButton, widthRatio: 1)
+    }
+    
+    private func setColor(index: Int) {
+        self.pickColorButton.setBackgroundColor(self.colors[index].1, for: .normal)
+        self.pickColorButton.title = self.colors[index].0
+        self.drawingView.userSettings.strokeColor = self.colors[index].1
+    }
+    
+    private func setBrush(_ width: CGFloat) {
+        self.pickBrushButton.title = "\(width)"
+        self.pickBrushButton.setIcon(UIImage.create(with: InterfaceTheme.Color.interactive, size: CGSize(width: width, height: width), style: .circle), for: .normal)
+        self.drawingView.userSettings.strokeWidth = width
+    }
+    
+    private func showColorPicker(button: RoundButton) {
+        let selector = SelectorViewController()
+        self.colors.forEach {
+            selector.addItem(icon: UIImage.create(with: $0.1, size: CGSize(width:30, height: 30), style: .circle),
+                                  title: "\($0.0)")
+        }
+        
+        selector.setSelect { (index, viewController) in
+            viewController.dismiss(animated: true) {
+                self.setColor(index: index)
+            }
+        }
+        
+        selector.currentTitle = button.title
+        selector.show(from: button, on: self)
+    }
+    
+    private func showBrushPicker(button: RoundButton) {
+        let selector = SelectorViewController()
+        selector.rowHeight = 80
+        self.brushWidth.forEach {
+            selector.addItem(icon: UIImage.create(with: InterfaceTheme.Color.interactive, size: CGSize(width: $0, height: $0), style: .circle),
+                                  title: "\($0)")
+        }
+        
+        selector.setSelect { (index, viewController) in
+            viewController.dismiss(animated: true) {
+                self.setBrush(self.brushWidth[index])
+            }
+        }
+        
+        selector.currentTitle = button.title
+        selector.show(from: button, on: self)
     }
 }
 

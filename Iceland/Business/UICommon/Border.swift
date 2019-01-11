@@ -157,8 +157,8 @@ extension UIView {
             border.translatesAutoresizingMaskIntoConstraints = false
             border.lineColor = color
             addConstraint(NSLayoutConstraint(item: border, attribute: .centerX, relatedBy: .equal, toItem: self, attribute: .centerX, multiplier: 1, constant: 0))
-            addConstraint(NSLayoutConstraint(item: border, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: width))
-            addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-h-[b]-t-|", options: [], metrics: metrics, views: ["b" : border]))
+            addConstraint(NSLayoutConstraint(item: border, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: width))
+            addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-h-[b]-t-|", options: [], metrics: metrics, views: ["b" : border]))
         }
     }
     

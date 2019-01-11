@@ -57,7 +57,7 @@ public class AttachmentAudioViewController: AttachmentViewController {
             self.recorderView.allSidesAnchors(to: superview, edgeInset: 0)
         }
         
-        self.actionsViewController.addCancel { viewController in
+        self.actionsViewController.setCancel { viewController in
             // 两个动画同时开始
             viewController.dismiss(animated: true, completion: {})
             self.viewModel.dependency?.stop()
@@ -190,7 +190,7 @@ public class RecorderView: UIView {
     
     private lazy var playButton: RoundButton = {
         let button = RoundButton()
-        button.setTitle("play".localizable)
+        button.title = "play".localizable
         button.tapped { _ in
             self.delegate?.tappedPlay()
         }
@@ -199,7 +199,7 @@ public class RecorderView: UIView {
     
     private lazy var recordButton: RoundButton = {
         let button = RoundButton()
-        button.setTitle("start".localizable)
+        button.title = "start".localizable
         button.tapped { _ in
             self.delegate?.tappedRecord()
         }
@@ -208,7 +208,7 @@ public class RecorderView: UIView {
     
     private lazy var pauseRecordingButton: RoundButton = {
         let button = RoundButton()
-        button.setTitle("pause".localizable)
+        button.title = "pause".localizable
         button.tapped { _ in
             self.delegate?.tappedPause()
         }
@@ -217,7 +217,7 @@ public class RecorderView: UIView {
     
     private lazy var stopRecordingButton: RoundButton = {
         let button = RoundButton()
-        button.setTitle("stop".localizable)
+        button.title = "stop".localizable
         button.tapped { _ in
             self.delegate?.tappedStopRecording()
         }
@@ -226,7 +226,7 @@ public class RecorderView: UIView {
     
     private lazy var stopPlayingButton: RoundButton = {
         let button = RoundButton()
-        button.setTitle("stop".localizable)
+        button.title = "stop".localizable
         button.tapped { _ in
             self.delegate?.tappedStopPlaying()
         }
@@ -235,7 +235,7 @@ public class RecorderView: UIView {
     
     private lazy var reRecordButton: RoundButton = {
         let button = RoundButton()
-        button.setTitle("restart".localizable)
+        button.title = "restart".localizable
         button.tapped { _ in
             self.delegate?.tappedRecord()
         }
@@ -244,7 +244,7 @@ public class RecorderView: UIView {
     
     private lazy var continueRecordingButton: RoundButton = {
         let button = RoundButton()
-        button.setTitle("continue".localizable)
+        button.title = "continue".localizable
         button.tapped { _ in
             self.delegate?.tappedResumRecording()
         }

@@ -62,7 +62,7 @@ public class AttachmentImageViewController: AttachmentViewController {
             })
         })
         
-        actionsViewController.addCancel { viewController in
+        actionsViewController.setCancel { viewController in
             // 两个动画同时开始
             viewController.dismiss(animated: true, completion: {})
             self.viewModel.dependency?.stop()

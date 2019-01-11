@@ -10,11 +10,18 @@ import Foundation
 import UIKit
 
 public class RoundButton: UIView {
+    public enum Style {
+        case verticle // default
+        case horizontal
+    }
+    
     public override func layoutSubviews() {
         super.layoutSubviews()
         
         button.layer.cornerRadius = button.bounds.width / 2
     }
+    
+    public let style: Style
     
     private let button: UIButton = {
         let button = UIButton()
@@ -32,9 +39,15 @@ public class RoundButton: UIView {
         return label
     }()
     
-    public func setTitle(_ title: String?) {
-        self.titleLabel.text = title
-        self.updateUI()
+    public var title: String? {
+        set {
+            self.titleLabel.text = newValue
+            self.updateUI()
+        }
+        
+        get {
+            return self.titleLabel.text
+        }
     }
     
     public var isEnabled: Bool {
@@ -59,7 +72,7 @@ public class RoundButton: UIView {
         self.button.setImage(image, for: state)
     }
     
-    public func tapped(_ action: @escaping (RoundButton) -> Void) {
+    @objc public func tapped(_ action: @escaping (RoundButton) -> Void) {
         self.tappedAction = action
     }
     
@@ -68,9 +81,31 @@ public class RoundButton: UIView {
         self.tappedAction?(self)
     }
     
-    public init() {
+    public init(style: Style = .verticle) {
+        self.style = style
         super.init(frame: .zero)
         self.setupUI()
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(tapped(tap:)))
+        self.addGestureRecognizer(tap)
+    }
+    
+    @objc private func tapped(tap: UITapGestureRecognizer) {
+        switch tap.state {
+        case .began:
+            self.button.isHighlighted = true
+        case .cancelled:
+            self.button.isHighlighted = false
+        case .failed:
+            self.button.isHighlighted = false
+        case .changed:
+            self.button.isHighlighted = true
+        case .ended:
+            self.button.isHighlighted = false
+            self.tappedAction?(self)
+        case .possible:
+            break
+        }
     }
     
     public required init?(coder aDecoder: NSCoder) {
@@ -89,12 +124,26 @@ public class RoundButton: UIView {
         self.button.translatesAutoresizingMaskIntoConstraints = false
         self.titleLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        self.button.sideAnchor(for: [.top, .left, .right], to: self, edgeInsets: .zero)
         self.button.ratioAnchor(1)
-        self.button.columnAnchor(view: self.titleLabel, space: 5)
         
-        self.titleLabel.sideAnchor(for: .bottom, to: self, edgeInset: 0)
-        self.titleLabel.centerAnchors(position: .centerX, to: self)
+        switch self.style {
+        case .verticle:
+            self.button.sideAnchor(for: [.top, .left, .right], to: self, edgeInset: 0)
+            self.button.columnAnchor(view: self.titleLabel, space: 5)
+            
+            self.titleLabel.sideAnchor(for: .bottom, to: self, edgeInset: 0)
+            self.titleLabel.centerAnchors(position: .centerX, to: self)
+        case .horizontal:
+            self.button.sideAnchor(for: [.top, .left, .bottom], to: self, edgeInset: 10)
+            self.button.rowAnchor(view: self.titleLabel, space: 15)
+            
+            self.titleLabel.sideAnchor(for: .right, to: self, edgeInset: 10)
+            self.titleLabel.centerAnchors(position: .centerY, to: self)
+        }
+        
+        self.titleLabel.setContentHuggingPriority(UILayoutPriority.defaultLow, for: NSLayoutConstraint.Axis.horizontal)
+        self.button.setContentHuggingPriority(UILayoutPriority.required, for: NSLayoutConstraint.Axis.horizontal)
+        self.button.setContentHuggingPriority(UILayoutPriority.required, for: NSLayoutConstraint.Axis.vertical)
         
         self.setBackgroundColor(InterfaceTheme.Color.background1, for: .normal)
         self.setBorder(color: InterfaceTheme.Color.background2)

@@ -17,9 +17,13 @@ public protocol AttachmentCoordinatorDelegate: class {
 public class AttachmentCoordinator: Coordinator {
     public weak var delegate: AttachmentCoordinatorDelegate?
     
+    public var type: Attachment.AttachmentType
+    
     public init(stack: UINavigationController, type: Attachment.AttachmentType) {
 
         let attachmentViewModel = AttachmentViewModel(attachmentManager: AttachmentManager())
+        
+        self.type = type
         
         super.init(stack: stack)
         
@@ -50,14 +54,28 @@ public class AttachmentCoordinator: Coordinator {
     
     public override func moveIn(from: UIViewController?) {
         guard let viewController = self.viewController else { return }
+        
+        switch self.type {
+        case .sketch:
+            from?.present(viewController, animated: true, completion: nil)
+            return
+        default: break
+        }
+        
         viewController.modalPresentationStyle = .overCurrentContext
+        viewController.view.backgroundColor = .clear
         from?.present(viewController, animated: false, completion: nil)
     }
     
     public override func moveOut(from: UIViewController) {
-        (self.viewController as? AttachmentViewController)?.animateHideBackground { [weak self] in
-            self?.viewController?.dismiss(animated: false, completion: nil)
+        switch self.type {
+        case .sketch:
+            from.dismiss(animated: true, completion: nil)
+            return
+        default: break
         }
+        
+        self.viewController?.dismiss(animated: false, completion: nil)
     }
 }
 
