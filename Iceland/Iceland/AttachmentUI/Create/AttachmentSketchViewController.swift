@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import Drawsana
 import Business
+import Storage
 
 public class AttachmentSketchViewController: AttachmentViewController {
     private lazy var drawingView: DrawsanaView = {
@@ -26,6 +27,7 @@ public class AttachmentSketchViewController: AttachmentViewController {
         button.setTitle("↶", for: .normal)
         button.titleLabel?.font = InterfaceTheme.Font.title
         button.setTitleColor(InterfaceTheme.Color.interactive, for: .normal)
+        button.addTarget(self, action: #selector(undo), for: .touchUpInside)
         return button
     }()
     
@@ -34,6 +36,7 @@ public class AttachmentSketchViewController: AttachmentViewController {
         button.setTitle("↷", for: .normal)
         button.titleLabel?.font = InterfaceTheme.Font.title
         button.setTitleColor(InterfaceTheme.Color.interactive, for: .normal)
+        button.addTarget(self, action: #selector(redo), for: .touchUpInside)
         return button
     }()
     
@@ -67,6 +70,14 @@ public class AttachmentSketchViewController: AttachmentViewController {
         return pickBrushButton
     }()
     
+    private lazy var saveButton: UIButton = {
+        let button = UIButton()
+        button.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.backgroundHighlight, size: CGSize.singlePoint), for: .normal)
+        button.setTitle("save".localizable, for: .normal)
+        button.addTarget(self, action: #selector(save), for: .touchUpInside)
+        return button
+    }()
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -79,6 +90,30 @@ public class AttachmentSketchViewController: AttachmentViewController {
     
     @objc private func cancel() {
         self.viewModel.dependency?.stop()
+    }
+    
+    @objc private func undo() {
+        if self.drawingView.operationStack.canUndo {
+            self.drawingView.operationStack.undo()
+        }
+    }
+    
+    @objc private func redo() {
+        if self.drawingView.operationStack.canRedo {
+            self.drawingView.operationStack.redo()
+        }
+    }
+    
+    @objc private func save() {
+        if let image = self.drawingView.render() {
+            let url = File(File.Folder.temp("sketch"), fileName: UUID().uuidString, createFolderIfNeeded: true).url.appendingPathExtension("png")
+            do {
+                try image.pngData()?.write(to: url)
+                self.viewModel.save(content: url.path, type: Attachment.AttachmentType.sketch, description: "sketch")
+            } catch {
+                log.error(error)
+            }
+        }
     }
     
     private let colors: [(String, UIColor)] = [("dard gray", .darkGray), ("black", .black), ("red", .red), ("blue", .blue), ("cyan", .cyan), ("orange", .orange), ("brown", .brown), ("gray", .gray), ("yellow", .yellow)]
@@ -110,6 +145,7 @@ public class AttachmentSketchViewController: AttachmentViewController {
         
         self.view.addSubview(self.controlsView)
 
+        self.drawingView.columnAnchor(view: self.controlsView, space: 10)
         self.controlsView.addSubview(self.pickColorButton)
         self.controlsView.addSubview(self.pickBrushButton)
         
@@ -117,12 +153,18 @@ public class AttachmentSketchViewController: AttachmentViewController {
         self.pickColorButton.translatesAutoresizingMaskIntoConstraints = false
         self.pickBrushButton.translatesAutoresizingMaskIntoConstraints = false
         
-        self.controlsView.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 0)
+        self.controlsView.sideAnchor(for: [.left, .right], to: self.view, edgeInset: 0)
         self.controlsView.sizeAnchor(height: 80)
         
         self.pickColorButton.sideAnchor(for: [.left, .top, .bottom], to: self.controlsView, edgeInsets: .init(top: 0, left: 20, bottom: 0, right: 0))
         self.pickBrushButton.sideAnchor(for: [.right, .top, .bottom], to: self.controlsView, edgeInsets: .init(top: 0, left: 20, bottom: 0, right: 0))
         self.pickColorButton.rowAnchor(view: self.pickBrushButton, widthRatio: 1)
+
+        self.view.addSubview(self.saveButton)
+        self.saveButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        self.saveButton.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 0)
+        self.saveButton.sizeAnchor(height: 60)
     }
     
     private func setColor(index: Int) {

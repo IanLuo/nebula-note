@@ -14,8 +14,14 @@ public class ActionsViewController: UIViewController {
         static let rowHeight = 80
     }
     
-    public func addAction(icon: UIImage?, title: String, action: @escaping (ActionsViewController) -> Void) {
-        self.items.append(Item(icon: icon, title: title, action: action))
+    public enum Style {
+        case `default`
+        case highlight
+        case warning
+    }
+    
+    public func addAction(icon: UIImage?, title: String, style: Style = .default, action: @escaping (ActionsViewController) -> Void) {
+        self.items.append(Item(icon: icon, title: title, action: action, style: style))
         
         if self.isInitialized {
             self.tableView.insertRows(at: [IndexPath(row: self.items.count - 1, section: 0)], with: UITableView.RowAnimation.none)
@@ -140,10 +146,11 @@ public class ActionsViewController: UIViewController {
         self.cancelAction?(self)
     }
     
-    private struct Item {
+    fileprivate struct Item {
         let icon: UIImage?
         let title: String
         let action: (ActionsViewController) -> Void
+        let style: ActionsViewController.Style
     }
 }
 
@@ -156,8 +163,8 @@ extension ActionsViewController: UITableViewDataSource, UITableViewDelegate {
         let cell = tableView.dequeueReusableCell(withIdentifier: ActionCell.reuseIdentifier, for: indexPath) as! ActionCell
         
         let item = self.items[indexPath.row]
-        cell.iconView.image = item.icon
-        cell.titleLabel.text = item.title
+        cell.item = item
+
         return cell
     }
     
@@ -172,6 +179,24 @@ extension ActionsViewController: UITableViewDataSource, UITableViewDelegate {
 }
 
 fileprivate class ActionCell: UITableViewCell {
+    fileprivate var item: ActionsViewController.Item? {
+        didSet {
+            guard let item = item else { return }
+            
+            self.iconView.image = item.icon
+            self.titleLabel.text = item.title
+            
+            switch item.style {
+            case .default:
+                self.backgroundColor = InterfaceTheme.Color.background2
+            case .highlight:
+                self.backgroundColor = InterfaceTheme.Color.backgroundHighlight
+            case .warning:
+                self.backgroundColor = UIColor.red
+            }
+        }
+    }
+    
     static let reuseIdentifier = "ActionCell"
     let iconView: UIImageView = {
         let imageView = UIImageView()

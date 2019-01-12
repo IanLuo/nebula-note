@@ -30,6 +30,8 @@ public class AudioPlayer: NSObject {
     
     public var url: URL?
     
+    public var isReady: Bool = false
+    
     private var player: AVAudioPlayer!
     
     private let audioSession: AVAudioSession = AVAudioSession.sharedInstance()
@@ -47,13 +49,14 @@ public class AudioPlayer: NSObject {
     public func getReady() {
         do {
             if let url = self.url {
-                try audioSession.setCategory(AVAudioSession.Category.playback, mode: AVAudioSession.Mode.default, options: AVAudioSession.CategoryOptions.defaultToSpeaker)
+                try audioSession.setCategory(AVAudioSession.Category.playAndRecord, mode: AVAudioSession.Mode.default, options: AVAudioSession.CategoryOptions.defaultToSpeaker)
                 try audioSession.setActive(true)
                 
                 try self.player = AVAudioPlayer(contentsOf: url)
                 self.player.delegate = self
                 
                 if self.player.prepareToPlay() {
+                    self.isReady = true
                     self.delegate?.playerDidReadyToPlay()
                 } else {
                     self.delegate?.playerDidFail(with: AudioPlayerError.canNotPlay)
@@ -67,6 +70,7 @@ public class AudioPlayer: NSObject {
     }
     
     public func start() {
+        guard isReady else { return }
         if !self.player.isPlaying {
             self.player.play()
             self.delegate?.playerDidStartPlaying()

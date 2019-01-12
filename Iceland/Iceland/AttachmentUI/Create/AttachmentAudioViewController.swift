@@ -84,7 +84,7 @@ extension AttachmentAudioViewController: AudioRecorderDelegate {
         self.recorderView.status = .stopped
         
         // 显示保存按钮
-        self.actionsViewController.addAction(icon: nil, title: "save".localizable) { [unowned self] (actionController) in
+        self.actionsViewController.addAction(icon: nil, title: "save".localizable, style: .highlight) { [unowned self] (actionController) in
             self.viewModel.save(content: url.path, type: .audio, description: "recorded voice")
         }
         
