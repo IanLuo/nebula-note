@@ -24,16 +24,25 @@ public class DocumentBrowserViewController: UIViewController {
         tableView.backgroundColor = InterfaceTheme.Color.background1
         tableView.tableFooterView = UIView()
         tableView.separatorStyle = .none
-        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 60, right: 0)
+        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 130, right: 0)
         return tableView
     }()
     
     private let createNewDocumentButton: UIButton = {
         let button = UIButton()
         button.setTitle("browser_create_new".localizable, for: .normal)
-        button.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.descriptive, size: .singlePoint),
+        button.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.background2, size: .singlePoint),
                                   for: .normal)
         button.addTarget(self, action: #selector(createNewDocumentAtRoot), for: .touchUpInside)
+        return button
+    }()
+    
+    private let cancelButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("cancel".localizable, for: .normal)
+        button.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.background2, size: .singlePoint),
+                                  for: .normal)
+        button.addTarget(self, action: #selector(cancel), for: .touchUpInside)
         return button
     }()
     
@@ -56,18 +65,29 @@ public class DocumentBrowserViewController: UIViewController {
     }
     
     private func setupUI() {
+        self.view.backgroundColor = InterfaceTheme.Color.background1
+        
         self.view.addSubview(self.tableView)
         self.view.addSubview(self.createNewDocumentButton)
-        self.tableView.translatesAutoresizingMaskIntoConstraints = false
-        self.createNewDocumentButton.translatesAutoresizingMaskIntoConstraints = false
+        self.view.addSubview(self.cancelButton)
         
         self.tableView.allSidesAnchors(to: self.view, edgeInsets: .zero)
-        self.createNewDocumentButton.sideAnchor(for: [.left, .bottom, .right], to: self.view, edgeInsets: .zero)
+        
+        self.createNewDocumentButton.sideAnchor(for: [.left, .right], to: self.view, edgeInsets: .zero)
         self.createNewDocumentButton.heightAnchor.constraint(equalToConstant: 60).isActive = true
+        
+        self.createNewDocumentButton.columnAnchor(view: self.cancelButton, space: 1)
+        
+        self.cancelButton.heightAnchor.constraint(equalToConstant: 60).isActive = true
+        self.cancelButton.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 0)
     }
     
     @objc private func createNewDocumentAtRoot() {
         self.viewModel.createDocument(below: nil)
+    }
+    
+    @objc private func cancel() {
+        self.viewModel.dependency?.stop()
     }
 }
 

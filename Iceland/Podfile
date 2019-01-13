@@ -18,6 +18,7 @@ end
 
 target 'Business' do
     pod 'SwiftyBeaver'
+    pod 'Result'
 end
 
 target 'Storage' do

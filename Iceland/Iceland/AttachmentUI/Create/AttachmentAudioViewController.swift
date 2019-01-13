@@ -66,6 +66,12 @@ public class AttachmentAudioViewController: AttachmentViewController {
         self.actionsViewController.modalPresentationStyle = .overCurrentContext
         self.present(actionsViewController, animated: true, completion: nil)
     }
+    
+    override public func didSaveAttachment(key: String) {
+        self.dismiss(animated: true, completion: { [unowned self] in
+            self.viewModel.dependency?.stop()
+        })
+    }
 }
 
 extension AttachmentAudioViewController: AudioRecorderDelegate {

@@ -78,6 +78,7 @@ public struct AttachmentManager {
         
         switch type {
         case .text: fallthrough
+        case .location: fallthrough
         case .link:
             fileURL = URL(fileURLWithPath: newKey + ".txt", relativeTo: AttachmentConstants.folder)
             do {

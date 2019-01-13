@@ -31,17 +31,18 @@ public class BrowserCoordinator: Coordinator {
         let viewController = DocumentBrowserViewController(viewModel: viewModel)
         self.usage = usage
         super.init(stack: stack)
+        viewModel.dependency = self
         viewController.delegate = self
         self.viewController = viewController
     }
     
-    public override func moveIn(from: UIViewController?) {
+    public override func moveIn(top: UIViewController?) {
         guard let viewController = self.viewController else { return }
         
-        from?.present(viewController, animated: true, completion: nil)
+        top?.present(viewController, animated: true, completion: nil)
     }
     
-    public override func moveOut(from: UIViewController) {
+    public override func moveOut(top: UIViewController) {
         self.viewController?.dismiss(animated: true, completion: nil)
     }
     

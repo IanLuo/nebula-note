@@ -32,8 +32,17 @@ public struct Position: OptionSet {
     }
 }
 
+
 extension UIView {
+    public func makeSureTranslationIsSetToFalse() {
+        if self.translatesAutoresizingMaskIntoConstraints == true {
+            self.translatesAutoresizingMaskIntoConstraints = false
+        }
+    }
+    
     public func centerAnchors(position: Position, to view: UIView, constaint: CGFloat = 0, multiplier: CGFloat = 1) {
+        self.makeSureTranslationIsSetToFalse()
+        
         if position.contains(Position.centerX) {
             let centerX = NSLayoutConstraint(item: self, attribute: NSLayoutConstraint.Attribute.centerX, relatedBy: NSLayoutConstraint.Relation.equal, toItem: view, attribute: NSLayoutConstraint.Attribute.centerX, multiplier: multiplier, constant: constaint)
             centerX.identifier = Position.centerX.identifier(for: self)
@@ -58,6 +67,8 @@ extension UIView {
     }
     
     public func sizeAnchor(width: CGFloat? = nil, height: CGFloat? = nil) {
+        self.makeSureTranslationIsSetToFalse()
+        
         if let width = width {
             let width = self.widthAnchor.constraint(equalToConstant: width)
             width.identifier = Position.width.identifier(for: self)
@@ -76,12 +87,16 @@ extension UIView {
     }
     
     public func ratioAnchor(_ ratio: CGFloat) {
+        self.makeSureTranslationIsSetToFalse()
+        
         let width = self.widthAnchor.constraint(equalTo: self.heightAnchor, multiplier: ratio)
         width.identifier = Position.ratio.identifier(for: self)
         width.isActive = true
     }
     
     public func rowAnchor(view: UIView, space: CGFloat = 0, widthRatio: CGFloat? = nil) {
+        self.makeSureTranslationIsSetToFalse()
+        
         let right = self.rightAnchor.constraint(equalTo: view.leftAnchor, constant: -space)
         right.identifier = Position.right.identifier(for: self)
         right.isActive = true
@@ -92,6 +107,8 @@ extension UIView {
     }
     
     public func columnAnchor(view: UIView, space: CGFloat = 0, heightRatio: CGFloat? = nil) {
+        self.makeSureTranslationIsSetToFalse()
+        
         let bottom = self.bottomAnchor.constraint(equalTo: view.topAnchor, constant: -space)
         bottom.identifier = Position.bottom.identifier(for: self)
         bottom.isActive = true
@@ -102,18 +119,24 @@ extension UIView {
     }
     
     public func widthDependencyAnchor(view: UIView, widthRatio: CGFloat) {
+        self.makeSureTranslationIsSetToFalse()
+        
         let widthDependency = self.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: widthRatio)
         widthDependency.identifier = Position.widthDependency.identifier(for: self)
         widthDependency.isActive = true
     }
     
     public func heightDependencyAnchor(view: UIView, heightRatio: CGFloat) {
+        self.makeSureTranslationIsSetToFalse()
+        
         let heightDependency = self.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: heightRatio)
         heightDependency.identifier = Position.widthDependency.identifier(for: self)
         heightDependency.isActive = true
     }
     
     public func sideAnchor(for position: Position, to view: UIView, edgeInsets: UIEdgeInsets) {
+        self.makeSureTranslationIsSetToFalse()
+        
         if position.contains(Position.left) {
             let left = self.leftAnchor.constraint(equalTo: view.leftAnchor, constant: edgeInsets.left)
             left.identifier = Position.left.identifier(for: self)

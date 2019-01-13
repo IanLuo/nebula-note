@@ -80,6 +80,7 @@ public class ActionsViewController: UIViewController {
             if let accessoryView = accessoryView {
                 accessoryViewContainer.subviews.forEach { $0.removeFromSuperview() }
                 accessoryViewContainer.addSubview(accessoryView)
+                accessoryView.allSidesAnchors(to: accessoryViewContainer, edgeInset: 0)
             } else {
                 let emptyView = UIView()
                 accessoryViewContainer.addSubview(emptyView)
@@ -108,19 +109,14 @@ public class ActionsViewController: UIViewController {
         let tableView = UITableView()
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.alwaysBounceVertical = false
+//        tableView.alwaysBounceVertical = false
         tableView.backgroundColor = InterfaceTheme.Color.background2
-        tableView.separatorStyle = .none
+        tableView.separatorColor = InterfaceTheme.Color.background1
         tableView.register(ActionCell.self, forCellReuseIdentifier: ActionCell.reuseIdentifier)
         return tableView
     }()
     
     private func setupUI() {
-        self.contentView.translatesAutoresizingMaskIntoConstraints = false
-        self.accessoryViewContainer.translatesAutoresizingMaskIntoConstraints = false
-        self.tableView.translatesAutoresizingMaskIntoConstraints = false
-        self.cancelButton.translatesAutoresizingMaskIntoConstraints = false
-        
         self.view.addSubview(self.contentView)
         
         self.contentView.addSubview(self.tableView)
@@ -181,19 +177,21 @@ extension ActionsViewController: UITableViewDataSource, UITableViewDelegate {
 fileprivate class ActionCell: UITableViewCell {
     fileprivate var item: ActionsViewController.Item? {
         didSet {
-            guard let item = item else { return }
-            
-            self.iconView.image = item.icon
-            self.titleLabel.text = item.title
-            
-            switch item.style {
-            case .default:
-                self.backgroundColor = InterfaceTheme.Color.background2
-            case .highlight:
-                self.backgroundColor = InterfaceTheme.Color.backgroundHighlight
-            case .warning:
-                self.backgroundColor = UIColor.red
-            }
+            self.iconView.image = item?.icon
+            self.titleLabel.text = item?.title
+        }
+    }
+    
+    private var cellBackgroundColor: UIColor {
+        guard let item = item else { return InterfaceTheme.Color.background2 }
+        
+        switch item.style {
+        case .default:
+            return InterfaceTheme.Color.background2
+        case .highlight:
+            return InterfaceTheme.Color.backgroundHighlight
+        case .warning:
+            return UIColor.red
         }
     }
     
@@ -215,9 +213,7 @@ fileprivate class ActionCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         self.backgroundColor = InterfaceTheme.Color.background2
-        
-        self.iconView.translatesAutoresizingMaskIntoConstraints = false
-        self.titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        self.separatorInset = .zero
         
         self.contentView.addSubview(self.iconView)
         self.contentView.addSubview(self.titleLabel)
@@ -230,5 +226,23 @@ fileprivate class ActionCell: UITableViewCell {
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func setHighlighted(_ highlighted: Bool, animated: Bool) {
+        if highlighted {
+            self.contentView.backgroundColor = InterfaceTheme.Color.background1
+        } else {
+            self.contentView.backgroundColor = self.cellBackgroundColor
+        }
+    }
+
+    override func setSelected(_ selected: Bool, animated: Bool) {
+        super.setSelected(selected, animated: animated)
+
+        if selected {
+            self.backgroundColor = InterfaceTheme.Color.background1
+        } else {
+            self.backgroundColor = self.cellBackgroundColor
+        }
     }
 }

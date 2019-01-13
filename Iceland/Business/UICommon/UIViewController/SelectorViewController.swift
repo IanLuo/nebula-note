@@ -9,9 +9,12 @@
 import Foundation
 import UIKit
 
+public protocol SelectorViewControllerDelegate: class {
+    func SelectorDidCancel(viewController: SelectorViewController)
+    func SelectorDidSelect(index: Int, viewController: SelectorViewController)
+}
+
 public class SelectorViewController: UIViewController {
-    private var selectAction: ((Int, SelectorViewController) -> Void)?
-    
     public var rowHeight: CGFloat = 60
     
     public lazy var tableView: UITableView = {
@@ -20,7 +23,7 @@ public class SelectorViewController: UIViewController {
         tableView.dataSource = self
         tableView.alwaysBounceVertical = false
         tableView.backgroundColor = InterfaceTheme.Color.background2
-        tableView.separatorColor = InterfaceTheme.Color.background3
+        tableView.separatorColor = InterfaceTheme.Color.background1
         tableView.register(ActionCell.self, forCellReuseIdentifier: ActionCell.reuseIdentifier)
         return tableView
     }()
@@ -55,10 +58,8 @@ public class SelectorViewController: UIViewController {
     public var items: [Item] = []
     public var currentTitle: String?
     public var selectedTitles: [String] = []
-    
-    public func setSelect(action: @escaping (Int, SelectorViewController) -> Void) {
-        self.selectAction = action
-    }
+    public weak var delegate: SelectorViewControllerDelegate?
+    public var name: String?
     
     public func addItem(icon: UIImage? = nil, title: String, description: String? = nil) {
         self.items.append(Item(icon: icon, title: title, description: description))
@@ -117,7 +118,7 @@ extension SelectorViewController: UITableViewDataSource, UITableViewDelegate {
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        self.selectAction?(indexPath.row, self)
+        self.delegate?.SelectorDidSelect(index: indexPath.row, viewController: self)
     }
     
     public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -166,6 +167,7 @@ fileprivate class ActionCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         self.backgroundColor = InterfaceTheme.Color.background2
+        self.separatorInset = .zero
         self.selectedBackgroundView?.isHidden = true
         
         self.descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -189,9 +191,9 @@ fileprivate class ActionCell: UITableViewCell {
     
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
         if highlighted {
-            self.contentView.backgroundColor = InterfaceTheme.Color.background1
+            self.backgroundColor = InterfaceTheme.Color.background1
         } else {
-            self.contentView.backgroundColor = InterfaceTheme.Color.background2
+            self.backgroundColor = InterfaceTheme.Color.background2
         }
     }
     
@@ -199,9 +201,9 @@ fileprivate class ActionCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
         
         if selected {
-            self.contentView.backgroundColor = InterfaceTheme.Color.background1
+            self.backgroundColor = InterfaceTheme.Color.background1
         } else {
-            self.contentView.backgroundColor = InterfaceTheme.Color.background2
+            self.backgroundColor = InterfaceTheme.Color.background2
         }
     }
     

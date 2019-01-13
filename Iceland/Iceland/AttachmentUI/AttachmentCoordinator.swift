@@ -52,25 +52,25 @@ public class AttachmentCoordinator: Coordinator {
         self.viewController = viewController
     }
     
-    public override func moveIn(from: UIViewController?) {
+    public override func moveIn(top: UIViewController?) {
         guard let viewController = self.viewController else { return }
         
         switch self.type {
         case .sketch:
-            from?.present(viewController, animated: true, completion: nil)
+            top?.present(viewController, animated: true, completion: nil)
             return
         default: break
         }
         
         viewController.modalPresentationStyle = .overCurrentContext
         viewController.view.backgroundColor = .clear
-        from?.present(viewController, animated: false, completion: nil)
+        top?.present(viewController, animated: false, completion: nil)
     }
     
-    public override func moveOut(from: UIViewController) {
+    public override func moveOut(top: UIViewController) {
         switch self.type {
         case .sketch:
-            from.dismiss(animated: true, completion: nil)
+            top.dismiss(animated: true, completion: nil)
             return
         default: break
         }

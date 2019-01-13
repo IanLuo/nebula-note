@@ -39,15 +39,20 @@ public class HomeViewController: UIViewController {
         sketchButton.setTitle("sketch", for: .normal)
         sketchButton.addTarget(self, action: #selector(showSketch), for: .touchUpInside)
         
+        let locationButton = UIButton()
+        locationButton.setTitle("location", for: .normal)
+        locationButton.addTarget(self, action: #selector(showLocationPicker), for: .touchUpInside)
+        
+        let videoButton = UIButton()
+        videoButton.setTitle("video", for: .normal)
+        videoButton.addTarget(self, action: #selector(showVideoRecorder), for: .touchUpInside)
+        
         self.view.addSubview(browserButton)
         self.view.addSubview(imageCaptureButton)
         self.view.addSubview(audioRecordButton)
         self.view.addSubview(sketchButton)
-        
-        browserButton.translatesAutoresizingMaskIntoConstraints = false
-        imageCaptureButton.translatesAutoresizingMaskIntoConstraints = false
-        audioRecordButton.translatesAutoresizingMaskIntoConstraints = false
-        sketchButton.translatesAutoresizingMaskIntoConstraints = false
+        self.view.addSubview(locationButton)
+        self.view.addSubview(videoButton)
         
         browserButton.centerAnchors(position: [.centerX, .centerY], to: self.view)
         
@@ -59,6 +64,12 @@ public class HomeViewController: UIViewController {
         
         sketchButton.centerAnchors(position: .centerX, to: self.view)
         sketchButton.topAnchor.constraint(equalTo: audioRecordButton.bottomAnchor, constant: 10).isActive = true
+        
+        locationButton.centerAnchors(position: .centerX, to: self.view)
+        locationButton.topAnchor.constraint(equalTo: sketchButton.bottomAnchor, constant: 10).isActive = true
+        
+        videoButton.centerAnchors(position: .centerX, to: self.view)
+        videoButton.topAnchor.constraint(equalTo: locationButton.bottomAnchor, constant: 10).isActive = true
     }
     
     @objc private func showBrowser() {
@@ -75,5 +86,13 @@ public class HomeViewController: UIViewController {
     
     @objc private func showSketch() {
         self.viewModel?.dependency?.showAttachmentCreator(type: .sketch)
+    }
+    
+    @objc private func showLocationPicker() {
+        self.viewModel?.dependency?.showAttachmentCreator(type: .location)
+    }
+    
+    @objc private func showVideoRecorder() {
+        self.viewModel?.dependency?.showAttachmentCreator(type: .video)
     }
 }

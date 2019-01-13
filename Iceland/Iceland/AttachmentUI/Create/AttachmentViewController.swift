@@ -14,7 +14,7 @@ public protocol AttachmentViewControllerDelegate: class {
     func didSaveAttachment(key: String)
 }
 
-public class AttachmentViewController: UIViewController {
+public class AttachmentViewController: UIViewController, AttachmentViewModelDelegate {
     public let viewModel: AttachmentViewModel
     public weak var delegate: AttachmentViewControllerDelegate?
     
@@ -28,9 +28,7 @@ public class AttachmentViewController: UIViewController {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-}
-
-extension AttachmentViewController: AttachmentViewModelDelegate {
+    
     public func didSaveAttachment(key: String) {
         self.delegate?.didSaveAttachment(key: key)
     }

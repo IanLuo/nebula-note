@@ -24,6 +24,8 @@
 	<string>pick media</string>
 	<key>NSCameraUsageDescription</key>
 	<string>take photo</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>find your location</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>record</string>
 	<key>UILaunchStoryboardName</key>

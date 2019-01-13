@@ -56,11 +56,11 @@ public class Coordinator {
         }
     }
     
-    open func moveOut(from: UIViewController) {
-        from.navigationController?.popViewController(animated: true)
+    open func moveOut(top: UIViewController) {
+        top.navigationController?.popViewController(animated: true)
     }
     
-    open func moveIn(from: UIViewController?) {
+    open func moveIn(top: UIViewController?) {
         if let viewController = self.viewController {
             self.stack.pushViewController(viewController, animated: true)
         }
@@ -68,7 +68,7 @@ public class Coordinator {
     
     @objc public func stop() {
         if let viewController = self.viewController {
-            self.moveOut(from: viewController)
+            self.moveOut(top: viewController)
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.25) {
                 self.parent?.remove(self)
             }
@@ -79,7 +79,7 @@ public class Coordinator {
         if let f = from {
             f.addChild(self)
             
-            self.moveIn(from: f.viewController)
+            self.moveIn(top: f.viewController)
         }
         
     }

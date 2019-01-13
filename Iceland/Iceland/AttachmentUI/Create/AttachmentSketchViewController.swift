@@ -85,7 +85,7 @@ public class AttachmentSketchViewController: AttachmentViewController {
         
         self.drawingView.set(tool: PenTool())
         self.setColor(index: 0)
-        self.setBrush(self.brushWidth[10])
+        self.setBrush(self.brushWidth[9])
     }
     
     @objc private func cancel() {
@@ -181,15 +181,11 @@ public class AttachmentSketchViewController: AttachmentViewController {
     
     private func showColorPicker(button: RoundButton) {
         let selector = SelectorViewController()
+        selector.delegate = self
+        selector.name = "color"
         self.colors.forEach {
             selector.addItem(icon: UIImage.create(with: $0.1, size: CGSize(width:30, height: 30), style: .circle),
                                   title: "\($0.0)")
-        }
-        
-        selector.setSelect { (index, viewController) in
-            viewController.dismiss(animated: true) {
-                self.setColor(index: index)
-            }
         }
         
         selector.currentTitle = button.title
@@ -199,20 +195,36 @@ public class AttachmentSketchViewController: AttachmentViewController {
     private func showBrushPicker(button: RoundButton) {
         let selector = SelectorViewController()
         selector.rowHeight = 80
+        selector.delegate = self
+        selector.name = "brush"
         self.brushWidth.forEach {
             selector.addItem(icon: UIImage.create(with: InterfaceTheme.Color.interactive, size: CGSize(width: $0, height: $0), style: .circle),
                                   title: "\($0)")
         }
         
-        selector.setSelect { (index, viewController) in
-            viewController.dismiss(animated: true) {
-                self.setBrush(self.brushWidth[index])
-            }
-        }
-        
         selector.currentTitle = button.title
         selector.show(from: button, on: self)
     }
+}
+
+extension AttachmentSketchViewController: SelectorViewControllerDelegate {
+    public func SelectorDidCancel(viewController: SelectorViewController) {
+        viewController.dismiss(animated: true, completion: nil)
+    }
+    
+    public func SelectorDidSelect(index: Int, viewController: SelectorViewController) {
+        viewController.dismiss(animated: true) {
+            if viewController.name == "color" {
+                self.setBrush(self.brushWidth[index])
+            }
+            
+            else if viewController.name == "brush" {
+                self.setColor(index: index)
+            }
+        }
+    }
+    
+    
 }
 
 extension AttachmentSketchViewController: DrawsanaViewDelegate {

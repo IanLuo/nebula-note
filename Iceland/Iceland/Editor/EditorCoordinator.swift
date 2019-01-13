@@ -46,17 +46,17 @@ public class EditorCoordinator: Coordinator {
         }
     }
     
-    public override func moveIn(from: UIViewController?) {
+    public override func moveIn(top: UIViewController?) {
         guard let viewController = self.viewController else { return }
         switch self.usage {
         case .editor:
             self.stack.pushViewController(viewController, animated: true)
         case .outline:
-            from?.present(viewController, animated: true, completion: nil)
+            top?.present(viewController, animated: true, completion: nil)
         }
     }
     
-    public override func moveOut(from: UIViewController) {
+    public override func moveOut(top: UIViewController) {
         switch self.usage {
         case .editor:
             self.stack.popViewController(animated: true)
