@@ -10,8 +10,8 @@ import Foundation
 import UIKit
 
 public protocol ModalFormViewControllerDelegate: class {
-    func ModalFormDidCancel(viewController: ModalFormViewController)
-    func ModalFormDidSave(viewController: ModalFormViewController)
+    func modalFormDidCancel(viewController: ModalFormViewController)
+    func modalFormDidSave(viewController: ModalFormViewController, formData: [String: Codable])
 }
 
 public class ModalFormViewController: UIViewController {
@@ -19,17 +19,27 @@ public class ModalFormViewController: UIViewController {
         case text(String, String, String?)
     }
     
-    private let cancelButton: UIButton = {
+    private lazy var cancelButton: UIButton = {
         let button = UIButton()
+        button.addTarget(self, action: #selector(cancel), for: .touchUpInside)
+        button.setTitle("✕", for: .normal)
+        button.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.background2, size: .singlePoint), for: .normal)
+        button.setTitleColor(InterfaceTheme.Color.interactive, for: .normal)
         return button
     }()
     
-    private let saveButton: UIButton = {
+    private lazy var saveButton: UIButton = {
         let button = UIButton()
+        button.setTitle("✓", for: .normal)
+        button.addTarget(self, action: #selector(save), for: .touchUpInside)
+        button.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.background2, size: .singlePoint), for: .normal)
+        button.setTitleColor(InterfaceTheme.Color.interactive, for: .normal)
         return button
     }()
     
     public var items: [InputType] = []
+    
+    private var formData: [String: Codable] = [:]
     
     public weak var delegate: ModalFormViewControllerDelegate?
     
@@ -38,22 +48,97 @@ public class ModalFormViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.alwaysBounceVertical = false
+        tableView.allowsSelection = false
         tableView.backgroundColor = InterfaceTheme.Color.background2
         tableView.separatorColor = InterfaceTheme.Color.background1
         tableView.register(InputTextCell.self, forCellReuseIdentifier: InputTextCell.reuseIdentifier)
         return tableView
     }()
     
+    private let actionButtonsContainer:UIView = {
+        let view = UIView()
+        view.backgroundColor = InterfaceTheme.Color.background2
+        return view
+    }()
+    
+    public override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        self.setupUI()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(keyBoardWillShow), name: UIApplication.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyBoardWillHide), name: UIApplication.keyboardWillHideNotification, object: nil)
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    private func setupUI() {
+        self.view.addSubview(self.actionButtonsContainer)
+        
+        self.actionButtonsContainer.addSubview(self.saveButton)
+        self.actionButtonsContainer.addSubview(self.cancelButton)
+        
+        // 此时添加 border 才不会被按钮覆盖
+        self.actionButtonsContainer.setBorder(position: .bottom, color: InterfaceTheme.Color.descriptive, width: 1)
+        
+        self.actionButtonsContainer.sideAnchor(for: [.left, .right], to: self.view, edgeInset: 0)
+        
+        self.saveButton.sideAnchor(for: [.left, .top, .bottom], to: actionButtonsContainer, edgeInset: 0)
+        self.saveButton.sizeAnchor(width: 60, height: 60)
+        self.cancelButton.sideAnchor(for: [.right, .top, .bottom], to: actionButtonsContainer, edgeInset: 0)
+        self.cancelButton.sizeAnchor(width: 60, height: 60)
+        
+        self.view.addSubview(self.tableView)
+        actionButtonsContainer.columnAnchor(view: self.tableView)
+        
+        self.tableView.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 0)
+        self.tableView.sizeAnchor(height: CGFloat(110 * self.items.count))
+        
+        self.tableView.constraint(for: .bottom)?.constant = CGFloat(60 + 110 * self.items.count)
+    }
+    
+    public func show(from: UIViewController) {
+        from.present(self, animated: false) {
+            UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseOut, animations: {
+                self.tableView.constraint(for: .bottom)?.constant = 0
+                self.view.layoutIfNeeded()
+            }, completion: nil)
+        }
+    }
+    
     public func addTextFied(title: String, placeHoder: String, defaultValue: String?) {
         self.items.append(InputType.text(title, placeHoder, defaultValue))
     }
     
+    @objc private func keyBoardWillShow(notification: Notification) {
+        if let rect = notification.userInfo?[UIApplication.keyboardFrameEndUserInfoKey] as? CGRect {
+            let height = rect.height
+            UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseOut, animations: {
+                var adjustment: CGFloat = 0
+                if #available(iOS 11.0, *) {
+                    adjustment += self.view.safeAreaInsets.bottom
+                }
+                self.tableView.constraint(for: .bottom)?.constant = -height + adjustment
+                self.view.layoutIfNeeded()
+            }, completion: nil)
+        }
+    }
+    
+    @objc private func keyBoardWillHide(notification: Notification) {
+        UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseOut, animations: {
+            self.tableView.constraint(for: .bottom)?.constant = 0
+            self.view.layoutIfNeeded()
+        }, completion: nil)
+    }
+    
     @objc private func cancel() {
-        
+        self.delegate?.modalFormDidCancel(viewController: self)
     }
     
     @objc private func save() {
-        
+        self.delegate?.modalFormDidSave(viewController: self, formData: self.formData)
     }
 }
 
@@ -69,19 +154,32 @@ extension ModalFormViewController: UITableViewDataSource, UITableViewDelegate {
         case .text:
             let cell = tableView.dequeueReusableCell(withIdentifier: InputTextCell.reuseIdentifier, for: indexPath) as! InputTextCell
             cell.item = item
+            cell.delegate = self
             return cell
         }
     }
 }
 
-private class InputTextCell: UITableViewCell {
+fileprivate protocol CellValueDelegate: class {
+    func didSetValue(title: String, value: Codable)
+}
+
+extension ModalFormViewController: CellValueDelegate {
+    func didSetValue(title: String, value: Codable) {
+        self.formData[title] = value
+    }
+}
+
+private class InputTextCell: UITableViewCell, UITextFieldDelegate {
     fileprivate static let reuseIdentifier = "InputTextCell"
+    
+    weak var delegate: CellValueDelegate?
     
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.font = InterfaceTheme.Font.title
         label.textAlignment = .left
-        label.textColor = InterfaceTheme.Color.descriptive
+        label.textColor = InterfaceTheme.Color.enphersizedDescriptive
         return label
     }()
     
@@ -103,18 +201,30 @@ private class InputTextCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         self.setupUI()
+        
+        self.textField.delegate = self
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if let title = self.titleLabel.text,
+            let value = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) {
+            self.delegate?.didSetValue(title: title, value: value)
+        }
+        return true
+    }
+    
     private func setupUI() {
+        self.backgroundColor = InterfaceTheme.Color.background2
+        
         self.contentView.addSubview(self.titleLabel)
         self.contentView.addSubview(self.textField)
         
         self.titleLabel.sideAnchor(for: [.left, .top, .right], to: self.contentView, edgeInset: 10)
-        self.titleLabel.sizeAnchor(height: 60)
+        self.titleLabel.sizeAnchor(height: 30)
         self.titleLabel.columnAnchor(view: self.textField)
         self.textField.sideAnchor(for: [.left, .right, .bottom], to: self.contentView, edgeInset: 10)
         self.textField.sizeAnchor(height: 60)
@@ -124,9 +234,9 @@ private class InputTextCell: UITableViewCell {
         switch item {
         case let .text(title, placeholder, value):
             self.titleLabel.text = title
-            self.textField.placeholder = placeholder
+            self.textField.attributedPlaceholder = NSAttributedString(string: placeholder,
+                                                                      attributes: [NSAttributedString.Key.foregroundColor : InterfaceTheme.Color.descriptive])
             self.textField.text = value
-        default: break
         }
     }
 }

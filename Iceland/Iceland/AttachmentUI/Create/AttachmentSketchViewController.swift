@@ -121,14 +121,11 @@ public class AttachmentSketchViewController: AttachmentViewController {
     
     private func setupUI() {
         self.view.addSubview(self.exitButton)
-        self.exitButton.translatesAutoresizingMaskIntoConstraints = false
         self.exitButton.sideAnchor(for: [.top, .right], to: self.view, edgeInsets: .init(top: 10, left: 0, bottom: 0, right: -30))
         self.exitButton.sizeAnchor(width: 44, height: 44)
         
         self.view.addSubview(self.undoButton)
         self.view.addSubview(self.redoButton)
-        self.undoButton.translatesAutoresizingMaskIntoConstraints = false
-        self.redoButton.translatesAutoresizingMaskIntoConstraints = false
 
         self.undoButton.sideAnchor(for: [.left, .top], to: self.view, edgeInsets: .init(top: 10, left: 30, bottom: 0, right: 0))
         self.undoButton.rowAnchor(view: self.redoButton, space: 20)
@@ -137,7 +134,6 @@ public class AttachmentSketchViewController: AttachmentViewController {
         self.redoButton.sideAnchor(for: .top, to: self.view, edgeInset: 10)
         
         self.view.addSubview(self.drawingView)
-        self.drawingView.translatesAutoresizingMaskIntoConstraints = false
         self.drawingView.sideAnchor(for: [.left, .right], to: self.view, edgeInset: 30)
         self.drawingView.ratioAnchor(1)
 
@@ -149,10 +145,6 @@ public class AttachmentSketchViewController: AttachmentViewController {
         self.controlsView.addSubview(self.pickColorButton)
         self.controlsView.addSubview(self.pickBrushButton)
         
-        self.controlsView.translatesAutoresizingMaskIntoConstraints = false
-        self.pickColorButton.translatesAutoresizingMaskIntoConstraints = false
-        self.pickBrushButton.translatesAutoresizingMaskIntoConstraints = false
-        
         self.controlsView.sideAnchor(for: [.left, .right], to: self.view, edgeInset: 0)
         self.controlsView.sizeAnchor(height: 80)
         
@@ -161,7 +153,6 @@ public class AttachmentSketchViewController: AttachmentViewController {
         self.pickColorButton.rowAnchor(view: self.pickBrushButton, widthRatio: 1)
 
         self.view.addSubview(self.saveButton)
-        self.saveButton.translatesAutoresizingMaskIntoConstraints = false
         
         self.saveButton.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 0)
         self.saveButton.sizeAnchor(height: 60)
@@ -223,8 +214,6 @@ extension AttachmentSketchViewController: SelectorViewControllerDelegate {
             }
         }
     }
-    
-    
 }
 
 extension AttachmentSketchViewController: DrawsanaViewDelegate {

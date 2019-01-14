@@ -47,14 +47,20 @@ public class HomeViewController: UIViewController {
         videoButton.setTitle("video", for: .normal)
         videoButton.addTarget(self, action: #selector(showVideoRecorder), for: .touchUpInside)
         
+        let linkButton = UIButton()
+        linkButton.setTitle("link", for: .normal)
+        linkButton.addTarget(self, action: #selector(showLinkEditor), for: .touchUpInside)
+        
         self.view.addSubview(browserButton)
         self.view.addSubview(imageCaptureButton)
         self.view.addSubview(audioRecordButton)
         self.view.addSubview(sketchButton)
         self.view.addSubview(locationButton)
         self.view.addSubview(videoButton)
+        self.view.addSubview(linkButton)
         
-        browserButton.centerAnchors(position: [.centerX, .centerY], to: self.view)
+        browserButton.centerAnchors(position: [.centerX], to: self.view)
+        browserButton.centerAnchors(position: [.centerY], to: self.view, multiplier: 0.5)
         
         imageCaptureButton.centerAnchors(position: .centerX, to: self.view)
         imageCaptureButton.topAnchor.constraint(equalTo: browserButton.bottomAnchor, constant: 10).isActive = true
@@ -70,6 +76,9 @@ public class HomeViewController: UIViewController {
         
         videoButton.centerAnchors(position: .centerX, to: self.view)
         videoButton.topAnchor.constraint(equalTo: locationButton.bottomAnchor, constant: 10).isActive = true
+        
+        linkButton.centerAnchors(position: .centerX, to: self.view)
+        linkButton.topAnchor.constraint(equalTo: videoButton.bottomAnchor, constant: 10).isActive = true
     }
     
     @objc private func showBrowser() {
@@ -94,5 +103,9 @@ public class HomeViewController: UIViewController {
     
     @objc private func showVideoRecorder() {
         self.viewModel?.dependency?.showAttachmentCreator(type: .video)
+    }
+    
+    @objc private func showLinkEditor() {
+        self.viewModel?.dependency?.showAttachmentCreator(type: .link)
     }
 }
