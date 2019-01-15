@@ -64,6 +64,8 @@ public class ActionsViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         self.setupUI()
+        
+        self.titleLabel.text = self.title
     }
     
     private var items: [Item] = []
@@ -90,7 +92,15 @@ public class ActionsViewController: UIViewController {
         }
     }
     
-    private let accessoryViewContainer: UIView = UIView()
+    private let accessoryViewContainer: UIView = {
+       let view = UIView()
+        return view
+    }()
+    
+    private let actionsContainerView: UIView = {
+        let view = UIView()
+        return view
+    }()
     
     private let contentView: UIView = {
         let view = UIView()
@@ -100,18 +110,25 @@ public class ActionsViewController: UIViewController {
     
     private lazy var cancelButton: UIButton = {
         let button = UIButton()
-        button.setTitle("x", for: .normal)
+        button.setTitle("✕", for: .normal)
         button.addTarget(self, action: #selector(cancel), for: .touchUpInside)
         return button
+    }()
+    
+    private var titleLabel: UILabel = {
+        let label = UILabel()
+        label.font = InterfaceTheme.Font.title
+        label.textColor = InterfaceTheme.Color.descriptive
+        label.textAlignment = .center
+        return label
     }()
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
         tableView.delegate = self
         tableView.dataSource = self
-//        tableView.alwaysBounceVertical = false
         tableView.backgroundColor = InterfaceTheme.Color.background2
-        tableView.separatorColor = InterfaceTheme.Color.background1
+        tableView.separatorColor = InterfaceTheme.Color.background3
         tableView.register(ActionCell.self, forCellReuseIdentifier: ActionCell.reuseIdentifier)
         return tableView
     }()
@@ -120,20 +137,29 @@ public class ActionsViewController: UIViewController {
         self.view.addSubview(self.contentView)
         
         self.contentView.addSubview(self.tableView)
+        self.contentView.addSubview(self.actionsContainerView)
         self.contentView.addSubview(self.accessoryViewContainer)
         self.contentView.addSubview(self.cancelButton)
         
-        self.contentView.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 0)
+        self.actionsContainerView.sideAnchor(for: [.left, .top, .right], to: self.contentView, edgeInset: 0)
         
-        self.cancelButton.sideAnchor(for: [.top, .right], to: self.contentView, edgeInset: 0)
-        self.cancelButton.columnAnchor(view: self.accessoryViewContainer, space: 10)
-        self.cancelButton.sizeAnchor(width: 44, height: 44)
+        self.actionsContainerView.addSubview(self.cancelButton)
+        self.actionsContainerView.addSubview(self.titleLabel)
+        self.actionsContainerView.setBorder(position: .bottom, color: InterfaceTheme.Color.background3, width: 2)
+        self.cancelButton.sideAnchor(for: [.right, .top, .bottom], to: self.actionsContainerView, edgeInset: 0)
+        self.cancelButton.sizeAnchor(width: 60, height: 60)
+        self.titleLabel.sideAnchor(for: [.left, .top, .bottom], to: self.actionsContainerView, edgeInsets: .init(top: 0, left: 60, bottom: 0, right: 0))
+        self.titleLabel.rowAnchor(view: self.cancelButton)
+        
+        self.actionsContainerView.columnAnchor(view: self.accessoryViewContainer)
+        
+        self.contentView.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 0)
         
         self.accessoryViewContainer.sideAnchor(for: [.left, .right], to: self.contentView, edgeInset: 0)
         self.accessoryViewContainer.columnAnchor(view: self.tableView)
         
         self.tableView.sizeAnchor(height: CGFloat(self.items.count * Constants.rowHeight))
-        self.tableView.sideAnchor(for: [.left, .right, .bottom], to: self.contentView, edgeInsets: .init(top: 0, left: 0, bottom: -20, right: 0))
+        self.tableView.sideAnchor(for: [.left, .right, .bottom], to: self.contentView, edgeInset: 0)
         
         self.isInitialized = true
     }
@@ -191,7 +217,7 @@ fileprivate class ActionCell: UITableViewCell {
         case .highlight:
             return InterfaceTheme.Color.backgroundHighlight
         case .warning:
-            return UIColor.red
+            return InterfaceTheme.Color.backgroundWarning
         }
     }
     
@@ -230,7 +256,7 @@ fileprivate class ActionCell: UITableViewCell {
     
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
         if highlighted {
-            self.contentView.backgroundColor = InterfaceTheme.Color.background1
+            self.contentView.backgroundColor = InterfaceTheme.Color.background3
         } else {
             self.contentView.backgroundColor = self.cellBackgroundColor
         }
@@ -240,7 +266,7 @@ fileprivate class ActionCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
 
         if selected {
-            self.backgroundColor = InterfaceTheme.Color.background1
+            self.backgroundColor = InterfaceTheme.Color.background3
         } else {
             self.backgroundColor = self.cellBackgroundColor
         }

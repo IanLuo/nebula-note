@@ -47,6 +47,7 @@ public class AttachmentImageViewController: AttachmentViewController {
     
     public func showImageSourcePicker() {
         let actionsViewController = ActionsViewController()
+        actionsViewController.title = "Add image".localizable
         
         if UIImagePickerController.isSourceTypeAvailable(UIImagePickerController.SourceType.camera) {
             actionsViewController.addAction(icon: nil, title: "Camera".localizable, action: { vc in

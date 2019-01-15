@@ -37,6 +37,14 @@ public class ModalFormViewController: UIViewController {
         return button
     }()
     
+    private var titleLabel: UILabel = {
+        let label = UILabel()
+        label.font = InterfaceTheme.Font.title
+        label.textColor = InterfaceTheme.Color.descriptive
+        label.textAlignment = .center
+        return label
+    }()
+    
     public var items: [InputType] = []
     
     private var formData: [String: Codable] = [:]
@@ -49,8 +57,9 @@ public class ModalFormViewController: UIViewController {
         tableView.dataSource = self
         tableView.alwaysBounceVertical = false
         tableView.allowsSelection = false
+        tableView.separatorInset = .zero
+        tableView.separatorColor = InterfaceTheme.Color.background3
         tableView.backgroundColor = InterfaceTheme.Color.background2
-        tableView.separatorColor = InterfaceTheme.Color.background1
         tableView.register(InputTextCell.self, forCellReuseIdentifier: InputTextCell.reuseIdentifier)
         return tableView
     }()
@@ -68,6 +77,8 @@ public class ModalFormViewController: UIViewController {
         
         NotificationCenter.default.addObserver(self, selector: #selector(keyBoardWillShow), name: UIApplication.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyBoardWillHide), name: UIApplication.keyboardWillHideNotification, object: nil)
+        
+        self.titleLabel.text = self.title
     }
     
     deinit {
@@ -79,22 +90,26 @@ public class ModalFormViewController: UIViewController {
         
         self.actionButtonsContainer.addSubview(self.saveButton)
         self.actionButtonsContainer.addSubview(self.cancelButton)
+        self.actionButtonsContainer.addSubview(self.titleLabel)
         
         // 此时添加 border 才不会被按钮覆盖
-        self.actionButtonsContainer.setBorder(position: .bottom, color: InterfaceTheme.Color.descriptive, width: 1)
+        self.actionButtonsContainer.setBorder(position: .bottom, color: InterfaceTheme.Color.background3, width: 2)
         
         self.actionButtonsContainer.sideAnchor(for: [.left, .right], to: self.view, edgeInset: 0)
         
         self.saveButton.sideAnchor(for: [.left, .top, .bottom], to: actionButtonsContainer, edgeInset: 0)
         self.saveButton.sizeAnchor(width: 60, height: 60)
+        self.titleLabel.sideAnchor(for: [.top, .bottom], to: actionButtonsContainer, edgeInset: 0)
+        self.saveButton.rowAnchor(view: self.titleLabel)
         self.cancelButton.sideAnchor(for: [.right, .top, .bottom], to: actionButtonsContainer, edgeInset: 0)
         self.cancelButton.sizeAnchor(width: 60, height: 60)
+        self.titleLabel.rowAnchor(view: self.cancelButton)
         
         self.view.addSubview(self.tableView)
         actionButtonsContainer.columnAnchor(view: self.tableView)
         
         self.tableView.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 0)
-        self.tableView.sizeAnchor(height: CGFloat(110 * self.items.count))
+        self.tableView.sizeAnchor(height: CGFloat(130 * self.items.count)) // cell 的高度 * cell 的个数
         
         self.tableView.constraint(for: .bottom)?.constant = CGFloat(60 + 110 * self.items.count)
     }
@@ -179,7 +194,7 @@ private class InputTextCell: UITableViewCell, UITextFieldDelegate {
         let label = UILabel()
         label.font = InterfaceTheme.Font.title
         label.textAlignment = .left
-        label.textColor = InterfaceTheme.Color.enphersizedDescriptive
+        label.textColor = InterfaceTheme.Color.descriptive
         return label
     }()
     
@@ -224,7 +239,7 @@ private class InputTextCell: UITableViewCell, UITextFieldDelegate {
         self.contentView.addSubview(self.textField)
         
         self.titleLabel.sideAnchor(for: [.left, .top, .right], to: self.contentView, edgeInset: 10)
-        self.titleLabel.sizeAnchor(height: 30)
+        self.titleLabel.sizeAnchor(height: 50)
         self.titleLabel.columnAnchor(view: self.textField)
         self.textField.sideAnchor(for: [.left, .right, .bottom], to: self.contentView, edgeInset: 10)
         self.textField.sizeAnchor(height: 60)

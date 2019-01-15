@@ -27,7 +27,7 @@ public class RoundButton: UIView {
         let button = UIButton()
         button.layer.masksToBounds = true
         button.titleLabel?.font = InterfaceTheme.Font.subTitle
-        button.setTitleColor(InterfaceTheme.Color.descriptive, for: .normal)
+        button.setTitleColor(InterfaceTheme.Color.interactive, for: .normal)
         button.addTarget(self, action: #selector(tapped_), for: .touchUpInside)
         return button
     }()
@@ -146,7 +146,9 @@ public class RoundButton: UIView {
         self.button.setContentHuggingPriority(UILayoutPriority.required, for: NSLayoutConstraint.Axis.vertical)
         
         self.setBackgroundColor(InterfaceTheme.Color.background1, for: .normal)
-        self.setBorder(color: InterfaceTheme.Color.background2)
+        
+        // default border color
+        self.setBorder(color: InterfaceTheme.Color.background3)
     }
     
     private func updateUI() {

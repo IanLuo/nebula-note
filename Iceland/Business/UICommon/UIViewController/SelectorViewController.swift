@@ -23,7 +23,7 @@ public class SelectorViewController: UIViewController {
         tableView.dataSource = self
         tableView.alwaysBounceVertical = false
         tableView.backgroundColor = InterfaceTheme.Color.background2
-        tableView.separatorColor = InterfaceTheme.Color.background1
+        tableView.separatorColor = InterfaceTheme.Color.background3
         tableView.register(ActionCell.self, forCellReuseIdentifier: ActionCell.reuseIdentifier)
         return tableView
     }()
@@ -191,7 +191,7 @@ fileprivate class ActionCell: UITableViewCell {
     
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
         if highlighted {
-            self.backgroundColor = InterfaceTheme.Color.background1
+            self.backgroundColor = InterfaceTheme.Color.background3
         } else {
             self.backgroundColor = InterfaceTheme.Color.background2
         }
@@ -201,7 +201,7 @@ fileprivate class ActionCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
         
         if selected {
-            self.backgroundColor = InterfaceTheme.Color.background1
+            self.backgroundColor = InterfaceTheme.Color.background3
         } else {
             self.backgroundColor = InterfaceTheme.Color.background2
         }
@@ -231,7 +231,7 @@ private class Animator: NSObject, UIViewControllerAnimatedTransitioning {
     }
     
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
-        return 0.3
+        return 0.2
     }
     
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
@@ -243,7 +243,6 @@ private class Animator: NSObject, UIViewControllerAnimatedTransitioning {
         if self.isPresenting {
             if let selectorViewcontroller = to as? SelectorViewController {
                 guard let fromView = selectorViewcontroller.transiteFromView else { return }
-//                guard let fromImage = fromView.snapshot else { return }
                 
                 containner.addSubview(to.view)
                 to.view.alpha = 0

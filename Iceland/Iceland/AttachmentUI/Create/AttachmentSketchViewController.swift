@@ -43,7 +43,7 @@ public class AttachmentSketchViewController: AttachmentViewController {
     private lazy var exitButton: UIButton = {
         let button = UIButton()
         button.addTarget(self, action: #selector(cancel), for: .touchUpInside)
-        button.setTitle("x", for: .normal)
+        button.setTitle("✕", for: .normal)
         return button
     }()
     
@@ -205,11 +205,11 @@ extension AttachmentSketchViewController: SelectorViewControllerDelegate {
     
     public func SelectorDidSelect(index: Int, viewController: SelectorViewController) {
         viewController.dismiss(animated: true) {
-            if viewController.name == "color" {
+            if viewController.name == "brush" {
                 self.setBrush(self.brushWidth[index])
             }
             
-            else if viewController.name == "brush" {
+            else if viewController.name == "color" {
                 self.setColor(index: index)
             }
         }

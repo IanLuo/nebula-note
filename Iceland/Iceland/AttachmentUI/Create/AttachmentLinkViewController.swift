@@ -26,7 +26,7 @@ public class AttachmentLinkViewController: AttachmentViewController {
         formViewController.delegate = self
         formViewController.addTextFied(title: "title".localizable, placeHoder: "Please input title".localizable, defaultValue: nil)
         formViewController.addTextFied(title: "link".localizable, placeHoder: "Please input link".localizable, defaultValue: nil)
-        
+        formViewController.title = "Create link".localizable
         formViewController.show(from: self)
     }
 }

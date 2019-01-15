@@ -29,6 +29,8 @@ public class AttachmentLocationViewController: AttachmentViewController {
         let actionsViewController = ActionsViewController()
         actionsViewController.accessoryView = mapView
         
+        actionsViewController.title = "Find your location".localizable
+        
         mapView.sizeAnchor(width: self.view.bounds.width, height: self.view.bounds.width)
         
         mapView.showsUserLocation = true

@@ -38,9 +38,10 @@ public struct InterfaceTheme {
         public static let enphersizedDescriptive: UIColor = .lightGray
         public static let spotLight: UIColor = .green
         public static let background1: UIColor = .black
-        public static let background2: UIColor = UIColor(red: 33.0/255.0, green: 33.0/255.0, blue: 33.0/255.0, alpha: 1.0)
-        public static let background3: UIColor = UIColor(red: 22.0/255.0, green: 22.0/255.0, blue: 22.0/255.0, alpha: 1.0)
-        public static let backgroundHighlight: UIColor = .green
+        public static let background2: UIColor = UIColor(red:0.12, green:0.12, blue:0.12, alpha:1.00)
+        public static let background3: UIColor = UIColor(red:0.18, green:0.18, blue:0.18, alpha:1.00)
+        public static let backgroundHighlight: UIColor = UIColor(red:0.13, green:0.82, blue:0.41, alpha:1.00)
+        public static let backgroundWarning: UIColor = UIColor(red:0.13, green:0.82, blue:0.41, alpha:1.00)
     }
 }
 
