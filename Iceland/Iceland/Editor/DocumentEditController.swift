@@ -27,6 +27,8 @@ public class DocumentEditViewController: UIViewController {
         self.textView.outlineDelegate = viewModel.outlineStorageDelegate
         
         super.init(nibName: nil, bundle: nil)
+        
+        viewModel.delegate = self
     }
     
     public required init?(coder aDecoder: NSCoder) {
@@ -44,7 +46,7 @@ public class DocumentEditViewController: UIViewController {
 }
 
 extension DocumentEditViewController: DocumentEditViewModelDelegate {
-    public func didReadToEdit() {
+    public func didReadyToEdit() {
         self.textView.selectedRange = NSRange(location: self.viewModel.onLoadingLocation,
                                                     length: 0)
     }

@@ -34,14 +34,14 @@ public class EditorCoordinator: Coordinator {
             super.init(stack: stack)
             let viewController = DocumentEditViewController(viewModel: viewModel)
             viewController.delegate = self
-            viewModel.delegate = viewController
+            viewModel.dependency = self
             self.viewController = viewController
         case .outline(let url):
             let viewModel = DocumentEditViewModel(editorService: OutlineEditorServer.request(url: url))
             super.init(stack: stack)
             let viewController = HeadingsOutlineViewController(viewModel: viewModel)
             viewController.delegate = self
-            viewModel.delegate = viewController
+            viewModel.dependency = self
             self.viewController = viewController
         }
     }
@@ -52,6 +52,7 @@ public class EditorCoordinator: Coordinator {
         case .editor:
             self.stack.pushViewController(viewController, animated: animated)
         case .outline:
+            viewController.modalPresentationStyle = .overCurrentContext
             top?.present(viewController, animated: animated, completion: nil)
         }
     }

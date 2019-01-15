@@ -25,8 +25,23 @@ public class SelectorViewController: UIViewController {
         tableView.backgroundColor = InterfaceTheme.Color.background2
         tableView.separatorColor = InterfaceTheme.Color.background3
         tableView.register(ActionCell.self, forCellReuseIdentifier: ActionCell.reuseIdentifier)
+        tableView.tableFooterView = UIView()
         return tableView
     }()
+    
+    public var emptyDataText: String = "It's empty".localizable
+    
+    public var emptyDataIcon: UIImage?
+    
+    public override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        if self.items.count == 0 {
+            self.showEmptyDataView()
+        } else {
+            self.hideEmptyDataView()
+        }
+    }
     
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -62,9 +77,25 @@ public class SelectorViewController: UIViewController {
     public var name: String?
     
     public func addItem(icon: UIImage? = nil, title: String, description: String? = nil) {
-        self.items.append(Item(icon: icon, title: title, description: description))
+        let item = Item(icon: icon, title: title, attributedString: nil, description: description)
+        self.items.append(item)
+        self.insertNewItemToTableIfNeeded(newItem: item)
     }
     
+    public func addItem(icon: UIImage? = nil, attributedString: NSAttributedString, description: String? = nil) {
+        let item = Item(icon: icon, title: "", attributedString: attributedString, description: description)
+        self.items.append(item)
+        self.insertNewItemToTableIfNeeded(newItem: item)
+    }
+    
+    private func insertNewItemToTableIfNeeded(newItem: Item) {
+        // 已经显示，则需要插入
+        if self.tableView.window != nil {
+            self.tableView.insertRows(at: [IndexPath(row: self.items.count - 1, section: 0)], with: UITableView.RowAnimation.none)
+        }
+    }
+    
+    // transite delegate will access this
     public var transiteFromView: UIView?
     public func show(from: UIView, on viewController: UIViewController) {
         self.modalPresentationStyle = .custom
@@ -77,20 +108,19 @@ public class SelectorViewController: UIViewController {
     private func setupUI() {
         self.view.addSubview(self.tableView)
         
-        self.tableView.translatesAutoresizingMaskIntoConstraints = false
-        
         self.tableView.sizeAnchor(height: self.view.bounds.height / 2)
         self.tableView.sideAnchor(for: .left, to: self.view, edgeInset: 30)
         self.tableView.centerAnchors(position: [.centerX, .centerY], to: self.view)
     }
     
     @objc private func cancel() {
-        self.dismiss(animated: true, completion: nil)
+        self.delegate?.SelectorDidCancel(viewController: self)
     }
     
     public struct Item {
         let icon: UIImage?
         let title: String
+        let attributedString: NSAttributedString?
         let description: String?
     }
 }
@@ -106,6 +136,9 @@ extension SelectorViewController: UITableViewDataSource, UITableViewDelegate {
         let item = self.items[indexPath.row]
         cell.descriptionLabel.text = item.description
         cell.titleLabel.text = item.title
+        if let attr = item.attributedString {
+            cell.titleLabel.attributedText = attr
+        }
         cell.setIcon(image: item.icon)
         
         return cell
@@ -123,6 +156,39 @@ extension SelectorViewController: UITableViewDataSource, UITableViewDelegate {
     
     public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return self.rowHeight
+    }
+    
+    private func showEmptyDataView() {
+        let emptyDataView = UIView(frame: self.tableView.bounds)
+        let label = UILabel()
+        label.font = InterfaceTheme.Font.title
+        label.textColor = InterfaceTheme.Color.descriptive
+        label.text = self.emptyDataText
+
+        if let icon = self.emptyDataIcon {
+            let container = UIView()
+            emptyDataView.addSubview(container)
+            container.centerAnchors(position: [.centerX, .centerY], to: emptyDataView)
+            
+            let imageView = UIImageView(image: icon)
+            container.addSubview(imageView)
+            container.addSubview(label)
+            
+            imageView.sideAnchor(for: [.left, .top, .right], to: container, edgeInset: 0)
+            imageView.columnAnchor(view: label, space: 20)
+            label.sideAnchor(for: [.left, .bottom, .right], to: container, edgeInset: 0)
+        } else {
+            emptyDataView.addSubview(label)
+            label.centerAnchors(position: [.centerX, .centerY], to: emptyDataView)
+        }
+        
+        self.tableView.tableFooterView = emptyDataView
+    }
+    
+    private func hideEmptyDataView() {
+        if self.tableView.tableFooterView?.bounds.size != .zero {
+            self.tableView.tableFooterView = UIView()
+        }
     }
 }
 

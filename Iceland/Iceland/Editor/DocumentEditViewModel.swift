@@ -13,18 +13,24 @@ public protocol DocumentEditViewModelDelegate: class {
     func showLink(url: URL)
     func updateHeadingInfo(heading: OutlineTextStorage.Heading?)
     func documentStatesChange(state: UIDocument.State)
-    func didReadToEdit()
+    func didReadyToEdit()
 }
 
 public class DocumentEditViewModel {
-    public weak var delegate: DocumentEditViewModelDelegate?
+    public weak var delegate: DocumentEditViewModelDelegate? {
+        didSet {
+            if self.isReadyToEdit {
+                self.delegate?.didReadyToEdit()
+            }
+        }
+    }
     public var onLoadingLocation: Int = 0 // 打开文档的时候默认的位置
     public weak var dependency: EditorCoordinator?
     private let editorService: EditorService
     public var isReadyToEdit: Bool = false {
         didSet {
             if isReadyToEdit {
-                self.delegate?.didReadToEdit()
+                self.delegate?.didReadyToEdit()
             }
         }
     }

@@ -17,22 +17,15 @@ public protocol HeadingsOutlineViewControllerDelegate: class {
 public class HeadingsOutlineViewController: UIViewController {
     private let viewModel: DocumentEditViewModel
     
-    private lazy var tableView: UITableView = {
-        let tableView = UITableView()
-        tableView.separatorStyle = .none
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.register(HeadingOutlineTableViewCell.self, forCellReuseIdentifier: HeadingOutlineTableViewCell.reuseIdentifier)
-        return tableView
-    }()
-    
     public weak var delegate: HeadingsOutlineViewControllerDelegate?
+    
+    private let selector:SelectorViewController = SelectorViewController()
     
     public init(viewModel: DocumentEditViewModel) {
         self.viewModel = viewModel
-        
         super.init(nibName: nil, bundle: nil)
         
+        viewModel.delegate = self
         self.setupUI()
     }
     
@@ -41,42 +34,32 @@ public class HeadingsOutlineViewController: UIViewController {
     }
     
     private func setupUI() {
-        self.view.addSubview(self.tableView)
+        self.view.addSubview(self.selector.view)
         
-        self.view.backgroundColor = InterfaceTheme.Color.background2
-        self.tableView.backgroundColor = InterfaceTheme.Color.background2
-        
-        self.tableView.translatesAutoresizingMaskIntoConstraints = false
-        self.tableView.allSidesAnchors(to: self.view, edgeInsets: .zero)
+        self.selector.delegate = self
     }
 }
 
-extension HeadingsOutlineViewController: UITableViewDelegate {
-    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.delegate?.didSelectHeading(url: self.viewModel.url, heading: self.viewModel.headings[indexPath.row])
-    }
-}
-
-extension HeadingsOutlineViewController: UITableViewDataSource {
-    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.viewModel.headings.count
+extension HeadingsOutlineViewController: SelectorViewControllerDelegate {
+    public func SelectorDidCancel(viewController: SelectorViewController) {
+        self.viewModel.dependency?.stop()
     }
     
-    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: HeadingOutlineTableViewCell.reuseIdentifier, for: indexPath) as! HeadingOutlineTableViewCell
-        cell.level = self.viewModel.level(index: indexPath.row)
-        cell.string = self.viewModel.headingString(index: indexPath.row)
-        return cell
-    }
-    
-    public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 50
+    public func SelectorDidSelect(index: Int, viewController: SelectorViewController) {
+        self.delegate?.didSelectHeading(url: self.viewModel.url, heading: self.viewModel.headings[index])
     }
 }
 
 extension HeadingsOutlineViewController: DocumentEditViewModelDelegate {
-    public func didReadToEdit() {
-        self.tableView.reloadData()
+    private func loadData() {
+        for index in 0..<self.viewModel.headings.count {
+            selector.addItem(attributedString: self.attributedString(level: self.viewModel.level(index: index),
+                                                                     string: self.viewModel.headingString(index: index)))
+        }
+    }
+    
+    public func didReadyToEdit() {
+        self.loadData()
     }
     
     public func documentStatesChange(state: UIDocument.State) {
@@ -90,4 +73,29 @@ extension HeadingsOutlineViewController: DocumentEditViewModelDelegate {
     public func updateHeadingInfo(heading: OutlineTextStorage.Heading?) {
         
     }
+    
+    private func attributedString(level: Int, string: String) -> NSAttributedString {
+        let prefix = "∙" * (level - 1) * 3
+        let infix = prefix.count > 0 ? " " : ""
+        let labelString = prefix + infix + string
+        let attributedString = NSMutableAttributedString(string: labelString)
+        attributedString.setAttributes([NSAttributedString.Key.foregroundColor : InterfaceTheme.Color.descriptive,
+                                        NSAttributedString.Key.font : InterfaceTheme.Font.footnote],
+                                       range: NSRange(location: 0, length: prefix.count))
+        attributedString.setAttributes([NSAttributedString.Key.foregroundColor : InterfaceTheme.Color.interactive,
+                                        NSAttributedString.Key.font : InterfaceTheme.Font.footnote],
+                                       range: NSRange(location: prefix.count, length: labelString.count - prefix.count))
+        
+        return attributedString
+    }
+}
+
+fileprivate func *(lhs: String, rhs: Int) -> String {
+    guard rhs > 0 else { return "" }
+    var s = lhs
+    for _ in 1..<rhs {
+        s.append(lhs)
+    }
+    
+    return s
 }
