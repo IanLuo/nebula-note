@@ -9,21 +9,26 @@
 import Foundation
 import UIKit
 import MobileCoreServices
+import Business
 
 public class AttachmentVideoViewController: AttachmentViewController {
     
-    private var isFirstLoad = true
-    public override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        if isFirstLoad {
-            let imagePicker = UIImagePickerController()
-            imagePicker.sourceType = .camera
-            imagePicker.mediaTypes = [(kUTTypeMovie as String)]
-            imagePicker.delegate = self
-            self.present(imagePicker, animated: true, completion: nil)
-            isFirstLoad = false
-        }
+    let imagePicker = UIImagePickerController()
+    public override func viewDidLoad() {
+        super.viewDidLoad()
+        imagePicker.sourceType = .camera
+        imagePicker.mediaTypes = [(kUTTypeMovie as String)]
+        imagePicker.delegate = self
+        self.view.addSubview(imagePicker.view)
+    }
+    
+    public func didSaveAttachment(key: String) {
+        self.delegate?.didSaveAttachment(key: key)
+        self.viewModel.dependency?.stop(animated: false)
+    }
+    
+    public func didFailToSave(error: Error, content: String, type: Attachment.AttachmentType, descritpion: String) {
+        log.error(error)
     }
 }
 

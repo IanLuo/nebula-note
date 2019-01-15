@@ -13,20 +13,17 @@ import MapKit
 import Business
 
 public class AttachmentLocationViewController: AttachmentViewController {
-    private var isFirstLoad: Bool = true
-    
-    public override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        if isFirstLoad {
-            self.showLocationPicker()
-            self.isFirstLoad = false
-        }
+    public override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        self.showLocationPicker()
     }
+    
+    let actionsViewController = ActionsViewController()
     
     private func showLocationPicker() {
         let mapView = MKMapView()
 
-        let actionsViewController = ActionsViewController()
         actionsViewController.accessoryView = mapView
         
         actionsViewController.title = "Find your location".localizable
@@ -41,9 +38,7 @@ public class AttachmentLocationViewController: AttachmentViewController {
         }
         
         actionsViewController.setCancel { viewController in
-            viewController.dismiss(animated: true, completion: {
-                self.viewModel.dependency?.stop()
-            })
+            self.viewModel.dependency?.stop()
         }
         
         actionsViewController.addAction(icon: nil, title: "save", style: ActionsViewController.Style.highlight) { viewController in
@@ -60,8 +55,7 @@ public class AttachmentLocationViewController: AttachmentViewController {
             }
         }
         
-        actionsViewController.modalPresentationStyle = .overCurrentContext
-        self.present(actionsViewController, animated: true, completion: nil)
+        self.view.addSubview(actionsViewController.view)
         
         self.showCurrentLocation(on: mapView, animated: false)
     }
@@ -84,10 +78,13 @@ public class AttachmentLocationViewController: AttachmentViewController {
         location.start()
     }
     
-    override public func didSaveAttachment(key: String) {
-        self.dismiss(animated: true, completion: { [unowned self] in
-            self.viewModel.dependency?.stop()
-        })
+    public func didSaveAttachment(key: String) {
+        self.delegate?.didSaveAttachment(key: key)
+        self.viewModel.dependency?.stop(animated: false)
+    }
+    
+    public func didFailToSave(error: Error, content: String, type: Attachment.AttachmentType, descritpion: String) {
+        log.error(error)
     }
 }
 

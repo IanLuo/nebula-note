@@ -11,11 +11,17 @@ import UIKit
 import Business
 import Storage
 
-public class AttachmentImageViewController: AttachmentViewController {
+public class AttachmentImageViewController: AttachmentViewController, AttachmentViewModelDelegate {
+    let actionsViewController = ActionsViewController()
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.viewModel.delegate = self
+        
         self.setupUI()
+        
+        self.showImageSourcePicker()
     }
     
     public func showCamera() {
@@ -33,44 +39,36 @@ public class AttachmentImageViewController: AttachmentViewController {
     }
     
     private func setupUI() {
-        
-    }
-    
-    private var isFirstLoad = true
-    public override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        if isFirstLoad {
-            self.showImageSourcePicker()
-            self.isFirstLoad = false
-        }
+
     }
     
     public func showImageSourcePicker() {
-        let actionsViewController = ActionsViewController()
         actionsViewController.title = "Add image".localizable
         
         if UIImagePickerController.isSourceTypeAvailable(UIImagePickerController.SourceType.camera) {
             actionsViewController.addAction(icon: nil, title: "Camera".localizable, action: { vc in
-                vc.dismiss(animated: true, completion: {
-                    self.showCamera()
-                })
+                self.showCamera()
             })
         }
         
         actionsViewController.addAction(icon: nil, title: "Image Library".localizable, action: { vc in
-            vc.dismiss(animated: true, completion: {
-                self.showImageLibrary()
-            })
+            self.showImageLibrary()
         })
         
         actionsViewController.setCancel { viewController in
-            // 两个动画同时开始
-            viewController.dismiss(animated: true, completion: {})
             self.viewModel.dependency?.stop()
         }
         
-        actionsViewController.modalPresentationStyle = .overCurrentContext
-        self.present(actionsViewController, animated: true, completion: nil)
+        self.view.addSubview(self.actionsViewController.view)
+    }
+    
+    public func didSaveAttachment(key: String) {
+        self.delegate?.didSaveAttachment(key: key)
+        self.viewModel.dependency?.stop()
+    }
+    
+    public func didFailToSave(error: Error, content: String, type: Attachment.AttachmentType, descritpion: String) {
+        log.error(error)
     }
 }
 

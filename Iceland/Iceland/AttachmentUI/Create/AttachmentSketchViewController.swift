@@ -80,7 +80,8 @@ public class AttachmentSketchViewController: AttachmentViewController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        
+
+        self.view.backgroundColor = InterfaceTheme.Color.background1
         self.setupUI()
         
         self.drawingView.set(tool: PenTool())
@@ -176,7 +177,7 @@ public class AttachmentSketchViewController: AttachmentViewController {
         selector.name = "color"
         self.colors.forEach {
             selector.addItem(icon: UIImage.create(with: $0.1, size: CGSize(width:30, height: 30), style: .circle),
-                                  title: "\($0.0)")
+                             title: "\($0.0)")
         }
         
         selector.currentTitle = button.title
@@ -190,7 +191,7 @@ public class AttachmentSketchViewController: AttachmentViewController {
         selector.name = "brush"
         self.brushWidth.forEach {
             selector.addItem(icon: UIImage.create(with: InterfaceTheme.Color.interactive, size: CGSize(width: $0, height: $0), style: .circle),
-                                  title: "\($0)")
+                             title: "\($0)")
         }
         
         selector.currentTitle = button.title

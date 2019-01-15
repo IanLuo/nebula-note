@@ -10,32 +10,38 @@ import Foundation
 import UIKit
 import Business
 
-public class AttachmentLinkViewController: AttachmentViewController {
-    private var isFirstLoad = true
-    public override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+public class AttachmentLinkViewController: AttachmentViewController, AttachmentViewModelDelegate {
+    public override func viewDidLoad() {
+        super.viewDidLoad()
         
-        if self.isFirstLoad {
-            self.showCreateLinkForm()
-            self.isFirstLoad = false
-        }
+        self.showCreateLinkForm()
+        
+        self.viewModel.delegate = self
     }
     
+    let formViewController = ModalFormViewController()
     private func showCreateLinkForm() {
-        let formViewController = ModalFormViewController()
         formViewController.delegate = self
         formViewController.addTextFied(title: "title".localizable, placeHoder: "Please input title".localizable, defaultValue: nil)
         formViewController.addTextFied(title: "link".localizable, placeHoder: "Please input link".localizable, defaultValue: nil)
         formViewController.title = "Create link".localizable
-        formViewController.show(from: self)
+
+        self.view.addSubview(formViewController.view)
+    }
+    
+    public func didSaveAttachment(key: String) {
+        self.delegate?.didSaveAttachment(key: key)
+        self.viewModel.dependency?.stop()
+    }
+    
+    public func didFailToSave(error: Error, content: String, type: Attachment.AttachmentType, descritpion: String) {
+        log.error(error)
     }
 }
 
 extension AttachmentLinkViewController: ModalFormViewControllerDelegate {
     public func modalFormDidCancel(viewController: ModalFormViewController) {
-        viewController.dismiss(animated: true) {
-            self.viewModel.dependency?.stop()
-        }
+        self.viewModel.dependency?.stop()
     }
     
     public func modalFormDidSave(viewController: ModalFormViewController, formData: [String: Codable]) {
@@ -50,27 +56,5 @@ extension AttachmentLinkViewController: ModalFormViewControllerDelegate {
         } catch {
             log.error(error)
         }
-    }
-}
-
-private extension Encodable {
-    func encode(to container: inout SingleValueEncodingContainer) throws {
-        try container.encode(self)
-    }
-}
-
-extension JSONEncoder {
-    private struct EncodableWrapper: Encodable {
-        let wrapped: Encodable
-        
-        func encode(to encoder: Encoder) throws {
-            var container = encoder.singleValueContainer()
-            try self.wrapped.encode(to: &container)
-        }
-    }
-    
-    func encode<Key: Encodable>(_ dictionary: [Key: Encodable]) throws -> Data {
-        let wrappedDict = dictionary.mapValues(EncodableWrapper.init(wrapped:))
-        return try self.encode(wrappedDict)
     }
 }

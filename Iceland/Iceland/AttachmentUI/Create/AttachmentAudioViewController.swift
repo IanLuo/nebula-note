@@ -36,16 +36,8 @@ public class AttachmentAudioViewController: AttachmentViewController {
         super.viewDidLoad()
         self.recorderView.status = .initing
         self.recorder.getReady()
-    }
-    
-    private var isFirstLoad: Bool = true
-    
-    public override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        if isFirstLoad {
-            self.showRecorder()
-            self.isFirstLoad = false
-        }
+        
+        self.showRecorder()
     }
     
     public func showRecorder() {
@@ -63,14 +55,16 @@ public class AttachmentAudioViewController: AttachmentViewController {
             self.viewModel.dependency?.stop()
         }
         
-        self.actionsViewController.modalPresentationStyle = .overCurrentContext
-        self.present(actionsViewController, animated: true, completion: nil)
+        self.view.addSubview(self.actionsViewController.view)
     }
     
-    override public func didSaveAttachment(key: String) {
-        self.dismiss(animated: true, completion: { [unowned self] in
-            self.viewModel.dependency?.stop()
-        })
+    public func didSaveAttachment(key: String) {
+        self.delegate?.didSaveAttachment(key: key)
+        self.viewModel.dependency?.stop(animated: false)
+    }
+    
+    public func didFailToSave(error: Error, content: String, type: Attachment.AttachmentType, descritpion: String) {
+        log.error(error)
     }
 }
 

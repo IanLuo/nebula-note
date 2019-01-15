@@ -16,7 +16,8 @@ public protocol ModalFormViewControllerDelegate: class {
 
 public class ModalFormViewController: UIViewController {
     public enum InputType {
-        case text(String, String, String?)
+        case textField(String, String, String?)
+        case textView(String, String?)
     }
     
     private lazy var cancelButton: UIButton = {
@@ -60,7 +61,8 @@ public class ModalFormViewController: UIViewController {
         tableView.separatorInset = .zero
         tableView.separatorColor = InterfaceTheme.Color.background3
         tableView.backgroundColor = InterfaceTheme.Color.background2
-        tableView.register(InputTextCell.self, forCellReuseIdentifier: InputTextCell.reuseIdentifier)
+        tableView.register(InputTextFieldCell.self, forCellReuseIdentifier: InputTextFieldCell.reuseIdentifier)
+        tableView.register(InputTextViewCell.self, forCellReuseIdentifier: InputTextViewCell.reuseIdentifier)
         return tableView
     }()
     
@@ -109,22 +111,43 @@ public class ModalFormViewController: UIViewController {
         actionButtonsContainer.columnAnchor(view: self.tableView)
         
         self.tableView.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 0)
-        self.tableView.sizeAnchor(height: CGFloat(130 * self.items.count)) // cell 的高度 * cell 的个数
-        
-        self.tableView.constraint(for: .bottom)?.constant = CGFloat(60 + 110 * self.items.count)
+        self.tableView.sizeAnchor(height: self.tabelHeight)
     }
     
-    public func show(from: UIViewController) {
-        from.present(self, animated: false) {
-            UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseOut, animations: {
-                self.tableView.constraint(for: .bottom)?.constant = 0
-                self.view.layoutIfNeeded()
-            }, completion: nil)
+    private var tabelHeight: CGFloat {
+        var height: CGFloat = 0
+        self.items.forEach {
+            switch $0 {
+            case .textField:
+                height += InputTextFieldCell.height
+            case .textView:
+                height += InputTextViewCell.height
+            }
+        }
+        
+        return height
+    }
+    
+    public func show(from: UIViewController, animated: Bool) {
+        if animated {
+            self.tableView.constraint(for: .bottom)?.constant = self.tabelHeight
+            from.present(self, animated: false) {
+                UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseOut, animations: {
+                    self.tableView.constraint(for: .bottom)?.constant = 0
+                    self.view.layoutIfNeeded()
+                }, completion: nil)
+            }
+        } else {
+            from.present(self, animated: false, completion: nil)
         }
     }
     
     public func addTextFied(title: String, placeHoder: String, defaultValue: String?) {
-        self.items.append(InputType.text(title, placeHoder, defaultValue))
+        self.items.append(InputType.textField(title, placeHoder, defaultValue))
+    }
+    
+    public func addTextView(title: String, defaultValue: String?) {
+        self.items.append(InputType.textView(title, defaultValue))
     }
     
     @objc private func keyBoardWillShow(notification: Notification) {
@@ -149,10 +172,12 @@ public class ModalFormViewController: UIViewController {
     }
     
     @objc private func cancel() {
+        self.tableView.endEditing(true)
         self.delegate?.modalFormDidCancel(viewController: self)
     }
     
     @objc private func save() {
+        self.tableView.endEditing(true)
         self.delegate?.modalFormDidSave(viewController: self, formData: self.formData)
     }
 }
@@ -166,8 +191,13 @@ extension ModalFormViewController: UITableViewDataSource, UITableViewDelegate {
         let item = self.items[indexPath.row]
         
         switch item {
-        case .text:
-            let cell = tableView.dequeueReusableCell(withIdentifier: InputTextCell.reuseIdentifier, for: indexPath) as! InputTextCell
+        case .textField:
+            let cell = tableView.dequeueReusableCell(withIdentifier: InputTextFieldCell.reuseIdentifier, for: indexPath) as! InputTextFieldCell
+            cell.item = item
+            cell.delegate = self
+            return cell
+        case .textView:
+            let cell = tableView.dequeueReusableCell(withIdentifier: InputTextViewCell.reuseIdentifier, for: indexPath) as! InputTextViewCell
             cell.item = item
             cell.delegate = self
             return cell
@@ -185,16 +215,89 @@ extension ModalFormViewController: CellValueDelegate {
     }
 }
 
-private class InputTextCell: UITableViewCell, UITextFieldDelegate {
-    fileprivate static let reuseIdentifier = "InputTextCell"
+//
+// MARK: - cells
+//
+
+// MARK: - InputTextViewCell
+private class InputTextViewCell: UITableViewCell, UITextViewDelegate {
+    fileprivate static let reuseIdentifier = "InputTextViewCell"
+    fileprivate static let height: CGFloat = 150
+    
+    weak var delegate: CellValueDelegate?
+    
+    fileprivate var item: ModalFormViewController.InputType? {
+        didSet {
+            guard let item = item else { return }
+            self.updateUI(item)
+        }
+    }
+    
+    private let titleLabel: UILabel = {
+        let label = UILabel()
+        label.font = InterfaceTheme.Font.footnote
+        label.textColor = InterfaceTheme.Color.enphersizedDescriptive
+        return label
+    }()
+    
+    private let textView: UITextView = {
+        let textView = UITextView()
+        textView.font = InterfaceTheme.Font.body
+        textView.textColor = InterfaceTheme.Color.interactive
+        textView.backgroundColor = InterfaceTheme.Color.background2
+        return textView
+    }()
+    
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
+        self.setupUI()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func setupUI() {
+        self.backgroundColor = InterfaceTheme.Color.background2
+        
+        self.contentView.addSubview(self.titleLabel)
+        self.contentView.addSubview(self.textView)
+        
+        self.titleLabel.sideAnchor(for: [.left, .top, .right], to: self.contentView, edgeInset: 10)
+        self.titleLabel.columnAnchor(view: self.textView)
+        self.textView.sideAnchor(for: [.left, .right, .bottom], to: self.contentView, edgeInset: 10)
+        
+        self.titleLabel.sizeAnchor(height: 30)
+        self.textView.sizeAnchor(height: 100)
+    }
+    
+    private func updateUI(_ item: ModalFormViewController.InputType) {
+        switch item {
+        case let .textView(title, defaultValue):
+            self.titleLabel.text = title
+            self.textView.text = defaultValue
+        default: break
+        }
+    }
+    
+    func textViewDidChange(_ textView: UITextView) {
+        self.delegate?.didSetValue(title: self.titleLabel.text ?? "", value: textView.text)
+    }
+}
+
+// MARK: - InputTextFieldCell
+private class InputTextFieldCell: UITableViewCell, UITextFieldDelegate {
+    fileprivate static let reuseIdentifier = "InputTextFieldCell"
+    fileprivate static let height: CGFloat = 130
     
     weak var delegate: CellValueDelegate?
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.font = InterfaceTheme.Font.title
+        label.font = InterfaceTheme.Font.footnote
         label.textAlignment = .left
-        label.textColor = InterfaceTheme.Color.descriptive
+        label.textColor = InterfaceTheme.Color.enphersizedDescriptive
         return label
     }()
     
@@ -239,7 +342,7 @@ private class InputTextCell: UITableViewCell, UITextFieldDelegate {
         self.contentView.addSubview(self.textField)
         
         self.titleLabel.sideAnchor(for: [.left, .top, .right], to: self.contentView, edgeInset: 10)
-        self.titleLabel.sizeAnchor(height: 50)
+        self.titleLabel.sizeAnchor(height: 30)
         self.titleLabel.columnAnchor(view: self.textField)
         self.textField.sideAnchor(for: [.left, .right, .bottom], to: self.contentView, edgeInset: 10)
         self.textField.sizeAnchor(height: 60)
@@ -247,11 +350,34 @@ private class InputTextCell: UITableViewCell, UITextFieldDelegate {
     
     private func updateUI(_ item: ModalFormViewController.InputType) {
         switch item {
-        case let .text(title, placeholder, value):
+        case let .textField(title, placeholder, value):
             self.titleLabel.text = title
             self.textField.attributedPlaceholder = NSAttributedString(string: placeholder,
                                                                       attributes: [NSAttributedString.Key.foregroundColor : InterfaceTheme.Color.descriptive])
             self.textField.text = value
+        default: break
         }
+    }
+}
+
+extension Encodable {
+    public func encode(to container: inout SingleValueEncodingContainer) throws {
+        try container.encode(self)
+    }
+}
+
+extension JSONEncoder {
+    public struct EncodableWrapper: Encodable {
+        let wrapped: Encodable
+        
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.singleValueContainer()
+            try self.wrapped.encode(to: &container)
+        }
+    }
+    
+    public func encode<Key: Encodable>(_ dictionary: [Key: Encodable]) throws -> Data {
+        let wrappedDict = dictionary.mapValues(EncodableWrapper.init(wrapped:))
+        return try self.encode(wrappedDict)
     }
 }

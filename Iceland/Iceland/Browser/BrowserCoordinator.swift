@@ -36,14 +36,14 @@ public class BrowserCoordinator: Coordinator {
         self.viewController = viewController
     }
     
-    public override func moveIn(top: UIViewController?) {
+    public override func moveIn(top: UIViewController?, animated: Bool) {
         guard let viewController = self.viewController else { return }
         
-        top?.present(viewController, animated: true, completion: nil)
+        top?.present(viewController, animated: animated, completion: nil)
     }
     
-    public override func moveOut(top: UIViewController) {
-        self.viewController?.dismiss(animated: true, completion: nil)
+    public override func moveOut(top: UIViewController, animated: Bool) {
+        self.viewController?.dismiss(animated: animated, completion: nil)
     }
     
     public func showOutlineHeadings(url: URL) {

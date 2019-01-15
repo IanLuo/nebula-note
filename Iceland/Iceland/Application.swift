@@ -24,9 +24,9 @@ public class Application: Coordinator {
         self.window?.rootViewController = self.stack
     }
     
-    public override func start(from: Coordinator?) {
+    public override func start(from: Coordinator?, animated: Bool) {
         let homeCoord = HomeCoordinator(stack: self.stack)
-        homeCoord.start(from: self)
+        homeCoord.start(from: self, animated: animated)
     }
 }
 
@@ -56,30 +56,30 @@ public class Coordinator {
         }
     }
     
-    open func moveOut(top: UIViewController) {
+    open func moveOut(top: UIViewController, animated: Bool) {
         top.navigationController?.popViewController(animated: true)
     }
     
-    open func moveIn(top: UIViewController?) {
+    open func moveIn(top: UIViewController?, animated: Bool) {
         if let viewController = self.viewController {
             self.stack.pushViewController(viewController, animated: true)
         }
     }
     
-    @objc public func stop() {
+    @objc public func stop(animated: Bool = true) {
         if let viewController = self.viewController {
-            self.moveOut(top: viewController)
+            self.moveOut(top: viewController, animated: animated)
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.25) {
                 self.parent?.remove(self)
             }
         }
     }
     
-    open func start(from: Coordinator?) {
+    open func start(from: Coordinator?, animated: Bool = true) {
         if let f = from {
             f.addChild(self)
             
-            self.moveIn(top: f.viewController)
+            self.moveIn(top: f.viewController, animated: animated)
         }
         
     }

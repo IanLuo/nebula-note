@@ -46,22 +46,22 @@ public class EditorCoordinator: Coordinator {
         }
     }
     
-    public override func moveIn(top: UIViewController?) {
+    public override func moveIn(top: UIViewController?, animated: Bool) {
         guard let viewController = self.viewController else { return }
         switch self.usage {
         case .editor:
-            self.stack.pushViewController(viewController, animated: true)
+            self.stack.pushViewController(viewController, animated: animated)
         case .outline:
-            top?.present(viewController, animated: true, completion: nil)
+            top?.present(viewController, animated: animated, completion: nil)
         }
     }
     
-    public override func moveOut(top: UIViewController) {
+    public override func moveOut(top: UIViewController, animated: Bool) {
         switch self.usage {
         case .editor:
-            self.stack.popViewController(animated: true)
+            self.stack.popViewController(animated: animated)
         case .outline:
-            self.viewController?.dismiss(animated: true, completion: nil)
+            self.viewController?.dismiss(animated: animated, completion: nil)
         }
     }
 }
