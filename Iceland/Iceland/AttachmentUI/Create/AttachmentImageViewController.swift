@@ -39,7 +39,7 @@ public class AttachmentImageViewController: AttachmentViewController, Attachment
     }
     
     private func setupUI() {
-
+     
     }
     
     public func showImageSourcePicker() {
@@ -74,9 +74,7 @@ public class AttachmentImageViewController: AttachmentViewController, Attachment
 
 extension AttachmentImageViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     public func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        picker.dismiss(animated: true) {
-            self.viewModel.dependency?.stop()
-        }
+        picker.dismiss(animated: true)
     }
     
     public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {

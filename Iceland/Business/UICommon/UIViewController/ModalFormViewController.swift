@@ -81,6 +81,10 @@ public class ModalFormViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(keyBoardWillHide), name: UIApplication.keyboardWillHideNotification, object: nil)
         
         self.titleLabel.text = self.title
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(cancel))
+        tap.delegate = self
+        self.view.addGestureRecognizer(tap)
     }
     
     deinit {
@@ -88,6 +92,8 @@ public class ModalFormViewController: UIViewController {
     }
     
     private func setupUI() {
+        self.view.backgroundColor = UIColor.black.withAlphaComponent(0.2)
+        
         self.view.addSubview(self.actionButtonsContainer)
         
         self.actionButtonsContainer.addSubview(self.saveButton)
@@ -179,6 +185,12 @@ public class ModalFormViewController: UIViewController {
     @objc private func save() {
         self.tableView.endEditing(true)
         self.delegate?.modalFormDidSave(viewController: self, formData: self.formData)
+    }
+}
+
+extension ModalFormViewController: UIGestureRecognizerDelegate {
+    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        return touch.view == self.view
     }
 }
 

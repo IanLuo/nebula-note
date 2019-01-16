@@ -66,6 +66,10 @@ public class ActionsViewController: UIViewController {
         self.setupUI()
         
         self.titleLabel.text = self.title
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(cancel))
+        tap.delegate = self
+        self.view.addGestureRecognizer(tap)
     }
     
     private var items: [Item] = []
@@ -134,6 +138,8 @@ public class ActionsViewController: UIViewController {
     }()
     
     private func setupUI() {
+        self.view.backgroundColor = UIColor.black.withAlphaComponent(0.2)
+        
         self.view.addSubview(self.contentView)
         
         self.contentView.addSubview(self.tableView)
@@ -173,6 +179,12 @@ public class ActionsViewController: UIViewController {
         let title: String
         let action: (ActionsViewController) -> Void
         let style: ActionsViewController.Style
+    }
+}
+
+extension ActionsViewController: UIGestureRecognizerDelegate {
+    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        return touch.view == self.view
     }
 }
 

@@ -14,7 +14,7 @@ public protocol SelectorViewControllerDelegate: class {
     func SelectorDidSelect(index: Int, viewController: SelectorViewController)
 }
 
-public class SelectorViewController: UIViewController {
+open class SelectorViewController: UIViewController {
     public var rowHeight: CGFloat = 60
     
     public lazy var tableView: UITableView = {
@@ -33,17 +33,17 @@ public class SelectorViewController: UIViewController {
     
     public var emptyDataIcon: UIImage?
     
-    public override func viewDidLayoutSubviews() {
+    open override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        if self.items.count == 0 {
+        if self.items.count == 0 && self.tableView.bounds.size != .zero {
             self.showEmptyDataView()
         } else {
             self.hideEmptyDataView()
         }
     }
     
-    public override func viewDidLoad() {
+    open override func viewDidLoad() {
         super.viewDidLoad()
         
         self.setupUI()
@@ -53,7 +53,7 @@ public class SelectorViewController: UIViewController {
         self.view.addGestureRecognizer(tap)
     }
     
-    public override func viewDidAppear(_ animated: Bool) {
+    open override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
         var selectedIndex: Int? = nil
@@ -69,7 +69,7 @@ public class SelectorViewController: UIViewController {
             self.tableView.scrollToRow(at: indexPath, at: UITableView.ScrollPosition.middle, animated: false)
         }
     }
-
+    
     public var items: [Item] = []
     public var currentTitle: String?
     public var selectedTitles: [String] = []
@@ -92,12 +92,14 @@ public class SelectorViewController: UIViewController {
         // 已经显示，则需要插入
         if self.tableView.window != nil {
             self.tableView.insertRows(at: [IndexPath(row: self.items.count - 1, section: 0)], with: UITableView.RowAnimation.none)
+            
+            self.hideEmptyDataView()
         }
     }
     
     // transite delegate will access this
     public var transiteFromView: UIView?
-    public func show(from: UIView, on viewController: UIViewController) {
+    public func show(from: UIView?, on viewController: UIViewController) {
         self.modalPresentationStyle = .custom
         self.transitioningDelegate = self
         self.transiteFromView = from
@@ -164,6 +166,8 @@ extension SelectorViewController: UITableViewDataSource, UITableViewDelegate {
         label.font = InterfaceTheme.Font.title
         label.textColor = InterfaceTheme.Color.descriptive
         label.text = self.emptyDataText
+        label.textAlignment = .center
+        label.numberOfLines = 0
 
         if let icon = self.emptyDataIcon {
             let container = UIView()
@@ -177,9 +181,11 @@ extension SelectorViewController: UITableViewDataSource, UITableViewDelegate {
             imageView.sideAnchor(for: [.left, .top, .right], to: container, edgeInset: 0)
             imageView.columnAnchor(view: label, space: 20)
             label.sideAnchor(for: [.left, .bottom, .right], to: container, edgeInset: 0)
+            label.sideAnchor(for: [.left, .right], to: container, edgeInset: 30)
         } else {
             emptyDataView.addSubview(label)
             label.centerAnchors(position: [.centerX, .centerY], to: emptyDataView)
+            label.sideAnchor(for: [.left, .right], to: emptyDataView, edgeInset: 30)
         }
         
         self.tableView.tableFooterView = emptyDataView
@@ -308,13 +314,15 @@ private class Animator: NSObject, UIViewControllerAnimatedTransitioning {
         
         if self.isPresenting {
             if let selectorViewcontroller = to as? SelectorViewController {
-                guard let fromView = selectorViewcontroller.transiteFromView else { return }
+                let fromView = selectorViewcontroller.transiteFromView
                 
                 containner.addSubview(to.view)
-                to.view.alpha = 0
+                selectorViewcontroller.tableView.alpha = 0
+                selectorViewcontroller.view.backgroundColor = UIColor.black.withAlphaComponent(0)
                 let bounds = from.view.bounds
                 let destRect = transitionContext.finalFrame(for: to).inset(by: UIEdgeInsets(top: bounds.height / 4, left: 30, bottom: bounds.height / 4, right: 30))
-                let startRect = fromView.superview!.convert(fromView.frame, to: from.view)
+                // 如果没有设置显示位置的 UIView，使用屏幕正中心的点作为显示位置
+                let startRect = fromView != nil ? fromView!.superview!.convert(fromView!.frame, to: from.view) : CGRect(origin: selectorViewcontroller.view.center, size: .zero)
                 let animatableView = UIImageView(frame: startRect)
                 animatableView.backgroundColor = InterfaceTheme.Color.background2
                 animatableView.clipsToBounds = true
@@ -325,8 +333,9 @@ private class Animator: NSObject, UIViewControllerAnimatedTransitioning {
                 UIView.animate(withDuration: self.transitionDuration(using: transitionContext), delay: 0.0, options: .curveEaseOut, animations: ({
                     animatableView.frame = destRect
                     animatableView.alpha = 1
+                    selectorViewcontroller.view.backgroundColor = UIColor.black.withAlphaComponent(0.2)
                 }), completion: { completeion in
-                    to.view.alpha = 1
+                    selectorViewcontroller.tableView.alpha = 1
                     animatableView.removeFromSuperview()
                     transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
                 })
@@ -335,13 +344,14 @@ private class Animator: NSObject, UIViewControllerAnimatedTransitioning {
             }
         } else {
             if let selectorViewcontroller = from as? SelectorViewController {
-                guard let toView = selectorViewcontroller.transiteFromView else { return }
+                let toView = selectorViewcontroller.transiteFromView
                 guard let fromImage = selectorViewcontroller.tableView.snapshot else { return }
                 
-                selectorViewcontroller.view.alpha = 0
+                selectorViewcontroller.tableView.alpha = 0
                 let bounds = from.view.bounds
                 let startRect = transitionContext.finalFrame(for: to).inset(by: UIEdgeInsets(top: bounds.height / 4, left: 30, bottom: bounds.height / 4, right: 30))
-                let destRect = toView.superview!.convert(toView.frame, to: from.view)
+                // 如果没有设置显示位置的 UIView，使用屏幕正中心的点作为显示位置
+                let destRect = toView != nil ? toView!.superview!.convert(toView!.frame, to: from.view) : CGRect(origin: selectorViewcontroller.view.center, size: .zero)
                 let animatableView = UIImageView(frame: startRect)
                 animatableView.backgroundColor = InterfaceTheme.Color.background2
                 animatableView.clipsToBounds = true
@@ -352,6 +362,7 @@ private class Animator: NSObject, UIViewControllerAnimatedTransitioning {
                 UIView.animate(withDuration: self.transitionDuration(using: transitionContext), delay: 0, options: .curveEaseIn, animations: ({
                     animatableView.frame = destRect
                     animatableView.alpha = 0
+                    selectorViewcontroller.view.backgroundColor = UIColor.black.withAlphaComponent(0)
                 }), completion: { completeion in
                     animatableView.removeFromSuperview()
                     transitionContext.completeTransition(!transitionContext.transitionWasCancelled)

@@ -14,29 +14,21 @@ public protocol HeadingsOutlineViewControllerDelegate: class {
     func didSelectHeading(url: URL, heading: OutlineTextStorage.Heading)
 }
 
-public class HeadingsOutlineViewController: UIViewController {
+public class HeadingsOutlineViewController: SelectorViewController {
     private let viewModel: DocumentEditViewModel
     
-    public weak var delegate: HeadingsOutlineViewControllerDelegate?
-    
-    private let selector:SelectorViewController = SelectorViewController()
+    public weak var outlineDelegate: HeadingsOutlineViewControllerDelegate?
     
     public init(viewModel: DocumentEditViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
-        
+        self.delegate = self
         viewModel.delegate = self
-        self.setupUI()
+        self.emptyDataText = "There's no heading in this document yet"
     }
     
     public required init?(coder aDecoder: NSCoder) {
         fatalError()
-    }
-    
-    private func setupUI() {
-        self.view.addSubview(self.selector.view)
-        
-        self.selector.delegate = self
     }
 }
 
@@ -46,14 +38,14 @@ extension HeadingsOutlineViewController: SelectorViewControllerDelegate {
     }
     
     public func SelectorDidSelect(index: Int, viewController: SelectorViewController) {
-        self.delegate?.didSelectHeading(url: self.viewModel.url, heading: self.viewModel.headings[index])
+        self.outlineDelegate?.didSelectHeading(url: self.viewModel.url, heading: self.viewModel.headings[index])
     }
 }
 
 extension HeadingsOutlineViewController: DocumentEditViewModelDelegate {
     private func loadData() {
         for index in 0..<self.viewModel.headings.count {
-            selector.addItem(attributedString: self.attributedString(level: self.viewModel.level(index: index),
+            self.addItem(attributedString: self.attributedString(level: self.viewModel.level(index: index),
                                                                      string: self.viewModel.headingString(index: index)))
         }
     }
