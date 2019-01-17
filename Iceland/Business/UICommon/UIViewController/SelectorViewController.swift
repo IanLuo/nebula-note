@@ -17,7 +17,7 @@ public protocol SelectorViewControllerDelegate: class {
 open class SelectorViewController: UIViewController {
     public var rowHeight: CGFloat = 60
     
-    public lazy var tableView: UITableView = {
+    private lazy var tableView: UITableView = {
         let tableView = UITableView()
         tableView.delegate = self
         tableView.dataSource = self
@@ -29,6 +29,21 @@ open class SelectorViewController: UIViewController {
         return tableView
     }()
     
+    public let titleLabel: UILabel = {
+        let label = UILabel()
+        label.font = InterfaceTheme.Font.title
+        label.textColor = InterfaceTheme.Color.descriptive
+        label.textAlignment = .center
+        label.setBorder(position: .bottom, color: InterfaceTheme.Color.background3, width: 2)
+        label.backgroundColor = InterfaceTheme.Color.background2
+        return label
+    }()
+    
+    public let contentView: UIView = {
+        let view = UIView()
+        return view
+    }()
+    
     public var emptyDataText: String = "It's empty".localizable
     
     public var emptyDataIcon: UIImage?
@@ -36,7 +51,8 @@ open class SelectorViewController: UIViewController {
     open override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        if self.items.count == 0 && self.tableView.bounds.size != .zero {
+        self.contentView.layoutIfNeeded() // force contentView to layout it's subview
+        if self.items.count == 0 {
             self.showEmptyDataView()
         } else {
             self.hideEmptyDataView()
@@ -51,6 +67,8 @@ open class SelectorViewController: UIViewController {
         let tap = UITapGestureRecognizer(target: self, action: #selector(cancel))
         tap.delegate = self
         self.view.addGestureRecognizer(tap)
+        
+        self.titleLabel.text = self.title
     }
     
     open override func viewDidAppear(_ animated: Bool) {
@@ -108,11 +126,18 @@ open class SelectorViewController: UIViewController {
     }
     
     private func setupUI() {
-        self.view.addSubview(self.tableView)
+        self.view.addSubview(self.contentView)
+        self.contentView.addSubview(self.tableView)
+        self.contentView.addSubview(self.titleLabel)
         
-        self.tableView.sizeAnchor(height: self.view.bounds.height / 2)
-        self.tableView.sideAnchor(for: .left, to: self.view, edgeInset: 30)
-        self.tableView.centerAnchors(position: [.centerX, .centerY], to: self.view)
+        self.contentView.sideAnchor(for: [.left, .right], to: self.view, edgeInset: 30)
+        self.contentView.sideAnchor(for: [.top, .bottom], to: self.view, edgeInset: self.view.bounds.height / 4)
+        
+        self.titleLabel.sizeAnchor(height: 60)
+        self.titleLabel.sideAnchor(for: [.left, .right, .top], to: self.contentView, edgeInset: 0)
+        
+        self.titleLabel.columnAnchor(view: self.tableView, space: 0)
+        self.tableView.sideAnchor(for: [.left, .right, .bottom], to: self.contentView, edgeInset: 0)
     }
     
     @objc private func cancel() {
@@ -184,8 +209,7 @@ extension SelectorViewController: UITableViewDataSource, UITableViewDelegate {
             label.sideAnchor(for: [.left, .right], to: container, edgeInset: 30)
         } else {
             emptyDataView.addSubview(label)
-            label.centerAnchors(position: [.centerX, .centerY], to: emptyDataView)
-            label.sideAnchor(for: [.left, .right], to: emptyDataView, edgeInset: 30)
+            label.allSidesAnchors(to: emptyDataView, edgeInset: 30)
         }
         
         self.tableView.tableFooterView = emptyDataView
@@ -317,7 +341,7 @@ private class Animator: NSObject, UIViewControllerAnimatedTransitioning {
                 let fromView = selectorViewcontroller.transiteFromView
                 
                 containner.addSubview(to.view)
-                selectorViewcontroller.tableView.alpha = 0
+                selectorViewcontroller.contentView.alpha = 0
                 selectorViewcontroller.view.backgroundColor = UIColor.black.withAlphaComponent(0)
                 let bounds = from.view.bounds
                 let destRect = transitionContext.finalFrame(for: to).inset(by: UIEdgeInsets(top: bounds.height / 4, left: 30, bottom: bounds.height / 4, right: 30))
@@ -335,7 +359,7 @@ private class Animator: NSObject, UIViewControllerAnimatedTransitioning {
                     animatableView.alpha = 1
                     selectorViewcontroller.view.backgroundColor = UIColor.black.withAlphaComponent(0.2)
                 }), completion: { completeion in
-                    selectorViewcontroller.tableView.alpha = 1
+                    selectorViewcontroller.contentView.alpha = 1
                     animatableView.removeFromSuperview()
                     transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
                 })
@@ -345,9 +369,9 @@ private class Animator: NSObject, UIViewControllerAnimatedTransitioning {
         } else {
             if let selectorViewcontroller = from as? SelectorViewController {
                 let toView = selectorViewcontroller.transiteFromView
-                guard let fromImage = selectorViewcontroller.tableView.snapshot else { return }
+                guard let fromImage = selectorViewcontroller.contentView.snapshot else { return }
                 
-                selectorViewcontroller.tableView.alpha = 0
+                selectorViewcontroller.contentView.alpha = 0
                 let bounds = from.view.bounds
                 let startRect = transitionContext.finalFrame(for: to).inset(by: UIEdgeInsets(top: bounds.height / 4, left: 30, bottom: bounds.height / 4, right: 30))
                 // 如果没有设置显示位置的 UIView，使用屏幕正中心的点作为显示位置

@@ -177,6 +177,7 @@ public class AttachmentSketchViewController: AttachmentViewController, Attachmen
         let selector = SelectorViewController()
         selector.delegate = self
         selector.name = "color"
+        selector.title = "Pick Color"
         self.colors.forEach {
             selector.addItem(icon: UIImage.create(with: $0.1, size: CGSize(width:30, height: 30), style: .circle),
                              title: "\($0.0)")
@@ -191,6 +192,7 @@ public class AttachmentSketchViewController: AttachmentViewController, Attachmen
         selector.rowHeight = 80
         selector.delegate = self
         selector.name = "brush"
+        selector.title = "Pick Brush Size"
         self.brushWidth.forEach {
             selector.addItem(icon: UIImage.create(with: InterfaceTheme.Color.interactive, size: CGSize(width: $0, height: $0), style: .circle),
                              title: "\($0)")

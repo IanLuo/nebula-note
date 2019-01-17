@@ -41,6 +41,7 @@ public class EditorCoordinator: Coordinator {
             super.init(stack: stack, context: context)
             let viewController = HeadingsOutlineViewController(viewModel: viewModel)
             viewController.outlineDelegate = self
+            viewController.title = url.fileName
             viewModel.dependency = self
             self.viewController = viewController
         }

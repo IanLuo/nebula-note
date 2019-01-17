@@ -120,7 +120,7 @@ public class DocumentBrowserViewModel {
     }
     
     func createDocument(below: URL?) {
-        self.documentManager.add(title: "untitled", below: below) { url in
+        self.documentManager.add(title: "untitled".localizable, below: below) { url in
             if let url = url {
                 var index: Int = self.data.count
                 if let below = below {
