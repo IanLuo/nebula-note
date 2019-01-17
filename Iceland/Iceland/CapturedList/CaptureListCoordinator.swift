@@ -19,6 +19,7 @@ public class CaptureListCoordinator: Coordinator {
         
         super.init(stack: stack, context: context)
         self.viewController = viewController
+        viewModel.dependency = self
     }
     
     public func showDocumentHeadingSelector() {

@@ -71,22 +71,14 @@ public class DocumentBrowserCell: UITableViewCell {
         self.contentView.addSubview(self.titleLabel)
         self.contentView.addSubview(self.actionButton)
         
-        self.arrowButton.translatesAutoresizingMaskIntoConstraints = false
-        self.titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        self.actionButton.translatesAutoresizingMaskIntoConstraints = false
+        self.arrowButton.sideAnchor(for: [.left, .top, .bottom], to: self.contentView, edgeInsets: .zero)
+        self.arrowButton.sizeAnchor(width: 30, height: 60)
+        self.arrowButton.rowAnchor(view: self.titleLabel, space: 10)
+        self.titleLabel.sideAnchor(for: [.top, .bottom], to: self.contentView, edgeInset: 0)
         
-        self.arrowButton.sideAnchor(for: [.left], to: self.contentView, edgeInsets: .zero)
-        self.arrowButton.centerAnchors(position: [.centerY], to: self.contentView)
-        self.arrowButton.heightAnchor.constraint(equalToConstant: 44).isActive = true
-        self.arrowButton.widthAnchor.constraint(equalToConstant: 44).isActive = true
+        self.titleLabel.rowAnchor(view: self.actionButton, space: 10)
+        self.actionButton.sideAnchor(for: [.top, .bottom, .right], to: self.contentView, edgeInsets: .init(top: 0, left: 0, bottom: 0, right: -30))
 
-        self.titleLabel.leftAnchor.constraint(equalTo: self.arrowButton.rightAnchor, constant: 10).isActive = true
-        self.titleLabel.rightAnchor.constraint(equalTo: self.contentView.rightAnchor, constant: 10).isActive = true
-        self.titleLabel.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor).isActive = true
-        
-        self.actionButton.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -30).isActive = true
-        self.actionButton.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor).isActive = true
-        
         self.contentView.backgroundColor = InterfaceTheme.Color.background1
     }
     

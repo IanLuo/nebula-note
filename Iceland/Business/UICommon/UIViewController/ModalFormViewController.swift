@@ -50,6 +50,10 @@ public class ModalFormViewController: UIViewController {
     
     private var formData: [String: Codable] = [:]
     
+    public var onSaveValue: (([String: Codable], ModalFormViewController) -> Void)?
+    
+    public var onCancel: ((ModalFormViewController) -> Void)?
+    
     public weak var delegate: ModalFormViewControllerDelegate?
     
     public lazy var tableView: UITableView = {
@@ -71,6 +75,16 @@ public class ModalFormViewController: UIViewController {
         view.backgroundColor = InterfaceTheme.Color.background2
         return view
     }()
+    
+    public init() {
+        super.init(nibName: nil, bundle: nil)
+        
+        self.modalPresentationStyle = .overCurrentContext
+    }
+    
+    public required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -134,20 +148,6 @@ public class ModalFormViewController: UIViewController {
         return height
     }
     
-    public func show(from: UIViewController, animated: Bool) {
-        if animated {
-            self.tableView.constraint(for: .bottom)?.constant = self.tabelHeight
-            from.present(self, animated: false) {
-                UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseOut, animations: {
-                    self.tableView.constraint(for: .bottom)?.constant = 0
-                    self.view.layoutIfNeeded()
-                }, completion: nil)
-            }
-        } else {
-            from.present(self, animated: false, completion: nil)
-        }
-    }
-    
     public func addTextFied(title: String, placeHoder: String, defaultValue: String?, keyboardType: UIKeyboardType = .default) {
         self.items.append(InputType.textField(title, placeHoder, defaultValue, keyboardType))
     }
@@ -180,11 +180,13 @@ public class ModalFormViewController: UIViewController {
     @objc private func cancel() {
         self.tableView.endEditing(true)
         self.delegate?.modalFormDidCancel(viewController: self)
+        self.onCancel?(self)
     }
     
     @objc private func save() {
         self.tableView.endEditing(true)
         self.delegate?.modalFormDidSave(viewController: self, formData: self.formData)
+        self.onSaveValue?(self.formData, self)
     }
 }
 

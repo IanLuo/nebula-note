@@ -23,7 +23,8 @@ public class DocumentBrowserViewController: UIViewController {
         tableView.register(DocumentBrowserCell.self, forCellReuseIdentifier: DocumentBrowserCell.reuseIdentifier)
         tableView.backgroundColor = InterfaceTheme.Color.background1
         tableView.tableFooterView = UIView()
-        tableView.separatorStyle = .none
+        tableView.separatorColor = InterfaceTheme.Color.background3
+        tableView.separatorInset = .zero
         tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 130, right: 0)
         return tableView
     }()
@@ -39,8 +40,8 @@ public class DocumentBrowserViewController: UIViewController {
     
     private let cancelButton: UIButton = {
         let button = UIButton()
-        button.setTitle("cancel".localizable, for: .normal)
-        button.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.background2, size: .singlePoint),
+        button.setTitle("✕".localizable, for: .normal)
+        button.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.background1, size: .singlePoint),
                                   for: .normal)
         button.addTarget(self, action: #selector(cancel), for: .touchUpInside)
         return button
@@ -70,16 +71,15 @@ public class DocumentBrowserViewController: UIViewController {
         self.view.addSubview(self.tableView)
         self.view.addSubview(self.createNewDocumentButton)
         self.view.addSubview(self.cancelButton)
+
+        self.cancelButton.sideAnchor(for: [.right, .top], to: self.view, edgeInset: 20)
+        self.cancelButton.sizeAnchor(width: 60, height: 60)
+
+        self.cancelButton.columnAnchor(view: self.tableView)
+        self.tableView.sideAnchor(for: [.left, .bottom, .right], to: self.view, edgeInset: 0)
         
-        self.tableView.allSidesAnchors(to: self.view, edgeInsets: .zero)
-        
-        self.createNewDocumentButton.sideAnchor(for: [.left, .right], to: self.view, edgeInsets: .zero)
+        self.createNewDocumentButton.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInsets: .zero)
         self.createNewDocumentButton.heightAnchor.constraint(equalToConstant: 60).isActive = true
-        
-        self.createNewDocumentButton.columnAnchor(view: self.cancelButton, space: 1)
-        
-        self.cancelButton.heightAnchor.constraint(equalToConstant: 60).isActive = true
-        self.cancelButton.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 0)
     }
     
     @objc private func createNewDocumentAtRoot() {
@@ -101,10 +101,6 @@ extension DocumentBrowserViewController: UITableViewDataSource {
         cell.delegate = self
         cell.cellModel = self.viewModel.data[indexPath.row]
         return cell
-    }
-    
-    public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 60
     }
 }
 
@@ -148,26 +144,50 @@ extension DocumentBrowserViewController: DocumentBrowserCellDelegate {
     
     public func didTapActions(url: URL) {
         if let index = self.viewModel.index(of: url) {
-            let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-            actionSheet.addAction(UIAlertAction(title: "add new documnet", style: .default, handler: { _ in
-                self.viewModel.createDocument(below: self.viewModel.data[index].url)
-            }))
+            let actionsViewController = ActionsViewController()
+            actionsViewController.addAction(icon: nil, title: "new document".localizable) { viewController in
+                viewController.dismiss(animated: true, completion: {
+                    self.viewModel.createDocument(below: self.viewModel.data[index].url)
+                })
+            }
+
+            actionsViewController.addAction(icon: nil, title: "rename".localizable) { viewController in
+                viewController.dismiss(animated: true, completion: {
+                    let renameFormViewController = ModalFormViewController()
+                    renameFormViewController.addTextFied(title: "new name".localizable, placeHoder: "put new name here".localizable, defaultValue: nil)
+                    renameFormViewController.onSaveValue = { formValue, viewController in
+                        if let newName = formValue["new name".localizable] as? String {
+                            viewController.dismiss(animated: true, completion: {
+                                self.viewModel.rename(index: index, to: newName)
+                            })
+                        }
+                    }
+                    
+                    renameFormViewController.onCancel = { viewController in
+                        viewController.dismiss(animated: true, completion: nil)
+                    }
+                    
+                    self.present(renameFormViewController, animated: true, completion: nil)
+                })
+            }
             
-            actionSheet.addAction(UIAlertAction(title: "rename", style: .default, handler: { _ in
-                self.viewModel.rename(index: index, to: "new name")
-            }))
+            actionsViewController.addAction(icon: nil, title: "delete".localizable) { viewController in
+                viewController.dismiss(animated: true, completion: {
+                    self.viewModel.deleteDocument(index: index)
+                })
+            }
             
-            actionSheet.addAction(UIAlertAction(title: "delete", style: .default, handler: { _ in
-                self.viewModel.deleteDocument(index: index)
-            }))
+            actionsViewController.addAction(icon: nil, title: "duplicate".localizable) { viewController in
+                viewController.dismiss(animated: true, completion: {
+                    self.viewModel.duplicate(index: index)
+                })
+            }
             
-            actionSheet.addAction(UIAlertAction(title: "duplicate", style: .default, handler: { _ in
-                self.viewModel.duplicate(index: index)
-            }))
+            actionsViewController.setCancel { viewController in
+                viewController.dismiss(animated: true, completion: nil)
+            }
             
-            actionSheet.addAction(UIAlertAction(title: "cancel", style: UIAlertAction.Style.cancel, handler: nil))
-            
-            self.present(actionSheet, animated: true, completion: nil)
+            self.present(actionsViewController, animated: true, completion: nil)
         }
     }
     

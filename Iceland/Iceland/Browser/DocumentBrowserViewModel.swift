@@ -164,7 +164,7 @@ public class DocumentBrowserViewModel {
                 to: String) {
         let url = self.data[index].url
         self.documentManager.rename(url: url,
-                                    to: "new name",
+                                    to: to,
                                     below: nil,
                                     completion: { url in
                                         self.data[index].url = url
