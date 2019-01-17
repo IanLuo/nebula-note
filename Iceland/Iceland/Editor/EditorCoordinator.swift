@@ -24,21 +24,21 @@ public class EditorCoordinator: Coordinator {
     
     private let usage: Usage
     
-    public init(stack: UINavigationController, usage: Usage) {
+    public init(stack: UINavigationController, context: Context, usage: Usage) {
         self.usage = usage
         
         switch usage {
         case .editor(let url, let location):
             let viewModel = DocumentEditViewModel(editorService: OutlineEditorServer.request(url: url))
             viewModel.onLoadingLocation = location
-            super.init(stack: stack)
+            super.init(stack: stack, context: context)
             let viewController = DocumentEditViewController(viewModel: viewModel)
             viewController.delegate = self
             viewModel.dependency = self
             self.viewController = viewController
         case .outline(let url):
             let viewModel = DocumentEditViewModel(editorService: OutlineEditorServer.request(url: url))
-            super.init(stack: stack)
+            super.init(stack: stack, context: context)
             let viewController = HeadingsOutlineViewController(viewModel: viewModel)
             viewController.outlineDelegate = self
             viewModel.dependency = self

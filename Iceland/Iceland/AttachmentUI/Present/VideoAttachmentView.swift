@@ -9,27 +9,25 @@
 import Foundation
 import UIKit
 import Business
+import AVKit
 
 public class VideoAttachmentView: UIView, AttachmentViewProtocol {
+    public var attachment: Attachment!
+    
     public func size(for width: CGFloat) -> CGSize {
         return CGSize(width: width, height: width)
     }
     
-    public let label: UILabel = UILabel()
+    public var player: AVPlayerViewController!
     
     public func setup(attachment: Attachment) {
-        self.addSubview(self.label)
-        self.label.translatesAutoresizingMaskIntoConstraints = false
+        self.player = AVPlayerViewController()
         
-        self.label.leftAnchor.constraint(equalTo: self.leftAnchor).isActive = true
-        self.label.rightAnchor.constraint(equalTo: self.rightAnchor).isActive = true
-        self.label.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
-        self.label.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
+        self.addSubview(self.player.view)
+        self.player.view.allSidesAnchors(to: self, edgeInset: 0)
         
-        do {
-            label.text = try String(contentsOf: attachment.url)
-        } catch {
-            label.text = "\(error)"
-        }
+        self.player.player = AVPlayer(url: attachment.url)
+        
+        self.attachment = attachment
     }
 }

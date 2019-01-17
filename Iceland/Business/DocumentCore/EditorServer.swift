@@ -17,6 +17,10 @@ public class OutlineEditorServer: EditorServiceDelegate {
     
     private let editingQueue: DispatchQueue = DispatchQueue(label: "editor.doing.editing")
     
+    public static var instance: OutlineEditorServer {
+        return _instance
+    }
+    
     public static func request(url: URL) -> EditorService {
         if let editorInstance = OutlineEditorServer._instance.instances[url] {
             return editorInstance

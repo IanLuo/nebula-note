@@ -17,10 +17,10 @@ public protocol SearchCoordinatorDelegate: class {
 public class SearchCoordinator: Coordinator {
     public weak var delegate: SearchCoordinatorDelegate?
     
-    public init(stack: UINavigationController, documentSearchManager: DocumentSearchManager) {
-        let viewModel = DocumentSearchViewModel(documentSearchManager: documentSearchManager)
+    public override init(stack: UINavigationController, context: Context) {
+        let viewModel = DocumentSearchViewModel(documentSearchManager: context.documentSearchManager)
         let viewController = DocumentSearchViewController(viewModel: viewModel)
-        super.init(stack: stack)
+        super.init(stack: stack, context: context)
         viewController.delegate = self
     }
 }

@@ -11,8 +11,10 @@ import UIKit
 import Business
 
 public class ImageAttachmentView: UIView, AttachmentViewProtocol {
+    public var attachment: Attachment!
+    
     public func size(for width: CGFloat) -> CGSize {
-        return CGSize(width: width, height: width)
+        return self.imageView.image?.size.aspectFitWidthScale(for: width) ?? CGSize(width: width, height: width)
     }
     
     private let imageView: UIImageView = UIImageView()
@@ -20,12 +22,13 @@ public class ImageAttachmentView: UIView, AttachmentViewProtocol {
     public func setup(attachment: Attachment) {
         self.addSubview(self.imageView)
         self.imageView.contentMode = .scaleAspectFit
-        self.imageView.translatesAutoresizingMaskIntoConstraints = false
+        self.imageView.allSidesAnchors(to: self, edgeInset: 0)
         
-        self.imageView.leftAnchor.constraint(equalTo: self.leftAnchor).isActive = true
-        self.imageView.rightAnchor.constraint(equalTo: self.rightAnchor).isActive = true
-        self.imageView.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
-        self.imageView.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
+        self.attachment = attachment
+        self.updateUI(attachment)
+    }
+    
+    private func updateUI(_ attachment: Attachment) {
+        self.imageView.image = UIImage(contentsOfFile: attachment.url.path)
     }
 }
-

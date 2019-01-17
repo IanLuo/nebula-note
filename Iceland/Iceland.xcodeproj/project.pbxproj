@@ -110,6 +110,7 @@
 		E4B19AB021C5363A00ED3463 /* SettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B19AAF21C5363A00ED3463 /* SettingsTests.swift */; };
 		E4C46FE321EB311900F6374F /* ModalFormViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C46FE221EB311900F6374F /* ModalFormViewController.swift */; };
 		E4C7FB8521BA916D006E3CD8 /* AgendaCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C7FB8421BA916D006E3CD8 /* AgendaCellModel.swift */; };
+		E4CC0C5921EEF92900058E5D /* Size.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4CC0C5821EEF92900058E5D /* Size.swift */; };
 		E4EA855621D1DA3D00DD92F9 /* AttachmentImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EA855521D1DA3D00DD92F9 /* AttachmentImageViewController.swift */; };
 		E4EA855821D1DA8700DD92F9 /* AttachmentLinkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EA855721D1DA8700DD92F9 /* AttachmentLinkViewController.swift */; };
 		E4EA855A21D1DAAF00DD92F9 /* AttachmentAudioViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EA855921D1DAAF00DD92F9 /* AttachmentAudioViewController.swift */; };
@@ -314,6 +315,7 @@
 		E4B19AAF21C5363A00ED3463 /* SettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTests.swift; sourceTree = "<group>"; };
 		E4C46FE221EB311900F6374F /* ModalFormViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModalFormViewController.swift; sourceTree = "<group>"; };
 		E4C7FB8421BA916D006E3CD8 /* AgendaCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgendaCellModel.swift; sourceTree = "<group>"; };
+		E4CC0C5821EEF92900058E5D /* Size.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Size.swift; sourceTree = "<group>"; };
 		E4EA855521D1DA3D00DD92F9 /* AttachmentImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentImageViewController.swift; sourceTree = "<group>"; };
 		E4EA855721D1DA8700DD92F9 /* AttachmentLinkViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentLinkViewController.swift; sourceTree = "<group>"; };
 		E4EA855921D1DAAF00DD92F9 /* AttachmentAudioViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentAudioViewController.swift; sourceTree = "<group>"; };
@@ -764,6 +766,7 @@
 				E41CB1E021D8BD8400EF0A3C /* UIView */,
 				E41CB14A21D78E5B00EF0A3C /* Border.swift */,
 				E4A46A1D21AE6CF400FBDA04 /* Image+Generation.swift */,
+				E4CC0C5821EEF92900058E5D /* Size.swift */,
 				E4EA856421D1F8AE00DD92F9 /* CalendarView.swift */,
 				E4F3029D21D750ED00BDE178 /* Autolayout+Shortcuts.swift */,
 			);
@@ -1214,6 +1217,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E4CC0C5921EEF92900058E5D /* Size.swift in Sources */,
 				E4C46FE321EB311900F6374F /* ModalFormViewController.swift in Sources */,
 				E41CB1BC21D88DD100EF0A3C /* OutlineTextView.swift in Sources */,
 				E41CB1C121D88DD700EF0A3C /* OutlineParser.swift in Sources */,

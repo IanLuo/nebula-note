@@ -16,8 +16,8 @@ public protocol ModalFormViewControllerDelegate: class {
 
 public class ModalFormViewController: UIViewController {
     public enum InputType {
-        case textField(String, String, String?)
-        case textView(String, String?)
+        case textField(String, String, String?, UIKeyboardType)
+        case textView(String, String?, UIKeyboardType)
     }
     
     private lazy var cancelButton: UIButton = {
@@ -148,12 +148,12 @@ public class ModalFormViewController: UIViewController {
         }
     }
     
-    public func addTextFied(title: String, placeHoder: String, defaultValue: String?) {
-        self.items.append(InputType.textField(title, placeHoder, defaultValue))
+    public func addTextFied(title: String, placeHoder: String, defaultValue: String?, keyboardType: UIKeyboardType = .default) {
+        self.items.append(InputType.textField(title, placeHoder, defaultValue, keyboardType))
     }
     
-    public func addTextView(title: String, defaultValue: String?) {
-        self.items.append(InputType.textView(title, defaultValue))
+    public func addTextView(title: String, defaultValue: String?, keyboardType: UIKeyboardType = .default) {
+        self.items.append(InputType.textView(title, defaultValue, keyboardType))
     }
     
     @objc private func keyBoardWillShow(notification: Notification) {
@@ -252,11 +252,12 @@ private class InputTextViewCell: UITableViewCell, UITextViewDelegate {
         return label
     }()
     
-    private let textView: UITextView = {
+    private lazy var textView: UITextView = {
         let textView = UITextView()
         textView.font = InterfaceTheme.Font.body
         textView.textColor = InterfaceTheme.Color.interactive
         textView.backgroundColor = InterfaceTheme.Color.background2
+        textView.delegate = self
         return textView
     }()
     
@@ -286,9 +287,10 @@ private class InputTextViewCell: UITableViewCell, UITextViewDelegate {
     
     private func updateUI(_ item: ModalFormViewController.InputType) {
         switch item {
-        case let .textView(title, defaultValue):
+        case let .textView(title, defaultValue, keyboardType):
             self.titleLabel.text = title
             self.textView.text = defaultValue
+            self.textView.keyboardType = keyboardType
         default: break
         }
     }
@@ -362,11 +364,12 @@ private class InputTextFieldCell: UITableViewCell, UITextFieldDelegate {
     
     private func updateUI(_ item: ModalFormViewController.InputType) {
         switch item {
-        case let .textField(title, placeholder, value):
+        case let .textField(title, placeholder, value, keyboardType):
             self.titleLabel.text = title
             self.textField.attributedPlaceholder = NSAttributedString(string: placeholder,
                                                                       attributes: [NSAttributedString.Key.foregroundColor : InterfaceTheme.Color.descriptive])
             self.textField.text = value
+            self.textField.keyboardType = keyboardType
         default: break
         }
     }

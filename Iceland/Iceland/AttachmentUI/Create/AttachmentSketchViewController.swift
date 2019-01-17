@@ -12,7 +12,7 @@ import Drawsana
 import Business
 import Storage
 
-public class AttachmentSketchViewController: AttachmentViewController {
+public class AttachmentSketchViewController: AttachmentViewController, AttachmentViewModelDelegate {
     private lazy var drawingView: DrawsanaView = {
         let drawingView = DrawsanaView()
         drawingView.delegate = self
@@ -87,6 +87,8 @@ public class AttachmentSketchViewController: AttachmentViewController {
         self.drawingView.set(tool: PenTool())
         self.setColor(index: 0)
         self.setBrush(self.brushWidth[9])
+        
+        self.viewModel.delegate = self
     }
     
     @objc private func cancel() {
@@ -106,7 +108,7 @@ public class AttachmentSketchViewController: AttachmentViewController {
     }
     
     @objc private func save() {
-        if let image = self.drawingView.render() {
+        if let image = self.drawingView.render(over: UIImage.create(with: self.drawingView.backgroundColor!, size: self.drawingView.bounds.size)) {
             let url = File(File.Folder.temp("sketch"), fileName: UUID().uuidString, createFolderIfNeeded: true).url.appendingPathExtension("png")
             do {
                 try image.pngData()?.write(to: url)
@@ -196,6 +198,15 @@ public class AttachmentSketchViewController: AttachmentViewController {
         
         selector.currentTitle = button.title
         selector.show(from: button, on: self)
+    }
+    
+    public func didSaveAttachment(key: String) {
+        self.delegate?.didSaveAttachment(key: key)
+        self.viewModel.dependency?.stop()
+    }
+    
+    public func didFailToSave(error: Error, content: String, type: Attachment.AttachmentType, descritpion: String) {
+        log.error(error)
     }
 }
 

@@ -64,10 +64,3 @@ extension UIView {
         return image
     }
 }
-
-
-extension CGSize {
-    public static var singlePoint: CGSize {
-        return CGSize(width: 1, height: 1)
-    }
-}

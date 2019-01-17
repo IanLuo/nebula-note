@@ -9,27 +9,34 @@
 import Foundation
 import UIKit
 import Business
+import MapKit
 
 public class LocationAttachmentView: UIView, AttachmentViewProtocol {
+    public var attachment: Attachment!
+    
     public func size(for width: CGFloat) -> CGSize {
         return CGSize(width: width, height: width / 2)
     }
     
-    public let label: UILabel = UILabel()
+    public let mapView: MKMapView  = MKMapView()
     
     public func setup(attachment: Attachment) {
-        self.addSubview(self.label)
-        self.label.translatesAutoresizingMaskIntoConstraints = false
-        
-        self.label.leftAnchor.constraint(equalTo: self.leftAnchor).isActive = true
-        self.label.rightAnchor.constraint(equalTo: self.rightAnchor).isActive = true
-        self.label.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
-        self.label.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
+        self.mapView.isUserInteractionEnabled = false
+        self.addSubview(self.mapView)
+        self.mapView.allSidesAnchors(to: self, edgeInset: 0)
         
         do {
-            label.text = try String(contentsOf: attachment.url)
+            let jsonDecoder = JSONDecoder()
+            let data = try Data(contentsOf: attachment.url)
+            let coordinate = try jsonDecoder.decode(CLLocationCoordinate2D.self, from: data)
+            
+            self.attachment = attachment
+            mapView.setRegion(MKCoordinateRegion(center: coordinate, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)), animated: false)
+            let anno = MKPointAnnotation()
+            anno.coordinate = coordinate
+            mapView.addAnnotation(anno)
         } catch {
-            label.text = "\(error)"
+            log.error(error)
         }
     }
 }

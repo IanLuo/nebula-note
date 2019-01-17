@@ -19,6 +19,7 @@ public enum AudioPlayerError: Error {
 
 public protocol AudioPlayerDelegate: class {
     func playerDidStartPlaying()
+    func playerDidContinuePlaying()
     func playerDidReadyToPlay()
     func playerDidStopPlaying()
     func playerDidFail(with error: AudioPlayerError)
@@ -75,6 +76,13 @@ public class AudioPlayer: NSObject {
             self.player.play()
             self.delegate?.playerDidStartPlaying()
         }
+    }
+    
+    public func `continue`() {
+        guard isReady else { return }
+
+        self.player.play()
+        self.delegate?.playerDidContinuePlaying()
     }
     
     public func pause() {

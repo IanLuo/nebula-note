@@ -11,11 +11,13 @@ import UIKit
 import MobileCoreServices
 import Business
 
-public class AttachmentVideoViewController: AttachmentViewController {
+public class AttachmentVideoViewController: AttachmentViewController, AttachmentViewModelDelegate {
     
     let imagePicker = UIImagePickerController()
     public override func viewDidLoad() {
         super.viewDidLoad()
+        self.viewModel.delegate = self
+        
         imagePicker.sourceType = .camera
         imagePicker.mediaTypes = [(kUTTypeMovie as String)]
         imagePicker.delegate = self

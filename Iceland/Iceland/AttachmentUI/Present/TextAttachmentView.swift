@@ -11,23 +11,31 @@ import UIKit
 import Business
 
 public class TextAttachmentView: UIView, AttachmentViewProtocol {
+    public var attachment: Attachment!
+    
     public func size(for width: CGFloat) -> CGSize {
-        let attributes: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: self.label.font]
-        let attString = NSAttributedString(string: self.label.text ?? "", attributes: attributes)
-        let framesetter = CTFramesetterCreateWithAttributedString(attString)
-        return CTFramesetterSuggestFrameSizeWithConstraints(framesetter, CFRange(location: 0,length: 0), nil, CGSize(width: width, height: CGFloat.greatestFiniteMagnitude), nil)
+        return self.label.text?.boundingBox(for: width, font: self.label.font).heigher(by: 20) ?? .zero
     }
     
-    public let label: UILabel = UILabel()
+    public let label: UILabel = {
+        let label = UILabel()
+        label.font = InterfaceTheme.Font.body
+        label.textColor = InterfaceTheme.Color.interactive
+        label.numberOfLines = 0
+        return label
+    }()
     
     public func setup(attachment: Attachment) {
         self.addSubview(self.label)
-        self.label.translatesAutoresizingMaskIntoConstraints = false
         
-        self.label.leftAnchor.constraint(equalTo: self.leftAnchor).isActive = true
-        self.label.rightAnchor.constraint(equalTo: self.rightAnchor).isActive = true
-        self.label.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
-        self.label.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
+        self.label.allSidesAnchors(to: self, edgeInsets: .init(top: 0, left: 0, bottom: 20, right: 0))
+        
+        self.attachment = attachment
+        
+        self.updateUI(attachment: attachment)
+    }
+    
+    private func updateUI(attachment: Attachment) {
         
         do {
             label.text = try String(contentsOf: attachment.url)

@@ -42,13 +42,7 @@ extension AttachmentTextViewController: ModalFormViewControllerDelegate {
     }
     
     public func modalFormDidSave(viewController: ModalFormViewController, formData: [String : Codable]) {
-        let jsonEncoder = JSONEncoder()
-        do {
-            let data = try jsonEncoder.encode(formData)
-            let string = String(data: data, encoding: .utf8) ?? ""
-            self.viewModel.save(content: string, type: Attachment.AttachmentType.text, description: "user write text")
-        } catch {
-            log.error(error)
-        }
+        let string = formData["text"] as? String ?? ""
+        self.viewModel.save(content: string, type: Attachment.AttachmentType.text, description: "user write text")
     }
 }

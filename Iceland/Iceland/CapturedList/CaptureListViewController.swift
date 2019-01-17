@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import Business
+import MapKit
 
 public class CaptureListViewController: UIViewController {
     let viewModel: CaptureListViewModel
@@ -18,7 +19,20 @@ public class CaptureListViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(CaptureTableCell.self, forCellReuseIdentifier: CaptureTableCell.reuseIdentifier)
+        tableView.backgroundColor = InterfaceTheme.Color.background1
+        tableView.separatorInset = .zero
+        tableView.separatorColor = InterfaceTheme.Color.background3
+        tableView.tableFooterView = UIView()
         return tableView
+    }()
+    
+    private lazy var cancelButton: UIButton = {
+        let button = UIButton()
+        button.addTarget(self, action: #selector(cancel), for: .touchUpInside)
+        button.setTitle("✕", for: .normal)
+        button.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.background1, size: .singlePoint), for: .normal)
+        button.setTitleColor(InterfaceTheme.Color.interactive, for: .normal)
+        return button
     }()
     
     public init(viewModel: CaptureListViewModel) {
@@ -30,19 +44,93 @@ public class CaptureListViewController: UIViewController {
     public required init?(coder aDecoder: NSCoder) {
         fatalError()
     }
+    
+    public override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        self.setupUI()
+        
+        self.viewModel.loadAllCapturedData()
+    }
+    
+    private func setupUI() {
+        self.view.backgroundColor = InterfaceTheme.Color.background1
+        
+        self.view.addSubview(self.cancelButton)
+        self.view.addSubview(self.tableView)
+        
+        self.cancelButton.sideAnchor(for: [.right, .top], to: self.view, edgeInset: 0)
+        self.cancelButton.sizeAnchor(width: 60, height: 60)
+        self.cancelButton.columnAnchor(view: self.tableView)
+        
+        self.tableView.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 0)
+    }
+    
+    @objc private func cancel() {
+        self.dismiss(animated: true, completion: nil)
+    }
 }
 
 extension CaptureListViewController: CaptureTableCellDelegate {
-    public func didTapDelete(cell: CaptureTableCell) {
-        if let index = self.tableView.indexPath(for: cell)?.row {
-            self.viewModel.delete(index: index)
-        }
+    public func didTapActions(cell: UITableViewCell) {
+        guard let index = self.tableView.indexPath(for: cell)?.row else { return }
+        
+        let actionsViewController = self.createActionsViewController(index: index)
+        
+        self.present(actionsViewController, animated: true, completion: nil)
     }
     
-    public func didTapRefile(cell: CaptureTableCell) {
-        if let index = self.tableView.indexPath(for: cell)?.row {
-            self.viewModel.chooseRefileLocation(index: index)
+    public func didTapActionsWithLink(cell: UITableViewCell, link: String?) {
+        guard let index = self.tableView.indexPath(for: cell)?.row else { return }
+        
+        let actionsViewController = self.createActionsViewController(index: index)
+        
+        actionsViewController.addAction(icon: nil, title: "open link") { viewController in
+            viewController.dismiss(animated: true, completion: {
+                if let url = URL(string: link ?? "") {
+                    UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                }
+            })
         }
+        
+        self.present(actionsViewController, animated: true, completion: nil)
+    }
+    
+    public func didTapActionsWithLocation(cell: UITableViewCell, location: CLLocationCoordinate2D) {
+        guard let index = self.tableView.indexPath(for: cell)?.row else { return }
+        
+        let actionsViewController = self.createActionsViewController(index: index)
+        
+        actionsViewController.addAction(icon: nil, title: "open location") { viewController in
+            viewController.dismiss(animated: true, completion: {
+                let mapItem = MKMapItem(placemark: MKPlacemark(coordinate: location, addressDictionary:nil))
+                mapItem.openInMaps(launchOptions: [:])
+            })
+        }
+        
+        self.present(actionsViewController, animated: true, completion: nil)
+    }
+    
+    private func createActionsViewController(index: Int) -> ActionsViewController {
+        let actionsViewController = ActionsViewController()
+        
+        actionsViewController.addAction(icon: nil, title: "delete".localizable) { viewController in
+            viewController.dismiss(animated: true, completion: {
+                self.viewModel.delete(index: index)
+            })
+        }
+        
+        actionsViewController.addAction(icon: nil, title: "refile".localizable) { viewController in
+            viewController.dismiss(animated: true, completion: {
+                self.viewModel.chooseRefileLocation(index: index)
+            })
+        }
+        
+        actionsViewController.setCancel { viewController in
+            viewController.dismiss(animated: true, completion: nil)
+        }
+        
+        return actionsViewController
     }
 }
 
@@ -54,11 +142,12 @@ extension CaptureListViewController: UITableViewDataSource {
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: CaptureTableCell.reuseIdentifier, for: indexPath) as! CaptureTableCell
         cell.cellModel = self.viewModel.cellModels[indexPath.row]
+        cell.delegate = self
         return cell
     }
     
     public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return self.viewModel.cellModels[indexPath.row].attachmentView.size(for: tableView.bounds.width - 60).height
+        return self.viewModel.cellModels[indexPath.row].attachmentView.size(for: tableView.bounds.width - 60).height + 120
     }
 }
 

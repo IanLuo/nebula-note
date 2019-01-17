@@ -31,7 +31,7 @@ public class DocumentBrowserCell: UITableViewCell {
     }()
     private let actionButton: UIButton = {
         let button = UIButton()
-        button.setTitle("◦◦◦", for: .normal)
+        button.setTitle("…", for: .normal)
         return button
     }()
     
@@ -84,7 +84,7 @@ public class DocumentBrowserCell: UITableViewCell {
         self.titleLabel.rightAnchor.constraint(equalTo: self.contentView.rightAnchor, constant: 10).isActive = true
         self.titleLabel.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor).isActive = true
         
-        self.actionButton.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -10).isActive = true
+        self.actionButton.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -30).isActive = true
         self.actionButton.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor).isActive = true
         
         self.contentView.backgroundColor = InterfaceTheme.Color.background1

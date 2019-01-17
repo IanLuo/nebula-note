@@ -79,6 +79,14 @@ public class Location: NSObject, CLLocationManagerDelegate {
         }
     }
     
+    public func reverseLocation(for location: CLLocationCoordinate2D, completion: @escaping ([CLPlacemark]?, Error?) -> Void) {
+        CLGeocoder().reverseGeocodeLocation(CLLocation(latitude: location.latitude, longitude: location.longitude),
+                                            completionHandler: { placemark, error in
+                                                
+            completion(placemark, error)
+        })
+    }
+    
     public func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         self.completionAction?(.failure(LocationError.failed(error.localizedDescription)))
     }

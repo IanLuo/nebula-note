@@ -13,17 +13,10 @@ import Business
 /// 用户的活动中心
 /// 每天的任务安排显示在此处
 public class AgendaCoordinator: Coordinator {
-    private let documentManager: DocumentManager
-    private let documentSearchManager: DocumentSearchManager
-    
-    public init(stack: UINavigationController,
-                documentSearchManager: DocumentSearchManager,
-                documentManager: DocumentManager) {
-        let viewModel = AgendaViewModel(documentSearchManager: documentSearchManager)
+    public override init(stack: UINavigationController, context: Context) {
+        let viewModel = AgendaViewModel(documentSearchManager: context.documentSearchManager)
         let viewController = AgendaViewController(viewModel: viewModel)
-        self.documentManager = documentManager
-        self.documentSearchManager = documentSearchManager
-        super.init(stack: stack)
+        super.init(stack: stack, context: context)
         self.viewController = viewController
         viewModel.delegate = viewController
         viewModel.dependency = self
@@ -42,6 +35,7 @@ extension AgendaCoordinator {
     
     public func openDocument(url: URL, location: Int) {
         let docCood = EditorCoordinator(stack: self.stack,
+                                        context: self.context,
                                         usage: EditorCoordinator.Usage.editor(url, location))
         docCood.start(from: self)
     }
@@ -50,6 +44,7 @@ extension AgendaCoordinator {
 extension AgendaCoordinator: AgendaActionViewControllerDelegate {
     public func openDocument(url: URL) {
         let docCood = EditorCoordinator(stack: self.stack,
+                                        context: self.context,
                                         usage: .editor(url, 0))
         docCood.start(from: self)
     }

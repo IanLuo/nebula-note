@@ -23,7 +23,7 @@ public class CaptureListViewModel {
     
     private let service: CaptureServiceProtocol
     
-    private var data: [Attachment] = []
+    public var data: [Attachment] = []
     
     public var cellModels: [CaptureTableCellModel] = []
     
@@ -71,7 +71,11 @@ public class CaptureListViewModel {
     public func loadAllCapturedData() {
         self.service
             .loadAll(completion: { [weak self] attachments in
-                self?.data = data
+                let attachments = attachments.sorted(by: { last, next -> Bool in
+                    last.date > next.date
+                })
+                self?.data = attachments
+                self?.cellModels = attachments.map { CaptureTableCellModel(attacment: $0) }
                 self?.delegate?.didLoadData()
             }, failure: { [weak self] error in
                 self?.delegate?.didFail(error: error)
@@ -80,6 +84,8 @@ public class CaptureListViewModel {
     
     public func delete(index: Int) {
         self.service.delete(key: self.data[index].key)
+        self.data.remove(at: index)
+        self.cellModels.remove(at: index)
         self.delegate?.didDeleteCapture(index: index)
         
         if index == self.currentIndex {

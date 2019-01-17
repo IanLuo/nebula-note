@@ -11,30 +11,40 @@ import UIKit
 import Business
 
 public class HomeCoordinator: Coordinator {
-    public override init(stack: UINavigationController) {
+    public override init(stack: UINavigationController, context: Context) {
         let viewModel = HomeViewModel()
         let viewController = HomeViewController(viewModel: viewModel)
-        super.init(stack: stack)
+        super.init(stack: stack, context: context)
         viewModel.dependency = self
         self.viewController = viewController
     }
 
     public func showBrowser() {
-        let coord = BrowserCoordinator(stack: self.stack, documentManager: DocumentManager(), usage: BrowserCoordinator.Usage.chooseHeading)
+        let coord = BrowserCoordinator(stack: self.stack,
+                                       context: self.context,
+                                       usage: BrowserCoordinator.Usage.chooseHeading)
         coord.delegate = self
         coord.start(from: self)
     }
     
     public func showAttachmentCreator(type: Attachment.AttachmentType) {
-        let captureImage = AttachmentCoordinator(stack: self.stack, type: type)
+        let captureImage = AttachmentCoordinator(stack: self.stack,
+                                                 context: self.context,
+                                                 type: type)
         captureImage.delegate = self
         captureImage.start(from: self)
+    }
+    
+    public func showCaptureList() {
+        let captureListCoordinator = CaptureListCoordinator(stack: self.stack,
+                                                            context: self.context)
+        captureListCoordinator.start(from: self)
     }
 }
 
 extension HomeCoordinator: AttachmentCoordinatorDelegate {
     public func didSaveAttachment(key: String) {
-        
+        CaptureService().save(key: key)
     }
 }
 

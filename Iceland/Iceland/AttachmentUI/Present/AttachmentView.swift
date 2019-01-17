@@ -13,6 +13,7 @@ import Business
 public protocol AttachmentViewProtocol {
     func setup(attachment: Attachment)
     func size(for width: CGFloat) -> CGSize
+    var attachment: Attachment! { get set }
 }
 
 public typealias AttachmentViewType = AttachmentViewProtocol & UIView

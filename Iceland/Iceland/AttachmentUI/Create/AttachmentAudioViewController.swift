@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import Business
 
-public class AttachmentAudioViewController: AttachmentViewController {
+public class AttachmentAudioViewController: AttachmentViewController, AttachmentViewModelDelegate {
     private lazy var recorder: AudioRecorder = {
         let recorder = AudioRecorder()
         recorder.delegate = self
@@ -34,6 +34,9 @@ public class AttachmentAudioViewController: AttachmentViewController {
 
     public override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.viewModel.delegate = self
+        
         self.recorderView.status = .initing
         self.recorder.getReady()
         
@@ -113,6 +116,10 @@ extension AttachmentAudioViewController: AudioRecorderDelegate {
 }
 
 extension AttachmentAudioViewController: AudioPlayerDelegate {
+    public func playerDidContinuePlaying() {
+        
+    }
+    
     public func playerDidReadyToPlay() {
         self.recorderView.status = .readyToPlay
     }

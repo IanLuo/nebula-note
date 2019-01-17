@@ -9,10 +9,12 @@
 import Foundation
 import UIKit
 import Business
+import CoreLocation
 
 public protocol CaptureTableCellDelegate: class {
-    func didTapDelete(cell: CaptureTableCell)
-    func didTapRefile(cell: CaptureTableCell)
+    func didTapActions(cell: UITableViewCell)
+    func didTapActionsWithLink(cell: UITableViewCell, link: String?)
+    func didTapActionsWithLocation(cell: UITableViewCell, location: CLLocationCoordinate2D)
 }
 
 public class CaptureTableCell: UITableViewCell {
@@ -33,21 +35,31 @@ public class CaptureTableCell: UITableViewCell {
         return label
     }()
     
+    private lazy var actionsButton: UIButton = {
+        let button = UIButton()
+        button.titleLabel?.font = InterfaceTheme.Font.body
+        button.setTitleColor(InterfaceTheme.Color.interactive, for: .normal)
+        button.setTitle("…", for: .normal)
+        button.addTarget(self, action: #selector(didTapActionButton), for: .touchUpInside)
+        return button
+    }()
+    
+    private let actionsContainerView: UIView = {
+        let view = UIView()
+        return view
+    }()
+    
     private let attachmentContentView: UIView = {
         let view = UIView()
         view.clipsToBounds = true
         return view
     }()
     
-    private lazy var actionsView: ActionsView = {
-        let view = ActionsView()
-        view.delegate = self
-        return view
-    }()
-    
     public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.setupUI()
+        
+        self.selectionStyle = .none
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -55,113 +67,56 @@ public class CaptureTableCell: UITableViewCell {
     }
     
     private func setupUI() {
-        self.contentView.addSubview(self.titleLabel)
+        self.backgroundColor = InterfaceTheme.Color.background1
+        
         self.contentView.addSubview(self.attachmentContentView)
+        self.contentView.addSubview(self.actionsContainerView)
         
-        self.titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        self.attachmentContentView.translatesAutoresizingMaskIntoConstraints = false
+        self.actionsContainerView.sideAnchor(for: [.left, .top, .right], to: self.contentView, edgeInsets: .init(top: 0, left: 30, bottom: 0, right: -30))
+        self.actionsContainerView.sizeAnchor(height: 60)
         
-        self.titleLabel.leftAnchor.constraint(equalTo: self.contentView.leftAnchor, constant: 30).isActive = true
-        self.titleLabel.rightAnchor.constraint(equalTo: self.contentView.rightAnchor, constant: -30).isActive = true
-        self.titleLabel.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 30).isActive = true
-        self.titleLabel.bottomAnchor.constraint(equalTo: self.attachmentContentView.topAnchor, constant: -30).isActive = true
+        self.actionsContainerView.addSubview(self.titleLabel)
+        self.titleLabel.sideAnchor(for: [.left, .top, .bottom], to: self.actionsContainerView, edgeInset: 0)
         
-        self.attachmentContentView.leftAnchor.constraint(equalTo: self.contentView.leftAnchor, constant: 30).isActive = true
-        self.attachmentContentView.rightAnchor.constraint(equalTo: self.contentView.rightAnchor, constant: -30).isActive = true
-        self.attachmentContentView.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -30).isActive = true
+        self.actionsContainerView.addSubview(self.actionsButton)
+        self.actionsButton.sideAnchor(for: [.top, .right, .bottom], to: self.actionsContainerView, edgeInset: 0)
+        self.actionsButton.sizeAnchor(width: 60, height: 60)
+        
+        self.actionsContainerView.columnAnchor(view: self.attachmentContentView)
+        self.attachmentContentView.sideAnchor(for: [.left, .bottom, .right], to: self.contentView, edgeInset: 30)
     }
     
     private func setupAttachmentUI(attachmentView: AttachmentViewType) {
-        self.contentView.addSubview(attachmentView)
-        attachmentView.translatesAutoresizingMaskIntoConstraints = false
-        
+        self.titleLabel.text = attachmentView.attachment.type.rawValue
         self.attachmentContentView.addSubview(attachmentView)
-        
-        attachmentView.allSidesAnchors(to: self.attachmentContentView, edgeInsets: .zero)
+        attachmentView.allSidesAnchors(to: self.attachmentContentView, edgeInset: 0)
+    }
+    
+    @objc private func didTapActionButton() {
+        guard let attachment = self.cellModel?.attachmentView.attachment else { return }
+        switch attachment.type {
+        case .link:
+            do {
+                let jsonDecoder = JSONDecoder()
+                let dic = try jsonDecoder.decode([String : String].self, from: try Data(contentsOf: attachment.url))
+                self.delegate?.didTapActionsWithLink(cell: self, link: dic["link"])
+            } catch {
+                log.error(error)
+            }
+        case .location:
+            do {
+                let jsonDecoder = JSONDecoder()
+                let coord = try jsonDecoder.decode(CLLocationCoordinate2D.self, from: try Data(contentsOf: attachment.url))
+                self.delegate?.didTapActionsWithLocation(cell: self, location: coord)
+            } catch {
+                log.error(error)
+            }
+        default: self.delegate?.didTapActions(cell: self)
+        }
     }
     
     public override func prepareForReuse() {
         self.titleLabel.text = ""
         self.attachmentContentView.subviews.forEach { $0.removeFromSuperview() }
-    }
-        
-    private func showActions(animated: Bool) {
-        if self.actionsView.superview == nil {
-            self.attachmentContentView.addSubview(self.actionsView)
-            self.actionsView.translatesAutoresizingMaskIntoConstraints = false
-            self.actionsView.sideAnchor(for: [.left, .bottom, .right], to: self.attachmentContentView, edgeInsets: .init(top: 0, left: 0, bottom: 60, right: 0))
-            self.actionsView.heightAnchor.constraint(equalToConstant: 60)
-        }
-        
-        UIView.animate(withDuration: animated ? 0.25 : 0) {
-            self.actionsView.constraint(for: Position.bottom)?.constant = 0
-        }
-    }
-    
-    private func hideActions(animated: Bool) {
-        UIView.animate(withDuration: animated ? 0.25 : 0) {
-            self.actionsView.constraint(for: Position.bottom)?.constant = 60
-        }
-    }
-    
-    public override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-        
-        if self.isSelected {
-            self.showActions(animated: animated)
-        } else {
-            self.hideActions(animated: animated)
-        }
-    }
-}
-
-// MARK: - ActionsViewDelegate
-extension CaptureTableCell: ActionsViewDelegate {
-    func didTapDelete() {
-        self.hideActions(animated: true)
-        self.delegate?.didTapDelete(cell: self)
-    }
-    
-    func didTapRefile() {
-        self.hideActions(animated: true)
-        self.delegate?.didTapRefile(cell: self)
-    }
-}
-
-// MARK: - ActionsView
-protocol ActionsViewDelegate: class {
-    func didTapDelete()
-    func didTapRefile()
-}
-
-private class ActionsView: UIView {
-    fileprivate let deleteButton: UIButton = UIButton()
-    fileprivate let refileButton: UIButton = UIButton()
-    fileprivate weak var delegate: ActionsViewDelegate?
-    
-    fileprivate init() {
-        super.init(frame: .zero)
-        self.setupUI()
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    private func setupUI() {
-        self.backgroundColor = InterfaceTheme.Color.background2
-        
-        self.addSubview(self.deleteButton)
-        self.addSubview(self.refileButton)
-        
-        self.deleteButton.translatesAutoresizingMaskIntoConstraints = false
-        self.refileButton.translatesAutoresizingMaskIntoConstraints = false
-        
-        self.deleteButton.sideAnchor(for: [.top, .bottom, .left], to: self, edgeInsets: .zero)
-        self.refileButton.sideAnchor(for: [.top, .bottom, .right], to: self, edgeInsets: .zero)
-        self.deleteButton.rightAnchor.constraint(equalTo: self.refileButton.leftAnchor).isActive = true
-        self.deleteButton.widthAnchor.constraint(equalTo: self.refileButton.widthAnchor).isActive = true
-        
-        self.setBorder(position: Border.Position.centerV, color: InterfaceTheme.Color.descriptive, width: 1)
     }
 }

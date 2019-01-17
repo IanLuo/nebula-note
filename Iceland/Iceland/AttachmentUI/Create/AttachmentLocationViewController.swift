@@ -12,10 +12,10 @@ import CoreLocation
 import MapKit
 import Business
 
-public class AttachmentLocationViewController: AttachmentViewController {
+public class AttachmentLocationViewController: AttachmentViewController, AttachmentViewModelDelegate, MKMapViewDelegate {
     public override func viewDidLoad() {
         super.viewDidLoad()
-        
+        self.viewModel.delegate = self
         self.showLocationPicker()
     }
     
@@ -32,6 +32,7 @@ public class AttachmentLocationViewController: AttachmentViewController {
         
         mapView.showsUserLocation = true
         mapView.showsScale = true
+        mapView.delegate = self
         
         actionsViewController.addAction(icon: nil, title: "current location".localizable) { viewController in
             self.showCurrentLocation(on: mapView, animated: true)
@@ -60,13 +61,23 @@ public class AttachmentLocationViewController: AttachmentViewController {
         self.showCurrentLocation(on: mapView, animated: false)
     }
     
+    public func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+        mapView.annotations.forEach { mapView.removeAnnotation($0) }
+        let anno = MKPointAnnotation()
+        anno.coordinate = mapView.centerCoordinate
+        mapView.addAnnotation(anno)
+    }
+    
     private func showCurrentLocation(on map: MKMapView, animated: Bool) {
         let location = Location(timeout: 10, completion: { result in
             switch result {
             case .success(let placeMark):
                 if let coordinate = placeMark.location?.coordinate {
-                    map.setCenter(coordinate, animated: animated)
+                    map.annotations.forEach { map.removeAnnotation($0) }
                     map.setRegion(MKCoordinateRegion(center: coordinate, span: MKCoordinateSpan(latitudeDelta: 0.001, longitudeDelta: 0.001)), animated: animated)
+                    let anno = MKPointAnnotation()
+                    anno.coordinate = coordinate
+                    map.addAnnotation(anno)
                 } else {
                     log.error("can't get location")
                 }

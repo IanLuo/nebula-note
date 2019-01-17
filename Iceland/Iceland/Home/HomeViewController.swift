@@ -55,6 +55,10 @@ public class HomeViewController: UIViewController {
         textButton.setTitle("text", for: .normal)
         textButton.addTarget(self, action: #selector(showTextEditor), for: .touchUpInside)
         
+        let captureListButton = UIButton()
+        captureListButton.setTitle("capture list", for: .normal)
+        captureListButton.addTarget(self, action: #selector(showCaptureList), for: .touchUpInside)
+        
         self.view.addSubview(browserButton)
         self.view.addSubview(imageCaptureButton)
         self.view.addSubview(audioRecordButton)
@@ -63,6 +67,7 @@ public class HomeViewController: UIViewController {
         self.view.addSubview(videoButton)
         self.view.addSubview(linkButton)
         self.view.addSubview(textButton)
+        self.view.addSubview(captureListButton)
         
         browserButton.centerAnchors(position: [.centerX], to: self.view)
         browserButton.centerAnchors(position: [.centerY], to: self.view, multiplier: 0.5)
@@ -87,6 +92,9 @@ public class HomeViewController: UIViewController {
         
         textButton.centerAnchors(position: .centerX, to: self.view)
         textButton.topAnchor.constraint(equalTo: linkButton.bottomAnchor, constant: 10).isActive = true
+        
+        captureListButton.centerAnchors(position: .centerX, to: self.view)
+        captureListButton.topAnchor.constraint(equalTo: textButton.bottomAnchor, constant: 10).isActive = true
     }
     
     @objc private func showBrowser() {
@@ -119,5 +127,9 @@ public class HomeViewController: UIViewController {
     
     @objc private func showTextEditor() {
         self.viewModel?.dependency?.showAttachmentCreator(type: .text)
+    }
+    
+    @objc private func showCaptureList() {
+        self.viewModel?.dependency?.showCaptureList()
     }
 }

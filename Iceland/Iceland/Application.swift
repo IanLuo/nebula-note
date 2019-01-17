@@ -19,15 +19,25 @@ public class Application: Coordinator {
     public init(window: UIWindow) {
         self.window = window
         
-        super.init(stack: UINavigationController())
+        super.init(stack: UINavigationController(),
+                   context: Context(documentManager: DocumentManager(),
+                                    documentSearchManager: DocumentSearchManager(),
+                                    editorServiceServer: OutlineEditorServer.instance))
         
         self.window?.rootViewController = self.stack
     }
     
     public override func start(from: Coordinator?, animated: Bool) {
-        let homeCoord = HomeCoordinator(stack: self.stack)
+        let homeCoord = HomeCoordinator(stack: self.stack,
+                                        context: self.context)
         homeCoord.start(from: self, animated: animated)
     }
+}
+
+public struct Context {
+    let documentManager: DocumentManager
+    let documentSearchManager: DocumentSearchManager
+    let editorServiceServer: OutlineEditorServer
 }
 
 public class Coordinator {
@@ -39,8 +49,11 @@ public class Coordinator {
     
     public weak var parent: Coordinator?
     
-    public init(stack: UINavigationController) {
+    public let context: Context
+    
+    public init(stack: UINavigationController, context: Context) {
         self.stack = stack
+        self.context = context
     }
     
     public func addChild(_ coord: Coordinator) {
