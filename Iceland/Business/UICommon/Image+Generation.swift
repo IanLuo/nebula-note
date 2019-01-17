@@ -57,6 +57,10 @@ extension UIView {
         if let context = UIGraphicsGetCurrentContext() {
             self.layer.render(in: context)
             image = UIGraphicsGetImageFromCurrentImageContext()
+        } else {
+            let context = CGContext(data: nil, width: Int(self.bounds.size.width), height: Int(self.bounds.size.height), bitsPerComponent: 8, bytesPerRow: Int(self.bounds.size.width) * 4 * 8, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedFirst.rawValue)!
+            self.layer.render(in: context)
+            image = UIGraphicsGetImageFromCurrentImageContext()
         }
 
         UIGraphicsEndImageContext()

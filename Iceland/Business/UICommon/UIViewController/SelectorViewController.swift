@@ -71,9 +71,7 @@ open class SelectorViewController: UIViewController {
         self.titleLabel.text = self.title
     }
     
-    open override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-
+    public func scrollToDefaultValue() {
         var selectedIndex: Int? = nil
         for (index, item) in self.items.enumerated() {
             if item.title == self.currentTitle {
@@ -131,7 +129,8 @@ open class SelectorViewController: UIViewController {
         self.contentView.addSubview(self.titleLabel)
         
         self.contentView.sideAnchor(for: [.left, .right], to: self.view, edgeInset: 30)
-        self.contentView.sideAnchor(for: [.top, .bottom], to: self.view, edgeInset: self.view.bounds.height / 4)
+        self.contentView.sizeAnchor(height: self.view.bounds.height / 2)
+        self.contentView.centerAnchors(position: .centerY, to: self.view)
         
         self.titleLabel.sizeAnchor(height: 60)
         self.titleLabel.sideAnchor(for: [.left, .right, .top], to: self.contentView, edgeInset: 0)
@@ -340,24 +339,24 @@ private class Animator: NSObject, UIViewControllerAnimatedTransitioning {
             if let selectorViewcontroller = to as? SelectorViewController {
                 let fromView = selectorViewcontroller.transiteFromView
                 
-                containner.addSubview(to.view)
-                selectorViewcontroller.contentView.alpha = 0
-                selectorViewcontroller.view.backgroundColor = UIColor.black.withAlphaComponent(0)
-                let bounds = from.view.bounds
-                let destRect = transitionContext.finalFrame(for: to).inset(by: UIEdgeInsets(top: bounds.height / 4, left: 30, bottom: bounds.height / 4, right: 30))
+                containner.addSubview(selectorViewcontroller.view)
+                selectorViewcontroller.view.layoutIfNeeded()
+                selectorViewcontroller.scrollToDefaultValue()
+                let toImage = selectorViewcontroller.contentView.snapshot
+                let destRect = selectorViewcontroller.contentView.frame
                 // 如果没有设置显示位置的 UIView，使用屏幕正中心的点作为显示位置
                 let startRect = fromView != nil ? fromView!.superview!.convert(fromView!.frame, to: from.view) : CGRect(origin: selectorViewcontroller.view.center, size: .zero)
                 let animatableView = UIImageView(frame: startRect)
-                animatableView.backgroundColor = InterfaceTheme.Color.background2
+                animatableView.image = toImage
                 animatableView.clipsToBounds = true
                 animatableView.alpha = 0
                 
                 containner.addSubview(animatableView)
+                selectorViewcontroller.contentView.alpha = 0
                 
                 UIView.animate(withDuration: self.transitionDuration(using: transitionContext), delay: 0.0, options: .curveEaseOut, animations: ({
                     animatableView.frame = destRect
                     animatableView.alpha = 1
-                    selectorViewcontroller.view.backgroundColor = UIColor.black.withAlphaComponent(0.2)
                 }), completion: { completeion in
                     selectorViewcontroller.contentView.alpha = 1
                     animatableView.removeFromSuperview()
