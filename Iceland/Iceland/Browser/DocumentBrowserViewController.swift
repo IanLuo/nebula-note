@@ -154,7 +154,7 @@ extension DocumentBrowserViewController: DocumentBrowserCellDelegate {
             actionsViewController.addAction(icon: nil, title: "rename".localizable) { viewController in
                 viewController.dismiss(animated: true, completion: {
                     let renameFormViewController = ModalFormViewController()
-                    renameFormViewController.addTextFied(title: "new name".localizable, placeHoder: "put new name here".localizable, defaultValue: nil)
+                    renameFormViewController.addTextFied(title: "new name".localizable, placeHoder: "put new name here".localizable, defaultValue: url.fileName)
                     renameFormViewController.onSaveValue = { formValue, viewController in
                         if let newName = formValue["new name".localizable] as? String {
                             viewController.dismiss(animated: true, completion: {

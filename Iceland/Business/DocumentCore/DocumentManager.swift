@@ -173,6 +173,9 @@ extension URL {
         let fm = FileManager.default
         return fm.fileExists(atPath: subDocumentFolder, isDirectory: &isDir) &&
         ((try? fm.contentsOfDirectory(atPath: subDocumentFolder)) ?? []).count > 0
-        
+    }
+    
+    public var fileName: String {
+        return self.deletingPathExtension().lastPathComponent.replacingOccurrences(of: "/", with: "")
     }
 }
