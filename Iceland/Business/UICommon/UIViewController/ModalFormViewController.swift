@@ -12,6 +12,9 @@ import UIKit
 public protocol ModalFormViewControllerDelegate: class {
     func modalFormDidCancel(viewController: ModalFormViewController)
     func modalFormDidSave(viewController: ModalFormViewController, formData: [String: Codable])
+    
+    /// 如果校验失败，返回失败的 key 以及要显示的问题
+    func validate(formdata: [String: Codable]) -> [String: String]
 }
 
 public class ModalFormViewController: UIViewController {
@@ -48,11 +51,17 @@ public class ModalFormViewController: UIViewController {
     
     public var items: [InputType] = []
     
-    private var formData: [String: Codable] = [:]
+    private var formData: [String: Codable] = [:] {
+        didSet {
+            self.performValidation(formData: formData)
+        }
+    }
     
     public var onSaveValue: (([String: Codable], ModalFormViewController) -> Void)?
     
     public var onCancel: ((ModalFormViewController) -> Void)?
+    
+    public var onValidating: (([String: Codable]) -> [String: String])?
     
     public weak var delegate: ModalFormViewControllerDelegate?
     
@@ -188,6 +197,36 @@ public class ModalFormViewController: UIViewController {
         self.delegate?.modalFormDidSave(viewController: self, formData: self.formData)
         self.onSaveValue?(self.formData, self)
     }
+    
+    // MARK: - validation -
+    private func performValidation(formData: [String: Codable]) {
+        var validateResult: [String: String] = [:]
+        if let onValidating = onValidating {
+            validateResult = onValidating(formData)
+        }
+        
+        if validateResult.count == 0 {
+            validateResult = self.delegate?.validate(formdata: formData) ?? [:]
+        }
+        
+        self.showValidationResult(validateResult)
+    }
+    
+    private func showValidationResult(_ result: [String: String]) {
+        self.saveButton.isEnabled = result.count == 0 // 如果校验有问题，disable 保存按钮
+        self.saveButton.alpha = self.saveButton.isEnabled ? 1 : 0.3
+        
+        // 调用每个 cell 对应显示问题的方法
+        for i in 0..<self.items.count {
+            if let validatable = tableView.cellForRow(at: IndexPath(row: i, section: 0)) as? Validatable {
+                if let p = result[validatable.validateKey] {
+                    validatable.showValidationResult(p)
+                } else {
+                    validatable.showValidationResult(nil)
+                }
+            }
+        }
+    }
 }
 
 extension ModalFormViewController: UIGestureRecognizerDelegate {
@@ -229,12 +268,17 @@ extension ModalFormViewController: CellValueDelegate {
     }
 }
 
+fileprivate protocol Validatable {
+    func showValidationResult(_ problem: String?)
+    var validateKey: String { get }
+}
+
 //
 // MARK: - cells
 //
 
 // MARK: - InputTextViewCell
-private class InputTextViewCell: UITableViewCell, UITextViewDelegate {
+private class InputTextViewCell: UITableViewCell, UITextViewDelegate, Validatable {
     fileprivate static let reuseIdentifier = "InputTextViewCell"
     fileprivate static let height: CGFloat = 150
     
@@ -287,10 +331,23 @@ private class InputTextViewCell: UITableViewCell, UITextViewDelegate {
         self.textView.sizeAnchor(height: 100)
     }
     
+    func showValidationResult(_ problem: String?) {
+        if let problem = problem {
+            self.titleLabel.text = "\(self.validateKey) \(problem)"
+            self.textView.backgroundColor = InterfaceTheme.Color.backgroundWarning
+        } else {
+            self.titleLabel.text = self.validateKey
+            self.textView.backgroundColor = InterfaceTheme.Color.background2
+        }
+    }
+    
+    private(set) var validateKey: String = "" // make compiler happy
+    
     private func updateUI(_ item: ModalFormViewController.InputType) {
         switch item {
         case let .textView(title, defaultValue, keyboardType):
             self.titleLabel.text = title
+            self.validateKey = title
             self.textView.text = defaultValue
             self.textView.keyboardType = keyboardType
         default: break
@@ -298,12 +355,12 @@ private class InputTextViewCell: UITableViewCell, UITextViewDelegate {
     }
     
     func textViewDidChange(_ textView: UITextView) {
-        self.delegate?.didSetValue(title: self.titleLabel.text ?? "", value: textView.text)
+        self.delegate?.didSetValue(title: self.validateKey, value: textView.text)
     }
 }
 
 // MARK: - InputTextFieldCell
-private class InputTextFieldCell: UITableViewCell, UITextFieldDelegate {
+private class InputTextFieldCell: UITableViewCell, UITextFieldDelegate, Validatable{
     fileprivate static let reuseIdentifier = "InputTextFieldCell"
     fileprivate static let height: CGFloat = 130
     
@@ -344,10 +401,8 @@ private class InputTextFieldCell: UITableViewCell, UITextFieldDelegate {
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        if let title = self.titleLabel.text,
-            let value = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) {
-            self.delegate?.didSetValue(title: title, value: value)
-        }
+        let value = (textField.text as NSString?)?.replacingCharacters(in: range, with: string)
+        self.delegate?.didSetValue(title: self.validateKey, value: value)
         return true
     }
     
@@ -364,10 +419,23 @@ private class InputTextFieldCell: UITableViewCell, UITextFieldDelegate {
         self.textField.sizeAnchor(height: 60)
     }
     
+    func showValidationResult(_ problem: String?) {
+        if let problem = problem {
+            self.titleLabel.text = "\(self.validateKey) \(problem)"
+            self.textField.backgroundColor = InterfaceTheme.Color.backgroundWarning
+        } else {
+            self.titleLabel.text = self.validateKey
+            self.textField.backgroundColor = InterfaceTheme.Color.background2
+        }
+    }
+    
+    private(set) var validateKey: String = "" // make compiler happy
+    
     private func updateUI(_ item: ModalFormViewController.InputType) {
         switch item {
         case let .textField(title, placeholder, value, keyboardType):
             self.titleLabel.text = title
+            self.validateKey = title
             self.textField.attributedPlaceholder = NSAttributedString(string: placeholder,
                                                                       attributes: [NSAttributedString.Key.foregroundColor : InterfaceTheme.Color.descriptive])
             self.textField.text = value

@@ -22,7 +22,7 @@ public class HomeCoordinator: Coordinator {
     public func showBrowser() {
         let coord = BrowserCoordinator(stack: self.stack,
                                        context: self.context,
-                                       usage: BrowserCoordinator.Usage.chooseHeading)
+                                       usage: BrowserCoordinator.Usage.chooseDocument)
         coord.delegate = self
         coord.start(from: self)
     }

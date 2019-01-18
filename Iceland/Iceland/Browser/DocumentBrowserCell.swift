@@ -43,6 +43,14 @@ public class DocumentBrowserCell: UITableViewCell {
                 
                 self.arrowButton.addTarget(self, action: #selector(didTapArrow), for: .touchUpInside)
                 self.actionButton.addTarget(self, action: #selector(didTapAction), for: .touchUpInside)
+                
+                self.actionButton.isHidden = !cellModel.shouldShowActions
+                
+                if cellModel.shouldShowChooseHeadingIndicator {
+                    self.accessoryType = .disclosureIndicator
+                } else {
+                    self.accessoryType = .none
+                }
             }
         }
     }
@@ -79,7 +87,7 @@ public class DocumentBrowserCell: UITableViewCell {
         self.titleLabel.rowAnchor(view: self.actionButton, space: 10)
         self.actionButton.sideAnchor(for: [.top, .bottom, .right], to: self.contentView, edgeInsets: .init(top: 0, left: 0, bottom: 0, right: -30))
 
-        self.contentView.backgroundColor = InterfaceTheme.Color.background1
+        self.backgroundColor = InterfaceTheme.Color.background1
     }
     
     required init?(coder aDecoder: NSCoder) {

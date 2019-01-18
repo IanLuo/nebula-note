@@ -29,9 +29,29 @@ public class DocumentBrowserViewModel {
         self.documentManager = documentManager
     }
     
+    public var shouldShowActions: Bool {
+        return self.dependency?.usage == .chooseDocument
+    }
+    
+    public var shouldShowHeadingIndicator: Bool {
+        return self.dependency?.usage == .chooseHeading
+    }
+    
+    public func isNameAvailable(newName: String, index: Int) -> Bool {
+        var newURL = self.data[index].url
+        newURL.deleteLastPathComponent()
+        newURL = newURL.appendingPathComponent(newName).appendingPathExtension(Document.fileExtension)
+        return !FileManager.default.fileExists(atPath: newURL.path)
+    }
+    
     public func loadData() {
         do {
-            self.data = try self.documentManager.query(in: URL.filesFolder).map { DocumentBrowserCellModel(url: $0) }
+            self.data = try self.documentManager.query(in: URL.filesFolder).map { [unowned self] in
+                let cellModel = DocumentBrowserCellModel(url: $0)
+                cellModel.shouldShowActions = self.shouldShowActions
+                cellModel.shouldShowChooseHeadingIndicator = self.shouldShowHeadingIndicator
+                return cellModel
+            }
             self.delegate?.didLoadData()
         } catch {
             log.error(error)
@@ -42,8 +62,13 @@ public class DocumentBrowserViewModel {
         if let index = self.index(of: url) {
             do {
                 // 读取所有当前文件的子文件
-                let subDocuments = try self.documentManager.query(in: url.convertoFolderURL)
-                    .map { DocumentBrowserCellModel(url: $0) }
+                let subDocuments: [DocumentBrowserCellModel] = try self.documentManager.query(in: url.convertoFolderURL)
+                    .map { [unowned self] in
+                        let cellModel = DocumentBrowserCellModel(url: $0)
+                        cellModel.shouldShowActions = self.shouldShowActions
+                        cellModel.shouldShowChooseHeadingIndicator = self.shouldShowHeadingIndicator
+                        return cellModel
+                }
 
                 // 设置当前 cell 的状态为 unfoled
                 self.data[index].isFolded = false

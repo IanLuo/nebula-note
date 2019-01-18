@@ -79,7 +79,8 @@ public class DocumentBrowserViewController: UIViewController {
         self.tableView.sideAnchor(for: [.left, .bottom, .right], to: self.view, edgeInset: 0)
         
         self.createNewDocumentButton.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInsets: .zero)
-        self.createNewDocumentButton.heightAnchor.constraint(equalToConstant: 60).isActive = true
+        self.createNewDocumentButton.sizeAnchor(height: 60)
+        self.createNewDocumentButton.isHidden = !self.viewModel.shouldShowActions
     }
     
     @objc private func createNewDocumentAtRoot() {
@@ -154,13 +155,22 @@ extension DocumentBrowserViewController: DocumentBrowserCellDelegate {
             actionsViewController.addAction(icon: nil, title: "rename".localizable) { viewController in
                 viewController.dismiss(animated: true, completion: {
                     let renameFormViewController = ModalFormViewController()
-                    renameFormViewController.addTextFied(title: "new name".localizable, placeHoder: "", defaultValue: url.fileName) // 不需要显示 placeholder, default value 有值
+                    let title = "new name".localizable
+                    renameFormViewController.addTextFied(title: title, placeHoder: "", defaultValue: url.fileName) // 不需要显示 placeholder, default value 有值
                     renameFormViewController.onSaveValue = { formValue, viewController in
-                        if let newName = formValue["new name".localizable] as? String {
+                        if let newName = formValue[title] as? String {
                             viewController.dismiss(animated: true, completion: {
                                 self.viewModel.rename(index: index, to: newName)
                             })
                         }
+                    }
+                    
+                    renameFormViewController.onValidating = { formData in
+                        if !self.viewModel.isNameAvailable(newName: formData[title] as! String, index: index) {
+                            return [title: "name is taken".localizable]
+                        }
+                        
+                        return [:]
                     }
                     
                     renameFormViewController.onCancel = { viewController in

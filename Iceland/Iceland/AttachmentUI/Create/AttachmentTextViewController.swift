@@ -37,6 +37,10 @@ public class AttachmentTextViewController: AttachmentViewController, AttachmentV
 }
 
 extension AttachmentTextViewController: ModalFormViewControllerDelegate {
+    public func validate(formdata: [String : Codable]) -> [String : String] {
+        return [:]
+    }
+    
     public func modalFormDidCancel(viewController: ModalFormViewController) {
         self.viewModel.dependency?.stop()
     }

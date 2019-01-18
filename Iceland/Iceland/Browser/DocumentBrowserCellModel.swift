@@ -14,6 +14,8 @@ public class DocumentBrowserCellModel {
     public var isFolded: Bool = true
     public var parent: URL?
     public var levelFromRoot: Int
+    public var shouldShowActions: Bool = true
+    public var shouldShowChooseHeadingIndicator: Bool = false
     
     public init(url: URL) {
         self.url = url

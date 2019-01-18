@@ -40,6 +40,10 @@ public class AttachmentLinkViewController: AttachmentViewController, AttachmentV
 }
 
 extension AttachmentLinkViewController: ModalFormViewControllerDelegate {
+    public func validate(formdata: [String : Codable]) -> [String : String] {
+        return [:]
+    }
+    
     public func modalFormDidCancel(viewController: ModalFormViewController) {
         self.viewModel.dependency?.stop()
     }
