@@ -41,7 +41,7 @@ public struct InterfaceTheme {
         public static let background2: UIColor = UIColor(red:0.12, green:0.12, blue:0.12, alpha:1.00)
         public static let background3: UIColor = UIColor(red:0.18, green:0.18, blue:0.18, alpha:1.00)
         public static let backgroundHighlight: UIColor = UIColor(red:0.13, green:0.82, blue:0.41, alpha:1.00)
-        public static let backgroundWarning: UIColor = UIColor(red:0.13, green:0.82, blue:0.41, alpha:1.00)
+        public static let backgroundWarning: UIColor = UIColor(red:0.99, green:0.20, blue:0.44, alpha:1.00)
     }
 }
 

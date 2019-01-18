@@ -107,8 +107,8 @@ extension DocumentBrowserViewController: UITableViewDataSource {
 
 extension DocumentBrowserViewController: UITableViewDelegate {
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.delegate?.didSelectDocument(url: self.viewModel.data[indexPath.row].url)
         tableView.deselectRow(at: indexPath, animated: true)
+        self.delegate?.didSelectDocument(url: self.viewModel.data[indexPath.row].url)
     }
 }
 
@@ -146,12 +146,14 @@ extension DocumentBrowserViewController: DocumentBrowserCellDelegate {
     public func didTapActions(url: URL) {
         if let index = self.viewModel.index(of: url) {
             let actionsViewController = ActionsViewController()
+            // 创建新文档，使用默认的新文档名
             actionsViewController.addAction(icon: nil, title: "new document".localizable) { viewController in
                 viewController.dismiss(animated: true, completion: {
                     self.viewModel.createDocument(below: self.viewModel.data[index].url)
                 })
             }
 
+            // 重命名
             actionsViewController.addAction(icon: nil, title: "rename".localizable) { viewController in
                 viewController.dismiss(animated: true, completion: {
                     let renameFormViewController = ModalFormViewController()
@@ -165,6 +167,7 @@ extension DocumentBrowserViewController: DocumentBrowserCellDelegate {
                         }
                     }
                     
+                    // 显示给用户，是否可以使用这个文件名
                     renameFormViewController.onValidating = { formData in
                         if !self.viewModel.isNameAvailable(newName: formData[title] as! String, index: index) {
                             return [title: "name is taken".localizable]

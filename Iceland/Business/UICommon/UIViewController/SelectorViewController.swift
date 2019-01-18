@@ -34,7 +34,7 @@ open class SelectorViewController: UIViewController {
         label.font = InterfaceTheme.Font.title
         label.textColor = InterfaceTheme.Color.descriptive
         label.textAlignment = .center
-        label.setBorder(position: .bottom, color: InterfaceTheme.Color.background3, width: 2)
+
         label.backgroundColor = InterfaceTheme.Color.background2
         return label
     }()

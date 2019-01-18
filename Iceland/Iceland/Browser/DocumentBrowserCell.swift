@@ -73,8 +73,6 @@ public class DocumentBrowserCell: UITableViewCell {
     public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        self.selectionStyle = .none
-        
         self.contentView.addSubview(self.arrowButton)
         self.contentView.addSubview(self.titleLabel)
         self.contentView.addSubview(self.actionButton)
@@ -107,6 +105,22 @@ public class DocumentBrowserCell: UITableViewCell {
             }
         } else {
             self.arrowButton.setTitle("", for: .normal)
+        }
+    }
+    
+    override public func setHighlighted(_ highlighted: Bool, animated: Bool) {
+        if highlighted {
+            self.contentView.backgroundColor = InterfaceTheme.Color.background2
+        } else {
+            self.contentView.backgroundColor = InterfaceTheme.Color.background1
+        }
+    }
+    
+    override public func setSelected(_ selected: Bool, animated: Bool) {
+        if selected {
+            self.backgroundColor = InterfaceTheme.Color.background2
+        } else {
+            self.backgroundColor = InterfaceTheme.Color.background1
         }
     }
 }

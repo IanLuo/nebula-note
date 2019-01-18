@@ -42,12 +42,12 @@ public class AttachmentLocationViewController: AttachmentViewController, Attachm
             self.viewModel.dependency?.stop()
         }
         
-        actionsViewController.addAction(icon: nil, title: "save", style: ActionsViewController.Style.highlight) { viewController in
+        actionsViewController.addAction(icon: nil, title: "save".localizable, style: ActionsViewController.Style.highlight) { viewController in
             let jsonEncoder = JSONEncoder()
             do {
                 let data = try jsonEncoder.encode(mapView.centerCoordinate)
                 if let string = String(data: data, encoding: String.Encoding.utf8) {
-                    self.viewModel.save(content: string, type: Attachment.AttachmentType.location, description: "location choosen by user")
+                    self.viewModel.save(content: string, type: Attachment.AttachmentType.location, description: "location choosen by user".localizable)
                 } else {
                     log.error("can't encode for location: \(mapView.centerCoordinate)")
                 }

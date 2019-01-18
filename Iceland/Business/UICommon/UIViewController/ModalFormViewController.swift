@@ -122,10 +122,6 @@ public class ModalFormViewController: UIViewController {
         self.actionButtonsContainer.addSubview(self.saveButton)
         self.actionButtonsContainer.addSubview(self.cancelButton)
         self.actionButtonsContainer.addSubview(self.titleLabel)
-        
-        // 此时添加 border 才不会被按钮覆盖
-        self.actionButtonsContainer.setBorder(position: .bottom, color: InterfaceTheme.Color.background3, width: 2)
-        
         self.actionButtonsContainer.sideAnchor(for: [.left, .right], to: self.view, edgeInset: 0)
         
         self.saveButton.sideAnchor(for: [.left, .top, .bottom], to: actionButtonsContainer, edgeInset: 0)

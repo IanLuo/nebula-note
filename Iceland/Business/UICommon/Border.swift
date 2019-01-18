@@ -127,7 +127,7 @@ extension UIView {
             addSubview(border)
             border.translatesAutoresizingMaskIntoConstraints = false
             border.lineColor = color
-            addConstraint(NSLayoutConstraint(item: border, attribute: .right, relatedBy: .equal, toItem: self, attribute: .right, multiplier: 1, constant: -width))
+            addConstraint(NSLayoutConstraint(item: border, attribute: .right, relatedBy: .equal, toItem: self, attribute: .right, multiplier: 1, constant: 0))
             addConstraint(NSLayoutConstraint(item: border, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: width))
             addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-h-[b]-t-|", options: [], metrics: metrics, views: ["b" : border]))
         }
@@ -136,7 +136,7 @@ extension UIView {
             addSubview(border)
             border.translatesAutoresizingMaskIntoConstraints = false
             border.lineColor = color
-            addConstraint(NSLayoutConstraint(item: border, attribute: .bottom, relatedBy: .equal, toItem: self, attribute: .bottom, multiplier: 1, constant: -width))
+            addConstraint(NSLayoutConstraint(item: border, attribute: .bottom, relatedBy: .equal, toItem: self, attribute: .bottom, multiplier: 1, constant: 0))
             addConstraint(NSLayoutConstraint(item: border, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: width))
             addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-h-[b]-t-|", options: [], metrics: metrics, views: ["b" : border]))
         }

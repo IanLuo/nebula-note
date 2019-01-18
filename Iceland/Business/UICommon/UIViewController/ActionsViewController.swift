@@ -160,7 +160,7 @@ public class ActionsViewController: UIViewController {
         
         self.actionsContainerView.addSubview(self.cancelButton)
         self.actionsContainerView.addSubview(self.titleLabel)
-        self.actionsContainerView.setBorder(position: .bottom, color: InterfaceTheme.Color.background3, width: 2)
+
         self.cancelButton.sideAnchor(for: [.right, .top, .bottom], to: self.actionsContainerView, edgeInset: 0)
         self.cancelButton.sizeAnchor(width: 60, height: 60)
         self.titleLabel.sideAnchor(for: [.left, .top, .bottom], to: self.actionsContainerView, edgeInsets: .init(top: 0, left: 60, bottom: 0, right: 0))
@@ -284,8 +284,6 @@ fileprivate class ActionCell: UITableViewCell {
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
         if selected {
             self.backgroundColor = InterfaceTheme.Color.background3
         } else {
