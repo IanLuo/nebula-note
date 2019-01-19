@@ -59,6 +59,10 @@ public class HomeViewController: UIViewController {
         captureListButton.setTitle("capture list", for: .normal)
         captureListButton.addTarget(self, action: #selector(showCaptureList), for: .touchUpInside)
         
+        let agendaButton = UIButton()
+        agendaButton.setTitle("agenda", for: .normal)
+        agendaButton.addTarget(self, action: #selector(showAgenda), for: .touchUpInside)
+        
         self.view.addSubview(browserButton)
         self.view.addSubview(imageCaptureButton)
         self.view.addSubview(audioRecordButton)
@@ -68,6 +72,7 @@ public class HomeViewController: UIViewController {
         self.view.addSubview(linkButton)
         self.view.addSubview(textButton)
         self.view.addSubview(captureListButton)
+        self.view.addSubview(agendaButton)
         
         browserButton.centerAnchors(position: [.centerX], to: self.view)
         browserButton.centerAnchors(position: [.centerY], to: self.view, multiplier: 0.5)
@@ -95,6 +100,9 @@ public class HomeViewController: UIViewController {
         
         captureListButton.centerAnchors(position: .centerX, to: self.view)
         captureListButton.topAnchor.constraint(equalTo: textButton.bottomAnchor, constant: 10).isActive = true
+        
+        agendaButton.centerAnchors(position: .centerX, to: self.view)
+        agendaButton.topAnchor.constraint(equalTo: captureListButton.bottomAnchor, constant: 10).isActive = true
     }
     
     @objc private func showBrowser() {
@@ -131,5 +139,9 @@ public class HomeViewController: UIViewController {
     
     @objc private func showCaptureList() {
         self.viewModel?.dependency?.showCaptureList()
+    }
+    
+    @objc private func showAgenda() {
+        self.viewModel?.dependency?.showAgenda()
     }
 }

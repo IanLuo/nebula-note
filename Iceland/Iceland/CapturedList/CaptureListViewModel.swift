@@ -62,9 +62,13 @@ public class CaptureListViewModel {
             service.insert(content: content, headingLocation: heading.range.location) // 添加字符串到对应的 heading 中
             self.currentIndex = nil // 移除当前选中的
             self.service.delete(key: attachment.key) // 删除 capture 中的 attachment 记录
-
-            self.delegate?.didCompleteRefile(index: index)
-            self.delegate?.didDeleteCapture(index: index)
+            self.data.remove(at: index)
+            self.cellModels.remove(at: index)
+            
+            DispatchQueue.main.async {
+                self.delegate?.didCompleteRefile(index: index)
+                self.delegate?.didDeleteCapture(index: index)
+            }
         }
     }
     
@@ -72,7 +76,7 @@ public class CaptureListViewModel {
         self.service
             .loadAll(completion: { [weak self] attachments in
                 let attachments = attachments.sorted(by: { last, next -> Bool in
-                    last.date > next.date
+                    last.date.timeIntervalSince1970 > next.date.timeIntervalSince1970
                 })
                 self?.data = attachments
                 self?.cellModels = attachments.map { CaptureTableCellModel(attacment: $0) }

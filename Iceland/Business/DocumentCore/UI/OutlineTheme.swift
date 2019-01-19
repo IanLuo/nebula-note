@@ -26,6 +26,7 @@ private struct ThemeConfig {
 
 public struct InterfaceTheme {
     public struct Font {
+        public static let largeTitle: UIFont = UIFont.systemFont(ofSize: 40)
         public static let title: UIFont = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.headline)
         public static let subTitle: UIFont = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.subheadline)
         public static let body: UIFont = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.body)

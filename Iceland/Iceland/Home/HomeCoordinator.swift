@@ -27,6 +27,11 @@ public class HomeCoordinator: Coordinator {
         coord.start(from: self)
     }
     
+    public func showAgenda() {
+        let agendaCoordinator = AgendaCoordinator(stack: self.stack, context: self.context)
+        agendaCoordinator.start(from: self)
+    }
+    
     public func showAttachmentCreator(type: Attachment.AttachmentType) {
         let captureImage = AttachmentCoordinator(stack: self.stack,
                                                  context: self.context,

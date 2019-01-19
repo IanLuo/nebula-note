@@ -25,7 +25,7 @@ public class DocumentBrowserViewController: UIViewController {
         tableView.tableFooterView = UIView()
         tableView.separatorColor = InterfaceTheme.Color.background3
         tableView.separatorInset = .zero
-        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 130, right: 0)
+        tableView.contentInset = UIEdgeInsets(top: self.view.bounds.height / 4, left: 0, bottom: 130, right: 0)
         return tableView
     }()
     
@@ -73,7 +73,7 @@ public class DocumentBrowserViewController: UIViewController {
         self.view.addSubview(self.cancelButton)
 
         self.cancelButton.sideAnchor(for: [.right, .top], to: self.view, edgeInset: 20)
-        self.cancelButton.sizeAnchor(width: 60, height: 60)
+        self.cancelButton.sizeAnchor(width: 80, height: 80)
 
         self.cancelButton.columnAnchor(view: self.tableView)
         self.tableView.sideAnchor(for: [.left, .bottom, .right], to: self.view, edgeInset: 0)
@@ -107,8 +107,11 @@ extension DocumentBrowserViewController: UITableViewDataSource {
 
 extension DocumentBrowserViewController: UITableViewDelegate {
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
         self.delegate?.didSelectDocument(url: self.viewModel.data[indexPath.row].url)
+        
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
+            tableView.deselectRow(at: indexPath, animated: true)
+        }
     }
 }
 

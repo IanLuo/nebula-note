@@ -26,7 +26,7 @@ public class Border: UIView {
     
     public enum Style {
         case solid
-        case dash
+        case dash(CGFloat, CGFloat)
     }
     
     public enum Insect {
@@ -63,8 +63,8 @@ public class Border: UIView {
             switch style {
             case .solid:
                 break
-            case .dash:
-                var dashes: [CGFloat] = [path.lineWidth * 4, path.lineWidth * 2]
+            case .dash(let width1, let width2):
+                var dashes: [CGFloat] = [width1, width2]
                 path.setLineDash(&dashes, count: dashes.count, phase: 0)
             }
             

@@ -125,11 +125,11 @@ public class ModalFormViewController: UIViewController {
         self.actionButtonsContainer.sideAnchor(for: [.left, .right], to: self.view, edgeInset: 0)
         
         self.saveButton.sideAnchor(for: [.left, .top, .bottom], to: actionButtonsContainer, edgeInset: 0)
-        self.saveButton.sizeAnchor(width: 60, height: 60)
+        self.saveButton.sizeAnchor(width: 80, height: 80)
         self.titleLabel.sideAnchor(for: [.top, .bottom], to: actionButtonsContainer, edgeInset: 0)
         self.saveButton.rowAnchor(view: self.titleLabel)
         self.cancelButton.sideAnchor(for: [.right, .top, .bottom], to: actionButtonsContainer, edgeInset: 0)
-        self.cancelButton.sizeAnchor(width: 60, height: 60)
+        self.cancelButton.sizeAnchor(width: 80, height: 80)
         self.titleLabel.rowAnchor(view: self.cancelButton)
         
         self.view.addSubview(self.tableView)

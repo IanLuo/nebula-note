@@ -30,20 +30,22 @@ private class ProcessingView: UIView {
 extension UIView {
     public func showProcessingAnimation() {
         let view = self.createProcessingAnimationView()
-        view.start()
         self.addSubview(view)
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.allSidesAnchors(to: self, edgeInsets: .zero)
+        view.allSidesAnchors(to: self, edgeInset: 0)
         view.alpha = 0
         
-        UIView.animate(withDuration: 0.25) {
+        UIView.animate(withDuration: 0.1, animations: {
             view.alpha = 1
-        }
+        }, completion: {
+            if $0 {
+                view.start()
+            }
+        })
     }
     
     public func hideProcessingAnimation() {
         if let view = self.getPrecessingAnimationView() {
-            UIView.animate(withDuration: 0.25, animations: {
+            UIView.animate(withDuration: 0.1, animations: {
                 view.alpha = 0
             }, completion: {
                 if $0 {

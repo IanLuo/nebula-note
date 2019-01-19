@@ -27,6 +27,11 @@ public class HeadingsOutlineViewController: SelectorViewController {
         self.emptyDataText = "There's no heading in this document yet"
     }
     
+    public override func viewDidLoad() {
+        super.viewDidLoad()
+        self.view.showProcessingAnimation()
+    }
+    
     public required init?(coder aDecoder: NSCoder) {
         fatalError()
     }
@@ -47,6 +52,12 @@ extension HeadingsOutlineViewController: DocumentEditViewModelDelegate {
         for index in 0..<self.viewModel.headings.count {
             self.addItem(attributedString: self.attributedString(level: self.viewModel.level(index: index),
                                                                      string: self.viewModel.headingString(index: index)))
+        }
+        
+        self.view.hideProcessingAnimation()
+        
+        if self.items.count == 0 {
+            super.showEmptyDataView()
         }
     }
     

@@ -162,8 +162,8 @@ public class ActionsViewController: UIViewController {
         self.actionsContainerView.addSubview(self.titleLabel)
 
         self.cancelButton.sideAnchor(for: [.right, .top, .bottom], to: self.actionsContainerView, edgeInset: 0)
-        self.cancelButton.sizeAnchor(width: 60, height: 60)
-        self.titleLabel.sideAnchor(for: [.left, .top, .bottom], to: self.actionsContainerView, edgeInsets: .init(top: 0, left: 60, bottom: 0, right: 0))
+        self.cancelButton.sizeAnchor(width: 80, height: 80)
+        self.titleLabel.sideAnchor(for: [.left, .top, .bottom], to: self.actionsContainerView, edgeInsets: .init(top: 0, left: 80, bottom: 0, right: 0))
         self.titleLabel.rowAnchor(view: self.cancelButton)
         
         self.actionsContainerView.columnAnchor(view: self.accessoryViewContainer)
@@ -212,8 +212,11 @@ extension ActionsViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
         self.items[indexPath.row].action(self)
+        
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
+            tableView.deselectRow(at: indexPath, animated: true)
+        }
     }
     
     public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -277,9 +280,9 @@ fileprivate class ActionCell: UITableViewCell {
     
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
         if highlighted {
-            self.contentView.backgroundColor = InterfaceTheme.Color.background3
+            self.backgroundColor = InterfaceTheme.Color.background3
         } else {
-            self.contentView.backgroundColor = self.cellBackgroundColor
+            self.backgroundColor = self.cellBackgroundColor
         }
     }
 

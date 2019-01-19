@@ -15,7 +15,7 @@ public protocol SelectorViewControllerDelegate: class {
 }
 
 open class SelectorViewController: UIViewController {
-    public var rowHeight: CGFloat = 60
+    public var rowHeight: CGFloat = 80
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
@@ -47,17 +47,6 @@ open class SelectorViewController: UIViewController {
     public var emptyDataText: String = "It's empty".localizable
     
     public var emptyDataIcon: UIImage?
-    
-    open override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        
-        self.contentView.layoutIfNeeded() // force contentView to layout it's subview
-        if self.items.count == 0 {
-            self.showEmptyDataView()
-        } else {
-            self.hideEmptyDataView()
-        }
-    }
     
     open override func viewDidLoad() {
         super.viewDidLoad()
@@ -108,8 +97,6 @@ open class SelectorViewController: UIViewController {
         // 已经显示，则需要插入
         if self.tableView.window != nil {
             self.tableView.insertRows(at: [IndexPath(row: self.items.count - 1, section: 0)], with: UITableView.RowAnimation.none)
-            
-            self.hideEmptyDataView()
         }
     }
     
@@ -132,7 +119,7 @@ open class SelectorViewController: UIViewController {
         self.contentView.sizeAnchor(height: self.view.bounds.height / 2)
         self.contentView.centerAnchors(position: .centerY, to: self.view)
         
-        self.titleLabel.sizeAnchor(height: 60)
+        self.titleLabel.sizeAnchor(height: 80)
         self.titleLabel.sideAnchor(for: [.left, .right, .top], to: self.contentView, edgeInset: 0)
         
         self.titleLabel.columnAnchor(view: self.tableView, space: 0)
@@ -184,7 +171,7 @@ extension SelectorViewController: UITableViewDataSource, UITableViewDelegate {
         return self.rowHeight
     }
     
-    private func showEmptyDataView() {
+    public func showEmptyDataView() {
         let emptyDataView = UIView(frame: self.tableView.bounds)
         let label = UILabel()
         label.font = InterfaceTheme.Font.title
@@ -214,7 +201,7 @@ extension SelectorViewController: UITableViewDataSource, UITableViewDelegate {
         self.tableView.tableFooterView = emptyDataView
     }
     
-    private func hideEmptyDataView() {
+    public func hideEmptyDataView() {
         if self.tableView.tableFooterView?.bounds.size != .zero {
             self.tableView.tableFooterView = UIView()
         }

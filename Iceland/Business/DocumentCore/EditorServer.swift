@@ -248,14 +248,20 @@ public class EditorService {
     }
     
     public func open(completion:((String?) -> Void)? = nil) {
-        document.open { [weak self] (isOpenSuccessfully: Bool) in
-            guard let strongSelf = self else { return }
-            
-            if isOpenSuccessfully {
-                strongSelf.editorController.string = strongSelf.document.string // 触发解析
-                completion?(strongSelf.document.string)
-            } else {
-                completion?(nil)
+        self.queue.async { [weak self] in
+            self?.document.open { (isOpenSuccessfully: Bool) in
+                guard let strongSelf = self else { return }
+                
+                if isOpenSuccessfully {
+                    strongSelf.editorController.string = strongSelf.document.string // 触发解析
+                    DispatchQueue.main.async {
+                        completion?(strongSelf.document.string)
+                    }
+                } else {
+                    DispatchQueue.main.async {
+                        completion?(nil)
+                    }
+                }
             }
         }
     }

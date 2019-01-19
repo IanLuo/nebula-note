@@ -22,6 +22,7 @@ public class CaptureListViewController: UIViewController {
         tableView.backgroundColor = InterfaceTheme.Color.background1
         tableView.separatorInset = .zero
         tableView.separatorColor = InterfaceTheme.Color.background3
+        tableView.contentInset = UIEdgeInsets(top: self.view.bounds.height / 4, left: 0, bottom: 0, right: 0)
         tableView.tableFooterView = UIView()
         return tableView
     }()
@@ -60,7 +61,7 @@ public class CaptureListViewController: UIViewController {
         self.view.addSubview(self.tableView)
         
         self.cancelButton.sideAnchor(for: [.right, .top], to: self.view, edgeInset: 0)
-        self.cancelButton.sizeAnchor(width: 60, height: 60)
+        self.cancelButton.sizeAnchor(width: 80, height: 80)
         self.cancelButton.columnAnchor(view: self.tableView)
         
         self.tableView.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 0)
@@ -174,8 +175,6 @@ extension CaptureListViewController: CaptureListViewModelDelegate {
         if let cell = self.tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? CaptureTableCell {
             cell.hideProcessingAnimation()
         }
-        
-        self.tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .right)
     }
     
     public func didLoadData() {

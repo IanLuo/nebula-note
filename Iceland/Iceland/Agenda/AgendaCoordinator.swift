@@ -21,6 +21,16 @@ public class AgendaCoordinator: Coordinator {
         viewModel.delegate = viewController
         viewModel.dependency = self
     }
+    
+    public override func moveIn(top: UIViewController?, animated: Bool) {
+        guard let viewController = self.viewController else { return }
+        
+        top?.present(viewController, animated: true, completion: nil)
+    }
+    
+    public override func moveOut(top: UIViewController, animated: Bool) {
+        top.dismiss(animated: true)
+    }
 }
 
 extension AgendaCoordinator {

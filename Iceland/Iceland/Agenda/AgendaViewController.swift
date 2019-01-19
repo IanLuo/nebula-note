@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import Business
 
 public class AgendaViewController: UIViewController {
     private let viewModel: AgendaViewModel
@@ -17,6 +18,9 @@ public class AgendaViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(AgendaTableCell.self, forCellReuseIdentifier: AgendaTableCell.reuseIdentifier)
+        tableView.tableFooterView = UIView()
+        tableView.contentInset = UIEdgeInsets(top: self.view.bounds.height / 4, left: 0, bottom: 0, right: 0)
+        tableView.backgroundColor = InterfaceTheme.Color.background1
         return tableView
     }()
     
@@ -31,6 +35,15 @@ public class AgendaViewController: UIViewController {
         return dateView
     }()
     
+    private let cancelButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("✕".localizable, for: .normal)
+        button.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.background1, size: .singlePoint),
+                                  for: .normal)
+        button.addTarget(self, action: #selector(cancel), for: .touchUpInside)
+        return button
+    }()
+    
     public init(viewModel: AgendaViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -43,43 +56,45 @@ public class AgendaViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         self.setupUI()
+        
+        self.besideDatesView.moveToToday(animated: false)
     }
     
-    private func setupUI(){
+    private func setupUI() {
+        self.view.backgroundColor = InterfaceTheme.Color.background1
+        
         self.view.addSubview(self.besideDatesView)
         self.view.addSubview(self.tableView)
         self.view.addSubview(self.dateView)
+        self.view.addSubview(self.cancelButton)
         
-        self.besideDatesView.translatesAutoresizingMaskIntoConstraints = false
-        self.dateView.translatesAutoresizingMaskIntoConstraints = false
-        self.tableView.translatesAutoresizingMaskIntoConstraints = false
+        self.cancelButton.sideAnchor(for: [.right, .top], to: self.view, edgeInset: 0)
+        self.cancelButton.sizeAnchor(width: 80, height: 80)
         
-        self.besideDatesView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
-        self.besideDatesView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
-        if #available(iOS 11.0, *) {
-            self.besideDatesView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
-        } else {
-            self.besideDatesView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
-        }
+        self.cancelButton.columnAnchor(view: self.besideDatesView)
+
+        self.besideDatesView.sideAnchor(for: [.top, .left, .right], to: self.view, edgeInsets: .init(top: 80, left: 0, bottom: 0, right: 0))
+        self.besideDatesView.sizeAnchor(height: 120)
         
-        self.dateView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
-        self.dateView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
-        self.dateView.topAnchor.constraint(equalTo: self.besideDatesView.bottomAnchor).isActive = true
+        self.besideDatesView.columnAnchor(view: self.dateView, space: 30)
         
-        self.tableView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
-        self.tableView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
-        self.tableView.topAnchor.constraint(equalTo: self.dateView.bottomAnchor).isActive = true
-        if #available(iOS 11.0, *) {
-            self.tableView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor).isActive = true
-        } else {
-            self.tableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
-        }
+        self.dateView.sideAnchor(for: [.left, .right], to: self.view, edgeInset: 0)
+        self.dateView.sizeAnchor(height: 80)
+        
+        self.dateView.columnAnchor(view: self.tableView, space: 30)
+        
+        self.tableView.sideAnchor(for: [.left, .bottom, .right], to: self.view, edgeInset: 0)
+    }
+    
+    @objc private func cancel() {
+        self.viewModel.dependency?.stop()
     }
 }
 
 extension AgendaViewController: BesideDatesViewDelegate {
     public func didSelectDate(date: Date) {
         self.viewModel.load(date: date)
+        self.dateView.date = date
     }
 }
 
@@ -112,13 +127,56 @@ extension AgendaViewController: AgendaViewModelDelegate {
 }
 
 private class DateView: UIView {
+    private let weekdayLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = InterfaceTheme.Color.descriptive
+        label.font = InterfaceTheme.Font.largeTitle
+        label.textAlignment = .center
+        return label
+    }()
+    
+    let dateLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = InterfaceTheme.Color.descriptive
+        label.font = InterfaceTheme.Font.subTitle
+        label.textAlignment = .left
+        return label
+    }()
+    
+    public init() {
+        super.init(frame: .zero)
+        
+        self.setupUI()
+    }
+    
+    public required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     var date: Date? {
         didSet {
-            self.setupUI()
+            guard let date = date else { return }
+            
+            self.dateLabel.text = "\(date.day), \(date.monthStringLong),  \(date.weekOfYearString), \(date.year)"
+            self.weekdayLabel.text = date.weekDayShortString
         }
     }
     
     private func setupUI() {
-        // TODO:
+        self.addSubview(self.dateLabel)
+        self.addSubview(self.weekdayLabel)
+        
+        self.weekdayLabel.sideAnchor(for: [.left, .bottom],
+                                     to: self,
+                                     edgeInset: 0)
+        self.weekdayLabel.sizeAnchor(width: 120)
+        
+        self.dateLabel.sideAnchor(for: [.left, .right],
+                                  to: self,
+                                  edgeInsets: .init(top: 0, left: 120, bottom: 0, right: 0))
+        
+        self.weekdayLabel.lastBaselineAnchor.constraint(equalTo: self.dateLabel.lastBaselineAnchor).isActive = true
+        
+        
     }
 }

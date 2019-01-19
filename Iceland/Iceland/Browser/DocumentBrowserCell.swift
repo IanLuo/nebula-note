@@ -110,9 +110,9 @@ public class DocumentBrowserCell: UITableViewCell {
     
     override public func setHighlighted(_ highlighted: Bool, animated: Bool) {
         if highlighted {
-            self.contentView.backgroundColor = InterfaceTheme.Color.background2
+            self.backgroundColor = InterfaceTheme.Color.background2
         } else {
-            self.contentView.backgroundColor = InterfaceTheme.Color.background1
+            self.backgroundColor = InterfaceTheme.Color.background1
         }
     }
     
