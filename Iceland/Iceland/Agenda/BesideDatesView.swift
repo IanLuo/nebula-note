@@ -23,12 +23,14 @@ public class BesideDatesView: UIView {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.delegate = self
         collectionView.dataSource = self
-        collectionView.register(DateView.self, forCellWithReuseIdentifier: DateView.reuseIdentifier)
+        collectionView.register(DateCell.self, forCellWithReuseIdentifier: DateCell.reuseIdentifier)
         return collectionView
     }()
     
     public func moveToToday(animated: Bool) {
-        self.collectionView.scrollToItem(at: IndexPath(row: 500, section: 0), at: UICollectionView.ScrollPosition.centeredHorizontally, animated: animated)
+        self.collectionView.selectItem(at: IndexPath(row: 500, section: 0), animated: animated, scrollPosition: UICollectionView.ScrollPosition.centeredHorizontally)
+        
+        self.delegate?.didSelectDate(date: Date())
     }
     
     public init() {
@@ -58,7 +60,7 @@ extension BesideDatesView: UICollectionViewDataSource {
     }
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: DateView.reuseIdentifier, for: indexPath) as! DateView
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: DateCell.reuseIdentifier, for: indexPath) as! DateCell
         let offset = indexPath.row - 500
         cell.update(offset: offset)
         return cell
@@ -80,28 +82,43 @@ extension BesideDatesView: UICollectionViewDelegateFlowLayout {
     }
 }
 
-private class DateView: UICollectionViewCell {
-    static let reuseIdentifier = "DateView"
+private class DateCell: UICollectionViewCell {
+    static let reuseIdentifier = "DateCell"
+    
     public let titleLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 2
         label.textAlignment = .center
         return label
     }()
+    
+    public let todayLabel: UILabel = {
+        let label = UILabel()
+        label.text = "•"
+        label.textAlignment = .center
+        label.textColor = InterfaceTheme.Color.descriptive
+        label.font = InterfaceTheme.Font.title
+        return label
+    }()
+    
     private var date: Date = Date()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         
+        self.contentView.addSubview(self.todayLabel)
         self.contentView.addSubview(self.titleLabel)
-        self.titleLabel.allSidesAnchors(to: self.contentView, edgeInset: 0)
+
+        self.titleLabel.centerAnchors(position: [.centerX, .centerY], to: self.contentView)
+        self.titleLabel.columnAnchor(view: self.todayLabel, space: 5)
+        self.todayLabel.centerAnchors(position: .centerX, to: self.contentView)
         
         let unit = frame.width / 5 / 11
         
         self.setBorder(position: [.top, .bottom],
                        style: Border.Style.dash(unit, unit * 10),
                        color: InterfaceTheme.Color.descriptive.withAlphaComponent(0.5),
-                       width: unit * 10,
+                       width: 10,
                        insect: Border.Insect.tail(unit * 10))
     }
     
@@ -115,6 +132,8 @@ private class DateView: UICollectionViewCell {
         self.date = Date().dayAfter(offset)
         
         self.updateFor(isSelected: self.isSelected)
+        
+        self.todayLabel.isHidden = !date.isToday()
     }
     
     private func updateFor(isSelected: Bool) {
@@ -126,21 +145,16 @@ private class DateView: UICollectionViewCell {
         if isSelected {
             attr.addAttributes([NSAttributedString.Key.foregroundColor : InterfaceTheme.Color.interactive,
                                 NSAttributedString.Key.font : InterfaceTheme.Font.title],
-                               range: (string as NSString).range(of: weekString))
-            attr.addAttributes([NSAttributedString.Key.underlineStyle : 1,
-                                NSAttributedString.Key.foregroundColor : InterfaceTheme.Color.interactive,
-                                NSAttributedString.Key.underlineColor : InterfaceTheme.Color.interactive,
-                                NSAttributedString.Key.font : InterfaceTheme.Font.title],
-                               range: (string as NSString).range(of: dateString))
+                               range: NSRange(location: 0, length: string.count))
         } else {
             attr.addAttributes([NSAttributedString.Key.foregroundColor : InterfaceTheme.Color.descriptive,
                                 NSAttributedString.Key.font : InterfaceTheme.Font.footnote],
                                range: (string as NSString).range(of: weekString))
-            attr.addAttributes([NSAttributedString.Key.underlineStyle : 0,
-                                NSAttributedString.Key.foregroundColor : InterfaceTheme.Color.descriptive,
+            attr.addAttributes([NSAttributedString.Key.foregroundColor : InterfaceTheme.Color.descriptive,
                                 NSAttributedString.Key.font : InterfaceTheme.Font.footnote],
-                               range: (string as NSString).range(of: dateString))
+                               range: NSRange(location: 0, length: string.count))
         }
+        
         self.titleLabel.attributedText = NSAttributedString(attributedString: attr)
     }
     

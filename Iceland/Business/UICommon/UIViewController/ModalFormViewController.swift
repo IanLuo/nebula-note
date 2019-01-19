@@ -358,7 +358,7 @@ private class InputTextViewCell: UITableViewCell, UITextViewDelegate, Validatabl
 // MARK: - InputTextFieldCell
 private class InputTextFieldCell: UITableViewCell, UITextFieldDelegate, Validatable{
     fileprivate static let reuseIdentifier = "InputTextFieldCell"
-    fileprivate static let height: CGFloat = 130
+    fileprivate static let height: CGFloat = 110
     
     weak var delegate: CellValueDelegate?
     

@@ -35,15 +35,6 @@ public class AgendaViewController: UIViewController {
         return dateView
     }()
     
-    private let cancelButton: UIButton = {
-        let button = UIButton()
-        button.setTitle("✕".localizable, for: .normal)
-        button.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.background1, size: .singlePoint),
-                                  for: .normal)
-        button.addTarget(self, action: #selector(cancel), for: .touchUpInside)
-        return button
-    }()
-    
     public init(viewModel: AgendaViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -56,6 +47,10 @@ public class AgendaViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         self.setupUI()
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         
         self.besideDatesView.moveToToday(animated: false)
     }
@@ -66,22 +61,16 @@ public class AgendaViewController: UIViewController {
         self.view.addSubview(self.besideDatesView)
         self.view.addSubview(self.tableView)
         self.view.addSubview(self.dateView)
-        self.view.addSubview(self.cancelButton)
         
-        self.cancelButton.sideAnchor(for: [.right, .top], to: self.view, edgeInset: 0)
-        self.cancelButton.sizeAnchor(width: 80, height: 80)
-        
-        self.cancelButton.columnAnchor(view: self.besideDatesView)
-
         self.besideDatesView.sideAnchor(for: [.top, .left, .right], to: self.view, edgeInsets: .init(top: 80, left: 0, bottom: 0, right: 0))
         self.besideDatesView.sizeAnchor(height: 120)
         
-        self.besideDatesView.columnAnchor(view: self.dateView, space: 30)
+        self.besideDatesView.columnAnchor(view: self.dateView)
         
         self.dateView.sideAnchor(for: [.left, .right], to: self.view, edgeInset: 0)
         self.dateView.sizeAnchor(height: 80)
         
-        self.dateView.columnAnchor(view: self.tableView, space: 30)
+        self.dateView.columnAnchor(view: self.tableView)
         
         self.tableView.sideAnchor(for: [.left, .bottom, .right], to: self.view, edgeInset: 0)
     }

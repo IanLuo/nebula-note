@@ -39,10 +39,7 @@ public class DocumentBrowserCell: UITableViewCell {
     public var cellModel: DocumentBrowserCellModel? {
         didSet {
             if let cellModel = cellModel {
-                setupUI(cellModel: cellModel)
-                
-                self.arrowButton.addTarget(self, action: #selector(didTapArrow), for: .touchUpInside)
-                self.actionButton.addTarget(self, action: #selector(didTapAction), for: .touchUpInside)
+                updateUI(cellModel: cellModel)
                 
                 self.actionButton.isHidden = !cellModel.shouldShowActions
                 
@@ -73,6 +70,17 @@ public class DocumentBrowserCell: UITableViewCell {
     public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
+        self.setupUI()
+        
+        self.arrowButton.addTarget(self, action: #selector(didTapArrow), for: .touchUpInside)
+        self.actionButton.addTarget(self, action: #selector(didTapAction), for: .touchUpInside)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func setupUI() {
         self.contentView.addSubview(self.arrowButton)
         self.contentView.addSubview(self.titleLabel)
         self.contentView.addSubview(self.actionButton)
@@ -84,15 +92,11 @@ public class DocumentBrowserCell: UITableViewCell {
         
         self.titleLabel.rowAnchor(view: self.actionButton, space: 10)
         self.actionButton.sideAnchor(for: [.top, .bottom, .right], to: self.contentView, edgeInsets: .init(top: 0, left: 0, bottom: 0, right: -30))
-
+        
         self.backgroundColor = InterfaceTheme.Color.background1
     }
     
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    private func setupUI(cellModel: DocumentBrowserCellModel) {
+    private func updateUI(cellModel: DocumentBrowserCellModel) {
         self.arrowButton.constraint(for: .left)?.constant = CGFloat(cellModel.levelFromRoot * 10 + 10)
         
         self.titleLabel.text = self.cellModel?.url.deletingPathExtension().lastPathComponent

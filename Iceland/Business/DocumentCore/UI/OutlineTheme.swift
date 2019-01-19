@@ -35,7 +35,7 @@ public struct InterfaceTheme {
     
     public struct Color {
         public static let interactive: UIColor = .white
-        public static let descriptive: UIColor = .gray
+        public static let descriptive: UIColor = .darkGray
         public static let enphersizedDescriptive: UIColor = .lightGray
         public static let spotLight: UIColor = .green
         public static let background1: UIColor = .black
