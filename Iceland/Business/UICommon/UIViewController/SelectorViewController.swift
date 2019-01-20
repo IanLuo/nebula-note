@@ -23,6 +23,7 @@ open class SelectorViewController: UIViewController {
         tableView.dataSource = self
         tableView.alwaysBounceVertical = false
         tableView.backgroundColor = InterfaceTheme.Color.background2
+        tableView.separatorInset = UIEdgeInsets(top: 0, left: 30, bottom: 0, right: 30)
         tableView.separatorColor = InterfaceTheme.Color.background3
         tableView.register(ActionCell.self, forCellReuseIdentifier: ActionCell.reuseIdentifier)
         tableView.tableFooterView = UIView()
@@ -121,6 +122,7 @@ open class SelectorViewController: UIViewController {
         
         self.titleLabel.sizeAnchor(height: 80)
         self.titleLabel.sideAnchor(for: [.left, .right, .top], to: self.contentView, edgeInset: 0)
+        self.titleLabel.setBorder(position: .bottom, color: InterfaceTheme.Color.background3, width: 0.5)
         
         self.titleLabel.columnAnchor(view: self.tableView, space: 0)
         self.tableView.sideAnchor(for: [.left, .right, .bottom], to: self.contentView, edgeInset: 0)
@@ -249,7 +251,6 @@ fileprivate class ActionCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         self.backgroundColor = InterfaceTheme.Color.background2
-        self.separatorInset = .zero
         self.selectedBackgroundView?.isHidden = true
         
         self.descriptionLabel.translatesAutoresizingMaskIntoConstraints = false

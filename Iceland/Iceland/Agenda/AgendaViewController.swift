@@ -47,6 +47,8 @@ public class AgendaViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         self.setupUI()
+        
+        self.viewModel.loadAllData()
     }
     
     public override func viewDidAppear(_ animated: Bool) {
@@ -106,12 +108,16 @@ extension AgendaViewController: UITableViewDelegate {
 }
 
 extension AgendaViewController: AgendaViewModelDelegate {
+    public func didCompleteLoadAllData() {
+        self.viewModel.load(date: self.besideDatesView.currentDate)
+    }
+    
     public func didLoadData() {
         self.tableView.reloadData()
     }
     
     public func didFailed(_ error: Error) {
-        
+        log.error(error)
     }
 }
 
@@ -166,6 +172,6 @@ private class DateView: UIView {
         
         self.weekdayLabel.lastBaselineAnchor.constraint(equalTo: self.dateLabel.lastBaselineAnchor).isActive = true
         
-        
+        self.setBorder(position: .bottom, color: InterfaceTheme.Color.background3, width: 0.5)
     }
 }

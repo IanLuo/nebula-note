@@ -32,4 +32,12 @@ public class SettingsAccessor {
     public var customizedFinishedPlannings: [String]? {
         return ["Rejected"] // TODO: change to real function
     }
+    
+    public var unfinishedPlanning: [String] {
+        return (customizedUnfinishedPlannings ?? []) + [OutlineParser.Values.Heading.Planning.todo]
+    }
+    
+    public var finishedPlanning: [String] {
+        return (customizedFinishedPlannings ?? []) + [OutlineParser.Values.Heading.Planning.canceled, OutlineParser.Values.Heading.Planning.done]
+    }
 }

@@ -99,13 +99,15 @@ public class DocumentBrowserCell: UITableViewCell {
     private func updateUI(cellModel: DocumentBrowserCellModel) {
         self.arrowButton.constraint(for: .left)?.constant = CGFloat(cellModel.levelFromRoot * 10 + 10)
         
+        self.separatorInset = UIEdgeInsets(top: 0, left: CGFloat(cellModel.levelFromRoot * 10 + 30), bottom: 0, right: 30)
+        
         self.titleLabel.text = self.cellModel?.url.deletingPathExtension().lastPathComponent
         
         if cellModel.hasSubDocuments {
             if cellModel.isFolded {
-                self.arrowButton.setTitle("+", for: .normal)
+                self.arrowButton.setTitle("▾", for: .normal)
             } else {
-                self.arrowButton.setTitle("-", for: .normal)
+                self.arrowButton.setTitle("▴", for: .normal)
             }
         } else {
             self.arrowButton.setTitle("", for: .normal)

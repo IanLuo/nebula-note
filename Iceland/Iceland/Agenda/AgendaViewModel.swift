@@ -11,6 +11,7 @@ import Business
 
 public protocol AgendaViewModelDelegate: class {
     func didLoadData()
+    func didCompleteLoadAllData()
     func didFailed(_ error: Error)
 }
 
@@ -23,16 +24,21 @@ public class AgendaViewModel {
         self.documentSearchManager = documentSearchManager
     }
     
-    public var data: [AgendaCellModel] = [] {
-        didSet {
-            self.delegate?.didLoadData()
-        }
-    }
+    public var data: [AgendaCellModel] = []
     
-    private var allData: [OutlineTextStorage.Heading] = []
+    private var allData: [DocumentSearchResult] = []
     
     public func load(date: Date) {
         
+    }
+    
+    public func loadAllData() {
+        self.documentSearchManager.loadAllHeadingsThatIsUnfinished(complete: { searchResults in
+            self.allData = searchResults
+            self.delegate?.didCompleteLoadAllData()
+        }) { error in
+            self.delegate?.didFailed(error)
+        }
     }
     
     public func showActions(index: Int) {

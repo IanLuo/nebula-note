@@ -141,6 +141,7 @@ public class ActionsViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.backgroundColor = InterfaceTheme.Color.background2
+        tableView.separatorInset = UIEdgeInsets(top: 0, left: 30, bottom: 0, right: 30)
         tableView.separatorColor = InterfaceTheme.Color.background3
         tableView.register(ActionCell.self, forCellReuseIdentifier: ActionCell.reuseIdentifier)
         return tableView
@@ -157,9 +158,10 @@ public class ActionsViewController: UIViewController {
         self.contentView.addSubview(self.cancelButton)
         
         self.actionsContainerView.sideAnchor(for: [.left, .top, .right], to: self.contentView, edgeInset: 0)
-        
         self.actionsContainerView.addSubview(self.cancelButton)
         self.actionsContainerView.addSubview(self.titleLabel)
+        
+        self.actionsContainerView.setBorder(position: .bottom, color: InterfaceTheme.Color.background3, width: 0.5)
 
         self.cancelButton.sideAnchor(for: [.right, .top, .bottom], to: self.actionsContainerView, edgeInset: 0)
         self.cancelButton.sizeAnchor(width: 80, height: 80)

@@ -226,10 +226,17 @@ public struct DocumentSearchManager {
                                 
                                 return searchResults
         }
-        
     }
     
-    // MARK: - private
+    public func headingHasPlanning(contained in: [String], text: String, heading: [String: NSRange]) -> Bool {
+        if let planningRange = heading[OutlineParser.Key.Element.Heading.planning] {
+            return `in`.contains(text.substring(planningRange))
+        } else {
+            return false
+        }
+    }
+    
+    /// 搜索所有的 heading
     private func doSearchHeading(resultAdded: @escaping ([DocumentSearchResult]) -> Void,
                                  complete: @escaping () -> Void,
                                  failed: ((Error) -> Void)?,
@@ -284,6 +291,50 @@ public struct DocumentSearchManager {
         }
         
         operationQueue.addOperation(operation)
+    }
+    
+    public func loadAllHeadingsThatIsUnfinished(complete: @escaping (([DocumentSearchResult]) -> Void),
+                                                failure: @escaping (Error) -> Void) {
+        var searchResults: [DocumentSearchResult] = []
+        self.doSearchHeading(resultAdded: { result in
+            searchResults.append(contentsOf: result)
+        }, complete: {
+            complete(searchResults)
+        }, failed: { error in
+            failure(error)
+        }) { (text, url, headings) -> [DocumentSearchResult] in
+            var resultsInThisFile: [DocumentSearchResult] = []
+            for heading in headings {
+                var shouldAppendThis = false
+                if self.headingHasPlanning(contained: SettingsAccessor.shared.finishedPlanning,
+                                           text: text,
+                                           heading: heading) {
+                    shouldAppendThis = false
+                } else {
+                    if self.headingHasPlanning(contained: SettingsAccessor.shared.unfinishedPlanning,
+                                               text: text,
+                                               heading: heading) {
+                        shouldAppendThis = true
+                    } else if heading[OutlineParser.Key.Element.Heading.schedule] != nil &&
+                        heading[OutlineParser.Key.Element.Heading.closed] == nil {
+                        shouldAppendThis = true
+                    } else if heading[OutlineParser.Key.Element.Heading.due] != nil &&
+                        heading[OutlineParser.Key.Element.Heading.closed] == nil  {
+                        shouldAppendThis = true
+                    }
+                }
+                
+                if shouldAppendThis {
+                    let headingObj = OutlineTextStorage.Heading(data: heading)
+                    resultsInThisFile.append(DocumentSearchResult(url: url,
+                                                                  highlightRange: headingObj.range,
+                                                                  context: text.substring(headingObj.range),
+                                                                  heading: headingObj))
+                }
+            }
+            
+            return resultsInThisFile
+        }
     }
     
     public func loadAllFiles() -> [URL] {

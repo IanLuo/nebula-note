@@ -24,7 +24,6 @@ public class DocumentBrowserViewController: UIViewController {
         tableView.backgroundColor = InterfaceTheme.Color.background1
         tableView.tableFooterView = UIView()
         tableView.separatorColor = InterfaceTheme.Color.background3
-        tableView.separatorInset = .zero
         tableView.contentInset = UIEdgeInsets(top: self.view.bounds.height / 4, left: 0, bottom: 130, right: 0)
         return tableView
     }()

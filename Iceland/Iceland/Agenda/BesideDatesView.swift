@@ -27,13 +27,18 @@ public class BesideDatesView: UIView {
         return collectionView
     }()
     
+    public var currentDate: Date
+    
     public func moveToToday(animated: Bool) {
         self.collectionView.selectItem(at: IndexPath(row: 500, section: 0), animated: animated, scrollPosition: UICollectionView.ScrollPosition.centeredHorizontally)
         
+        self.currentDate = Date()
         self.delegate?.didSelectDate(date: Date())
     }
     
     public init() {
+        self.currentDate = Date()
+        
         super.init(frame: .zero)
         
         self.addSubview(self.collectionView)
@@ -50,7 +55,8 @@ extension BesideDatesView: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let offset = indexPath.row - 500
         
-        self.delegate?.didSelectDate(date: Date().dayAfter(offset))
+        self.currentDate = Date().dayAfter(offset)
+        self.delegate?.didSelectDate(date: self.currentDate)
     }
 }
 
@@ -110,7 +116,7 @@ private class DateCell: UICollectionViewCell {
         self.contentView.addSubview(self.titleLabel)
 
         self.titleLabel.centerAnchors(position: [.centerX, .centerY], to: self.contentView)
-        self.titleLabel.columnAnchor(view: self.todayLabel, space: 5)
+        self.todayLabel.sideAnchor(for: .bottom, to: self, edgeInset: 16)
         self.todayLabel.centerAnchors(position: .centerX, to: self.contentView)
         
         let unit = frame.width / 5 / 11
