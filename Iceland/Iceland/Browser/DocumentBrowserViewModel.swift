@@ -144,8 +144,8 @@ public class DocumentBrowserViewModel {
         return nil
     }
     
-    func createDocument(below: URL?) {
-        self.documentManager.add(title: "untitled".localizable, below: below) { url in
+    func createDocument(title: String, below: URL?) {
+        self.documentManager.add(title: title, below: below) { url in
             if let url = url {
                 var index: Int = self.data.count
                 if let below = below {

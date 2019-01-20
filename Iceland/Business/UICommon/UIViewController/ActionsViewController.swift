@@ -265,7 +265,6 @@ fileprivate class ActionCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         self.backgroundColor = InterfaceTheme.Color.background2
-        self.separatorInset = .zero
         
         self.contentView.addSubview(self.iconView)
         self.contentView.addSubview(self.titleLabel)

@@ -19,22 +19,34 @@ public class AgendaViewModel {
     public weak var delegate: AgendaViewModelDelegate?
     public weak var dependency: AgendaCoordinator?
     private let documentSearchManager: DocumentSearchManager
+    private let headingTrimmer: OutlineTextTrimmer
     
-    public init(documentSearchManager: DocumentSearchManager) {
+    public init(documentSearchManager: DocumentSearchManager, headingTrimmer: OutlineTextTrimmer) {
         self.documentSearchManager = documentSearchManager
+        self.headingTrimmer = headingTrimmer
     }
     
     public var data: [AgendaCellModel] = []
     
-    private var allData: [DocumentSearchResult] = []
+    private var allData: [AgendaCellModel] = []
     
     public func load(date: Date) {
-        
+        self.data = self.allData.filter {
+            switch ($0.schedule?.date, $0.due?.date) {
+            case (nil, nil): return true
+            case (let schedule?, nil):
+                return schedule >= date
+            case (nil, let due?):
+                return due <= date
+            case (let schedule?, let due?):
+                return schedule <= date || due <= date
+            }
+        }
     }
     
     public func loadAllData() {
         self.documentSearchManager.loadAllHeadingsThatIsUnfinished(complete: { searchResults in
-            self.allData = searchResults
+            self.allData = searchResults.map { AgendaCellModel(heading: $0.heading!, text: $0.context, url: $0.url, trimmedHeading: self.headingTrimmer.trim(string: $0.context, range: NSRange(location: 0, length: $0.context.count))) }
             self.delegate?.didCompleteLoadAllData()
         }) { error in
             self.delegate?.didFailed(error)
@@ -55,7 +67,7 @@ public class AgendaViewModel {
                                 $0.heading != nil
                             }
                             .map {
-                                AgendaCellModel(heading: $0.heading!, text: $0.context, url: $0.url)
+                                AgendaCellModel(heading: $0.heading!, text: $0.context, url: $0.url, trimmedHeading: self.headingTrimmer.trim(string: $0.context, range: NSRange(location: 0, length: $0.context.count)))
                             }
                         )
             }, complete: { [weak self] in
@@ -78,7 +90,7 @@ public class AgendaViewModel {
                                 $0.heading != nil
                             }
                             .map {
-                                AgendaCellModel(heading: $0.heading!, text: $0.context, url: $0.url)
+                                AgendaCellModel(heading: $0.heading!, text: $0.context, url: $0.url, trimmedHeading: self.headingTrimmer.trim(string: $0.context, range: NSRange(location: 0, length: $0.context.count)))
                             }
                         )
             }, complete: { [weak self] in
@@ -104,7 +116,7 @@ public class AgendaViewModel {
                                 $0.heading != nil
                             }
                             .map {
-                                AgendaCellModel(heading: $0.heading!, text: $0.context, url: $0.url)
+                                AgendaCellModel(heading: $0.heading!, text: $0.context, url: $0.url, trimmedHeading: self.headingTrimmer.trim(string: $0.context, range: NSRange(location: 0, length: $0.context.count)))
                             }
                         )
             }, complete: { [weak self] in
@@ -124,7 +136,7 @@ public class AgendaViewModel {
                                 $0.heading != nil
                             }
                             .map {
-                                AgendaCellModel(heading: $0.heading!, text: $0.context, url: $0.url)
+                                AgendaCellModel(heading: $0.heading!, text: $0.context, url: $0.url, trimmedHeading: self.headingTrimmer.trim(string: $0.context, range: NSRange(location: 0, length: $0.context.count)))
                             }
                         )
             }, complete: { [weak self] in
@@ -144,7 +156,7 @@ public class AgendaViewModel {
                                 $0.heading != nil
                             }
                             .map {
-                                AgendaCellModel(heading: $0.heading!, text: $0.context, url: $0.url)
+                                AgendaCellModel(heading: $0.heading!, text: $0.context, url: $0.url, trimmedHeading: self.headingTrimmer.trim(string: $0.context, range: NSRange(location: 0, length: $0.context.count)))
                             }
                         )
             }, complete: { [weak self] in

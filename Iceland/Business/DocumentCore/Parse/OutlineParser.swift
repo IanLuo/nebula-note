@@ -18,6 +18,8 @@ extension NSRange {
 public class OutlineParser {
     public weak var delegate: OutlineParserDelegate?
     
+    public init() {}
+    
     private func safeSubstring(with str: String, range: NSRange) -> String {
         if range.location != Int.max {
             return (str as NSString).substring(with: range)
@@ -270,8 +272,16 @@ extension OutlineParser {
 }
 
 public struct DateAndTimeType {
-    let date: Date
-    let includeTime: Bool
+    public let date: Date
+    public let includeTime: Bool
+    
+    public var description: String {
+        if includeTime {
+            return "\(date.monthStringShort) \(date.day) \(date.format("hh:mm"))"
+        } else {
+            return "\(date.monthStringShort) \(date.day)"
+        }
+    }
 }
 
 extension DateAndTimeType {

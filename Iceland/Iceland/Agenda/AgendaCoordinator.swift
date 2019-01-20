@@ -14,7 +14,7 @@ import Business
 /// 每天的任务安排显示在此处
 public class AgendaCoordinator: Coordinator {
     public override init(stack: UINavigationController, context: Context) {
-        let viewModel = AgendaViewModel(documentSearchManager: context.documentSearchManager)
+        let viewModel = AgendaViewModel(documentSearchManager: context.documentSearchManager, headingTrimmer: context.headingTrimmer)
         let viewController = AgendaViewController(viewModel: viewModel)
         super.init(stack: stack, context: context)
         self.viewController = viewController

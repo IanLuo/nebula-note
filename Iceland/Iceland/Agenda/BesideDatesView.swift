@@ -43,7 +43,8 @@ public class BesideDatesView: UIView {
         
         self.addSubview(self.collectionView)
         
-        self.collectionView.allSidesAnchors(to: self, edgeInset: 0)
+        self.collectionView.frame = self.bounds
+        self.collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
     }
     
     public required init?(coder aDecoder: NSCoder) {
@@ -115,7 +116,7 @@ private class DateCell: UICollectionViewCell {
         self.contentView.addSubview(self.todayLabel)
         self.contentView.addSubview(self.titleLabel)
 
-        self.titleLabel.centerAnchors(position: [.centerX, .centerY], to: self.contentView)
+        self.titleLabel.allSidesAnchors(to: self.contentView, edgeInset: 0)
         self.todayLabel.sideAnchor(for: .bottom, to: self, edgeInset: 16)
         self.todayLabel.centerAnchors(position: .centerX, to: self.contentView)
         

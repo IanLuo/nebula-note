@@ -364,7 +364,7 @@ DEADLINE: <2018-12-05 Wed>
     }
     
     func testParseDue() {
-        var string = "**** TODO Demo heading DEADLINE: <2018-12-05 Wed> SCHEDULED: <2018-12-05 Wed>"
+        var string = "**** TODO Demo heading                         \nDEADLINE: <2018-12-05 Wed>\nSCHEDULED: <2018-12-05 Wed>"
         if let date = DateAndTimeType.createFromDue(string)?.date {
             XCTAssertEqual(Calendar.current.component(.year, from: date), 2018)
             XCTAssertEqual(Calendar.current.component(.month, from: date), 12)
@@ -374,13 +374,11 @@ DEADLINE: <2018-12-05 Wed>
             XCTAssert(false)
         }
         
-        string = "**** TODO Demo heading DEADLINE: <2018-12-05 Wed 17:30>  SCHEDULED: <2018-12-05 Wed 03:10>"
+        string = "**** TODO 接口\nDEADLINE: <2018-11-23 Fri>"
         if let date = DateAndTimeType.createFromDue(string)?.date {
             XCTAssertEqual(Calendar.current.component(.year, from: date), 2018)
-            XCTAssertEqual(Calendar.current.component(.month, from: date), 12)
-            XCTAssertEqual(Calendar.current.component(.day, from: date), 5)
-            XCTAssertEqual(Calendar.current.component(.hour, from: date), 17)
-            XCTAssertEqual(Calendar.current.component(.minute, from: date), 30)
+            XCTAssertEqual(Calendar.current.component(.month, from: date), 11)
+            XCTAssertEqual(Calendar.current.component(.day, from: date), 23)
             XCTAssert(true)
         } else {
             XCTAssert(false)

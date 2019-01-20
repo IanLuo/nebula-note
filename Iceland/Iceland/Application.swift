@@ -22,7 +22,8 @@ public class Application: Coordinator {
         super.init(stack: UINavigationController(),
                    context: Context(documentManager: DocumentManager(),
                                     documentSearchManager: DocumentSearchManager(),
-                                    editorServiceServer: OutlineEditorServer.instance))
+                                    editorServiceServer: OutlineEditorServer.instance,
+                                    headingTrimmer: OutlineTextTrimmer(parser: OutlineParser())))
         
         self.window?.rootViewController = self.stack
     }
@@ -38,6 +39,7 @@ public struct Context {
     let documentManager: DocumentManager
     let documentSearchManager: DocumentSearchManager
     let editorServiceServer: OutlineEditorServer
+    let headingTrimmer: OutlineTextTrimmer
 }
 
 public class Coordinator {

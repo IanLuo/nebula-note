@@ -83,7 +83,7 @@ public class DocumentBrowserViewController: UIViewController {
     }
     
     @objc private func createNewDocumentAtRoot() {
-        self.viewModel.createDocument(below: nil)
+        self.viewModel.createDocument(title: "untitled".localizable, below: nil)
     }
     
     @objc private func cancel() {
@@ -151,7 +151,7 @@ extension DocumentBrowserViewController: DocumentBrowserCellDelegate {
             // 创建新文档，使用默认的新文档名
             actionsViewController.addAction(icon: nil, title: "new document".localizable) { viewController in
                 viewController.dismiss(animated: true, completion: {
-                    self.viewModel.createDocument(below: self.viewModel.data[index].url)
+                    self.viewModel.createDocument(title: "untitled".localizable, below: self.viewModel.data[index].url)
                 })
             }
 
