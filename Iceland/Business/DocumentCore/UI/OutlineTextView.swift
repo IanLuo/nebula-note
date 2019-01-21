@@ -36,10 +36,14 @@ public class OutlineTextView: UITextView {
         self.contentInset = UIEdgeInsets(top: 80, left: 30, bottom: 80, right: 30)
     }
     
-    private func tapped(guesture: UITapGestureRecognizer) -> Bool {
+    private var lastTapLocation: CGPoint = .zero
+    
+    private func tapped(gesture: UITapGestureRecognizer) -> Bool {
+        guard gesture.location(in: self) != lastTapLocation else { return true }
+        
         guard self.text.count > 0 else { return true }
         
-        let location = guesture.location(in: self)
+        let location = gesture.location(in: self)
         
         let characterIndex = self.layoutManager.characterIndex(for: location,
                                                                in: self.textContainer,
@@ -63,6 +67,8 @@ public class OutlineTextView: UITextView {
             shouldPassTapToOtherGuestureRecognizers = true
         }
         
+        lastTapLocation = gesture.location(in: self)
+        
         return shouldPassTapToOtherGuestureRecognizers
     }
 }
@@ -71,7 +77,7 @@ extension OutlineTextView: UIGestureRecognizerDelegate {
     public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         // 拦截 textView 中点击到需要与用户交互的 tap, 比如折叠，checkbox，link 等
         if gestureRecognizer == self.tapGestureRecognizer {
-            return self.tapped(guesture: self.tapGestureRecognizer)
+            return self.tapped(gesture: self.tapGestureRecognizer)
         } else {
             return true
         }
