@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import Business
 
-public protocol EditorCoordinatorDelegate: class {
+public protocol EditorCoordinatorSelectHeadingDelegate: class {
     func didSelectHeading(url: URL, heading: OutlineTextStorage.Heading)
 }
 
@@ -20,7 +20,7 @@ public class EditorCoordinator: Coordinator {
         case outline(URL)
     }
     
-    public weak var delegate: EditorCoordinatorDelegate?
+    public weak var delegate: EditorCoordinatorSelectHeadingDelegate?
     
     private let usage: Usage
     
@@ -51,7 +51,7 @@ public class EditorCoordinator: Coordinator {
         guard let viewController = self.viewController else { return }
         switch self.usage {
         case .editor:
-            self.stack.pushViewController(viewController, animated: animated)
+            top?.present(viewController, animated: true, completion: nil)
         case .outline:
             if let top = top {
                 (viewController as? HeadingsOutlineViewController)?.show(from: nil, on: top)

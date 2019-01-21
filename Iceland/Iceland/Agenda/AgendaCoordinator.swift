@@ -18,7 +18,6 @@ public class AgendaCoordinator: Coordinator {
         let viewController = AgendaViewController(viewModel: viewModel)
         super.init(stack: stack, context: context)
         self.viewController = viewController
-        viewModel.delegate = viewController
         viewModel.dependency = self
     }
 }
@@ -28,24 +27,7 @@ extension AgendaCoordinator {
         let viewModel = AgendaActionViewModel(service: OutlineEditorServer.request(url: url), heading: heading)
         let viewController = AgendaActionViewController(viewModel: viewModel)
         viewModel.delegate = viewController
-        viewController.delegate = self
         viewController.modalPresentationStyle = .overCurrentContext
         self.stack.present(viewController, animated: true, completion: nil)
-    }
-    
-    public func openDocument(url: URL, location: Int) {
-        let docCood = EditorCoordinator(stack: self.stack,
-                                        context: self.context,
-                                        usage: EditorCoordinator.Usage.editor(url, location))
-        docCood.start(from: self)
-    }
-}
-
-extension AgendaCoordinator: AgendaActionViewControllerDelegate {
-    public func openDocument(url: URL) {
-        let docCood = EditorCoordinator(stack: self.stack,
-                                        context: self.context,
-                                        usage: .editor(url, 0))
-        docCood.start(from: self)
     }
 }

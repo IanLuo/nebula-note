@@ -20,7 +20,10 @@ public class HomeCoordinator: Coordinator {
         
         self.addSubCoordinator(coordinator: AgendaCoordinator(stack: stack, context: context))
         self.addSubCoordinator(coordinator: CaptureListCoordinator(stack: stack, context: context))
-        self.addSubCoordinator(coordinator: BrowserCoordinator(stack: stack, context: context, usage: .chooseDocument))
+        
+        let browserCoordinator = BrowserCoordinator(stack: stack, context: context, usage: .chooseDocument)
+        browserCoordinator.delegate = self
+        self.addSubCoordinator(coordinator: browserCoordinator)
     }
     
     public func addSubCoordinator(coordinator: Coordinator) {
@@ -30,47 +33,14 @@ public class HomeCoordinator: Coordinator {
             self.viewController?.addChild(viewController)
         }
     }
-
-    public func showBrowser() {
-        let coord = BrowserCoordinator(stack: self.stack,
-                                       context: self.context,
-                                       usage: BrowserCoordinator.Usage.chooseDocument)
-        coord.delegate = self
-        coord.start(from: self)
-    }
-    
-    public func showAgenda() {
-        let agendaCoordinator = AgendaCoordinator(stack: self.stack, context: self.context)
-        agendaCoordinator.start(from: self)
-    }
-    
-    public func showAttachmentCreator(type: Attachment.AttachmentType) {
-        let captureImage = AttachmentCoordinator(stack: self.stack,
-                                                 context: self.context,
-                                                 type: type)
-        captureImage.delegate = self
-        captureImage.start(from: self)
-    }
-    
-    public func showCaptureList() {
-        let captureListCoordinator = CaptureListCoordinator(stack: self.stack,
-                                                            context: self.context)
-        captureListCoordinator.start(from: self)
-    }
-}
-
-extension HomeCoordinator: AttachmentCoordinatorDelegate {
-    public func didSaveAttachment(key: String) {
-        CaptureService().save(key: key)
-    }
 }
 
 extension HomeCoordinator: BrowserCoordinatorDelegate {
     public func didSelectDocument(url: URL) {
-        
+        self.openDocument(url: url, location: 0)
     }
     
     public func didSelectHeading(url: URL, heading: OutlineTextStorage.Heading) {
-        
+        // ignore
     }
 }

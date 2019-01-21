@@ -32,9 +32,13 @@ public class OutlineTextView: UITextView {
     private func setup() {
         self.tapGestureRecognizer.delegate = self
         self.addGestureRecognizer(self.tapGestureRecognizer)
+        
+        self.contentInset = UIEdgeInsets(top: 80, left: 30, bottom: 80, right: 30)
     }
     
     private func tapped(guesture: UITapGestureRecognizer) -> Bool {
+        guard self.text.count > 0 else { return true }
+        
         let location = guesture.location(in: self)
         
         let characterIndex = self.layoutManager.characterIndex(for: location,

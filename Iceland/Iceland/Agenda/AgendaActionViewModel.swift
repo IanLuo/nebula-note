@@ -46,8 +46,4 @@ public class AgendaActionViewModel {
             self.service.removePlanning(at: heading.range.location)
         }
     }
-    
-    public func openDocument() {
-        
-    }
 }

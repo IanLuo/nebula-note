@@ -64,7 +64,7 @@ extension BrowserCoordinator: DocumentBrowserViewControllerDelegate {
     }
 }
 
-extension BrowserCoordinator: EditorCoordinatorDelegate {
+extension BrowserCoordinator: EditorCoordinatorSelectHeadingDelegate {
     public func didSelectHeading(url: URL, heading: OutlineTextStorage.Heading) {
         self.delegate?.didSelectHeading(url: url, heading: heading)
         self.stop()

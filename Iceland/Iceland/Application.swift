@@ -102,3 +102,10 @@ public class Coordinator {
         
     }
 }
+
+extension Coordinator {
+    public func openDocument(url: URL, location: Int) {
+        let documentCoordinator = EditorCoordinator(stack: self.stack, context: self.context, usage: EditorCoordinator.Usage.editor(url, location))
+        documentCoordinator.start(from: self)
+    }
+}
