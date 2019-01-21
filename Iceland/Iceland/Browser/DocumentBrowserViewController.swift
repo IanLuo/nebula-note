@@ -52,6 +52,7 @@ public class DocumentBrowserViewController: UIViewController {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
         viewModel.delegate = self
+        self.title = "Documents".localizable
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -80,6 +81,7 @@ public class DocumentBrowserViewController: UIViewController {
         self.createNewDocumentButton.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInsets: .zero)
         self.createNewDocumentButton.sizeAnchor(height: 60)
         self.createNewDocumentButton.isHidden = !self.viewModel.shouldShowActions
+        self.cancelButton.isHidden = self.viewModel.shouldShowActions
     }
     
     @objc private func createNewDocumentAtRoot() {

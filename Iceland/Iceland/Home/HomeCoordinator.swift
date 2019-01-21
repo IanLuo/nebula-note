@@ -17,6 +17,18 @@ public class HomeCoordinator: Coordinator {
         super.init(stack: stack, context: context)
         viewModel.dependency = self
         self.viewController = viewController
+        
+        self.addSubCoordinator(coordinator: AgendaCoordinator(stack: stack, context: context))
+        self.addSubCoordinator(coordinator: CaptureListCoordinator(stack: stack, context: context))
+        self.addSubCoordinator(coordinator: BrowserCoordinator(stack: stack, context: context, usage: .chooseDocument))
+    }
+    
+    public func addSubCoordinator(coordinator: Coordinator) {
+        self.addChild(coordinator)
+        
+        if let viewController = coordinator.viewController {
+            self.viewController?.addChild(viewController)
+        }
     }
 
     public func showBrowser() {

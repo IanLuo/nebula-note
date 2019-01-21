@@ -19,7 +19,10 @@ public class Application: Coordinator {
     public init(window: UIWindow) {
         self.window = window
         
-        super.init(stack: UINavigationController(),
+        let navigationController = UINavigationController()
+        navigationController.isNavigationBarHidden = true
+        
+        super.init(stack: navigationController,
                    context: Context(documentManager: DocumentManager(),
                                     documentSearchManager: DocumentSearchManager(),
                                     editorServiceServer: OutlineEditorServer.instance,

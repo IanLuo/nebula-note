@@ -40,6 +40,7 @@ public class CaptureListViewController: UIViewController {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
         viewModel.delegate = self
+        self.title = "Captures".localizable
     }
     
     public required init?(coder aDecoder: NSCoder) {

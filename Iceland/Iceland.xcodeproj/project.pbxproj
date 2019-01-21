@@ -109,6 +109,9 @@
 		E4A46A3821B6470100FBDA04 /* DocumentBrowserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A3721B6470100FBDA04 /* DocumentBrowserViewModel.swift */; };
 		E4A46A3E21B6605C00FBDA04 /* DocumentBrowserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A3D21B6605C00FBDA04 /* DocumentBrowserTests.swift */; };
 		E4B19AB021C5363A00ED3463 /* SettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B19AAF21C5363A00ED3463 /* SettingsTests.swift */; };
+		E4BC264021F56A7E00B0F2B9 /* MasterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4BC263F21F56A7E00B0F2B9 /* MasterView.swift */; };
+		E4BC264221F56DB900B0F2B9 /* Rect.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4BC264121F56DB900B0F2B9 /* Rect.swift */; };
+		E4BC264421F587BC00B0F2B9 /* FrameLayout+Shortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4BC264321F587BC00B0F2B9 /* FrameLayout+Shortcuts.swift */; };
 		E4C46FE321EB311900F6374F /* ModalFormViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C46FE221EB311900F6374F /* ModalFormViewController.swift */; };
 		E4C7FB8521BA916D006E3CD8 /* AgendaCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C7FB8421BA916D006E3CD8 /* AgendaCellModel.swift */; };
 		E4CC0C5921EEF92900058E5D /* Size.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4CC0C5821EEF92900058E5D /* Size.swift */; };
@@ -315,6 +318,9 @@
 		E4A46A3F21B6891700FBDA04 /* DocumentSearchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentSearchTests.swift; sourceTree = "<group>"; };
 		E4B19AAD21C5010100ED3463 /* SettingsAccessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsAccessor.swift; sourceTree = "<group>"; };
 		E4B19AAF21C5363A00ED3463 /* SettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTests.swift; sourceTree = "<group>"; };
+		E4BC263F21F56A7E00B0F2B9 /* MasterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterView.swift; sourceTree = "<group>"; };
+		E4BC264121F56DB900B0F2B9 /* Rect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rect.swift; sourceTree = "<group>"; };
+		E4BC264321F587BC00B0F2B9 /* FrameLayout+Shortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FrameLayout+Shortcuts.swift"; sourceTree = "<group>"; };
 		E4C46FE221EB311900F6374F /* ModalFormViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModalFormViewController.swift; sourceTree = "<group>"; };
 		E4C7FB8421BA916D006E3CD8 /* AgendaCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgendaCellModel.swift; sourceTree = "<group>"; };
 		E4CC0C5821EEF92900058E5D /* Size.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Size.swift; sourceTree = "<group>"; };
@@ -536,6 +542,7 @@
 			children = (
 				E41CB16121D8897400EF0A3C /* HomeCoordinator.swift */,
 				E41CB16321D8899200EF0A3C /* HomeViewController.swift */,
+				E4BC263F21F56A7E00B0F2B9 /* MasterView.swift */,
 				E41B892521E31B07009C5AD7 /* HomeViewModel.swift */,
 			);
 			path = Home;
@@ -769,9 +776,11 @@
 				E41CB1E021D8BD8400EF0A3C /* UIView */,
 				E41CB14A21D78E5B00EF0A3C /* Border.swift */,
 				E4A46A1D21AE6CF400FBDA04 /* Image+Generation.swift */,
+				E4BC264121F56DB900B0F2B9 /* Rect.swift */,
 				E4CC0C5821EEF92900058E5D /* Size.swift */,
 				E4EA856421D1F8AE00DD92F9 /* CalendarView.swift */,
 				E4F3029D21D750ED00BDE178 /* Autolayout+Shortcuts.swift */,
+				E4BC264321F587BC00B0F2B9 /* FrameLayout+Shortcuts.swift */,
 			);
 			path = UICommon;
 			sourceTree = "<group>";
@@ -1223,6 +1232,7 @@
 				E4CC0C5921EEF92900058E5D /* Size.swift in Sources */,
 				E4C46FE321EB311900F6374F /* ModalFormViewController.swift in Sources */,
 				E41CB1BC21D88DD100EF0A3C /* OutlineTextView.swift in Sources */,
+				E4BC264421F587BC00B0F2B9 /* FrameLayout+Shortcuts.swift in Sources */,
 				E41CB1C121D88DD700EF0A3C /* OutlineParser.swift in Sources */,
 				E41B892421E2F1C1009C5AD7 /* SelectorViewController.swift in Sources */,
 				E41CB1BA21D88DCE00EF0A3C /* Document.swift in Sources */,
@@ -1253,6 +1263,7 @@
 				E41CB1C021D88DD700EF0A3C /* OutlineParserMatcher.swift in Sources */,
 				E41CB1D521D890E200EF0A3C /* Autolayout+Shortcuts.swift in Sources */,
 				E41CB1BB21D88DCE00EF0A3C /* OutlineStorage.swift in Sources */,
+				E4BC264221F56DB900B0F2B9 /* Rect.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1301,6 +1312,7 @@
 				E41A538A21D4CE43002B11E9 /* AgendaActionViewModel.swift in Sources */,
 				E41B893221E3497D009C5AD7 /* ImageAttachmentView.swift in Sources */,
 				E4A46A2B21B4109C00FBDA04 /* DocumentSearchViewController.swift in Sources */,
+				E4BC264021F56A7E00B0F2B9 /* MasterView.swift in Sources */,
 				E4A46A3821B6470100FBDA04 /* DocumentBrowserViewModel.swift in Sources */,
 				E4A46A2D21B410BE00FBDA04 /* DocumentSearchViewModel.swift in Sources */,
 				E49F3E4421B8EDBD003F468D /* AgendaViewController.swift in Sources */,

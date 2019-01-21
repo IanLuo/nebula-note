@@ -39,6 +39,7 @@ public class AgendaViewController: UIViewController {
     public init(viewModel: AgendaViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
+        self.title = "Agenda".localizable
     }
     
     public required init?(coder aDecoder: NSCoder) {
