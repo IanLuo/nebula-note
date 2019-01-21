@@ -36,10 +36,10 @@ public class OutlineTextView: UITextView {
         self.contentInset = UIEdgeInsets(top: 80, left: 30, bottom: 80, right: 30)
     }
     
-    private var lastTapLocation: CGPoint = .zero
+    private var lastTap: (CGPoint, Bool) = (.zero, true)
     
     private func tapped(gesture: UITapGestureRecognizer) -> Bool {
-        guard gesture.location(in: self) != lastTapLocation else { return true }
+        guard gesture.location(in: self) != lastTap.0 else { return lastTap.1 }
         
         guard self.text.count > 0 else { return true }
         
@@ -67,7 +67,7 @@ public class OutlineTextView: UITextView {
             shouldPassTapToOtherGuestureRecognizers = true
         }
         
-        lastTapLocation = gesture.location(in: self)
+        lastTap = (location, shouldPassTapToOtherGuestureRecognizers)
         
         return shouldPassTapToOtherGuestureRecognizers
     }
