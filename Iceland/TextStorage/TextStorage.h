@@ -16,7 +16,18 @@ FOUNDATION_EXPORT const unsigned char TextStorageVersionString[];
 
 // In this header, you should import all the public headers of your framework using statements like #import <TextStorage/PublicHeader.h>
 
+#define OUTLINE_ATTRIBUTE_HEADING_FOLDED @"heading-folded"
+#define OUTLINE_ATTRIBUTE_HEADING_LEVEL @"heading-level"
+#define OUTLINE_ATTRIBUTE_HEADING_SCHEDULE @"heading-schedule"
+#define OUTLINE_ATTRIBUTE_HEADING_DUE @"heading-due"
+#define OUTLINE_ATTRIBUTE_HEADING_TAGS @"heading-tags"
 
-@interface TextStorage: NSTextStorage
+#define OUTLINE_ATTRIBUTE_CHECKBOX_STATUS @"checkbox-status"
+#define OUTLINE_ATTRIBUTE_CHECKBOX_BOX @"checkbox-box"
+
+#define OUTLINE_ATTRIBUTE_LINK @"link"
+#define OUTLINE_ATTRIBUTE_LINK_TITLE @"link-title"
+
+@interface TextStorage: NSTextStorage<NSLayoutManagerDelegate>
 
 @end

@@ -43,7 +43,7 @@ public class EditorController: NSObject {
         self.textStorage.delegate = self
         self.textStorage.outlineDelegate = self
         self.textStorage.addLayoutManager(self.layoutManager)
-        self.layoutManager.delegate = self
+        self.layoutManager.delegate = self.textStorage
         self.layoutManager.allowsNonContiguousLayout = true
         self.layoutManager.addTextContainer(self.textContainer)
         self.layoutManager.showsInvisibleCharacters = true

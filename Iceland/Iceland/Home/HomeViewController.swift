@@ -102,7 +102,7 @@ public class HomeViewController: UIViewController {
     }
     
     @objc private func showChildView() {
-        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
+        UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseOut, animations: {
             self.view.bounds = CGRect(origin: .zero, size: self.view.bounds.size)
             self.updateCoverAlpha(offset: 0)
         }, completion: { _ in
@@ -111,7 +111,7 @@ public class HomeViewController: UIViewController {
     }
     
     @objc private func showMasterView() {
-        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
+        UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseOut, animations: {
             self.view.bounds = CGRect(origin: .init(x: -self.masterViewWidth, y: 0), size: self.view.bounds.size)
             self.updateCoverAlpha(offset: self.masterViewWidth)
         }, completion: { _ in

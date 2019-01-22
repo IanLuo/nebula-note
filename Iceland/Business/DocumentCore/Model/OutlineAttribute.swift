@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import TextStorage
 
 public struct OutlineAttribute {
     public struct Link {
