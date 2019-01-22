@@ -16,9 +16,9 @@ public protocol AgendaActionViewModelDelegate: class {
 public class AgendaActionViewModel {
     public weak var delegate: AgendaActionViewModelDelegate?
     private let service: EditorService
-    private let heading: OutlineTextStorage.Heading
+    private let heading: Document.Heading
     
-    public init(service: EditorService, heading: OutlineTextStorage.Heading) {
+    public init(service: EditorService, heading: Document.Heading) {
         self.service = service
         self.heading = heading
     }

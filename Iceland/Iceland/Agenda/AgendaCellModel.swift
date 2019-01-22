@@ -17,10 +17,10 @@ public class AgendaCellModel {
     public var schedule: DateAndTimeType? = nil
     public var due: DateAndTimeType? = nil
     public var tags: [String]? = nil
-    public let heading: OutlineTextStorage.Heading
+    public let heading: Document.Heading
     public let trimmedHeading: String
     
-    public init(heading: OutlineTextStorage.Heading, text: String, url: URL, trimmedHeading: String) {
+    public init(heading: Document.Heading, text: String, url: URL, trimmedHeading: String) {
         self.headingText = text
         var trimmedHeading = trimmedHeading.substring(NSRange(location: heading.level + 1, length: trimmedHeading.count - heading.level - 1)) // + 1 为 level 后的空格
         if let planning = heading.planning {

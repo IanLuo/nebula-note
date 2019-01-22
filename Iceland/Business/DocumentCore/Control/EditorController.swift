@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 public protocol EditorControllerDelegate: class {
-    func currentHeadingDidChnage(heading: OutlineTextStorage.Heading?)
+    func currentHeadingDidChnage(heading: Document.Heading?)
     func didTapLink(url: String, title: String, point: CGPoint)
 }
 
@@ -34,18 +34,18 @@ public class EditorController: NSObject {
     
     public override init() {
         self.textStorage = OutlineTextStorage()
-        self.textContainer = NSTextContainer(size: UIScreen.main.bounds.size)
+        self.textContainer = NSTextContainer(size: CGSize(width: UIScreen.main.bounds.size.width, height: CGFloat(Int.max)))
+        self.textContainer.widthTracksTextView = true
         self.layoutManager = OutlineLayoutManager()
         
         super.init()
         
         self.textStorage.delegate = self
         self.textStorage.outlineDelegate = self
-        self.textStorage.addLayoutManager(layoutManager)
+        self.textStorage.addLayoutManager(self.layoutManager)
         self.layoutManager.delegate = self
-        layoutManager.allowsNonContiguousLayout = true
-        layoutManager.addTextContainer(textContainer)
-        
+        self.layoutManager.allowsNonContiguousLayout = true
+        self.layoutManager.addTextContainer(self.textContainer)
         self.layoutManager.showsInvisibleCharacters = true
     }
     
@@ -56,11 +56,11 @@ public class EditorController: NSObject {
 
 /// API
 extension EditorController {
-    public func getParagraphs() -> [OutlineTextStorage.Heading] {
+    public func getParagraphs() -> [Document.Heading] {
         return self.textStorage.savedHeadings // FIXME: may be not the best way, this function should be called on Agenda to load content of heading
     }
     
-    public func insertToParagraph(at heading: OutlineTextStorage.Heading, content: String) {
+    public func insertToParagraph(at heading: Document.Heading, content: String) {
         let location = heading.range.location + heading.contentLength
         let content = "\n" + content
         self.textStorage.replaceCharacters(in: NSRange(location: location, length: 0), with: content)
@@ -81,7 +81,7 @@ extension EditorController {
 }
 
 extension EditorController: OutlineTextStorageDelegate {
-    public func didSetHeading(newHeading: OutlineTextStorage.Heading?, oldHeading: OutlineTextStorage.Heading?) {
+    public func didSetHeading(newHeading: Document.Heading?, oldHeading: Document.Heading?) {
         if oldHeading?.range.location != newHeading?.range.location {
             self.delegate?.currentHeadingDidChnage(heading: newHeading)
         }
@@ -96,6 +96,7 @@ extension EditorController: OutlineTextViewDelegate {
             let range = heading.paragraphRange
             
             if range.contains(chracterIndex) {
+                
                 let headingRange = self.textStorage.savedHeadings[self.textStorage.headingIndex(at: chracterIndex)].range
                 let contentLocation = headingRange.upperBound + 1 // contentLocation + 1 因为有换行符
                 
@@ -106,6 +107,8 @@ extension EditorController: OutlineTextViewDelegate {
                 }
                 let contentRange = NSRange(location: contentLocation,
                                            length: range.upperBound - contentLocation + postParagraphLength)
+                
+                log.info("fold/unfold for range: \(contentRange)")
                 
                 if self.textStorage.attributes(at: contentRange.location, effectiveRange: nil)[OutlineAttribute.Heading.folded] == nil {
                     
@@ -184,10 +187,10 @@ extension EditorController: NSTextStorageDelegate {
                             changeInLength delta: Int) {
         
         log.info("removing attributes in range: \(editedRange)")
-        
+
         // 清空 attributes, 保留折叠的状态
         guard editedRange.upperBound < textStorage.string.count else { return }
-        
+
         for (key, _) in textStorage.attributes(at: editedRange.location, longestEffectiveRange: nil, in: editedRange) {
             if key == OutlineAttribute.Heading.folded { continue }
             textStorage.removeAttribute(key, range: editedRange)
@@ -200,22 +203,22 @@ extension EditorController: NSTextStorageDelegate {
                             range editedRange: NSRange,
                             changeInLength delta: Int) {
         
-        log.info("editing in range: \(editedRange)")
-        
+        log.info("editing in range: \(editedRange), is non continouse: \(textStorage.layoutManagers[0].hasNonContiguousLayout)")
+
         guard delta != 0 else { return } // 如果是设置 attribute 引起的调用，则忽略
-        
+
         /// 当前交互的位置
         self.textStorage.currentLocation = editedRange.location
-        
+
         // 调整需要解析的字符串范围
         self.adjustParseRange(editedRange)
-        
+
         // 更新 item 索引缓存
         self.textStorage.updateItemIndexAndRange(delta: delta)
-        
+
         parser.parse(str: textStorage.string,
                      range: self.textStorage.currentParseRange!)
-        
+
         // 更新当前状态缓存
         self.textStorage.updateCurrentInfo()
     }
@@ -237,33 +240,53 @@ extension EditorController: NSTextStorageDelegate {
     }
 }
 
+/// 隐藏不需要显示的字符
 extension EditorController: NSLayoutManagerDelegate {
     public func layoutManager(_ layoutManager: NSLayoutManager, shouldGenerateGlyphs glyphs: UnsafePointer<CGGlyph>, properties props: UnsafePointer<NSLayoutManager.GlyphProperty>, characterIndexes charIndexes: UnsafePointer<Int>, font aFont: UIFont, forGlyphRange glyphRange: NSRange) -> Int {
+        
         let controlCharProps: UnsafeMutablePointer<NSLayoutManager.GlyphProperty> = UnsafeMutablePointer(mutating: props)
+        
+        var souldGenrate: Bool = false
         for i in 0..<glyphRange.length {
             let attributes = self.textStorage.attributes(at: glyphRange.location + i, effectiveRange: nil)
 
             // 隐藏这些字符
             if attributes[OutlineAttribute.Heading.folded] != nil { // 标记为折叠
                 controlCharProps[i] = .null
+                souldGenrate = true
             } else if attributes[OutlineAttribute.link] != nil // 标记为 link 中非 title 的部分
                 && attributes[OutlineAttribute.Link.title] == nil {
                 controlCharProps[i] = .null
+                souldGenrate = true
             } else if attributes[OutlineAttribute.Checkbox.status] != nil // 标记为 checkbox 中非 box 的部分
                 && attributes[OutlineAttribute.Checkbox.box] == nil {
                 controlCharProps[i] = .null
+                souldGenrate = true
             }
         }
-        
-        log.verbose((self.textStorage.string as NSString).substring(with: glyphRange))
-        
-        layoutManager.setGlyphs(glyphs,
-                                properties: controlCharProps,
-                                characterIndexes: charIndexes,
-                                font: aFont,
-                                forGlyphRange: glyphRange)
-        
-        return glyphRange.length
+
+        if souldGenrate {
+                layoutManager.setGlyphs(glyphs,
+                                    properties: controlCharProps,
+                                    characterIndexes: charIndexes,
+                                    font: aFont,
+                                    forGlyphRange: glyphRange)
+            return glyphRange.length
+        } else {
+            return 0
+        }
+    }
+    
+    public func layoutManagerDidInvalidateLayout(_ sender: NSLayoutManager) {
+        log.info("layoutManagerDidInvalidateLayout")
+    }
+    
+    public func layoutManager(_ layoutManager: NSLayoutManager, shouldSetLineFragmentRect lineFragmentRect: UnsafeMutablePointer<CGRect>, lineFragmentUsedRect: UnsafeMutablePointer<CGRect>, baselineOffset: UnsafeMutablePointer<CGFloat>, in textContainer: NSTextContainer, forGlyphRange glyphRange: NSRange) -> Bool {
+        return true
+    }
+    
+    public func layoutManager(_ layoutManager: NSLayoutManager, textContainer: NSTextContainer, didChangeGeometryFrom oldSize: CGSize) {
+        log.info("didChangeGeometryFrom from: \(oldSize)")
     }
 }
 

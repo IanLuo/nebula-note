@@ -11,7 +11,7 @@ import UIKit
 import Business
 
 public protocol EditorCoordinatorSelectHeadingDelegate: class {
-    func didSelectHeading(url: URL, heading: OutlineTextStorage.Heading)
+    func didSelectHeading(url: URL, heading: Document.Heading)
 }
 
 public class EditorCoordinator: Coordinator {
@@ -76,7 +76,7 @@ extension EditorCoordinator: DocumentEditViewControllerDelegate {
 }
 
 extension EditorCoordinator: HeadingsOutlineViewControllerDelegate {
-    public func didSelectHeading(url: URL, heading: OutlineTextStorage.Heading) {
+    public func didSelectHeading(url: URL, heading: Document.Heading) {
         self.stop()
         self.delegate?.didSelectHeading(url: url, heading: heading)
     }

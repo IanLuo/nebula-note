@@ -7,3 +7,9 @@
 //
 
 import Foundation
+
+extension CGRect {
+    public var bottomRightCorner: CGPoint {
+        return CGPoint(x: self.maxX, y: self.maxY)
+    }
+}

@@ -41,7 +41,6 @@ public class DocumentEditViewController: UIViewController {
         self.textView.frame = self.view.bounds
         
         self.view.addSubview(self.textView)
-        
     }
 }
 
@@ -59,7 +58,7 @@ extension DocumentEditViewController: DocumentEditViewModelDelegate {
         
     }
     
-    public func updateHeadingInfo(heading: OutlineTextStorage.Heading?) {
+    public func updateHeadingInfo(heading: Document.Heading?) {
         
     }
 }

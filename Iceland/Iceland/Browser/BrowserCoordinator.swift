@@ -12,7 +12,7 @@ import Business
 
 public protocol BrowserCoordinatorDelegate: class {
     func didSelectDocument(url: URL)
-    func didSelectHeading(url: URL, heading: OutlineTextStorage.Heading)
+    func didSelectHeading(url: URL, heading: Document.Heading)
 }
 
 public class BrowserCoordinator: Coordinator {
@@ -65,7 +65,7 @@ extension BrowserCoordinator: DocumentBrowserViewControllerDelegate {
 }
 
 extension BrowserCoordinator: EditorCoordinatorSelectHeadingDelegate {
-    public func didSelectHeading(url: URL, heading: OutlineTextStorage.Heading) {
+    public func didSelectHeading(url: URL, heading: Document.Heading) {
         self.delegate?.didSelectHeading(url: url, heading: heading)
         self.stop()
     }

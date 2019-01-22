@@ -11,7 +11,7 @@ import UIKit
 import Business
 
 public protocol HeadingsOutlineViewControllerDelegate: class {
-    func didSelectHeading(url: URL, heading: OutlineTextStorage.Heading)
+    func didSelectHeading(url: URL, heading: Document.Heading)
 }
 
 public class HeadingsOutlineViewController: SelectorViewController {
@@ -73,7 +73,7 @@ extension HeadingsOutlineViewController: DocumentEditViewModelDelegate {
         
     }
     
-    public func updateHeadingInfo(heading: OutlineTextStorage.Heading?) {
+    public func updateHeadingInfo(heading: Document.Heading?) {
         
     }
     

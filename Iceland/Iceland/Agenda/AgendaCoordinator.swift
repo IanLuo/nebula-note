@@ -23,7 +23,7 @@ public class AgendaCoordinator: Coordinator {
 }
 
 extension AgendaCoordinator {
-    public func openAgendaActions(url: URL, heading: OutlineTextStorage.Heading) {
+    public func openAgendaActions(url: URL, heading: Document.Heading) {
         let viewModel = AgendaActionViewModel(service: OutlineEditorServer.request(url: url), heading: heading)
         let viewController = AgendaActionViewController(viewModel: viewModel)
         viewModel.delegate = viewController

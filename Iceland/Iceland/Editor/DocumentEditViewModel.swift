@@ -11,7 +11,7 @@ import Business
 
 public protocol DocumentEditViewModelDelegate: class {
     func showLink(url: URL)
-    func updateHeadingInfo(heading: OutlineTextStorage.Heading?)
+    func updateHeadingInfo(heading: Document.Heading?)
     func documentStatesChange(state: UIDocument.State)
     func didReadyToEdit()
 }
@@ -59,7 +59,7 @@ public class DocumentEditViewModel {
         return self.editorService.outlineDelegate
     }
     
-    public var headings: [OutlineTextStorage.Heading] {
+    public var headings: [Document.Heading] {
         return self.editorService.headings
     }
     
@@ -144,7 +144,7 @@ public class DocumentEditViewModel {
     }
     
     /// 交换两个 paragraph 的内容
-    public func replace(heading: OutlineTextStorage.Heading, with: OutlineTextStorage.Heading) {
+    public func replace(heading: Document.Heading, with: Document.Heading) {
         self.editorService.replace(heading: heading, with: with)
     }
 }
@@ -157,7 +157,7 @@ extension DocumentEditViewModel: EditorControllerDelegate {
         }
     }
     
-    public func currentHeadingDidChnage(heading: OutlineTextStorage.Heading?) {
+    public func currentHeadingDidChnage(heading: Document.Heading?) {
         self.delegate?.updateHeadingInfo(heading: heading)
     }
 }

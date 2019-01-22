@@ -8,9 +8,10 @@
 
 import Foundation
 import UIKit
+import TextStorage
 
 public protocol OutlineTextStorageDelegate: class {
-    func didSetHeading(newHeading: OutlineTextStorage.Heading?, oldHeading: OutlineTextStorage.Heading?)
+    func didSetHeading(newHeading: Document.Heading?, oldHeading: Document.Heading?)
 }
 
 /// 提供渲染的对象，如 attachment, checkbox 等
@@ -18,102 +19,24 @@ public protocol OutlineTextStorageDataSource: class {
     // TODO: outline text storage data source
 }
 
-public class OutlineTextStorage: NSTextStorage {
-    /// Node 和 element 都是 Item
-    public class Item {
-        public var offset: Int = 0 {
-            didSet {
-                log.verbose("offset did set: \(offset)")
-            }
-        }
-        private var previouse: Item?
-        private var next: Item?
-        private var _range: NSRange
-        public var range: NSRange {
-            set { _range = newValue }
-            get { return offset == 0 ? _range : _range.offset(self.offset) }
-        }
-        public var name: String
-        public var data: [String: NSRange]
-        
-        public init(range: NSRange, name: String, data: [String: NSRange]) {
-            self._range = range
-            self.name = name
-            self.data = data
-        }
-        
-        public func offset(_ offset: Int) {
-            self.offset += offset
-            next?.offset(offset)
-        }
-    }
+public class OutlineTextStorage: TextStorage {
     
-    public class Heading: Item {
-        /// 当前的 heading 的 planning TODO|DONE|CANCELD 等
-        public var planning: NSRange? {
-            return data[OutlineParser.Key.Element.Heading.planning]?.offset(offset)
-        }
-        /// 当前 heading 的 tag 数组
-        public var tags: NSRange? {
-            return data[OutlineParser.Key.Element.Heading.tags]?.offset(offset)
-        }
-        /// 当前 heading 的 schedule
-        public var schedule: NSRange? {
-            return data[OutlineParser.Key.Element.Heading.schedule]?.offset(offset)
-        }
-        /// 当前 heading 的 due
-        public var due: NSRange? {
-            return data[OutlineParser.Key.Element.Heading.due]?.offset(offset)
-        }
-        /// 当前的 heading level
-        public var level: Int {
-            return data[OutlineParser.Key.Element.Heading.level]!.length
-        }
-        
-        /// tag 的位置，如果没有 tag，则为应该放 tag 的位置
-        public var tagLocation: Int {
-            if let tags = self.tags {
-                return tags.location
-            }
-            
-            if let schedule = self.schedule, let due = self.due {
-                return min(schedule.location, due.location)
-            }
-            
-            if let schedule = self.schedule {
-                return schedule.location
-            }
-            
-            if let due = self.due {
-                return due.location
-            }
-            
-            return range.upperBound
-        }
-        
-        public var contentLength: Int = 0
-        
-        public var paragraphRange: NSRange {
-            return NSRange(location: range.location, length: contentLength)
-        }
-        
-        public convenience init(data: [String: NSRange]) {
-            self.init(range: data[OutlineParser.Key.Node.heading]!, name: OutlineParser.Key.Node.heading, data: data)
-            log.verbose("new heading: \(range)")
-        }
+    public override var string: String {
+        set { super.replaceCharacters(in: NSRange(location: 0, length: self.string.count), with: newValue) }
+        get { return super.string }
     }
-    
+
     public var theme: OutlineTheme = OutlineTheme()
     
     public weak var outlineDelegate: OutlineTextStorageDelegate?
     
     /// 用于保存已经找到的 heading
-    public var savedHeadings: [Heading] = []
+    public var savedHeadings: [Document.Heading] = []
     
     /// 当前交互的文档位置，当前解析部分相对于文档开始的偏移量，不同于 currentParseRange 中的 location
     public var currentLocation: Int = 0
     
-    public var currentHeading: Heading?
+    public var currentHeading: Document.Heading?
     
     /// 当前的解析范围，需要进行解析的字符串范围，用于对 item，索引 等缓存数据进行重新组织
     public var currentParseRange: NSRange? {
@@ -129,15 +52,17 @@ public class OutlineTextStorage: NSTextStorage {
     public var itemRanges: [NSRange] = []
     
     /// 找到的 node 的 location 与之 data 的映射
-    public var itemRangeDataMapping: [NSRange: Item] = [:]
+    public var itemRangeDataMapping: [NSRange: Document.Item] = [:]
     
     // 用于解析过程中临时数据处理
     private var tempParsingResult: [[String: NSRange]] = []
     // 某些范围要忽略掉文字的样式，比如 link 内的文字样式
     private var ignoreTextMarkRanges: [NSRange] = []
-    
+}
+
+extension OutlineTextStorage {
     /// 找到对应位置之后的第一个 item
-    public func item(after: Int) -> Item? {
+    public func item(after: Int) -> Document.Item? {
         for itemRange in self.itemRanges {
             if itemRange.upperBound >= after {
                 return self.itemRangeDataMapping[itemRange]
@@ -186,41 +111,6 @@ public class OutlineTextStorage: NSTextStorage {
         self.currentHeading?.contentLength += delta
     }
     
-    private var backingStore: NSMutableAttributedString = NSMutableAttributedString()
-    
-    public override var string: String {
-        set { self.replaceCharacters(in: NSRange(location: 0, length: backingStore.string.count), with: newValue) }
-        get { return backingStore.string }
-    }
-    
-    public override func attributes(at location: Int, effectiveRange range: NSRangePointer?) -> [NSAttributedString.Key : Any] {
-        return backingStore.attributes(at: location, effectiveRange: range)
-    }
-    
-    public override func setAttributes(_ attrs: [NSAttributedString.Key : Any]?, range: NSRange) {
-        backingStore.setAttributes(attrs, range: range)
-        edited(NSTextStorage.EditActions.editedCharacters, range: range, changeInLength: 0)
-    }
-    
-    /// 替换显示样式, 比如渲染 code block
-    public override func replaceCharacters(in range: NSRange, with attrString: NSAttributedString) {
-        backingStore.replaceCharacters(in: range, with: attrString)
-        edited(NSTextStorage.EditActions.editedAttributes,
-               range: range,
-               changeInLength: attrString.string.count - range.length)
-    }
-    
-    public override func replaceCharacters(in range: NSRange, with str: String) {
-        backingStore.replaceCharacters(in: range, with: str)
-        edited(NSTextStorage.EditActions.editedAttributes,
-               range: range,
-               changeInLength: str.count - range.length)
-    }
-    
-    public override func processEditing() {
-        super.processEditing()
-    }
-    
     private func findInsertPosition(new: Int, ranges: [NSRange]) -> Int {
         guard ranges.count > 0 else { return 0 }
         
@@ -256,6 +146,8 @@ public class OutlineTextStorage: NSTextStorage {
     }
 }
 
+// MARK: - parse result -
+
 extension OutlineTextStorage: OutlineParserDelegate {
     /// 更新找到的 heading
     /// - Parameter newHeadings:
@@ -263,7 +155,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
     private func updateHeadingIfNeeded(_ newHeadings: [[String: NSRange]]) {
         // 如果已保存的 heading 为空，直接全部添加
         if savedHeadings.count == 0 {
-            self.savedHeadings = newHeadings.map { Heading(data: $0) } // OutlineParser.Key.Node.heading 总是存在
+            self.savedHeadings = newHeadings.map { Document.Heading(data: $0) } // OutlineParser.Key.Node.heading 总是存在
         } else {
             // 删除 currentParsingRange 范围内包含的所有 heading, 删除后，将新的 headings 插入删除掉的位置
             if let currentRange = self.currentParseRange {
@@ -279,7 +171,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 }
                 
                 if indexsToRemove.count > 0 {
-                    let newHeadingRanges = newHeadings.map { Heading(data: $0) }
+                    let newHeadingRanges = newHeadings.map { Document.Heading(data: $0) }
                     self.savedHeadings.insert(contentsOf: newHeadingRanges, at: indexsToRemove[0])
                 }
             }
@@ -288,14 +180,14 @@ extension OutlineTextStorage: OutlineParserDelegate {
     
     /// 添加数据到 itemRanges 以及 itemRangeDataMapping 中
     private func insertItems(items: [[String: NSRange]]) {
-        var newItems: [Item] = []
+        var newItems: [Document.Item] = []
         items.forEach {
             for (key, value) in $0 {
-                newItems.append(Item(range: value, name: key, data: [key: value]))
+                newItems.append(Document.Item(range: value, name: key, data: [key: value]))
             }
         }
         
-        newItems.sort { (lhs: OutlineTextStorage.Item, rhs: OutlineTextStorage.Item) -> Bool in
+        newItems.sort { (lhs: Document.Item, rhs: Document.Item) -> Bool in
             if lhs.range.location != rhs.range.location {
                 return lhs.range.location < rhs.range.location
             } else {
@@ -390,7 +282,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
                     let status = (self.string as NSString).substring(with: range)
                     let color = status == OutlineParser.Values.Checkbox.unchecked // TODO:
                         ? UIColor.green
-                        : status == OutlineParser.Values.Checkbox.checked ? UIColor.red : UIColor.lightGray
+                        : status == OutlineParser.Values.Checkbox.checked ? UIColor.red : UIColor.purple
                     
                     attachment.image = UIImage.create(with: color, size: attachment.bounds.size)
                     self.addAttribute(NSAttributedString.Key.attachment, value: attachment, range: NSRange(location: range.location, length: 1))

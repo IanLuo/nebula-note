@@ -157,6 +157,7 @@ extension AgendaViewController: UITableViewDelegate {
 extension AgendaViewController: AgendaViewModelDelegate {
     public func didCompleteLoadAllData() {
         self.viewModel.load(date: self.besideDatesView.currentDate)
+        self.tableView.reloadData()
     }
     
     public func didLoadData() {

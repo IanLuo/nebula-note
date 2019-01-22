@@ -12,7 +12,7 @@ public struct DocumentSearchResult {
     public let url: URL
     public let highlightRange: NSRange
     public let context: String
-    public let heading: OutlineTextStorage.Heading?
+    public let heading: Document.Heading?
 }
 
 public struct DocumentSearchManager {
@@ -113,7 +113,7 @@ public struct DocumentSearchManager {
                                                 searchResults.append(DocumentSearchResult(url: url,
                                                                                           highlightRange: range.offset(-headingRange.location),
                                                                                           context: (string as NSString).substring(with: headingRange),
-                                                                                          heading: OutlineTextStorage.Heading(data: heading)))
+                                                                                          heading: Document.Heading(data: heading)))
                                             }
                                         }
                                     }
@@ -148,7 +148,7 @@ public struct DocumentSearchManager {
                                                 searchResults.append(DocumentSearchResult(url: url,
                                                                                           highlightRange: scheduleRange,
                                                                                           context: (string as NSString).substring(with: headingRange),
-                                                                                          heading: OutlineTextStorage.Heading(data: heading)))
+                                                                                          heading: Document.Heading(data: heading)))
                                             }
                                         }
                                     }
@@ -184,7 +184,7 @@ public struct DocumentSearchManager {
                                                 searchResults.append(DocumentSearchResult(url: url,
                                                                                           highlightRange: dueRange,
                                                                                           context: (string as NSString).substring(with: headingRange),
-                                                                                          heading: OutlineTextStorage.Heading(data: heading)))
+                                                                                          heading: Document.Heading(data: heading)))
                                             }
                                         }
                                     }
@@ -219,7 +219,7 @@ public struct DocumentSearchManager {
                                             searchResults.append(DocumentSearchResult(url: url,
                                                                                       highlightRange: planningRange,
                                                                                       context: (string as NSString).substring(with: headingRange),
-                                                                                      heading: OutlineTextStorage.Heading(data: heading)))
+                                                                                      heading: Document.Heading(data: heading)))
                                         }
                                     }
                                 }
@@ -325,7 +325,7 @@ public struct DocumentSearchManager {
                 }
                 
                 if shouldAppendThis {
-                    let headingObj = OutlineTextStorage.Heading(data: heading)
+                    let headingObj = Document.Heading(data: heading)
                     resultsInThisFile.append(DocumentSearchResult(url: url,
                                                                   highlightRange: headingObj.range,
                                                                   context: text.substring(headingObj.range),

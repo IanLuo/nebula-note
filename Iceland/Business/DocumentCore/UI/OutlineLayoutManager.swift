@@ -17,6 +17,18 @@ public class OutlineLayoutManager: NSLayoutManager {
     public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    public override func invalidateGlyphs(forCharacterRange charRange: NSRange, changeInLength delta: Int, actualCharacterRange actualCharRange: NSRangePointer?) {
+        super.invalidateGlyphs(forCharacterRange: charRange, changeInLength: delta, actualCharacterRange: actualCharRange)
+        
+        log.info("invalidateGlyphs at: \(charRange), length: \(delta)")
+    }
+    
+    public override func invalidateLayout(forCharacterRange charRange: NSRange, actualCharacterRange actualCharRange: NSRangePointer?) {
+        super.invalidateLayout(forCharacterRange: charRange, actualCharacterRange: actualCharRange)
+        
+        log.info("invalidateLayout at: \(charRange)")
+    }
 }
 
 

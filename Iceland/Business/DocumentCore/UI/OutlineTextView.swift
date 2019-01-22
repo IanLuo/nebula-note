@@ -21,7 +21,6 @@ public class OutlineTextView: UITextView {
     
     public override init(frame: CGRect, textContainer: NSTextContainer?) {
         super.init(frame: frame, textContainer: textContainer)
-        
         self.setup()
     }
     
@@ -33,7 +32,7 @@ public class OutlineTextView: UITextView {
         self.tapGestureRecognizer.delegate = self
         self.addGestureRecognizer(self.tapGestureRecognizer)
         
-        self.contentInset = UIEdgeInsets(top: 80, left: 30, bottom: 80, right: 30)
+        self.delegate = self
     }
     
     private var lastTap: (CGPoint, Bool) = (.zero, true)
@@ -70,6 +69,16 @@ public class OutlineTextView: UITextView {
         lastTap = (location, shouldPassTapToOtherGuestureRecognizers)
         
         return shouldPassTapToOtherGuestureRecognizers
+    }
+}
+
+extension OutlineTextView: UITextViewDelegate, UIScrollViewDelegate {
+    public func textViewDidChange(_ textView: UITextView) {
+        
+    }
+    
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        
     }
 }
 
