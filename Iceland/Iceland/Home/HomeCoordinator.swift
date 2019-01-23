@@ -20,6 +20,7 @@ public class HomeCoordinator: Coordinator {
         
         self.addSubCoordinator(coordinator: AgendaCoordinator(stack: stack, context: context))
         self.addSubCoordinator(coordinator: CaptureListCoordinator(stack: stack, context: context))
+        self.addSubCoordinator(coordinator: SearchCoordinator(stack: stack, context: context))
         
         let browserCoordinator = BrowserCoordinator(stack: stack, context: context, usage: .chooseDocument)
         browserCoordinator.delegate = self

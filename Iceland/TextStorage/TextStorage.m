@@ -51,26 +51,26 @@
 - (NSUInteger)layoutManager:(NSLayoutManager *)layoutManager shouldGenerateGlyphs:(const CGGlyph *)glyphs properties:(const NSGlyphProperty *)props characterIndexes:(const NSUInteger *)charIndexes font:(UIFont *)aFont forGlyphRange:(NSRange)glyphRange {
     
     NSGlyphProperty *controlCharProps = malloc(sizeof(NSGlyphProperty) * glyphRange.length);
-    BOOL souldGenrate = NO;
+    BOOL shouldGenerate = NO;
     
     for (int i = 0; i < glyphRange.length; i++) {
         NSDictionary * attributes = [self attributesAtIndex: glyphRange.location + i effectiveRange: nil];
         
         if (attributes[OUTLINE_ATTRIBUTE_HEADING_FOLDED] != nil) {
             controlCharProps[i] = NSGlyphPropertyNull;
-            souldGenrate = YES;
+            shouldGenerate = YES;
         } else if (attributes[OUTLINE_ATTRIBUTE_LINK] != nil && attributes[OUTLINE_ATTRIBUTE_LINK_TITLE] == nil) {
             controlCharProps[i] = NSGlyphPropertyNull;
-            souldGenrate = YES;
+            shouldGenerate = YES;
         }  else if (attributes[OUTLINE_ATTRIBUTE_CHECKBOX_STATUS] != nil && attributes[OUTLINE_ATTRIBUTE_CHECKBOX_BOX] == nil) {
             controlCharProps[i] = NSGlyphPropertyNull;
-            souldGenrate = YES;
+            shouldGenerate = YES;
         } else {
             controlCharProps[i] = props[i];
         }
     }
     
-    if (souldGenrate) {
+    if (shouldGenerate) {
         [layoutManager setGlyphs:glyphs properties:controlCharProps characterIndexes:charIndexes font:aFont forGlyphRange:glyphRange];
         return glyphRange.length;
     } else {

@@ -240,56 +240,6 @@ extension EditorController: NSTextStorageDelegate {
     }
 }
 
-/// 隐藏不需要显示的字符
-extension EditorController: NSLayoutManagerDelegate {
-    public func layoutManager(_ layoutManager: NSLayoutManager, shouldGenerateGlyphs glyphs: UnsafePointer<CGGlyph>, properties props: UnsafePointer<NSLayoutManager.GlyphProperty>, characterIndexes charIndexes: UnsafePointer<Int>, font aFont: UIFont, forGlyphRange glyphRange: NSRange) -> Int {
-        
-        let controlCharProps: UnsafeMutablePointer<NSLayoutManager.GlyphProperty> = UnsafeMutablePointer(mutating: props)
-        
-        var souldGenrate: Bool = false
-        for i in 0..<glyphRange.length {
-            let attributes = self.textStorage.attributes(at: glyphRange.location + i, effectiveRange: nil)
-
-            // 隐藏这些字符
-            if attributes[OutlineAttribute.Heading.folded] != nil { // 标记为折叠
-                controlCharProps[i] = .null
-                souldGenrate = true
-            } else if attributes[OutlineAttribute.link] != nil // 标记为 link 中非 title 的部分
-                && attributes[OutlineAttribute.Link.title] == nil {
-                controlCharProps[i] = .null
-                souldGenrate = true
-            } else if attributes[OutlineAttribute.Checkbox.status] != nil // 标记为 checkbox 中非 box 的部分
-                && attributes[OutlineAttribute.Checkbox.box] == nil {
-                controlCharProps[i] = .null
-                souldGenrate = true
-            }
-        }
-
-        if souldGenrate {
-                layoutManager.setGlyphs(glyphs,
-                                    properties: controlCharProps,
-                                    characterIndexes: charIndexes,
-                                    font: aFont,
-                                    forGlyphRange: glyphRange)
-            return glyphRange.length
-        } else {
-            return 0
-        }
-    }
-    
-    public func layoutManagerDidInvalidateLayout(_ sender: NSLayoutManager) {
-        log.info("layoutManagerDidInvalidateLayout")
-    }
-    
-    public func layoutManager(_ layoutManager: NSLayoutManager, shouldSetLineFragmentRect lineFragmentRect: UnsafeMutablePointer<CGRect>, lineFragmentUsedRect: UnsafeMutablePointer<CGRect>, baselineOffset: UnsafeMutablePointer<CGFloat>, in textContainer: NSTextContainer, forGlyphRange glyphRange: NSRange) -> Bool {
-        return true
-    }
-    
-    public func layoutManager(_ layoutManager: NSLayoutManager, textContainer: NSTextContainer, didChangeGeometryFrom oldSize: CGSize) {
-        log.info("didChangeGeometryFrom from: \(oldSize)")
-    }
-}
-
 extension NSRange {
     /// 将在字符串中的选择区域扩展到前一个换行符之后，后一个换行符之前
     internal func expandFoward(string: String) -> NSRange {

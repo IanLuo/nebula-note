@@ -10,7 +10,9 @@ import Foundation
 import Business
 
 public protocol DocumentSearchViewModelDelegate: class {
-
+    func didAddResult(index: Int, count: Int)
+    func didClearResults()
+    func didCompleteSearching()
 }
 
 public class DocumentSearchViewModel {
@@ -23,76 +25,55 @@ public class DocumentSearchViewModel {
         self.documentSearchManager = documentSearchManager
     }
     
-    // MARK: -
-    /// 搜索包含指定字符串的文件，染回搜索结果
-    /// - parameter contain: 搜索中包含的字符串
-    /// - parameter resultAdded: 每个文件的搜索完成后会调用这个 closure
-    /// - parameter result: 封装的搜索结果, 其中, url 为对应的文件 url，contex 为包含搜索结果的一个字符串，提供搜索结果的上下文, highlightRange 为 context 中搜索结果的 range, heading 为 nil
-    /// - parameter complete: 所有文件搜索完成后调用
-    /// - parameter failed: 有错误产生的时候调用
-    public func search(contain: String,
-                       resultAdded: @escaping (_ result: [DocumentSearchResult]) -> Void,
-                       complete: @escaping () -> Void,
-                       failed: @escaping ((Error) -> Void)) {
+    public var data: [SearchTabelCellModel] = []
+    
+    public var allDocumentsTags: [String] = []
+    
+    public var allDocumentsPlannings: [String] = []
+    
+    public func loadAllTags() {
         
-        self.documentSearchManager.search(contain: contain, resultAdded: resultAdded, complete: complete, failed: failed)
     }
     
-    // MARK: -
-    /// 搜索包含指定 tag 的所有 heading
-    /// - parameter tags, 字符串数组，需要搜索的所有 tag
-    /// - parameter resultAdded: 每个文件的搜索完成后会调用这个 closure
-    /// - parameter result: 封装的搜索结果, 其中, url 为对应的文件 url，context 为整个 heading，提供搜索结果的上下文, highlightRange 为 context 中搜索结果的 range, heading 为 整个 heading 对象
-    /// - parameter complete: 所有文件搜索完成后调用
-    /// - parameter failed: 有错误产生的时候调用
-    public func search(tags: [String],
-                       resultAdded: @escaping ([DocumentSearchResult]) -> Void,
-                       complete: @escaping () -> Void,
-                       failed: @escaping  ((Error) -> Void)) {
-        
-        self.documentSearchManager.search(tags: tags, resultAdded: resultAdded, complete: complete, failed: failed)
+    public func search(query: String) {
+        self.documentSearchManager.search(contain: query, resultAdded: { [weak self] searchResults in
+            let location = max(0, self?.data.count ?? 0 - 1)
+            self?.data.append(contentsOf: searchResults.map { SearchTabelCellModel(searchResult: $0) })
+            self?.delegate?.didAddResult(index: location, count: searchResults.count)
+        }, complete: { [weak self] in
+            self?.delegate?.didCompleteSearching()
+        }) { error in
+            log.error(error)
+        }
     }
     
-    // MARK: -
-    /// - parameter schedule: 搜索 schedule 整个日期之前的所有 heading
-    /// - parameter resultAdded: 每个文件的搜索完成后会调用这个 closure
-    /// - parameter result: 封装的搜索结果, 其中, url 为对应的文件 url，context 为整个 heading，提供搜索结果的上下文, highlightRange 为 context 中搜索结果的 range, heading 为 整个 heading 对象
-    /// - parameter complete: 所有文件搜索完成后调用
-    /// - parameter failed: 有错误产生的时候调用
-    public func search(schedule: Date,
-                       resultAdded: @escaping ([DocumentSearchResult]) -> Void,
-                       complete: @escaping () -> Void,
-                       failed: @escaping  ((Error) -> Void)) {
-        
-        self.documentSearchManager.search(schedule: schedule, resultAdded: resultAdded, complete: complete, failed: failed)
+    public func clearSearchResults() {
+        self.data = []
+        self.delegate?.didClearResults()
     }
     
-    // MARK: -
-    /// - parameter schedule: 搜索 due 整个日期之前的所有 heading
-    /// - parameter resultAdded: 每个文件的搜索完成后会调用这个 closure
-    /// - parameter result: 封装的搜索结果, 其中, url 为对应的文件 url，context 为整个 heading，提供搜索结果的上下文, highlightRange 为 context 中搜索结果的 range, heading 为 整个 heading 对象
-    /// - parameter complete: 所有文件搜索完成后调用
-    /// - parameter failed: 有错误产生的时候调用
-    public func search(due: Date,
-                       resultAdded: @escaping ([DocumentSearchResult]) -> Void,
-                       complete: @escaping () -> Void,
-                       failed: @escaping  ((Error) -> Void)) {
-
-        self.documentSearchManager.search(due: due, resultAdded: resultAdded, complete: complete, failed: failed)
+    public func loadOverDue() {
+        let calendar = Calendar.current
+        let beforeToday = calendar.date(from: calendar.dateComponents([.year, .month, .day], from: Date()))!
+        
     }
     
-    // MARK: -
-    /// - parameter planning: 搜索包含这些 planning 的所有 heading
-    /// - parameter resultAdded: 每个文件的搜索完成后会调用这个 closure
-    /// - parameter result: 封装的搜索结果, 其中, url 为对应的文件 url，context 为整个 heading，提供搜索结果的上下文, highlightRange 为 context 中搜索结果的 range, heading 为 整个 heading 对象
-    /// - parameter complete: 所有文件搜索完成后调用
-    /// - parameter failed: 有错误产生的时候调用
-    public func search(plannings: [String],
-                       resultAdded: @escaping ([DocumentSearchResult]) -> Void,
-                       complete: @escaping () -> Void,
-                       failed: @escaping ((Error) -> Void)) {
+    public func loadOverDueToday() {
+        let calendar = Calendar.current
+        var components = calendar.dateComponents([.year, .month, .day], from: Date())
+        components.setValue(23, for: Calendar.Component.hour)
+        components.setValue(59, for: Calendar.Component.minute)
+        components.setValue(59, for: Calendar.Component.second)
+        let endOfToday = calendar.date(from: components)!
+    }
+    
+    public func loadHasDueDate() {
+        var newData: [SearchTabelCellModel] = []
         
+    }
+    
+    public func loadScheduled() {
+        var newData: [SearchTabelCellModel] = []
         
-        self.documentSearchManager.search(plannings: plannings, resultAdded: resultAdded, complete: complete, failed: failed)
     }
 }

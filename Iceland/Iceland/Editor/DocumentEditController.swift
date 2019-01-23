@@ -25,6 +25,7 @@ public class DocumentEditViewController: UIViewController {
         self.textView = OutlineTextView(frame: .zero,
                                         textContainer: viewModel.container)
         self.textView.outlineDelegate = viewModel.outlineStorageDelegate
+        self.textView.contentInset = UIEdgeInsets(top: 80, left: 30, bottom: 80, right: 30)
         
         super.init(nibName: nil, bundle: nil)
         
@@ -48,6 +49,7 @@ extension DocumentEditViewController: DocumentEditViewModelDelegate {
     public func didReadyToEdit() {
         self.textView.selectedRange = NSRange(location: self.viewModel.onLoadingLocation,
                                                     length: 0)
+        self.textView.scrollRangeToVisible(self.textView.selectedRange)
     }
     
     public func documentStatesChange(state: UIDocument.State) {

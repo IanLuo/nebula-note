@@ -22,6 +22,7 @@ public class SearchCoordinator: Coordinator {
         let viewController = DocumentSearchViewController(viewModel: viewModel)
         super.init(stack: stack, context: context)
         viewController.delegate = self
+        self.viewController = viewController
     }
 }
 

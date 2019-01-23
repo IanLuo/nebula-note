@@ -11,20 +11,20 @@ import TextStorage
 
 public struct OutlineAttribute {
     public struct Link {
-        public static let title: NSAttributedString.Key = NSAttributedString.Key("link-title")
+        public static let title: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_LINK_TITLE)
+        public static let link: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_LINK)
     }
     
     public struct Checkbox {
-        public static let box: NSAttributedString.Key = NSAttributedString.Key("checkbox-box")
-        public static let status: NSAttributedString.Key = NSAttributedString.Key("checkbox-status")
+        public static let box: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_CHECKBOX_BOX)
+        public static let status: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_CHECKBOX_STATUS)
     }
     
     public struct Heading {
-        public static let level: NSAttributedString.Key = NSAttributedString.Key("heading-level")
-        public static let folded: NSAttributedString.Key = NSAttributedString.Key("heading-folded")
-        public static let schedule: NSAttributedString.Key = NSAttributedString.Key("heading-schedule")
-        public static let due: NSAttributedString.Key = NSAttributedString.Key("heading-due")
-        public static let tags: NSAttributedString.Key = NSAttributedString.Key("heading-tags")
+        public static let level: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_HEADING_LEVEL)
+        public static let folded: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_HEADING_FOLDED)
+        public static let schedule: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_HEADING_SCHEDULE)
+        public static let due: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_HEADING_DUE)
+        public static let tags: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_HEADING_TAGS)
     }
-    public static let link: NSAttributedString.Key = NSAttributedString.Key("link")
 }

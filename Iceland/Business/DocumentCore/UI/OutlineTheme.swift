@@ -37,7 +37,7 @@ private struct ThemeConfig {
         @objc public static let interactive: UIColor = .white
         @objc public static let descriptive: UIColor = .darkGray
         @objc public static let enphersizedDescriptive: UIColor = .lightGray
-        @objc public static let spotLight: UIColor = .green
+        @objc public static let spotLight: UIColor = UIColor(red:0.13, green:0.82, blue:0.41, alpha:1.00)
         @objc public static let background1: UIColor = .black
         @objc public static let background2: UIColor = UIColor(red:0.12, green:0.12, blue:0.12, alpha:1.00)
         @objc public static let background3: UIColor = UIColor(red:0.18, green:0.18, blue:0.18, alpha:1.00)

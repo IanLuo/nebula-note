@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import Business
 
 public class HomeViewController: UIViewController {
     private var viewModel: HomeViewModel?
@@ -51,6 +52,15 @@ public class HomeViewController: UIViewController {
         self.masterView.frame = CGRect(x: -masterViewWidth, y: 0, width: masterViewWidth, height: self.view.bounds.height)
         
         self.showChildViewController(at: 0)
+        
+//        let showMasterButton = UIButton()
+//        showMasterButton.setTitle("❖", for: .normal)
+//        showMasterButton.setTitleColor(InterfaceTheme.Color.interactive, for: .normal)
+//        showMasterButton.addTarget(self, action: #selector(showMasterView), for: .touchUpInside)
+//
+//        self.view.addSubview(showMasterButton)
+//        showMasterButton.sideAnchor(for: [.left, .top], to: self.view, edgeInset: 0)
+//        showMasterButton.sizeAnchor(width: 80, height: 80)
     }
     
     private func showChildViewController(at index: Int) {
@@ -79,7 +89,7 @@ public class HomeViewController: UIViewController {
             self.beginPoint = self.view.bounds.origin
             
             if !self.isShowingMaster {
-                self.addCover()
+                self.addCoverIfNeeded()
             }
         case .changed:
             let newLocation = self.beginPoint.x - gesture.translation(in: self.view!).x
@@ -111,6 +121,8 @@ public class HomeViewController: UIViewController {
     }
     
     @objc private func showMasterView() {
+        self.addCoverIfNeeded()
+        
         UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseOut, animations: {
             self.view.bounds = CGRect(origin: .init(x: -self.masterViewWidth, y: 0), size: self.view.bounds.size)
             self.updateCoverAlpha(offset: self.masterViewWidth)
@@ -126,10 +138,12 @@ public class HomeViewController: UIViewController {
         return view
     }()
     
-    private func addCover() {
-        self.view.addSubview(self.cover)
-        self.cover.frame = self.view.bounds
-        self.cover.alpha = 0
+    private func addCoverIfNeeded() {
+        if self.cover.superview == nil {
+            self.view.addSubview(self.cover)
+            self.cover.frame = self.view.bounds
+            self.cover.alpha = 0
+        }
     }
     
     private func updateCoverAlpha(offset: CGFloat) {
@@ -149,5 +163,6 @@ extension HomeViewController: UIGestureRecognizerDelegate {
 extension HomeViewController: MasterViewDelegate {
     public func didSelect(at index: Int) {
         self.showChildViewController(at: index)
+        self.showChildView()
     }
 }

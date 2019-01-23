@@ -257,7 +257,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
         urlRanges.forEach {
             $0.forEach {
                 if $0.key == OutlineParser.Key.Element.link {
-                    self.addAttribute(OutlineAttribute.link, value: $0.value, range: $0.value)
+                    self.addAttribute(OutlineAttribute.Link.link, value: $0.value, range: $0.value)
                     self.addAttribute(NSAttributedString.Key.link, value: 1, range: $0.value)
                 } else if $0.key == OutlineParser.Key.Element.Link.title {
                     self.addAttribute(OutlineAttribute.Link.title, value: $0.value, range: $0.value)
