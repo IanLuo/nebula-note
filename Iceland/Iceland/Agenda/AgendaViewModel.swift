@@ -42,6 +42,8 @@ public class AgendaViewModel {
                 return schedule <= date || due <= date
             }
         }
+        
+        self.delegate?.didLoadData()
     }
     
     public func loadAllData() {

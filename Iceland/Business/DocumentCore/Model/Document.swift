@@ -12,6 +12,10 @@ import Storage
 
 public class Document: UIDocument {
     public static let fileExtension = "iceland"
+    public static let contentFileExtension = "org"
+    public static let coverFileExtension = "jpg"
+    public static let logsFileExtension = "log"
+    
     var string: String = ""
     var logs: String = ""
     var cover: UIImage?
@@ -22,8 +26,16 @@ public class Document: UIDocument {
     public static let logsKey: String = "logs.log"
     
     public override init(fileURL url: URL) {
+        var url = url
+        
+        /// 如果文件是 org 文件，则使用所在的 .iceland 目录
+        if url.path.hasSuffix(Document.contentFileExtension) {
+            url = url.deletingLastPathComponent()
+        }
+        
         let ext = url.path.hasSuffix(Document.fileExtension) ? "" : Document.fileExtension
         super.init(fileURL: url.appendingPathExtension(ext))
+
     }
     
     public func updateCover(_ new: UIImage?) {

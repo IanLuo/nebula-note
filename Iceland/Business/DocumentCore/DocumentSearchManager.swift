@@ -345,7 +345,7 @@ public struct DocumentSearchManager {
                                                               errorHandler: nil) else { return result}
         
         for file in enumerator {
-            if let url = file as? URL, url.pathExtension == Document.fileExtension {
+            if let url = file as? URL, url.pathExtension == Document.contentFileExtension {
                 result.append(url)
             }
         }

@@ -201,7 +201,15 @@ extension URL {
     }
     
     public var fileName: String {
-        return self.deletingPathExtension().lastPathComponent.replacingOccurrences(of: "/", with: "")
+        /// 如果文件是 org, cover, logs 文件，则使用所在的 .iceland 目录
+        var url = self
+        if url.path.hasSuffix(Document.contentFileExtension)
+            || url.path.hasSuffix(Document.coverFileExtension)
+            || url.path.hasSuffix(Document.logsFileExtension) {
+            url = url.deletingLastPathComponent()
+        }
+        
+        return url.deletingPathExtension().lastPathComponent.replacingOccurrences(of: "/", with: "")
     }
     
     public var coverURL: URL {
