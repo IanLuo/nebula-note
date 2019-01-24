@@ -27,9 +27,9 @@ extension CGSize {
     
     public func aspectFitSizeScale(for size: CGSize) -> CGSize {
         if self.width / size.width >= self.height / size.height {
-            return self.aspectFitHeightScale(for: size.height)
-        } else {
             return self.aspectFitWidthScale(for: size.width)
+        } else {
+            return self.aspectFitHeightScale(for: size.height)
         }
     }
     

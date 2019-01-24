@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 public protocol EditorControllerDelegate: class {
-    func currentHeadingDidChnage(heading: Document.Heading?)
+    func currentHeadingDidChange(heading: Document.Heading?)
     func didTapLink(url: String, title: String, point: CGPoint)
 }
 
@@ -83,52 +83,50 @@ extension EditorController {
 extension EditorController: OutlineTextStorageDelegate {
     public func didSetHeading(newHeading: Document.Heading?, oldHeading: Document.Heading?) {
         if oldHeading?.range.location != newHeading?.range.location {
-            self.delegate?.currentHeadingDidChnage(heading: newHeading)
+            self.delegate?.currentHeadingDidChange(heading: newHeading)
         }
     }
 }
 
-extension EditorController: OutlineTextViewDelegate {
-    public func didTapOnLevel(textView: UITextView,
-                              chracterIndex: Int,
-                              point: CGPoint) {
-        for heading in self.textStorage.savedHeadings {
+extension EditorController {
+    public func changeFoldingStatus(at location: Int) {
+        if let heading = self.textStorage.heading(at: location) {
             let range = heading.paragraphRange
             
-            if range.contains(chracterIndex) {
+            let contentLocation = heading.range.upperBound + 1 // contentLocation + 1 因为有换行符
+            
+            // 当位于文章末尾之前的章节，长度 + 1，避免折叠后留下一个换行符，导致章节之间有空行
+            var postParagraphLength = 1
+            if range.upperBound >= textStorage.string.count - 1 {
+                postParagraphLength = 0
+            }
+            let contentRange = NSRange(location: contentLocation,
+                                       length: range.upperBound - contentLocation + postParagraphLength)
+            
+            log.info("fold range: \(contentRange)")
+            
+            if self.textStorage.attributes(at: contentRange.location, effectiveRange: nil)[OutlineAttribute.Heading.folded] == nil {
                 
-                let headingRange = self.textStorage.savedHeadings[self.textStorage.headingIndex(at: chracterIndex)].range
-                let contentLocation = headingRange.upperBound + 1 // contentLocation + 1 因为有换行符
-                
-                // 当位于文章末尾之前的章节，长度 + 1，避免折叠后留下一个换行符，导致章节之间有空行
-                var postParagraphLength = 1
-                if range.upperBound >= textView.text.count - 1 {
-                    postParagraphLength = 0
-                }
-                let contentRange = NSRange(location: contentLocation,
-                                           length: range.upperBound - contentLocation + postParagraphLength)
-                
-                log.info("fold/unfold for range: \(contentRange)")
-                
-                if self.textStorage.attributes(at: contentRange.location, effectiveRange: nil)[OutlineAttribute.Heading.folded] == nil {
-                    
-                    // 如果当前 cursor 在被折叠的部分，会造成 indent 出错, 因此将 cursor 移到 heading 的末尾
-                    if contentRange.contains(textView.selectedRange.location) {
-                        textView.selectedRange = NSRange(location: contentRange.location - 1,
-                                                         length: 0)
-                    }
-                    
-                    self.textStorage.addAttribute(OutlineAttribute.Heading.folded,
-                                                  value: contentRange,
-                                                  range: contentRange)
-                } else {
-                    self.textStorage.removeAttribute(OutlineAttribute.Heading.folded,
-                                                     range: contentRange)
-                }
-                
-                return
+                self.textStorage.addAttribute(OutlineAttribute.Heading.folded,
+                                              value: contentRange,
+                                              range: contentRange)
+            } else {
+                self.textStorage.removeAttribute(OutlineAttribute.Heading.folded,
+                                                 range: contentRange)
             }
         }
+    }
+    
+    public func changeCheckBoxStatus(range: NSRange) {
+        let attachment = NSTextAttachment()
+        attachment.bounds = CGRect(origin: .zero, size: CGSize(width: 24, height: 24))
+        let status = self.string.substring(range)
+        let color = status == OutlineParser.Values.Checkbox.unchecked // TODO:
+            ? UIColor.green
+            : status == OutlineParser.Values.Checkbox.checked ? UIColor.red : UIColor.purple
+        
+        attachment.image = UIImage.create(with: color, size: attachment.bounds.size)
+        self.textStorage.addAttribute(NSAttributedString.Key.attachment, value: attachment, range: NSRange(location: range.location, length: 1))
     }
     
     public func didTapOnCheckbox(textView: UITextView,
@@ -147,35 +145,6 @@ extension EditorController: OutlineTextViewDelegate {
         
         if replacement.count > 0 {
             self.textStorage.replaceCharacters(in: offsetedRange, with: replacement)
-        }
-    }
-    
-    public func didTapOnLink(textView: UITextView,
-                             characterIndex: Int,
-                             linkRange: NSRange,
-                             point: CGPoint) {
-        if let url = OutlineParser.Matcher.Element.link {
-            let result: [[String: NSRange]] = url
-                .matches(in: textView.text, options: [], range: linkRange)
-                .map { (result: NSTextCheckingResult) -> [String: NSRange] in
-                    var comp: [String: NSRange] = [:]
-                    comp[OutlineParser.Key.Element.link] = result.range(at: 0)
-                    comp[OutlineParser.Key.Element.Link.url] = result.range(at: 1)
-                    comp[OutlineParser.Key.Element.Link.scheme] = result.range(at: 2)
-                    comp[OutlineParser.Key.Element.Link.title] = result.range(at: 3)
-                    return comp.filter { _, value in value.location != Int.max }
-            }
-            
-            if let result = result.first {
-                log.info(string.substring(result[OutlineParser.Key.Element.Link.url]!))
-                log.info(string.substring(result[OutlineParser.Key.Element.Link.title]!))
-                log.info(string.substring(result[OutlineParser.Key.Element.Link.scheme]!))
-                
-                self.delegate?.didTapLink(url: string.substring(result[OutlineParser.Key.Element.Link.url]!),
-                                          title: string.substring(result[OutlineParser.Key.Element.Link.title]!),
-                                          point: point)
-            }
-            
         }
     }
 }

@@ -171,7 +171,7 @@ extension OutlineParser {
                     do { return try String(contentsOf: attachment.url) }
                     catch { return "\(error)" }
                 default:
-                    return "//Attachment:\(attachment.type.rawValue)=\(attachment.url.absoluteString)"
+                    return "#+Attachment:\(attachment.type.rawValue)=\(attachment.url.path)"
                 }
             }
         }

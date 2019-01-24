@@ -10,9 +10,9 @@ import Foundation
 import UIKit
 
 public protocol OutlineTextViewDelegate: class {
-    func didTapOnLevel(textView: UITextView, chracterIndex: Int, point: CGPoint)
-    func didTapOnCheckbox(textView: UITextView, characterIndex: Int, statusRange: NSRange, point: CGPoint)
-    func didTapOnLink(textView: UITextView, characterIndex: Int, linkRange: NSRange, point: CGPoint)
+    func didTapOnLevel(textView: UITextView, chracterIndex: Int, heading: [String: NSRange], point: CGPoint)
+    func didTapOnCheckbox(textView: UITextView, characterIndex: Int, checkbox: [String: NSRange], point: CGPoint)
+    func didTapOnLink(textView: UITextView, characterIndex: Int, linkStructure: [String: NSRange], point: CGPoint)
 }
 
 public class OutlineTextView: UITextView {
@@ -32,7 +32,7 @@ public class OutlineTextView: UITextView {
         self.tapGestureRecognizer.delegate = self
         self.addGestureRecognizer(self.tapGestureRecognizer)
         
-        self.delegate = self
+        self.tintColor = InterfaceTheme.Color.spotLight
     }
     
     private var lastTap: (CGPoint, Bool) = (.zero, true)
@@ -56,12 +56,12 @@ public class OutlineTextView: UITextView {
         let attributes = self.textStorage.attributes(at: characterIndex, effectiveRange: nil)
         
         var shouldPassTapToOtherGuestureRecognizers = false
-        if attributes[OutlineAttribute.Heading.level] != nil {
-            self.outlineDelegate?.didTapOnLevel(textView: self, chracterIndex: characterIndex, point: location)
-        } else if let statusRange = attributes[OutlineAttribute.Checkbox.box] as? NSRange {
-            self.outlineDelegate?.didTapOnCheckbox(textView: self, characterIndex: characterIndex, statusRange: statusRange, point: location)
-        } else if let linkRange = attributes[OutlineAttribute.Link.link] as? NSRange {
-            self.outlineDelegate?.didTapOnLink(textView: self, characterIndex: characterIndex, linkRange: linkRange, point: location)
+        if let heading = attributes[OutlineAttribute.Heading.level] as? [String: NSRange] {
+            self.outlineDelegate?.didTapOnLevel(textView: self, chracterIndex: characterIndex, heading: heading, point: location)
+        } else if let checkbox = attributes[OutlineAttribute.Checkbox.box] as? [String: NSRange] {
+            self.outlineDelegate?.didTapOnCheckbox(textView: self, characterIndex: characterIndex, checkbox: checkbox, point: location)
+        } else if let linkStructure = attributes[OutlineAttribute.Link.link] as? [String: NSRange] {
+            self.outlineDelegate?.didTapOnLink(textView: self, characterIndex: characterIndex, linkStructure: linkStructure, point: location)
         } else {
             shouldPassTapToOtherGuestureRecognizers = true
         }
@@ -69,16 +69,6 @@ public class OutlineTextView: UITextView {
         lastTap = (location, shouldPassTapToOtherGuestureRecognizers)
         
         return shouldPassTapToOtherGuestureRecognizers
-    }
-}
-
-extension OutlineTextView: UITextViewDelegate, UIScrollViewDelegate {
-    public func textViewDidChange(_ textView: UITextView) {
-        
-    }
-    
-    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        
     }
 }
 

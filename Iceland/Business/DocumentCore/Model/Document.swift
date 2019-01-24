@@ -17,13 +17,40 @@ public class Document: UIDocument {
     var cover: UIImage?
     var wrapper: FileWrapper?
     
-    public static let contentKey: String = "content.txt"
-    public static let coverKey: String = "cover.png"
+    public static let contentKey: String = "content.org"
+    public static let coverKey: String = "cover.jpg"
     public static let logsKey: String = "logs.log"
     
     public override init(fileURL url: URL) {
-        let ext = url.absoluteString.hasSuffix(Document.fileExtension) ? "" : Document.fileExtension
+        let ext = url.path.hasSuffix(Document.fileExtension) ? "" : Document.fileExtension
         super.init(fileURL: url.appendingPathExtension(ext))
+    }
+    
+    public func updateCover(_ new: UIImage?) {
+        self.cover = new
+        if let oldWrapper = self.wrapper?.fileWrappers?[Document.coverKey] {
+            self.wrapper?.removeFileWrapper(oldWrapper)
+        }
+        
+        self.updateChangeCount(UIDocument.ChangeKind.done)
+    }
+    
+    public func updateContent(_ new: String) {
+        self.string = new
+        if let oldWrapper = self.wrapper?.fileWrappers?[Document.contentKey] {
+            self.wrapper?.removeFileWrapper(oldWrapper)
+        }
+        
+        self.updateChangeCount(UIDocument.ChangeKind.done)
+    }
+    
+    public func updateLogs(_ new: String) {
+        self.string = new
+        if let oldWrapper = self.wrapper?.fileWrappers?[Document.logsKey] {
+            self.wrapper?.removeFileWrapper(oldWrapper)
+        }
+        
+        self.updateChangeCount(UIDocument.ChangeKind.done)
     }
     
     public override func contents(forType typeName: String) throws -> Any {
@@ -41,7 +68,7 @@ public class Document: UIDocument {
         
         if self.wrapper?.fileWrappers?[Document.coverKey] == nil {
             if let coverImage = self.cover {
-                if let coverData = coverImage.pngData() {
+                if let coverData = coverImage.jpegData(compressionQuality: 0.8) {
                     let coverWrapper = FileWrapper(regularFileWithContents: coverData)
                     coverWrapper.preferredFilename = Document.coverKey
                     self.wrapper?.addFileWrapper(coverWrapper)
@@ -76,6 +103,10 @@ public class Document: UIDocument {
                 self.logs = String(data: logsData, encoding: .utf8) ?? ""
             }
         }
+    }
+    
+    public override func save(to url: URL, for saveOperation: UIDocument.SaveOperation, completionHandler: ((Bool) -> Void)? = nil) {
+        super.save(to: url, for: saveOperation, completionHandler: completionHandler)
     }
     
     /// Node 和 element 都是 Item

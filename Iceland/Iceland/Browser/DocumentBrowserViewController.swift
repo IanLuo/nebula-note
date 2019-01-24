@@ -188,15 +188,26 @@ extension DocumentBrowserViewController: DocumentBrowserCellDelegate {
                 })
             }
             
-            actionsViewController.addAction(icon: nil, title: "delete".localizable) { viewController in
-                viewController.dismiss(animated: true, completion: {
-                    self.viewModel.deleteDocument(index: index)
-                })
-            }
-            
             actionsViewController.addAction(icon: nil, title: "duplicate".localizable) { viewController in
                 viewController.dismiss(animated: true, completion: {
                     self.viewModel.duplicate(index: index)
+                })
+            }
+            
+            actionsViewController.addAction(icon: nil, title: "cover".localizable) { viewController in
+                viewController.dismiss(animated: true, completion: {
+                    let coverPicker = CoverPickerViewController()
+                    coverPicker.onSelecedCover = { [weak self] cover in
+                        self?.viewModel.setCover(cover, index: index)
+                    }
+                    
+                    self.present(coverPicker, animated: true, completion: nil)
+                })
+            }
+            
+            actionsViewController.addAction(icon: nil, title: "delete".localizable, style: .warning) { viewController in
+                viewController.dismiss(animated: true, completion: {
+                    self.viewModel.deleteDocument(index: index)
                 })
             }
             

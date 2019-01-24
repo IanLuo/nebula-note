@@ -122,8 +122,16 @@ public class EditorService {
         return editorController.textContainer
     }
     
-    public var outlineDelegate: OutlineTextViewDelegate {
-        return editorController
+    public func markAsContentUpdated() {
+        self.document.updateContent(editorController.string)
+    }
+    
+    public func changeFoldingStatus(location: Int) {
+        self.editorController.changeFoldingStatus(at: location)
+    }
+    
+    public func changeCheckboxStatus(range: NSRange) {
+        self.editorController.changeCheckBoxStatus(range: range)
     }
     
     public func start(complete: @escaping (Bool, EditorService) -> Void) {
@@ -149,7 +157,9 @@ public class EditorService {
     }
     
     public var cover: UIImage? {
-        set { self.document.cover = cover }
+        set {
+            self.document.updateCover(newValue)
+        }
         get { return self.document.cover }
     }
     
@@ -191,7 +201,7 @@ public class EditorService {
             self.editorController.textStorage.replaceCharacters(in: extendedRange, with: "")
         }
         
-        self.document.updateChangeCount(UIDocument.ChangeKind.done)
+        self.document.updateContent(editorController.string)
     }
     
     public func removeSchedule(at headingLocation: Int) {
@@ -202,7 +212,7 @@ public class EditorService {
             self.editorController.textStorage.replaceCharacters(in: extendedRange, with: "")
         }
         
-        self.document.updateChangeCount(UIDocument.ChangeKind.done)
+        self.document.updateContent(editorController.string)
     }
     
     public func remove(tag: String, at headingLocation: Int) {
@@ -224,7 +234,7 @@ public class EditorService {
             }
         }
         
-        self.document.updateChangeCount(UIDocument.ChangeKind.done)
+        self.document.updateContent(editorController.string)
     }
     
     public func removePlanning(at headingLocation: Int) {
@@ -234,7 +244,7 @@ public class EditorService {
             self.editorController.textStorage.replaceCharacters(in: planningRange, with: "")
         }
         
-        self.document.updateChangeCount(UIDocument.ChangeKind.done)
+        self.document.updateContent(editorController.string)
     }
     
     public func update(planning: String, at headingLocation: Int) {
@@ -254,7 +264,7 @@ public class EditorService {
         
         editorController.textStorage.replaceCharacters(in: editRange, with: replacement)
         
-        self.document.updateChangeCount(UIDocument.ChangeKind.done)
+        self.document.updateContent(editorController.string)
     }
     
     public func update(schedule: DateAndTimeType, at headingLocation: Int) {
@@ -274,7 +284,7 @@ public class EditorService {
         
         editorController.textStorage.replaceCharacters(in: editRange, with: replacement)
         
-        self.document.updateChangeCount(UIDocument.ChangeKind.done)
+        self.document.updateContent(editorController.string)
     }
     
     public func update(due: DateAndTimeType, at headingLocation: Int) {
@@ -295,7 +305,7 @@ public class EditorService {
         
         editorController.textStorage.replaceCharacters(in: editRange, with: replacement)
         
-        self.document.updateChangeCount(UIDocument.ChangeKind.done)
+        self.document.updateContent(editorController.string)
     }
     
     /// 添加 tag 到 heading
@@ -308,7 +318,7 @@ public class EditorService {
             editorController.insert(string: " :\(tag):", at: heading.tagLocation)
         }
         
-        self.document.updateChangeCount(UIDocument.ChangeKind.done)
+        self.document.updateContent(editorController.string)
     }
     
     public func archive(headingLocation: Int) {
@@ -344,7 +354,7 @@ public class EditorService {
         
         editorController.insertToParagraph(at: heading, content: content)
         
-        self.document.updateChangeCount(UIDocument.ChangeKind.done)
+        self.document.updateContent(editorController.string)
     }
     
     public func close(completion:((Bool) -> Void)? = nil) {
@@ -374,6 +384,7 @@ public class EditorService {
     }
     
     public func delete(completion: ((Error?) -> Void)? = nil) {
+        // FIXME: use file coordinator
         self.document.fileURL.delete {
             completion?($0)
         }

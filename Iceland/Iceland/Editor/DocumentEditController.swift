@@ -24,11 +24,12 @@ public class DocumentEditViewController: UIViewController {
         self.viewModel = viewModel
         self.textView = OutlineTextView(frame: .zero,
                                         textContainer: viewModel.container)
-        self.textView.outlineDelegate = viewModel.outlineStorageDelegate
         self.textView.contentInset = UIEdgeInsets(top: 80, left: 30, bottom: 80, right: 30)
-        
+
         super.init(nibName: nil, bundle: nil)
         
+        self.textView.outlineDelegate = self
+        self.textView.delegate = self
         viewModel.delegate = self
     }
     
@@ -42,6 +43,30 @@ public class DocumentEditViewController: UIViewController {
         self.textView.frame = self.view.bounds
         
         self.view.addSubview(self.textView)
+    }
+}
+
+extension DocumentEditViewController: OutlineTextViewDelegate {
+    public func didTapOnLink(textView: UITextView, characterIndex: Int, linkStructure: [String : NSRange], point: CGPoint) {
+
+    }
+    
+    public func didTapOnLevel(textView: UITextView, chracterIndex: Int, heading: [String : NSRange], point: CGPoint) {
+        self.viewModel.changeFoldingStatus(location: chracterIndex)
+    }
+    
+    public func didTapOnCheckbox(textView: UITextView, characterIndex: Int, checkbox: [String : NSRange], point: CGPoint) {
+        self.viewModel.changeCheckboxStatus(range: checkbox["checkbox-box"]!)
+    }
+}
+
+extension DocumentEditViewController: UITextViewDelegate {
+    public func textViewDidChange(_ textView: UITextView) {
+        self.viewModel.didUpdate()
+    }
+    
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        
     }
 }
 

@@ -37,6 +37,10 @@ public class DocumentBrowserViewModel {
         return self.dependency?.usage == .chooseHeading
     }
     
+    public func setCover(_ cover: UIImage?, index: Int) {
+        self.documentManager.setCover(cover, url: self.data[index].url)
+    }
+    
     public func isNameAvailable(newName: String, index: Int) -> Bool {
         var newURL = self.data[index].url
         newURL.deleteLastPathComponent()
@@ -50,6 +54,7 @@ public class DocumentBrowserViewModel {
                 let cellModel = DocumentBrowserCellModel(url: $0)
                 cellModel.shouldShowActions = self.shouldShowActions
                 cellModel.shouldShowChooseHeadingIndicator = self.shouldShowHeadingIndicator
+                cellModel.cover = self.documentManager.cover(url: $0)
                 return cellModel
             }
             self.delegate?.didLoadData()

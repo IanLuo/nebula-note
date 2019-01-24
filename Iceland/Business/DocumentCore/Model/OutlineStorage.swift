@@ -123,17 +123,14 @@ extension OutlineTextStorage {
         return ranges.count - 1
     }
     
-    public func headingIndex(at characterIndex: Int) -> Int {
-        var index: Int = 0
-        // FIXME: 提高查找效率，目前是 O(n)
-        for (i, heading) in self.savedHeadings.reversed().enumerated() {
-            if heading.range.location <= characterIndex {
-                index = self.savedHeadings.count - 1 - i
-                break
+    public func heading(at location: Int) -> Document.Heading? {
+        for heading in self.savedHeadings {
+            if heading.paragraphRange.contains(location) {
+                return heading
             }
         }
         
-        return index
+        return nil
     }
     
     /// 更新和当前位置相关的其他信息
@@ -141,7 +138,7 @@ extension OutlineTextStorage {
         guard self.savedHeadings.count > 0 else { return }
         
         let oldHeading = self.currentHeading
-        self.currentHeading = self.savedHeadings[self.headingIndex(at: self.currentLocation)]
+        self.currentHeading = self.heading(at: self.currentLocation)
         self.outlineDelegate?.didSetHeading(newHeading: self.currentHeading, oldHeading: oldHeading)
     }
 }
@@ -254,11 +251,14 @@ extension OutlineTextStorage: OutlineParserDelegate {
     public func didFoundLink(text: String, urlRanges: [[String : NSRange]]) {
         self.tempParsingResult.append(contentsOf: urlRanges)
         self.ignoreTextMarkRanges.append(contentsOf: urlRanges.map { $0[OutlineParser.Key.Element.link]! })
-        urlRanges.forEach {
-            $0.forEach {
+        urlRanges.forEach { urlRangeData in
+            urlRangeData.forEach {
+                // range 为整个链接时，添加自定义属性，值为解析的链接结构
                 if $0.key == OutlineParser.Key.Element.link {
-                    self.addAttribute(OutlineAttribute.Link.link, value: $0.value, range: $0.value)
+                    self.addAttribute(OutlineAttribute.Link.link, value: urlRangeData, range: $0.value)
                     self.addAttribute(NSAttributedString.Key.link, value: 1, range: $0.value)
+                    
+                // range 为链接的 title 时，添加自定义属性，值为 title 的内容
                 } else if $0.key == OutlineParser.Key.Element.Link.title {
                     self.addAttribute(OutlineAttribute.Link.title, value: $0.value, range: $0.value)
                 }
@@ -274,19 +274,10 @@ extension OutlineTextStorage: OutlineParserDelegate {
     public func didFoundCheckbox(text: String, checkboxRanges: [[String : NSRange]]) {
         self.tempParsingResult.append(contentsOf: checkboxRanges)
         
-        checkboxRanges.forEach {
-            for (key, range) in $0 {
+        checkboxRanges.forEach { checkbox in
+            for (key, range) in checkbox {
                 if key == OutlineParser.Key.Element.Checkbox.status {
-                    let attachment = NSTextAttachment()
-                    attachment.bounds = CGRect(origin: .zero, size: CGSize(width: 24, height: 24))
-                    let status = (self.string as NSString).substring(with: range)
-                    let color = status == OutlineParser.Values.Checkbox.unchecked // TODO:
-                        ? UIColor.green
-                        : status == OutlineParser.Values.Checkbox.checked ? UIColor.red : UIColor.purple
-                    
-                    attachment.image = UIImage.create(with: color, size: attachment.bounds.size)
-                    self.addAttribute(NSAttributedString.Key.attachment, value: attachment, range: NSRange(location: range.location, length: 1))
-                    self.addAttribute(OutlineAttribute.Checkbox.box, value: range, range: NSRange(location: range.location, length: 1))
+                    self.addAttribute(OutlineAttribute.Checkbox.box, value: checkbox, range: NSRange(location: range.location, length: 1))
                     self.addAttribute(OutlineAttribute.Checkbox.status, value: range, range: range)
                 }
             }
@@ -319,7 +310,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 attachment.bounds = CGRect(origin: .zero, size: CGSize(width: 24, height: 24))
                 attachment.image = UIImage.create(with: UIColor.lightGray, size: attachment.bounds.size)
                 self.addAttribute(NSAttributedString.Key.attachment, value: attachment, range: levelRange)
-                self.addAttribute(OutlineAttribute.Heading.level, value: levelRange, range: levelRange)
+                self.addAttribute(OutlineAttribute.Heading.level, value: $0, range: levelRange)
             }
             
             if let scheduleRange = $0[OutlineParser.Key.Element.Heading.schedule] {

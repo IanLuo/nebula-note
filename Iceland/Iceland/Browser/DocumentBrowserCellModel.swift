@@ -16,6 +16,7 @@ public class DocumentBrowserCellModel {
     public var levelFromRoot: Int
     public var shouldShowActions: Bool = true
     public var shouldShowChooseHeadingIndicator: Bool = false
+    public var cover: UIImage?
     
     public init(url: URL) {
         self.url = url

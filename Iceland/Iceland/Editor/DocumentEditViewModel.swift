@@ -60,12 +60,16 @@ public class DocumentEditViewModel {
         set { self.editorService.cover = newValue }
     }
     
-    public var outlineStorageDelegate: OutlineTextViewDelegate {
-        return self.editorService.outlineDelegate
-    }
-    
     public var headings: [Document.Heading] {
         return self.editorService.headings
+    }
+    
+    public func changeFoldingStatus(location: Int) {
+        self.editorService.changeFoldingStatus(location: location)
+    }
+    
+    public func changeCheckboxStatus(range: NSRange) {
+        self.editorService.changeCheckboxStatus(range: range)
     }
     
     public func headingString(index: Int) -> String {
@@ -156,13 +160,17 @@ public class DocumentEditViewModel {
 
 // MARK: - EditorControllerDelegate
 extension DocumentEditViewModel: EditorControllerDelegate {
+    public func didUpdate() {
+        self.editorService.markAsContentUpdated()
+    }
+    
     public func didTapLink(url: String, title: String, point: CGPoint) {
         if let url = URL(string: url) {
             self.delegate?.showLink(url: url)
         }
     }
     
-    public func currentHeadingDidChnage(heading: Document.Heading?) {
+    public func currentHeadingDidChange(heading: Document.Heading?) {
         self.delegate?.updateHeadingInfo(heading: heading)
     }
 }

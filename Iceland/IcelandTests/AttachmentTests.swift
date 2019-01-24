@@ -47,7 +47,7 @@ public class AttachmentTests: XCTestCase {
         try data?.write(to: tempFile)
         
         let ex2 = expectation(description: "audio")
-        try manager.insert(content: tempFile.absoluteString, type: Attachment.AttachmentType.audio, description: "audio", complete: { key in
+        try manager.insert(content: tempFile.path, type: Attachment.AttachmentType.audio, description: "audio", complete: { key in
             let saved = try manager.attachment(with: key)
             
             XCTAssertEqual(saved.key, key)
