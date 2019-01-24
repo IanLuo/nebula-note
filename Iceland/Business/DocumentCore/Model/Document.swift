@@ -17,9 +17,9 @@ public class Document: UIDocument {
     var cover: UIImage?
     var wrapper: FileWrapper?
     
-    private let contentKey: String = "content"
-    private let coverKey: String = "cover"
-    private let logsKey: String = "logs"
+    public static let contentKey: String = "content.txt"
+    public static let coverKey: String = "cover.png"
+    public static let logsKey: String = "logs.log"
     
     public override init(fileURL url: URL) {
         let ext = url.absoluteString.hasSuffix(Document.fileExtension) ? "" : Document.fileExtension
@@ -31,28 +31,28 @@ public class Document: UIDocument {
             self.wrapper = FileWrapper(directoryWithFileWrappers: [:])
         }
         
-        if self.wrapper?.fileWrappers?[contentKey] == nil {
+        if self.wrapper?.fileWrappers?[Document.contentKey] == nil {
             if let data = self.string.data(using: .utf8) {
                 let textWrapper = FileWrapper(regularFileWithContents: data)
-                textWrapper.preferredFilename = contentKey.appending(".org")
+                textWrapper.preferredFilename = Document.contentKey
                 self.wrapper?.addFileWrapper(textWrapper)
             }
         }
         
-        if self.wrapper?.fileWrappers?[coverKey] == nil {
+        if self.wrapper?.fileWrappers?[Document.coverKey] == nil {
             if let coverImage = self.cover {
                 if let coverData = coverImage.pngData() {
                     let coverWrapper = FileWrapper(regularFileWithContents: coverData)
-                    coverWrapper.preferredFilename = coverKey.appending(".png")
+                    coverWrapper.preferredFilename = Document.coverKey
                     self.wrapper?.addFileWrapper(coverWrapper)
                 }
             }
         }
         
-        if self.wrapper?.fileWrappers?[logsKey] == nil {
+        if self.wrapper?.fileWrappers?[Document.logsKey] == nil {
             if let logsData = self.logs.data(using: .utf8) {
                 let logsWrapper = FileWrapper(regularFileWithContents: logsData)
-                logsWrapper.preferredFilename = logsKey.appending(".log")
+                logsWrapper.preferredFilename = Document.logsKey
                 self.wrapper?.addFileWrapper(logsWrapper)
             }
         }
@@ -64,15 +64,15 @@ public class Document: UIDocument {
         if let wrapper = contents as? FileWrapper {
             self.wrapper = wrapper
             
-            if let contentData = wrapper.fileWrappers?[contentKey]?.regularFileContents {
+            if let contentData = wrapper.fileWrappers?[Document.contentKey]?.regularFileContents {
                 self.string = String(data: contentData, encoding: .utf8) ?? ""
             }
             
-            if let imageData = wrapper.fileWrappers?[coverKey]?.regularFileContents {
+            if let imageData = wrapper.fileWrappers?[Document.coverKey]?.regularFileContents {
                 self.cover = UIImage(data: imageData)
             }
             
-            if let logsData = wrapper.fileWrappers?[logsKey]?.regularFileContents {
+            if let logsData = wrapper.fileWrappers?[Document.logsKey]?.regularFileContents {
                 self.logs = String(data: logsData, encoding: .utf8) ?? ""
             }
         }

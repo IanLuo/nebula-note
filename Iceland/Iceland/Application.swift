@@ -99,7 +99,6 @@ public class Coordinator {
             
             self.moveIn(top: f.viewController, animated: animated)
         }
-        
     }
 }
 
@@ -107,5 +106,11 @@ extension Coordinator {
     public func openDocument(url: URL, location: Int) {
         let documentCoordinator = EditorCoordinator(stack: self.stack, context: self.context, usage: EditorCoordinator.Usage.editor(url, location))
         documentCoordinator.start(from: self)
+    }
+    
+    public func showAttachmentPicker(type: Attachment.AttachmentType, complete: @escaping (String) -> Void) {
+        let attachmentCoordinator = AttachmentCoordinator(stack: self.stack, context: self.context, type: type)
+        attachmentCoordinator.onSaveAttachment = complete
+        attachmentCoordinator.start(from: self)
     }
 }

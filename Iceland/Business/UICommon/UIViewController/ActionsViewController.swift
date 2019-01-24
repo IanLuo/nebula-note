@@ -123,7 +123,7 @@ public class ActionsViewController: UIViewController {
     
     private lazy var cancelButton: UIButton = {
         let button = UIButton()
-        button.setTitle("✕", for: .normal)
+        button.setImage(UIImage(named: "cross")?.withRenderingMode(.alwaysTemplate), for: .normal)
         button.addTarget(self, action: #selector(cancel), for: .touchUpInside)
         return button
     }()

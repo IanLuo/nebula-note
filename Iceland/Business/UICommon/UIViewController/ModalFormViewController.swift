@@ -26,7 +26,7 @@ public class ModalFormViewController: UIViewController {
     private lazy var cancelButton: UIButton = {
         let button = UIButton()
         button.addTarget(self, action: #selector(cancel), for: .touchUpInside)
-        button.setTitle("✕", for: .normal)
+        button.setImage(UIImage(named: "cross")?.withRenderingMode(.alwaysTemplate), for: .normal)
         button.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.background2, size: .singlePoint), for: .normal)
         button.setTitleColor(InterfaceTheme.Color.interactive, for: .normal)
         return button
@@ -34,7 +34,7 @@ public class ModalFormViewController: UIViewController {
     
     private lazy var saveButton: UIButton = {
         let button = UIButton()
-        button.setTitle("✓", for: .normal)
+        button.setImage(UIImage(named: "check-mark")?.withRenderingMode(.alwaysTemplate), for: .normal)
         button.addTarget(self, action: #selector(save), for: .touchUpInside)
         button.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.background2, size: .singlePoint), for: .normal)
         button.setTitleColor(InterfaceTheme.Color.interactive, for: .normal)

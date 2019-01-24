@@ -17,6 +17,8 @@ public protocol AttachmentCoordinatorDelegate: class {
 public class AttachmentCoordinator: Coordinator {
     public weak var delegate: AttachmentCoordinatorDelegate?
     
+    public var onSaveAttachment: ((String) -> Void)?
+    
     public var type: Attachment.AttachmentType
     
     public init(stack: UINavigationController, context: Context, type: Attachment.AttachmentType) {
@@ -67,6 +69,7 @@ public class AttachmentCoordinator: Coordinator {
 extension AttachmentCoordinator: AttachmentViewControllerDelegate {
     public func didSaveAttachment(key: String) {
         self.delegate?.didSaveAttachment(key: key)
+        self.onSaveAttachment?(key)
         self.stop()
     }
 }

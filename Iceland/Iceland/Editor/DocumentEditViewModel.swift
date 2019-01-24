@@ -55,6 +55,11 @@ public class DocumentEditViewModel {
         return self.editorService.container
     }
     
+    public var cover: UIImage? {
+        get { return self.editorService.cover }
+        set { self.editorService.cover = newValue }
+    }
+    
     public var outlineStorageDelegate: OutlineTextViewDelegate {
         return self.editorService.outlineDelegate
     }

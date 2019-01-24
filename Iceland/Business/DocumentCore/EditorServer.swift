@@ -148,6 +148,11 @@ public class EditorService {
         }
     }
     
+    public var cover: UIImage? {
+        set { self.document.cover = cover }
+        get { return self.document.cover }
+    }
+    
     public func trim(string: String, range: NSRange) -> String {
         return self.trimmer.trim(string: string, range: range)
     }
@@ -186,7 +191,7 @@ public class EditorService {
             self.editorController.textStorage.replaceCharacters(in: extendedRange, with: "")
         }
         
-        self.save() // FIXME: 更好的保存方式
+        self.document.updateChangeCount(UIDocument.ChangeKind.done)
     }
     
     public func removeSchedule(at headingLocation: Int) {
@@ -197,7 +202,7 @@ public class EditorService {
             self.editorController.textStorage.replaceCharacters(in: extendedRange, with: "")
         }
         
-        self.save() // FIXME: 更好的保存方式
+        self.document.updateChangeCount(UIDocument.ChangeKind.done)
     }
     
     public func remove(tag: String, at headingLocation: Int) {
@@ -219,7 +224,7 @@ public class EditorService {
             }
         }
         
-        self.save() // FIXME: 更好的保存方式
+        self.document.updateChangeCount(UIDocument.ChangeKind.done)
     }
     
     public func removePlanning(at headingLocation: Int) {
@@ -229,7 +234,7 @@ public class EditorService {
             self.editorController.textStorage.replaceCharacters(in: planningRange, with: "")
         }
         
-        self.save() // FIXME: 更好的保存方式
+        self.document.updateChangeCount(UIDocument.ChangeKind.done)
     }
     
     public func update(planning: String, at headingLocation: Int) {
@@ -249,7 +254,7 @@ public class EditorService {
         
         editorController.textStorage.replaceCharacters(in: editRange, with: replacement)
         
-        self.save() // FIXME: 更好的保存方式
+        self.document.updateChangeCount(UIDocument.ChangeKind.done)
     }
     
     public func update(schedule: DateAndTimeType, at headingLocation: Int) {
@@ -269,7 +274,7 @@ public class EditorService {
         
         editorController.textStorage.replaceCharacters(in: editRange, with: replacement)
         
-        self.save()// FIXME: 更好的保存方式
+        self.document.updateChangeCount(UIDocument.ChangeKind.done)
     }
     
     public func update(due: DateAndTimeType, at headingLocation: Int) {
@@ -290,7 +295,7 @@ public class EditorService {
         
         editorController.textStorage.replaceCharacters(in: editRange, with: replacement)
         
-        self.save()// FIXME: 更好的保存方式
+        self.document.updateChangeCount(UIDocument.ChangeKind.done)
     }
     
     /// 添加 tag 到 heading
@@ -303,7 +308,7 @@ public class EditorService {
             editorController.insert(string: " :\(tag):", at: heading.tagLocation)
         }
         
-        self.save()// FIXME: 更好的保存方式
+        self.document.updateChangeCount(UIDocument.ChangeKind.done)
     }
     
     public func archive(headingLocation: Int) {
@@ -339,7 +344,7 @@ public class EditorService {
         
         editorController.insertToParagraph(at: heading, content: content)
         
-        self.save()// FIXME: 更好的保存方式
+        self.document.updateChangeCount(UIDocument.ChangeKind.done)
     }
     
     public func close(completion:((Bool) -> Void)? = nil) {

@@ -45,8 +45,18 @@ extension UIImage {
     }
     
     public func resize(upto: CGSize) -> UIImage {
-        // TODO: resize
-        return self
+        let newSize = self.size.aspectFitSizeScale(for: upto)
+        
+        var image: UIImage!
+        UIGraphicsBeginImageContextWithOptions(newSize, true, 0)
+        
+        self.draw(in: CGRect(origin: .zero, size: newSize))
+        
+        image = UIGraphicsGetImageFromCurrentImageContext()!
+        
+        UIGraphicsEndImageContext()
+        
+        return image
     }
 }
 

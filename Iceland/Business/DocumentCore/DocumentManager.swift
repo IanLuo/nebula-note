@@ -35,6 +35,17 @@ public struct DocumentManager {
             .filter { $0.pathExtension == Document.fileExtension }
     }
     
+    public func setCover(_ image: UIImage?, url: URL) {
+        let service = OutlineEditorServer.request(url: url)
+        service.open { [service] _ in
+            service.cover = image
+        }
+    }
+    
+    public func cover(url: URL) -> UIImage? {
+        return UIImage(contentsOfFile: url.coverURL.path)
+    }
+    
     private func createFolderIfNeeded(url: URL) -> URL {
         let folderURL = url.convertoFolderURL
         var isDIR = ObjCBool(true)
@@ -191,5 +202,9 @@ extension URL {
     
     public var fileName: String {
         return self.deletingPathExtension().lastPathComponent.replacingOccurrences(of: "/", with: "")
+    }
+    
+    public var coverURL: URL {
+        return self.appendingPathComponent(Document.coverKey)
     }
 }

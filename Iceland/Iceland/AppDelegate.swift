@@ -8,6 +8,7 @@
 
 import UIKit
 import SwiftyBeaver
+import Business
 
 internal let log = SwiftyBeaver.self
 
@@ -31,6 +32,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.application = Application(window: window!)
         
         window?.makeKeyAndVisible()
+        window?.tintColor = InterfaceTheme.Color.interactive
         
         self.application?.start(from: nil, animated: false)
         
