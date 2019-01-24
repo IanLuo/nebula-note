@@ -39,7 +39,7 @@ public class DocumentBrowserViewController: UIViewController {
     
     private let cancelButton: UIButton = {
         let button = UIButton()
-        button.setTitle("✕".localizable, for: .normal)
+        button.setImage(UIImage(named: "cross")?.withRenderingMode(.alwaysTemplate), for: .normal)
         button.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.background1, size: .singlePoint),
                                   for: .normal)
         button.addTarget(self, action: #selector(cancel), for: .touchUpInside)

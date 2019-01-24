@@ -11,24 +11,70 @@ import UIKit
 import Storage
 
 public class Document: UIDocument {
-    public static let fileExtension = "org"
+    public static let fileExtension = "iceland"
     var string: String = ""
-    var title: String = ""
+    var logs: String = ""
+    var cover: UIImage?
+    var wrapper: FileWrapper?
+    
+    private let contentKey: String = "content"
+    private let coverKey: String = "cover"
+    private let logsKey: String = "logs"
     
     public override init(fileURL url: URL) {
         let ext = url.absoluteString.hasSuffix(Document.fileExtension) ? "" : Document.fileExtension
         super.init(fileURL: url.appendingPathExtension(ext))
     }
     
-    public override var fileType: String? { return "txt" }
-    
     public override func contents(forType typeName: String) throws -> Any {
-        return string.data(using: .utf8) as Any
+        if self.wrapper == nil {
+            self.wrapper = FileWrapper(directoryWithFileWrappers: [:])
+        }
+        
+        if self.wrapper?.fileWrappers?[contentKey] == nil {
+            if let data = self.string.data(using: .utf8) {
+                let textWrapper = FileWrapper(regularFileWithContents: data)
+                textWrapper.preferredFilename = contentKey.appending(".org")
+                self.wrapper?.addFileWrapper(textWrapper)
+            }
+        }
+        
+        if self.wrapper?.fileWrappers?[coverKey] == nil {
+            if let coverImage = self.cover {
+                if let coverData = coverImage.pngData() {
+                    let coverWrapper = FileWrapper(regularFileWithContents: coverData)
+                    coverWrapper.preferredFilename = coverKey.appending(".png")
+                    self.wrapper?.addFileWrapper(coverWrapper)
+                }
+            }
+        }
+        
+        if self.wrapper?.fileWrappers?[logsKey] == nil {
+            if let logsData = self.logs.data(using: .utf8) {
+                let logsWrapper = FileWrapper(regularFileWithContents: logsData)
+                logsWrapper.preferredFilename = logsKey.appending(".log")
+                self.wrapper?.addFileWrapper(logsWrapper)
+            }
+        }
+        
+        return self.wrapper!
     }
     
     public override func load(fromContents contents: Any, ofType typeName: String?) throws {
-        if let data = contents as? Data {
-            self.string = String(data: data, encoding: .utf8)!
+        if let wrapper = contents as? FileWrapper {
+            self.wrapper = wrapper
+            
+            if let contentData = wrapper.fileWrappers?[contentKey]?.regularFileContents {
+                self.string = String(data: contentData, encoding: .utf8) ?? ""
+            }
+            
+            if let imageData = wrapper.fileWrappers?[coverKey]?.regularFileContents {
+                self.cover = UIImage(data: imageData)
+            }
+            
+            if let logsData = wrapper.fileWrappers?[logsKey]?.regularFileContents {
+                self.logs = String(data: logsData, encoding: .utf8) ?? ""
+            }
         }
     }
     

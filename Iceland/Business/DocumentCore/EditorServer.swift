@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit.UIDocument
+import Storage
 
 public class OutlineEditorServer: EditorServiceDelegate {
     private init() {}
@@ -26,19 +27,85 @@ public class OutlineEditorServer: EditorServiceDelegate {
             return editorInstance
         } else {
             let newService = EditorService.connect(url: url, queue: OutlineEditorServer._instance.editingQueue)
+            newService.delegate = OutlineEditorServer._instance
             OutlineEditorServer._instance.instances[url] = newService
             return self.request(url: url)
         }
     }
     
+    // MARK: - 最近使用的文件
+    
+    /// 删除最近文件, 参数为相对路径
+    public func removeRecentFile(key: String) {
+        let plist = KeyValueStoreFactory.store(type: KeyValueStoreType.plist(PlistStoreType.custom("recent_files")))
+        plist.remove(key: key)
+    }
+    
+    /// 关闭文件后，更新最近使用文件
+    public func closeFile(key: String, lastLocation: Int) {
+        let plist = KeyValueStoreFactory.store(type: KeyValueStoreType.plist(PlistStoreType.custom("recent_files")))
+        plist.set(value: self.encodeLastFileInfo(location: lastLocation, date: Date()), key: key)
+    }
+    
+    /// 返回保存文件的相对路径列表
+    public static func recentFileList() -> [String] {
+        let plist = KeyValueStoreFactory.store(type: KeyValueStoreType.plist(PlistStoreType.custom("recent_files")))
+        return plist.allKeys().sorted(by: { key1, key2 in
+            let data1 = self.getLastFileData(key: key1, plist: plist)
+            let data2 = self.getLastFileData(key: key2, plist: plist)
+            
+            switch (data1?["time"], data2?["time"]) {
+            case (let date1?, let date2?): return date1 >= date2
+            case (_?, nil): return true
+            default: return false
+            }
+        })
+    }
+    
+    private func encodeLastFileInfo(location: Int, date: Date) -> String {
+        let payload = ["time": date.timeIntervalSince1970,
+                       "location": Double(0)]
+        let jsonEncoder = JSONEncoder()
+        let data = (try? jsonEncoder.encode(payload)) ?? Data()
+        let string = String(data: data, encoding: .utf8) ?? ""
+        return string
+    }
+    
+    private static func getLastFileData(key: String, plist: KeyValueStore) -> [String: Double]? {
+        if let json = plist.get(key: key) as? String {
+            return self.decodeLastFileInfo(string: json)
+        }
+        
+        return nil
+    }
+    
+    private static func decodeLastFileInfo(string: String) -> [String: Double]? {
+        let jsonDecoder = JSONDecoder()
+        if let data = string.data(using: .utf8) {
+            return try? jsonDecoder.decode([String: Double].self, from: data)
+        } else {
+            return nil
+        }
+    }
+    
+    // MARK: -
+    
     /// 当重命名后，将缓存中的旧文件名指向新的
     func didChangeFileName(to url: URL, old: URL) {
         instances[old] = instances[url]
+    }
+    
+    /// 打开文件后，更新最近使用文件
+    func didOpenFile(url: URL) {
+        let plist = KeyValueStoreFactory.store(type: KeyValueStoreType.plist(PlistStoreType.custom("recent_files")))
+        plist.set(value: self.encodeLastFileInfo(location: 0, date: Date()), key: url.lastPathComponent)
     }
 }
 
 fileprivate protocol EditorServiceDelegate: class {
     func didChangeFileName(to url: URL, old: URL)
+    
+    func didOpenFile(url: URL)
 }
 
 public class EditorService {
@@ -256,6 +323,7 @@ public class EditorService {
                     strongSelf.editorController.string = strongSelf.document.string // 触发解析
                     DispatchQueue.main.async {
                         completion?(strongSelf.document.string)
+                        strongSelf.delegate?.didOpenFile(url: strongSelf.fileURL)
                     }
                 } else {
                     DispatchQueue.main.async {

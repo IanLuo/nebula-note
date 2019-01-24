@@ -14,6 +14,20 @@ public struct DocumentManager {
         Constants.filesFolder.createFolderIfNeeded()
     }
     
+    public var recentFiles: [URL] {
+        return OutlineEditorServer.recentFileList().map {
+            File(Constants.filesFolder, fileName: $0).url
+        }
+    }
+    
+    public func removeRecentFile(url: URL) {
+        OutlineEditorServer.instance.removeRecentFile(key: url.lastPathComponent)
+    }
+    
+    public func closeFile(url: URL, last selectionLocation: Int) {
+        OutlineEditorServer.instance.closeFile(key: url.lastPathComponent, lastLocation: selectionLocation)
+    }
+    
     public func query(in folder: URL) throws -> [URL] {
         return try FileManager.default.contentsOfDirectory(at: folder,
                                                            includingPropertiesForKeys: nil,

@@ -23,6 +23,12 @@ public class DocumentBrowserCellModel {
         self.levelFromRoot = url.pathReleatedToRoot.components(separatedBy: "/").filter { $0.count > 0 }.count
     }
     
+    public func parentChanged(newParent: URL) {
+        self.parent = newParent
+        
+        self.url = newParent.convertoFolderURL.appendingPathComponent(self.url.lastPathComponent)
+    }
+    
     public var hasSubDocuments: Bool {
         return url.hasSubDocuments
     }

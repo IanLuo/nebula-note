@@ -193,8 +193,11 @@ public class DocumentBrowserViewModel {
                                     below: nil,
                                     completion: { url in
                                         self.data[index].url = url
-                                        for i in index..<index + self.subDocumentcount(index: index, recursively: true) {
-                                            self.data[i].parent = url
+                                        let subCount = self.subDocumentcount(index: index, recursively: false)
+                                        if subCount > 0 {
+                                            for i in index + 1...(index + subCount) {
+                                                self.data[i].parentChanged(newParent: url)
+                                            }
                                         }
                                         self.delegate?.didRenameDocument(index: index)
                                         self.delegate?.didUpdate(index: index)
