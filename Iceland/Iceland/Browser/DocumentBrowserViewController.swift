@@ -170,8 +170,10 @@ extension DocumentBrowserViewController: DocumentBrowserCellDelegate {
     public func didTapActions(url: URL) {
         if let index = self.viewModel.index(of: url) {
             let actionsViewController = ActionsViewController()
+            
+            actionsViewController.title = "Perform Actions".localizable
             // 创建新文档，使用默认的新文档名
-            actionsViewController.addAction(icon: nil, title: "new document".localizable) { viewController in
+            actionsViewController.addAction(icon: UIImage(named: "image library"), title: "new document".localizable) { viewController in
                 viewController.dismiss(animated: true, completion: {
                     self.viewModel.createDocument(title: "untitled".localizable, below: self.viewModel.data[index].url)
                 })

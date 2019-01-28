@@ -21,7 +21,7 @@ public class DocumentBrowserCellModel {
     public init(url: URL) {
         self.url = url
         self.parent = url.parentDocumentURL
-        self.levelFromRoot = url.pathReleatedToRoot.components(separatedBy: "/").filter { $0.count > 0 }.count
+        self.levelFromRoot = url.documentRelativePath.components(separatedBy: "/").filter { $0.count > 0 }.count
     }
     
     public func parentChanged(newParent: URL) {

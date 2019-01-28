@@ -70,6 +70,10 @@ extension URL {
         return location.url.appendingPathComponent(relativePath)
     }
     
+    public static func directory(relativeDirectory: URL, relativePath: String) -> URL {
+        return relativeDirectory.appendingPathComponent(relativePath)
+    }
+    
     public static func file(directory: URL, name: String, extension ext: String) -> URL {
         return directory.appendingPathComponent(name).appendingPathExtension(ext)
     }
@@ -99,17 +103,9 @@ extension URL {
     public var convertoFolderURL: URL {
         let path = self.deletingPathExtension().path.replacingOccurrences(of: URL.filesFolderPath, with: "")
             + DocumentConstants.documentDirSuffix
-        return URL.directory(location: URLLocation.document, relativePath: path)
+        return URL.directory(relativeDirectory: URL.documentBaseURL, relativePath: path)
     }
-    
-    public var pathReleatedToRoot: String {
-        return self.deletingPathExtension().path.replacingOccurrences(of: URL.filesFolderPath, with: "")
-    }
-    
-    public var parentDir: URL {
-        return self.parentDocumentURL?.deletingLastPathComponent() ?? URL.documentBaseURL
-    }
-    
+        
     public var parentDocumentURL: URL? {
         var url = self.deletingPathExtension().deletingLastPathComponent()
         let fileName = url.lastPathComponent.replacingOccurrences(of: DocumentConstants.documentDirSuffix, with: "")

@@ -52,15 +52,6 @@ public class HomeViewController: UIViewController {
         self.masterView.frame = CGRect(x: -masterViewWidth, y: 0, width: masterViewWidth, height: self.view.bounds.height)
         
         self.showChildViewController(at: 0)
-        
-//        let showMasterButton = UIButton()
-//        showMasterButton.setTitle("❖", for: .normal)
-//        showMasterButton.setTitleColor(InterfaceTheme.Color.interactive, for: .normal)
-//        showMasterButton.addTarget(self, action: #selector(showMasterView), for: .touchUpInside)
-//
-//        self.view.addSubview(showMasterButton)
-//        showMasterButton.sideAnchor(for: [.left, .top], to: self.view, edgeInset: 0)
-//        showMasterButton.sizeAnchor(width: 80, height: 80)
     }
     
     private func showChildViewController(at index: Int) {

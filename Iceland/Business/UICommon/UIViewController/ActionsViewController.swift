@@ -11,7 +11,7 @@ import UIKit
 
 public class ActionsViewController: UIViewController {
     private struct Constants {
-        static let rowHeight = 80
+        static let rowHeight = 50
     }
     
     public enum Style {
@@ -132,7 +132,7 @@ public class ActionsViewController: UIViewController {
         let label = UILabel()
         label.font = InterfaceTheme.Font.title
         label.textColor = InterfaceTheme.Color.descriptive
-        label.textAlignment = .center
+        label.textAlignment = .left
         return label
     }()
     
@@ -165,7 +165,7 @@ public class ActionsViewController: UIViewController {
 
         self.cancelButton.sideAnchor(for: [.right, .top, .bottom], to: self.actionsContainerView, edgeInset: 0)
         self.cancelButton.sizeAnchor(width: 80, height: 80)
-        self.titleLabel.sideAnchor(for: [.left, .top, .bottom], to: self.actionsContainerView, edgeInsets: .init(top: 0, left: 80, bottom: 0, right: 0))
+        self.titleLabel.sideAnchor(for: [.left, .top, .bottom], to: self.actionsContainerView, edgeInsets: .init(top: 0, left: 30, bottom: 0, right: 0))
         self.titleLabel.rowAnchor(view: self.cancelButton)
         
         self.actionsContainerView.columnAnchor(view: self.accessoryViewContainer)
@@ -229,7 +229,7 @@ extension ActionsViewController: UITableViewDataSource, UITableViewDelegate {
 fileprivate class ActionCell: UITableViewCell {
     fileprivate var item: ActionsViewController.Item? {
         didSet {
-            self.iconView.image = item?.icon
+            self.iconView.image = item?.icon?.withRenderingMode(.alwaysTemplate)
             self.titleLabel.text = item?.title
         }
     }
@@ -251,13 +251,15 @@ fileprivate class ActionCell: UITableViewCell {
     let iconView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .center
+        imageView.tintColor = InterfaceTheme.Color.descriptive
         return imageView
     }()
     
     let titleLabel: UILabel = {
         let label = UILabel()
-        label.font = InterfaceTheme.Font.title
+        label.font = InterfaceTheme.Font.body
         label.textColor = InterfaceTheme.Color.interactive
+        label.textAlignment = .left
         return label
     }()
     
@@ -269,10 +271,12 @@ fileprivate class ActionCell: UITableViewCell {
         self.contentView.addSubview(self.iconView)
         self.contentView.addSubview(self.titleLabel)
         
-        self.iconView.sideAnchor(for: .left, to: self.contentView, edgeInset: 30)
-        self.iconView.centerAnchors(position: .centerY, to: self.contentView)
+        self.titleLabel.sideAnchor(for: [.left, .top, .bottom], to: self.contentView, edgeInsets: .init(top: 0, left: 30, bottom: 0, right: 0))
+        self.titleLabel.centerAnchors(position: .centerY, to: self.contentView)
+        self.titleLabel.rowAnchor(view: self.iconView)
         
-        self.titleLabel.centerAnchors(position: [.centerX, .centerY], to: self.contentView)
+        self.iconView.sideAnchor(for: .right, to: self.contentView, edgeInset: 30)
+        self.iconView.centerAnchors(position: .centerY, to: self.contentView)
     }
     
     required init?(coder aDecoder: NSCoder) {

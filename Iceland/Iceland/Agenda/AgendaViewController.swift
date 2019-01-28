@@ -113,6 +113,8 @@ extension AgendaViewController: UITableViewDelegate {
         
         let actionsViewController = ActionsViewController()
         
+        actionsViewController.title = "Perform actions".localizable
+        
         actionsViewController.addAction(icon: nil, title: "Reschedule") { viewController in
             viewController.dismiss(animated: true, completion: nil)
         }
