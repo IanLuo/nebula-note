@@ -82,7 +82,7 @@ extension AttachmentImageViewController: UIImagePickerControllerDelegate, UINavi
        
         if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
             let fileName = UUID().uuidString
-            let file = File(File.Folder.temp("image"), fileName: fileName + ".png", createFolderIfNeeded: true).url
+            let file = URL.file(directory: URL.imageCacheURL, name: fileName, extension: "png").createDirectorysIfNeeded()
             do {
                 try image.pngData()?.write(to: file)
                 self.viewModel.save(content: file.path, type: .image, description: "image")

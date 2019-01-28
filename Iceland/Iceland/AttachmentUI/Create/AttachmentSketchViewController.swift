@@ -109,7 +109,7 @@ public class AttachmentSketchViewController: AttachmentViewController, Attachmen
     
     @objc private func save() {
         if let image = self.drawingView.render(over: UIImage.create(with: self.drawingView.backgroundColor!, size: self.drawingView.bounds.size)) {
-            let url = File(File.Folder.temp("sketch"), fileName: UUID().uuidString, createFolderIfNeeded: true).url.appendingPathExtension("png")
+            let url = URL.file(directory: URL.sketchCacheURL, name: UUID().uuidString, extension: "png").createDirectorysIfNeeded()
             do {
                 try image.pngData()?.write(to: url)
                 self.viewModel.save(content: url.path, type: Attachment.AttachmentType.sketch, description: "sketch")

@@ -37,8 +37,8 @@ public class AudioRecorder: NSObject {
     
     public var isReady: Bool = false
 
-    public override init() {
-        self.url = File(File.Folder.temp("audio"), fileName: UUID().uuidString, createFolderIfNeeded: true).url.appendingPathExtension("m4a")
+    public init(url: URL) {
+        self.url = url
         self.settings = [AVFormatIDKey: kAudioFormatMPEG4AAC,
                          AVSampleRateKey: 44100,
                          AVNumberOfChannelsKey: 1]

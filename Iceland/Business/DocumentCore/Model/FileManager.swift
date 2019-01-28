@@ -36,6 +36,29 @@ extension URL {
     public static var attachmentURL: URL {
         return URL.directory(location: URLLocation.document, relativePath: "attachment")
     }
+    
+    public static var imageCacheURL: URL {
+        return URL.directory(location: URLLocation.cache, relativePath: "image")
+    }
+    
+    public static var sketchCacheURL: URL {
+        return URL.directory(location: URLLocation.cache, relativePath: "sketch")
+    }
+    
+    public static var audioCacheURL: URL {
+        return URL.directory(location: URLLocation.cache, relativePath: "audio")
+    }
+    
+    public func createDirectorysIfNeeded() -> URL {
+        var isDIR = ObjCBool(true)
+        let path = self.path
+        if !Foundation.FileManager.default.fileExists(atPath: path, isDirectory: &isDIR) {
+            do { try Foundation.FileManager.default.createDirectory(atPath: path, withIntermediateDirectories: true, attributes: nil) }
+            catch { print("Error when touching dir for path: \(path): error") }
+        }
+        
+        return self
+    }
 }
 
 extension URL {

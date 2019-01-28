@@ -12,7 +12,7 @@ import Business
 
 public class AttachmentAudioViewController: AttachmentViewController, AttachmentViewModelDelegate {
     private lazy var recorder: AudioRecorder = {
-        let recorder = AudioRecorder()
+        let recorder = AudioRecorder(url: URL.file(directory: URL.audioCacheURL, name: UUID().uuidString, extension: "m4a"))
         recorder.delegate = self
         return recorder
     }()
