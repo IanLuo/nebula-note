@@ -39,7 +39,7 @@ public class AttachmentLocationViewController: AttachmentViewController, Attachm
         }
         
         actionsViewController.setCancel { viewController in
-            self.viewModel.dependency?.stop()
+            self.viewModel.coordinator?.stop()
         }
         
         actionsViewController.addAction(icon: nil, title: "save".localizable, style: ActionsViewController.Style.highlight) { viewController in
@@ -91,7 +91,7 @@ public class AttachmentLocationViewController: AttachmentViewController, Attachm
     
     public func didSaveAttachment(key: String) {
         self.delegate?.didSaveAttachment(key: key)
-        self.viewModel.dependency?.stop(animated: false)
+        self.viewModel.coordinator?.stop(animated: false)
     }
     
     public func didFailToSave(error: Error, content: String, type: Attachment.AttachmentType, descritpion: String) {

@@ -17,7 +17,7 @@ public protocol DocumentSearchViewModelDelegate: class {
 
 public class DocumentSearchViewModel {
     public weak var delegate: DocumentSearchViewModelDelegate?
-    public weak var dependency: SearchCoordinator?
+    public weak var coordinator: SearchCoordinator?
     
     private let documentSearchManager: DocumentSearchManager
     

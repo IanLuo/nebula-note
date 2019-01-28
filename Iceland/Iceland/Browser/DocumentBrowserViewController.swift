@@ -99,13 +99,13 @@ public class DocumentBrowserViewController: UIViewController {
     }
     
     @objc private func cancel() {
-        self.viewModel.dependency?.stop()
+        self.viewModel.coordinator?.stop()
     }
 }
 
 extension DocumentBrowserViewController: OpenningFilesViewDelegate {
     public func didSelectDocument(url: URL) {
-        self.viewModel.dependency?.openDocument(url: url, location: 0)
+        self.viewModel.coordinator?.openDocument(url: url, location: 0)
     }
     
     public func dataChanged(count: Int) {

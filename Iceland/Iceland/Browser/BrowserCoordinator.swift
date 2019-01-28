@@ -24,19 +24,19 @@ public class BrowserCoordinator: Coordinator {
     public let usage: Usage
     public weak var delegate: BrowserCoordinatorDelegate?
     
-    public init(stack: UINavigationController, context: Context, usage: Usage) {
-        let viewModel = DocumentBrowserViewModel(documentManager: context.documentManager)
+    public init(stack: UINavigationController, dependency: Dependency, usage: Usage) {
+        let viewModel = DocumentBrowserViewModel(documentManager: dependency.documentManager)
         let viewController = DocumentBrowserViewController(viewModel: viewModel)
         self.usage = usage
-        super.init(stack: stack, context: context)
-        viewModel.dependency = self
+        super.init(stack: stack, dependency: dependency)
+        viewModel.coordinator = self
         viewController.delegate = self
         self.viewController = viewController
     }
     
     public func showOutlineHeadings(url: URL) {
         let editorCoord = EditorCoordinator(stack: self.stack,
-                                            context: self.context,
+                                            dependency: self.dependency,
                                             usage: .outline(url))
         editorCoord.delegate = self
         editorCoord.start(from: self)

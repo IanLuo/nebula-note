@@ -21,15 +21,15 @@ public class AttachmentCoordinator: Coordinator {
     
     public var type: Attachment.AttachmentType
     
-    public init(stack: UINavigationController, context: Context, type: Attachment.AttachmentType) {
+    public init(stack: UINavigationController, dependency: Dependency, type: Attachment.AttachmentType) {
 
         let attachmentViewModel = AttachmentViewModel(attachmentManager: AttachmentManager())
         
         self.type = type
         
-        super.init(stack: stack, context: context)
+        super.init(stack: stack, dependency: dependency)
         
-        attachmentViewModel.dependency = self
+        attachmentViewModel.coordinator = self
 
         let viewController: AttachmentViewController!
         switch type {

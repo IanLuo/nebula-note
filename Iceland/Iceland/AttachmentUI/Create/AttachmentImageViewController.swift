@@ -56,7 +56,7 @@ public class AttachmentImageViewController: AttachmentViewController, Attachment
         })
         
         actionsViewController.setCancel { viewController in
-            self.viewModel.dependency?.stop()
+            self.viewModel.coordinator?.stop()
         }
         
         self.view.addSubview(self.actionsViewController.view)
@@ -64,7 +64,7 @@ public class AttachmentImageViewController: AttachmentViewController, Attachment
     
     public func didSaveAttachment(key: String) {
         self.delegate?.didSaveAttachment(key: key)
-        self.viewModel.dependency?.stop()
+        self.viewModel.coordinator?.stop()
     }
     
     public func didFailToSave(error: Error, content: String, type: Attachment.AttachmentType, descritpion: String) {

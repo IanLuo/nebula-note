@@ -67,11 +67,11 @@ public class DocumentEditViewController: UIViewController {
     
     @objc private func cancel() {
         self.textView.endEditing(true)
-        self.viewModel.dependency?.stop()
+        self.viewModel.coordinator?.stop()
     }
     
     @objc private func search() {
-        self.viewModel.dependency?.search()
+        self.viewModel.coordinator?.search()
     }
     
     private func createActionButton(icon: UIImage?) -> UIButton {

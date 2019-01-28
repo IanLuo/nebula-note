@@ -28,7 +28,7 @@ public class AttachmentTextViewController: AttachmentViewController, AttachmentV
     
     public func didSaveAttachment(key: String) {
         self.delegate?.didSaveAttachment(key: key)
-        self.viewModel.dependency?.stop()
+        self.viewModel.coordinator?.stop()
     }
     
     public func didFailToSave(error: Error, content: String, type: Attachment.AttachmentType, descritpion: String) {
@@ -42,7 +42,7 @@ extension AttachmentTextViewController: ModalFormViewControllerDelegate {
     }
     
     public func modalFormDidCancel(viewController: ModalFormViewController) {
-        self.viewModel.dependency?.stop()
+        self.viewModel.coordinator?.stop()
     }
     
     public func modalFormDidSave(viewController: ModalFormViewController, formData: [String : Codable]) {

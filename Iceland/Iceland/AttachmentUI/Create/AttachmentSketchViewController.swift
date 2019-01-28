@@ -92,7 +92,7 @@ public class AttachmentSketchViewController: AttachmentViewController, Attachmen
     }
     
     @objc private func cancel() {
-        self.viewModel.dependency?.stop()
+        self.viewModel.coordinator?.stop()
     }
     
     @objc private func undo() {
@@ -204,7 +204,7 @@ public class AttachmentSketchViewController: AttachmentViewController, Attachmen
     
     public func didSaveAttachment(key: String) {
         self.delegate?.didSaveAttachment(key: key)
-        self.viewModel.dependency?.stop()
+        self.viewModel.coordinator?.stop()
     }
     
     public func didFailToSave(error: Error, content: String, type: Attachment.AttachmentType, descritpion: String) {

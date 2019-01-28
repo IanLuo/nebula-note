@@ -19,7 +19,7 @@ public protocol CaptureListViewModelDelegate: class {
 
 public class CaptureListViewModel {
     public weak var delegate: CaptureListViewModelDelegate?
-    public weak var dependency: CaptureListCoordinator?
+    public weak var coordinator: CaptureListCoordinator?
     
     private let service: CaptureServiceProtocol
     
@@ -99,6 +99,6 @@ public class CaptureListViewModel {
     
     public func chooseRefileLocation(index: Int) {
         self.currentIndex = index
-        self.dependency?.showDocumentHeadingSelector()
+        self.coordinator?.showDocumentHeadingSelector()
     }
 }

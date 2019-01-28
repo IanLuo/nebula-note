@@ -55,7 +55,7 @@ public class AttachmentAudioViewController: AttachmentViewController, Attachment
         self.actionsViewController.setCancel { viewController in
             // 两个动画同时开始
             viewController.dismiss(animated: true, completion: {})
-            self.viewModel.dependency?.stop()
+            self.viewModel.coordinator?.stop()
         }
         
         self.view.addSubview(self.actionsViewController.view)
@@ -63,7 +63,7 @@ public class AttachmentAudioViewController: AttachmentViewController, Attachment
     
     public func didSaveAttachment(key: String) {
         self.delegate?.didSaveAttachment(key: key)
-        self.viewModel.dependency?.stop(animated: false)
+        self.viewModel.coordinator?.stop(animated: false)
     }
     
     public func didFailToSave(error: Error, content: String, type: Attachment.AttachmentType, descritpion: String) {

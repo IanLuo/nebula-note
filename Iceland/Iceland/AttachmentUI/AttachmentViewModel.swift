@@ -16,7 +16,7 @@ public protocol AttachmentViewModelDelegate: class {
 
 public class AttachmentViewModel {
     public weak var delegate: AttachmentViewModelDelegate?
-    public weak var dependency: AttachmentCoordinator?
+    public weak var coordinator: AttachmentCoordinator?
     private var attachmentManager: AttachmentManager
     
     public init(attachmentManager: AttachmentManager) {
@@ -29,7 +29,7 @@ public class AttachmentViewModel {
         self.attachmentManager
             .insert(content: content, type: type, description: description, complete: { [weak self] key in
                 self?.delegate?.didSaveAttachment(key: key)
-                self?.dependency?.stop()
+                self?.coordinator?.stop()
             }, failure: { [weak self] error in
                 self?.delegate?.didFailToSave(error: error,
                                               content: content,

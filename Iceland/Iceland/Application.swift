@@ -23,22 +23,22 @@ public class Application: Coordinator {
         navigationController.isNavigationBarHidden = true
         
         super.init(stack: navigationController,
-                   context: Context(documentManager: DocumentManager(),
-                                    documentSearchManager: DocumentSearchManager(),
-                                    editorServiceServer: OutlineEditorServer.instance,
-                                    headingTrimmer: OutlineTextTrimmer(parser: OutlineParser())))
+                   dependency: Dependency(documentManager: DocumentManager(),
+                                       documentSearchManager: DocumentSearchManager(),
+                                       editorServiceServer: OutlineEditorServer.instance,
+                                       headingTrimmer: OutlineTextTrimmer(parser: OutlineParser())))
         
         self.window?.rootViewController = self.stack
     }
     
     public override func start(from: Coordinator?, animated: Bool) {
         let homeCoord = HomeCoordinator(stack: self.stack,
-                                        context: self.context)
+                                        dependency: self.dependency)
         homeCoord.start(from: self, animated: animated)
     }
 }
 
-public struct Context {
+public struct Dependency {
     let documentManager: DocumentManager
     let documentSearchManager: DocumentSearchManager
     let editorServiceServer: OutlineEditorServer
@@ -54,11 +54,11 @@ public class Coordinator {
     
     public weak var parent: Coordinator?
     
-    public let context: Context
+    public let dependency: Dependency
     
-    public init(stack: UINavigationController, context: Context) {
+    public init(stack: UINavigationController, dependency: Dependency) {
         self.stack = stack
-        self.context = context
+        self.dependency = dependency
     }
     
     public func addChild(_ coord: Coordinator) {
@@ -115,12 +115,12 @@ extension Coordinator {
         let navigationController = UINavigationController()
         navigationController.isNavigationBarHidden = true
         
-        let documentCoordinator = EditorCoordinator(stack: navigationController, context: self.context, usage: EditorCoordinator.Usage.editor(url, location))
+        let documentCoordinator = EditorCoordinator(stack: navigationController, dependency: self.dependency, usage: EditorCoordinator.Usage.editor(url, location))
         documentCoordinator.start(from: self)
     }
     
     public func showAttachmentPicker(type: Attachment.AttachmentType, complete: @escaping (String) -> Void) {
-        let attachmentCoordinator = AttachmentCoordinator(stack: self.stack, context: self.context, type: type)
+        let attachmentCoordinator = AttachmentCoordinator(stack: self.stack, dependency: self.dependency, type: type)
         attachmentCoordinator.onSaveAttachment = complete
         attachmentCoordinator.start(from: self)
     }

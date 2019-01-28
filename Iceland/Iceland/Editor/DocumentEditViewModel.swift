@@ -25,7 +25,7 @@ public class DocumentEditViewModel {
         }
     }
     public var onLoadingLocation: Int = 0 // 打开文档的时候默认的位置
-    public weak var dependency: EditorCoordinator?
+    public weak var coordinator: EditorCoordinator?
     private let editorService: EditorService
     public var isReadyToEdit: Bool = false {
         didSet {

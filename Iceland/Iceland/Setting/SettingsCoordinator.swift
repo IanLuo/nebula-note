@@ -10,9 +10,9 @@ import Foundation
 import UIKit
 
 public class SettingsCoordinator: Coordinator {
-    public override init(stack: UINavigationController, context: Context) {
+    public override init(stack: UINavigationController, dependency: Dependency) {
         let viewModel = SettingsViewModel()
-        super.init(stack: stack, context: context)
+        super.init(stack: stack, dependency: dependency)
         let viewController = SettingsViewController(viewModel: viewModel)
         viewModel.delegate = viewController
         self.viewController = viewController

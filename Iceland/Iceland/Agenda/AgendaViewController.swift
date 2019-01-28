@@ -84,7 +84,7 @@ public class AgendaViewController: UIViewController {
     }
     
     @objc private func cancel() {
-        self.viewModel.dependency?.stop()
+        self.viewModel.coordinator?.stop()
     }
 }
 
@@ -128,7 +128,7 @@ extension AgendaViewController: UITableViewDelegate {
         actionsViewController.addAction(icon: nil, title: "Open", style: ActionsViewController.Style.highlight) { viewController in
             viewController.dismiss(animated: true, completion: nil)
             let data = self.viewModel.data[indexPath.row]
-            self.viewModel.dependency?.openDocument(url: data.url, location: data.heading.range.location)
+            self.viewModel.coordinator?.openDocument(url: data.url, location: data.heading.range.location)
         }
         
         actionsViewController.setCancel { viewController in

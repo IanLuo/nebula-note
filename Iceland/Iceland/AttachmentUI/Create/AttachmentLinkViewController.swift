@@ -31,7 +31,7 @@ public class AttachmentLinkViewController: AttachmentViewController, AttachmentV
     
     public func didSaveAttachment(key: String) {
         self.delegate?.didSaveAttachment(key: key)
-        self.viewModel.dependency?.stop()
+        self.viewModel.coordinator?.stop()
     }
     
     public func didFailToSave(error: Error, content: String, type: Attachment.AttachmentType, descritpion: String) {
@@ -45,7 +45,7 @@ extension AttachmentLinkViewController: ModalFormViewControllerDelegate {
     }
     
     public func modalFormDidCancel(viewController: ModalFormViewController) {
-        self.viewModel.dependency?.stop()
+        self.viewModel.coordinator?.stop()
     }
     
     public func modalFormDidSave(viewController: ModalFormViewController, formData: [String: Codable]) {
@@ -55,7 +55,7 @@ extension AttachmentLinkViewController: ModalFormViewControllerDelegate {
             let string = String(data: data, encoding: .utf8) ?? ""
             self.viewModel.save(content: string, type: .link, description: "link by user input")
             viewController.dismiss(animated: true) {
-                self.viewModel.dependency?.stop()
+                self.viewModel.coordinator?.stop()
             }
         } catch {
             log.error(error)

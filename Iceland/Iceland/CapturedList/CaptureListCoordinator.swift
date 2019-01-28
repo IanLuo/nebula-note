@@ -13,18 +13,18 @@ import Business
 public class CaptureListCoordinator: Coordinator {
     let viewModel: CaptureListViewModel
     
-    public override init(stack: UINavigationController, context: Context) {
+    public override init(stack: UINavigationController, dependency: Dependency) {
         self.viewModel = CaptureListViewModel(service: CaptureService())
         let viewController = CaptureListViewController(viewModel: self.viewModel)
         
-        super.init(stack: stack, context: context)
+        super.init(stack: stack, dependency: dependency)
         self.viewController = viewController
-        viewModel.dependency = self
+        viewModel.coordinator = self
     }
     
     public func showDocumentHeadingSelector() {
         let documentCoord = BrowserCoordinator(stack: self.stack,
-                                               context: super.context,
+                                               dependency: super.dependency,
                                                usage: .chooseHeading)
         documentCoord.delegate = self
         documentCoord.start(from: self)

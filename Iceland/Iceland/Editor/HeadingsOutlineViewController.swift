@@ -39,7 +39,7 @@ public class HeadingsOutlineViewController: SelectorViewController {
 
 extension HeadingsOutlineViewController: SelectorViewControllerDelegate {
     public func SelectorDidCancel(viewController: SelectorViewController) {
-        self.viewModel.dependency?.stop()
+        self.viewModel.coordinator?.stop()
     }
     
     public func SelectorDidSelect(index: Int, viewController: SelectorViewController) {

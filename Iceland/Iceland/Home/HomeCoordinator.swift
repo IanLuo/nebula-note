@@ -11,18 +11,17 @@ import UIKit
 import Business
 
 public class HomeCoordinator: Coordinator {
-    public override init(stack: UINavigationController, context: Context) {
+    public override init(stack: UINavigationController, dependency: Dependency) {
         let viewModel = HomeViewModel()
         let viewController = HomeViewController(viewModel: viewModel)
-        super.init(stack: stack, context: context)
-        viewModel.dependency = self
+        super.init(stack: stack, dependency: dependency)
         self.viewController = viewController
         
-        self.addSubCoordinator(coordinator: AgendaCoordinator(stack: stack, context: context))
-        self.addSubCoordinator(coordinator: CaptureListCoordinator(stack: stack, context: context))
-        self.addSubCoordinator(coordinator: SearchCoordinator(stack: stack, context: context))
+        self.addSubCoordinator(coordinator: AgendaCoordinator(stack: stack, dependency: dependency))
+        self.addSubCoordinator(coordinator: CaptureListCoordinator(stack: stack, dependency: dependency))
+        self.addSubCoordinator(coordinator: SearchCoordinator(stack: stack, dependency: dependency))
         
-        let browserCoordinator = BrowserCoordinator(stack: stack, context: context, usage: .chooseDocument)
+        let browserCoordinator = BrowserCoordinator(stack: stack, dependency: dependency, usage: .chooseDocument)
         browserCoordinator.delegate = self
         self.addSubCoordinator(coordinator: browserCoordinator)
     }

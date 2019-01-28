@@ -20,7 +20,7 @@ public protocol DocumentBrowserViewModelDelegate: class {
 
 public class DocumentBrowserViewModel {
     public weak var delegate: DocumentBrowserViewModelDelegate?
-    public weak var dependency: BrowserCoordinator?
+    public weak var coordinator: BrowserCoordinator?
     private let documentManager: DocumentManager
     
     public var data: [DocumentBrowserCellModel] = []
@@ -30,11 +30,11 @@ public class DocumentBrowserViewModel {
     }
     
     public var shouldShowActions: Bool {
-        return self.dependency?.usage == .chooseDocument
+        return self.coordinator?.usage == .chooseDocument
     }
     
     public var shouldShowHeadingIndicator: Bool {
-        return self.dependency?.usage == .chooseHeading
+        return self.coordinator?.usage == .chooseHeading
     }
     
     public func setCover(_ cover: UIImage?, index: Int) {

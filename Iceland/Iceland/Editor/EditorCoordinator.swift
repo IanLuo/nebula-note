@@ -24,25 +24,25 @@ public class EditorCoordinator: Coordinator {
     
     private let usage: Usage
     
-    public init(stack: UINavigationController, context: Context, usage: Usage) {
+    public init(stack: UINavigationController, dependency: Dependency, usage: Usage) {
         self.usage = usage
         
         switch usage {
         case .editor(let url, let location):
             let viewModel = DocumentEditViewModel(editorService: OutlineEditorServer.request(url: url))
             viewModel.onLoadingLocation = location
-            super.init(stack: stack, context: context)
+            super.init(stack: stack, dependency: dependency)
             let viewController = DocumentEditViewController(viewModel: viewModel)
             viewController.delegate = self
-            viewModel.dependency = self
+            viewModel.coordinator = self
             self.viewController = viewController
         case .outline(let url):
             let viewModel = DocumentEditViewModel(editorService: OutlineEditorServer.request(url: url))
-            super.init(stack: stack, context: context)
+            super.init(stack: stack, dependency: dependency)
             let viewController = HeadingsOutlineViewController(viewModel: viewModel)
             viewController.outlineDelegate = self
             viewController.title = url.fileName
-            viewModel.dependency = self
+            viewModel.coordinator = self
             self.viewController = viewController
         }
     }
@@ -70,7 +70,7 @@ extension EditorCoordinator: SearchCoordinatorDelegate {
     }
     
     public func search() {
-        let searchCoordinator = SearchCoordinator(stack: self.stack, context: self.context)
+        let searchCoordinator = SearchCoordinator(stack: self.stack, dependency: self.dependency)
         searchCoordinator.delegate = self
         searchCoordinator.start(from: self)
     }

@@ -17,7 +17,7 @@ public protocol AgendaViewModelDelegate: class {
 
 public class AgendaViewModel {
     public weak var delegate: AgendaViewModelDelegate?
-    public weak var dependency: AgendaCoordinator?
+    public weak var coordinator: AgendaCoordinator?
     private let documentSearchManager: DocumentSearchManager
     private let headingTrimmer: OutlineTextTrimmer
     
@@ -51,7 +51,7 @@ public class AgendaViewModel {
     }
     
     public func showActions(index: Int) {
-        dependency?.openAgendaActions(url: self.data[index].url, heading: self.data[index].heading)
+        self.coordinator?.openAgendaActions(url: self.data[index].url, heading: self.data[index].heading)
     }
     
     public func load(plannings: [String]) {
@@ -80,7 +80,7 @@ public class AgendaViewModel {
     }
     
     public func openDocument(index: Int) {
-        self.dependency?.openDocument(url: self.data[index].url,
+        self.coordinator?.openDocument(url: self.data[index].url,
                                       location: self.data[index].headingLocation)
     }
 }

@@ -26,7 +26,7 @@ public class AttachmentVideoViewController: AttachmentViewController, Attachment
     
     public func didSaveAttachment(key: String) {
         self.delegate?.didSaveAttachment(key: key)
-        self.viewModel.dependency?.stop(animated: false)
+        self.viewModel.coordinator?.stop(animated: false)
     }
     
     public func didFailToSave(error: Error, content: String, type: Attachment.AttachmentType, descritpion: String) {
@@ -37,7 +37,7 @@ public class AttachmentVideoViewController: AttachmentViewController, Attachment
 extension AttachmentVideoViewController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
     public func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true, completion: nil)
-        self.viewModel.dependency?.stop()
+        self.viewModel.coordinator?.stop()
     }
     
     public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
