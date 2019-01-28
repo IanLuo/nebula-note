@@ -11,7 +11,7 @@ import UIKit
 import Business
 
 public protocol SearchCoordinatorDelegate: class {
-    func didSelectDocument(url: URL)
+    func didSelectDocument(url: URL, location: Int, searchCoordinator: SearchCoordinator)
     func didCancelSearching()
 }
 
@@ -24,12 +24,13 @@ public class SearchCoordinator: Coordinator {
         super.init(stack: stack, dependency: dependency)
         viewController.delegate = self
         self.viewController = viewController
+        viewModel.coordinator = self
     }
 }
 
 extension SearchCoordinator: DocumentSearchViewControllerDelegate {
-    public func didSelectDocument(url: URL) {
-        self.delegate?.didSelectDocument(url: url)
+    public func didSelectDocument(url: URL, location: Int) {
+        self.delegate?.didSelectDocument(url: url, location: location, searchCoordinator: self)
     }
     
     public func didCancelSearching() {

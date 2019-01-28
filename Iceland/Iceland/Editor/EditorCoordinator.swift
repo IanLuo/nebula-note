@@ -61,8 +61,12 @@ public class EditorCoordinator: Coordinator {
 }
 
 extension EditorCoordinator: SearchCoordinatorDelegate {
-    public func didSelectDocument(url: URL) {
-        self.openDocument(url: url, location: 0)
+    public func didSelectDocument(url: URL, location: Int, searchCoordinator: SearchCoordinator) {
+        searchCoordinator.stop()
+        let documentCoordinator = EditorCoordinator(stack: self.stack,
+                                                    dependency: self.dependency,
+                                                    usage: EditorCoordinator.Usage.editor(url, location))
+        documentCoordinator.start(from: self)
     }
     
     public func didCancelSearching() {
@@ -70,7 +74,10 @@ extension EditorCoordinator: SearchCoordinatorDelegate {
     }
     
     public func search() {
-        let searchCoordinator = SearchCoordinator(stack: self.stack, dependency: self.dependency)
+        let navigationController = UINavigationController()
+        navigationController.isNavigationBarHidden = true
+        navigationController.modalPresentationStyle = .overCurrentContext
+        let searchCoordinator = SearchCoordinator(stack: navigationController, dependency: self.dependency)
         searchCoordinator.delegate = self
         searchCoordinator.start(from: self)
     }

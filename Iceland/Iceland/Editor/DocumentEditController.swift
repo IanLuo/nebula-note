@@ -51,7 +51,8 @@ public class DocumentEditViewController: UIViewController {
         self.toolBar.sideAnchor(for: [.left, .top, .right], to: self.view, edgeInset: 0)
         self.toolBar.sizeAnchor(height: 40)
         
-        let closeButton = self.createActionButton(icon: UIImage(named: "cross")?.withRenderingMode(.alwaysTemplate))
+        let image = self.viewModel.coordinator?.isModal == true ? UIImage(named: "cross") : UIImage(named: "back")
+        let closeButton = self.createActionButton(icon: image?.withRenderingMode(.alwaysTemplate))
         closeButton.addTarget(self, action: #selector(cancel), for: .touchUpInside)
         let searchButton = self.createActionButton(icon: UIImage(named: "zoom")?.withRenderingMode(.alwaysTemplate))
         searchButton.addTarget(self, action: #selector(search), for: .touchUpInside)

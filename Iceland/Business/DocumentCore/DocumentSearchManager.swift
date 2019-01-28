@@ -75,7 +75,7 @@ public struct DocumentSearchManager {
                                                 let contextRange = NSRange(location: lowerBound, length: upperBound - lowerBound)
                                                 let highlightRange = NSRange(location: range.location - lowerBound, length: range.length)
                                                 
-                                                item.append(DocumentSearchResult(url: url,
+                                                item.append(DocumentSearchResult(url: url.wrapperURL,
                                                                                  highlightRange: highlightRange,
                                                                                  context: (string as NSString).substring(with: contextRange),
                                                                                  heading: nil))
@@ -120,7 +120,7 @@ public struct DocumentSearchManager {
                                         for t in tags {
                                             let range = (tagString as NSString).range(of: t)
                                             if range.location != Int.max {
-                                                searchResults.append(DocumentSearchResult(url: url,
+                                                searchResults.append(DocumentSearchResult(url: url.wrapperURL,
                                                                                           highlightRange: range.offset(-headingRange.location),
                                                                                           context: (string as NSString).substring(with: headingRange),
                                                                                           heading: Document.Heading(data: heading)))
@@ -155,7 +155,7 @@ public struct DocumentSearchManager {
                                         
                                         if let scheduleDate = DateAndTimeType.createFromSchedule(headingString)?.date {
                                             if scheduleDate <= schedule {
-                                                searchResults.append(DocumentSearchResult(url: url,
+                                                searchResults.append(DocumentSearchResult(url: url.wrapperURL,
                                                                                           highlightRange: scheduleRange,
                                                                                           context: (string as NSString).substring(with: headingRange),
                                                                                           heading: Document.Heading(data: heading)))
@@ -191,7 +191,7 @@ public struct DocumentSearchManager {
                                         
                                         if let dueDate = DateAndTimeType.createFromDue(headingString)?.date {
                                             if dueDate <= due {
-                                                searchResults.append(DocumentSearchResult(url: url,
+                                                searchResults.append(DocumentSearchResult(url: url.wrapperURL,
                                                                                           highlightRange: dueRange,
                                                                                           context: (string as NSString).substring(with: headingRange),
                                                                                           heading: Document.Heading(data: heading)))
@@ -226,7 +226,7 @@ public struct DocumentSearchManager {
                                         let planningString = (string as NSString).substring(with: planningRange)
                                         
                                         if plannings.contains(planningString) {
-                                            searchResults.append(DocumentSearchResult(url: url,
+                                            searchResults.append(DocumentSearchResult(url: url.wrapperURL,
                                                                                       highlightRange: planningRange,
                                                                                       context: (string as NSString).substring(with: headingRange),
                                                                                       heading: Document.Heading(data: heading)))

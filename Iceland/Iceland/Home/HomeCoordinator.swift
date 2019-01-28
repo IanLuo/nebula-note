@@ -19,7 +19,10 @@ public class HomeCoordinator: Coordinator {
         
         self.addSubCoordinator(coordinator: AgendaCoordinator(stack: stack, dependency: dependency))
         self.addSubCoordinator(coordinator: CaptureListCoordinator(stack: stack, dependency: dependency))
-        self.addSubCoordinator(coordinator: SearchCoordinator(stack: stack, dependency: dependency))
+        
+        let searchCoordinator = SearchCoordinator(stack: stack, dependency: dependency)
+        searchCoordinator.delegate = self
+        self.addSubCoordinator(coordinator: searchCoordinator)
         
         let browserCoordinator = BrowserCoordinator(stack: stack, dependency: dependency, usage: .chooseDocument)
         browserCoordinator.delegate = self
@@ -32,6 +35,16 @@ public class HomeCoordinator: Coordinator {
         if let viewController = coordinator.viewController {
             self.viewController?.addChild(viewController)
         }
+    }
+}
+
+extension HomeCoordinator: SearchCoordinatorDelegate {
+    public func didSelectDocument(url: URL, location: Int, searchCoordinator: SearchCoordinator) {
+        self.openDocument(url: url, location: location)
+    }
+    
+    public func didCancelSearching() {
+        
     }
 }
 

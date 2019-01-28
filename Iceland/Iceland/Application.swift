@@ -52,6 +52,8 @@ public class Coordinator {
     
     public var viewController: UIViewController?
     
+    public var isModal: Bool = false
+    
     public weak var parent: Coordinator?
     
     public let dependency: Dependency
@@ -87,6 +89,7 @@ public class Coordinator {
             if self.stack == self.parent?.stack {
                 self.stack.pushViewController(viewController, animated: animated)
             } else {
+                self.isModal = true
                 self.stack.pushViewController(viewController, animated: false)
                 top?.present(self.stack, animated: animated, completion: nil)
             }

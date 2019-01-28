@@ -11,7 +11,7 @@ import UIKit
 import Business
 
 public protocol DocumentSearchViewControllerDelegate: class {
-    func didSelectDocument(url: URL)
+    func didSelectDocument(url: URL, location: Int)
     func didCancelSearching()
 }
 
@@ -26,6 +26,12 @@ public class DocumentSearchViewController: UIViewController {
     public weak var delegate: DocumentSearchViewControllerDelegate?
     
     private let searchInputView: SearchInputView = SearchInputView()
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        self.searchInputView.textField.becomeFirstResponder()
+    }
     
     private lazy var searchResultTableView: UITableView = {
         let tableView = UITableView()
@@ -99,6 +105,8 @@ public class DocumentSearchViewController: UIViewController {
         
         self.preservedSearchItemsTableView.sideAnchor(for: [.bottom, .left, .right], to: self.view, edgeInset: 0)
         self.searchResultTableView.sideAnchor(for: [.bottom, .left, .right], to: self.view, edgeInset: 0)
+        
+        self.searchInputView.hideCancelButton(self.viewModel.coordinator?.isModal != true) // 因为目前只有在 modal 和常驻侧边栏两个位置有 search 模块，所以直接检查是否 modal 即可
     }
 }
 
@@ -134,7 +142,8 @@ extension DocumentSearchViewController: UITableViewDataSource, UITableViewDelega
     }
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.delegate?.didSelectDocument(url: self.viewModel.data[indexPath.row].url)
+        let searchResult = self.viewModel.data[indexPath.row]
+        self.delegate?.didSelectDocument(url: searchResult.url, location: searchResult.hilightRange.location)
         
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
             tableView.deselectRow(at: indexPath, animated: true)
@@ -148,11 +157,6 @@ extension DocumentSearchViewController: DocumentSearchViewModelDelegate {
     }
     
     public func didAddResult(index: Int, count: Int) {
-//        var indexPaths: [IndexPath] = []
-//        for i in index..<index + count {
-//            indexPaths.append(IndexPath(row: i, section: 0))
-//        }
-//        self.searchResultTableView.insertRows(at: indexPaths, with: UITableView.RowAnimation.none)
         self.searchResultTableView.reloadData()
     }
     
@@ -196,7 +200,7 @@ private class SearchInputView: UIView, UITextFieldDelegate {
         return button
     }()
     
-    private lazy var textField: UITextField = {
+    fileprivate lazy var textField: UITextField = {
         let textField = UITextField()
         textField.delegate = self
         textField.textColor = InterfaceTheme.Color.interactive
@@ -224,11 +228,17 @@ private class SearchInputView: UIView, UITextFieldDelegate {
     }
     
     @objc private func clear() {
-        self.textField.text = nil
+        self.textField.text = ""
+        self.delegate?.didChangeQuery(string: "")
     }
     
     @objc private func beginEdit() {
         self.textField.becomeFirstResponder()
+    }
+    
+    fileprivate func hideCancelButton(_ hide: Bool) {
+        self.endEditButton.constraint(for: .width)?.constant = hide ? 0 : 60
+        self.layoutIfNeeded()
     }
     
     private func setupUI() {
