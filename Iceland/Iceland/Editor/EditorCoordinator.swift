@@ -51,16 +51,28 @@ public class EditorCoordinator: Coordinator {
         guard let viewController = self.viewController else { return }
         switch self.usage {
         case .editor:
-            top?.present(viewController, animated: true, completion: nil)
+            super.moveIn(top: top, animated: animated)
         case .outline:
             if let top = top {
                 (viewController as? HeadingsOutlineViewController)?.show(from: nil, on: top)
             }
         }
     }
+}
+
+extension EditorCoordinator: SearchCoordinatorDelegate {
+    public func didSelectDocument(url: URL) {
+        self.openDocument(url: url, location: 0)
+    }
     
-    public override func moveOut(top: UIViewController, animated: Bool) {
-        top.dismiss(animated: animated)
+    public func didCancelSearching() {
+        // ignore
+    }
+    
+    public func search() {
+        let searchCoordinator = SearchCoordinator(stack: self.stack, context: self.context)
+        searchCoordinator.delegate = self
+        searchCoordinator.start(from: self)
     }
 }
 

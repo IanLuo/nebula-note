@@ -107,7 +107,7 @@ public class OpenningFilesView: UIView {
             }
             
             self.data = OutlineEditorServer.instance.recentFilesManager.recentFiles
-            self.collectionView.insertItems(at: [IndexPath(row: 0, section: 0)])
+            self.collectionView.reloadData()
         }
     }
     

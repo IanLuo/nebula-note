@@ -12,6 +12,7 @@ import Business
 
 public protocol DocumentSearchViewControllerDelegate: class {
     func didSelectDocument(url: URL)
+    func didCancelSearching()
 }
 
 public class DocumentSearchViewController: UIViewController {
@@ -33,7 +34,7 @@ public class DocumentSearchViewController: UIViewController {
         tableView.separatorColor = InterfaceTheme.Color.background3
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 30, bottom: 0, right: 30)
         tableView.register(SearchTableCell.self, forCellReuseIdentifier: SearchTableCell.reuseIdentifier)
-        tableView.backgroundColor = InterfaceTheme.Color.background2.withAlphaComponent(0.1)
+        tableView.backgroundColor = .clear
         tableView.tableFooterView = UIView()
         return tableView
     }()
@@ -43,7 +44,7 @@ public class DocumentSearchViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.separatorColor = InterfaceTheme.Color.background3
-        tableView.backgroundColor = InterfaceTheme.Color.background1
+        tableView.backgroundColor = .clear
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 30, bottom: 0, right: 30)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "UITableViewCell")
         tableView.tableFooterView = UIView()
@@ -85,7 +86,7 @@ public class DocumentSearchViewController: UIViewController {
     }
     
     private func setupUI() {
-        self.view.backgroundColor = InterfaceTheme.Color.background1
+        self.view.backgroundColor = InterfaceTheme.Color.background1.withAlphaComponent(0.1)
         
         self.view.addSubview(self.searchInputView)
         self.view.addSubview(self.preservedSearchItemsTableView)
@@ -104,6 +105,7 @@ public class DocumentSearchViewController: UIViewController {
 extension DocumentSearchViewController: SearchInputViewDelegate {
     func didEndSearching() {
         self.searchStatus = .ready
+        self.delegate?.didCancelSearching()
     }
     
     func didStartSearching() {
@@ -187,10 +189,11 @@ private class SearchInputView: UIView, UITextFieldDelegate {
     }()
     
     private lazy var endEditButton: UIButton = {
-        let icon = UIButton(frame: CGRect(origin: .zero, size: CGSize(width: 20, height: 20)))
-        icon.addTarget(self, action: #selector(endEdit), for: .touchUpInside)
-        icon.setImage(UIImage(named: "cross")?.withRenderingMode(.alwaysTemplate), for: .normal)
-        return icon
+        let button = UIButton(frame: CGRect(origin: .zero, size: CGSize(width: 20, height: 20)))
+        button.addTarget(self, action: #selector(endEdit), for: .touchUpInside)
+        button.setTitle("Cancel".localizable, for: .normal)
+        button.titleLabel?.font = InterfaceTheme.Font.footnote
+        return button
     }()
     
     private lazy var textField: UITextField = {
@@ -201,11 +204,27 @@ private class SearchInputView: UIView, UITextFieldDelegate {
         textField.autocorrectionType = .no
         textField.autocapitalizationType = .none
         textField.tintColor = InterfaceTheme.Color.interactive
+        
+        let clearButton = UIButton(frame: CGRect(origin: .zero, size: CGSize(width: 20, height: 20)))
+        clearButton.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.descriptive, size: .singlePoint), for: .normal)
+        clearButton.setImage(UIImage(named: "cross")?.withRenderingMode(.alwaysTemplate), for: .normal)
+        clearButton.tintColor = InterfaceTheme.Color.interactive
+        clearButton.addTarget(self, action: #selector(clear), for: .touchUpInside)
+        clearButton.layer.cornerRadius = 10
+        clearButton.layer.masksToBounds = true
+        clearButton.contentEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
+        textField.rightView = clearButton
+        textField.rightViewMode = .whileEditing
         return textField
     }()
     
     @objc private func endEdit() {
-        self.endEditing(true)
+        self.textField.endEditing(true)
+        self.delegate?.didEndSearching()
+    }
+    
+    @objc private func clear() {
+        self.textField.text = nil
     }
     
     @objc private func beginEdit() {
@@ -228,22 +247,18 @@ private class SearchInputView: UIView, UITextFieldDelegate {
         self.textField.sideAnchor(for: [.top, .bottom], to: self, edgeInset: 0)
         self.textField.rowAnchor(view: self.endEditButton)
         self.endEditButton.sizeAnchor(width: 60, height: 60)
-        self.endEditButton.sideAnchor(for: .right, to: self, edgeInset: 0)
+        self.endEditButton.sideAnchor(for: .right, to: self, edgeInset: 30)
         self.endEditButton.centerAnchors(position: .centerY, to: self)
         
         self.setBorder(position: .bottom, color: InterfaceTheme.Color.background3, width: 0.5)
-        
-        self.endEditButton.isHidden = true
     }
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
         self.delegate?.didStartSearching()
-        self.endEditButton.isHidden = false
         self.startEditButton.isEnabled = false
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
-        self.delegate?.didEndSearching()
         self.endEditButton.isHidden = true
         self.startEditButton.isEnabled = true
     }

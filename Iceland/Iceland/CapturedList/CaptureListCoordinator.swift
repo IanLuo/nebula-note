@@ -29,15 +29,6 @@ public class CaptureListCoordinator: Coordinator {
         documentCoord.delegate = self
         documentCoord.start(from: self)
     }
-    
-    public override func moveIn(top: UIViewController?, animated: Bool) {
-        guard let viewController = self.viewController else { return }
-        top?.present(viewController, animated: true, completion: nil)
-    }
-    
-    public override func moveOut(top: UIViewController, animated: Bool) {
-        top.dismiss(animated: true, completion: nil)
-    }
 }
 
 extension CaptureListCoordinator: BrowserCoordinatorDelegate {

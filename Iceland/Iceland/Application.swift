@@ -75,12 +75,21 @@ public class Coordinator {
     }
     
     open func moveOut(top: UIViewController, animated: Bool) {
-        top.navigationController?.popViewController(animated: true)
+        if self.stack == parent?.stack {
+            self.stack.popViewController(animated: animated)
+        } else {
+            top.dismiss(animated: animated, completion: nil)
+        }
     }
     
     open func moveIn(top: UIViewController?, animated: Bool) {
         if let viewController = self.viewController {
-            self.stack.pushViewController(viewController, animated: true)
+            if self.stack == self.parent?.stack {
+                self.stack.pushViewController(viewController, animated: animated)
+            } else {
+                self.stack.pushViewController(viewController, animated: false)
+                top?.present(self.stack, animated: animated, completion: nil)
+            }
         }
     }
     
@@ -96,7 +105,6 @@ public class Coordinator {
     open func start(from: Coordinator?, animated: Bool = true) {
         if let f = from {
             f.addChild(self)
-            
             self.moveIn(top: f.viewController, animated: animated)
         }
     }
@@ -104,7 +112,10 @@ public class Coordinator {
 
 extension Coordinator {
     public func openDocument(url: URL, location: Int) {
-        let documentCoordinator = EditorCoordinator(stack: self.stack, context: self.context, usage: EditorCoordinator.Usage.editor(url, location))
+        let navigationController = UINavigationController()
+        navigationController.isNavigationBarHidden = true
+        
+        let documentCoordinator = EditorCoordinator(stack: navigationController, context: self.context, usage: EditorCoordinator.Usage.editor(url, location))
         documentCoordinator.start(from: self)
     }
     

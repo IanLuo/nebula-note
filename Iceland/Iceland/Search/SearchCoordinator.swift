@@ -12,6 +12,7 @@ import Business
 
 public protocol SearchCoordinatorDelegate: class {
     func didSelectDocument(url: URL)
+    func didCancelSearching()
 }
 
 public class SearchCoordinator: Coordinator {
@@ -29,5 +30,9 @@ public class SearchCoordinator: Coordinator {
 extension SearchCoordinator: DocumentSearchViewControllerDelegate {
     public func didSelectDocument(url: URL) {
         self.delegate?.didSelectDocument(url: url)
+    }
+    
+    public func didCancelSearching() {
+        self.stop()
     }
 }

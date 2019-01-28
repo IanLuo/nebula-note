@@ -53,17 +53,6 @@ public class AttachmentCoordinator: Coordinator {
         
         self.viewController = viewController
     }
-    
-    public override func moveIn(top: UIViewController?, animated: Bool) {
-        guard let viewController = self.viewController else { return }
-
-        viewController.modalPresentationStyle = .overCurrentContext
-        top?.present(viewController, animated: animated, completion: nil)
-    }
-    
-    public override func moveOut(top: UIViewController, animated: Bool) {
-        self.viewController?.dismiss(animated: animated, completion: nil)
-    }
 }
 
 extension AttachmentCoordinator: AttachmentViewControllerDelegate {

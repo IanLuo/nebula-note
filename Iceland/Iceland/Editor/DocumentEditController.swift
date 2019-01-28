@@ -37,6 +37,8 @@ public class DocumentEditViewController: UIViewController {
         fatalError()
     }
     
+    private let toolBar: UIView = UIView()
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -44,22 +46,42 @@ public class DocumentEditViewController: UIViewController {
         
         self.view.addSubview(self.textView)
         
-        let closeButton = UIButton()
-        closeButton.setImage(UIImage(named: "cross")?.withRenderingMode(.alwaysTemplate), for: .normal)
-        closeButton.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.descriptive, size: .singlePoint), for: .normal)
-        closeButton.tintColor = InterfaceTheme.Color.interactive
-        closeButton.addTarget(self, action: #selector(cancel), for: .touchUpInside)
-        closeButton.layer.cornerRadius = 20
-        closeButton.layer.masksToBounds = true
+        self.view.addSubview(self.toolBar)
         
-        self.view.addSubview(closeButton)
-        closeButton.sideAnchor(for: [.left, .top], to: self.view, edgeInset: 30)
+        self.toolBar.sideAnchor(for: [.left, .top, .right], to: self.view, edgeInset: 0)
+        self.toolBar.sizeAnchor(height: 40)
+        
+        let closeButton = self.createActionButton(icon: UIImage(named: "cross")?.withRenderingMode(.alwaysTemplate))
+        closeButton.addTarget(self, action: #selector(cancel), for: .touchUpInside)
+        let searchButton = self.createActionButton(icon: UIImage(named: "zoom")?.withRenderingMode(.alwaysTemplate))
+        searchButton.addTarget(self, action: #selector(search), for: .touchUpInside)
+        
+        self.toolBar.addSubview(closeButton)
+        self.toolBar.addSubview(searchButton)
+        
+        closeButton.sideAnchor(for: [.right, .bottom, .top], to: self.toolBar, edgeInsets: .init(top: 0, left: 0, bottom: 0, right: -30))
         closeButton.sizeAnchor(width: 40, height: 40)
+        searchButton.sideAnchor(for: [.left, .bottom, .top], to: self.toolBar, edgeInsets: .init(top: 0, left: 30, bottom: 0, right: 0))
+        searchButton.sizeAnchor(width: 40, height: 40)
     }
     
     @objc private func cancel() {
         self.textView.endEditing(true)
         self.viewModel.dependency?.stop()
+    }
+    
+    @objc private func search() {
+        self.viewModel.dependency?.search()
+    }
+    
+    private func createActionButton(icon: UIImage?) -> UIButton {
+        let button = UIButton()
+        button.setImage(icon, for: .normal)
+        button.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.descriptive, size: .singlePoint), for: .normal)
+        button.tintColor = InterfaceTheme.Color.interactive
+        button.layer.cornerRadius = 20
+        button.layer.masksToBounds = true
+        return button
     }
 }
 
