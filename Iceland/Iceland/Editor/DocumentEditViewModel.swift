@@ -76,7 +76,7 @@ public class DocumentEditViewModel {
         let heading = self.headings[index]
         let length = [heading.tags, heading.due, heading.schedule]
             .map { $0?.location ?? Int.max }
-            .reduce(heading.range.upperBound, min) - heading.range.location
+            .reduce(heading.range.upperBound, min) - heading.range.location - heading.level + 1
         
         let location = [heading.range.location + heading.level, heading.planning?.upperBound]
             .map { $0 ?? -Int.max }

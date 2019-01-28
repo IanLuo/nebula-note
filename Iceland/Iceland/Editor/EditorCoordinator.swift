@@ -60,12 +60,7 @@ public class EditorCoordinator: Coordinator {
     }
     
     public override func moveOut(top: UIViewController, animated: Bool) {
-        switch self.usage {
-        case .editor:
-            self.stack.popViewController(animated: animated)
-        case .outline:
-            top.dismiss(animated: animated)
-        }
+        top.dismiss(animated: animated)
     }
 }
 

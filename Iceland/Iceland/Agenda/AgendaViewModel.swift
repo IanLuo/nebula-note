@@ -33,13 +33,8 @@ public class AgendaViewModel {
     public func load(date: Date) {
         self.data = self.allData.filter {
             switch ($0.schedule?.date, $0.due?.date) {
-            case (nil, nil): return true
-            case (let schedule?, nil):
-                return schedule >= date
-            case (nil, let due?):
-                return due <= date
-            case (let schedule?, let due?):
-                return schedule <= date || due <= date
+            case (let schedule?, nil): return schedule <= date
+            default: return true
             }
         }
         

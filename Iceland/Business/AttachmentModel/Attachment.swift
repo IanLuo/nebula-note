@@ -57,7 +57,7 @@ public struct Attachment: Codable {
         date = try values.decode(Date.self, forKey: .date)
         
         let fileName = try values.decode(String.self, forKey: .url)
-        url = AttachmentConstants.folder.appendingPathComponent(fileName)
+        url = URL.attachmentURL.appendingPathComponent(fileName)
         description = try values.decode(String.self, forKey: .description)
         key = try values.decode(String.self, forKey: .key)
     }

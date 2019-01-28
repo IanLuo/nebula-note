@@ -110,6 +110,14 @@ public class ModalFormViewController: UIViewController {
         self.view.addGestureRecognizer(tap)
     }
     
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        if tableView.numberOfRows(inSection: 0) > 0 {
+            tableView.cellForRow(at: IndexPath(row: 0, section: 0))?.becomeFirstResponder()
+        }
+    }
+    
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
@@ -289,6 +297,10 @@ private class InputTextViewCell: UITableViewCell, UITextViewDelegate, Validatabl
         }
     }
     
+    override func becomeFirstResponder() -> Bool {
+        return self.textView.becomeFirstResponder()
+    }
+    
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.font = InterfaceTheme.Font.footnote
@@ -371,6 +383,10 @@ private class InputTextFieldCell: UITableViewCell, UITextFieldDelegate, Validata
         label.textColor = InterfaceTheme.Color.enphersizedDescriptive
         return label
     }()
+    
+    override func becomeFirstResponder() -> Bool {
+        return self.textField.becomeFirstResponder()
+    }
     
     private let textField: UITextField = {
         let textField = UITextField()

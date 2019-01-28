@@ -121,7 +121,12 @@ fileprivate struct PlistStore: KeyValueStore {
         if let store = store, let filePath = file?.filePath {
             file?.folder.createFolderIfNeeded()
             store.setValue(value, forKey: key)
-            store.write(toFile: filePath, atomically: true)
+            
+            file?.write(accessor: { error in
+                if error == nil {
+                    store.write(toFile: filePath, atomically: true)
+                }
+            })
         } else {
             let userDefaults = UserDefaults.standard
             userDefaults.set(value, forKey: key)
@@ -132,7 +137,12 @@ fileprivate struct PlistStore: KeyValueStore {
     public func remove(key: String) {
         if let store = store, let filePath = file?.filePath {
             store.removeObject(forKey: key)
-            store.write(toFile: filePath, atomically: true)
+            
+            file?.write(accessor: { error in
+                if error == nil {
+                    store.write(toFile: filePath, atomically: true)
+                }
+            })
         } else {
             let userDefaults = UserDefaults.standard
             userDefaults.removeObject(forKey: key)
@@ -142,7 +152,15 @@ fileprivate struct PlistStore: KeyValueStore {
     
     public func clear() {
         if let filePath = file?.filePath {
-            try? Foundation.FileManager.default.removeItem(atPath: filePath)
+            file?.delete(accessor: { error in
+                if error == nil {
+                    do {
+                        try Foundation.FileManager.default.removeItem(atPath: filePath)
+                    } catch {
+                        print("ERROR: \(error)")
+                    }
+                }
+            })
         } else {
             UserDefaults.resetStandardUserDefaults()
         }

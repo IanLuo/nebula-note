@@ -9,25 +9,42 @@
 import Foundation
 import Storage
 
+public struct DocumentManagerNotification {
+    public static let didChangeDocumentName = Notification.Name(rawValue: "didChangeDocumentName")
+    public static let keyDidChangeDocumentNameOld = "old-url"
+    public static let keyDidChangeDocumentNameNew = "new-url"
+    
+    public static let didChangeDocumentCover = Notification.Name(rawValue: "didChangeDocumentCover")
+    public static let keyDidChangeDocumentCover = "url"
+    public static let keyNewCover = "new-cover"
+    
+    public static let didDeleteDocument = Notification.Name(rawValue: "didDeleteDocument")
+    public static let keyDidDelegateDocumentURL = "url"
+}
+
 public struct DocumentManager {
+    public struct Constants {
+        static let filesFolderName = "files"
+        static let filesFolder = File.Folder.document(filesFolderName)
+    }
+
     public init() {
         Constants.filesFolder.createFolderIfNeeded()
     }
     
-    public var recentFiles: [URL] {
-        return OutlineEditorServer.recentFileList().map {
-            File(Constants.filesFolder, fileName: $0).url
-        }
+    public var recentFiles: [RecentDocumentInfo] {
+        return OutlineEditorServer.instance.recentFilesManager.recentFiles
     }
     
     public func removeRecentFile(url: URL) {
-        OutlineEditorServer.instance.removeRecentFile(key: url.lastPathComponent)
+        OutlineEditorServer.instance.recentFilesManager.removeRecentFile(url: url)
     }
     
     public func closeFile(url: URL, last selectionLocation: Int) {
-        OutlineEditorServer.instance.closeFile(key: url.lastPathComponent, lastLocation: selectionLocation)
+        OutlineEditorServer.instance.recentFilesManager.addRecentFile(url: url, lastLocation: selectionLocation)
     }
     
+    /// 查找指定目录下的 iceland 文件包
     public func query(in folder: URL) throws -> [URL] {
         return try FileManager.default.contentsOfDirectory(at: folder,
                                                            includingPropertiesForKeys: nil,
@@ -39,6 +56,11 @@ public struct DocumentManager {
         let service = OutlineEditorServer.request(url: url)
         service.open { [service] _ in
             service.cover = image
+            
+            NotificationCenter.default.post(name: DocumentManagerNotification.didChangeDocumentCover,
+                                            object: nil,
+                                            userInfo: [DocumentManagerNotification.keyDidChangeDocumentCover: url,
+                                                       DocumentManagerNotification.keyNewCover: image as Any])
         }
     }
     
@@ -56,10 +78,11 @@ public struct DocumentManager {
         return folderURL
     }
     
+    /// 如果有 below，则创建成 below 的子文件，否则在根目录创建
     public func add(title: String,
                         below: URL?,
                         completion: ((URL?) -> Void)? = nil) {
-        var newURL: URL = URL.filesFolder.appendingPathComponent(title).appendingPathExtension(Document.fileExtension)
+        var newURL: URL = URL.documentBaseURL.appendingPathComponent(title).appendingPathExtension(Document.fileExtension)
         if let below = below {
             let folderURL = self.createFolderIfNeeded(url: below)
             newURL = folderURL.appendingPathComponent(title).appendingPathExtension(Document.fileExtension)
@@ -75,31 +98,49 @@ public struct DocumentManager {
         
         let document = Document.init(fileURL: newURL)
         document.string = "" // 新文档的内容为空字符串
-        document.save(to: newURL, for: UIDocument.SaveOperation.forCreating) { success in
+        document.save(to: newURL, for: UIDocument.SaveOperation.forCreating) { [document] success in
             if success {
                 completion?(newURL)
             } else {
                 completion?(nil)
             }
+            
+            document.close(completionHandler: nil)
         }
     }
     
-    public func delete(url: URL,
-                       completion: ((Error?) -> Void)? = nil) {
-        do {
-            // 1. 如果有子文件, 一并删除
-            let fm = FileManager.default
-            let subFolder = url.convertoFolderURL
-            var isDir = ObjCBool(true)
-            if fm.fileExists(atPath: subFolder.path, isDirectory: &isDir) {
-                try fm.removeItem(at: subFolder)
+    public func delete(url: URL, completion: ((Error?) -> Void)? = nil) {
+        let fm = FileManager.default
+        let subFolder = url.convertoFolderURL
+        var isDir = ObjCBool(true)
+        // 如果有子文件, 先删除子文件
+        if fm.fileExists(atPath: subFolder.path, isDirectory: &isDir) {
+            subFolder.delete { error in
+                if let error = error {
+                    completion?(error)
+                } else {
+                    url.delete { error in
+                        // 执行回调
+                        completion?(error)
+                        
+                        // 如果没有失败，则通知外部，此文件已删除
+                        if error == nil {
+                            NotificationCenter.default.post(name: DocumentManagerNotification.didDeleteDocument, object: nil, userInfo: [DocumentManagerNotification.keyDidDelegateDocumentURL: url])
+                        }
+                    }
+                }
             }
-            // 2. 如果删除之后文件夹为空，将空文件夹一并删除
-            try fm.removeItem(at: url) // FIXME: use Filecorrdinator
-            completion?(nil)
-        } catch {
-            log.error("failed to delete document: \(error)")
-            completion?(error)
+        // 如果没有子文件夹，直接删除
+        } else {
+            url.delete { error in
+                // 执行回调
+                completion?(error)
+                
+                // 如果没有失败，则通知外部，此文件已删除
+                if error == nil {
+                    NotificationCenter.default.post(name: DocumentManagerNotification.didDeleteDocument, object: nil, userInfo: [DocumentManagerNotification.keyDidDelegateDocumentURL: url])
+                }
+            }
         }
     }
     
@@ -120,6 +161,7 @@ public struct DocumentManager {
             if let error = error {
                 failure(error)
             } else {
+                // 修改子文件夹名字
                 let subdocumentFolder = url.convertoFolderURL
                 var isDir = ObjCBool(true)
                 if FileManager.default.fileExists(atPath: subdocumentFolder.path, isDirectory: &isDir) {
@@ -127,92 +169,35 @@ public struct DocumentManager {
                         if let error = error {
                             failure(error)
                         } else {
+                            // 通知文件名更改
+                            NotificationCenter.default.post(name: DocumentManagerNotification.didChangeDocumentName,
+                                                            object: nil,
+                                                            userInfo: [DocumentManagerNotification.keyDidChangeDocumentNameNew : newURL,
+                                                                       DocumentManagerNotification.keyDidChangeDocumentNameOld : url])
                             completion(newURL)
                         }
                     }
                 } else {
+                    // 通知文件名更改
+                    NotificationCenter.default.post(name: DocumentManagerNotification.didChangeDocumentName,
+                                                    object: nil,
+                                                    userInfo: [DocumentManagerNotification.keyDidChangeDocumentNameNew : newURL,
+                                                               DocumentManagerNotification.keyDidChangeDocumentNameOld : url])
                     completion(newURL)
                 }
             }
         }
     }
     
-    public func duplicate(url: URL, complete: () -> Void, failure: (Error) -> Void) {
-        // TODO: duplicate
+    public func duplicate(url: URL, complete: @escaping (URL) -> Void, failure: @escaping (Error) -> Void) {
+        url.duplicate { url, error in
+            if error == nil {
+                complete(url!)
+            } else {
+                failure(error!)
+            }
+        }
     }
-}
-
-fileprivate struct Constants {
-    static let filesFolderName = "files"
-    static let filesFolder = File.Folder.document(filesFolderName)
-}
-
-private struct DocumentConstants {
-    fileprivate static let documentDirSuffix: String = "__"
 }
 
 // MARK: - URL extension
-
-extension URL {
-    /// 一个文件，可以包含子文件，方法是，创建一个以该文件同名的文件夹(以'__'结尾)，放在同一目录
-    /// 将当前文件的 URL 转为当前文件子文件夹的 URL
-    public var convertoFolderURL: URL {
-        let path = self.deletingPathExtension().path.replacingOccurrences(of: URL.filesFolderPath, with: "")
-            + DocumentConstants.documentDirSuffix
-        let folder = File.Folder.document(Constants.filesFolderName + "/" + path)
-        return folder.url
-    }
-    
-    public var pathReleatedToRoot: String {
-        return self.deletingPathExtension().path.replacingOccurrences(of: URL.filesFolderPath, with: "")
-    }
-    
-    public var parentDir: URL {
-        return self.parentDocumentURL?.deletingLastPathComponent() ?? File.Folder.document(URL.filesFolderPath).url
-    }
-    
-    public var parentDocumentURL: URL? {
-        var url = self.deletingPathExtension().deletingLastPathComponent()
-        let fileName = url.lastPathComponent.replacingOccurrences(of: DocumentConstants.documentDirSuffix, with: "")
-        url = url.deletingLastPathComponent()
-        let parentURL = url.appendingPathComponent(fileName).appendingPathExtension(Document.fileExtension)
-        
-        if FileManager.default.fileExists(atPath: parentURL.path) {
-            return parentURL
-        }
-        
-        return nil
-    }
-    
-    public static var filesFolder: URL {
-        return Constants.filesFolder.url
-    }
-    
-    public static var filesFolderPath: String {
-        return Constants.filesFolder.path
-    }
-    
-    public var hasSubDocuments: Bool {
-        let subDocumentFolder = self.convertoFolderURL.path
-        var isDir = ObjCBool(true)
-        let fm = FileManager.default
-        return fm.fileExists(atPath: subDocumentFolder, isDirectory: &isDir) &&
-        ((try? fm.contentsOfDirectory(atPath: subDocumentFolder)) ?? []).count > 0
-    }
-    
-    public var fileName: String {
-        /// 如果文件是 org, cover, logs 文件，则使用所在的 .iceland 目录
-        var url = self
-        if url.path.hasSuffix(Document.contentFileExtension)
-            || url.path.hasSuffix(Document.coverFileExtension)
-            || url.path.hasSuffix(Document.logsFileExtension) {
-            url = url.deletingLastPathComponent()
-        }
-        
-        return url.deletingPathExtension().lastPathComponent.replacingOccurrences(of: "/", with: "")
-    }
-    
-    public var coverURL: URL {
-        return self.appendingPathComponent(Document.coverKey)
-    }
-}

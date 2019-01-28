@@ -153,37 +153,93 @@ public struct File {
         return folder.path + fileName
     }
     
-    public func write(value: Data) throws {
+    public func write(value: Data, completion: @escaping (Error?) -> Void) {
         if Settings.isLogEnabled {
             print("writing file at: \(filePath)")
         }
         
         folder.createFolderIfNeeded()
-        try value.write(to: URL(fileURLWithPath: filePath))
+        
+        let fileCoordinator = NSFileCoordinator()
+        let intent = NSFileAccessIntent.writingIntent(with: self.url, options: NSFileCoordinator.WritingOptions.forMerging)
+        let queue = OperationQueue()
+        fileCoordinator.coordinate(with: [intent], queue: queue) { error in
+            if error != nil {
+                completion(error)
+            } else {
+                do {
+                    try value.write(to: URL(fileURLWithPath: self.filePath))
+                    completion(nil)
+                } catch {
+                    completion(error)
+                }
+            }
+        }
     }
     
-    public func read() throws -> Data? {
+    public func write(accessor: @escaping (Error?) -> Void) {
+        if Settings.isLogEnabled {
+            print("writing file at: \(filePath)")
+        }
+        
+        folder.createFolderIfNeeded()
+        
+        let fileCoordinator = NSFileCoordinator()
+        let intent = NSFileAccessIntent.writingIntent(with: self.url, options: NSFileCoordinator.WritingOptions.forMerging)
+        let queue = OperationQueue()
+        fileCoordinator.coordinate(with: [intent], queue: queue) { error in
+            accessor(error)
+        }
+    }
+    
+    public func read(completion: @escaping (Data?, Error?) -> Void) {
         let fm = Foundation.FileManager.default
         guard fm.fileExists(atPath: filePath) != false else {
-            throw FileError.fail
+            completion(nil, FileError.fail)
+            return
         }
         
         guard fm.isReadableFile(atPath: filePath) != false else {
-            throw FileError.fail
+            completion(nil, FileError.fail)
+            return
         }
         
-        return fm.contents(atPath: filePath)
+        let fileCoordinator = NSFileCoordinator()
+        let intent = NSFileAccessIntent.readingIntent(with: self.url, options: NSFileCoordinator.ReadingOptions.Element())
+        let queue = OperationQueue()
+        fileCoordinator.coordinate(with: [intent], queue: queue) { error in
+            if error != nil {
+                completion(nil, error)
+            } else {
+                completion(fm.contents(atPath: self.filePath), nil)
+            }
+        }
     }
     
-    public func delete() throws {
-        try Foundation.FileManager.default.removeItem(atPath: filePath)
+    public func delete(completion: @escaping (Error?) -> Void) {
+        let fileCoordinator = NSFileCoordinator()
+        let intent = NSFileAccessIntent.readingIntent(with: self.url, options: NSFileCoordinator.ReadingOptions.Element())
+        let queue = OperationQueue()
+        fileCoordinator.coordinate(with: [intent], queue: queue) { error in
+            if error != nil {
+                completion(error)
+            } else {
+                do {
+                    try Foundation.FileManager.default.removeItem(atPath: self.filePath)
+                    completion(nil)
+                } catch {
+                    completion(error)
+                }
+            }
+        }
     }
     
-    // 删除
-    public func remove() {
-        if isExit() {
-            do { try Foundation.FileManager.default.removeItem(atPath: filePath) }
-            catch { print("Error when removing file for path: \(filePath): error") }
+    public func delete(accessor: @escaping (Error?) -> Void) {
+        let fileCoordinator = NSFileCoordinator()
+        let intent = NSFileAccessIntent.readingIntent(with: self.url, options: NSFileCoordinator.ReadingOptions.Element())
+        let queue = OperationQueue()
+        fileCoordinator.coordinate(with: [intent], queue: queue) { error in
+            accessor(error)
         }
     }
     

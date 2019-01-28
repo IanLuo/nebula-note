@@ -24,7 +24,7 @@ public class DocumentEditViewController: UIViewController {
         self.viewModel = viewModel
         self.textView = OutlineTextView(frame: .zero,
                                         textContainer: viewModel.container)
-        self.textView.contentInset = UIEdgeInsets(top: 80, left: 30, bottom: 80, right: 30)
+        self.textView.contentInset = UIEdgeInsets(top: 160, left: 30, bottom: 80, right: 30)
 
         super.init(nibName: nil, bundle: nil)
         
@@ -43,6 +43,23 @@ public class DocumentEditViewController: UIViewController {
         self.textView.frame = self.view.bounds
         
         self.view.addSubview(self.textView)
+        
+        let closeButton = UIButton()
+        closeButton.setImage(UIImage(named: "cross")?.withRenderingMode(.alwaysTemplate), for: .normal)
+        closeButton.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.descriptive, size: .singlePoint), for: .normal)
+        closeButton.tintColor = InterfaceTheme.Color.interactive
+        closeButton.addTarget(self, action: #selector(cancel), for: .touchUpInside)
+        closeButton.layer.cornerRadius = 20
+        closeButton.layer.masksToBounds = true
+        
+        self.view.addSubview(closeButton)
+        closeButton.sideAnchor(for: [.left, .top], to: self.view, edgeInset: 30)
+        closeButton.sizeAnchor(width: 40, height: 40)
+    }
+    
+    @objc private func cancel() {
+        self.textView.endEditing(true)
+        self.viewModel.dependency?.stop()
     }
 }
 

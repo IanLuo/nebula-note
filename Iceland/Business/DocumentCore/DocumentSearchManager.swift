@@ -13,6 +13,16 @@ public struct DocumentSearchResult {
     public let highlightRange: NSRange
     public let context: String
     public let heading: Document.Heading?
+    public let documentInfo: DocumentInfo
+    
+    public init(url: URL, highlightRange: NSRange, context: String, heading: Document.Heading?) {
+        self.url = url
+        self.highlightRange = highlightRange
+        self.context = context
+        self.heading = heading
+        
+        self.documentInfo = DocumentInfo(wrapperURL: url)
+    }
 }
 
 public struct DocumentSearchManager {
@@ -326,7 +336,7 @@ public struct DocumentSearchManager {
                 
                 if shouldAppendThis {
                     let headingObj = Document.Heading(data: heading)
-                    resultsInThisFile.append(DocumentSearchResult(url: url,
+                    resultsInThisFile.append(DocumentSearchResult(url: url.wrapperURL,
                                                                   highlightRange: headingObj.range,
                                                                   context: text.substring(headingObj.range),
                                                                   heading: headingObj))
@@ -339,7 +349,7 @@ public struct DocumentSearchManager {
     
     public func loadAllFiles() -> [URL] {
         var result: [URL] = []
-        guard let enumerator = FileManager.default.enumerator(at: URL.filesFolder,
+        guard let enumerator = FileManager.default.enumerator(at: URL.documentBaseURL,
                                                               includingPropertiesForKeys: nil,
                                                               options: FileManager.DirectoryEnumerationOptions.skipsHiddenFiles,
                                                               errorHandler: nil) else { return result}

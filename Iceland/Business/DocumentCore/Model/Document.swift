@@ -10,6 +10,29 @@ import Foundation
 import UIKit
 import Storage
 
+public class DocumentInfo {
+    public let name: String
+    public var cover: UIImage? {
+        return UIImage(contentsOfFile: coverURL.path)
+    }
+    public let url: URL
+    public let coverURL: URL
+    
+    public init(name: String, cover: UIImage?, url: URL) {
+        self.name = name
+        self.coverURL = url.coverURL
+        self.url = url
+    }
+    
+    public init(wrapperURL: URL) {
+        guard wrapperURL.path.hasSuffix(Document.fileExtension) else { fatalError("must be a '.icelande' file") }
+        
+        self.name = wrapperURL.fileName
+        self.coverURL = wrapperURL.coverURL
+        self.url = wrapperURL
+    }
+}
+
 public class Document: UIDocument {
     public static let fileExtension = "iceland"
     public static let contentFileExtension = "org"
@@ -24,19 +47,6 @@ public class Document: UIDocument {
     public static let contentKey: String = "content.org"
     public static let coverKey: String = "cover.jpg"
     public static let logsKey: String = "logs.log"
-    
-    public override init(fileURL url: URL) {
-        var url = url
-        
-        /// 如果文件是 org 文件，则使用所在的 .iceland 目录
-        if url.path.hasSuffix(Document.contentFileExtension) {
-            url = url.deletingLastPathComponent()
-        }
-        
-        let ext = url.path.hasSuffix(Document.fileExtension) ? "" : Document.fileExtension
-        super.init(fileURL: url.appendingPathExtension(ext))
-
-    }
     
     public func updateCover(_ new: UIImage?) {
         self.cover = new
@@ -205,67 +215,4 @@ public class Document: UIDocument {
         }
     }
     
-}
-
-extension URL {
-    public func delete(completion: @escaping (Error?) -> Void) {
-        let fileCoordinator = NSFileCoordinator(filePresenter: nil)
-        let fileAccessIntent = NSFileAccessIntent.writingIntent(with: self, options: NSFileCoordinator.WritingOptions.forDeleting)
-        let queue = OperationQueue()
-        queue.qualityOfService = .background
-        fileCoordinator.coordinate(with: [fileAccessIntent], queue: queue) { error in
-            if let error = error {
-                completion(error)
-            } else {
-                do {
-                    try FileManager.default.removeItem(at: fileAccessIntent.url)
-                    completion(nil)
-                } catch {
-                    completion(error)
-                }
-            }
-        }
-    }
-    
-    public func rename(url: URL, completion: ((Error?) -> Void)?) {
-        let oldURL = self
-        let newURL = url
-        var error: NSError?
-        
-        DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
-            let fileCoordinator = NSFileCoordinator(filePresenter: nil)
-            fileCoordinator.coordinate(writingItemAt: oldURL,
-                                       options: NSFileCoordinator.WritingOptions.forMoving,
-                                       writingItemAt: newURL,
-                                       options: NSFileCoordinator.WritingOptions.forReplacing,
-                                       error: &error,
-                                       byAccessor: { (newURL1, newURL2) in
-                                        do {
-                                            let fileManager = FileManager.default
-                                            fileCoordinator.item(at: oldURL, willMoveTo: newURL)
-                                            try fileManager.moveItem(at: newURL1, to: newURL2)
-                                            fileCoordinator.item(at: oldURL, didMoveTo: newURL)
-                                            DispatchQueue.main.async {
-                                                completion?(error)
-                                            }
-                                        } catch {
-                                            DispatchQueue.main.async {
-                                                completion?(error)
-                                            }
-                                        }
-                                        
-            })
-        }
-    }
-}
-
-
-extension String {
-    public func substring(_ range: NSRange) -> String {
-        return (self as NSString).substring(with: range)
-    }
-    
-    public func removing(_ range: NSRange) -> String {
-        return self.replacingOccurrences(of: self.substring(range), with: "")
-    }
 }

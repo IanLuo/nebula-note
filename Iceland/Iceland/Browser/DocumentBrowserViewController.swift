@@ -46,6 +46,12 @@ public class DocumentBrowserViewController: UIViewController {
         return button
     }()
     
+    private lazy var openningFilesView: OpenningFilesView = {
+        let view = OpenningFilesView()
+        view.delegate = self
+        return view
+    }()
+    
     public weak var delegate: DocumentBrowserViewControllerDelegate?
     
     public init(viewModel: DocumentBrowserViewModel) {
@@ -69,8 +75,12 @@ public class DocumentBrowserViewController: UIViewController {
         self.view.backgroundColor = InterfaceTheme.Color.background1
         
         self.view.addSubview(self.tableView)
+        self.view.addSubview(self.openningFilesView)
         self.view.addSubview(self.createNewDocumentButton)
         self.view.addSubview(self.cancelButton)
+        
+        self.openningFilesView.sideAnchor(for: [.left, .top, .right], to: self.view, edgeInsets: .init(top: 80, left: 0, bottom: 0, right: 0))
+        self.openningFilesView.sizeAnchor(height: self.view.bounds.height / 4 - 80)
 
         self.cancelButton.sideAnchor(for: [.right, .top], to: self.view, edgeInset: 20)
         self.cancelButton.sizeAnchor(width: 80, height: 80)
@@ -90,6 +100,16 @@ public class DocumentBrowserViewController: UIViewController {
     
     @objc private func cancel() {
         self.viewModel.dependency?.stop()
+    }
+}
+
+extension DocumentBrowserViewController: OpenningFilesViewDelegate {
+    public func didSelectDocument(url: URL) {
+        self.viewModel.dependency?.openDocument(url: url, location: 0)
+    }
+    
+    public func dataChanged(count: Int) {
+        // TODO:
     }
 }
 
@@ -143,7 +163,7 @@ extension DocumentBrowserViewController: DocumentBrowserViewModelDelegate {
 }
 
 extension DocumentBrowserViewController: DocumentBrowserCellDelegate {
-    public func didUpdate(index: Int) {
+    public func didUpdateCell(index: Int) {
         self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .none)
     }
     

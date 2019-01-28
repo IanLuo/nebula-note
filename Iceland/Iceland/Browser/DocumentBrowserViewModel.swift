@@ -15,7 +15,7 @@ public protocol DocumentBrowserViewModelDelegate: class {
     func didRemoveDocument(index: Int, count: Int)
     func didRenameDocument(index: Int)
     func didLoadData()
-    func didUpdate(index: Int)
+    func didUpdateCell(index: Int)
 }
 
 public class DocumentBrowserViewModel {
@@ -50,7 +50,7 @@ public class DocumentBrowserViewModel {
     
     public func loadData() {
         do {
-            self.data = try self.documentManager.query(in: URL.filesFolder).map { [unowned self] in
+            self.data = try self.documentManager.query(in: URL.documentBaseURL).map { [unowned self] in
                 let cellModel = DocumentBrowserCellModel(url: $0)
                 cellModel.shouldShowActions = self.shouldShowActions
                 cellModel.shouldShowChooseHeadingIndicator = self.shouldShowHeadingIndicator
@@ -65,37 +65,53 @@ public class DocumentBrowserViewModel {
     
     public func unfold(url: URL) {
         if let index = self.index(of: url) {
-            do {
-                // 读取所有当前文件的子文件
-                let subDocuments: [DocumentBrowserCellModel] = try self.documentManager.query(in: url.convertoFolderURL)
-                    .map { [unowned self] in
-                        let cellModel = DocumentBrowserCellModel(url: $0)
-                        cellModel.shouldShowActions = self.shouldShowActions
-                        cellModel.shouldShowChooseHeadingIndicator = self.shouldShowHeadingIndicator
-                        return cellModel
-                }
-
-                // 设置当前 cell 的状态为 unfoled
-                self.data[index].isFolded = false
-
-                // 插入文件数据
-                data.insert(contentsOf: subDocuments, at: index + 1)
-                
-                // 更新新插入的数据
-                self.delegate?.didAddDocument(index: index + 1, count: subDocuments.count)
-                
-                // 更新当前 cell 状态
-                self.delegate?.didUpdate(index: index)
-            } catch {
-                log.error(error)
-            }
+            // 读取所有当前文件的子文件
+            let subDocuments: [DocumentBrowserCellModel] = self.loadSubfolderData(url: url, recursively: false)
+            
+            // 设置当前 cell 的状态为 unfoled
+            self.data[index].isFolded = false
+            
+            // 插入文件数据
+            data.insert(contentsOf: subDocuments, at: index + 1)
+            
+            // 更新新插入的数据
+            self.delegate?.didAddDocument(index: index + 1, count: subDocuments.count)
+            
+            // 更新当前 cell 状态
+            self.delegate?.didUpdateCell(index: index)
         }
+    }
+    
+    private func loadSubfolderData(url: URL, recursively: Bool) -> [DocumentBrowserCellModel] {
+        var cellModels: [DocumentBrowserCellModel] = []
+        
+        do {
+            let urls = try self.documentManager.query(in: url.convertoFolderURL)
+            
+            urls.forEach {
+                let cellModel = DocumentBrowserCellModel(url: $0)
+                cellModel.shouldShowActions = self.shouldShowActions
+                cellModel.shouldShowChooseHeadingIndicator = self.shouldShowHeadingIndicator
+                cellModels.append(cellModel)
+                if recursively {
+                    let subCellModels = self.loadSubfolderData(url: $0, recursively: true)
+                    if subCellModels.count > 0 {
+                        cellModel.isFolded = false
+                        cellModels.append(contentsOf: subCellModels)
+                    }
+                }
+            }
+        } catch {
+            log.error(error)
+        }
+        
+        return cellModels
     }
     
     public func fold(url: URL) {
         if let index = self.index(of: url) {
             // 计算所选位置的所有子文件，包括子文件的子文件
-            let count = self.subDocumentcount(index: index, recursively: true)
+            let count = self.visualSubDocumentcount(index: index, recursively: true)
             for _ in 0..<count {
                 // 从显示的数据中移除被 fold 的数据
                 self.data.remove(at: index + 1)
@@ -104,18 +120,18 @@ public class DocumentBrowserViewModel {
             // 标记当前 cell 的状态
             self.data[index].isFolded = true
 
-            // 耿直界面移除删除掉的数据
+            // 通知界面移除删除掉的数据
             self.delegate?.didRemoveDocument(index: index + 1, count: count)
             
             // 更新当前 cell
-            self.delegate?.didUpdate(index: index)
+            self.delegate?.didUpdateCell(index: index)
         }
     }
     
     /// 计算子文件夹中的文件数量
     /// - parameter index: 需要计算的子文件夹的位置
     /// - parameter recursively: 是否计算子文件的子文件
-    private func subDocumentcount(index: Int, recursively: Bool = false) -> Int {
+    private func visualSubDocumentcount(index: Int, recursively: Bool = false) -> Int {
         guard index < self.data.count - 1 else { return 0 }
         
         let currentLevel = self.data[index].levelFromRoot
@@ -155,7 +171,7 @@ public class DocumentBrowserViewModel {
                 var index: Int = self.data.count
                 if let below = below {
                     if let i = self.index(of: below) {
-                        let subCount = self.subDocumentcount(index: i) // 计算子文件的数量，将新文件插入到子文件的末尾
+                        let subCount = self.visualSubDocumentcount(index: i) // 计算子文件的数量，将新文件插入到子文件的末尾
                         index = subCount + i + 1
                     }
                 }
@@ -167,7 +183,7 @@ public class DocumentBrowserViewModel {
                 // 更新父 cell 的状态
                 if below != nil {
                     self.data[index - 1].isFolded = false
-                    self.delegate?.didUpdate(index: index - 1)
+                    self.delegate?.didUpdateCell(index: index - 1)
                 }
             }
         }
@@ -179,7 +195,7 @@ public class DocumentBrowserViewModel {
                 log.error(error)
             } else {
                 // 当前显示的子文件个数
-                let subcount = self.subDocumentcount(index: index, recursively: true)
+                let subcount = self.visualSubDocumentcount(index: index, recursively: true)
                 // 一次删除当前文件以及子文件
                 for _ in 0..<subcount + 1 {
                     self.data.remove(at: index)
@@ -198,15 +214,9 @@ public class DocumentBrowserViewModel {
                                     below: nil,
                                     completion: { url in
                                         self.data[index].url = url
-                                        let subCount = self.subDocumentcount(index: index, recursively: false)
-                                        if subCount > 0 {
-                                            for i in index + 1...(index + subCount) {
-                                                self.data[i].parentChanged(newParent: url)
-                                            }
-                                        }
                                         self.delegate?.didRenameDocument(index: index)
-                                        self.delegate?.didUpdate(index: index)
-                                        
+                                        self.delegate?.didUpdateCell(index: index)
+                                        self.fold(url: url)
         },
                                     failure: { error in
                                         log.error(error)
@@ -215,7 +225,8 @@ public class DocumentBrowserViewModel {
     
     public func duplicate(index: Int) {
         self.documentManager.duplicate(url: self.data[index].url,
-                                       complete: { [weak self] in
+                                       complete: { [weak self] url in
+                                        self?.data.insert(DocumentBrowserCellModel(url: url), at: index + 1)
                                         self?.delegate?.didAddDocument(index: index + 1, count: 1)
             }, failure: { error in
                 log.error(error)

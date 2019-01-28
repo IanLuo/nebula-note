@@ -115,8 +115,6 @@
 		E4BC264021F56A7E00B0F2B9 /* MasterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4BC263F21F56A7E00B0F2B9 /* MasterView.swift */; };
 		E4BC264221F56DB900B0F2B9 /* Rect.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4BC264121F56DB900B0F2B9 /* Rect.swift */; };
 		E4BC264421F587BC00B0F2B9 /* FrameLayout+Shortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4BC264321F587BC00B0F2B9 /* FrameLayout+Shortcuts.swift */; };
-		E4BFD44B21F6FB09003C048C /* OutlineStorage.h in Headers */ = {isa = PBXBuildFile; fileRef = E4BFD44921F6FB09003C048C /* OutlineStorage.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E4BFD44C21F6FB09003C048C /* OutlineStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = E4BFD44A21F6FB09003C048C /* OutlineStorage.m */; };
 		E4BFD45C21F71185003C048C /* TextStorage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4BFD45321F71184003C048C /* TextStorage.framework */; };
 		E4BFD46321F71185003C048C /* TextStorageTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E4BFD46221F71185003C048C /* TextStorageTests.m */; };
 		E4BFD46521F71185003C048C /* TextStorage.h in Headers */ = {isa = PBXBuildFile; fileRef = E4BFD45521F71184003C048C /* TextStorage.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -136,6 +134,9 @@
 		E4EA857521D3AF0D00DD92F9 /* BesideDatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EA857421D3AF0D00DD92F9 /* BesideDatesView.swift */; };
 		E4EA857721D3B0AC00DD92F9 /* EditorCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EA857621D3B0AC00DD92F9 /* EditorCoordinator.swift */; };
 		E4F3029C21D74E8700BDE178 /* CaptureTableCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4F3029B21D74E8700BDE178 /* CaptureTableCellModel.swift */; };
+		E4F9ECDB21FAD826009A08CD /* OpenningFilesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4F9ECDA21FAD826009A08CD /* OpenningFilesView.swift */; };
+		E4F9ECDF21FBF61B009A08CD /* RecentFiles.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4F9ECDE21FBF61B009A08CD /* RecentFiles.swift */; };
+		E4F9ECE121FECE5C009A08CD /* FileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4F9ECE021FECE5C009A08CD /* FileManager.swift */; };
 		EE260FEBE701F7B91549B9B8 /* Pods_Iceland.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B03B21DC28F546E7D3A966E7 /* Pods_Iceland.framework */; };
 /* End PBXBuildFile section */
 
@@ -357,8 +358,6 @@
 		E4BC263F21F56A7E00B0F2B9 /* MasterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterView.swift; sourceTree = "<group>"; };
 		E4BC264121F56DB900B0F2B9 /* Rect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rect.swift; sourceTree = "<group>"; };
 		E4BC264321F587BC00B0F2B9 /* FrameLayout+Shortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FrameLayout+Shortcuts.swift"; sourceTree = "<group>"; };
-		E4BFD44921F6FB09003C048C /* OutlineStorage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OutlineStorage.h; sourceTree = "<group>"; };
-		E4BFD44A21F6FB09003C048C /* OutlineStorage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OutlineStorage.m; sourceTree = "<group>"; };
 		E4BFD45321F71184003C048C /* TextStorage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TextStorage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4BFD45521F71184003C048C /* TextStorage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TextStorage.h; sourceTree = "<group>"; };
 		E4BFD45621F71184003C048C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -391,6 +390,9 @@
 		E4F3029921D744CD00BDE178 /* LocationAttachmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationAttachmentView.swift; sourceTree = "<group>"; };
 		E4F3029B21D74E8700BDE178 /* CaptureTableCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureTableCellModel.swift; sourceTree = "<group>"; };
 		E4F3029D21D750ED00BDE178 /* Autolayout+Shortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Autolayout+Shortcuts.swift"; sourceTree = "<group>"; };
+		E4F9ECDA21FAD826009A08CD /* OpenningFilesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenningFilesView.swift; sourceTree = "<group>"; };
+		E4F9ECDE21FBF61B009A08CD /* RecentFiles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentFiles.swift; sourceTree = "<group>"; };
+		E4F9ECE021FECE5C009A08CD /* FileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManager.swift; sourceTree = "<group>"; };
 		E68A1109AE2343C161D810A1 /* Pods-Business.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Business.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Business/Pods-Business.debug.xcconfig"; sourceTree = "<group>"; };
 		FC69118DDC07F2D89DFC636D /* Pods_IcelandTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_IcelandTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -554,8 +556,7 @@
 			children = (
 				E4A46A2421B0DA1300FBDA04 /* OutlineAttribute.swift */,
 				E4A46A3121B4D07500FBDA04 /* Document.swift */,
-				E4BFD44921F6FB09003C048C /* OutlineStorage.h */,
-				E4BFD44A21F6FB09003C048C /* OutlineStorage.m */,
+				E4F9ECE021FECE5C009A08CD /* FileManager.swift */,
 				E4A46A1821AA8E9F00FBDA04 /* OutlineStorage.swift */,
 			);
 			path = Model;
@@ -586,6 +587,7 @@
 				E4A46A3721B6470100FBDA04 /* DocumentBrowserViewModel.swift */,
 				E41CB15321D7E0F200EF0A3C /* DocumentBrowserCell.swift */,
 				E41CB15221D7E0F200EF0A3C /* DocumentBrowserCellModel.swift */,
+				E4F9ECDA21FAD826009A08CD /* OpenningFilesView.swift */,
 			);
 			path = Browser;
 			sourceTree = "<group>";
@@ -655,6 +657,7 @@
 				E4EA856F21D279A500DD92F9 /* DocumentManager.swift */,
 				E4EA857121D27C3600DD92F9 /* DocumentSearchManager.swift */,
 				E41A539021D62095002B11E9 /* EditorServer.swift */,
+				E4F9ECDE21FBF61B009A08CD /* RecentFiles.swift */,
 			);
 			path = DocumentCore;
 			sourceTree = "<group>";
@@ -916,7 +919,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				E41CB1AD21D88D9400EF0A3C /* Business.h in Headers */,
-				E4BFD44B21F6FB09003C048C /* OutlineStorage.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1401,6 +1403,7 @@
 				E41CB1BE21D88DD100EF0A3C /* OutlineLayoutManager.swift in Sources */,
 				E41CB1D621D8921B00EF0A3C /* SettingsAccessor.swift in Sources */,
 				E41CB1C721D88DFD00EF0A3C /* AttachmentManager.swift in Sources */,
+				E4F9ECDF21FBF61B009A08CD /* RecentFiles.swift in Sources */,
 				E41B892C21E34297009C5AD7 /* AudioPlayer.swift in Sources */,
 				E41CB1C921D88E2300EF0A3C /* Log.swift in Sources */,
 				E41B892921E34238009C5AD7 /* AudioRecorder.swift in Sources */,
@@ -1409,8 +1412,8 @@
 				E41CB1BF21D88DD400EF0A3C /* EditorController.swift in Sources */,
 				E41CB1D321D890E200EF0A3C /* Image+Generation.swift in Sources */,
 				E41CB1B921D88DCE00EF0A3C /* OutlineAttribute.swift in Sources */,
+				E4F9ECE121FECE5C009A08CD /* FileManager.swift in Sources */,
 				E4895FF721D9244000D2B19D /* EditRecord.swift in Sources */,
-				E4BFD44C21F6FB09003C048C /* OutlineStorage.m in Sources */,
 				E41CB1D221D890E200EF0A3C /* Border.swift in Sources */,
 				E41CB1C621D88DFD00EF0A3C /* Attachment.swift in Sources */,
 				E489600221DB06C800D2B19D /* Localization.swift in Sources */,
@@ -1506,6 +1509,7 @@
 				E49F3E4A21B9186D003F468D /* SettingsViewController.swift in Sources */,
 				E41CB16221D8897400EF0A3C /* HomeCoordinator.swift in Sources */,
 				E49F3E4621B8EDC8003F468D /* AgendaViewModel.swift in Sources */,
+				E4F9ECDB21FAD826009A08CD /* OpenningFilesView.swift in Sources */,
 				E42A87FF21CFCAC500151C90 /* AttachmentViewModel.swift in Sources */,
 				E49F3E4821B9183F003F468D /* SettingsCoordinator.swift in Sources */,
 				E498AAFF21BBE9B900D2A8EA /* CaptureListViewController.swift in Sources */,

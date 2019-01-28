@@ -23,10 +23,6 @@ extension Attachment {
     }
 }
 
-public struct AttachmentConstants {
-    public static let folder: URL = URL(fileURLWithPath: File.Folder.document("attachment").path)
-}
-
 public enum AttachmentError: Error {
     case failToSaveDocument
     case noSuchFileToSave(String)
@@ -58,7 +54,7 @@ public struct AttachmentManager {
         let newKey = self.newKey()
         
         /// 附件信息保存的文件路径
-        let jsonURL = URL(fileURLWithPath: newKey + ".json", relativeTo: AttachmentConstants.folder)
+        let jsonURL = URL(fileURLWithPath: newKey + ".json", relativeTo: URL.attachmentURL)
         
         /// 附件内容保存的文件路径
         var fileURL: URL!
@@ -80,7 +76,7 @@ public struct AttachmentManager {
         case .text: fallthrough
         case .location: fallthrough
         case .link:
-            fileURL = URL(fileURLWithPath: newKey + ".txt", relativeTo: AttachmentConstants.folder)
+            fileURL = URL(fileURLWithPath: newKey + ".txt", relativeTo: URL.attachmentURL)
             do {
                 try content.write(to: fileURL, atomically: true, encoding: .utf8) // FIXME: 改为 Document 的 save  方法
                 try saveFileInfo()
@@ -90,7 +86,7 @@ public struct AttachmentManager {
             }
         default:
             let url = URL(fileURLWithPath: content)
-            fileURL =  AttachmentConstants.folder.appendingPathComponent(newKey).appendingPathExtension(url.pathExtension)
+            fileURL = URL.attachmentURL.appendingPathComponent(newKey).appendingPathExtension(url.pathExtension)
             let document = AttachmentFile(fileURL: url)
             document.save(to: fileURL, for: .forCreating) { result in
                 if !result {
@@ -111,7 +107,7 @@ public struct AttachmentManager {
     /// - parameter key: 附件的 key
     public func delete(key: String) throws {
         
-        let jsonURL = URL(fileURLWithPath: key + ".json", relativeTo: AttachmentConstants.folder)
+        let jsonURL = URL(fileURLWithPath: key + ".json", relativeTo: URL.attachmentURL)
         let fileURL = try attachment(with: key).url
         
         try FileManager.default.removeItem(at: jsonURL)
@@ -122,7 +118,7 @@ public struct AttachmentManager {
     public func attachment(with key: String) throws -> Attachment {
         let jsonDecoder = JSONDecoder()
         jsonDecoder.dateDecodingStrategy = .secondsSince1970
-        let json = try Data(contentsOf: URL(fileURLWithPath: key + ".json", relativeTo: AttachmentConstants.folder))
+        let json = try Data(contentsOf: URL(fileURLWithPath: key + ".json", relativeTo: URL.attachmentURL))
         return try jsonDecoder.decode(Attachment.self, from: json)
     }
 }
