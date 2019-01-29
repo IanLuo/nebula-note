@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import UIKit
 
 public protocol EditorControllerDelegate: class {
     func currentHeadingDidChange(heading: Document.Heading?)

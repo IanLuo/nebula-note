@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import UIKit
 import TextStorage
 
 public protocol OutlineTextStorageDelegate: class {

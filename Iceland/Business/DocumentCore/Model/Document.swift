@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import UIKit
 import Storage
 
 public class DocumentInfo {

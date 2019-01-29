@@ -39,31 +39,39 @@ public class DocumentEditViewController: UIViewController {
     
     private let toolBar: UIView = UIView()
     
+    private var closeButton: UIButton!
+    private var searchButton: UIButton!
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
         
         self.textView.frame = self.view.bounds
         
         self.view.addSubview(self.textView)
-        
         self.view.addSubview(self.toolBar)
         
-        self.toolBar.sideAnchor(for: [.left, .top, .right], to: self.view, edgeInset: 0)
-        self.toolBar.sizeAnchor(height: 40)
-        
         let image = self.viewModel.coordinator?.isModal == true ? UIImage(named: "cross") : UIImage(named: "back")
-        let closeButton = self.createActionButton(icon: image?.withRenderingMode(.alwaysTemplate))
-        closeButton.addTarget(self, action: #selector(cancel), for: .touchUpInside)
-        let searchButton = self.createActionButton(icon: UIImage(named: "zoom")?.withRenderingMode(.alwaysTemplate))
-        searchButton.addTarget(self, action: #selector(search), for: .touchUpInside)
+        self.closeButton = self.createActionButton(icon: image?.withRenderingMode(.alwaysTemplate))
+        self.searchButton = self.createActionButton(icon: UIImage(named: "zoom")?.withRenderingMode(.alwaysTemplate))
+        
+        self.closeButton.addTarget(self, action: #selector(cancel), for: .touchUpInside)
+        self.searchButton.addTarget(self, action: #selector(search), for: .touchUpInside)
         
         self.toolBar.addSubview(closeButton)
         self.toolBar.addSubview(searchButton)
+    }
+    
+    public override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
         
-        closeButton.sideAnchor(for: [.right, .bottom, .top], to: self.toolBar, edgeInsets: .init(top: 0, left: 0, bottom: 0, right: -30))
-        closeButton.sizeAnchor(width: 40, height: 40)
-        searchButton.sideAnchor(for: [.left, .bottom, .top], to: self.toolBar, edgeInsets: .init(top: 0, left: 30, bottom: 0, right: 0))
-        searchButton.sizeAnchor(width: 40, height: 40)
+        self.toolBar.size(width: self.view.bounds.width, height: 80)
+            .align(to: self.view, direction: AlignmentDirection.top, position: AlignmentPosition.middle, inset: 0)
+
+        self.closeButton.size(width: 40, height: 40)
+            .alignToSuperview(direction: AlignmentDirection.right, position: AlignmentPosition.middle, inset: 30)
+        
+        self.searchButton.size(width: 40, height: 40)
+            .alignToSuperview(direction: AlignmentDirection.left, position: AlignmentPosition.middle, inset: 30)
     }
     
     @objc private func cancel() {
