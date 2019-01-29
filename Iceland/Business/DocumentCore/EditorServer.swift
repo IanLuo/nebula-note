@@ -49,9 +49,17 @@ public class OutlineEditorServer {
     
     public static func closeIfOpen(url: URL, complete: @escaping () -> Void) {
         if let service = instance.cachedServiceInstances[url] {
-            service.document.close { _ in
+            
+            if service.document.documentState != .closed {
+                service.document.close { _ in
+                    instance.cachedServiceInstances[url] = nil
+                    complete()
+                }
+            } else {
                 complete()
             }
+        } else {
+            complete()
         }
     }
     
@@ -64,9 +72,20 @@ public class OutlineEditorServer {
             for (url, service) in instance.cachedServiceInstances {
                 dispatchGroup.enter()
                 if url.path.contains(relatePath) {
-                    service.document.close { _ in
+                    if service.document.documentState != .closed {
+                        DispatchQueue.main.async {
+                            service.document.close { _ in
+                                queue.async {
+                                    instance.cachedServiceInstances[url] = nil
+                                    dispatchGroup.leave()
+                                }
+                            }
+                        }
+                    } else {
                         dispatchGroup.leave()
                     }
+                } else {
+                    dispatchGroup.leave()
                 }
             }
         }

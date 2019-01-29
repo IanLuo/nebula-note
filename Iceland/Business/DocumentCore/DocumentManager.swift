@@ -115,11 +115,16 @@ public struct DocumentManager {
         var isDir = ObjCBool(true)
         // 如果有子文件, 先删除子文件
         if fm.fileExists(atPath: subFolder.path, isDirectory: &isDir) {
+            // 关闭文件夹下的文件
             OutlineEditorServer.closeIfOpen(dir: subFolder) {
                 subFolder.delete { error in
                     if let error = error {
                         completion?(error)
                     } else {
+                        DispatchQueue.main.async {
+                            NotificationCenter.default.post(name: DocumentManagerNotification.didDeleteDocument, object: nil, userInfo: [DocumentManagerNotification.keyDidDelegateDocumentURL: subFolder])
+                        }
+                        
                         OutlineEditorServer.closeIfOpen(url: url, complete: {
                             url.delete { error in
                                 // 执行回调

@@ -101,8 +101,8 @@ public class RecentFilesManager {
     @objc private func handleDocumentDelete(notification: Notification) {
         if let url = notification.userInfo?[DocumentManagerNotification.keyDidDelegateDocumentURL] as? URL {
             self.recentFiles.forEach {
-                if url.documentRelativePath == $0.url.documentRelativePath {
-                    self.removeRecentFile(url: url) {
+                if $0.url.documentRelativePath.contains(url.documentRelativePath) {
+                    self.removeRecentFile(url: $0.url) {
                         DispatchQueue.main.async {
                             NotificationCenter.default.post(name: RecentFileChangedNotification.fileInfoChanged,
                                                             object: nil,

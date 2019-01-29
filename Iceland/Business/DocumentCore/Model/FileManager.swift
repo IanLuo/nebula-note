@@ -101,9 +101,7 @@ extension URL {
     /// 一个文件，可以包含子文件，方法是，创建一个以该文件同名的文件夹(不包含 icelane 后缀)，放在同一目录
     /// 将当前文件的 URL 转为当前文件子文件夹的 URL
     public var convertoFolderURL: URL {
-        let path = self.deletingPathExtension().path.replacingOccurrences(of: URL.filesFolderPath, with: "")
-            + DocumentConstants.documentDirSuffix
-        return URL.directory(relativeDirectory: URL.documentBaseURL, relativePath: path)
+        return URL(string: self.deletingPathExtension().deletingLastSplashIfThereIs + DocumentConstants.documentDirSuffix + "/")!
     }
         
     public var parentDocumentURL: URL? {
