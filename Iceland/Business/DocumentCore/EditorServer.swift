@@ -32,8 +32,11 @@ public class OutlineEditorServer {
         url = url.appendingPathExtension(ext)
         
         // 打开文件时， 添加到最近使用的文件
-        self.instance.recentFilesManager.addRecentFile(url: url, lastLocation: 0)
-        NotificationCenter.default.post(name: RecentFileChangedNotification.openFile, object: nil, userInfo: ["url": url])
+        self.instance.recentFilesManager.addRecentFile(url: url, lastLocation: 0) {
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: RecentFileChangedNotification.openFile, object: nil, userInfo: ["url": url])
+            }
+        }
 
         if let editorInstance = OutlineEditorServer._instance.cachedServiceInstances[url] {
             return editorInstance
@@ -43,11 +46,40 @@ public class OutlineEditorServer {
             return newService
         }
     }
+    
+    public static func closeIfOpen(url: URL, complete: @escaping () -> Void) {
+        if let service = instance.cachedServiceInstances[url] {
+            service.document.close { _ in
+                complete()
+            }
+        }
+    }
+    
+    public static func closeIfOpen(dir: URL, complete: @escaping () -> Void) {
+        let dispatchGroup = DispatchGroup()
+        let queue = DispatchQueue(label: "close files")
+        let relatePath = dir.documentRelativePath
+        
+        queue.async {
+            for (url, service) in instance.cachedServiceInstances {
+                dispatchGroup.enter()
+                if url.path.contains(relatePath) {
+                    service.document.close { _ in
+                        dispatchGroup.leave()
+                    }
+                }
+            }
+        }
+        
+        dispatchGroup.notify(queue: queue) {
+            complete()
+        }
+    }
 }
 
 public class EditorService {
     private let editorController = EditorController(parser: OutlineParser())
-    private var document: Document!
+    fileprivate var document: Document!
     private lazy var trimmer: OutlineTextTrimmer = OutlineTextTrimmer(parser: OutlineParser())
     
     fileprivate init() {}

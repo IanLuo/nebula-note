@@ -347,6 +347,29 @@ public struct DocumentSearchManager {
         }
     }
     
+    public func loadAllTags(_ completion: @escaping ([DocumentSearchResult]) -> Void) {
+        var allTagsSearchResult: [DocumentSearchResult] = []
+        self.doSearchHeading(resultAdded: { searchResults in
+            allTagsSearchResult.append(contentsOf: searchResults)
+        }, complete: {
+            completion(allTagsSearchResult)
+        }, failed: { error in
+            log.error(error)
+        }) { (text, url, headings) -> [DocumentSearchResult] in
+            var resultsInSingleFile: [DocumentSearchResult] = []
+            for heading in headings {
+                if let tagsRange = heading[OutlineParser.Key.Element.Heading.tags] {
+                    let tags = text.substring(tagsRange).components(separatedBy: ":").filter { $0.count > 0 }
+                    for tag in tags {
+                        resultsInSingleFile.append(DocumentSearchResult(url: url, highlightRange: tagsRange, context: tag, heading: nil))
+                    }
+                }
+            }
+            
+            return resultsInSingleFile
+        }
+    }
+    
     public func loadAllFiles() -> [URL] {
         var result: [URL] = []
         guard let enumerator = FileManager.default.enumerator(at: URL.documentBaseURL,

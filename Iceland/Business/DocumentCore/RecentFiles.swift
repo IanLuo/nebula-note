@@ -37,7 +37,7 @@ public class RecentDocumentInfo: DocumentInfo, Codable {
         self.location = try container.decode(Int.self, forKey: CodingKeys.location)
         let relatedPath = try container.decode(String.self, forKey: CodingKeys.path)
 
-        super.init(wrapperURL: DocumentManager.Constants.filesFolder.url.appendingPathComponent(relatedPath))
+        super.init(wrapperURL: URL.documentBaseURL.appendingPathComponent(relatedPath))
     }
     
     public func encode(to encoder: Encoder) throws {
@@ -71,26 +71,28 @@ public class RecentFilesManager {
                 let documentCurrentPath = documentInfo.url.path
                 if documentCurrentPath == oldPath {
                     let openDate = self.recentFile(url: oldURL.documentRelativePath, plist: plist)?.lastRequestTime ?? Date()
-                    self.removeRecentFile(url: oldURL)
-                    self.addRecentFile(url: newURL, lastLocation: 0, date: openDate)
-                    NotificationCenter.default.post(name: RecentFileChangedNotification.fileInfoChanged,
-                                                    object: nil,
-                                                    userInfo: ["oldURL" : oldURL, "newURL" : newURL])
+                    self.removeRecentFile(url: oldURL) {
+                        self.addRecentFile(url: newURL, lastLocation: 0, date: openDate) {
+                            NotificationCenter.default.post(name: RecentFileChangedNotification.fileInfoChanged,
+                                                            object: nil,
+                                                            userInfo: ["oldURL" : oldURL, "newURL" : newURL])
+                        }
+                    }
                 } else if documentCurrentPath.contains(oldSubfolderPath) { // 子文件
                     let openDate = self.recentFile(url: documentInfo.url.documentRelativePath, plist: plist)?.lastRequestTime ?? Date()
-                    self.removeRecentFile(url: documentInfo.url)
-                    
-                    // 替换已修改的父文件目录
-                    let newPath = documentCurrentPath.replacingOccurrences(of: oldSubfolderPath,
-                                                                           with: newURL.convertoFolderURL.documentRelativePath)
-                    
-                    let newSubURL = URL(fileURLWithPath: newPath)
-                    self.addRecentFile(url: newSubURL, lastLocation: 0, date: openDate)
-                    
-                    NotificationCenter.default.post(name: RecentFileChangedNotification.fileInfoChanged,
-                                                    object: nil,
-                                                    userInfo: ["renamed": ["oldURL" : documentInfo.url,
-                                                                           "newURL" : newSubURL]])
+                    self.removeRecentFile(url: documentInfo.url) {
+                        // 替换已修改的父文件目录
+                        let newPath = documentCurrentPath.replacingOccurrences(of: oldSubfolderPath,
+                                                                               with: newURL.convertoFolderURL.documentRelativePath)
+                        
+                        let newSubURL = URL(fileURLWithPath: newPath)
+                        self.addRecentFile(url: newSubURL, lastLocation: 0, date: openDate) {
+                            NotificationCenter.default.post(name: RecentFileChangedNotification.fileInfoChanged,
+                                                            object: nil,
+                                                            userInfo: ["renamed": ["oldURL" : documentInfo.url,
+                                                                                   "newURL" : newSubURL]])
+                        }
+                    }                    
                 }
             }
         }
@@ -100,20 +102,24 @@ public class RecentFilesManager {
         if let url = notification.userInfo?[DocumentManagerNotification.keyDidDelegateDocumentURL] as? URL {
             self.recentFiles.forEach {
                 if url.documentRelativePath == $0.url.documentRelativePath {
-                    self.removeRecentFile(url: url)
-                    
-                    NotificationCenter.default.post(name: RecentFileChangedNotification.fileInfoChanged,
-                                                    object: nil,
-                                                    userInfo: ["deleted" : url])
+                    self.removeRecentFile(url: url) {
+                        DispatchQueue.main.async {
+                            NotificationCenter.default.post(name: RecentFileChangedNotification.fileInfoChanged,
+                                                            object: nil,
+                                                            userInfo: ["deleted" : url])
+                        }
+                    }
                 }
             }
         }
     }
     
     /// 删除最近文件
-    public func removeRecentFile(url: URL) {
+    public func removeRecentFile(url: URL, completion: @escaping () -> Void) {
         let plist = KeyValueStoreFactory.store(type: KeyValueStoreType.plist(PlistStoreType.custom("recent_files")))
-        plist.remove(key: url.documentRelativePath)
+        plist.remove(key: url.documentRelativePath) {
+            completion()
+        }
     }
     
     public func recentFile(url: String, plist: KeyValueStore) -> RecentDocumentInfo? {
@@ -132,14 +138,16 @@ public class RecentFilesManager {
     }
     
     /// 最近使用文件
-    public func addRecentFile(url: URL, lastLocation: Int, date: Date = Date()) {
+    public func addRecentFile(url: URL, lastLocation: Int, date: Date = Date(), completion: @escaping () -> Void) {
         let plist = KeyValueStoreFactory.store(type: KeyValueStoreType.plist(PlistStoreType.custom("recent_files")))
         let recentDocumentInfo = RecentDocumentInfo(lastRequestTime: date, location: lastLocation, wrapperURL: url)
         let jsonEncoder = JSONEncoder()
         do {
             let data = try jsonEncoder.encode(recentDocumentInfo)
             let jsonString = String(data: data, encoding: .utf8) ?? ""
-            plist.set(value: jsonString, key: url.documentRelativePath)
+            plist.set(value: jsonString, key: url.documentRelativePath) {
+                completion()
+            }
         } catch {
             log.error(error)
         }

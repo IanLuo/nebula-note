@@ -9,5 +9,5 @@
 import Foundation
 
 public class HomeViewModel {
-    public weak var dependency: HomeCoordinator?
+    public weak var coordinator: HomeCoordinator?
 }

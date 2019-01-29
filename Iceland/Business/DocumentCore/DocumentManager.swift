@@ -37,11 +37,11 @@ public struct DocumentManager {
     }
     
     public func removeRecentFile(url: URL) {
-        OutlineEditorServer.instance.recentFilesManager.removeRecentFile(url: url)
+        OutlineEditorServer.instance.recentFilesManager.removeRecentFile(url: url) {}
     }
     
     public func closeFile(url: URL, last selectionLocation: Int) {
-        OutlineEditorServer.instance.recentFilesManager.addRecentFile(url: url, lastLocation: selectionLocation)
+        OutlineEditorServer.instance.recentFilesManager.addRecentFile(url: url, lastLocation: selectionLocation) {}
     }
     
     /// 查找指定目录下的 iceland 文件包
@@ -115,30 +115,40 @@ public struct DocumentManager {
         var isDir = ObjCBool(true)
         // 如果有子文件, 先删除子文件
         if fm.fileExists(atPath: subFolder.path, isDirectory: &isDir) {
-            subFolder.delete { error in
-                if let error = error {
-                    completion?(error)
-                } else {
-                    url.delete { error in
-                        // 执行回调
+            OutlineEditorServer.closeIfOpen(dir: subFolder) {
+                subFolder.delete { error in
+                    if let error = error {
                         completion?(error)
-                        
-                        // 如果没有失败，则通知外部，此文件已删除
-                        if error == nil {
-                            NotificationCenter.default.post(name: DocumentManagerNotification.didDeleteDocument, object: nil, userInfo: [DocumentManagerNotification.keyDidDelegateDocumentURL: url])
-                        }
+                    } else {
+                        OutlineEditorServer.closeIfOpen(url: url, complete: {
+                            url.delete { error in
+                                // 执行回调
+                                completion?(error)
+                                
+                                // 如果没有失败，则通知外部，此文件已删除
+                                if error == nil {
+                                    DispatchQueue.main.async {
+                                        NotificationCenter.default.post(name: DocumentManagerNotification.didDeleteDocument, object: nil, userInfo: [DocumentManagerNotification.keyDidDelegateDocumentURL: url])
+                                    }
+                                }
+                            }
+                        })
                     }
                 }
             }
         // 如果没有子文件夹，直接删除
         } else {
-            url.delete { error in
-                // 执行回调
-                completion?(error)
-                
-                // 如果没有失败，则通知外部，此文件已删除
-                if error == nil {
-                    NotificationCenter.default.post(name: DocumentManagerNotification.didDeleteDocument, object: nil, userInfo: [DocumentManagerNotification.keyDidDelegateDocumentURL: url])
+            OutlineEditorServer.closeIfOpen(url: url) {
+                url.delete { error in
+                    // 执行回调
+                    completion?(error)
+                    
+                    // 如果没有失败，则通知外部，此文件已删除
+                    if error == nil {
+                        DispatchQueue.main.async {
+                            NotificationCenter.default.post(name: DocumentManagerNotification.didDeleteDocument, object: nil, userInfo: [DocumentManagerNotification.keyDidDelegateDocumentURL: url])
+                        }
+                    }
                 }
             }
         }

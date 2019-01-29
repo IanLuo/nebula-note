@@ -43,7 +43,7 @@ public class HomeViewController: UIViewController {
         self.view.addGestureRecognizer(pan)
         
         self.children.forEach { [unowned self] in
-            self.masterView.addItem(MasterView.Item(icon: UIImage(), title: $0.title ?? "unknown"))
+            self.masterView.addTab(MasterView.Item(icon: $0.tabBarItem.image, title: $0.title ?? "unknown"))
         }
     }
     
@@ -107,6 +107,7 @@ public class HomeViewController: UIViewController {
             self.view.bounds = CGRect(origin: .zero, size: self.view.bounds.size)
             self.updateCoverAlpha(offset: 0)
         }, completion: { _ in
+            self.currentChildViewController?.becomeFirstResponder()
             self.isShowingMaster = false
         })
     }
@@ -118,6 +119,7 @@ public class HomeViewController: UIViewController {
             self.view.bounds = CGRect(origin: .init(x: -self.masterViewWidth, y: 0), size: self.view.bounds.size)
             self.updateCoverAlpha(offset: self.masterViewWidth)
         }, completion: { _ in
+            self.currentChildViewController?.resignFirstResponder()
             self.isShowingMaster = true
         })
     }
@@ -152,7 +154,11 @@ extension HomeViewController: UIGestureRecognizerDelegate {
 }
 
 extension HomeViewController: MasterViewDelegate {
-    public func didSelect(at index: Int) {
+    public func didSelectTag(at index: Int) {
+        
+    }
+    
+    public func didSelectTab(at index: Int) {
         self.showChildViewController(at: index)
         self.showChildView()
     }

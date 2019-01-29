@@ -149,8 +149,8 @@ extension URL {
     
     public var documentRelativePath: String {
         let path = self.path
-        let seperator = DocumentManager.Constants.filesFolder.path
-        return path.components(separatedBy: seperator).last!
+        let separator = URL.documentBaseURL.path + "/" // 在末尾加上斜线，在替换的时候，相对路径开始则不会有斜线
+        return path.components(separatedBy: separator).last!
     }
     
     public var coverURL: URL {

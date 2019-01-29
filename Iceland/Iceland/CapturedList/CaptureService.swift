@@ -32,19 +32,19 @@ public struct CaptureService: CaptureServiceProtocol {
     /// 创建一个新的 attachment, 并添加到 capture 列表中
     public func save(key: String) {
         let plist = KeyValueStoreFactory.store(type: .plist(.custom("capture")))
-        plist.set(value: "", key: key) // value 没用
+        plist.set(value: "", key: key) {} // value 没用
     }
     
     /// 删除 capture 中的 attachment
     public func delete(key: String) {
         let plist = KeyValueStoreFactory.store(type: .plist(.custom("capture")))
-        plist.remove(key: key)
+        plist.remove(key: key) {}
     }
     
     /// 删除 capture 中的 attachment，并且删除磁盘上的 attachment
     public func deleteWithAttachment(key: String) {
         let plist = KeyValueStoreFactory.store(type: .plist(.custom("capture")))
-        plist.remove(key: key)
+        plist.remove(key: key) {}
     }
     
     /// 从 capture 中找到对应的 attahcment 并返回

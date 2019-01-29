@@ -112,15 +112,11 @@
 		E4A46A3821B6470100FBDA04 /* DocumentBrowserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A3721B6470100FBDA04 /* DocumentBrowserViewModel.swift */; };
 		E4A46A3E21B6605C00FBDA04 /* DocumentBrowserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A3D21B6605C00FBDA04 /* DocumentBrowserTests.swift */; };
 		E4B19AB021C5363A00ED3463 /* SettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B19AAF21C5363A00ED3463 /* SettingsTests.swift */; };
+		E4B802022200437A00AD5AD8 /* TextStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = E4BFD47021F711A2003C048C /* TextStorage.m */; };
+		E4B80203220043BA00AD5AD8 /* TextStorage.h in Headers */ = {isa = PBXBuildFile; fileRef = E4BFD45521F71184003C048C /* TextStorage.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E4BC264021F56A7E00B0F2B9 /* MasterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4BC263F21F56A7E00B0F2B9 /* MasterView.swift */; };
 		E4BC264221F56DB900B0F2B9 /* Rect.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4BC264121F56DB900B0F2B9 /* Rect.swift */; };
 		E4BC264421F587BC00B0F2B9 /* FrameLayout+Shortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4BC264321F587BC00B0F2B9 /* FrameLayout+Shortcuts.swift */; };
-		E4BFD45C21F71185003C048C /* TextStorage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4BFD45321F71184003C048C /* TextStorage.framework */; };
-		E4BFD46321F71185003C048C /* TextStorageTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E4BFD46221F71185003C048C /* TextStorageTests.m */; };
-		E4BFD46521F71185003C048C /* TextStorage.h in Headers */ = {isa = PBXBuildFile; fileRef = E4BFD45521F71184003C048C /* TextStorage.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E4BFD46821F71185003C048C /* TextStorage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4BFD45321F71184003C048C /* TextStorage.framework */; };
-		E4BFD46921F71185003C048C /* TextStorage.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E4BFD45321F71184003C048C /* TextStorage.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		E4BFD47121F711A2003C048C /* TextStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = E4BFD47021F711A2003C048C /* TextStorage.m */; };
 		E4C46FE321EB311900F6374F /* ModalFormViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C46FE221EB311900F6374F /* ModalFormViewController.swift */; };
 		E4C7FB8521BA916D006E3CD8 /* AgendaCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C7FB8421BA916D006E3CD8 /* AgendaCellModel.swift */; };
 		E4CC0C5921EEF92900058E5D /* Size.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4CC0C5821EEF92900058E5D /* Size.swift */; };
@@ -204,27 +200,6 @@
 			remoteGlobalIDString = E43427F52121BF5B00EC6DC3;
 			remoteInfo = Iceland;
 		};
-		E4BFD45D21F71185003C048C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E43427EE2121BF5B00EC6DC3 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = E4BFD45221F71184003C048C;
-			remoteInfo = TextStorage;
-		};
-		E4BFD45F21F71185003C048C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E43427EE2121BF5B00EC6DC3 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = E43427F52121BF5B00EC6DC3;
-			remoteInfo = Iceland;
-		};
-		E4BFD46621F71185003C048C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E43427EE2121BF5B00EC6DC3 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = E4BFD45221F71184003C048C;
-			remoteInfo = TextStorage;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -234,7 +209,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				E4BFD46921F71185003C048C /* TextStorage.framework in Embed Frameworks */,
 				E41F86FC21902D95006C4CDB /* Storage.framework in Embed Frameworks */,
 				E41CB1B121D88D9400EF0A3C /* Business.framework in Embed Frameworks */,
 			);
@@ -358,12 +332,7 @@
 		E4BC263F21F56A7E00B0F2B9 /* MasterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterView.swift; sourceTree = "<group>"; };
 		E4BC264121F56DB900B0F2B9 /* Rect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rect.swift; sourceTree = "<group>"; };
 		E4BC264321F587BC00B0F2B9 /* FrameLayout+Shortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FrameLayout+Shortcuts.swift"; sourceTree = "<group>"; };
-		E4BFD45321F71184003C048C /* TextStorage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TextStorage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4BFD45521F71184003C048C /* TextStorage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TextStorage.h; sourceTree = "<group>"; };
-		E4BFD45621F71184003C048C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		E4BFD45B21F71185003C048C /* TextStorageTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TextStorageTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		E4BFD46221F71185003C048C /* TextStorageTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TextStorageTests.m; sourceTree = "<group>"; };
-		E4BFD46421F71185003C048C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E4BFD47021F711A2003C048C /* TextStorage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TextStorage.m; sourceTree = "<group>"; };
 		E4C46FE221EB311900F6374F /* ModalFormViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModalFormViewController.swift; sourceTree = "<group>"; };
 		E4C7FB8421BA916D006E3CD8 /* AgendaCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgendaCellModel.swift; sourceTree = "<group>"; };
@@ -437,7 +406,6 @@
 				EE260FEBE701F7B91549B9B8 /* Pods_Iceland.framework in Frameworks */,
 				E41F86FB21902D95006C4CDB /* Storage.framework in Frameworks */,
 				E41CB1B021D88D9400EF0A3C /* Business.framework in Frameworks */,
-				E4BFD46821F71185003C048C /* TextStorage.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -453,21 +421,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		E4BFD45021F71184003C048C /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		E4BFD45821F71185003C048C /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				E4BFD45C21F71185003C048C /* TextStorage.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -558,6 +511,8 @@
 				E4A46A3121B4D07500FBDA04 /* Document.swift */,
 				E4F9ECE021FECE5C009A08CD /* FileManager.swift */,
 				E4A46A1821AA8E9F00FBDA04 /* OutlineStorage.swift */,
+				E4BFD45521F71184003C048C /* TextStorage.h */,
+				E4BFD47021F711A2003C048C /* TextStorage.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -746,8 +701,6 @@
 				E41F86F421902D95006C4CDB /* StorageTests */,
 				E41CB19C21D88D9300EF0A3C /* Business */,
 				E41CB1A921D88D9400EF0A3C /* BusinessTests */,
-				E4BFD45421F71184003C048C /* TextStorage */,
-				E4BFD46121F71185003C048C /* TextStorageTests */,
 				E43427F72121BF5B00EC6DC3 /* Products */,
 				64A7409AC7374688F3C99B32 /* Pods */,
 				12C79086BDCD360A64A82947 /* Frameworks */,
@@ -764,8 +717,6 @@
 				E41F86EE21902D94006C4CDB /* StorageTests.xctest */,
 				E41CB19B21D88D9300EF0A3C /* Business.framework */,
 				E41CB1A321D88D9400EF0A3C /* BusinessTests.xctest */,
-				E4BFD45321F71184003C048C /* TextStorage.framework */,
-				E4BFD45B21F71185003C048C /* TextStorageTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -870,25 +821,6 @@
 			path = Editor;
 			sourceTree = "<group>";
 		};
-		E4BFD45421F71184003C048C /* TextStorage */ = {
-			isa = PBXGroup;
-			children = (
-				E4BFD45521F71184003C048C /* TextStorage.h */,
-				E4BFD47021F711A2003C048C /* TextStorage.m */,
-				E4BFD45621F71184003C048C /* Info.plist */,
-			);
-			path = TextStorage;
-			sourceTree = "<group>";
-		};
-		E4BFD46121F71185003C048C /* TextStorageTests */ = {
-			isa = PBXGroup;
-			children = (
-				E4BFD46221F71185003C048C /* TextStorageTests.m */,
-				E4BFD46421F71185003C048C /* Info.plist */,
-			);
-			path = TextStorageTests;
-			sourceTree = "<group>";
-		};
 		E4EA857321D3AE4200DD92F9 /* Parse */ = {
 			isa = PBXGroup;
 			children = (
@@ -919,6 +851,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E41CB1AD21D88D9400EF0A3C /* Business.h in Headers */,
+				E4B80203220043BA00AD5AD8 /* TextStorage.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -927,14 +860,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				E41F86F821902D95006C4CDB /* Storage.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		E4BFD44E21F71184003C048C /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				E4BFD46521F71185003C048C /* TextStorage.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1034,7 +959,6 @@
 			dependencies = (
 				E41F86FA21902D95006C4CDB /* PBXTargetDependency */,
 				E41CB1AF21D88D9400EF0A3C /* PBXTargetDependency */,
-				E4BFD46721F71185003C048C /* PBXTargetDependency */,
 			);
 			name = Iceland;
 			productName = Iceland;
@@ -1079,43 +1003,6 @@
 			productReference = E43428152121BF6000EC6DC3 /* IcelandUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
-		E4BFD45221F71184003C048C /* TextStorage */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = E4BFD46A21F71185003C048C /* Build configuration list for PBXNativeTarget "TextStorage" */;
-			buildPhases = (
-				E4BFD44E21F71184003C048C /* Headers */,
-				E4BFD44F21F71184003C048C /* Sources */,
-				E4BFD45021F71184003C048C /* Frameworks */,
-				E4BFD45121F71184003C048C /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = TextStorage;
-			productName = TextStorage;
-			productReference = E4BFD45321F71184003C048C /* TextStorage.framework */;
-			productType = "com.apple.product-type.framework";
-		};
-		E4BFD45A21F71185003C048C /* TextStorageTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = E4BFD46D21F71185003C048C /* Build configuration list for PBXNativeTarget "TextStorageTests" */;
-			buildPhases = (
-				E4BFD45721F71185003C048C /* Sources */,
-				E4BFD45821F71185003C048C /* Frameworks */,
-				E4BFD45921F71185003C048C /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				E4BFD45E21F71185003C048C /* PBXTargetDependency */,
-				E4BFD46021F71185003C048C /* PBXTargetDependency */,
-			);
-			name = TextStorageTests;
-			productName = TextStorageTests;
-			productReference = E4BFD45B21F71185003C048C /* TextStorageTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -1153,13 +1040,6 @@
 						CreatedOnToolsVersion = 10.0;
 						TestTargetID = E43427F52121BF5B00EC6DC3;
 					};
-					E4BFD45221F71184003C048C = {
-						CreatedOnToolsVersion = 10.1;
-					};
-					E4BFD45A21F71185003C048C = {
-						CreatedOnToolsVersion = 10.1;
-						TestTargetID = E43427F52121BF5B00EC6DC3;
-					};
 				};
 			};
 			buildConfigurationList = E43427F12121BF5B00EC6DC3 /* Build configuration list for PBXProject "Iceland" */;
@@ -1182,8 +1062,6 @@
 				E41F86ED21902D94006C4CDB /* StorageTests */,
 				E41CB19A21D88D9300EF0A3C /* Business */,
 				E41CB1A221D88D9400EF0A3C /* BusinessTests */,
-				E4BFD45221F71184003C048C /* TextStorage */,
-				E4BFD45A21F71185003C048C /* TextStorageTests */,
 			);
 		};
 /* End PBXProject section */
@@ -1235,20 +1113,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		E43428132121BF6000EC6DC3 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		E4BFD45121F71184003C048C /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		E4BFD45921F71185003C048C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1401,6 +1265,7 @@
 				E41CB1BA21D88DCE00EF0A3C /* Document.swift in Sources */,
 				E41CB1C521D88DD700EF0A3C /* EditorServer.swift in Sources */,
 				E41CB1BE21D88DD100EF0A3C /* OutlineLayoutManager.swift in Sources */,
+				E4B802022200437A00AD5AD8 /* TextStorage.m in Sources */,
 				E41CB1D621D8921B00EF0A3C /* SettingsAccessor.swift in Sources */,
 				E41CB1C721D88DFD00EF0A3C /* AttachmentManager.swift in Sources */,
 				E4F9ECDF21FBF61B009A08CD /* RecentFiles.swift in Sources */,
@@ -1546,22 +1411,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E4BFD44F21F71184003C048C /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				E4BFD47121F711A2003C048C /* TextStorage.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		E4BFD45721F71185003C048C /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				E4BFD46321F71185003C048C /* TextStorageTests.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -1610,21 +1459,6 @@
 			target = E43427F52121BF5B00EC6DC3 /* Iceland */;
 			targetProxy = E43428162121BF6000EC6DC3 /* PBXContainerItemProxy */;
 		};
-		E4BFD45E21F71185003C048C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = E4BFD45221F71184003C048C /* TextStorage */;
-			targetProxy = E4BFD45D21F71185003C048C /* PBXContainerItemProxy */;
-		};
-		E4BFD46021F71185003C048C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = E43427F52121BF5B00EC6DC3 /* Iceland */;
-			targetProxy = E4BFD45F21F71185003C048C /* PBXContainerItemProxy */;
-		};
-		E4BFD46721F71185003C048C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = E4BFD45221F71184003C048C /* TextStorage */;
-			targetProxy = E4BFD46621F71185003C048C /* PBXContainerItemProxy */;
-		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
@@ -1661,6 +1495,14 @@
 					"@loader_path/Frameworks",
 				);
 				MTL_FAST_MATH = YES;
+				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-iquote",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/Result/Result.framework/Headers\"",
+					"-iquote",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/SwiftyBeaver/SwiftyBeaver.framework/Headers\"",
+				);
+				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				PRODUCT_BUNDLE_IDENTIFIER = wod.Business;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -1694,6 +1536,14 @@
 					"@loader_path/Frameworks",
 				);
 				MTL_FAST_MATH = YES;
+				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-iquote",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/Result/Result.framework/Headers\"",
+					"-iquote",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/SwiftyBeaver/SwiftyBeaver.framework/Headers\"",
+				);
+				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				PRODUCT_BUNDLE_IDENTIFIER = wod.Business;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -2097,106 +1947,6 @@
 			};
 			name = Release;
 		};
-		E4BFD46B21F71185003C048C /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = 26RSSM9Q9P;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = TextStorage/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = wod.TextStorage;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Debug;
-		};
-		E4BFD46C21F71185003C048C /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = 26RSSM9Q9P;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = TextStorage/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = wod.TextStorage;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Release;
-		};
-		E4BFD46E21F71185003C048C /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 26RSSM9Q9P;
-				INFOPLIST_FILE = TextStorageTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = wod.TextStorageTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Iceland.app/Iceland";
-			};
-			name = Debug;
-		};
-		E4BFD46F21F71185003C048C /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 26RSSM9Q9P;
-				INFOPLIST_FILE = TextStorageTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = wod.TextStorageTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Iceland.app/Iceland";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -2268,24 +2018,6 @@
 			buildConfigurations = (
 				E43428252121BF6000EC6DC3 /* Debug */,
 				E43428262121BF6000EC6DC3 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		E4BFD46A21F71185003C048C /* Build configuration list for PBXNativeTarget "TextStorage" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				E4BFD46B21F71185003C048C /* Debug */,
-				E4BFD46C21F71185003C048C /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		E4BFD46D21F71185003C048C /* Build configuration list for PBXNativeTarget "TextStorageTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				E4BFD46E21F71185003C048C /* Debug */,
-				E4BFD46F21F71185003C048C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

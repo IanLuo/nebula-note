@@ -16,6 +16,7 @@ public class HomeCoordinator: Coordinator {
         let viewController = HomeViewController(viewModel: viewModel)
         super.init(stack: stack, dependency: dependency)
         self.viewController = viewController
+        viewModel.coordinator = self
         
         self.addSubCoordinator(coordinator: AgendaCoordinator(stack: stack, dependency: dependency))
         self.addSubCoordinator(coordinator: CaptureListCoordinator(stack: stack, dependency: dependency))

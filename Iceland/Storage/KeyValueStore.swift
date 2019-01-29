@@ -12,11 +12,11 @@ import KeychainAccess
 public protocol KeyValueStore {
     func get(key: String) -> Any?
     
-    func set(value: Any, key: String)
+    func set(value: Any, key: String, completion: @escaping () -> Void)
     
-    func remove(key: String)
+    func remove(key: String, completion: @escaping () -> Void)
     
-    func clear()
+    func clear(completion: @escaping () -> Void)
     
     func allKeys() -> [String]
 }
@@ -55,7 +55,7 @@ fileprivate struct KeychainStore: KeyValueStore {
         return keychain[key]
     }
     
-    public func set(value: Any, key: String) {
+    public func set(value: Any, key: String, completion: @escaping () -> Void) {
         if value is String {
             try? keychain.set((value as? String)!, key: key)
         } else if value is Data {
@@ -63,14 +63,16 @@ fileprivate struct KeychainStore: KeyValueStore {
         }
     }
     
-    public func remove(key: String) {
+    public func remove(key: String, completion: @escaping () -> Void) {
         keychain[key] = nil
+        completion()
     }
     
-    public func clear() {
+    public func clear(completion: @escaping () -> Void) {
         keychain.allKeys().forEach {
             try? keychain.remove($0)
         }
+        completion()
     }
     
     public func allKeys() -> [String] {
@@ -117,7 +119,7 @@ fileprivate struct PlistStore: KeyValueStore {
         }
     }
     
-    public func set(value: Any, key: String) {
+    public func set(value: Any, key: String, completion: @escaping () -> Void) {
         if let store = store, let filePath = file?.filePath {
             file?.folder.createFolderIfNeeded()
             store.setValue(value, forKey: key)
@@ -125,6 +127,7 @@ fileprivate struct PlistStore: KeyValueStore {
             file?.write(accessor: { error in
                 if error == nil {
                     store.write(toFile: filePath, atomically: true)
+                    completion()
                 }
             })
         } else {
@@ -134,13 +137,14 @@ fileprivate struct PlistStore: KeyValueStore {
         }
     }
     
-    public func remove(key: String) {
+    public func remove(key: String, completion: @escaping () -> Void) {
         if let store = store, let filePath = file?.filePath {
             store.removeObject(forKey: key)
             
             file?.write(accessor: { error in
                 if error == nil {
                     store.write(toFile: filePath, atomically: true)
+                    completion()
                 }
             })
         } else {
@@ -150,12 +154,13 @@ fileprivate struct PlistStore: KeyValueStore {
         }
     }
     
-    public func clear() {
+    public func clear(completion: @escaping () -> Void) {
         if let filePath = file?.filePath {
             file?.delete(accessor: { error in
                 if error == nil {
                     do {
                         try Foundation.FileManager.default.removeItem(atPath: filePath)
+                        completion()
                     } catch {
                         print("ERROR: \(error)")
                     }

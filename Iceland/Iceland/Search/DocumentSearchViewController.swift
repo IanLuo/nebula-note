@@ -33,6 +33,14 @@ public class DocumentSearchViewController: UIViewController {
         self.searchInputView.textField.becomeFirstResponder()
     }
     
+    public override func becomeFirstResponder() -> Bool {
+        return self.searchInputView.textField.becomeFirstResponder()
+    }
+    
+    public override func resignFirstResponder() -> Bool {
+        return self.searchInputView.textField.resignFirstResponder()
+    }
+    
     private lazy var searchResultTableView: UITableView = {
         let tableView = UITableView()
         tableView.delegate = self

@@ -43,6 +43,7 @@ public class AgendaViewController: UIViewController {
         viewModel.delegate = self
         
         self.title = "Agenda".localizable
+        self.tabBarItem = UITabBarItem(title: "Agenda".localizable, image: UIImage(named: "tag"), tag: 0)
     }
     
     public required init?(coder aDecoder: NSCoder) {
