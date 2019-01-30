@@ -79,8 +79,7 @@ public class OpenningFilesView: UIView {
             for (index, documentInfo) in self.data.enumerated() {
                 if documentInfo.url.documentRelativePath == url.documentRelativePath {
                     let indexPath = IndexPath(row: index, section: 0)
-                    let cell = self.collectionView.cellForItem(at: indexPath) as? OpenningFileCell
-                    cell?.coverView.image =  notification.userInfo?[DocumentManagerNotification.keyNewCover] as? UIImage
+                    self.collectionView.reloadItems(at: [indexPath])
                 }
             }
         }
@@ -124,7 +123,7 @@ extension OpenningFilesView: UICollectionViewDelegate, UICollectionViewDataSourc
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: OpenningFileCell.reuseIdentifier, for: indexPath) as! OpenningFileCell
-        cell.coverView.image = self.data[indexPath.row].cover
+        cell.coverView.image = self.data[indexPath.row].cover?.resize(upto: CGSize(width: collectionView.bounds.width, height: collectionView.bounds.width))
         cell.titleLabel.text = self.data[indexPath.row].name
         return cell
     }
@@ -145,6 +144,8 @@ private class OpenningFileCell: UICollectionViewCell {
     
     let coverView: UIImageView = {
         let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
         return imageView
     }()
     

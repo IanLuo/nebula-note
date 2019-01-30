@@ -72,6 +72,12 @@ public class DocumentEditViewModel {
         self.editorService.changeCheckboxStatus(range: range)
     }
     
+    public func save(completion: @escaping () -> Void) {
+        editorService.save { _  in
+            completion()
+        }
+    }
+    
     public func headingString(index: Int) -> String {
         let heading = self.headings[index]
         let length = [heading.tags, heading.due, heading.schedule]

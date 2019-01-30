@@ -76,6 +76,7 @@ public class DocumentEditViewController: UIViewController {
     
     @objc private func cancel() {
         self.textView.endEditing(true)
+        self.viewModel.save {}
         self.viewModel.coordinator?.stop()
     }
     

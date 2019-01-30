@@ -16,20 +16,14 @@ public struct DocumentManagerNotification {
     
     public static let didChangeDocumentCover = Notification.Name(rawValue: "didChangeDocumentCover")
     public static let keyDidChangeDocumentCover = "url"
-    public static let keyNewCover = "new-cover"
     
     public static let didDeleteDocument = Notification.Name(rawValue: "didDeleteDocument")
     public static let keyDidDelegateDocumentURL = "url"
 }
 
 public struct DocumentManager {
-    public struct Constants {
-        static let filesFolderName = "files"
-        static let filesFolder = File.Folder.document(filesFolderName)
-    }
-
     public init() {
-        Constants.filesFolder.createFolderIfNeeded()
+        URL.documentBaseURL.createDirectorysIfNeeded()
     }
     
     public var recentFiles: [RecentDocumentInfo] {
@@ -57,10 +51,13 @@ public struct DocumentManager {
         service.open { [service] _ in
             service.cover = image
             
-            NotificationCenter.default.post(name: DocumentManagerNotification.didChangeDocumentCover,
-                                            object: nil,
-                                            userInfo: [DocumentManagerNotification.keyDidChangeDocumentCover: url,
-                                                       DocumentManagerNotification.keyNewCover: image as Any])
+            service.save(completion: { _ in
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name: DocumentManagerNotification.didChangeDocumentCover,
+                                                    object: nil,
+                                                    userInfo: [DocumentManagerNotification.keyDidChangeDocumentCover: url])
+                }
+            })
         }
     }
     
@@ -99,11 +96,14 @@ public struct DocumentManager {
         let document = Document.init(fileURL: newURL)
         document.string = "" // 新文档的内容为空字符串
         document.save(to: newURL, for: UIDocument.SaveOperation.forCreating) { [document] success in
-            if success {
-                completion?(newURL)
-            } else {
-                completion?(nil)
+            DispatchQueue.main.async {
+                if success {
+                    completion?(newURL)
+                } else {
+                    completion?(nil)
+                }
             }
+            
             
             document.close(completionHandler: nil)
         }
@@ -119,7 +119,9 @@ public struct DocumentManager {
             OutlineEditorServer.closeIfOpen(dir: subFolder) {
                 subFolder.delete { error in
                     if let error = error {
-                        completion?(error)
+                        DispatchQueue.main.async {
+                            completion?(error)
+                        }
                     } else {
                         DispatchQueue.main.async {
                             NotificationCenter.default.post(name: DocumentManagerNotification.didDeleteDocument, object: nil, userInfo: [DocumentManagerNotification.keyDidDelegateDocumentURL: subFolder])
@@ -127,12 +129,11 @@ public struct DocumentManager {
                         
                         OutlineEditorServer.closeIfOpen(url: url, complete: {
                             url.delete { error in
-                                // 执行回调
-                                completion?(error)
-                                
-                                // 如果没有失败，则通知外部，此文件已删除
-                                if error == nil {
-                                    DispatchQueue.main.async {
+                                DispatchQueue.main.async {
+                                    // 执行回调
+                                    completion?(error)
+                                    // 如果没有失败，则通知外部，此文件已删除
+                                    if error == nil {
                                         NotificationCenter.default.post(name: DocumentManagerNotification.didDeleteDocument, object: nil, userInfo: [DocumentManagerNotification.keyDidDelegateDocumentURL: url])
                                     }
                                 }
@@ -145,12 +146,11 @@ public struct DocumentManager {
         } else {
             OutlineEditorServer.closeIfOpen(url: url) {
                 url.delete { error in
-                    // 执行回调
-                    completion?(error)
-                    
-                    // 如果没有失败，则通知外部，此文件已删除
-                    if error == nil {
-                        DispatchQueue.main.async {
+                    DispatchQueue.main.async {
+                        // 执行回调
+                        completion?(error)
+                        if error == nil {
+                            // 如果没有失败，则通知外部，此文件已删除
                             NotificationCenter.default.post(name: DocumentManagerNotification.didDeleteDocument, object: nil, userInfo: [DocumentManagerNotification.keyDidDelegateDocumentURL: url])
                         }
                     }
@@ -174,7 +174,9 @@ public struct DocumentManager {
         }
         url.rename(url: newURL) { error in
             if let error = error {
-                failure(error)
+                DispatchQueue.main.async {
+                    failure(error)
+                }
             } else {
                 // 修改子文件夹名字
                 let subdocumentFolder = url.convertoFolderURL
@@ -182,23 +184,29 @@ public struct DocumentManager {
                 if FileManager.default.fileExists(atPath: subdocumentFolder.path, isDirectory: &isDir) {
                     subdocumentFolder.rename(url: newURL.convertoFolderURL) { error in
                         if let error = error {
-                            failure(error)
+                            DispatchQueue.main.async {
+                                failure(error)
+                            }
                         } else {
                             // 通知文件名更改
-                            NotificationCenter.default.post(name: DocumentManagerNotification.didChangeDocumentName,
-                                                            object: nil,
-                                                            userInfo: [DocumentManagerNotification.keyDidChangeDocumentNameNew : newURL,
-                                                                       DocumentManagerNotification.keyDidChangeDocumentNameOld : url])
-                            completion(newURL)
+                            DispatchQueue.main.async {
+                                completion(newURL)
+                                NotificationCenter.default.post(name: DocumentManagerNotification.didChangeDocumentName,
+                                                                object: nil,
+                                                                userInfo: [DocumentManagerNotification.keyDidChangeDocumentNameNew : newURL,
+                                                                           DocumentManagerNotification.keyDidChangeDocumentNameOld : url])
+                            }
                         }
                     }
                 } else {
                     // 通知文件名更改
-                    NotificationCenter.default.post(name: DocumentManagerNotification.didChangeDocumentName,
-                                                    object: nil,
-                                                    userInfo: [DocumentManagerNotification.keyDidChangeDocumentNameNew : newURL,
-                                                               DocumentManagerNotification.keyDidChangeDocumentNameOld : url])
-                    completion(newURL)
+                    DispatchQueue.main.async {
+                        completion(newURL)
+                        NotificationCenter.default.post(name: DocumentManagerNotification.didChangeDocumentName,
+                                                        object: nil,
+                                                        userInfo: [DocumentManagerNotification.keyDidChangeDocumentNameNew : newURL,
+                                                                   DocumentManagerNotification.keyDidChangeDocumentNameOld : url])
+                    }
                 }
             }
         }

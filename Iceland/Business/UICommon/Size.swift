@@ -22,7 +22,7 @@ extension CGSize {
     
     public func aspectFitHeightScale(for height: CGFloat) -> CGSize {
         let scale = self.height / height
-        return self.applying(CGAffineTransform(scaleX: 1 / scale, y: scale))
+        return self.applying(CGAffineTransform(scaleX: 1 / scale, y: 1 / scale))
     }
     
     public func aspectFitSizeScale(for size: CGSize) -> CGSize {

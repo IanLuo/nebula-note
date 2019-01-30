@@ -49,6 +49,7 @@ extension URL {
         return URL.directory(location: URLLocation.cache, relativePath: "audio")
     }
     
+    @discardableResult
     public func createDirectorysIfNeeded() -> URL {
         var isDIR = ObjCBool(true)
         let path = self.path
@@ -118,7 +119,7 @@ extension URL {
     }
     
     public static var filesFolderPath: String {
-        return DocumentManager.Constants.filesFolder.path
+        return URL.documentBaseURL.path
     }
     
     public var hasSubDocuments: Bool {
@@ -165,22 +166,19 @@ extension URL {
         let copyURL = self.concatingToFileName(" copy")
         let write = NSFileAccessIntent.writingIntent(with: copyURL,
                                                      options: NSFileCoordinator.WritingOptions.forReplacing)
-        fileCoordinator.coordinate(with: [write, read], queue: OperationQueue()) { error in
+        
+        let queue = OperationQueue()
+        queue.qualityOfService = .background
+        fileCoordinator.coordinate(with: [write, read], queue: queue) { error in
             if error != nil {
-                DispatchQueue.main.async {
-                    completion(nil, error)
-                }
+                completion(nil, error)
             } else {
                 let fm = FileManager.default
                 do {
                     try fm.copyItem(at: self, to: copyURL)
-                    DispatchQueue.main.async {
-                        completion(copyURL, nil)
-                    }
+                    completion(copyURL, nil)
                 } catch {
-                    DispatchQueue.main.async {
-                        completion(nil, error)
-                    }
+                    completion(nil, error)
                 }
             }
         }
@@ -199,13 +197,9 @@ extension URL {
             } else {
                 do {
                     try FileManager.default.removeItem(at: fileAccessIntent.url)
-                    DispatchQueue.main.async {
-                        completion(nil)
-                    }
+                    completion(nil)
                 } catch {
-                    DispatchQueue.main.async {
-                        completion(error)
-                    }
+                    completion(error)
                 }
             }
         }
@@ -214,31 +208,23 @@ extension URL {
     public func rename(url: URL, completion: ((Error?) -> Void)?) {
         let oldURL = self
         let newURL = url
-        var error: NSError?
         
-        DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
-            let fileCoordinator = NSFileCoordinator(filePresenter: nil)
-            fileCoordinator.coordinate(writingItemAt: oldURL,
-                                       options: NSFileCoordinator.WritingOptions.forMoving,
-                                       writingItemAt: newURL,
-                                       options: NSFileCoordinator.WritingOptions.forReplacing,
-                                       error: &error,
-                                       byAccessor: { (newURL1, newURL2) in
-                                        do {
-                                            let fileManager = FileManager.default
-                                            fileCoordinator.item(at: oldURL, willMoveTo: newURL)
-                                            try fileManager.moveItem(at: newURL1, to: newURL2)
-                                            fileCoordinator.item(at: oldURL, didMoveTo: newURL)
-                                            DispatchQueue.main.async {
-                                                completion?(error)
-                                            }
-                                        } catch {
-                                            DispatchQueue.main.async {
-                                                completion?(error)
-                                            }
-                                        }
-                                        
-            })
+        let fileCoordinator = NSFileCoordinator(filePresenter: nil)
+        let moving = NSFileAccessIntent.writingIntent(with: oldURL, options: NSFileCoordinator.WritingOptions.forMoving)
+        let replacing = NSFileAccessIntent.writingIntent(with: newURL, options: NSFileCoordinator.WritingOptions.forReplacing)
+        
+        let queue = OperationQueue()
+        queue.qualityOfService = .background
+        fileCoordinator.coordinate(with: [moving, replacing], queue: queue) { error in
+            do {
+                let fileManager = FileManager.default
+                fileCoordinator.item(at: oldURL, willMoveTo: newURL)
+                try fileManager.moveItem(at: oldURL, to: newURL)
+                fileCoordinator.item(at: oldURL, didMoveTo: newURL)
+                completion?(error)
+            } catch {
+                completion?(error)
+            }
         }
     }
 }
