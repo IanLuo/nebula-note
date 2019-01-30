@@ -224,16 +224,28 @@ private class TabView: UITableViewHeaderFooterView {
         button.tintColor = InterfaceTheme.Color.interactive
         button.addTarget(self, action: #selector(subtabActionTapped), for: .touchUpInside)
         button.setTitle("▽", for: UIControl.State.normal)
-        button.setTitle("△", for: UIControl.State.selected)
         return button
     }()
     
     var action: (() -> Void)?
     var showSubtabsAction: (() -> Void)?
     
-    var isOpen: Bool {
-        set { self.showSubtabsButton.isSelected = newValue }
-        get { return self.showSubtabsButton.isSelected }
+    var isOpen: Bool = false {
+        didSet {
+            var transform = CATransform3DIdentity
+            if isOpen {
+                transform = CATransform3DRotate(transform, CGFloat.pi, 1, 0, 0)
+            }
+
+            var perspective = CATransform3DIdentity
+            perspective.m34 = 1.0 / -1800.0;
+            self.showSubtabsButton.superview!.layer.sublayerTransform = perspective
+            self.showSubtabsButton.layer.zPosition = 100
+            
+            UIView.animate(withDuration: 0.5) {
+                self.showSubtabsButton.layer.transform = transform
+            }
+        }
     }
     
     var isHighlighted: Bool {
