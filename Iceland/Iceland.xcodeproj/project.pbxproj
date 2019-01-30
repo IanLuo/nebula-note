@@ -113,7 +113,7 @@
 		E4A46A3E21B6605C00FBDA04 /* DocumentBrowserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A3D21B6605C00FBDA04 /* DocumentBrowserTests.swift */; };
 		E4B19AB021C5363A00ED3463 /* SettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B19AAF21C5363A00ED3463 /* SettingsTests.swift */; };
 		E4B802022200437A00AD5AD8 /* TextStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = E4BFD47021F711A2003C048C /* TextStorage.m */; };
-		E4B80203220043BA00AD5AD8 /* TextStorage.h in Headers */ = {isa = PBXBuildFile; fileRef = E4BFD45521F71184003C048C /* TextStorage.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E4B802042201704E00AD5AD8 /* TextStorage.h in Headers */ = {isa = PBXBuildFile; fileRef = E4BFD45521F71184003C048C /* TextStorage.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E4BC264021F56A7E00B0F2B9 /* MasterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4BC263F21F56A7E00B0F2B9 /* MasterView.swift */; };
 		E4BC264221F56DB900B0F2B9 /* Rect.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4BC264121F56DB900B0F2B9 /* Rect.swift */; };
 		E4BC264421F587BC00B0F2B9 /* FrameLayout+Shortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4BC264321F587BC00B0F2B9 /* FrameLayout+Shortcuts.swift */; };
@@ -851,7 +851,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E41CB1AD21D88D9400EF0A3C /* Business.h in Headers */,
-				E4B80203220043BA00AD5AD8 /* TextStorage.h in Headers */,
+				E4B802042201704E00AD5AD8 /* TextStorage.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

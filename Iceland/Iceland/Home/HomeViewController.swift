@@ -11,19 +11,19 @@ import UIKit
 import Business
 
 public class HomeViewController: UIViewController {
-    private var viewModel: HomeViewModel?
+    private let viewModel: HomeViewModel
     
     public init(viewModel: HomeViewModel) {
         self.viewModel = viewModel
-        
         super.init(nibName: nil, bundle: nil)
+        viewModel.delegate = self
     }
     
     public required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private lazy var masterView: MasterView = {
+    fileprivate lazy var masterView: MasterView = {
         let masterView = MasterView()
         masterView.delegate = self
         return masterView
@@ -43,8 +43,10 @@ public class HomeViewController: UIViewController {
         self.view.addGestureRecognizer(pan)
         
         self.children.forEach { [unowned self] in
-            self.masterView.addTab(MasterView.Item(icon: $0.tabBarItem.image, title: $0.title ?? "unknown"))
+            self.masterView.addTab(MasterView.Tab(icon: $0.tabBarItem.image, title: $0.title ?? "unknown"))
         }
+        
+        self.viewModel.loadAllTags()
     }
     
     private func setupUI() {
@@ -149,12 +151,19 @@ public class HomeViewController: UIViewController {
     }
 }
 
+extension HomeViewController: HomeViewModelDelegate {
+    public func didLoadAllTags() {
+        self.masterView.addSubTab(self.viewModel.allTags.map { MasterView.Subtab(icon: UIImage(named: "check-mark"), title: $0, subtitle: "") }, for: 3)
+        self.masterView.reload()
+    }
+}
+
 extension HomeViewController: UIGestureRecognizerDelegate {
-    
+
 }
 
 extension HomeViewController: MasterViewDelegate {
-    public func didSelectTag(at index: Int) {
+    public func didSelectSubtab(at index: Int, for tabIndex: Int) {
         
     }
     

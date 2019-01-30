@@ -83,6 +83,7 @@ public class DocumentSearchViewController: UIViewController {
         viewModel.delegate = self
         
         self.title = "Search".localizable
+        self.tabBarItem = UITabBarItem(title: "", image: UIImage(named: "zoom"), tag: 0)
     }
     
     public override func viewDidLoad() {

@@ -69,6 +69,7 @@ extension UIView {
     @discardableResult
     public func fill(view: UIView) -> UIView {
         self.frame = view.bounds
+        self.autoresizingMask = [.flexibleHeight, .flexibleWidth]
         return self
     }
     

@@ -58,7 +58,9 @@ public class DocumentBrowserViewController: UIViewController {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
         viewModel.delegate = self
+        
         self.title = "Documents".localizable
+        self.tabBarItem = UITabBarItem(title: "", image: UIImage(named: "camera"), tag: 0)
     }
     
     required init?(coder aDecoder: NSCoder) {

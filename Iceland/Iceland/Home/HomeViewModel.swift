@@ -7,7 +7,28 @@
 //
 
 import Foundation
+import Business
+
+public protocol HomeViewModelDelegate: class {
+    func didLoadAllTags()
+}
 
 public class HomeViewModel {
     public weak var coordinator: HomeCoordinator?
+    private let documentSearchManager: DocumentSearchManager
+    public weak var delegate: HomeViewModelDelegate?
+    
+    public init(documentSearchManager: DocumentSearchManager) {
+        self.documentSearchManager = documentSearchManager
+    }
+    
+    public var allTags: [String] = []
+    
+    public func loadAllTags() {
+        self.documentSearchManager.loadAllTags { [weak self] searchResult in
+            self?.allTags = searchResult.map { $0.context }
+            self?.allTags = ["tag1", "tag2", "tag3", "tag4"] // just for test
+            self?.delegate?.didLoadAllTags()
+        }
+    }
 }

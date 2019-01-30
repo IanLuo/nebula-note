@@ -41,6 +41,7 @@ public class CaptureListViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
         viewModel.delegate = self
         self.title = "Captures".localizable
+        self.tabBarItem = UITabBarItem(title: "", image: UIImage(named: "camera"), tag: 0)
     }
     
     public required init?(coder aDecoder: NSCoder) {

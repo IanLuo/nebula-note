@@ -12,7 +12,7 @@ import Business
 
 public class HomeCoordinator: Coordinator {
     public override init(stack: UINavigationController, dependency: Dependency) {
-        let viewModel = HomeViewModel()
+        let viewModel = HomeViewModel(documentSearchManager: dependency.documentSearchManager)
         let viewController = HomeViewController(viewModel: viewModel)
         super.init(stack: stack, dependency: dependency)
         self.viewController = viewController

@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import TextStorage
 
 public protocol OutlineTextStorageDelegate: class {
     func didSetHeading(newHeading: Document.Heading?, oldHeading: Document.Heading?)
