@@ -278,7 +278,6 @@ private class SearchInputView: UIView, UITextFieldDelegate {
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
-        self.endEditButton.isHidden = true
         self.startEditButton.isEnabled = true
     }
     

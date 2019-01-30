@@ -50,7 +50,7 @@ public class DocumentEditViewController: UIViewController {
         self.view.addSubview(self.textView)
         self.view.addSubview(self.toolBar)
         
-        let image = self.viewModel.coordinator?.isModal == true ? UIImage(named: "cross") : UIImage(named: "back")
+        let image = self.viewModel.coordinator?.isModal == true ? UIImage(named: "down") : UIImage(named: "left")
         self.closeButton = self.createActionButton(icon: image?.withRenderingMode(.alwaysTemplate))
         self.searchButton = self.createActionButton(icon: UIImage(named: "zoom")?.withRenderingMode(.alwaysTemplate))
         
@@ -87,7 +87,7 @@ public class DocumentEditViewController: UIViewController {
     private func createActionButton(icon: UIImage?) -> UIButton {
         let button = UIButton()
         button.setImage(icon, for: .normal)
-        button.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.descriptive, size: .singlePoint), for: .normal)
+        button.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.background2, size: .singlePoint), for: .normal)
         button.tintColor = InterfaceTheme.Color.interactive
         button.layer.cornerRadius = 20
         button.layer.masksToBounds = true

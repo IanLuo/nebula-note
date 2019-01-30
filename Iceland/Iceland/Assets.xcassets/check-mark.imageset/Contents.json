@@ -2,6 +2,7 @@
   "images" : [
     {
       "idiom" : "universal",
+      "filename" : "check-mark.png",
       "scale" : "1x"
     },
     {

@@ -186,7 +186,7 @@ private class TabView: UITableViewHeaderFooterView {
     var tab: MasterView.Tab? {
         didSet {
             guard let tab = tab else { return }
-            self.iconView.image = tab.icon
+            self.iconView.image = tab.icon?.withRenderingMode(.alwaysTemplate)
             self.titleButton.setTitle(tab.title, for: .normal)
             self.isHighlighted = tab.isCurrent
             self.isOpen = tab.isOpen
@@ -223,7 +223,7 @@ private class TabView: UITableViewHeaderFooterView {
         let button = UIButton()
         button.tintColor = InterfaceTheme.Color.interactive
         button.addTarget(self, action: #selector(subtabActionTapped), for: .touchUpInside)
-        button.setTitle("▽", for: UIControl.State.normal)
+        button.setImage(UIImage(named: "down")?.withRenderingMode(.alwaysTemplate), for: .normal)
         return button
     }()
     
@@ -233,13 +233,11 @@ private class TabView: UITableViewHeaderFooterView {
     var isOpen: Bool = false {
         didSet {
             var transform = CATransform3DIdentity
+            transform.m34 = 1.0 / -1800.0;
             if isOpen {
                 transform = CATransform3DRotate(transform, CGFloat.pi, 1, 0, 0)
             }
 
-            var perspective = CATransform3DIdentity
-            perspective.m34 = 1.0 / -1800.0;
-            self.showSubtabsButton.superview!.layer.sublayerTransform = perspective
             self.showSubtabsButton.layer.zPosition = 100
             
             UIView.animate(withDuration: 0.5) {
@@ -279,10 +277,10 @@ private class TabView: UITableViewHeaderFooterView {
         
         self.iconView.sideAnchor(for: .left, to: self.contentView, edgeInsets: .init(top: 0, left: 30, bottom: 0, right: 0))
         self.iconView.centerAnchors(position: .centerY, to: self.contentView)
-        self.iconView.sizeAnchor(width: 15, height: 15)
+        self.iconView.sizeAnchor(width: 20, height: 20)
         
         self.titleButton.allSidesAnchors(to: self.contentView, edgeInset: 0)
-        self.titleButton.contentEdgeInsets = UIEdgeInsets(top: 20, left: 55, bottom: 20, right: 0)
+        self.titleButton.contentEdgeInsets = UIEdgeInsets(top: 20, left: 70, bottom: 20, right: 0)
         
         self.showSubtabsButton.sizeAnchor(width: 0)
         self.showSubtabsButton.centerAnchors(position: .centerY, to: self.contentView)
@@ -328,8 +326,8 @@ private class SubtabCell: UITableViewCell {
         
         self.iconView.sideAnchor(for: .left, to: self.contentView, edgeInsets: .init(top: 0, left: 60, bottom: 0, right: 0))
         self.iconView.centerAnchors(position: .centerY, to: self.contentView)
-        self.iconView.sizeAnchor(width: 15, height: 15)
-        self.iconView.rowAnchor(view: self.titleLabel, space: 10)
+        self.iconView.sizeAnchor(width: 20, height: 20)
+        self.iconView.rowAnchor(view: self.titleLabel, space: 15)
         self.titleLabel.sideAnchor(for: [.top, .bottom, .right], to: self.contentView, edgeInsets: .init(top: 15, left: 0, bottom: -15, right: -30))
         
         self.titleLabel.rowAnchor(view: self.subtitleLabel)

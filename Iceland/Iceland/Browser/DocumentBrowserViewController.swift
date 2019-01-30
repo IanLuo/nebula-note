@@ -60,7 +60,7 @@ public class DocumentBrowserViewController: UIViewController {
         viewModel.delegate = self
         
         self.title = "Documents".localizable
-        self.tabBarItem = UITabBarItem(title: "", image: UIImage(named: "camera"), tag: 0)
+        self.tabBarItem = UITabBarItem(title: "", image: UIImage(named: "document"), tag: 0)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -175,7 +175,7 @@ extension DocumentBrowserViewController: DocumentBrowserCellDelegate {
             
             actionsViewController.title = "Perform Actions".localizable
             // 创建新文档，使用默认的新文档名
-            actionsViewController.addAction(icon: UIImage(named: "image library"), title: "new document".localizable) { viewController in
+            actionsViewController.addAction(icon: UIImage(named: "add"), title: "new document".localizable) { viewController in
                 viewController.dismiss(animated: true, completion: {
                     self.viewModel.createDocument(title: "untitled".localizable, below: self.viewModel.data[index].url)
                 })
@@ -229,7 +229,7 @@ extension DocumentBrowserViewController: DocumentBrowserCellDelegate {
                 })
             }
             
-            actionsViewController.addAction(icon: nil, title: "delete".localizable, style: .warning) { viewController in
+            actionsViewController.addAction(icon: UIImage(named: "trash"), title: "delete".localizable, style: .warning) { viewController in
                 viewController.dismiss(animated: true, completion: {
                     self.viewModel.deleteDocument(index: index)
                 })

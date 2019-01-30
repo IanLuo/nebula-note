@@ -128,7 +128,8 @@ public class HomeViewController: UIViewController {
 
     private lazy var cover: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.white.withAlphaComponent(0.3)
+        view.backgroundColor = InterfaceTheme.Color.background1
+            .withAlphaComponent(0.7)
         view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(showChildView)))
         return view
     }()
@@ -153,7 +154,7 @@ public class HomeViewController: UIViewController {
 
 extension HomeViewController: HomeViewModelDelegate {
     public func didLoadAllTags() {
-        self.masterView.addSubTab(self.viewModel.allTags.map { MasterView.Subtab(icon: UIImage(named: "check-mark"), title: $0, subtitle: "") }, for: 3)
+        self.masterView.addSubTab(self.viewModel.allTags.map { MasterView.Subtab(icon: UIImage(named: "tag"), title: $0, subtitle: "") }, for: 3)
         self.masterView.reload()
     }
 }
