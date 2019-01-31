@@ -191,9 +191,7 @@ extension URL {
         queue.qualityOfService = .background
         fileCoordinator.coordinate(with: [fileAccessIntent], queue: queue) { error in
             if let error = error {
-                DispatchQueue.main.async {
-                    completion(error)
-                }
+                completion(error)
             } else {
                 do {
                     try FileManager.default.removeItem(at: fileAccessIntent.url)

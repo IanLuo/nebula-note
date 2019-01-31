@@ -187,6 +187,7 @@ public struct File {
         let fileCoordinator = NSFileCoordinator()
         let intent = NSFileAccessIntent.writingIntent(with: self.url, options: NSFileCoordinator.WritingOptions.forMerging)
         let queue = OperationQueue()
+        queue.qualityOfService = .background
         fileCoordinator.coordinate(with: [intent], queue: queue) { error in
             accessor(error)
         }
@@ -207,6 +208,7 @@ public struct File {
         let fileCoordinator = NSFileCoordinator()
         let intent = NSFileAccessIntent.readingIntent(with: self.url, options: NSFileCoordinator.ReadingOptions.Element())
         let queue = OperationQueue()
+        queue.qualityOfService = .background
         fileCoordinator.coordinate(with: [intent], queue: queue) { error in
             if error != nil {
                 completion(nil, error)
@@ -220,6 +222,7 @@ public struct File {
         let fileCoordinator = NSFileCoordinator()
         let intent = NSFileAccessIntent.readingIntent(with: self.url, options: NSFileCoordinator.ReadingOptions.Element())
         let queue = OperationQueue()
+        queue.qualityOfService = .background
         fileCoordinator.coordinate(with: [intent], queue: queue) { error in
             if error != nil {
                 completion(error)
@@ -238,6 +241,7 @@ public struct File {
         let fileCoordinator = NSFileCoordinator()
         let intent = NSFileAccessIntent.readingIntent(with: self.url, options: NSFileCoordinator.ReadingOptions.Element())
         let queue = OperationQueue()
+        queue.qualityOfService = .background
         fileCoordinator.coordinate(with: [intent], queue: queue) { error in
             accessor(error)
         }

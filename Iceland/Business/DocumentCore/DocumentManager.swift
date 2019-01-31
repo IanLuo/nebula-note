@@ -117,6 +117,7 @@ public struct DocumentManager {
         if fm.fileExists(atPath: subFolder.path, isDirectory: &isDir) {
             // 关闭文件夹下的文件
             OutlineEditorServer.closeIfOpen(dir: subFolder) {
+                // 先删除子文件中的文件
                 subFolder.delete { error in
                     if let error = error {
                         DispatchQueue.main.async {
@@ -127,6 +128,7 @@ public struct DocumentManager {
                             NotificationCenter.default.post(name: DocumentManagerNotification.didDeleteDocument, object: nil, userInfo: [DocumentManagerNotification.keyDidDelegateDocumentURL: subFolder])
                         }
                         
+                        // 然后在删除此文件
                         OutlineEditorServer.closeIfOpen(url: url, complete: {
                             url.delete { error in
                                 DispatchQueue.main.async {

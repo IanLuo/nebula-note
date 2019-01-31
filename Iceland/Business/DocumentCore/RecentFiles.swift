@@ -58,6 +58,9 @@ public class RecentFilesManager {
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
+    
+    private let plist = KeyValueStoreFactory.store(type: KeyValueStoreType.plist(PlistStoreType.custom("recent_files")))
+    
     /// 当文件名修改了之后，更改保存的最近文件的文件名
     @objc internal func handleDocumentNameChange(notification: Notification) {
         if let oldURL = notification.userInfo?[DocumentManagerNotification.keyDidChangeDocumentNameOld] as? URL,
@@ -104,14 +107,14 @@ public class RecentFilesManager {
     
     @objc private func handleDocumentDelete(notification: Notification) {
         if let url = notification.userInfo?[DocumentManagerNotification.keyDidDelegateDocumentURL] as? URL {
-            self.recentFiles.forEach {
-                if $0.url.documentRelativePath.contains(url.documentRelativePath) {
-                    self.removeRecentFile(url: $0.url) {
-                        DispatchQueue.main.async {
-                            NotificationCenter.default.post(name: RecentFileChangedNotification.fileInfoChanged,
-                                                            object: nil,
-                                                            userInfo: ["deleted" : url])
-                        }
+            self.recentFiles.forEach { savedDocument in
+                if savedDocument.url.documentRelativePath.contains(url.documentRelativePath) {
+                    log.info(">>> removing \(savedDocument.url.documentRelativePath)")
+                    self.removeRecentFile(url: savedDocument.url) {
+                        log.info("<<< removed \(savedDocument.url.documentRelativePath)")
+                        NotificationCenter.default.post(name: RecentFileChangedNotification.fileInfoChanged,
+                                                        object: nil,
+                                                        userInfo: ["deleted" : url])
                     }
                 }
             }
@@ -120,8 +123,7 @@ public class RecentFilesManager {
     
     /// 删除最近文件
     public func removeRecentFile(url: URL, completion: @escaping () -> Void) {
-        let plist = KeyValueStoreFactory.store(type: KeyValueStoreType.plist(PlistStoreType.custom("recent_files")))
-        plist.remove(key: url.documentRelativePath) {
+        self.plist.remove(key: url.documentRelativePath) {
             DispatchQueue.main.async {
                 completion()
             }
@@ -145,13 +147,12 @@ public class RecentFilesManager {
     
     /// 最近使用文件
     public func addRecentFile(url: URL, lastLocation: Int, date: Date = Date(), completion: @escaping () -> Void) {
-        let plist = KeyValueStoreFactory.store(type: KeyValueStoreType.plist(PlistStoreType.custom("recent_files")))
         let recentDocumentInfo = RecentDocumentInfo(lastRequestTime: date, location: lastLocation, wrapperURL: url)
         let jsonEncoder = JSONEncoder()
         do {
             let data = try jsonEncoder.encode(recentDocumentInfo)
             let jsonString = String(data: data, encoding: .utf8) ?? ""
-            plist.set(value: jsonString, key: url.documentRelativePath) {
+            self.plist.set(value: jsonString, key: url.documentRelativePath) {
                 completion()
             }
         } catch {
@@ -161,10 +162,9 @@ public class RecentFilesManager {
     
     /// 返回保存文件的相对路径列表
     public var recentFiles: [RecentDocumentInfo] {
-        let plist = KeyValueStoreFactory.store(type: KeyValueStoreType.plist(PlistStoreType.custom("recent_files")))
         var documentInfos: [RecentDocumentInfo] = []
         
-        plist.allKeys().forEach {
+        self.plist.allKeys().forEach {
             if let recentDocumentInfo = self.recentFile(url: $0, plist: plist) {
                 documentInfos.append(recentDocumentInfo)
             }
