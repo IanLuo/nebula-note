@@ -216,10 +216,12 @@ public struct DocumentManager {
     
     public func duplicate(url: URL, complete: @escaping (URL) -> Void, failure: @escaping (Error) -> Void) {
         url.duplicate { url, error in
-            if error == nil {
-                complete(url!)
-            } else {
-                failure(error!)
+            DispatchQueue.main.async {
+                if error == nil {
+                    complete(url!)
+                } else {
+                    failure(error!)
+                }
             }
         }
     }

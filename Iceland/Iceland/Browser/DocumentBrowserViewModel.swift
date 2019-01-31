@@ -78,7 +78,7 @@ public class DocumentBrowserViewModel {
             self.delegate?.didAddDocument(index: index + 1, count: subDocuments.count)
             
             // 更新当前 cell 状态
-            self.delegate?.didUpdateCell(index: index)
+//            self.delegate?.didUpdateCell(index: index)
         }
     }
     
@@ -124,7 +124,7 @@ public class DocumentBrowserViewModel {
             self.delegate?.didRemoveDocument(index: index + 1, count: count)
             
             // 更新当前 cell
-            self.delegate?.didUpdateCell(index: index)
+//            self.delegate?.didUpdateCell(index: index)
         }
     }
     

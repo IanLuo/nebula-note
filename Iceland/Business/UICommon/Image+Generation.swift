@@ -48,7 +48,7 @@ extension UIImage {
         let newSize = self.size.aspectFitSizeScale(for: upto)
         
         var image: UIImage!
-        UIGraphicsBeginImageContextWithOptions(newSize, true, 0)
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 0)
         
         self.draw(in: CGRect(origin: .zero, size: newSize))
         
@@ -57,6 +57,14 @@ extension UIImage {
         UIGraphicsEndImageContext()
         
         return image
+    }
+    
+    public func translation(offset: CGPoint) -> UIImage {
+        UIGraphicsBeginImageContextWithOptions(CGSize(width: size.width + offset.x, height: size.height + offset.y), false, 0)
+        draw(at: offset)
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return image!
     }
 }
 

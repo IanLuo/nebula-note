@@ -90,6 +90,8 @@
 		E44825A3219722C300C17568 /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44825A2219722C300C17568 /* Application.swift */; };
 		E44E60F521E9F2C0005AC25F /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44E60F421E9F2C0005AC25F /* Location.swift */; };
 		E455868A21DF643F00381FA8 /* HeadingOutlineTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E455868921DF643F00381FA8 /* HeadingOutlineTableViewCell.swift */; };
+		E4729B9F2202B70200F22885 /* SquareButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4729B9E2202B70200F22885 /* SquareButton.swift */; };
+		E4729BA22202BBE300F22885 /* Rotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4729BA12202BBE300F22885 /* Rotation.swift */; };
 		E4773BA821F7505E000F8F3F /* SearchTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4773BA721F7505E000F8F3F /* SearchTableCell.swift */; };
 		E4773BAA21F7507E000F8F3F /* SearchTabelCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4773BA921F7507E000F8F3F /* SearchTabelCellModel.swift */; };
 		E4773BAC21F9A203000F8F3F /* CoverPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4773BAB21F9A203000F8F3F /* CoverPickerViewController.swift */; };
@@ -296,6 +298,8 @@
 		E44E60F421E9F2C0005AC25F /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 		E455868921DF643F00381FA8 /* HeadingOutlineTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadingOutlineTableViewCell.swift; sourceTree = "<group>"; };
 		E464BBB021A69C9000D34C88 /* OutlineTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineTheme.swift; sourceTree = "<group>"; };
+		E4729B9E2202B70200F22885 /* SquareButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SquareButton.swift; sourceTree = "<group>"; };
+		E4729BA12202BBE300F22885 /* Rotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rotation.swift; sourceTree = "<group>"; };
 		E4773BA721F7505E000F8F3F /* SearchTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTableCell.swift; sourceTree = "<group>"; };
 		E4773BA921F7507E000F8F3F /* SearchTabelCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTabelCellModel.swift; sourceTree = "<group>"; };
 		E4773BAB21F9A203000F8F3F /* CoverPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverPickerViewController.swift; sourceTree = "<group>"; };
@@ -530,6 +534,7 @@
 			isa = PBXGroup;
 			children = (
 				E41B893B21E4DCFE009C5AD7 /* RoundButton.swift */,
+				E4729B9E2202B70200F22885 /* SquareButton.swift */,
 			);
 			path = Button;
 			sourceTree = "<group>";
@@ -765,6 +770,14 @@
 			path = IcelandUITests;
 			sourceTree = "<group>";
 		};
+		E4729BA02202BBD700F22885 /* Animation */ = {
+			isa = PBXGroup;
+			children = (
+				E4729BA12202BBE300F22885 /* Rotation.swift */,
+			);
+			path = Animation;
+			sourceTree = "<group>";
+		};
 		E4895FF421D91D5A00D2B19D /* UIViewController */ = {
 			isa = PBXGroup;
 			children = (
@@ -795,6 +808,7 @@
 		E4A46A1C21AE6CDC00FBDA04 /* UICommon */ = {
 			isa = PBXGroup;
 			children = (
+				E4729BA02202BBD700F22885 /* Animation */,
 				E41B893A21E4DCF1009C5AD7 /* Button */,
 				E4895FF421D91D5A00D2B19D /* UIViewController */,
 				E41CB1E021D8BD8400EF0A3C /* UIView */,
@@ -1265,11 +1279,13 @@
 				E41CB1BA21D88DCE00EF0A3C /* Document.swift in Sources */,
 				E41CB1C521D88DD700EF0A3C /* EditorServer.swift in Sources */,
 				E41CB1BE21D88DD100EF0A3C /* OutlineLayoutManager.swift in Sources */,
+				E4729B9F2202B70200F22885 /* SquareButton.swift in Sources */,
 				E4B802022200437A00AD5AD8 /* TextStorage.m in Sources */,
 				E41CB1D621D8921B00EF0A3C /* SettingsAccessor.swift in Sources */,
 				E41CB1C721D88DFD00EF0A3C /* AttachmentManager.swift in Sources */,
 				E4F9ECDF21FBF61B009A08CD /* RecentFiles.swift in Sources */,
 				E41B892C21E34297009C5AD7 /* AudioPlayer.swift in Sources */,
+				E4729BA22202BBE300F22885 /* Rotation.swift in Sources */,
 				E41CB1C921D88E2300EF0A3C /* Log.swift in Sources */,
 				E41B892921E34238009C5AD7 /* AudioRecorder.swift in Sources */,
 				E41CB1C321D88DD700EF0A3C /* DocumentManager.swift in Sources */,

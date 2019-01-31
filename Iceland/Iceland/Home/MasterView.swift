@@ -221,9 +221,10 @@ private class TabView: UITableViewHeaderFooterView {
     
     let showSubtabsButton: UIButton = {
         let button = UIButton()
-        button.tintColor = InterfaceTheme.Color.interactive
+        button.tintColor = InterfaceTheme.Color.enphersizedDescriptive
         button.addTarget(self, action: #selector(subtabActionTapped), for: .touchUpInside)
-        button.setImage(UIImage(named: "down")?.withRenderingMode(.alwaysTemplate), for: .normal)
+        button.setImage(UIImage(named: "down")?.resize(upto: CGSize(width: 10, height: 10)).withRenderingMode(.alwaysTemplate), for: .normal)
+        button.imageView?.contentMode = .scaleAspectFit
         return button
     }()
     
@@ -232,16 +233,10 @@ private class TabView: UITableViewHeaderFooterView {
     
     var isOpen: Bool = false {
         didSet {
-            var transform = CATransform3DIdentity
-            transform.m34 = 1.0 / -1800.0;
             if isOpen {
-                transform = CATransform3DRotate(transform, CGFloat.pi, 1, 0, 0)
-            }
-
-            self.showSubtabsButton.layer.zPosition = 100
-            
-            UIView.animate(withDuration: 0.5) {
-                self.showSubtabsButton.layer.transform = transform
+                self.showSubtabsButton.perspectiveRotate(angel: CGFloat.pi)
+            } else {
+                self.showSubtabsButton.perspectiveRotate(angel: 0)
             }
         }
     }
@@ -283,7 +278,7 @@ private class TabView: UITableViewHeaderFooterView {
         self.titleButton.contentEdgeInsets = UIEdgeInsets(top: 20, left: 70, bottom: 20, right: 0)
         
         self.showSubtabsButton.sizeAnchor(width: 0)
-        self.showSubtabsButton.centerAnchors(position: .centerY, to: self.contentView)
+        self.showSubtabsButton.lastBaselineAnchor.constraint(equalTo: self.titleButton.lastBaselineAnchor).isActive = true
         self.showSubtabsButton.sideAnchor(for: [.top, .bottom, .right], to: self.contentView, edgeInsets: .init(top: 0, left: 0, bottom: 0, right: -30))
     }
     
@@ -327,7 +322,7 @@ private class SubtabCell: UITableViewCell {
         self.iconView.sideAnchor(for: .left, to: self.contentView, edgeInsets: .init(top: 0, left: 60, bottom: 0, right: 0))
         self.iconView.centerAnchors(position: .centerY, to: self.contentView)
         self.iconView.sizeAnchor(width: 20, height: 20)
-        self.iconView.rowAnchor(view: self.titleLabel, space: 15)
+        self.iconView.rowAnchor(view: self.titleLabel, space: 10)
         self.titleLabel.sideAnchor(for: [.top, .bottom, .right], to: self.contentView, edgeInsets: .init(top: 15, left: 0, bottom: -15, right: -30))
         
         self.titleLabel.rowAnchor(view: self.subtitleLabel)

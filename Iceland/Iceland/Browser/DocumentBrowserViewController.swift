@@ -28,9 +28,10 @@ public class DocumentBrowserViewController: UIViewController {
         return tableView
     }()
     
-    private let createNewDocumentButton: UIButton = {
-        let button = UIButton()
-        button.setTitle("browser_create_new".localizable, for: .normal)
+    private let createNewDocumentButton: SquareButton = {
+        let button = SquareButton()
+        button.title.text = "browser_create_new".localizable
+        button.icon.image = UIImage(named: "add")?.withRenderingMode(.alwaysTemplate)
         button.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.background2, size: .singlePoint),
                                   for: .normal)
         button.addTarget(self, action: #selector(createNewDocumentAtRoot), for: .touchUpInside)
@@ -148,7 +149,7 @@ extension DocumentBrowserViewController: DocumentBrowserViewModelDelegate {
         for index in index..<index + count {
             indexPaths.append(IndexPath(row: index, section: 0))
         }
-        self.tableView.insertRows(at: indexPaths, with: .fade)
+        self.tableView.insertRows(at: indexPaths, with: .none)
     }
     
     public func didRemoveDocument(index: Int, count: Int) {

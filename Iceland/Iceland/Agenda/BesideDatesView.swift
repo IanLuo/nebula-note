@@ -120,13 +120,13 @@ private class DateCell: UICollectionViewCell {
         self.todayLabel.sideAnchor(for: .bottom, to: self, edgeInset: 16)
         self.todayLabel.centerAnchors(position: .centerX, to: self.contentView)
         
-        let unit = frame.width / 5 / 11
+//        let unit = frame.width / 5 / 11
         
-        self.setBorder(position: [.top, .bottom],
-                       style: Border.Style.dash(unit, unit * 10),
-                       color: InterfaceTheme.Color.descriptive.withAlphaComponent(0.5),
-                       width: 10,
-                       insect: Border.Insect.tail(unit * 10))
+        self.setBorder(position: [.top, .bottom, .left],
+                       style: .solid,//Border.Style.dash(unit, unit * 10),
+                       color: InterfaceTheme.Color.background3,
+                       width: 0.5,//10,
+                       insect: .none)//Border.Insect.tail(unit * 10))
     }
     
     override var isSelected: Bool {
@@ -151,15 +151,18 @@ private class DateCell: UICollectionViewCell {
         
         if isSelected {
             attr.addAttributes([NSAttributedString.Key.foregroundColor : InterfaceTheme.Color.interactive,
+                                NSAttributedString.Key.font : InterfaceTheme.Font.footnote],
+                               range: (string as NSString).range(of: weekString))
+            attr.addAttributes([NSAttributedString.Key.foregroundColor : InterfaceTheme.Color.interactive,
                                 NSAttributedString.Key.font : InterfaceTheme.Font.title],
-                               range: NSRange(location: 0, length: string.count))
+                               range: (string as NSString).range(of: dateString))
         } else {
             attr.addAttributes([NSAttributedString.Key.foregroundColor : InterfaceTheme.Color.descriptive,
                                 NSAttributedString.Key.font : InterfaceTheme.Font.footnote],
                                range: (string as NSString).range(of: weekString))
             attr.addAttributes([NSAttributedString.Key.foregroundColor : InterfaceTheme.Color.descriptive,
-                                NSAttributedString.Key.font : InterfaceTheme.Font.footnote],
-                               range: NSRange(location: 0, length: string.count))
+                                NSAttributedString.Key.font : InterfaceTheme.Font.title],
+                               range: (string as NSString).range(of: dateString))
         }
         
         self.titleLabel.attributedText = NSAttributedString(attributedString: attr)

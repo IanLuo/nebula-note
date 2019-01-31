@@ -20,6 +20,9 @@ public class DocumentBrowserCell: UITableViewCell {
     public static let reuseIdentifier: String = "DocumentBrowserCell"
     private let arrowButton: UIButton = {
         let button = UIButton()
+        button.setImage(UIImage(named: "down")?.resize(upto: CGSize(width: 10, height: 10)).withRenderingMode(.alwaysTemplate), for: .normal)
+        button.isHidden = true
+        button.tintColor = InterfaceTheme.Color.enphersizedDescriptive
         return button
     }()
     private let titleLabel: UILabel = {
@@ -60,9 +63,12 @@ public class DocumentBrowserCell: UITableViewCell {
     
     @objc func didTapArrow() {
         guard let cellModel = self.cellModel else { return }
+
         if cellModel.isFolded {
+            self.arrowButton.perspectiveRotate(angel: CGFloat.pi)
             self.delegate?.didTapUnfold(url: cellModel.url)
         } else {
+            self.arrowButton.perspectiveRotate(angel: 0)
             self.delegate?.didTapFold(url: cellModel.url)
         }
     }
@@ -86,7 +92,7 @@ public class DocumentBrowserCell: UITableViewCell {
         self.contentView.addSubview(self.actionButton)
         
         self.arrowButton.sideAnchor(for: [.left, .top, .bottom], to: self.contentView, edgeInsets: .zero)
-        self.arrowButton.sizeAnchor(width: 30, height: 60)
+        self.arrowButton.sizeAnchor(width: 40, height: 60)
         self.arrowButton.rowAnchor(view: self.titleLabel, space: 10)
         self.titleLabel.sideAnchor(for: [.top, .bottom], to: self.contentView, edgeInset: 0)
         
@@ -101,16 +107,17 @@ public class DocumentBrowserCell: UITableViewCell {
         
         self.separatorInset = UIEdgeInsets(top: 0, left: CGFloat(cellModel.levelFromRoot * 10 + 30), bottom: 0, right: 30)
         
-        self.titleLabel.text = self.cellModel?.url.deletingPathExtension().lastPathComponent
+        self.titleLabel.text = self.cellModel?.url.fileName
         
         if cellModel.hasSubDocuments {
+            self.arrowButton.isHidden = false
             if cellModel.isFolded {
-                self.arrowButton.setTitle("▾", for: .normal)
+                self.arrowButton.perspectiveRotate(angel: 0, skipAnimation: true)
             } else {
-                self.arrowButton.setTitle("▴", for: .normal)
+                self.arrowButton.perspectiveRotate(angel: CGFloat.pi, skipAnimation: true)
             }
         } else {
-            self.arrowButton.setTitle("", for: .normal)
+            self.arrowButton.isHidden = true
         }
     }
     
