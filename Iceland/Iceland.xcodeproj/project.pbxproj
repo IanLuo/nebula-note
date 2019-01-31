@@ -92,6 +92,7 @@
 		E455868A21DF643F00381FA8 /* HeadingOutlineTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E455868921DF643F00381FA8 /* HeadingOutlineTableViewCell.swift */; };
 		E4729B9F2202B70200F22885 /* SquareButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4729B9E2202B70200F22885 /* SquareButton.swift */; };
 		E4729BA22202BBE300F22885 /* Rotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4729BA12202BBE300F22885 /* Rotation.swift */; };
+		E4729BA42202E6BA00F22885 /* Range.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4729BA32202E6BA00F22885 /* Range.swift */; };
 		E4773BA821F7505E000F8F3F /* SearchTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4773BA721F7505E000F8F3F /* SearchTableCell.swift */; };
 		E4773BAA21F7507E000F8F3F /* SearchTabelCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4773BA921F7507E000F8F3F /* SearchTabelCellModel.swift */; };
 		E4773BAC21F9A203000F8F3F /* CoverPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4773BAB21F9A203000F8F3F /* CoverPickerViewController.swift */; };
@@ -300,6 +301,7 @@
 		E464BBB021A69C9000D34C88 /* OutlineTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineTheme.swift; sourceTree = "<group>"; };
 		E4729B9E2202B70200F22885 /* SquareButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SquareButton.swift; sourceTree = "<group>"; };
 		E4729BA12202BBE300F22885 /* Rotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rotation.swift; sourceTree = "<group>"; };
+		E4729BA32202E6BA00F22885 /* Range.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Range.swift; sourceTree = "<group>"; };
 		E4773BA721F7505E000F8F3F /* SearchTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTableCell.swift; sourceTree = "<group>"; };
 		E4773BA921F7507E000F8F3F /* SearchTabelCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTabelCellModel.swift; sourceTree = "<group>"; };
 		E4773BAB21F9A203000F8F3F /* CoverPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverPickerViewController.swift; sourceTree = "<group>"; };
@@ -816,6 +818,7 @@
 				E4A46A1D21AE6CF400FBDA04 /* Image+Generation.swift */,
 				E4BC264121F56DB900B0F2B9 /* Rect.swift */,
 				E4CC0C5821EEF92900058E5D /* Size.swift */,
+				E4729BA32202E6BA00F22885 /* Range.swift */,
 				E4EA856421D1F8AE00DD92F9 /* CalendarView.swift */,
 				E4F3029D21D750ED00BDE178 /* Autolayout+Shortcuts.swift */,
 				E4BC264321F587BC00B0F2B9 /* FrameLayout+Shortcuts.swift */,
@@ -1296,6 +1299,7 @@
 				E4F9ECE121FECE5C009A08CD /* FileManager.swift in Sources */,
 				E4895FF721D9244000D2B19D /* EditRecord.swift in Sources */,
 				E41CB1D221D890E200EF0A3C /* Border.swift in Sources */,
+				E4729BA42202E6BA00F22885 /* Range.swift in Sources */,
 				E41CB1C621D88DFD00EF0A3C /* Attachment.swift in Sources */,
 				E489600221DB06C800D2B19D /* Localization.swift in Sources */,
 				E41CB1C221D88DD700EF0A3C /* SyncManager.swift in Sources */,

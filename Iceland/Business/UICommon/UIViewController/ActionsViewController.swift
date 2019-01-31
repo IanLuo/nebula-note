@@ -10,14 +10,26 @@ import Foundation
 import UIKit
 
 public class ActionsViewController: UIViewController {
-    private struct Constants {
-        static let rowHeight = 50
+    fileprivate struct Constants {
+        static let rowHeight: CGFloat = 50
+        static let specialItemSeparatorHeight: CGFloat = 10
     }
     
     public enum Style {
         case `default`
         case highlight
         case warning
+        
+        var height: CGFloat {
+            switch self {
+            case .default:
+                return Constants.rowHeight
+            case .highlight:
+                return Constants.rowHeight + Constants.specialItemSeparatorHeight
+            case .warning:
+                return Constants.rowHeight + Constants.specialItemSeparatorHeight
+            }
+        }
     }
     
     public func addAction(icon: UIImage?, title: String, style: Style = .default, action: @escaping (ActionsViewController) -> Void) {
@@ -26,7 +38,7 @@ public class ActionsViewController: UIViewController {
         if self.isInitialized {
             self.tableView.insertRows(at: [IndexPath(row: self.items.count - 1, section: 0)], with: UITableView.RowAnimation.none)
             UIView.animate(withDuration: 0.25, animations: {
-                self.tableView.constraint(for: Position.height)?.constant = CGFloat(self.items.count * Constants.rowHeight)
+                self.tableView.constraint(for: Position.height)?.constant = CGFloat(self.items.count) * Constants.rowHeight
                 self.view.layoutIfNeeded()
             })
         }
@@ -47,7 +59,7 @@ public class ActionsViewController: UIViewController {
         
         if self.isInitialized {
             UIView.animate(withDuration: 0.25, animations: {
-                self.tableView.constraint(for: Position.height)?.constant = CGFloat(self.items.count * Constants.rowHeight)
+                self.tableView.constraint(for: Position.height)?.constant = self.items.reduce(0.0, { $0 + $1.style.height })
                 self.view.layoutIfNeeded()
             }, completion: {
                 if $0 {
@@ -141,7 +153,6 @@ public class ActionsViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.backgroundColor = InterfaceTheme.Color.background2
-        tableView.separatorInset = UIEdgeInsets(top: 0, left: 30, bottom: 0, right: 30)
         tableView.separatorColor = InterfaceTheme.Color.background3
         tableView.register(ActionCell.self, forCellReuseIdentifier: ActionCell.reuseIdentifier)
         return tableView
@@ -175,7 +186,7 @@ public class ActionsViewController: UIViewController {
         self.accessoryViewContainer.sideAnchor(for: [.left, .right], to: self.contentView, edgeInset: 0)
         self.accessoryViewContainer.columnAnchor(view: self.tableView)
         
-        self.tableView.sizeAnchor(height: CGFloat(self.items.count * Constants.rowHeight))
+        self.tableView.sizeAnchor(height: self.items.reduce(0.0, { $0 + $1.style.height }))
         self.tableView.sideAnchor(for: [.left, .right, .bottom], to: self.contentView, edgeInset: 0)
         
         self.isInitialized = true
@@ -222,7 +233,7 @@ extension ActionsViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return CGFloat(Constants.rowHeight)
+        return self.items[indexPath.row].style.height
     }
 }
 
@@ -231,6 +242,21 @@ fileprivate class ActionCell: UITableViewCell {
         didSet {
             self.iconView.image = item?.icon?.withRenderingMode(.alwaysTemplate)
             self.titleLabel.text = item?.title
+            
+            guard let item = item else { return }
+            
+            switch item.style {
+            case .default:
+                self.iconView.constraint(for: .centerY)?.constant = 0
+                self.contentView.removeBorders()
+                self.separatorInset = UIEdgeInsets(top: 0, left: 30, bottom: 0, right: 30)
+            case .highlight:
+                fallthrough
+            case .warning:
+                self.contentView.setBorder(position: .top, color: InterfaceTheme.Color.background3, width: ActionsViewController.Constants.specialItemSeparatorHeight)
+                self.iconView.constraint(for: .centerY)?.constant = ActionsViewController.Constants.specialItemSeparatorHeight / 2
+                self.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+            }
         }
     }
     
@@ -271,8 +297,8 @@ fileprivate class ActionCell: UITableViewCell {
         self.contentView.addSubview(self.iconView)
         self.contentView.addSubview(self.titleLabel)
         
-        self.titleLabel.sideAnchor(for: [.left, .top, .bottom], to: self.contentView, edgeInsets: .init(top: 0, left: 30, bottom: 0, right: 0))
-        self.titleLabel.centerAnchors(position: .centerY, to: self.contentView)
+        self.titleLabel.sideAnchor(for: [.left, .bottom], to: self.contentView, edgeInsets: .init(top: 0, left: 30, bottom: 0, right: 0))
+        self.titleLabel.sizeAnchor(height: ActionsViewController.Constants.rowHeight)
         self.titleLabel.rowAnchor(view: self.iconView)
         
         self.iconView.sideAnchor(for: .right, to: self.contentView, edgeInset: 30)

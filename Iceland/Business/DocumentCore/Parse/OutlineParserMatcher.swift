@@ -127,13 +127,14 @@ extension OutlineParser {
     }
     
     public struct RegexPattern {
+        private static let charactor = "\\p{L}"
         public struct Node {
             public static let heading = "^(\\*+) (.+)((\n\(Element.Heading.schedule))|(\n\(Element.Heading.due))){0,2}"
             // FIXME: 如果 BEGIN 和 END 内部没有至少一个空行，则无法匹配成功
-            public static let codeBlock =       "^[\\t ]*\\#\\+BEGIN\\_SRC( [0-9a-zA-Z\\.]*)?\\n([^\\#\\+END\\_SRC]*)\\n\\s*\\#\\+END\\_SRC[\\t ]*\\n"
+            public static let codeBlock =       "^[\\t ]*\\#\\+BEGIN\\_SRC( [\(charactor)\\.]*)?\\n([^\\#\\+END\\_SRC]*)\\n\\s*\\#\\+END\\_SRC[\\t ]*\\n"
             public static let checkBox =        "[\\t ]*( \\[[X| |\\-]\\])"
             public static let unorderedList =   "^[\\t ]*[\\-\\+] .*"
-            public static let orderedList =     "^[\\t ]*([0-9a-zA-Z\\.])+[\\.\\)\\>] .*"
+            public static let orderedList =     "^[\\t ]*([\(charactor)\\.])+[\\.\\)\\>] .*"
             public static let seperator =       "^[\\t ]*(\\-{5,}[\\t ]*)"
             public static let attachment =      "\\#\\+Attachment\\:(image|video|audio|sketch|location)\\=([^\\=\\n]+)" // like: #+Attachment:image=xdafeljlfjeksjdf
         }

@@ -40,19 +40,19 @@ extension UIView {
         }
     }
     
-    public func centerAnchors(position: Position, to view: UIView, constaint: CGFloat = 0, multiplier: CGFloat = 1) {
+    public func centerAnchors(position: Position, to view: UIView, constant: CGFloat = 0, multiplier: CGFloat = 1) {
         self.makeSureTranslationIsSetToFalse()
         
         if position.contains(Position.centerX) {
-            let centerX = NSLayoutConstraint(item: self, attribute: NSLayoutConstraint.Attribute.centerX, relatedBy: NSLayoutConstraint.Relation.equal, toItem: view, attribute: NSLayoutConstraint.Attribute.centerX, multiplier: multiplier, constant: constaint)
+            let centerX = NSLayoutConstraint(item: self, attribute: NSLayoutConstraint.Attribute.centerX, relatedBy: NSLayoutConstraint.Relation.equal, toItem: view, attribute: NSLayoutConstraint.Attribute.centerX, multiplier: multiplier, constant: constant)
             centerX.identifier = Position.centerX.identifier(for: self)
             centerX.isActive = true
             view.addConstraint(centerX)
         }
         
         if position.contains(Position.centerY) {
-            let centerY = NSLayoutConstraint(item: self, attribute: NSLayoutConstraint.Attribute.centerY, relatedBy: NSLayoutConstraint.Relation.equal, toItem: view, attribute: NSLayoutConstraint.Attribute.centerY, multiplier: multiplier, constant: constaint)
-            centerY.identifier = Position.centerX.identifier(for: self)
+            let centerY = NSLayoutConstraint(item: self, attribute: NSLayoutConstraint.Attribute.centerY, relatedBy: NSLayoutConstraint.Relation.equal, toItem: view, attribute: NSLayoutConstraint.Attribute.centerY, multiplier: multiplier, constant: constant)
+            centerY.identifier = Position.centerY.identifier(for: self)
             centerY.isActive = true
             view.addConstraint(centerY)
         }

@@ -181,6 +181,11 @@ public class Document: UIDocument {
             return data[OutlineParser.Key.Element.Heading.level]!.length
         }
         
+        /// close 标记
+        public var closed: NSRange? {
+            return data[OutlineParser.Key.Element.Heading.closed]?.offset(offset)
+        }
+        
         /// tag 的位置，如果没有 tag，则为应该放 tag 的位置
         public var tagLocation: Int {
             if let tags = self.tags {
@@ -204,8 +209,38 @@ public class Document: UIDocument {
         
         public var contentLength: Int = 0
         
+        public var headingTextRange: NSRange {
+            var headingContentRange: NSRange = self.range.offset(-self.range.location).moveLeft(by: self.level + 1)
+            
+            if let schedule = self.schedule {
+                let dateRange = schedule.offset(-self.range.location)
+                let newUpperBound = min(dateRange.lowerBound, headingContentRange.upperBound)
+                headingContentRange = headingContentRange.withNewUpperBound(newUpperBound)
+            }
+            
+            if let due = self.due {
+                let dateRange = due.offset(-self.range.location)
+                let newUpperBound = min(dateRange.lowerBound, headingContentRange.upperBound)
+                headingContentRange = headingContentRange.withNewUpperBound(newUpperBound)
+            }
+            
+            if let planning = self.planning {
+                let planningRange = planning.offset(-self.range.location)
+                let newLowerBound = max(headingContentRange.lowerBound, planningRange.upperBound + 1)
+                headingContentRange = headingContentRange.withNewLowerBound(newLowerBound)
+            }
+            
+            if let tags = self.tags {
+                let tagsRange = tags.offset(-self.range.location)
+                let newUpperBound = min(tagsRange.lowerBound - 1, headingContentRange.upperBound)
+                headingContentRange = headingContentRange.withNewUpperBound(newUpperBound)
+            }
+            
+            return headingContentRange
+        }
+        
         public var paragraphRange: NSRange {
-            return NSRange(location: range.location, length: contentLength)
+            return NSRange(location: range.location, length: contentLength + range.length)
         }
         
         public convenience init(data: [String: NSRange]) {

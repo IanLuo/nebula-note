@@ -442,7 +442,8 @@ public class OutlineTextTrimmer: OutlineParserDelegate {
     
     var result: String = ""
     
-    public func trim(string: String, range: NSRange) -> String {
+    public func trim(string: String, range: NSRange? = nil) -> String {
+        let range = range ?? NSRange(location: 0, length: string.count)
         self.result = string.substring(range)
         self.parser.parse(str: string, range: range)
         return result

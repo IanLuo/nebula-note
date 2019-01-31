@@ -111,19 +111,18 @@ public struct DocumentSearchManager {
         
         self.doSearchHeading(resultAdded: resultAdded,
                              complete: complete,
-                             failed: failed) { (string: String, url: URL, headings: [[String: NSRange]]) -> [DocumentSearchResult] in
+                             failed: failed) { (string: String, url: URL, headings: [Document.Heading]) -> [DocumentSearchResult] in
                                 var searchResults: [DocumentSearchResult] = []
                                 for heading in headings {
-                                    if let tagsRange = heading[OutlineParser.Key.Element.Heading.tags],
-                                        let headingRange = heading[OutlineParser.Key.Node.heading] {
-                                        let tagString = (string as NSString).substring(with: tagsRange)
+                                    if let tagsRange = heading.tags {
+                                        let tagString = string.substring(tagsRange)
                                         for t in tags {
                                             let range = (tagString as NSString).range(of: t)
                                             if range.location != Int.max {
                                                 searchResults.append(DocumentSearchResult(url: url.wrapperURL,
-                                                                                          highlightRange: range.offset(-headingRange.location),
-                                                                                          context: (string as NSString).substring(with: headingRange),
-                                                                                          heading: Document.Heading(data: heading)))
+                                                                                          highlightRange: range.offset(-heading.range.location),
+                                                                                          context: string.substring(heading.paragraphRange),
+                                                                                          heading: heading))
                                             }
                                         }
                                     }
@@ -146,19 +145,17 @@ public struct DocumentSearchManager {
         
         self.doSearchHeading(resultAdded: resultAdded,
                              complete: complete,
-                             failed: failed) { (string: String, url: URL, headings: [[String: NSRange]]) -> [DocumentSearchResult] in
+                             failed: failed) { (string: String, url: URL, headings: [Document.Heading]) -> [DocumentSearchResult] in
                                 var searchResults: [DocumentSearchResult] = []
                                 for heading in headings {
-                                    if let scheduleRange = heading[OutlineParser.Key.Element.Heading.schedule],
-                                        let headingRange = heading[OutlineParser.Key.Node.heading] {
-                                        let headingString = (string as NSString).substring(with: headingRange)
-                                        
+                                    if let scheduleRange = heading.schedule {
+                                        let headingString = string.substring(heading.range)
                                         if let scheduleDate = DateAndTimeType.createFromSchedule(headingString)?.date {
                                             if scheduleDate <= schedule {
                                                 searchResults.append(DocumentSearchResult(url: url.wrapperURL,
                                                                                           highlightRange: scheduleRange,
-                                                                                          context: (string as NSString).substring(with: headingRange),
-                                                                                          heading: Document.Heading(data: heading)))
+                                                                                          context: string.substring(heading.paragraphRange),
+                                                                                          heading: heading))
                                             }
                                         }
                                     }
@@ -182,19 +179,18 @@ public struct DocumentSearchManager {
         
         self.doSearchHeading(resultAdded:resultAdded,
                              complete: complete,
-                             failed: failed) { (string: String, url: URL, headings: [[String: NSRange]]) -> [DocumentSearchResult] in
+                             failed: failed) { (string: String, url: URL, headings: [Document.Heading]) -> [DocumentSearchResult] in
                                 var searchResults: [DocumentSearchResult] = []
                                 for heading in headings {
-                                    if let dueRange = heading[OutlineParser.Key.Element.Heading.due],
-                                        let headingRange = heading[OutlineParser.Key.Node.heading] {
-                                        let headingString = (string as NSString).substring(with: headingRange)
+                                    if let dueRange = heading.due {
+                                        let headingString = (string as NSString).substring(with: heading.range)
                                         
                                         if let dueDate = DateAndTimeType.createFromDue(headingString)?.date {
                                             if dueDate <= due {
                                                 searchResults.append(DocumentSearchResult(url: url.wrapperURL,
                                                                                           highlightRange: dueRange,
-                                                                                          context: (string as NSString).substring(with: headingRange),
-                                                                                          heading: Document.Heading(data: heading)))
+                                                                                          context: string.substring(heading.paragraphRange),
+                                                                                          heading: heading))
                                             }
                                         }
                                     }
@@ -218,18 +214,17 @@ public struct DocumentSearchManager {
         
         self.doSearchHeading(resultAdded:resultAdded,
                              complete: complete,
-                             failed: failed) { (string: String, url: URL, headings: [[String: NSRange]]) -> [DocumentSearchResult] in
+                             failed: failed) { (string: String, url: URL, headings: [Document.Heading]) -> [DocumentSearchResult] in
                                 var searchResults: [DocumentSearchResult] = []
                                 for heading in headings {
-                                    if let planningRange = heading[OutlineParser.Key.Element.Heading.planning],
-                                        let headingRange = heading[OutlineParser.Key.Node.heading] {
-                                        let planningString = (string as NSString).substring(with: planningRange)
+                                    if let planningRange = heading.planning {
+                                        let planningString = string.substring(planningRange)
                                         
                                         if plannings.contains(planningString) {
                                             searchResults.append(DocumentSearchResult(url: url.wrapperURL,
                                                                                       highlightRange: planningRange,
-                                                                                      context: (string as NSString).substring(with: headingRange),
-                                                                                      heading: Document.Heading(data: heading)))
+                                                                                      context: string.substring(heading.paragraphRange),
+                                                                                      heading: heading))
                                         }
                                     }
                                 }
@@ -250,7 +245,7 @@ public struct DocumentSearchManager {
     private func doSearchHeading(resultAdded: @escaping ([DocumentSearchResult]) -> Void,
                                  complete: @escaping () -> Void,
                                  failed: ((Error) -> Void)?,
-                                 onEachHeadingMatch: @escaping (String, URL, [[String: NSRange]]) -> [DocumentSearchResult]) {
+                                 onEachHeadingMatch: @escaping (String, URL, [Document.Heading]) -> [DocumentSearchResult]) {
         
         self.operationQueue.cancelAllOperations()
         let operation = BlockOperation()
@@ -264,11 +259,19 @@ public struct DocumentSearchManager {
         operation.addExecutionBlock {
             
             class ParseDelegate: OutlineParserDelegate {
-                var headings: [[String: NSRange]] = []
+                var headings: [Document.Heading] = []
                 func didFoundHeadings(text: String,
                                       headingDataRanges: [[String: NSRange]]) {
                     
-                    self.headings = headingDataRanges
+                    self.headings = headingDataRanges.map { Document.Heading(data: $0) }
+                }
+                
+                func didCompleteParsing(text: String) {
+                    var lastUpperBound = text.count
+                    headings.reversed().forEach {
+                        $0.contentLength = lastUpperBound - $0.range.upperBound
+                        lastUpperBound = $0.range.location
+                    }
                 }
             }
             
@@ -318,28 +321,27 @@ public struct DocumentSearchManager {
                 var shouldAppendThis = false
                 if self.headingHasPlanning(contained: SettingsAccessor.shared.finishedPlanning,
                                            text: text,
-                                           heading: heading) {
+                                           heading: heading.data) {
                     shouldAppendThis = false
                 } else {
                     if self.headingHasPlanning(contained: SettingsAccessor.shared.unfinishedPlanning,
                                                text: text,
-                                               heading: heading) {
+                                               heading: heading.data) {
                         shouldAppendThis = true
-                    } else if heading[OutlineParser.Key.Element.Heading.schedule] != nil &&
-                        heading[OutlineParser.Key.Element.Heading.closed] == nil {
+                    } else if heading.schedule != nil &&
+                        heading.closed == nil {
                         shouldAppendThis = true
-                    } else if heading[OutlineParser.Key.Element.Heading.due] != nil &&
-                        heading[OutlineParser.Key.Element.Heading.closed] == nil  {
+                    } else if heading.due != nil &&
+                        heading.closed == nil  {
                         shouldAppendThis = true
                     }
                 }
                 
                 if shouldAppendThis {
-                    let headingObj = Document.Heading(data: heading)
                     resultsInThisFile.append(DocumentSearchResult(url: url.wrapperURL,
-                                                                  highlightRange: headingObj.range,
-                                                                  context: text.substring(headingObj.range),
-                                                                  heading: headingObj))
+                                                                  highlightRange: heading.range,
+                                                                  context: text.substring(heading.paragraphRange),
+                                                                  heading: heading))
                 }
             }
             
@@ -358,10 +360,10 @@ public struct DocumentSearchManager {
         }) { (text, url, headings) -> [DocumentSearchResult] in
             var resultsInSingleFile: [DocumentSearchResult] = []
             for heading in headings {
-                if let tagsRange = heading[OutlineParser.Key.Element.Heading.tags] {
+                if let tagsRange = heading.tags {
                     let tags = text.substring(tagsRange).components(separatedBy: ":").filter { $0.count > 0 }
                     for tag in tags {
-                        resultsInSingleFile.append(DocumentSearchResult(url: url, highlightRange: tagsRange, context: tag, heading: nil))
+                        resultsInSingleFile.append(DocumentSearchResult(url: url.wrapperURL, highlightRange: tagsRange, context: tag, heading: nil))
                     }
                 }
             }

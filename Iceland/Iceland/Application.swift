@@ -26,7 +26,7 @@ public class Application: Coordinator {
                    dependency: Dependency(documentManager: DocumentManager(),
                                        documentSearchManager: DocumentSearchManager(),
                                        editorServiceServer: OutlineEditorServer.instance,
-                                       headingTrimmer: OutlineTextTrimmer(parser: OutlineParser())))
+                                       textTrimmer: OutlineTextTrimmer(parser: OutlineParser())))
         
         self.window?.rootViewController = self.stack
     }
@@ -42,7 +42,7 @@ public struct Dependency {
     let documentManager: DocumentManager
     let documentSearchManager: DocumentSearchManager
     let editorServiceServer: OutlineEditorServer
-    let headingTrimmer: OutlineTextTrimmer
+    let textTrimmer: OutlineTextTrimmer
 }
 
 public class Coordinator {

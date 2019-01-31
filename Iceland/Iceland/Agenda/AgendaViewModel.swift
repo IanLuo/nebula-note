@@ -19,11 +19,11 @@ public class AgendaViewModel {
     public weak var delegate: AgendaViewModelDelegate?
     public weak var coordinator: AgendaCoordinator?
     private let documentSearchManager: DocumentSearchManager
-    private let headingTrimmer: OutlineTextTrimmer
+    private let textTrimmer: OutlineTextTrimmer
     
-    public init(documentSearchManager: DocumentSearchManager, headingTrimmer: OutlineTextTrimmer) {
+    public init(documentSearchManager: DocumentSearchManager, textTrimmer: OutlineTextTrimmer) {
         self.documentSearchManager = documentSearchManager
-        self.headingTrimmer = headingTrimmer
+        self.textTrimmer = textTrimmer
     }
     
     public var data: [AgendaCellModel] = []
@@ -43,7 +43,7 @@ public class AgendaViewModel {
     
     public func loadAllData() {
         self.documentSearchManager.loadAllHeadingsThatIsUnfinished(complete: { searchResults in
-            self.allData = searchResults.map { AgendaCellModel(heading: $0.heading!, text: $0.context, url: $0.url, trimmedHeading: self.headingTrimmer.trim(string: $0.context, range: NSRange(location: 0, length: $0.context.count))) }
+            self.allData = searchResults.map { AgendaCellModel(heading: $0.heading!, paragraph: $0.context, url: $0.url, textTrimmer: self.textTrimmer) }
             self.delegate?.didCompleteLoadAllData()
         }) { error in
             self.delegate?.didFailed(error)
@@ -60,12 +60,8 @@ public class AgendaViewModel {
             .search(plannings: plannings,
                     resultAdded: { (result) in
                         newData.append(contentsOf: result
-                            .filter {
-                                $0.heading != nil
-                            }
-                            .map {
-                                AgendaCellModel(heading: $0.heading!, text: $0.context, url: $0.url, trimmedHeading: self.headingTrimmer.trim(string: $0.context, range: NSRange(location: 0, length: $0.context.count)))
-                            }
+                            .filter { $0.heading != nil }
+                            .map { AgendaCellModel(heading: $0.heading!, paragraph: $0.context, url: $0.url, textTrimmer: self.textTrimmer) }
                         )
             }, complete: { [weak self] in
                 self?.data = newData

@@ -11,6 +11,12 @@ import UIKit
 import Business
 
 public class AgendaViewController: UIViewController {
+    public struct Constants {
+        static let edgeInsets: UIEdgeInsets = UIEdgeInsets(top: Layout.edgeInsets.top, left: 120, bottom: Layout.edgeInsets.bottom, right: Layout.edgeInsets.right)
+        static let besideDateBarHeight: CGFloat = 120
+        static let dateLabelHeight: CGFloat = DateView.Constants.height
+    }
+    
     private let viewModel: AgendaViewModel
     
     private lazy var tableView: UITableView = {
@@ -19,7 +25,7 @@ public class AgendaViewController: UIViewController {
         tableView.dataSource = self
         tableView.register(AgendaTableCell.self, forCellReuseIdentifier: AgendaTableCell.reuseIdentifier)
         tableView.tableFooterView = UIView()
-        tableView.separatorInset = UIEdgeInsets(top: 0, left: 120, bottom: 0, right: 30)
+        tableView.separatorInset = UIEdgeInsets(top: 0, left: Constants.edgeInsets.left, bottom: 0, right: Constants.edgeInsets.right)
         tableView.separatorColor = InterfaceTheme.Color.background3
         tableView.backgroundColor = InterfaceTheme.Color.background1
         return tableView
@@ -72,15 +78,16 @@ public class AgendaViewController: UIViewController {
         self.view.addSubview(self.besideDatesView)
         self.view.addSubview(self.dateView)
         
-        self.besideDatesView.sideAnchor(for: [.top, .left, .right], to: self.view, edgeInsets: .init(top: 80, left: 0, bottom: 0, right: 0))
-        self.besideDatesView.sizeAnchor(height: 120)
+        self.besideDatesView.sideAnchor(for: [.top, .left, .right], to: self.view, edgeInsets: .init(top: Constants.edgeInsets.top, left: 0, bottom: 0, right: 0))
+        self.besideDatesView.sizeAnchor(height: Constants.besideDateBarHeight)
         
         self.besideDatesView.columnAnchor(view: self.dateView)
         
         self.dateView.sideAnchor(for: [.left, .right], to: self.view, edgeInset: 0)
-        self.dateView.sizeAnchor(height: 80)
+        self.dateView.sizeAnchor(height: Constants.dateLabelHeight)
         
-        self.tableView.contentInset = UIEdgeInsets(top: 280, left: 0, bottom: 0, right: 0)
+        self.tableView.contentInset = UIEdgeInsets(top: Constants.edgeInsets.top + Constants.besideDateBarHeight + Constants.dateLabelHeight,
+                                                   left: 0, bottom: 0, right: 0)
         self.tableView.allSidesAnchors(to: self.view, edgeInset: 0)
     }
     
@@ -128,7 +135,7 @@ extension AgendaViewController: UITableViewDelegate {
             viewController.dismiss(animated: true, completion: nil)
         }
         
-        actionsViewController.addAction(icon: nil, title: "Open", style: ActionsViewController.Style.highlight) { viewController in
+        actionsViewController.addAction(icon: UIImage(named: "enter"), title: "Open", style: ActionsViewController.Style.highlight) { viewController in
             viewController.dismiss(animated: true, completion: nil)
             let data = self.viewModel.data[indexPath.row]
             self.viewModel.coordinator?.openDocument(url: data.url, location: data.heading.range.location)
@@ -148,10 +155,10 @@ extension AgendaViewController: UITableViewDelegate {
     /// 当向上滚动时，同时滚动日期选择和日期显示 view，往下则不动
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if scrollView.contentOffset.y + scrollView.contentInset.top > 0 {
-            self.besideDatesView.constraint(for: Position.top)?.constant = 80 - scrollView.contentOffset.y  - scrollView.contentInset.top
+            self.besideDatesView.constraint(for: Position.top)?.constant = Constants.edgeInsets.top - scrollView.contentOffset.y  - scrollView.contentInset.top
             self.view.layoutIfNeeded()
         } else {
-            self.besideDatesView.constraint(for: Position.top)?.constant = 80
+            self.besideDatesView.constraint(for: Position.top)?.constant = Constants.edgeInsets.top
             self.view.layoutIfNeeded()
         }
     }
@@ -173,6 +180,10 @@ extension AgendaViewController: AgendaViewModelDelegate {
 }
 
 private class DateView: UIView {
+    public struct Constants {
+        static let height: CGFloat = 80
+    }
+    
     private let weekdayLabel: UILabel = {
         let label = UILabel()
         label.textColor = InterfaceTheme.Color.descriptive
@@ -215,11 +226,11 @@ private class DateView: UIView {
         self.weekdayLabel.sideAnchor(for: [.left, .bottom],
                                      to: self,
                                      edgeInsets: .init(top: 0, left: 0, bottom: -20, right: 0))
-        self.weekdayLabel.sizeAnchor(width: 120)
+        self.weekdayLabel.sizeAnchor(width: AgendaViewController.Constants.edgeInsets.left)
         
         self.dateLabel.sideAnchor(for: [.left, .right],
                                   to: self,
-                                  edgeInsets: .init(top: 0, left: 120, bottom: -20, right: 0))
+                                  edgeInsets: .init(top: 0, left: AgendaViewController.Constants.edgeInsets.left, bottom: -20, right: 0))
         
         self.weekdayLabel.lastBaselineAnchor.constraint(equalTo: self.dateLabel.lastBaselineAnchor).isActive = true
         

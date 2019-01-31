@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import UIKit.UIFont
+import UIKit
 
 private struct ThemeConfig {
     private static let data: [String: AnyObject] = defaultTheme
@@ -22,6 +22,10 @@ private struct ThemeConfig {
         OutlineParser.Key.Element.TextMark.verbatim: UIFont.preferredFont(forTextStyle: UIFont.TextStyle.title1),
         OutlineParser.Key.Element.TextMark.code: UIColor.gray
     ]
+}
+
+public struct Layout {
+    public static let edgeInsets: UIEdgeInsets = UIEdgeInsets(top: 80, left: 30, bottom: 80, right: 30)
 }
 
 @objc public class InterfaceTheme: NSObject {

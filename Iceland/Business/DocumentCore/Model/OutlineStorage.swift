@@ -373,23 +373,10 @@ extension OutlineTextStorage: OutlineParserDelegate {
     
     /// 获得用 heading 分割的段落的 range 列表
     private func updateHeadingParagraphLength() {
-        var paragrphs: [NSRange] = []
-        if var last = self.savedHeadings.first {
-            for i in 1..<self.savedHeadings.count {
-                let next = self.savedHeadings[i]
-                let range = NSRange(location: last.range.location,
-                                    length: next.range.location - last.range.location - 1)
-                paragrphs.append(range)
-                last = self.savedHeadings[i]
-            }
-            
-            let lastRange = NSRange(location: last.range.location, length: self.string.count - last.range.location)
-            paragrphs.append(lastRange)
+        var endOfParagraph = self.string.count
+        self.savedHeadings.reversed().forEach {
+            $0.contentLength = endOfParagraph - $0.range.upperBound
+            endOfParagraph = $0.range.location
         }
-        
-        for (index, range) in paragrphs.enumerated() {
-            self.savedHeadings[index].contentLength = range.length
-        }
-        
     }
 }

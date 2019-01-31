@@ -27,7 +27,6 @@ public class HomeViewModel {
     public func loadAllTags() {
         self.documentSearchManager.loadAllTags { [weak self] searchResult in
             self?.allTags = searchResult.map { $0.context }
-            self?.allTags = ["tag1", "tag2", "tag3", "tag4"] // just for test
             self?.delegate?.didLoadAllTags()
         }
     }
