@@ -186,7 +186,7 @@ private class DateView: UIView {
     
     private let weekdayLabel: UILabel = {
         let label = UILabel()
-        label.textColor = InterfaceTheme.Color.descriptive
+        label.textColor = InterfaceTheme.Color.enphersizedDescriptive
         label.font = InterfaceTheme.Font.title
         label.textAlignment = .center
         return label
@@ -194,7 +194,7 @@ private class DateView: UIView {
     
     let dateLabel: UILabel = {
         let label = UILabel()
-        label.textColor = InterfaceTheme.Color.descriptive
+        label.textColor = InterfaceTheme.Color.enphersizedDescriptive
         label.font = InterfaceTheme.Font.subTitle
         label.textAlignment = .left
         return label

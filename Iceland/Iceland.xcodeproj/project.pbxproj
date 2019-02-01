@@ -16,7 +16,7 @@
 		E41A538D21D5F629002B11E9 /* CaptureTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41A538C21D5F629002B11E9 /* CaptureTableCell.swift */; };
 		E41B892221E2F19B009C5AD7 /* ActionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41B892121E2F19B009C5AD7 /* ActionsViewController.swift */; };
 		E41B892421E2F1C1009C5AD7 /* SelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41B892321E2F1C1009C5AD7 /* SelectorViewController.swift */; };
-		E41B892621E31B07009C5AD7 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41B892521E31B07009C5AD7 /* HomeViewModel.swift */; };
+		E41B892621E31B07009C5AD7 /* DashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41B892521E31B07009C5AD7 /* DashboardViewModel.swift */; };
 		E41B892921E34238009C5AD7 /* AudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41B892821E34238009C5AD7 /* AudioRecorder.swift */; };
 		E41B892C21E34297009C5AD7 /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41B892B21E34297009C5AD7 /* AudioPlayer.swift */; };
 		E41B893221E3497D009C5AD7 /* ImageAttachmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4F3028B21D7397900BDE178 /* ImageAttachmentView.swift */; };
@@ -93,6 +93,8 @@
 		E4729B9F2202B70200F22885 /* SquareButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4729B9E2202B70200F22885 /* SquareButton.swift */; };
 		E4729BA22202BBE300F22885 /* Rotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4729BA12202BBE300F22885 /* Rotation.swift */; };
 		E4729BA42202E6BA00F22885 /* Range.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4729BA32202E6BA00F22885 /* Range.swift */; };
+		E4729BA82204160200F22885 /* DashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4729BA72204160200F22885 /* DashboardViewController.swift */; };
+		E4729BAC220426C100F22885 /* HeadingListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4729BAB220426C100F22885 /* HeadingListViewController.swift */; };
 		E4773BA821F7505E000F8F3F /* SearchTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4773BA721F7505E000F8F3F /* SearchTableCell.swift */; };
 		E4773BAA21F7507E000F8F3F /* SearchTabelCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4773BA921F7507E000F8F3F /* SearchTabelCellModel.swift */; };
 		E4773BAC21F9A203000F8F3F /* CoverPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4773BAB21F9A203000F8F3F /* CoverPickerViewController.swift */; };
@@ -117,7 +119,6 @@
 		E4B19AB021C5363A00ED3463 /* SettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B19AAF21C5363A00ED3463 /* SettingsTests.swift */; };
 		E4B802022200437A00AD5AD8 /* TextStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = E4BFD47021F711A2003C048C /* TextStorage.m */; };
 		E4B802042201704E00AD5AD8 /* TextStorage.h in Headers */ = {isa = PBXBuildFile; fileRef = E4BFD45521F71184003C048C /* TextStorage.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E4BC264021F56A7E00B0F2B9 /* MasterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4BC263F21F56A7E00B0F2B9 /* MasterView.swift */; };
 		E4BC264221F56DB900B0F2B9 /* Rect.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4BC264121F56DB900B0F2B9 /* Rect.swift */; };
 		E4BC264421F587BC00B0F2B9 /* FrameLayout+Shortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4BC264321F587BC00B0F2B9 /* FrameLayout+Shortcuts.swift */; };
 		E4C46FE321EB311900F6374F /* ModalFormViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C46FE221EB311900F6374F /* ModalFormViewController.swift */; };
@@ -241,7 +242,7 @@
 		E41A539021D62095002B11E9 /* EditorServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorServer.swift; sourceTree = "<group>"; };
 		E41B892121E2F19B009C5AD7 /* ActionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionsViewController.swift; sourceTree = "<group>"; };
 		E41B892321E2F1C1009C5AD7 /* SelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectorViewController.swift; sourceTree = "<group>"; };
-		E41B892521E31B07009C5AD7 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		E41B892521E31B07009C5AD7 /* DashboardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardViewModel.swift; sourceTree = "<group>"; };
 		E41B892821E34238009C5AD7 /* AudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorder.swift; sourceTree = "<group>"; };
 		E41B892B21E34297009C5AD7 /* AudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayer.swift; sourceTree = "<group>"; };
 		E41B893B21E4DCFE009C5AD7 /* RoundButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundButton.swift; sourceTree = "<group>"; };
@@ -302,6 +303,8 @@
 		E4729B9E2202B70200F22885 /* SquareButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SquareButton.swift; sourceTree = "<group>"; };
 		E4729BA12202BBE300F22885 /* Rotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rotation.swift; sourceTree = "<group>"; };
 		E4729BA32202E6BA00F22885 /* Range.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Range.swift; sourceTree = "<group>"; };
+		E4729BA72204160200F22885 /* DashboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardViewController.swift; sourceTree = "<group>"; };
+		E4729BAB220426C100F22885 /* HeadingListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadingListViewController.swift; sourceTree = "<group>"; };
 		E4773BA721F7505E000F8F3F /* SearchTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTableCell.swift; sourceTree = "<group>"; };
 		E4773BA921F7507E000F8F3F /* SearchTabelCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTabelCellModel.swift; sourceTree = "<group>"; };
 		E4773BAB21F9A203000F8F3F /* CoverPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverPickerViewController.swift; sourceTree = "<group>"; };
@@ -335,7 +338,6 @@
 		E4A46A3F21B6891700FBDA04 /* DocumentSearchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentSearchTests.swift; sourceTree = "<group>"; };
 		E4B19AAD21C5010100ED3463 /* SettingsAccessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsAccessor.swift; sourceTree = "<group>"; };
 		E4B19AAF21C5363A00ED3463 /* SettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTests.swift; sourceTree = "<group>"; };
-		E4BC263F21F56A7E00B0F2B9 /* MasterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterView.swift; sourceTree = "<group>"; };
 		E4BC264121F56DB900B0F2B9 /* Rect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rect.swift; sourceTree = "<group>"; };
 		E4BC264321F587BC00B0F2B9 /* FrameLayout+Shortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FrameLayout+Shortcuts.swift"; sourceTree = "<group>"; };
 		E4BFD45521F71184003C048C /* TextStorage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TextStorage.h; sourceTree = "<group>"; };
@@ -571,8 +573,9 @@
 			children = (
 				E41CB16121D8897400EF0A3C /* HomeCoordinator.swift */,
 				E41CB16321D8899200EF0A3C /* HomeViewController.swift */,
-				E4BC263F21F56A7E00B0F2B9 /* MasterView.swift */,
-				E41B892521E31B07009C5AD7 /* HomeViewModel.swift */,
+				E4729BA72204160200F22885 /* DashboardViewController.swift */,
+				E41B892521E31B07009C5AD7 /* DashboardViewModel.swift */,
+				E4729BAB220426C100F22885 /* HeadingListViewController.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -1360,15 +1363,16 @@
 				E4EA855E21D1DAEB00DD92F9 /* AttachmentLocationViewController.swift in Sources */,
 				E44825A3219722C300C17568 /* Application.swift in Sources */,
 				E41A538A21D4CE43002B11E9 /* AgendaActionViewModel.swift in Sources */,
+				E4729BA82204160200F22885 /* DashboardViewController.swift in Sources */,
 				E41B893221E3497D009C5AD7 /* ImageAttachmentView.swift in Sources */,
 				E4A46A2B21B4109C00FBDA04 /* DocumentSearchViewController.swift in Sources */,
-				E4BC264021F56A7E00B0F2B9 /* MasterView.swift in Sources */,
 				E4A46A3821B6470100FBDA04 /* DocumentBrowserViewModel.swift in Sources */,
 				E4A46A2D21B410BE00FBDA04 /* DocumentSearchViewModel.swift in Sources */,
 				E49F3E4421B8EDBD003F468D /* AgendaViewController.swift in Sources */,
 				E4EA856021D1DB1400DD92F9 /* AttachmentSketchViewController.swift in Sources */,
 				E4EA855621D1DA3D00DD92F9 /* AttachmentImageViewController.swift in Sources */,
 				E43427FA2121BF5B00EC6DC3 /* AppDelegate.swift in Sources */,
+				E4729BAC220426C100F22885 /* HeadingListViewController.swift in Sources */,
 				E41FA5752191569C001D8C63 /* DocumentEditController.swift in Sources */,
 				E4773BAA21F7507E000F8F3F /* SearchTabelCellModel.swift in Sources */,
 				E49F3E4C21B91885003F468D /* SettingsViewModel.swift in Sources */,
@@ -1386,7 +1390,7 @@
 				E41CB15921D87CD100EF0A3C /* BrowserCoordinator.swift in Sources */,
 				E41B893621E3497D009C5AD7 /* VideoAttachmentView.swift in Sources */,
 				E4EA855C21D1DACE00DD92F9 /* AttachmentVideoViewController.swift in Sources */,
-				E41B892621E31B07009C5AD7 /* HomeViewModel.swift in Sources */,
+				E41B892621E31B07009C5AD7 /* DashboardViewModel.swift in Sources */,
 				E4EA855821D1DA8700DD92F9 /* AttachmentLinkViewController.swift in Sources */,
 				E4773BA821F7505E000F8F3F /* SearchTableCell.swift in Sources */,
 				E4EA855A21D1DAAF00DD92F9 /* AttachmentAudioViewController.swift in Sources */,

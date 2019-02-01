@@ -9,12 +9,6 @@
 
 import Foundation
 
-extension NSRange {
-    public func offset(_ offset: Int) -> NSRange {
-        return NSRange(location: self.location + offset, length: self.length)
-    }
-}
-
 public class OutlineParser {
     public weak var delegate: OutlineParserDelegate?
     

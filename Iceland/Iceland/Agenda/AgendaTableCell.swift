@@ -46,7 +46,7 @@ public class AgendaTableCell: UITableViewCell {
         let label = UILabel()
         label.textColor = InterfaceTheme.Color.interactive
         label.font = InterfaceTheme.Font.footnote
-        label.numberOfLines = 0
+        label.numberOfLines = 3
         label.textAlignment = .left
         return label
     }()

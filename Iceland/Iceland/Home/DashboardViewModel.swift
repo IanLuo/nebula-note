@@ -9,14 +9,14 @@
 import Foundation
 import Business
 
-public protocol HomeViewModelDelegate: class {
+public protocol DashboardViewModelDelegate: class {
     func didLoadAllTags()
 }
 
-public class HomeViewModel {
+public class DashboardViewModel {
     public weak var coordinator: HomeCoordinator?
     private let documentSearchManager: DocumentSearchManager
-    public weak var delegate: HomeViewModelDelegate?
+    public weak var delegate: DashboardViewModelDelegate?
     
     public init(documentSearchManager: DocumentSearchManager) {
         self.documentSearchManager = documentSearchManager

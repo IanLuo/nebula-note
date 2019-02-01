@@ -1,8 +1,8 @@
 //
-//  MasterView.swift
+//  MasterViewController.swift
 //  Iceland
 //
-//  Created by ian luo on 2019/1/21.
+//  Created by ian luo on 2019/2/1.
 //  Copyright © 2019 wod. All rights reserved.
 //
 
@@ -10,26 +10,36 @@ import Foundation
 import UIKit
 import Business
 
-public protocol MasterViewDelegate: class {
+public protocol DashboardViewControllerDelegate: class {
     func didSelectTab(at index: Int)
     func didSelectSubtab(at index: Int, for tabIndex: Int)
 }
 
-public class MasterView: UIView {
-    public init() {
-        super.init(frame: .zero)
+public class DashboardViewController: UIViewController {
+    public weak var delegate: DashboardViewControllerDelegate?
+    private let viewModel: DashboardViewModel
+    
+    public init(viewModel: DashboardViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
         
-        self.backgroundColor = UIColor.blue
-        
-        self.addSubview(self.tableView)
-        self.tableView.fill(view: self)
+        viewModel.delegate = self
     }
     
-    public required init?(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public weak var delegate: MasterViewDelegate?
+    public override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        self.view.backgroundColor = InterfaceTheme.Color.background2
+        
+        self.view.addSubview(self.tableView)
+        self.tableView.fill(view: self.view)
+        
+        self.viewModel.loadAllTags()
+    }
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
@@ -44,7 +54,7 @@ public class MasterView: UIView {
     }()
     
     public class Tab: Equatable {
-        public static func == (lhs: MasterView.Tab, rhs: MasterView.Tab) -> Bool {
+        public static func == (lhs: DashboardViewController.Tab, rhs: DashboardViewController.Tab) -> Bool {
             return lhs.title == rhs.title
         }
         
@@ -68,7 +78,7 @@ public class MasterView: UIView {
         let subtitle: String
         var isCurrent: Bool = false
         
-        public static func == (lhs: MasterView.Subtab, rhs: MasterView.Subtab) -> Bool {
+        public static func == (lhs: DashboardViewController.Subtab, rhs: DashboardViewController.Subtab) -> Bool {
             return lhs.title == rhs.title
         }
         
@@ -124,7 +134,7 @@ public class MasterView: UIView {
     }
 }
 
-extension MasterView: UITableViewDelegate, UITableViewDataSource {
+extension DashboardViewController: UITableViewDelegate, UITableViewDataSource {
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard self.tabs[section].isOpen else { return 0 }
         return self.subtabs[section]?.count ?? 0
@@ -152,7 +162,7 @@ extension MasterView: UITableViewDelegate, UITableViewDataSource {
         let tab = self.tabs[section]
         view.tab = tab
         view.shoudShowSubtabsButton = (self.subtabs[section]?.count ?? 0) > 0
-
+        
         view.action = {
             self.selectOnTab(index: section)
         }
@@ -178,12 +188,19 @@ extension MasterView: UITableViewDelegate, UITableViewDataSource {
     }
 }
 
+extension DashboardViewController: DashboardViewModelDelegate {
+    public func didLoadAllTags() {
+        self.addSubTab(self.viewModel.allTags.map { DashboardViewController.Subtab(icon: UIImage(named: "tag"), title: $0, subtitle: "") }, for: 0)
+        self.reload()
+    }
+}
+
 // MARK: - TabView -
 
 private class TabView: UITableViewHeaderFooterView {
     static let reuseIdentifier = "TabView"
     
-    var tab: MasterView.Tab? {
+    var tab: DashboardViewController.Tab? {
         didSet {
             guard let tab = tab else { return }
             self.iconView.image = tab.icon?.withRenderingMode(.alwaysTemplate)

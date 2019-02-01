@@ -149,7 +149,7 @@ extension DocumentBrowserViewController: DocumentBrowserViewModelDelegate {
         for index in index..<index + count {
             indexPaths.append(IndexPath(row: index, section: 0))
         }
-        self.tableView.insertRows(at: indexPaths, with: .fade)
+        self.tableView.insertRows(at: indexPaths, with: .top)
     }
     
     public func didRemoveDocument(index: Int, count: Int) {
@@ -157,7 +157,7 @@ extension DocumentBrowserViewController: DocumentBrowserViewModelDelegate {
         for index in index..<index + count {
             indexPaths.append(IndexPath(row: index, section: 0))
         }
-        self.tableView.deleteRows(at: indexPaths, with: .fade)
+        self.tableView.deleteRows(at: indexPaths, with: .top)
     }
     
     public func didRenameDocument(index: Int) {

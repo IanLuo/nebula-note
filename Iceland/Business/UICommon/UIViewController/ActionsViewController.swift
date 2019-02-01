@@ -172,7 +172,7 @@ public class ActionsViewController: UIViewController {
         self.actionsContainerView.addSubview(self.cancelButton)
         self.actionsContainerView.addSubview(self.titleLabel)
         
-        self.actionsContainerView.setBorder(position: .bottom, color: InterfaceTheme.Color.background3, width: 0.5)
+        self.actionsContainerView.setBorder(position: [.top, .bottom], color: InterfaceTheme.Color.background3, width: 0.5)
 
         self.cancelButton.sideAnchor(for: [.right, .top, .bottom], to: self.actionsContainerView, edgeInset: 0)
         self.cancelButton.sizeAnchor(width: 80, height: 80)
@@ -253,7 +253,7 @@ fileprivate class ActionCell: UITableViewCell {
             case .highlight:
                 fallthrough
             case .warning:
-                self.contentView.setBorder(position: .top, color: InterfaceTheme.Color.background3, width: ActionsViewController.Constants.specialItemSeparatorHeight)
+                self.contentView.setBorder(position: .top, color: InterfaceTheme.Color.background1, width: ActionsViewController.Constants.specialItemSeparatorHeight)
                 self.iconView.constraint(for: .centerY)?.constant = ActionsViewController.Constants.specialItemSeparatorHeight / 2
                 self.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
             }

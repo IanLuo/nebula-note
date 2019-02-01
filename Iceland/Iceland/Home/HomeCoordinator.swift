@@ -11,12 +11,14 @@ import UIKit
 import Business
 
 public class HomeCoordinator: Coordinator {
+    private let homeViewController: HomeViewController
+    
     public override init(stack: UINavigationController, dependency: Dependency) {
-        let viewModel = HomeViewModel(documentSearchManager: dependency.documentSearchManager)
-        let viewController = HomeViewController(viewModel: viewModel)
+        let viewController = HomeViewController()
+        self.homeViewController = viewController
+        
         super.init(stack: stack, dependency: dependency)
         self.viewController = viewController
-        viewModel.coordinator = self
         
         self.addSubCoordinator(coordinator: AgendaCoordinator(stack: stack, dependency: dependency))
         self.addSubCoordinator(coordinator: CaptureListCoordinator(stack: stack, dependency: dependency))
@@ -28,6 +30,16 @@ public class HomeCoordinator: Coordinator {
         let browserCoordinator = BrowserCoordinator(stack: stack, dependency: dependency, usage: .chooseDocument)
         browserCoordinator.delegate = self
         self.addSubCoordinator(coordinator: browserCoordinator)
+        
+        let viewModel = DashboardViewModel(documentSearchManager: dependency.documentSearchManager)
+        viewModel.coordinator = self
+        let dashboardViewController = DashboardViewController(viewModel: viewModel)
+        viewController.masterNavigationController.pushViewController(dashboardViewController, animated: false)
+        dashboardViewController.delegate = self
+        
+        self.homeViewController.children.forEach {
+            dashboardViewController.addTab(DashboardViewController.Tab(icon: $0.tabBarItem.image, title: $0.title ?? "unknown"))
+        }
     }
     
     public func addSubCoordinator(coordinator: Coordinator) {
@@ -56,5 +68,16 @@ extension HomeCoordinator: BrowserCoordinatorDelegate {
     
     public func didSelectHeading(url: URL, heading: Document.Heading) {
         // ignore
+    }
+}
+
+extension HomeCoordinator: DashboardViewControllerDelegate {
+    public func didSelectSubtab(at index: Int, for tabIndex: Int) {
+        self.homeViewController.masterNavigationController.pushViewController(HeadingListViewController(), animated: true)
+    }
+    
+    public func didSelectTab(at index: Int) {
+        self.homeViewController.showChildViewController(at: index)
+        self.homeViewController.showChildView()
     }
 }

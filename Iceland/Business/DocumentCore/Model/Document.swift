@@ -239,6 +239,10 @@ public class Document: UIDocument {
             return headingContentRange
         }
         
+        public var contentRange: NSRange {
+            return NSRange(location: self.range.upperBound, length: self.contentLength)
+        }
+        
         public var paragraphRange: NSRange {
             return NSRange(location: range.location, length: contentLength + range.length)
         }

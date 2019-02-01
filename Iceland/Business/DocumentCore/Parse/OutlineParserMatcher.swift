@@ -144,7 +144,7 @@ extension OutlineParser {
                 public static let schedule =    "(SCHEDULED\\: \\<([0-9]{4}\\-[0-9]{1,2}\\-[0-9]{1,2} [a-zA-Z]{3}( [0-9]{2}\\:[0-9]{1,2})?)\\>)"
                 public static let due =         "(DEADLINE\\: \\<([0-9]{4}\\-[0-9]{1,2}\\-[0-9]{1,2} [a-zA-Z]{3}( [0-9]{2}\\:[0-9]{1,2})?)\\>)"
                 public static let planning =    " (\(Values.Heading.Planning.pattern))? "
-                public static let tags =        "(\\:([a-zA-Z0-9]+\\:)+)"
+                public static let tags =        "(\\:(\(charactor)+\\:)+)"
             }
             
             public struct TextMark {
