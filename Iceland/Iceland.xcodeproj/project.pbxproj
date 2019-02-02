@@ -96,7 +96,7 @@
 		E4729BA82204160200F22885 /* DashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4729BA72204160200F22885 /* DashboardViewController.swift */; };
 		E4729BAC220426C100F22885 /* HeadingListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4729BAB220426C100F22885 /* HeadingListViewController.swift */; };
 		E4729BAE22048A1900F22885 /* HeadingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4729BAD22048A1900F22885 /* HeadingCell.swift */; };
-		E4729BB02205372D00F22885 /* DashboardDetailItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4729BAF2205372D00F22885 /* DashboardDetailItemViewController.swift */; };
+		E4729BB02205372D00F22885 /* DashboardSubtypeItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4729BAF2205372D00F22885 /* DashboardSubtypeItemViewController.swift */; };
 		E4773BA821F7505E000F8F3F /* SearchTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4773BA721F7505E000F8F3F /* SearchTableCell.swift */; };
 		E4773BAA21F7507E000F8F3F /* SearchTabelCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4773BA921F7507E000F8F3F /* SearchTabelCellModel.swift */; };
 		E4773BAC21F9A203000F8F3F /* CoverPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4773BAB21F9A203000F8F3F /* CoverPickerViewController.swift */; };
@@ -308,7 +308,7 @@
 		E4729BA72204160200F22885 /* DashboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardViewController.swift; sourceTree = "<group>"; };
 		E4729BAB220426C100F22885 /* HeadingListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadingListViewController.swift; sourceTree = "<group>"; };
 		E4729BAD22048A1900F22885 /* HeadingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadingCell.swift; sourceTree = "<group>"; };
-		E4729BAF2205372D00F22885 /* DashboardDetailItemViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardDetailItemViewController.swift; sourceTree = "<group>"; };
+		E4729BAF2205372D00F22885 /* DashboardSubtypeItemViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardSubtypeItemViewController.swift; sourceTree = "<group>"; };
 		E4773BA721F7505E000F8F3F /* SearchTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTableCell.swift; sourceTree = "<group>"; };
 		E4773BA921F7507E000F8F3F /* SearchTabelCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTabelCellModel.swift; sourceTree = "<group>"; };
 		E4773BAB21F9A203000F8F3F /* CoverPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverPickerViewController.swift; sourceTree = "<group>"; };
@@ -579,7 +579,7 @@
 				E41CB16321D8899200EF0A3C /* HomeViewController.swift */,
 				E4729BA72204160200F22885 /* DashboardViewController.swift */,
 				E41B892521E31B07009C5AD7 /* DashboardViewModel.swift */,
-				E4729BAF2205372D00F22885 /* DashboardDetailItemViewController.swift */,
+				E4729BAF2205372D00F22885 /* DashboardSubtypeItemViewController.swift */,
 				E4729BAB220426C100F22885 /* HeadingListViewController.swift */,
 				E4729BAD22048A1900F22885 /* HeadingCell.swift */,
 			);
@@ -1418,7 +1418,7 @@
 				E41B893321E3497D009C5AD7 /* TextAttachmentView.swift in Sources */,
 				E41B893521E3497D009C5AD7 /* AudioAttachmentView.swift in Sources */,
 				E41F86C5218EF4E1006C4CDB /* AgendaCoordinator.swift in Sources */,
-				E4729BB02205372D00F22885 /* DashboardDetailItemViewController.swift in Sources */,
+				E4729BB02205372D00F22885 /* DashboardSubtypeItemViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

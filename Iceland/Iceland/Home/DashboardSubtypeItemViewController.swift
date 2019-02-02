@@ -10,18 +10,18 @@ import Foundation
 import UIKit
 import Business
 
-public protocol DashboardDetailItemViewControllerDelegate: class {
-    func didSelect(index: Int)
+public protocol DashboardSubtypeItemViewControllerDelegate: class {
+    func didSelect(title: String)
 }
 
-public class DashboardDetailItemViewController: UIViewController {
+public class DashboardSubtypeItemViewController: UIViewController {
     public struct Item {
         let icon: UIImage
         let title: String
     }
     
-    public weak var delegate: DashboardDetailItemViewControllerDelegate?
-    public var items: [Item] = []
+    public weak var delegate: DashboardSubtypeItemViewControllerDelegate?
+    private let subtype: DashboardViewController.SubtabType
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
@@ -34,8 +34,8 @@ public class DashboardDetailItemViewController: UIViewController {
         return tableView
     }()
     
-    public init(items: [Item]) {
-        self.items = items
+    public init(subtype: DashboardViewController.SubtabType) {
+        self.subtype = subtype
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -80,22 +80,22 @@ public class DashboardDetailItemViewController: UIViewController {
     }
 }
 
-extension DashboardDetailItemViewController: UITableViewDelegate {
+extension DashboardSubtypeItemViewController: UITableViewDelegate {
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.delegate?.didSelect(index: indexPath.row)
+        self.delegate?.didSelect(title: self.subtype.detailItems[indexPath.row])
     }
 }
 
-extension DashboardDetailItemViewController: UITableViewDataSource {
+extension DashboardSubtypeItemViewController: UITableViewDataSource {
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.items.count
+        return self.subtype.detailItems.count
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        let item = self.items[indexPath.row]
-        cell.imageView?.image = item.icon
-        cell.textLabel?.text = item.title
+        let title = self.subtype.detailItems[indexPath.row]
+        cell.imageView?.image = self.subtype.icon
+        cell.textLabel?.text = title
         cell.textLabel?.textColor = InterfaceTheme.Color.interactive
         cell.textLabel?.font = InterfaceTheme.Font.body
         cell.backgroundColor = InterfaceTheme.Color.background2

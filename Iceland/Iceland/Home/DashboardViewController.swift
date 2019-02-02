@@ -16,39 +16,6 @@ public protocol DashboardViewControllerDelegate: class {
 }
 
 public class DashboardViewController: UIViewController {
-    public enum TabType {
-        case agenda(UIViewController, Int)
-        case captureList(UIViewController, Int)
-        case search(UIViewController, Int)
-        case documents(UIViewController, Int)
-        
-        var viewController: UIViewController {
-            switch self {
-            case .agenda(let viewController, _): return viewController
-            case .captureList(let viewController, _): return viewController
-            case .search(let viewController, _): return viewController
-            case .documents(let viewController, _): return viewController
-            }
-        }
-        
-        var index: Int {
-            switch self {
-            case .agenda(_ , let index): return index
-            case .captureList(_ , let index): return index
-            case .search(_ , let index): return index
-            case .documents(_ , let index): return index
-            }
-        }
-    }
-    
-    public enum SubtabType {
-        case tags
-        case scheduled
-        case scheduledSoon
-        case dueSoon
-        case overDue
-    }
-    
     public weak var delegate: DashboardViewControllerDelegate?
     private let viewModel: DashboardViewModel
     
@@ -94,18 +61,12 @@ public class DashboardViewController: UIViewController {
         self.tableView.reloadData()
     }
     
-    fileprivate var subtabs: [Int: [Subtab]] = [:]
-    
     public func addTab(tabs: [TabType]) {
         tabs.sorted {
             $0.index < $1.index
         }.forEach {
-            self.tabs.append(Tab(icon: $0.viewController.tabBarItem.image, title: $0.viewController.title ?? "unkonwn", type: $0))
+            self.tabs.append(Tab(type: $0))
         }
-    }
-    
-    fileprivate func addSubTab(_ subTabs: [Subtab], for tabIndex: Int) {
-        self.subtabs[tabIndex] = subTabs
     }
     
     fileprivate func selectOnTab(index: Int?) {
@@ -119,8 +80,8 @@ public class DashboardViewController: UIViewController {
     }
     
     fileprivate func selectOnSubtab(tab: Int, subtab: Int?) {
-        self.subtabs.forEach {
-            $0.value.forEach {
+        self.tabs.forEach {
+            $0.sub.forEach {
                 $0.isCurrent = false
             }
         }
@@ -128,7 +89,7 @@ public class DashboardViewController: UIViewController {
         if let subtab = subtab { // 到这里的时候，table view 已经把选中的 cell 高亮显示了，所以不需要做高亮的操作
             self.selectOnSubtabAction(tab: tab, subtab: subtab)
             self.selectOnTab(index: nil) // 取消 tab 上的选中效果
-            self.subtabs[tab]![subtab].isCurrent = true
+            self.tabs[tab].sub[subtab].isCurrent = true
         } else {
             tableView.visibleCells.forEach {
                 $0.setSelected(false, animated: false)
@@ -137,24 +98,106 @@ public class DashboardViewController: UIViewController {
     }
     
     private func selectOnSubtabAction(tab: Int, subtab: Int) {
-        if let type = self.subtabs[tab]?[subtab].type {
-            switch type {
-            case .tags:
-                self.navigationController?.pushViewController(DashboardDetailItemViewController(items: self.viewModel.allTags.map {
-                    DashboardDetailItemViewController.Item(icon: UIImage(named: "tag")!, title: $0)
-                }), animated: true)
-            default: break
-            }
+        let type = self.tabs[tab].sub[subtab].type
+        switch type {
+        case .tags:
+            let tagsViewController = DashboardSubtypeItemViewController(subtype: self.tabs[tab].sub[subtab].type)
+            tagsViewController.delegate = self
+            self.navigationController?.pushViewController(tagsViewController, animated: true)
+        default: break
         }
     }
     
     private func selectOnTabFoldArrow(tab index: Int, isOpen: Bool) {
-        if let count = self.subtabs[index]?.count {
-            let indexPaths = Array<Int>(0..<count).map { IndexPath(row: $0, section: index) }
-            if isOpen {
-                self.tableView.insertRows(at: indexPaths, with: .top)
-            } else {
-                self.tableView.deleteRows(at: indexPaths, with: .top)
+        let count = self.tabs[index].sub.count
+        let indexPaths = Array<Int>(0..<count).map { IndexPath(row: $0, section: index) }
+        if isOpen {
+            self.tableView.insertRows(at: indexPaths, with: .top)
+        } else {
+            self.tableView.deleteRows(at: indexPaths, with: .top)
+        }
+    }
+    
+    public enum TabType {
+        case agenda(UIViewController, Int)
+        case captureList(UIViewController, Int)
+        case search(UIViewController, Int)
+        case documents(UIViewController, Int)
+        
+        var viewController: UIViewController {
+            switch self {
+            case .agenda(let viewController, _): return viewController
+            case .captureList(let viewController, _): return viewController
+            case .search(let viewController, _): return viewController
+            case .documents(let viewController, _): return viewController
+            }
+        }
+        
+        var index: Int {
+            switch self {
+            case .agenda(_ , let index): return index
+            case .captureList(_ , let index): return index
+            case .search(_ , let index): return index
+            case .documents(_ , let index): return index
+            }
+        }
+        
+        func getSubtypes(viewModel: DashboardViewModel) -> [SubtabType] {
+            var types: [SubtabType] = []
+            switch self {
+            case .agenda(_, _):
+                let tags = viewModel.allTags
+                if tags.count > 0 { types.append(.tags(tags)) }
+            default: return []
+            }
+            
+            return types
+        }
+    }
+    
+    // MARK: - type definition -
+    public enum SubtabType {
+        case tags([String])
+        case scheduled([Document.Heading])
+        case scheduledSoon([Document.Heading])
+        case overDue([Document.Heading])
+        case overDueSoon([Document.Heading])
+        
+        public var index: Int {
+            switch self {
+            case .tags: return 0
+            case .scheduled: return 1
+            case .overDue: return 2
+            case .scheduledSoon: return 3
+            case .overDueSoon: return 4
+            }
+        }
+        
+        var icon: UIImage? {
+            switch self {
+            case .tags(_): return UIImage(named: "tag")
+            default: return nil
+            }
+        }
+        
+        var title: String {
+            switch self {
+            case .tags(_): return "tags".localizable
+            default: return ""
+            }
+        }
+        
+        var subtitle: String {
+            switch self {
+            case .tags(let tags): return "\(tags.count)"
+            default: return ""
+            }
+        }
+        
+        var detailItems: [String] {
+            switch self {
+            case .tags(let tags): return tags
+            default: return []
             }
         }
     }
@@ -165,25 +208,25 @@ public class DashboardViewController: UIViewController {
         }
         
         let type: TabType
-        let icon: UIImage?
-        let title: String
+        var icon: UIImage? { return self.type.viewController.tabBarItem.image }
+        var title: String? { return self.type.viewController.title }
         var isOpen: Bool = false { didSet { didSetIsOpen?(isOpen) } }
         var isCurrent: Bool = false { didSet { didSetIsCurrent?(isCurrent) } }
         
         var didSetIsCurrent: ((Bool) -> Void)?
         var didSetIsOpen: ((Bool) -> Void)?
         
-        public init(icon: UIImage?, title: String, type: TabType) {
-            self.icon = icon
-            self.title = title
+        public init(type: TabType) {
             self.type = type
         }
+        
+        public var sub: [Subtab] = []
     }
     
     fileprivate class Subtab: Equatable {
-        let icon: UIImage?
-        let title: String
-        let subtitle: String
+        var icon: UIImage? { return self.type.icon }
+        var title: String { return self.type.title }
+        var subtitle: String { return self.type.subtitle }
         var isCurrent: Bool = false
         let type: SubtabType
         
@@ -191,10 +234,7 @@ public class DashboardViewController: UIViewController {
             return lhs.title == rhs.title
         }
         
-        public init(icon: UIImage?, title: String, subtitle: String, type: SubtabType) {
-            self.icon = icon
-            self.title = title
-            self.subtitle = subtitle
+        public init(type: SubtabType) {
             self.type = type
         }
     }
@@ -203,7 +243,8 @@ public class DashboardViewController: UIViewController {
 extension DashboardViewController: UITableViewDelegate, UITableViewDataSource {
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard self.tabs[section].isOpen else { return 0 }
-        return self.subtabs[section]?.count ?? 0
+
+        return self.tabs[section].sub.count
     }
     
     public func numberOfSections(in tableView: UITableView) -> Int {
@@ -212,7 +253,7 @@ extension DashboardViewController: UITableViewDelegate, UITableViewDataSource {
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: SubtabCell.reuseIdentifier, for: indexPath) as! SubtabCell
-        let item = self.subtabs[indexPath.section]![indexPath.row]
+        let item = self.tabs[indexPath.section].sub[indexPath.row]
         cell.titleLabel.text = item.title
         cell.iconView.image = item.icon?.withRenderingMode(.alwaysTemplate)
         cell.subtitleLabel.text = item.subtitle
@@ -220,7 +261,7 @@ extension DashboardViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        let item = self.subtabs[indexPath.section]![indexPath.row]
+        let item = self.tabs[indexPath.section].sub[indexPath.row]
         cell.setSelected(item.isCurrent, animated: false)
     }
     
@@ -228,7 +269,7 @@ extension DashboardViewController: UITableViewDelegate, UITableViewDataSource {
         let view = tableView.dequeueReusableHeaderFooterView(withIdentifier: TabView.reuseIdentifier) as! TabView
         let tab = self.tabs[section]
         view.tab = tab
-        view.shoudShowSubtabsButton = (self.subtabs[section]?.count ?? 0) > 0
+        view.shoudShowSubtabsButton = (self.tabs[section].sub.count) > 0
         
         view.action = {
             self.selectOnTab(index: section)
@@ -250,13 +291,14 @@ extension DashboardViewController: UITableViewDelegate, UITableViewDataSource {
 
 extension DashboardViewController: DashboardViewModelDelegate {
     public func didLoadAllTags() {
-        self.addSubTab([DashboardViewController.Subtab(icon: UIImage(named: "tag"), title: "tags".localizable, subtitle: "\(self.viewModel.allTags.count)", type: .tags)], for: 0)
+        self.tabs[0].sub.append(Subtab(type: DashboardViewController.SubtabType.tags(self.viewModel.allTags)))
         self.tableView.reloadSections([0], with: UITableView.RowAnimation.none)
     }
 }
 
-extension DashboardViewController: DashboardDetailItemViewControllerDelegate {
-    public func didSelect(index: Int) {
+// MARK: - DashboardSubtypeItemViewControllerDelegate -
+extension DashboardViewController: DashboardSubtypeItemViewControllerDelegate {
+    public func didSelect(title: String) {
         
     }
 }
