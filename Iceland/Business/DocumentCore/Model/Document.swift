@@ -32,6 +32,10 @@ public class DocumentInfo {
     }
 }
 
+public struct DocumentNotification {
+    public static let didUpdateDocumentContent = Notification.Name(rawValue: "didUpdateDocumentContent")
+}
+
 public class Document: UIDocument {
     public static let fileExtension = "iceland"
     public static let contentFileExtension = "org"
@@ -127,6 +131,10 @@ public class Document: UIDocument {
     }
     
     public override func save(to url: URL, for saveOperation: UIDocument.SaveOperation, completionHandler: ((Bool) -> Void)? = nil) {
+        if self.hasUnsavedChanges {
+            NotificationCenter.default.post(name: DocumentNotification.didUpdateDocumentContent, object: nil, userInfo: ["url": url])
+        }
+        
         super.save(to: url, for: saveOperation, completionHandler: completionHandler)
     }
     

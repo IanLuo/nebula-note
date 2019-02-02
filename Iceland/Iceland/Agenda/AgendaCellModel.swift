@@ -25,7 +25,7 @@ public class AgendaCellModel {
         self.url = url
         self.heading = heading
         self.headingText = paragraph.substring(heading.headingTextRange)
-        self.contentSummary = textTrimmer.trim(string: paragraph, range: heading.contentRange.offset(-heading.range.location))
+        self.contentSummary = textTrimmer.trim(string: paragraph, range: heading.contentRange.offset(-heading.range.location)).trimmingCharacters(in: CharacterSet.controlCharacters)
 
         if let schedule = heading.schedule {
             let dateRange = schedule.offset(-heading.range.location)

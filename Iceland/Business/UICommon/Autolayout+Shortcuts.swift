@@ -58,12 +58,12 @@ extension UIView {
         }
     }
     
-    public func allSidesAnchors(to view: UIView, edgeInsets: UIEdgeInsets) {
-        self.sideAnchor(for: [.left, .top, .right, .bottom], to: view, edgeInsets: edgeInsets)
+    public func allSidesAnchors(to view: UIView, edgeInsets: UIEdgeInsets, considerSafeArea: Bool = true) {
+        self.sideAnchor(for: [.left, .top, .right, .bottom], to: view, edgeInsets: edgeInsets, considerSafeArea: considerSafeArea)
     }
     
-    public func allSidesAnchors(to view: UIView, edgeInset: CGFloat) {
-        self.sideAnchor(for: [.left, .top, .right, .bottom], to: view, edgeInset: edgeInset)
+    public func allSidesAnchors(to view: UIView, edgeInset: CGFloat, considerSafeArea: Bool = true) {
+        self.sideAnchor(for: [.left, .top, .right, .bottom], to: view, edgeInset: edgeInset, considerSafeArea: considerSafeArea)
     }
     
     public func sizeAnchor(width: CGFloat? = nil, height: CGFloat? = nil) {
@@ -82,8 +82,8 @@ extension UIView {
         }
     }
     
-    public func sideAnchor(for position: Position, to view: UIView, edgeInset: CGFloat) {
-        self.sideAnchor(for: position, to: view, edgeInsets: UIEdgeInsets(top: edgeInset, left: edgeInset, bottom: -edgeInset, right: -edgeInset))
+    public func sideAnchor(for position: Position, to view: UIView, edgeInset: CGFloat, considerSafeArea: Bool = true) {
+        self.sideAnchor(for: position, to: view, edgeInsets: UIEdgeInsets(top: edgeInset, left: edgeInset, bottom: -edgeInset, right: -edgeInset), considerSafeArea: considerSafeArea)
     }
     
     public func ratioAnchor(_ ratio: CGFloat) {
@@ -134,23 +134,35 @@ extension UIView {
         heightDependency.isActive = true
     }
     
-    public func sideAnchor(for position: Position, to view: UIView, edgeInsets: UIEdgeInsets) {
+    public func sideAnchor(for position: Position, to view: UIView, edgeInsets: UIEdgeInsets, considerSafeArea: Bool = true) {
         self.makeSureTranslationIsSetToFalse()
         
         if position.contains(Position.left) {
-            let left = self.leftAnchor.constraint(equalTo: view.leftAnchor, constant: edgeInsets.left)
-            left.identifier = Position.left.identifier(for: self)
-            left.isActive = true
+            if #available(iOS 11, *), considerSafeArea {
+                let left = self.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: edgeInsets.left)
+                left.identifier = Position.left.identifier(for: self)
+                left.isActive = true
+            } else {
+                let left = self.leftAnchor.constraint(equalTo: view.leftAnchor, constant: edgeInsets.left)
+                left.identifier = Position.left.identifier(for: self)
+                left.isActive = true
+            }
         }
         
         if position.contains(Position.right) {
-            let right = self.rightAnchor.constraint(equalTo: view.rightAnchor, constant: edgeInsets.right)
-            right.identifier = Position.right.identifier(for: self)
-            right.isActive = true
+            if #available(iOS 11, *), considerSafeArea {
+                let right = self.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: edgeInsets.right)
+                right.identifier = Position.right.identifier(for: self)
+                right.isActive = true
+            } else {
+                let right = self.rightAnchor.constraint(equalTo: view.rightAnchor, constant: edgeInsets.right)
+                right.identifier = Position.right.identifier(for: self)
+                right.isActive = true
+            }
         }
         
         if position.contains(Position.top) {
-            if #available(iOS 11, *) {
+            if #available(iOS 11, *), considerSafeArea {
                 let top = self.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: edgeInsets.top)
                 top.identifier = Position.top.identifier(for: self)
                 top.isActive = true
@@ -162,7 +174,7 @@ extension UIView {
         }
         
         if position.contains(Position.bottom) {
-            if #available(iOS 11, *) {
+            if #available(iOS 11, *), considerSafeArea {
                 let bottom = self.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: edgeInsets.bottom)
                 bottom.identifier = Position.bottom.identifier(for: self)
                 bottom.isActive = true

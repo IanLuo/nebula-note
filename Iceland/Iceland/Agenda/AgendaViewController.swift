@@ -135,7 +135,7 @@ extension AgendaViewController: UITableViewDelegate {
             viewController.dismiss(animated: true, completion: nil)
         }
         
-        actionsViewController.addAction(icon: UIImage(named: "enter"), title: "Open", style: ActionsViewController.Style.highlight) { viewController in
+        actionsViewController.addAction(icon: UIImage(named: "up"), title: "Open", style: ActionsViewController.Style.highlight) { viewController in
             viewController.dismiss(animated: true, completion: nil)
             let data = self.viewModel.data[indexPath.row]
             self.viewModel.coordinator?.openDocument(url: data.url, location: data.heading.range.location)

@@ -106,12 +106,10 @@ public class RecentFilesManager {
     }
     
     @objc private func handleDocumentDelete(notification: Notification) {
-        if let url = notification.userInfo?[DocumentManagerNotification.keyDidDelegateDocumentURL] as? URL {
+        if let url = notification.userInfo?[DocumentManagerNotification.keyDocumentURL] as? URL {
             self.recentFiles.forEach { savedDocument in
                 if savedDocument.url.documentRelativePath.contains(url.documentRelativePath) {
-                    log.info(">>> removing \(savedDocument.url.documentRelativePath)")
                     self.removeRecentFile(url: savedDocument.url) {
-                        log.info("<<< removed \(savedDocument.url.documentRelativePath)")
                         NotificationCenter.default.post(name: RecentFileChangedNotification.fileInfoChanged,
                                                         object: nil,
                                                         userInfo: ["deleted" : url])

@@ -107,7 +107,7 @@ extension EditorController {
             if self.textStorage.attributes(at: contentRange.location, effectiveRange: nil)[OutlineAttribute.Heading.folded] == nil {
                 
                 self.textStorage.addAttribute(OutlineAttribute.Heading.folded,
-                                              value: contentRange,
+                                              value: 1,
                                               range: contentRange)
             } else {
                 self.textStorage.removeAttribute(OutlineAttribute.Heading.folded,

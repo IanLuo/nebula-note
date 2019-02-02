@@ -75,7 +75,7 @@ public class OpenningFilesView: UIView {
     }
     
     @objc private func handleCoverChange(notification: Notification) {
-        if let url = notification.userInfo?[DocumentManagerNotification.keyDidChangeDocumentCover] as? URL {
+        if let url = notification.userInfo?[DocumentManagerNotification.keyDocumentURL] as? URL {
             for (index, documentInfo) in self.data.enumerated() {
                 if documentInfo.url.documentRelativePath == url.documentRelativePath {
                     let indexPath = IndexPath(row: index, section: 0)

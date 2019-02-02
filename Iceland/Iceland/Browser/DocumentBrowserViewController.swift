@@ -15,6 +15,10 @@ public protocol DocumentBrowserViewControllerDelegate: class {
 }
 
 public class DocumentBrowserViewController: UIViewController {
+    public struct Constants {
+        public static let recentViewsHeight: CGFloat = 120
+    }
+    
     let viewModel: DocumentBrowserViewModel
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
@@ -24,7 +28,7 @@ public class DocumentBrowserViewController: UIViewController {
         tableView.backgroundColor = InterfaceTheme.Color.background1
         tableView.tableFooterView = UIView()
         tableView.separatorColor = InterfaceTheme.Color.background3
-        tableView.contentInset = UIEdgeInsets(top: self.view.bounds.height / 4, left: 0, bottom: 130, right: 0)
+        tableView.contentInset = UIEdgeInsets(top: Constants.recentViewsHeight, left: 0, bottom: Layout.edgeInsets.bottom, right: 0)
         return tableView
     }()
     
@@ -82,8 +86,8 @@ public class DocumentBrowserViewController: UIViewController {
         self.view.addSubview(self.createNewDocumentButton)
         self.view.addSubview(self.cancelButton)
         
-        self.openningFilesView.sideAnchor(for: [.left, .top, .right], to: self.view, edgeInsets: .init(top: 80, left: 0, bottom: 0, right: 0))
-        self.openningFilesView.sizeAnchor(height: self.view.bounds.height / 4 - 80)
+        self.openningFilesView.sideAnchor(for: [.left, .top, .right], to: self.view, edgeInsets: .init(top: Layout.edgeInsets.top, left: 0, bottom: 0, right: 0))
+        self.openningFilesView.sizeAnchor(height: Constants.recentViewsHeight)
 
         self.cancelButton.sideAnchor(for: [.right, .top], to: self.view, edgeInset: 20)
         self.cancelButton.sizeAnchor(width: 80, height: 80)
@@ -137,6 +141,17 @@ extension DocumentBrowserViewController: UITableViewDelegate {
             tableView.deselectRow(at: indexPath, animated: true)
         }
     }
+    
+    /// 当向上滚动时，同时滚动日期选择和日期显示 view，往下则不动
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView.contentOffset.y + scrollView.contentInset.top > 0 {
+            self.openningFilesView.constraint(for: Position.top)?.constant = Layout.edgeInsets.top - scrollView.contentOffset.y  - scrollView.contentInset.top
+            self.view.layoutIfNeeded()
+        } else {
+            self.openningFilesView.constraint(for: Position.top)?.constant = Layout.edgeInsets.top
+            self.view.layoutIfNeeded()
+        }
+    }
 }
 
 extension DocumentBrowserViewController: DocumentBrowserViewModelDelegate {
@@ -176,7 +191,7 @@ extension DocumentBrowserViewController: DocumentBrowserCellDelegate {
             
             actionsViewController.title = "Perform Actions".localizable
             // 创建新文档，使用默认的新文档名
-            actionsViewController.addAction(icon: UIImage(named: "add"), title: "new document".localizable) { viewController in
+            actionsViewController.addAction(icon: UIImage(named: "add"), title: "new sub document".localizable) { viewController in
                 viewController.dismiss(animated: true, completion: {
                     self.viewModel.createDocument(title: "untitled".localizable, below: self.viewModel.data[index].url)
                 })

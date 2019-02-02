@@ -17,12 +17,8 @@ public class HomeViewController: UIViewController {
     
     public var isShowingMaster: Bool = false
     
-    internal let masterNavigationController: UINavigationController = {
-        let nav = UINavigationController()
-        nav.isNavigationBarHidden = true
-        return nav
-    }()
-
+    public var masterViewController: UIViewController
+    
     public override func viewDidLoad() {
         self.setupUI()
 
@@ -31,32 +27,31 @@ public class HomeViewController: UIViewController {
         self.view.addGestureRecognizer(pan)
     }
     
+    public init(masterViewController: UIViewController) {
+        self.masterViewController = masterViewController
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    public required init?(coder aDecoder: NSCoder) {
+        fatalError()
+    }
+    
     private func setupUI() {
-        self.view.addSubview(self.masterNavigationController.view)
-        self.masterNavigationController.view.frame = CGRect(x: -masterViewWidth, y: 0, width: masterViewWidth, height: self.view.bounds.height)
+        self.view.addSubview(self.masterViewController.view)
+        self.masterViewController.view.frame = CGRect(x: -masterViewWidth, y: 0, width: masterViewWidth, height: self.view.bounds.height)
         
-        self.masterNavigationController.view.setBorder(position: Border.Position.right, color: InterfaceTheme.Color.background3, width: 0.5)
-        
-        self.showChildViewController(at: 0)
+        self.masterViewController.view.setBorder(position: Border.Position.right, color: InterfaceTheme.Color.background3, width: 0.5)
     }
     
-    internal func showChildViewController(at index: Int) {
-        if let view = self.childViewControllerView(index: index) {
-            if let current = self.currentChildViewController {
-                current.view.removeFromSuperview()
-            }
-            
-            self.currentChildViewController = self.children[index]
-            self.view.insertSubview(view, at: 0)
+    internal func showChildViewController(_ viewController: UIViewController) {
+        if let current = self.currentChildViewController {
+            current.removeFromParent()
+            current.view.removeFromSuperview()
         }
-    }
-    
-    internal func childViewControllerView(index: Int) -> UIView? {
-        if index <= self.children.count - 1 {
-            return self.children[index].view
-        } else {
-            return nil
-        }
+        
+        self.addChild(viewController)
+        self.currentChildViewController = viewController
+        self.view.insertSubview(viewController.view, at: 0)
     }
     
     private var beginPoint: CGPoint = .zero
@@ -89,7 +84,7 @@ public class HomeViewController: UIViewController {
     }
     
     @objc internal func showChildView() {
-        UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseOut, animations: {
+        UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseInOut, animations: {
             self.view.bounds = CGRect(origin: .zero, size: self.view.bounds.size)
             self.updateCoverAlpha(offset: 0)
         }, completion: { _ in
@@ -101,7 +96,7 @@ public class HomeViewController: UIViewController {
     @objc private func showMasterView() {
         self.addCoverIfNeeded()
         
-        UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseOut, animations: {
+        UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseInOut, animations: {
             self.view.bounds = CGRect(origin: .init(x: -self.masterViewWidth, y: 0), size: self.view.bounds.size)
             self.updateCoverAlpha(offset: self.masterViewWidth)
         }, completion: { _ in

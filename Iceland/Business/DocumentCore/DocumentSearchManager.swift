@@ -25,8 +25,7 @@ public struct DocumentSearchResult {
     }
 }
 
-public struct DocumentSearchManager {
-    
+public class DocumentSearchManager {
     private let operationQueue: OperationQueue
     
     public init() {

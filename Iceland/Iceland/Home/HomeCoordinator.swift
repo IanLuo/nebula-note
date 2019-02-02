@@ -14,40 +14,39 @@ public class HomeCoordinator: Coordinator {
     private let homeViewController: HomeViewController
     
     public override init(stack: UINavigationController, dependency: Dependency) {
-        let viewController = HomeViewController()
+        let viewModel = DashboardViewModel(documentSearchManager: dependency.documentSearchManager)
+        let dashboardViewController = DashboardViewController(viewModel: viewModel)
+        
+        let viewController = HomeViewController(masterViewController: UINavigationController(rootViewController: dashboardViewController))
         self.homeViewController = viewController
         
         super.init(stack: stack, dependency: dependency)
+        
+        viewModel.coordinator = self
+        dashboardViewController.delegate = self
+        
         self.viewController = viewController
         
-        self.addSubCoordinator(coordinator: AgendaCoordinator(stack: stack, dependency: dependency))
-        self.addSubCoordinator(coordinator: CaptureListCoordinator(stack: stack, dependency: dependency))
+        let agendaCoordinator = AgendaCoordinator(stack: stack, dependency: dependency)
+        self.addChild(agendaCoordinator)
+        
+        let captureCoordinator = CaptureListCoordinator(stack: stack, dependency: dependency)
+        self.addChild(captureCoordinator)
         
         let searchCoordinator = SearchCoordinator(stack: stack, dependency: dependency)
         searchCoordinator.delegate = self
-        self.addSubCoordinator(coordinator: searchCoordinator)
+        self.addChild(searchCoordinator)
         
         let browserCoordinator = BrowserCoordinator(stack: stack, dependency: dependency, usage: .chooseDocument)
         browserCoordinator.delegate = self
-        self.addSubCoordinator(coordinator: browserCoordinator)
+        self.addChild(browserCoordinator)
         
-        let viewModel = DashboardViewModel(documentSearchManager: dependency.documentSearchManager)
-        viewModel.coordinator = self
-        let dashboardViewController = DashboardViewController(viewModel: viewModel)
-        viewController.masterNavigationController.pushViewController(dashboardViewController, animated: false)
-        dashboardViewController.delegate = self
+        dashboardViewController.addTab(tabs: [DashboardViewController.TabType.agenda(agendaCoordinator.viewController!, 0),
+                                              DashboardViewController.TabType.captureList(captureCoordinator.viewController!, 1),
+                                              DashboardViewController.TabType.search(searchCoordinator.viewController!, 2),
+                                              DashboardViewController.TabType.documents(browserCoordinator.viewController!, 3)])
         
-        self.homeViewController.children.forEach {
-            dashboardViewController.addTab(DashboardViewController.Tab(icon: $0.tabBarItem.image, title: $0.title ?? "unknown"))
-        }
-    }
-    
-    public func addSubCoordinator(coordinator: Coordinator) {
-        self.addChild(coordinator)
-        
-        if let viewController = coordinator.viewController {
-            self.viewController?.addChild(viewController)
-        }
+        self.homeViewController.showChildViewController(agendaCoordinator.viewController!)
     }
 }
 
@@ -72,12 +71,12 @@ extension HomeCoordinator: BrowserCoordinatorDelegate {
 }
 
 extension HomeCoordinator: DashboardViewControllerDelegate {
-    public func didSelectSubtab(at index: Int, for tabIndex: Int) {
-        self.homeViewController.masterNavigationController.pushViewController(HeadingListViewController(), animated: true)
+    public func didSelectHeading(_ heading: Document.Heading, url: URL) {
+        
     }
     
-    public func didSelectTab(at index: Int) {
-        self.homeViewController.showChildViewController(at: index)
+    public func didSelectTab(at index: Int, viewController: UIViewController) {
+        self.homeViewController.showChildViewController(viewController)
         self.homeViewController.showChildView()
     }
 }

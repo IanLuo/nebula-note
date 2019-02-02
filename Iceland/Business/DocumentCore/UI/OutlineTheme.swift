@@ -26,6 +26,7 @@ private struct ThemeConfig {
 
 public struct Layout {
     public static let edgeInsets: UIEdgeInsets = UIEdgeInsets(top: 80, left: 30, bottom: 80, right: 30)
+    public static let backButtonSize: CGSize = CGSize(width: 40, height: 40)
 }
 
 @objc public class InterfaceTheme: NSObject {

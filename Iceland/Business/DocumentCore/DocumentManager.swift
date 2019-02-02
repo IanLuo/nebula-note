@@ -10,15 +10,14 @@ import Foundation
 import Storage
 
 public struct DocumentManagerNotification {
-    public static let didChangeDocumentName = Notification.Name(rawValue: "didChangeDocumentName")
     public static let keyDidChangeDocumentNameOld = "old-url"
     public static let keyDidChangeDocumentNameNew = "new-url"
+    public static let keyDocumentURL = "url"
     
+    public static let didChangeDocumentName = Notification.Name(rawValue: "didChangeDocumentName")
     public static let didChangeDocumentCover = Notification.Name(rawValue: "didChangeDocumentCover")
-    public static let keyDidChangeDocumentCover = "url"
-    
     public static let didDeleteDocument = Notification.Name(rawValue: "didDeleteDocument")
-    public static let keyDidDelegateDocumentURL = "url"
+    public static let didAddNewDocument = Notification.Name(rawValue: "didAddNewDocument")
 }
 
 public struct DocumentManager {
@@ -55,7 +54,7 @@ public struct DocumentManager {
                 DispatchQueue.main.async {
                     NotificationCenter.default.post(name: DocumentManagerNotification.didChangeDocumentCover,
                                                     object: nil,
-                                                    userInfo: [DocumentManagerNotification.keyDidChangeDocumentCover: url])
+                                                    userInfo: [DocumentManagerNotification.keyDocumentURL: url])
                 }
             })
         }
@@ -87,6 +86,7 @@ public struct DocumentManager {
         
         var incrementaor: Int = 1
         let copyOfNewURL = newURL
+        // 如果对应的文件名已经存在，则在文件名后添加数字，并以此增大
         while FileManager.default.fileExists(atPath: newURL.path) {
             let name = copyOfNewURL.deletingPathExtension().lastPathComponent + "\(incrementaor)"
             newURL = copyOfNewURL.deletingPathExtension().deletingLastPathComponent().appendingPathComponent(name).appendingPathExtension(Document.fileExtension)
@@ -98,6 +98,9 @@ public struct DocumentManager {
         document.save(to: newURL, for: UIDocument.SaveOperation.forCreating) { [document] success in
             DispatchQueue.main.async {
                 if success {
+                    NotificationCenter.default.post(name: DocumentManagerNotification.didAddNewDocument,
+                                                    object: nil,
+                                                    userInfo: [DocumentManagerNotification.keyDocumentURL: newURL])
                     completion?(newURL)
                 } else {
                     completion?(nil)
@@ -125,7 +128,7 @@ public struct DocumentManager {
                         }
                     } else {
                         DispatchQueue.main.async {
-                            NotificationCenter.default.post(name: DocumentManagerNotification.didDeleteDocument, object: nil, userInfo: [DocumentManagerNotification.keyDidDelegateDocumentURL: subFolder])
+                            NotificationCenter.default.post(name: DocumentManagerNotification.didDeleteDocument, object: nil, userInfo: [DocumentManagerNotification.keyDocumentURL: subFolder])
                         }
                         
                         // 然后在删除此文件
@@ -136,7 +139,7 @@ public struct DocumentManager {
                                     completion?(error)
                                     // 如果没有失败，则通知外部，此文件已删除
                                     if error == nil {
-                                        NotificationCenter.default.post(name: DocumentManagerNotification.didDeleteDocument, object: nil, userInfo: [DocumentManagerNotification.keyDidDelegateDocumentURL: url])
+                                        NotificationCenter.default.post(name: DocumentManagerNotification.didDeleteDocument, object: nil, userInfo: [DocumentManagerNotification.keyDocumentURL: url])
                                     }
                                 }
                             }
@@ -153,7 +156,7 @@ public struct DocumentManager {
                         completion?(error)
                         if error == nil {
                             // 如果没有失败，则通知外部，此文件已删除
-                            NotificationCenter.default.post(name: DocumentManagerNotification.didDeleteDocument, object: nil, userInfo: [DocumentManagerNotification.keyDidDelegateDocumentURL: url])
+                            NotificationCenter.default.post(name: DocumentManagerNotification.didDeleteDocument, object: nil, userInfo: [DocumentManagerNotification.keyDocumentURL: url])
                         }
                     }
                 }
@@ -219,6 +222,9 @@ public struct DocumentManager {
             DispatchQueue.main.async {
                 if error == nil {
                     complete(url!)
+                    NotificationCenter.default.post(name: DocumentManagerNotification.didAddNewDocument,
+                                                    object: nil,
+                                                    userInfo: [DocumentManagerNotification.keyDocumentURL: url!])
                 } else {
                     failure(error!)
                 }
@@ -226,5 +232,3 @@ public struct DocumentManager {
         }
     }
 }
-
-// MARK: - URL extension
