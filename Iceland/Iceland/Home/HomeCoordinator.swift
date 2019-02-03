@@ -28,18 +28,18 @@ public class HomeCoordinator: Coordinator {
         self.viewController = viewController
         
         let agendaCoordinator = AgendaCoordinator(stack: stack, dependency: dependency)
-        self.addChild(agendaCoordinator)
+        self.addPersistentCoordinator(agendaCoordinator)
         
         let captureCoordinator = CaptureListCoordinator(stack: stack, dependency: dependency)
-        self.addChild(captureCoordinator)
+        self.addPersistentCoordinator(captureCoordinator)
         
         let searchCoordinator = SearchCoordinator(stack: stack, dependency: dependency)
         searchCoordinator.delegate = self
-        self.addChild(searchCoordinator)
+        self.addPersistentCoordinator(searchCoordinator)
         
         let browserCoordinator = BrowserCoordinator(stack: stack, dependency: dependency, usage: .chooseDocument)
         browserCoordinator.delegate = self
-        self.addChild(browserCoordinator)
+        self.addPersistentCoordinator(browserCoordinator)
         
         dashboardViewController.addTab(tabs: [DashboardViewController.TabType.agenda(agendaCoordinator.viewController!, 0),
                                               DashboardViewController.TabType.captureList(captureCoordinator.viewController!, 1),
@@ -47,6 +47,19 @@ public class HomeCoordinator: Coordinator {
                                               DashboardViewController.TabType.documents(browserCoordinator.viewController!, 3)])
         
         self.homeViewController.showChildViewController(agendaCoordinator.viewController!)
+    }
+    
+    
+    private var tempCoordinator: Coordinator?
+    public func showTempCoordinator(_ coordinator: Coordinator) {
+        self.tempCoordinator = nil
+        self.tempCoordinator = coordinator
+        self.homeViewController.showChildViewController(coordinator.viewController!)
+        self.homeViewController.showChildView()
+    }
+    
+    public func addPersistentCoordinator(_ coordinator: Coordinator) {
+        self.addChild(coordinator)
     }
 }
 
@@ -71,8 +84,29 @@ extension HomeCoordinator: BrowserCoordinatorDelegate {
 }
 
 extension HomeCoordinator: DashboardViewControllerDelegate {
-    public func didSelectHeading(_ heading: Document.Heading, url: URL) {
-        
+    public func showHeadings(scheduled: Date) {
+        let agendaCoordinator = AgendaCoordinator(filterType: .scheduled(scheduled), stack: self.stack, dependency: self.dependency)
+        self.showTempCoordinator(agendaCoordinator)
+    }
+    
+    public func showHeadings(due: Date) {
+        let agendaCoordinator = AgendaCoordinator(filterType: .due(due), stack: self.stack, dependency: self.dependency)
+        self.showTempCoordinator(agendaCoordinator)
+    }
+    
+    public func showHeadingsScheduleSoon() {
+        let agendaCoordinator = AgendaCoordinator(filterType: .scheduledSoon, stack: self.stack, dependency: self.dependency)
+        self.showTempCoordinator(agendaCoordinator)
+    }
+    
+    public func showHeadingsDueSoon() {
+        let agendaCoordinator = AgendaCoordinator(filterType: .dueSoon, stack: self.stack, dependency: self.dependency)
+        self.showTempCoordinator(agendaCoordinator)
+    }
+    
+    public func showHeadings(with tag: String) {
+        let agendaCoordinator = AgendaCoordinator(filterType: .tag(tag), stack: self.stack, dependency: self.dependency)
+        self.showTempCoordinator(agendaCoordinator)
     }
     
     public func didSelectTab(at index: Int, viewController: UIViewController) {

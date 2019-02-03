@@ -12,7 +12,11 @@ import Business
 
 public protocol DashboardViewControllerDelegate: class {
     func didSelectTab(at index: Int, viewController: UIViewController)
-    func didSelectHeading(_ heading: Document.Heading, url: URL)
+    func showHeadings(with tag: String)
+    func showHeadings(scheduled: Date)
+    func showHeadings(due: Date)
+    func showHeadingsScheduleSoon()
+    func showHeadingsDueSoon()
 }
 
 public class DashboardViewController: UIViewController {
@@ -158,10 +162,11 @@ public class DashboardViewController: UIViewController {
     // MARK: - type definition -
     public enum SubtabType {
         case tags([String])
-        case scheduled([Document.Heading])
-        case scheduledSoon([Document.Heading])
-        case overDue([Document.Heading])
-        case overDueSoon([Document.Heading])
+        case scheduled(Int)
+        case scheduledSoon(Int)
+        case overDue(Int)
+        case overDueSoon(Int)
+        case withoutDate(Int)
         
         public var index: Int {
             switch self {
@@ -170,6 +175,7 @@ public class DashboardViewController: UIViewController {
             case .overDue: return 2
             case .scheduledSoon: return 3
             case .overDueSoon: return 4
+            case .withoutDate: return 5
             }
         }
         
@@ -299,7 +305,7 @@ extension DashboardViewController: DashboardViewModelDelegate {
 // MARK: - DashboardSubtypeItemViewControllerDelegate -
 extension DashboardViewController: DashboardSubtypeItemViewControllerDelegate {
     public func didSelect(title: String) {
-        
+        self.delegate?.showHeadings(with: title)
     }
 }
 

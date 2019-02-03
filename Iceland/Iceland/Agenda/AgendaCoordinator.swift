@@ -13,23 +13,29 @@ import Business
 /// 用户的活动中心
 /// 每天的任务安排显示在此处
 public class AgendaCoordinator: Coordinator {
-    private let viewModel: AgendaViewModel
+    public enum FilterType {
+        case tag(String)
+        case due(Date)
+        case scheduled(Date)
+        case dueSoon
+        case scheduledSoon
+    }
     
     public override init(stack: UINavigationController, dependency: Dependency) {
-        self.viewModel = AgendaViewModel(documentSearchManager: dependency.documentSearchManager, textTrimmer: dependency.textTrimmer)
-        let viewController = AgendaViewController(viewModel: viewModel)
         super.init(stack: stack, dependency: dependency)
-        self.viewController = viewController
+        let viewModel = AgendaViewModel(documentSearchManager: dependency.documentSearchManager, textTrimmer: dependency.textTrimmer)
         viewModel.coordinator = self
+        let viewController = AgendaViewController(viewModel: viewModel)
+        self.viewController = viewController
     }
-}
-
-extension AgendaCoordinator {
-    public func openAgendaActions(url: URL, heading: Document.Heading) {
-        let viewModel = AgendaActionViewModel(service: OutlineEditorServer.request(url: url), heading: heading)
-        let viewController = AgendaActionViewController(viewModel: viewModel)
-        viewModel.delegate = viewController
-        viewController.modalPresentationStyle = .overCurrentContext
-        self.stack.present(viewController, animated: true, completion: nil)
+    
+    /// 显示指定 tag 的所有 heading 列表
+    public init(filterType: FilterType, stack: UINavigationController, dependency: Dependency) {
+        super.init(stack: stack, dependency: dependency)
+        let viewModel = AgendaViewModel(documentSearchManager: dependency.documentSearchManager, textTrimmer: dependency.textTrimmer)
+        viewModel.filterType = filterType
+        viewModel.coordinator = self
+        let viewController = FilteredItemsViewController(viewModel: viewModel)
+        self.viewController = viewController
     }
 }

@@ -28,7 +28,10 @@ public class AgendaViewModel {
     
     public var data: [AgendaCellModel] = []
     
+    /// 在 agenda view controller 中，首先加载所有的数据，根据选择的日期来过滤要显示的 heading
     private var allData: [AgendaCellModel] = []
+    
+    var filterType: AgendaCoordinator.FilterType?
     
     public func load(date: Date) {
         self.data = self.allData.filter {
@@ -41,6 +44,24 @@ public class AgendaViewModel {
         self.delegate?.didLoadData()
     }
     
+    public func loadFiltered() {
+        if let filterType = self.filterType {
+            switch filterType {
+            case .tag(let tag):
+                var data: [DocumentSearchResult] = []
+                self.documentSearchManager.search(tags: [tag], resultAdded: { (searchResults: [DocumentSearchResult]) -> Void in
+                    data.append(contentsOf: searchResults)
+                }, complete: {
+                    self.data = data.map { AgendaCellModel(heading: $0.heading!, paragraph: $0.context, url: $0.url, textTrimmer: self.textTrimmer) }
+                    self.delegate?.didLoadData()
+                }, failed: {
+                    self.delegate?.didFailed($0)
+                })
+            default: break
+            }
+        }
+    }
+    
     public func loadAllData() {
         self.documentSearchManager.loadAllHeadingsThatIsUnfinished(complete: { searchResults in
             self.allData = searchResults.map { AgendaCellModel(heading: $0.heading!, paragraph: $0.context, url: $0.url, textTrimmer: self.textTrimmer) }
@@ -48,10 +69,6 @@ public class AgendaViewModel {
         }) { error in
             self.delegate?.didFailed(error)
         }
-    }
-    
-    public func showActions(index: Int) {
-        self.coordinator?.openAgendaActions(url: self.data[index].url, heading: self.data[index].heading)
     }
     
     public func load(plannings: [String]) {

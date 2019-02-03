@@ -26,6 +26,10 @@ public struct Position: OptionSet {
     public static let ratio: Position = Position(rawValue: 1 << 8)
     public static let widthDependency: Position = Position(rawValue: 1 << 9)
     public static let heightDependency: Position = Position(rawValue: 1 << 10)
+    public static let topBaseline: Position = Position(rawValue: 1 << 11)
+    public static let bottomBaseline: Position = Position(rawValue: 1 << 12)
+    public static let traling: Position = Position(rawValue: 1 << 13)
+    public static let leading: Position = Position(rawValue: 1 << 14)
     
     public func identifier(for view: UIView) -> String {
         return "\(self) @\(view.hash)-\(type(of: view))"
@@ -94,24 +98,58 @@ extension UIView {
         width.isActive = true
     }
     
-    public func rowAnchor(view: UIView, space: CGFloat = 0, widthRatio: CGFloat? = nil) {
+    public func rowAnchor(view: UIView, space: CGFloat = 0, widthRatio: CGFloat? = nil, alignment: Position = .centerY) {
         self.makeSureTranslationIsSetToFalse()
         
         let right = self.rightAnchor.constraint(equalTo: view.leftAnchor, constant: -space)
         right.identifier = Position.right.identifier(for: self)
         right.isActive = true
         
+        var constraint: NSLayoutConstraint!
+        if alignment.contains(.centerY) {
+            constraint = view.centerYAnchor.constraint(equalTo: self.centerYAnchor)
+        } else if alignment.contains(.top) {
+            constraint = view.topAnchor.constraint(equalTo: self.topAnchor)
+        } else if alignment.contains(.bottom) {
+            constraint = view.bottomAnchor.constraint(equalTo: self.bottomAnchor)
+        } else if alignment.contains(.topBaseline) {
+            constraint = view.firstBaselineAnchor.constraint(equalTo: self.firstBaselineAnchor)
+        } else if alignment.contains(.bottomBaseline) {
+            constraint = view.lastBaselineAnchor.constraint(equalTo: self.lastBaselineAnchor)
+        } else {
+            fatalError("must specify a valid alignment")
+        }
+        constraint.identifier = alignment.identifier(for: view)
+        constraint.isActive = true
+        
         if let widthRatio = widthRatio {
             self.widthDependencyAnchor(view: view, widthRatio: widthRatio)
         }
     }
     
-    public func columnAnchor(view: UIView, space: CGFloat = 0, heightRatio: CGFloat? = nil) {
+    public func columnAnchor(view: UIView, space: CGFloat = 0, heightRatio: CGFloat? = nil, alignment: Position = .leading) {
         self.makeSureTranslationIsSetToFalse()
         
         let bottom = self.bottomAnchor.constraint(equalTo: view.topAnchor, constant: -space)
         bottom.identifier = Position.bottom.identifier(for: self)
         bottom.isActive = true
+        
+        var constraint: NSLayoutConstraint!
+        if alignment.contains(.centerY) {
+            constraint = view.centerYAnchor.constraint(equalTo: self.centerYAnchor)
+        } else if alignment.contains(.left) {
+            constraint = view.leftAnchor.constraint(equalTo: self.leftAnchor)
+        } else if alignment.contains(.right) {
+            constraint = view.rightAnchor.constraint(equalTo: self.rightAnchor)
+        } else if alignment.contains(.traling) {
+            constraint = view.trailingAnchor.constraint(equalTo: self.trailingAnchor)
+        } else if alignment.contains(.leading) {
+            constraint = view.leadingAnchor.constraint(equalTo: self.leadingAnchor)
+        } else {
+            fatalError("must specify a valid alignment")
+        }
+        constraint.identifier = alignment.identifier(for: view)
+        constraint.isActive = true
         
         if let heightRatio = heightRatio {
             self.heightDependencyAnchor(view: view, heightRatio: heightRatio)

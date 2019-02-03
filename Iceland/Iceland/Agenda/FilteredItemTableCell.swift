@@ -10,27 +10,22 @@ import Foundation
 import UIKit
 import Business
 
-public protocol AgendaTableCellDelegate: class {
+public protocol FilteredItemTableCellDelegate: class {
     
 }
 
-public class AgendaTableCell: UITableViewCell {
+public class FilteredItemTableCell: UITableViewCell {
     
-    public static let reuseIdentifier = "AgendaTableCell"
+    public static let reuseIdentifier = "FilteredItemTableCell"
     
-    public weak var delegate: AgendaTableCellDelegate?
+    public weak var delegate: FilteredItemTableCellDelegate?
     
     private let statusLabel: UILabel = {
         let label = UILabel()
-        label.textColor = InterfaceTheme.Color.enphersizedDescriptive
-        label.font = InterfaceTheme.Font.title
+        label.textColor = InterfaceTheme.Color.descriptive
+        label.font = InterfaceTheme.Font.footnote
         label.textAlignment = .center
         return label
-    }()
-    
-    private let infoView: UIView = {
-        let view = UIView()
-        return view
     }()
     
     private let documentNameLabel: UILabel = {
@@ -100,44 +95,42 @@ public class AgendaTableCell: UITableViewCell {
     
     private func setupUI() {
         self.backgroundColor = InterfaceTheme.Color.background1
+        
+        self.contentView.addSubview(self.documentNameLabel)
+        self.contentView.addSubview(self.headingTextLabel)
+        self.contentView.addSubview(self.summaryLabel)
+        self.contentView.addSubview(self.tagsView)
         self.contentView.addSubview(self.statusLabel)
-        self.statusLabel.centerAnchors(position: .centerY, to: self.contentView)
-        self.statusLabel.sizeAnchor(width: AgendaViewController.Constants.edgeInsets.left)
+        self.contentView.addSubview(self.scheduleAndDueLabel)
         
-        self.contentView.addSubview(self.infoView)
-        self.infoView.sideAnchor(for: [.left, .top, .bottom, .right],
-                                 to: self.contentView,
-                                 edgeInsets: .init(top: 0, left: AgendaViewController.Constants.edgeInsets.left, bottom: 0, right: 0))
-        
-        self.infoView.addSubview(self.documentNameLabel)
-        self.infoView.addSubview(self.headingTextLabel)
-        self.infoView.addSubview(self.summaryLabel)
-        self.infoView.addSubview(self.tagsView)
-        self.infoView.addSubview(self.scheduleAndDueLabel)
-        
-        self.documentNameLabel.sideAnchor(for: [.left, .top, .right], to: self.infoView, edgeInsets: .init(top: 20, left: 0, bottom: 0, right: -Layout.edgeInsets.right))
+        self.documentNameLabel.sideAnchor(for: [.left, .top, .right], to: self.contentView, edgeInsets: .init(top: 20, left: Layout.edgeInsets.left, bottom: 0, right: -Layout.edgeInsets.right))
         self.documentNameLabel.columnAnchor(view: self.headingTextLabel, space: 10)
         
-        self.headingTextLabel.sideAnchor(for: [.left, .right], to: self.infoView, edgeInsets: .init(top: 0, left: 0, bottom: 0, right: -Layout.edgeInsets.right))
-        self.headingTextLabel.columnAnchor(view: self.summaryLabel, space: 10)
-
-        self.summaryLabel.sideAnchor(for: [.left, .right], to: self.infoView, edgeInsets: .init(top: 0, left: 0, bottom: 0, right: -Layout.edgeInsets.right))
-        self.summaryLabel.columnAnchor(view: self.tagsView)
+        self.headingTextLabel.sideAnchor(for: [.left, .right], to: self.contentView, edgeInsets: .init(top: 0, left: Layout.edgeInsets.left, bottom: 0, right: -Layout.edgeInsets.right))
+        self.headingTextLabel.columnAnchor(view: self.tagsView, space: 10)
         
-        self.tagsView.sideAnchor(for: [.left, .right], to: self.infoView, edgeInset: 0)
+        self.tagsView.sideAnchor(for: [.left, .right], to: self.contentView, edgeInsets: .init(top: 0, left: Layout.edgeInsets.left, bottom: 0, right: -Layout.edgeInsets.right))
         self.tagsView.sizeAnchor(height: 0)
-        self.tagsView.columnAnchor(view: self.scheduleAndDueLabel)
         
         self.tagsView.addSubview(self.tagsIcon)
         self.tagsView.addSubview(self.tagsLabel)
         
         self.tagsIcon.sideAnchor(for: [.left, .top, .bottom], to: self.tagsView, edgeInset: 0)
+        self.tagsIcon.sizeAnchor(width: 24)
         self.tagsIcon.rowAnchor(view: self.tagsLabel, space: 10)
         self.tagsLabel.sideAnchor(for: [.top, .right, .bottom], to: self.tagsView, edgeInset: 0)
         
-        self.tagsView.columnAnchor(view: self.scheduleAndDueLabel)
-        self.scheduleAndDueLabel.sideAnchor(for: [.left, .right, .bottom], to: self.infoView, edgeInsets: .init(top: 0, left: 0, bottom: -20, right: -Layout.edgeInsets.right))
+        self.tagsView.columnAnchor(view: self.statusLabel, space: 10)
+        
+        self.statusLabel.sideAnchor(for: .left, to: self.contentView, edgeInsets: .init(top: 0, left: Layout.edgeInsets.left, bottom: 0, right: -Layout.edgeInsets.right))
+        self.statusLabel.rowAnchor(view: self.scheduleAndDueLabel, space: 10)
+        
+        self.scheduleAndDueLabel.sideAnchor(for: .right, to: self.contentView, edgeInset: -Layout.edgeInsets.right)
         self.scheduleAndDueLabel.sizeAnchor(height: 0)
+        
+        self.scheduleAndDueLabel.columnAnchor(view: self.summaryLabel, space: 20)
+        
+        self.summaryLabel.sideAnchor(for: [.left, .right, .bottom], to: self.contentView, edgeInsets: .init(top: 0, left: Layout.edgeInsets.left, bottom: -20, right: -Layout.edgeInsets.right))
     }
     
     private func updateUI(cellModel: AgendaCellModel) {
@@ -155,6 +148,18 @@ public class AgendaTableCell: UITableViewCell {
             self.tagsView.constraint(for: Position.height)?.isActive = true
             self.tagsView.isHidden = true
             self.summaryLabel.constraint(for: Position.bottom)?.constant = 0
+        }
+        
+        if let planning = cellModel.planning {
+            self.statusLabel.text = planning
+            self.statusLabel.isHidden = false
+            if let width = self.statusLabel.constraint(for: .width),
+                let height = self.statusLabel.constraint(for: .height) {
+                self.statusLabel.removeConstraints([width, height])
+            }
+        } else {
+            self.statusLabel.sizeAnchor(width: 0, height: 0)
+            self.statusLabel.isHidden = true
         }
         
         let viewAboveScheduleAndDueLabel = self.tagsView.isHidden ? self.summaryLabel : self.tagsView

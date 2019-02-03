@@ -27,7 +27,7 @@ public class DashboardSubtypeItemViewController: UIViewController {
         let tableView = UITableView()
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.register(ItemCell.self, forCellReuseIdentifier: ItemCell.reuseIdentifier)
         tableView.backgroundColor = InterfaceTheme.Color.background2
         tableView.separatorColor = InterfaceTheme.Color.background3
         tableView.tableFooterView = UIView()
@@ -92,17 +92,46 @@ extension DashboardSubtypeItemViewController: UITableViewDataSource {
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: ItemCell.reuseIdentifier, for: indexPath)
         let title = self.subtype.detailItems[indexPath.row]
         cell.imageView?.image = self.subtype.icon
         cell.textLabel?.text = title
-        cell.textLabel?.textColor = InterfaceTheme.Color.interactive
-        cell.textLabel?.font = InterfaceTheme.Font.body
-        cell.backgroundColor = InterfaceTheme.Color.background2
         return cell
     }
     
     public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 60
+    }
+}
+
+private class ItemCell: UITableViewCell {
+    static let reuseIdentifier: String = "ItemCell"
+    
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
+        self.textLabel?.textColor = InterfaceTheme.Color.interactive
+        self.textLabel?.font = InterfaceTheme.Font.body
+        self.backgroundColor = InterfaceTheme.Color.background2
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override public func setHighlighted(_ highlighted: Bool, animated: Bool) {
+        if highlighted {
+            self.backgroundColor = InterfaceTheme.Color.background3
+        } else {
+            self.backgroundColor = InterfaceTheme.Color.background2
+        }
+    }
+    
+    override public func setSelected(_ selected: Bool, animated: Bool) {
+        if selected {
+            self.backgroundColor = InterfaceTheme.Color.background3
+        } else {
+            self.backgroundColor = InterfaceTheme.Color.background2
+        }
     }
 }
