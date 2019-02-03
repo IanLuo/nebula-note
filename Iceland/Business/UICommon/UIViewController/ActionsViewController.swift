@@ -187,7 +187,7 @@ public class ActionsViewController: UIViewController {
         self.accessoryViewContainer.columnAnchor(view: self.tableView)
         
         self.tableView.sizeAnchor(height: self.items.reduce(0.0, { $0 + $1.style.height }))
-        self.tableView.sideAnchor(for: [.left, .right, .bottom], to: self.contentView, edgeInset: 0)
+        self.tableView.sideAnchor(for: [.left, .right, .bottom], to: self.contentView, edgeInset: 0, considerSafeArea: true)
         
         self.isInitialized = true
     }

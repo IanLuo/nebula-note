@@ -62,11 +62,11 @@ extension UIView {
         }
     }
     
-    public func allSidesAnchors(to view: UIView, edgeInsets: UIEdgeInsets, considerSafeArea: Bool = true) {
+    public func allSidesAnchors(to view: UIView, edgeInsets: UIEdgeInsets, considerSafeArea: Bool = false) {
         self.sideAnchor(for: [.left, .top, .right, .bottom], to: view, edgeInsets: edgeInsets, considerSafeArea: considerSafeArea)
     }
     
-    public func allSidesAnchors(to view: UIView, edgeInset: CGFloat, considerSafeArea: Bool = true) {
+    public func allSidesAnchors(to view: UIView, edgeInset: CGFloat, considerSafeArea: Bool = false) {
         self.sideAnchor(for: [.left, .top, .right, .bottom], to: view, edgeInset: edgeInset, considerSafeArea: considerSafeArea)
     }
     
@@ -86,7 +86,7 @@ extension UIView {
         }
     }
     
-    public func sideAnchor(for position: Position, to view: UIView, edgeInset: CGFloat, considerSafeArea: Bool = true) {
+    public func sideAnchor(for position: Position, to view: UIView, edgeInset: CGFloat, considerSafeArea: Bool = false) {
         self.sideAnchor(for: position, to: view, edgeInsets: UIEdgeInsets(top: edgeInset, left: edgeInset, bottom: -edgeInset, right: -edgeInset), considerSafeArea: considerSafeArea)
     }
     
@@ -135,8 +135,8 @@ extension UIView {
         bottom.isActive = true
         
         var constraint: NSLayoutConstraint!
-        if alignment.contains(.centerY) {
-            constraint = view.centerYAnchor.constraint(equalTo: self.centerYAnchor)
+        if alignment.contains(.centerX) {
+            constraint = view.centerXAnchor.constraint(equalTo: self.centerXAnchor)
         } else if alignment.contains(.left) {
             constraint = view.leftAnchor.constraint(equalTo: self.leftAnchor)
         } else if alignment.contains(.right) {
@@ -172,7 +172,7 @@ extension UIView {
         heightDependency.isActive = true
     }
     
-    public func sideAnchor(for position: Position, to view: UIView, edgeInsets: UIEdgeInsets, considerSafeArea: Bool = true) {
+    public func sideAnchor(for position: Position, to view: UIView, edgeInsets: UIEdgeInsets, considerSafeArea: Bool = false) {
         self.makeSureTranslationIsSetToFalse()
         
         if position.contains(Position.left) {

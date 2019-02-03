@@ -95,7 +95,7 @@ public class DocumentBrowserViewController: UIViewController {
         self.cancelButton.columnAnchor(view: self.tableView)
         self.tableView.sideAnchor(for: [.left, .bottom, .right], to: self.view, edgeInset: 0)
         
-        self.createNewDocumentButton.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInsets: .zero)
+        self.createNewDocumentButton.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInsets: .zero, considerSafeArea: true)
         self.createNewDocumentButton.sizeAnchor(height: 60)
         self.createNewDocumentButton.isHidden = !self.viewModel.shouldShowActions
         self.cancelButton.isHidden = self.viewModel.shouldShowActions

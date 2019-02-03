@@ -145,7 +145,7 @@ public class ModalFormViewController: UIViewController {
         self.view.addSubview(self.tableView)
         actionButtonsContainer.columnAnchor(view: self.tableView)
         
-        self.tableView.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 0)
+        self.tableView.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 0, considerSafeArea: true)
         self.tableView.sizeAnchor(height: self.tabelHeight)
     }
     

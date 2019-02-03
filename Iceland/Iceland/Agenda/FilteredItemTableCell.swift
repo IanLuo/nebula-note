@@ -106,10 +106,10 @@ public class FilteredItemTableCell: UITableViewCell {
         self.documentNameLabel.sideAnchor(for: [.left, .top, .right], to: self.contentView, edgeInsets: .init(top: 20, left: Layout.edgeInsets.left, bottom: 0, right: -Layout.edgeInsets.right))
         self.documentNameLabel.columnAnchor(view: self.headingTextLabel, space: 10)
         
-        self.headingTextLabel.sideAnchor(for: [.left, .right], to: self.contentView, edgeInsets: .init(top: 0, left: Layout.edgeInsets.left, bottom: 0, right: -Layout.edgeInsets.right))
+        self.headingTextLabel.sideAnchor(for: .right, to: self.contentView, edgeInset:  -Layout.edgeInsets.right)
         self.headingTextLabel.columnAnchor(view: self.tagsView, space: 10)
         
-        self.tagsView.sideAnchor(for: [.left, .right], to: self.contentView, edgeInsets: .init(top: 0, left: Layout.edgeInsets.left, bottom: 0, right: -Layout.edgeInsets.right))
+        self.tagsView.sideAnchor(for: .right, to: self.contentView, edgeInset: -Layout.edgeInsets.right)
         self.tagsView.sizeAnchor(height: 0)
         
         self.tagsView.addSubview(self.tagsIcon)
@@ -121,16 +121,14 @@ public class FilteredItemTableCell: UITableViewCell {
         self.tagsLabel.sideAnchor(for: [.top, .right, .bottom], to: self.tagsView, edgeInset: 0)
         
         self.tagsView.columnAnchor(view: self.statusLabel, space: 10)
-        
-        self.statusLabel.sideAnchor(for: .left, to: self.contentView, edgeInsets: .init(top: 0, left: Layout.edgeInsets.left, bottom: 0, right: -Layout.edgeInsets.right))
         self.statusLabel.rowAnchor(view: self.scheduleAndDueLabel, space: 10)
         
         self.scheduleAndDueLabel.sideAnchor(for: .right, to: self.contentView, edgeInset: -Layout.edgeInsets.right)
         self.scheduleAndDueLabel.sizeAnchor(height: 0)
         
-        self.scheduleAndDueLabel.columnAnchor(view: self.summaryLabel, space: 20)
+        self.statusLabel.columnAnchor(view: self.summaryLabel, space: 20)
         
-        self.summaryLabel.sideAnchor(for: [.left, .right, .bottom], to: self.contentView, edgeInsets: .init(top: 0, left: Layout.edgeInsets.left, bottom: -20, right: -Layout.edgeInsets.right))
+        self.summaryLabel.sideAnchor(for: [.right, .bottom], to: self.contentView, edgeInsets: .init(top: 0, left: 0, bottom: -20, right: -Layout.edgeInsets.right))
     }
     
     private func updateUI(cellModel: AgendaCellModel) {
@@ -143,11 +141,9 @@ public class FilteredItemTableCell: UITableViewCell {
             self.tagsView.constraint(for: Position.height)?.isActive = false
             self.tagsView.isHidden = false
             self.tagsLabel.text = tags.joined(separator: " ")
-            self.summaryLabel.constraint(for: Position.bottom)?.constant = -10
         } else {
             self.tagsView.constraint(for: Position.height)?.isActive = true
             self.tagsView.isHidden = true
-            self.summaryLabel.constraint(for: Position.bottom)?.constant = 0
         }
         
         if let planning = cellModel.planning {
@@ -162,25 +158,20 @@ public class FilteredItemTableCell: UITableViewCell {
             self.statusLabel.isHidden = true
         }
         
-        let viewAboveScheduleAndDueLabel = self.tagsView.isHidden ? self.summaryLabel : self.tagsView
         switch (cellModel.schedule, cellModel.due) {
         case (nil, nil):
             self.scheduleAndDueLabel.constraint(for: Position.height)?.isActive = true
-            viewAboveScheduleAndDueLabel.constraint(for: Position.bottom)?.constant = 0
             self.scheduleAndDueLabel.isHidden = true
         case (let schedule?, nil):
             self.scheduleAndDueLabel.constraint(for: Position.height)?.isActive = false
-            viewAboveScheduleAndDueLabel.constraint(for: Position.bottom)?.constant = -10
             self.scheduleAndDueLabel.text = "\(schedule.description) ⇢"
             self.scheduleAndDueLabel.isHidden = false
         case (let schedule?, let due?):
             self.scheduleAndDueLabel.constraint(for: Position.height)?.isActive = false
-            viewAboveScheduleAndDueLabel.constraint(for: Position.bottom)?.constant = -10
             self.scheduleAndDueLabel.text = "\(schedule.description) ⇢ \(due.description)"
             self.scheduleAndDueLabel.isHidden = false
         case (nil, let due?):
             self.scheduleAndDueLabel.constraint(for: Position.height)?.isActive = false
-            viewAboveScheduleAndDueLabel.constraint(for: Position.bottom)?.constant = -10
             self.scheduleAndDueLabel.isHidden = false
             // 检查是否过期
             let today = Date()
