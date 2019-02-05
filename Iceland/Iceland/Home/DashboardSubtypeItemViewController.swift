@@ -113,6 +113,7 @@ private class ItemCell: UITableViewCell {
         self.textLabel?.textColor = InterfaceTheme.Color.interactive
         self.textLabel?.font = InterfaceTheme.Font.body
         self.backgroundColor = InterfaceTheme.Color.background2
+        self.imageView?.contentMode = .scaleAspectFit
     }
     
     required init?(coder aDecoder: NSCoder) {

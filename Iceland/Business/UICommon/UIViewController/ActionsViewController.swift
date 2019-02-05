@@ -249,12 +249,13 @@ fileprivate class ActionCell: UITableViewCell {
             case .default:
                 self.iconView.constraint(for: .centerY)?.constant = 0
                 self.contentView.removeBorders()
+                self.titleLabel.constraint(for: .top)?.constant = 0
                 self.separatorInset = UIEdgeInsets(top: 0, left: 30, bottom: 0, right: 30)
             case .highlight:
                 fallthrough
             case .warning:
                 self.contentView.setBorder(position: .top, color: InterfaceTheme.Color.background1, width: ActionsViewController.Constants.specialItemSeparatorHeight)
-                self.iconView.constraint(for: .centerY)?.constant = ActionsViewController.Constants.specialItemSeparatorHeight / 2
+                self.titleLabel.constraint(for: .top)?.constant = ActionsViewController.Constants.specialItemSeparatorHeight / 2
                 self.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
             }
         }
@@ -297,12 +298,12 @@ fileprivate class ActionCell: UITableViewCell {
         self.contentView.addSubview(self.iconView)
         self.contentView.addSubview(self.titleLabel)
         
-        self.titleLabel.sideAnchor(for: [.left, .bottom], to: self.contentView, edgeInsets: .init(top: 0, left: 30, bottom: 0, right: 0))
+        self.titleLabel.sideAnchor(for: [.top, .bottom, .left, .bottom], to: self.contentView, edgeInsets: .init(top: 0, left: Layout.edgeInsets.left, bottom: 0, right: 0))
         self.titleLabel.sizeAnchor(height: ActionsViewController.Constants.rowHeight)
         self.titleLabel.rowAnchor(view: self.iconView)
         
-        self.iconView.sideAnchor(for: .right, to: self.contentView, edgeInset: 30)
-        self.iconView.centerAnchors(position: .centerY, to: self.contentView)
+        self.titleLabel.rowAnchor(view: self.iconView)
+        self.iconView.sideAnchor(for: .right, to: self.contentView, edgeInset: Layout.edgeInsets.right)
     }
     
     required init?(coder aDecoder: NSCoder) {
