@@ -81,7 +81,7 @@ extension URL {
     
     public func concatingToFileName(_ string: String) -> URL {
         let ext = self.pathExtension
-        let string = string.replacingOccurrences(of: " ", with: "%20")
+        let string = string.escaped
         return URL(string: self.deletingPathExtension().deletingLastSplashIfThereIs.appending(string))!.appendingPathExtension(ext)
     }
     
@@ -97,6 +97,16 @@ extension URL {
 
 private struct DocumentConstants {
     fileprivate static let documentDirSuffix: String = ""
+}
+
+extension String {
+    public var escaped: String {
+        return self.replacingOccurrences(of: " ", with: "%20")
+    }
+    
+    public var unescaped: String {
+        return self.replacingOccurrences(of: "%20", with: " ")
+    }
 }
 
 extension URL {
@@ -132,7 +142,7 @@ extension URL {
     }
     
     public var fileName: String {
-        return self.wrapperURL.deletingPathExtension().lastPathComponent.replacingOccurrences(of: "/", with: "")
+        return self.wrapperURL.deletingPathExtension().lastPathComponent.replacingOccurrences(of: "/", with: "").unescaped
     }
     
     public var wrapperURL: URL {
