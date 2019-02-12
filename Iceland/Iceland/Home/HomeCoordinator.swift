@@ -84,13 +84,18 @@ extension HomeCoordinator: BrowserCoordinatorDelegate {
 }
 
 extension HomeCoordinator: DashboardViewControllerDelegate {
-    public func showHeadings(scheduled: Date) {
-        let agendaCoordinator = AgendaCoordinator(filterType: .scheduled(scheduled), stack: self.stack, dependency: self.dependency)
+    public func showHeadingsWithoutDate() {
+        let agendaCoordinator = AgendaCoordinator(filterType: .withoutDate, stack: self.stack, dependency: self.dependency)
         self.showTempCoordinator(agendaCoordinator)
     }
     
-    public func showHeadings(due: Date) {
-        let agendaCoordinator = AgendaCoordinator(filterType: .due(due), stack: self.stack, dependency: self.dependency)
+    public func showHeadingsScheduled() {
+        let agendaCoordinator = AgendaCoordinator(filterType: .scheduled, stack: self.stack, dependency: self.dependency)
+        self.showTempCoordinator(agendaCoordinator)
+    }
+    
+    public func showHeadingsOverdue() {
+        let agendaCoordinator = AgendaCoordinator(filterType: .overdue, stack: self.stack, dependency: self.dependency)
         self.showTempCoordinator(agendaCoordinator)
     }
     
@@ -99,7 +104,7 @@ extension HomeCoordinator: DashboardViewControllerDelegate {
         self.showTempCoordinator(agendaCoordinator)
     }
     
-    public func showHeadingsDueSoon() {
+    public func showHeadingsOverdueSoon() {
         let agendaCoordinator = AgendaCoordinator(filterType: .dueSoon, stack: self.stack, dependency: self.dependency)
         self.showTempCoordinator(agendaCoordinator)
     }

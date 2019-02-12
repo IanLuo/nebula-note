@@ -40,14 +40,14 @@ public struct Layout {
     
     @objc public class Color: NSObject {
         @objc public static let interactive: UIColor = .white
-        @objc public static let descriptive: UIColor = .darkGray
-        @objc public static let enphersizedDescriptive: UIColor = .lightGray
-        @objc public static let spotLight: UIColor = UIColor(red:0.13, green:0.82, blue:0.41, alpha:1.00)
-        @objc public static let background1: UIColor = .black
+        @objc public static let descriptive: UIColor = UIColor(red:0.29, green:0.29, blue:0.29, alpha:1.00)
+        @objc public static let enphersizedDescriptive: UIColor = UIColor(red:0.39, green:0.39, blue:0.39, alpha:1.00)
+        @objc public static let spotLight: UIColor = UIColor(red:0.32, green:0.87, blue:0.73, alpha:1.00)
+        @objc public static let background1: UIColor = UIColor(red:0.03, green:0.03, blue:0.03, alpha:1.00)
         @objc public static let background2: UIColor = UIColor(red:0.12, green:0.12, blue:0.12, alpha:1.00)
-        @objc public static let background3: UIColor = UIColor(red:0.18, green:0.18, blue:0.18, alpha:1.00)
-        @objc public static let backgroundHighlight: UIColor = UIColor(red:0.13, green:0.82, blue:0.41, alpha:1.00)
-        @objc public static let backgroundWarning: UIColor = UIColor(red:0.99, green:0.20, blue:0.44, alpha:1.00)
+        @objc public static let background3: UIColor = UIColor(red:0.20, green:0.21, blue:0.22, alpha:1.00)
+        @objc public static let backgroundHighlight: UIColor = UIColor(red:0.21, green:0.51, blue:0.44, alpha:1.00)
+        @objc public static let backgroundWarning: UIColor = UIColor(red:0.51, green:0.13, blue:0.17, alpha:1.00)
     }
 }
 
@@ -66,3 +66,23 @@ public struct Layout {
     }
 }
 
+extension UIColor {
+    public class func hexString(_ hexString: String) -> UIColor? {
+        if hexString.count > 7 || hexString.count < 7 {
+            return nil
+        } else {
+            
+            let hexInt = Int(hexString.substring(from: hexString.index(hexString.startIndex, offsetBy: 1)), radix: 16)
+            if let hex = hexInt {
+                let components = (
+                    R: CGFloat((hex >> 16) & 0xff) / 255,
+                    G: CGFloat((hex >> 08) & 0xff) / 255,
+                    B: CGFloat((hex >> 00) & 0xff) / 255
+                )
+                return UIColor(red: components.R, green: components.G, blue: components.B, alpha: 1)
+            } else {
+                return nil
+            }
+        }
+    }
+}

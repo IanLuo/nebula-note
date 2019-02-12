@@ -15,10 +15,11 @@ import Business
 public class AgendaCoordinator: Coordinator {
     public enum FilterType {
         case tag(String)
-        case due(Date)
-        case scheduled(Date)
+        case overdue
+        case scheduled
         case dueSoon
         case scheduledSoon
+        case withoutDate
     }
     
     public override init(stack: UINavigationController, dependency: Dependency) {

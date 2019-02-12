@@ -26,11 +26,15 @@ public struct DocumentSearchResult {
 }
 
 public class DocumentSearchManager {
-    private let operationQueue: OperationQueue
+    private let headingSearchOperationQueue: OperationQueue
+    private let contentSearchOperationQueue: OperationQueue
     
     public init() {
-        self.operationQueue = OperationQueue()
-        operationQueue.underlyingQueue = DispatchQueue.global(qos: DispatchQoS.QoSClass.userInteractive)
+        self.headingSearchOperationQueue = OperationQueue()
+        self.contentSearchOperationQueue = OperationQueue()
+        
+        self.headingSearchOperationQueue.underlyingQueue = DispatchQueue.global(qos: DispatchQoS.QoSClass.userInteractive)
+        self.contentSearchOperationQueue.underlyingQueue = DispatchQueue.global(qos: DispatchQoS.QoSClass.userInteractive)
     }
     
     // MARK: -
@@ -45,7 +49,7 @@ public class DocumentSearchManager {
                        complete: @escaping () -> Void,
                        failed: ((Error) -> Void)?) {
         
-        self.operationQueue.cancelAllOperations()
+        self.contentSearchOperationQueue.cancelAllOperations()
         let operation = BlockOperation()
         
         operation.completionBlock = {
@@ -93,7 +97,7 @@ public class DocumentSearchManager {
             }
         }
         
-        operationQueue.addOperation(operation)
+        self.contentSearchOperationQueue.addOperation(operation)
     }
     
     // MARK: -
@@ -246,7 +250,6 @@ public class DocumentSearchManager {
                                  failed: ((Error) -> Void)?,
                                  onEachHeadingMatch: @escaping (String, URL, [Document.Heading]) -> [DocumentSearchResult]) {
         
-        self.operationQueue.cancelAllOperations()
         let operation = BlockOperation()
         
         operation.completionBlock = {
@@ -302,7 +305,7 @@ public class DocumentSearchManager {
             }
         }
         
-        operationQueue.addOperation(operation)
+        headingSearchOperationQueue.addOperation(operation)
     }
     
     public func loadAllHeadingsThatIsUnfinished(complete: @escaping (([DocumentSearchResult]) -> Void),

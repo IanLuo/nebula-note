@@ -81,7 +81,8 @@ extension URL {
     
     public func concatingToFileName(_ string: String) -> URL {
         let ext = self.pathExtension
-        return URL(fileURLWithPath: self.deletingPathExtension().deletingLastSplashIfThereIs.appending(string)).appendingPathExtension(ext)
+        let string = string.replacingOccurrences(of: " ", with: "%20")
+        return URL(string: self.deletingPathExtension().deletingLastSplashIfThereIs.appending(string))!.appendingPathExtension(ext)
     }
     
     public var deletingLastSplashIfThereIs: String {
@@ -163,7 +164,16 @@ extension URL {
         let fileCoordinator = NSFileCoordinator()
         let read = NSFileAccessIntent.readingIntent(with: self, options: NSFileCoordinator.ReadingOptions.Element())
         
-        let copyURL = self.concatingToFileName(" copy")
+        var copyURL = self.concatingToFileName(" copy")
+        // 如果对应的文件名已经存在，则在文件名后添加数字，并以此增大
+        var incrementaor: Int = 1
+        let copyOfNewURL = copyURL
+        while FileManager.default.fileExists(atPath: copyURL.path) {
+            let name = copyOfNewURL.deletingPathExtension().lastPathComponent + "\(incrementaor)"
+            copyURL = copyOfNewURL.deletingPathExtension().deletingLastPathComponent().appendingPathComponent(name).appendingPathExtension(Document.fileExtension)
+            incrementaor += 1
+        }
+        
         let write = NSFileAccessIntent.writingIntent(with: copyURL,
                                                      options: NSFileCoordinator.WritingOptions.forReplacing)
         

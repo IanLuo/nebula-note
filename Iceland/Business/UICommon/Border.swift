@@ -84,14 +84,14 @@ public class Border: UIView {
 }
 
 extension UIView {
-    public func setBorder(position: Border.Position, style: Border.Style = .solid, color: UIColor, width: CGFloat, insect: Border.Insect = .none) {
+    public func setBorder(position: Border.Position, style: Border.Style = .solid, color: UIColor, width: CGFloat, insets: Border.Insect = .none) {
         removeBorders()
         
         var insectHead: CGFloat = 0
         var insectTail: CGFloat = 0
         let width: CGFloat = width
         
-        switch insect {
+        switch insets {
         case .both(let bothInsect):
             insectHead = bothInsect
             insectTail = bothInsect

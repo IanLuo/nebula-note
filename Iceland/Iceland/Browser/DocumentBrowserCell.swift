@@ -30,11 +30,13 @@ public class DocumentBrowserCell: UITableViewCell {
         label.font = InterfaceTheme.Font.subTitle
         label.textColor = InterfaceTheme.Color.interactive
         label.textAlignment = .left
+        label.numberOfLines = 0
         return label
     }()
     private let actionButton: UIButton = {
         let button = UIButton()
-        button.setTitle("…", for: .normal)
+        button.setImage(UIImage(named: "more")?.withRenderingMode(.alwaysTemplate), for: .normal)
+        button.tintColor = InterfaceTheme.Color.interactive
         return button
     }()
     
@@ -98,6 +100,7 @@ public class DocumentBrowserCell: UITableViewCell {
         
         self.titleLabel.rowAnchor(view: self.actionButton, space: 10)
         self.actionButton.sideAnchor(for: [.top, .bottom, .right], to: self.contentView, edgeInsets: .init(top: 0, left: 0, bottom: 0, right: -30))
+        self.actionButton.ratioAnchor(1)
         
         self.backgroundColor = InterfaceTheme.Color.background1
     }

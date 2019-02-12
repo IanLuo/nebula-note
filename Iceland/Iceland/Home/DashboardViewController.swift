@@ -13,10 +13,11 @@ import Business
 public protocol DashboardViewControllerDelegate: class {
     func didSelectTab(at index: Int, viewController: UIViewController)
     func showHeadings(with tag: String)
-    func showHeadings(scheduled: Date)
-    func showHeadings(due: Date)
+    func showHeadingsScheduled()
+    func showHeadingsOverdue()
     func showHeadingsScheduleSoon()
-    func showHeadingsDueSoon()
+    func showHeadingsOverdueSoon()
+    func showHeadingsWithoutDate()
 }
 
 public class DashboardViewController: UIViewController {
@@ -43,6 +44,7 @@ public class DashboardViewController: UIViewController {
         self.tableView.fill(view: self.view)
         
         self.viewModel.loadAllTags()
+        self.viewModel.loadPlanned()
         
         self.navigationController?.isNavigationBarHidden = true
     }
@@ -108,6 +110,16 @@ public class DashboardViewController: UIViewController {
             let tagsViewController = DashboardSubtypeItemViewController(subtype: self.tabs[tab].sub[subtab].type)
             tagsViewController.delegate = self
             self.navigationController?.pushViewController(tagsViewController, animated: true)
+        case .overdue:
+            self.viewModel.coordinator?.showHeadingsOverdue()
+        case .overdueSoon:
+            self.viewModel.coordinator?.showHeadingsOverdueSoon()
+        case .scheduled:
+            self.viewModel.coordinator?.showHeadingsScheduled()
+        case .scheduledSoon:
+            self.viewModel.coordinator?.showHeadingsScheduleSoon()
+        case .withoutDate:
+            self.viewModel.coordinator?.showHeadingsWithoutDate()
         default: break
         }
     }
@@ -145,18 +157,6 @@ public class DashboardViewController: UIViewController {
             case .documents(_ , let index): return index
             }
         }
-        
-        func getSubtypes(viewModel: DashboardViewModel) -> [SubtabType] {
-            var types: [SubtabType] = []
-            switch self {
-            case .agenda(_, _):
-                let tags = viewModel.allTags
-                if tags.count > 0 { types.append(.tags(tags)) }
-            default: return []
-            }
-            
-            return types
-        }
     }
     
     // MARK: - type definition -
@@ -164,24 +164,37 @@ public class DashboardViewController: UIViewController {
         case tags([String])
         case scheduled(Int)
         case scheduledSoon(Int)
-        case overDue(Int)
-        case overDueSoon(Int)
+        case overdue(Int)
+        case overdueSoon(Int)
         case withoutDate(Int)
+        case finished
+        case archived
         
         public var index: Int {
             switch self {
             case .tags: return 0
             case .scheduled: return 1
-            case .overDue: return 2
+            case .overdue: return 2
             case .scheduledSoon: return 3
-            case .overDueSoon: return 4
+            case .overdueSoon: return 4
             case .withoutDate: return 5
+            case .finished: return 6
+            case .archived: return 7
             }
         }
         
         var icon: UIImage? {
             switch self {
             case .tags(_): return UIImage(named: "tag")
+            case .scheduled: return UIImage(named: "scheduled")
+            case .overdue: return UIImage(named: "due")
+            default: return nil
+            }
+        }
+        
+        var detailIcon: UIImage? {
+            switch self {
+            case .tags(_): return UIImage(named: "right")?.resize(upto: CGSize(width: 10, height: 10))
             default: return nil
             }
         }
@@ -189,6 +202,11 @@ public class DashboardViewController: UIViewController {
         var title: String {
             switch self {
             case .tags(_): return "tags".localizable
+            case .overdue: return "overdue".localizable
+            case .scheduled: return "scheduled".localizable
+            case .overdueSoon: return "overdue soon".localizable
+            case .scheduledSoon: return "scheduled soon".localizable
+            case .withoutDate: return "without date".localizable
             default: return ""
             }
         }
@@ -196,10 +214,16 @@ public class DashboardViewController: UIViewController {
         var subtitle: String {
             switch self {
             case .tags(let tags): return "\(tags.count)"
+            case .overdue(let count): return "\(count)"
+            case .overdueSoon(let count): return "\(count)"
+            case .scheduled(let count): return "\(count)"
+            case .scheduledSoon(let count): return "\(count)"
+            case .withoutDate(let count): return "\(count)"
             default: return ""
             }
         }
         
+        //  下一级页面，现在只有 tags 有
         var detailItems: [String] {
             switch self {
             case .tags(let tags): return tags
@@ -226,7 +250,13 @@ public class DashboardViewController: UIViewController {
             self.type = type
         }
         
-        public var sub: [Subtab] = []
+        public var sub: [Subtab] = [] {
+            didSet {
+                sub.sort { (left, right) -> Bool in
+                    return left.type.index < right.type.index
+                }
+            }
+        }
     }
     
     fileprivate class Subtab: Equatable {
@@ -263,6 +293,7 @@ extension DashboardViewController: UITableViewDelegate, UITableViewDataSource {
         cell.titleLabel.text = item.title
         cell.iconView.image = item.icon?.withRenderingMode(.alwaysTemplate)
         cell.subtitleLabel.text = item.subtitle
+        cell.detailIconView.image = item.type.detailIcon?.withRenderingMode(.alwaysTemplate)
         return cell
     }
     
@@ -296,9 +327,46 @@ extension DashboardViewController: UITableViewDelegate, UITableViewDataSource {
 }
 
 extension DashboardViewController: DashboardViewModelDelegate {
+    public func didLoadScheduled() {
+        if self.viewModel.scheduled.count > 0 {
+            self.tabs[0].sub.append(Subtab(type: DashboardViewController.SubtabType.scheduled(self.viewModel.scheduled.count)))
+            self.tableView.reloadSections([0], with: UITableView.RowAnimation.none)
+        }
+    }
+    
+    public func didLoadOverdue() {
+        if self.viewModel.overdue.count > 0 {
+            self.tabs[0].sub.append(Subtab(type: DashboardViewController.SubtabType.overdue(self.viewModel.overdue.count)))
+            self.tableView.reloadSections([0], with: UITableView.RowAnimation.none)
+        }
+    }
+    
+    public func didLoadScheduledSoon() {
+        if self.viewModel.scheduledSoon.count > 0 {
+            self.tabs[0].sub.append(Subtab(type: DashboardViewController.SubtabType.scheduledSoon(self.viewModel.scheduledSoon.count)))
+            self.tableView.reloadSections([0], with: UITableView.RowAnimation.none)
+        }
+    }
+    
+    public func didLoadOverdueSoon() {
+        if self.viewModel.overdue.count > 0 {
+            self.tabs[0].sub.append(Subtab(type: DashboardViewController.SubtabType.overdueSoon(self.viewModel.overdueSoon.count)))
+            self.tableView.reloadSections([0], with: UITableView.RowAnimation.none)
+        }
+    }
+    
+    public func didLoadWithoutTag() {
+        if self.viewModel.withoutTag.count > 0 {
+            self.tabs[0].sub.append(Subtab(type: DashboardViewController.SubtabType.withoutDate(self.viewModel.withoutTag.count)))
+            self.tableView.reloadSections([0], with: UITableView.RowAnimation.none)
+        }
+    }
+    
     public func didLoadAllTags() {
-        self.tabs[0].sub.append(Subtab(type: DashboardViewController.SubtabType.tags(self.viewModel.allTags)))
-        self.tableView.reloadSections([0], with: UITableView.RowAnimation.none)
+        if self.viewModel.allTags.count > 0 {
+            self.tabs[0].sub.append(Subtab(type: DashboardViewController.SubtabType.tags(self.viewModel.allTags)))
+            self.tableView.reloadSections([0], with: UITableView.RowAnimation.none)
+        }
     }
 }
 
@@ -436,6 +504,13 @@ private class SubtabCell: UITableViewCell {
         return label
     }()
     
+    let detailIconView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.tintColor = InterfaceTheme.Color.descriptive
+        imageView.contentMode = .scaleAspectFit
+        return imageView
+    }()
+    
     let iconView: UIImageView = {
         let imageView = UIImageView()
         imageView.tintColor = InterfaceTheme.Color.descriptive
@@ -449,15 +524,20 @@ private class SubtabCell: UITableViewCell {
         self.contentView.addSubview(self.titleLabel)
         self.contentView.addSubview(self.iconView)
         self.contentView.addSubview(self.subtitleLabel)
+        self.contentView.addSubview(self.detailIconView)
         
         self.iconView.sideAnchor(for: .left, to: self.contentView, edgeInsets: .init(top: 0, left: 60, bottom: 0, right: 0))
         self.iconView.centerAnchors(position: .centerY, to: self.contentView)
         self.iconView.sizeAnchor(width: 20, height: 20)
         self.iconView.rowAnchor(view: self.titleLabel, space: 10)
-        self.titleLabel.sideAnchor(for: [.top, .bottom, .right], to: self.contentView, edgeInsets: .init(top: 15, left: 0, bottom: -15, right: -30))
+        self.titleLabel.sideAnchor(for: [.top, .bottom], to: self.contentView, edgeInsets: .init(top: 15, left: 0, bottom: -15, right: 0))
         
         self.titleLabel.rowAnchor(view: self.subtitleLabel)
-        self.subtitleLabel.sideAnchor(for: [.top, .bottom, .right], to: self.contentView, edgeInsets: .init(top: 0, left: 0, bottom: 0, right: 30))
+        self.subtitleLabel.sideAnchor(for: [.top, .bottom], to: self.contentView, edgeInsets: .init(top: 0, left: 0, bottom: 0, right: 0))
+        
+        self.subtitleLabel.rowAnchor(view: self.detailIconView, space: 3)
+        self.detailIconView.sideAnchor(for: .right, to: self.contentView, edgeInset: 30)
+        self.detailIconView.sizeAnchor(width: 10, height: 10)
     }
     
     required init?(coder aDecoder: NSCoder) {

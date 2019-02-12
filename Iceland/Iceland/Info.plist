@@ -47,5 +47,24 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>UTExportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>iceland</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>document file</string>
+			<key>UTTypeIconFiles</key>
+			<array/>
+			<key>UTTypeIdentifier</key>
+			<string>iceland</string>
+		</dict>
+		<dict>
+			<key>UTTypeIconFiles</key>
+			<array/>
+		</dict>
+	</array>
 </dict>
 </plist>

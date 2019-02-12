@@ -226,8 +226,8 @@ public class DocumentBrowserViewModel {
     public func duplicate(index: Int) {
         self.documentManager.duplicate(url: self.data[index].url,
                                        complete: { [weak self] url in
-                                        self?.data.insert(DocumentBrowserCellModel(url: url), at: index + 1)
-                                        self?.delegate?.didAddDocument(index: index + 1, count: 1)
+                                        self?.data.insert(DocumentBrowserCellModel(url: url), at: index)
+                                        self?.delegate?.didAddDocument(index: index, count: 1)
             }, failure: { error in
                 log.error(error)
         })

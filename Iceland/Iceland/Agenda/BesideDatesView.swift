@@ -126,7 +126,7 @@ private class DateCell: UICollectionViewCell {
                        style: .solid,//Border.Style.dash(unit, unit * 10),
                        color: InterfaceTheme.Color.background3,
                        width: 0.5,//10,
-                       insect: .none)//Border.Insect.tail(unit * 10))
+                       insets: .none)//Border.Insect.tail(unit * 10))
     }
     
     override var isSelected: Bool {
