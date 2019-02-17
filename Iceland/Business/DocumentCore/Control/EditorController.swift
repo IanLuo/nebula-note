@@ -192,6 +192,8 @@ extension EditorController: NSTextStorageDelegate {
 
         // 更新当前状态缓存
         self.textStorage.updateCurrentInfo()
+        
+        self.textStorage.addAttributes([NSAttributedString.Key.foregroundColor : InterfaceTheme.Color.interactive], range: editedRange)
     }
     
     internal func adjustParseRange(_ range: NSRange) {

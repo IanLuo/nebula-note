@@ -45,8 +45,6 @@ public class DashboardViewController: UIViewController {
         
         self.viewModel.loadAllTags()
         self.viewModel.loadPlanned()
-        
-        self.navigationController?.isNavigationBarHidden = true
     }
     
     private lazy var tableView: UITableView = {

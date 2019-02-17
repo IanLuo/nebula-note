@@ -17,7 +17,11 @@ public class HomeCoordinator: Coordinator {
         let viewModel = DashboardViewModel(documentSearchManager: dependency.documentSearchManager)
         let dashboardViewController = DashboardViewController(viewModel: viewModel)
         
-        let viewController = HomeViewController(masterViewController: UINavigationController(rootViewController: dashboardViewController))
+        let navigationController = UINavigationController(rootViewController: dashboardViewController)
+        navigationController.navigationBar.barTintColor = InterfaceTheme.Color.background1
+        navigationController.navigationBar.tintColor = InterfaceTheme.Color.interactive
+        
+        let viewController = HomeViewController(masterViewController: navigationController)
         self.homeViewController = viewController
         
         super.init(stack: stack, dependency: dependency)

@@ -34,7 +34,6 @@ public class OutlineTextView: UITextView {
         
         self.tintColor = InterfaceTheme.Color.spotLight
         self.backgroundColor = InterfaceTheme.Color.background1
-        self.textColor = InterfaceTheme.Color.interactive
     }
     
     private var lastTap: (CGPoint, Bool) = (.zero, true)

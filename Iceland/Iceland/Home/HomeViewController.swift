@@ -132,7 +132,7 @@ public class HomeViewController: UIViewController {
 extension HomeViewController: UIGestureRecognizerDelegate {
     public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         if gestureRecognizer == self.tap {
-            return isShowingMaster
+            return isShowingMaster && gestureRecognizer.location(in: self.view).x > 0
         }
         
         return true
