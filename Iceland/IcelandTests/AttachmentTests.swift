@@ -16,7 +16,7 @@ public class AttachmentTests: XCTestCase {
     
     public override func tearDown() {
         do {
-            try FileManager.default.removeItem(at: AttachmentConstants.folder)
+            try FileManager.default.removeItem(at: URL.attachmentURL)
         } catch {
             print(error)
         }

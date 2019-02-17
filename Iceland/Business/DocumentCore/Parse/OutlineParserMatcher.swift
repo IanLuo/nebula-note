@@ -164,6 +164,10 @@ extension OutlineParser {
     }
     
     public struct Values {
+        public struct Character {
+            public static let linebreak = "\n"
+        }
+        
         public struct Attachment {
             public static func serialize(attachment: Business.Attachment) -> String {
                 switch attachment.type {

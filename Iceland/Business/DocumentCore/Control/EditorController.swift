@@ -99,6 +99,7 @@ extension EditorController {
             if range.upperBound >= textStorage.string.count - 1 {
                 postParagraphLength = 0
             }
+            
             let contentRange = NSRange(location: contentLocation,
                                        length: range.upperBound - contentLocation + postParagraphLength)
             
@@ -120,7 +121,7 @@ extension EditorController {
         let attachment = NSTextAttachment()
         attachment.bounds = CGRect(origin: .zero, size: CGSize(width: 24, height: 24))
         let status = self.string.substring(range)
-        let color = status == OutlineParser.Values.Checkbox.unchecked // TODO:
+        let color = status == OutlineParser.Values.Checkbox.unchecked // FIXME: check box 渲染相关
             ? UIColor.green
             : status == OutlineParser.Values.Checkbox.checked ? UIColor.red : UIColor.purple
         
@@ -148,6 +149,8 @@ extension EditorController {
     }
 }
 
+// MARK: - Text Storage Delegate -
+// 每次编辑触发时，首先删除所在范围的属性(folding 除外),然后视情况看是否需要进行解析
 extension EditorController: NSTextStorageDelegate {
     public func textStorage(_ textStorage: NSTextStorage,
                             willProcessEditing editedMask: NSTextStorage.EditActions,
@@ -156,9 +159,9 @@ extension EditorController: NSTextStorageDelegate {
         
         log.info("removing attributes in range: \(editedRange)")
 
-        // 清空 attributes, 保留折叠的状态
-        guard editedRange.upperBound < textStorage.string.count else { return }
+        guard editedRange.upperBound < textStorage.string.count else { return } // 防止崩溃
 
+        // 清空 attributes (折叠的状态除外)
         for (key, _) in textStorage.attributes(at: editedRange.location, longestEffectiveRange: nil, in: editedRange) {
             if key == OutlineAttribute.Heading.folded { continue }
             textStorage.removeAttribute(key, range: editedRange)
@@ -173,9 +176,9 @@ extension EditorController: NSTextStorageDelegate {
         
         log.info("editing in range: \(editedRange), is non continouse: \(textStorage.layoutManagers[0].hasNonContiguousLayout)")
 
-        guard delta != 0 else { return } // 如果是设置 attribute 引起的调用，则忽略
+        guard delta != 0 else { return } // 如果没有文字增删，则不进行解析
 
-        /// 当前交互的位置
+        /// 更新当前交互的位置
         self.textStorage.currentLocation = editedRange.location
 
         // 调整需要解析的字符串范围
@@ -192,8 +195,9 @@ extension EditorController: NSTextStorageDelegate {
     }
     
     internal func adjustParseRange(_ range: NSRange) {
-        self.textStorage.currentParseRange = range.expandFoward(string: textStorage.string)
-        self.textStorage.currentParseRange = self.textStorage.currentParseRange?.expandBackward(string: textStorage.string)
+        var tempRange = range.expandFoward(string: textStorage.string)
+        tempRange = tempRange.expandBackward(string: textStorage.string)
+        self.textStorage.currentParseRange = tempRange
         
         // 如果范围在某个 item 内，并且小于这个 item 原来的范围，则扩大至这个 item 原来的范围
         if let currrentParseRange = self.textStorage.currentParseRange {
@@ -210,31 +214,24 @@ extension EditorController: NSTextStorageDelegate {
 
 extension NSRange {
     /// 将在字符串中的选择区域扩展到前一个换行符之后，后一个换行符之前
-    internal func expandFoward(string: String) -> NSRange {
+    internal func expandBackward(string: String) -> NSRange {
         var extendedRange = self
         // 向上, 到上一个 '\n' 之后
-        while extendedRange.location > 0 &&
-            extendedRange.upperBound < string.count - 1 &&
-            (string as NSString)
-                .substring(with: NSRange(location: extendedRange.location - 1, length: 1)) != "\n" {
-                    extendedRange = NSRange(location: extendedRange.location - 1, length: extendedRange.length + 1)
+        while extendedRange.location > 0
+            && string.substring(NSRange(location: extendedRange.location - 1, length: 1)) != OutlineParser.Values.Character.linebreak {
+                extendedRange = NSRange(location: extendedRange.location - 1, length: extendedRange.length + 1)
         }
         return extendedRange
     }
     
-    internal func expandBackward(string: String) -> NSRange {
-        // 向下，下一个 '\n' 之后
+    internal func expandFoward(string: String) -> NSRange {
+        // 向下，下一个 '\n' 之前
         var extendedRange = self
-        while extendedRange.upperBound < string.count - 1 &&
-            (string as NSString)
-                .substring(with: NSRange(location: extendedRange.upperBound, length: 1)) != "\n" {
-                    extendedRange = NSRange(location: extendedRange.location, length: extendedRange.length + 1)
+        while extendedRange.upperBound < string.count - 1
+            && string.substring(NSRange(location: extendedRange.upperBound, length: 1)) != OutlineParser.Values.Character.linebreak {
+                extendedRange = NSRange(location: extendedRange.location, length: extendedRange.length + 1)
         }
-        
-        if extendedRange.upperBound >= string.count - 1 {
-            return NSRange(location: extendedRange.location, length: max(0, string.count - extendedRange.location - 1))
-        }
-        
-        return NSRange(location: extendedRange.location, length: extendedRange.length + 1)
+
+        return extendedRange
     }
 }

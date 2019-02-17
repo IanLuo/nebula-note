@@ -64,7 +64,7 @@ public class OutlineParser {
             }
         }
         
-        // MARK: checkbox
+        // MARK: 解析 checkbox
         if let checkbox = Matcher.Node.checkbox, includeParsee.contains(.checkbox) {
             let result: [[String: NSRange]] = checkbox
                 .matches(in: str, options: [], range: totalRange)
@@ -81,7 +81,7 @@ public class OutlineParser {
             }
         }
         
-        // MARK: code block
+        // MARK: 解析 code block
         if let codeBlock = Matcher.Node.codeBlock, includeParsee.contains(.codeBlock) {
             let result: [[String: NSRange]] = codeBlock
                 .matches(in: str, options: [], range: totalRange)
@@ -99,7 +99,7 @@ public class OutlineParser {
             }
         }
         
-        // MARK: ordered list
+        // MARK: 解析 ordered list
         if let orderedList = Matcher.Node.ordedList, includeParsee.contains(.orderedList) {
             let result: [[String: NSRange]] = orderedList
                 .matches(in: str, options: [], range: totalRange)
@@ -116,7 +116,7 @@ public class OutlineParser {
             }
         }
         
-        // MARK: unordered list
+        // MARK: 解析 unordered list
         if let unorderedList = Matcher.Node.unorderedList, includeParsee.contains(.unorderedList) {
             let result: [[String: NSRange]] = unorderedList
                 .matches(in: str, options: [], range: totalRange)
@@ -132,7 +132,7 @@ public class OutlineParser {
             }
         }
         
-        // MARK: seperator
+        // MARK: 解析 seperator
         if let seperator = Matcher.Node.seperator, includeParsee.contains(.seperator) {
             let result: [[String: NSRange]] = seperator
                 .matches(in: str, options: [], range: totalRange)
@@ -146,7 +146,7 @@ public class OutlineParser {
             }
         }
         
-        // MARK: attachment
+        // MARK: 解析 attachment
         if let attachment = Matcher.Node.attachment, includeParsee.contains(.attachment) {
             let result: [[String: NSRange]] = attachment
                 .matches(in: str, options: [], range: totalRange)
@@ -164,7 +164,7 @@ public class OutlineParser {
             }
         }
         
-        // MARK: url
+        // MARK: 解析 url
         if let url = Matcher.Element.link, includeParsee.contains(.link) {
             let result: [[String: NSRange]] = url
                 .matches(in: str, options: [], range: totalRange)
@@ -183,7 +183,7 @@ public class OutlineParser {
             }
         }
         
-        // MARK: 最后，带 mark 的文字
+        // MARK: 最后，解析带 mark 的文字
         let markResuls: [[String: NSRange]] =
             [(Key.Element.TextMark.bold, Matcher.Element.TextMark.bold),
              (Key.Element.TextMark.italic, Matcher.Element.TextMark.itatic),

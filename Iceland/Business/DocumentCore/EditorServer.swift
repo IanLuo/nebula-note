@@ -318,17 +318,26 @@ public class EditorService {
     
     public func open(completion:((String?) -> Void)? = nil) {
         self.queue.async { [weak self] in
-            self?.document.open { (isOpenSuccessfully: Bool) in
+            // 如果文档已经打开，则直接返回
+            if self?.document.documentState == .normal {
                 guard let strongSelf = self else { return }
-                
-                if isOpenSuccessfully {
-                    strongSelf.editorController.string = strongSelf.document.string // 触发解析
-                    DispatchQueue.main.async {
-                        completion?(strongSelf.document.string)
-                    }
-                } else {
-                    DispatchQueue.main.async {
-                        completion?(nil)
+                DispatchQueue.main.async {
+                    completion?(strongSelf.document.string)
+                }
+            } else {
+                // 打开文档，触发解析，然后返回
+                self?.document.open { (isOpenSuccessfully: Bool) in
+                    guard let strongSelf = self else { return }
+                    
+                    if isOpenSuccessfully {
+                        DispatchQueue.main.async {
+                            strongSelf.editorController.string = strongSelf.document.string // 触发解析
+                            completion?(strongSelf.document.string)
+                        }
+                    } else {
+                        DispatchQueue.main.async {
+                            completion?(nil)
+                        }
                     }
                 }
             }
