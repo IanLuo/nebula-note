@@ -19,12 +19,12 @@ public class DocumentSearchTests: XCTestCase {
         }
     }
     
-    func testFindAllFiles() throws {        
+    func testFindAllFiles() throws { 
         let fm = FileManager.default
         for i in 0..<100 {
-            try fm.createDirectory(at: URL.filesFolder.appendingPathComponent("\(i)"), withIntermediateDirectories: false, attributes: nil)
-            try "\(i)".data(using: .utf8)?.write(to: URL(fileURLWithPath: "\(i).org", relativeTo: URL.filesFolder))
-            try "\(i)".data(using: .utf8)?.write(to: URL(fileURLWithPath: "\(i).org", relativeTo: URL.filesFolder.appendingPathComponent("\(i)")))
+            try fm.createDirectory(at: URL.documentBaseURL.appendingPathComponent("\(i)"), withIntermediateDirectories: false, attributes: nil)
+            try "\(i)".data(using: .utf8)?.write(to: URL(fileURLWithPath: "\(i).org", relativeTo: URL.documentBaseURL))
+            try "\(i)".data(using: .utf8)?.write(to: URL(fileURLWithPath: "\(i).org", relativeTo: URL.documentBaseURL.appendingPathComponent("\(i)")))
         }
         
         let files = DocumentSearchManager().loadAllFiles()
@@ -34,8 +34,8 @@ public class DocumentSearchTests: XCTestCase {
     
     func testSearchContent() {
         let ex = expectation(description: "search content")
-        let viewModel = DocumentSearchViewModel(documentSearchManager: DocumentSearchManager())
-        viewModel.search(contain: "dribbble", resultAdded: { searchResult in
+        let searchManager = DocumentSearchManager()
+        searchManager.search(contain: "dribbble", resultAdded: { searchResult in
             searchResult.forEach {
                 print($0.context)
             }
@@ -50,8 +50,10 @@ public class DocumentSearchTests: XCTestCase {
     
     func testSearchTag() {
         let ex = expectation(description: "search tags")
-        let viewModel = DocumentSearchViewModel(documentSearchManager: DocumentSearchManager())
-        viewModel.search(tags: ["iceland", "ar"], resultAdded: { searchResult in
+
+        let searchManager = DocumentSearchManager()
+        
+        searchManager.search(tags: ["iceland", "ar"], resultAdded: { searchResult in
             searchResult.forEach {
                 print($0.context)
                 print("--------")
@@ -67,8 +69,8 @@ public class DocumentSearchTests: XCTestCase {
     
     func testSearchSchedule() {
         let ex = expectation(description: "search schedule")
-        let viewModel = DocumentSearchViewModel(documentSearchManager: DocumentSearchManager())
-        viewModel.search(schedule: Date(), resultAdded: { searchResult in
+        let searchManager = DocumentSearchManager()
+        searchManager.search(schedule: Date(), resultAdded: { searchResult in
             searchResult.forEach {
                 print($0.context)
                 print("--------")
@@ -84,8 +86,8 @@ public class DocumentSearchTests: XCTestCase {
     
     func testSearchDue() {
         let ex = expectation(description: "search due")
-        let viewModel = DocumentSearchViewModel(documentSearchManager: DocumentSearchManager())
-        viewModel.search(due: Date(), resultAdded: { searchResult in
+        let searchManager = DocumentSearchManager()
+        searchManager.search(due: Date(), resultAdded: { searchResult in
             searchResult.forEach {
                 print($0.context)
                 print("--------")
@@ -101,8 +103,8 @@ public class DocumentSearchTests: XCTestCase {
     
     func testSearchPlanning() {
         let ex = expectation(description: "search planning")
-        let viewModel = DocumentSearchViewModel(documentSearchManager: DocumentSearchManager())
-        viewModel.search(plannings: ["TODO", "NEXT"], resultAdded: { searchResult in
+        let searchManager = DocumentSearchManager()
+        searchManager.search(plannings: ["TODO", "NEXT"], resultAdded: { searchResult in
             searchResult.forEach {
                 print($0.context)
                 print("--------")

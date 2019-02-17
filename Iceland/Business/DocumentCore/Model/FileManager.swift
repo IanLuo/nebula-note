@@ -128,11 +128,7 @@ extension URL {
         
         return nil
     }
-    
-    public static var filesFolderPath: String {
-        return URL.documentBaseURL.path
-    }
-    
+        
     public var hasSubDocuments: Bool {
         let subDocumentFolder = self.convertoFolderURL.path
         var isDir = ObjCBool(true)

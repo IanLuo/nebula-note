@@ -86,13 +86,13 @@ public class DocumentBrowserViewController: UIViewController {
         self.view.addSubview(self.createNewDocumentButton)
         self.view.addSubview(self.cancelButton)
         
-        self.openningFilesView.sideAnchor(for: [.left, .top, .right], to: self.view, edgeInsets: .init(top: Layout.edgeInsets.top, left: 0, bottom: 0, right: 0))
+        self.openningFilesView.sideAnchor(for: [.left, .top, .right], to: self.view, edgeInsets: .init(top: Layout.edgeInsets.top, left: 0, bottom: 0, right: 0), considerSafeArea: true)
         self.openningFilesView.sizeAnchor(height: Constants.recentViewsHeight)
 
         self.cancelButton.sideAnchor(for: [.right, .top], to: self.view, edgeInset: 20)
         self.cancelButton.sizeAnchor(width: 80, height: 80)
 
-        self.cancelButton.columnAnchor(view: self.tableView)
+        self.cancelButton.columnAnchor(view: self.tableView, space: Constants.recentViewsHeight)
         self.tableView.sideAnchor(for: [.left, .bottom, .right], to: self.view, edgeInset: 0)
         
         self.createNewDocumentButton.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInsets: .zero, considerSafeArea: true)

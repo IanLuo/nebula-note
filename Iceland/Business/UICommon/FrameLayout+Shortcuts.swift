@@ -149,7 +149,7 @@ extension UIView {
         return self
     }
 
-    private var safeArea: UIEdgeInsets {
+    public var safeArea: UIEdgeInsets {
         if #available(iOS 11.0, *) {
             return self.safeAreaInsets
         } else {

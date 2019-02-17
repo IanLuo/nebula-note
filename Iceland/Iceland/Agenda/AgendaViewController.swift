@@ -78,7 +78,10 @@ public class AgendaViewController: UIViewController {
         self.view.addSubview(self.besideDatesView)
         self.view.addSubview(self.dateView)
         
-        self.besideDatesView.sideAnchor(for: [.top, .left, .right], to: self.view, edgeInsets: .init(top: Constants.edgeInsets.top, left: 0, bottom: 0, right: 0))
+        self.besideDatesView.sideAnchor(for: [.top, .left, .right],
+                                        to: self.view,
+                                        edgeInsets: .init(top: Constants.edgeInsets.top, left: 0, bottom: 0, right: 0),
+                                        considerSafeArea: true)
         self.besideDatesView.sizeAnchor(height: Constants.besideDateBarHeight)
         
         self.besideDatesView.columnAnchor(view: self.dateView)

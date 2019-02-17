@@ -19,12 +19,20 @@ public class HomeViewController: UIViewController {
     
     public var masterViewController: UIViewController
     
+    private lazy var pan = UIPanGestureRecognizer(target: self, action: #selector(didPan(gesture:)))
+    private lazy var tap = UITapGestureRecognizer(target: self, action: #selector(didTap(gesture:)))
+    
     public override func viewDidLoad() {
         self.setupUI()
 
-        let pan = UIPanGestureRecognizer(target: self, action: #selector(didPan(gesture:)))
         pan.delegate = self
         self.view.addGestureRecognizer(pan)
+        
+        
+        tap.delegate = self
+        self.view.addGestureRecognizer(tap)
+        
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "master"), style: .plain, target: self, action: #selector(showMasterView))
     }
     
     public init(masterViewController: UIViewController) {
@@ -59,23 +67,21 @@ public class HomeViewController: UIViewController {
         switch gesture.state {
         case .began:
             self.beginPoint = self.view.bounds.origin
-            
-            if !self.isShowingMaster {
-                self.addCoverIfNeeded()
-            }
         case .changed:
             let newLocation = self.beginPoint.x - gesture.translation(in: self.view!).x
             if newLocation < 0
             && newLocation > -masterViewWidth {
                 self.view.bounds = CGRect(x: newLocation, y: 0, width: self.view.bounds.width, height: self.view.bounds.height)
+                if let frame = self.navigationController?.navigationBar.frame {
+                    self.navigationController?.navigationBar.frame = frame.offsetX(-newLocation)
+                }
             }
-            self.updateCoverAlpha(offset: -newLocation)
+            self.updateChildViewAlpha(offset: -newLocation)
         case .ended: fallthrough
         case .cancelled:
             if self.view.bounds.origin.x >= -self.masterViewWidth / 3
                 || gesture.velocity(in: self.view!).x < -0.5 {
                 self.showChildView()
-                self.removeCover()
             } else {
                 self.showMasterView()
             }
@@ -83,10 +89,19 @@ public class HomeViewController: UIViewController {
         }
     }
     
+    @objc private func didTap(gesture: UIGestureRecognizer) {
+        if self.isShowingMaster {
+            self.showChildView()
+        }
+    }
+    
     @objc internal func showChildView() {
         UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseInOut, animations: {
             self.view.bounds = CGRect(origin: .zero, size: self.view.bounds.size)
-            self.updateCoverAlpha(offset: 0)
+            if let frame = self.navigationController?.navigationBar.frame {
+                self.navigationController?.navigationBar.frame = CGRect(origin: CGPoint(x: 0, y: frame.origin.y), size: frame.size)
+            }
+            self.updateChildViewAlpha(offset: 0)
         }, completion: { _ in
             self.currentChildViewController?.becomeFirstResponder()
             self.isShowingMaster = false
@@ -94,44 +109,32 @@ public class HomeViewController: UIViewController {
     }
     
     @objc private func showMasterView() {
-        self.addCoverIfNeeded()
-        
         UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseInOut, animations: {
             self.view.bounds = CGRect(origin: .init(x: -self.masterViewWidth, y: 0), size: self.view.bounds.size)
-            self.updateCoverAlpha(offset: self.masterViewWidth)
+            if let frame = self.navigationController?.navigationBar.frame {
+                self.navigationController?.navigationBar.frame = frame.offsetX(-self.view.bounds.origin.x)
+            }
+            self.updateChildViewAlpha(offset: self.masterViewWidth)
         }, completion: { _ in
             self.currentChildViewController?.resignFirstResponder()
             self.isShowingMaster = true
         })
     }
 
-    private lazy var cover: UIView = {
-        let view = UIView()
-        view.backgroundColor = InterfaceTheme.Color.background1
-            .withAlphaComponent(0.7)
-        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(showChildView)))
-        return view
-    }()
-    
-    private func addCoverIfNeeded() {
-        if self.cover.superview == nil {
-            self.view.addSubview(self.cover)
-            self.cover.frame = self.view.bounds
-            self.cover.alpha = 0
-        }
-    }
-    
-    private func updateCoverAlpha(offset: CGFloat) {
-        let alphaComponent = offset / self.masterViewWidth
-        self.cover.alpha = alphaComponent
-    }
-    
-    private func removeCover() {
-        self.cover.removeFromSuperview()
+    private func updateChildViewAlpha(offset: CGFloat) {
+        let alphaComponent = max(0.3, 1 - offset / self.masterViewWidth) // 透明度不小于 0.3
+        self.currentChildViewController?.view.alpha = alphaComponent
+        self.navigationController?.navigationBar.alpha = alphaComponent
     }
 }
 
 
 extension HomeViewController: UIGestureRecognizerDelegate {
-    
+    public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        if gestureRecognizer == self.tap {
+            return isShowingMaster
+        }
+        
+        return true
+    }
 }

@@ -20,7 +20,8 @@ public class Application: Coordinator {
         self.window = window
         
         let navigationController = UINavigationController()
-        navigationController.isNavigationBarHidden = true
+        navigationController.navigationBar.barTintColor = InterfaceTheme.Color.background1
+        navigationController.navigationBar.tintColor = InterfaceTheme.Color.interactive
         
         super.init(stack: navigationController,
                    dependency: Dependency(documentManager: DocumentManager(),

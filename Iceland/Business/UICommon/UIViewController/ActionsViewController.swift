@@ -124,12 +124,13 @@ public class ActionsViewController: UIViewController {
     
     private let actionsContainerView: UIView = {
         let view = UIView()
+        view.backgroundColor = InterfaceTheme.Color.background2
         return view
     }()
     
     private let contentView: UIView = {
         let view = UIView()
-        view.backgroundColor = InterfaceTheme.Color.background2
+        view.backgroundColor = InterfaceTheme.Color.background1
         return view
     }()
     

@@ -11,11 +11,11 @@ import UIKit
 
 extension CGRect {
     public func offsetX(_ x: CGFloat) -> CGRect {
-        return offset(x: x, y: 0)
+        return offset(x: x, y: self.origin.y)
     }
     
     public func offsetY(_ y: CGFloat) -> CGRect {
-        return offset(x: 0, y: y)
+        return offset(x: self.origin.x, y: y)
     }
     
     public func offset(x: CGFloat, y: CGFloat) -> CGRect {
