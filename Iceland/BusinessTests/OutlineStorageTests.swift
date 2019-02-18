@@ -131,8 +131,8 @@ use voice to record remember task is handy
     }
     
     func testEditItems() {
-        let storage = EditorController(parser: OutlineParser())
-        let textView = UITextView(frame: .zero, textContainer: storage.textContainer)
+        let controller = EditorController(parser: OutlineParser())
+        let textView = UITextView(frame: .zero, textContainer: controller.textContainer)
         textView.text = """
         * TODO fastlane design :movie:entertainment:
         SCHEDULED: <2018-12-05 Wed>
@@ -162,38 +162,38 @@ use voice to record remember task is handy
         
         
         """
-        XCTAssertEqual("* TODO fastlane design :movie:entertainment:\nSCHEDULED: <2018-12-05 Wed>\nDEADLINE: <2018-12-05 Wed>", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[0]))
-        XCTAssertEqual("*", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[1]))
-        XCTAssertEqual("TODO", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[2]))
-        XCTAssertEqual(":movie:entertainment:", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[3]))
-        XCTAssertEqual("SCHEDULED: <2018-12-05 Wed>", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[4]))
-        XCTAssertEqual("DEADLINE: <2018-12-05 Wed>", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[5]))
-        XCTAssertEqual("*** DONE iOS platform structure project", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[6]))
-        XCTAssertEqual("***", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[7]))
-        XCTAssertEqual("DONE", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[8]))
-        XCTAssertEqual("1. list the structure", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[9]))
-        XCTAssertEqual("1", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[10]))
-        XCTAssertEqual("2. make a tool to do it", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[11]))
-        XCTAssertEqual("2", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[12]))
+        XCTAssertEqual("* TODO fastlane design :movie:entertainment:\nSCHEDULED: <2018-12-05 Wed>\nDEADLINE: <2018-12-05 Wed>", (textView.text as NSString).substring(with: controller.textStorage.itemRanges[0]))
+        XCTAssertEqual("*", (textView.text as NSString).substring(with: controller.textStorage.itemRanges[1]))
+        XCTAssertEqual("TODO", (textView.text as NSString).substring(with: controller.textStorage.itemRanges[2]))
+        XCTAssertEqual(":movie:entertainment:", (textView.text as NSString).substring(with: controller.textStorage.itemRanges[3]))
+        XCTAssertEqual("SCHEDULED: <2018-12-05 Wed>", (textView.text as NSString).substring(with: controller.textStorage.itemRanges[4]))
+        XCTAssertEqual("DEADLINE: <2018-12-05 Wed>", (textView.text as NSString).substring(with: controller.textStorage.itemRanges[5]))
+        XCTAssertEqual("*** DONE iOS platform structure project", (textView.text as NSString).substring(with: controller.textStorage.itemRanges[6]))
+        XCTAssertEqual("***", (textView.text as NSString).substring(with: controller.textStorage.itemRanges[7]))
+        XCTAssertEqual("DONE", (textView.text as NSString).substring(with: controller.textStorage.itemRanges[8]))
+        XCTAssertEqual("1. list the structure", (textView.text as NSString).substring(with: controller.textStorage.itemRanges[9]))
+        XCTAssertEqual("1", (textView.text as NSString).substring(with: controller.textStorage.itemRanges[10]))
+        XCTAssertEqual("2. make a tool to do it", (textView.text as NSString).substring(with: controller.textStorage.itemRanges[11]))
+        XCTAssertEqual("2", (textView.text as NSString).substring(with: controller.textStorage.itemRanges[12]))
         
-        storage.textStorage.currentLocation = 150
-        storage.adjustParseRange(NSRange(location: 150, length: 10))
-        storage.textStorage.updateItemIndexAndRange(delta: 0)
-        storage.parser.parse(str: textView.text!, range: storage.textStorage.currentParseRange)
-        storage.textStorage.updateCurrentInfo()
+        controller.textStorage.currentLocation = 150
+        controller.textStorage.adjustParseRange(NSRange(location: 150, length: 10))
+        controller.textStorage.updateItemIndexAndRange(delta: 0)
+        controller.textStorage.parser.parse(str: textView.text!, range: controller.textStorage.currentParseRange)
+        controller.textStorage.updateCurrentInfo()
         
-        XCTAssertEqual("* TODO fastlane design :movie:entertainment:\nSCHEDULED: <2018-12-05 Wed>\nDEADLINE: <2018-12-05 Wed>", textView.text.substring(storage.textStorage.itemRanges[0]))
-        XCTAssertEqual("*", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[1]))
-        XCTAssertEqual("TODO", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[2]))
-        XCTAssertEqual(":movie:entertainment:", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[3]))
-        XCTAssertEqual("SCHEDULED: <2018-12-05 Wed>", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[4]))
-        XCTAssertEqual("DEADLINE: <2018-12-05 Wed>", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[5]))
-        XCTAssertEqual("*** DONE iOS platform structure project", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[6]))
-        XCTAssertEqual("***", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[7]))
-        XCTAssertEqual("DONE", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[8]))
-        XCTAssertEqual("1. list the structure", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[9]))
-        XCTAssertEqual("1", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[10]))
-        XCTAssertEqual("2. make a tool to do it", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[11]))
-        XCTAssertEqual("2", (textView.text as NSString).substring(with: storage.textStorage.itemRanges[12]))
+        XCTAssertEqual("* TODO fastlane design :movie:entertainment:\nSCHEDULED: <2018-12-05 Wed>\nDEADLINE: <2018-12-05 Wed>", textView.text.substring(controller.textStorage.itemRanges[0]))
+        XCTAssertEqual("*", (textView.text as NSString).substring(with: controller.textStorage.itemRanges[1]))
+        XCTAssertEqual("TODO", (textView.text as NSString).substring(with: controller.textStorage.itemRanges[2]))
+        XCTAssertEqual(":movie:entertainment:", (textView.text as NSString).substring(with: controller.textStorage.itemRanges[3]))
+        XCTAssertEqual("SCHEDULED: <2018-12-05 Wed>", (textView.text as NSString).substring(with: controller.textStorage.itemRanges[4]))
+        XCTAssertEqual("DEADLINE: <2018-12-05 Wed>", (textView.text as NSString).substring(with: controller.textStorage.itemRanges[5]))
+        XCTAssertEqual("*** DONE iOS platform structure project", (textView.text as NSString).substring(with: controller.textStorage.itemRanges[6]))
+        XCTAssertEqual("***", (textView.text as NSString).substring(with: controller.textStorage.itemRanges[7]))
+        XCTAssertEqual("DONE", (textView.text as NSString).substring(with: controller.textStorage.itemRanges[8]))
+        XCTAssertEqual("1. list the structure", (textView.text as NSString).substring(with: controller.textStorage.itemRanges[9]))
+        XCTAssertEqual("1", (textView.text as NSString).substring(with: controller.textStorage.itemRanges[10]))
+        XCTAssertEqual("2. make a tool to do it", (textView.text as NSString).substring(with: controller.textStorage.itemRanges[11]))
+        XCTAssertEqual("2", (textView.text as NSString).substring(with: controller.textStorage.itemRanges[12]))
     }
 }

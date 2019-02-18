@@ -21,14 +21,13 @@ public class EditorController: NSObject {
     
     internal let textStorage: OutlineTextStorage
     
-    internal var parser: OutlineParser!
-    
     public weak var delegate: EditorControllerDelegate?
     
     public convenience init(parser: OutlineParser) {
         self.init()
-        self.parser = parser
-        self.parser.delegate = self.textStorage
+        self.textStorage.parser = parser
+        parser.delegate = self.textStorage
+        self.textStorage.attributeChangeDelegate = self.textStorage
     }
     
     public override init() {
@@ -90,29 +89,17 @@ extension EditorController: OutlineTextStorageDelegate {
 extension EditorController {
     public func changeFoldingStatus(at location: Int) {
         if let heading = self.textStorage.heading(at: location) {
-            let range = heading.paragraphRange
+            log.info("fold range: \(heading.contentRange)")
             
-            let contentLocation = heading.range.upperBound + 1 // contentLocation + 1 因为有换行符
-            
-            // 当位于文章末尾之前的章节，长度 + 1，避免折叠后留下一个换行符，导致章节之间有空行
-            var postParagraphLength = 1
-            if range.upperBound >= textStorage.string.count - 1 {
-                postParagraphLength = 0
-            }
-            
-            let contentRange = NSRange(location: contentLocation,
-                                       length: range.upperBound - contentLocation + postParagraphLength)
-            
-            log.info("fold range: \(contentRange)")
-            
-            if self.textStorage.attributes(at: contentRange.location, effectiveRange: nil)[OutlineAttribute.Heading.folded] == nil {
-                
+            if self.textStorage.attributes(at: heading.contentRange.location, effectiveRange: nil)[OutlineAttribute.Heading.folded] == nil {
+                // 标记内容为隐藏
                 self.textStorage.addAttribute(OutlineAttribute.Heading.folded,
                                               value: 1,
-                                              range: contentRange)
+                                              range: heading.contentRange)
             } else {
+                // 移除内容隐藏标记
                 self.textStorage.removeAttribute(OutlineAttribute.Heading.folded,
-                                                 range: contentRange)
+                                                 range: heading.contentRange)
             }
         }
     }
@@ -156,16 +143,6 @@ extension EditorController: NSTextStorageDelegate {
                             willProcessEditing editedMask: NSTextStorage.EditActions,
                             range editedRange: NSRange,
                             changeInLength delta: Int) {
-        
-        log.info("removing attributes in range: \(editedRange)")
-
-        guard editedRange.upperBound < textStorage.string.count else { return } // 防止崩溃
-
-        // 清空 attributes (折叠的状态除外)
-        for (key, _) in textStorage.attributes(at: editedRange.location, longestEffectiveRange: nil, in: editedRange) {
-            if key == OutlineAttribute.Heading.folded { continue }
-            textStorage.removeAttribute(key, range: editedRange)
-        }
     }
     
     /// 添加文字属性
@@ -173,67 +150,5 @@ extension EditorController: NSTextStorageDelegate {
                             didProcessEditing editedMask: NSTextStorage.EditActions,
                             range editedRange: NSRange,
                             changeInLength delta: Int) {
-        
-        log.info("editing in range: \(editedRange), is non continouse: \(textStorage.layoutManagers[0].hasNonContiguousLayout)")
-
-        guard delta != 0 else { return } // 如果没有文字增删，则不进行解析
-
-        /// 更新当前交互的位置
-        self.textStorage.currentLocation = editedRange.location
-
-        // 调整需要解析的字符串范围
-        self.adjustParseRange(editedRange)
-
-        // 更新 item 索引缓存
-        self.textStorage.updateItemIndexAndRange(delta: delta)
-
-        parser.parse(str: textStorage.string,
-                     range: self.textStorage.currentParseRange!)
-
-        // 更新当前状态缓存
-        self.textStorage.updateCurrentInfo()
-        
-        self.textStorage.addAttributes([NSAttributedString.Key.foregroundColor : InterfaceTheme.Color.interactive], range: editedRange)
-    }
-    
-    internal func adjustParseRange(_ range: NSRange) {
-        var tempRange = range.expandFoward(string: textStorage.string)
-        tempRange = tempRange.expandBackward(string: textStorage.string)
-        self.textStorage.currentParseRange = tempRange
-        
-        // 如果范围在某个 item 内，并且小于这个 item 原来的范围，则扩大至这个 item 原来的范围
-        if let currrentParseRange = self.textStorage.currentParseRange {
-            for item in self.textStorage.itemRanges {
-                if item.location <= currrentParseRange.location &&
-                    item.upperBound >= currrentParseRange.upperBound {
-                    self.textStorage.currentParseRange = item
-                    return
-                }
-            }
-        }
-    }
-}
-
-extension NSRange {
-    /// 将在字符串中的选择区域扩展到前一个换行符之后，后一个换行符之前
-    internal func expandBackward(string: String) -> NSRange {
-        var extendedRange = self
-        // 向上, 到上一个 '\n' 之后
-        while extendedRange.location > 0
-            && string.substring(NSRange(location: extendedRange.location - 1, length: 1)) != OutlineParser.Values.Character.linebreak {
-                extendedRange = NSRange(location: extendedRange.location - 1, length: extendedRange.length + 1)
-        }
-        return extendedRange
-    }
-    
-    internal func expandFoward(string: String) -> NSRange {
-        // 向下，下一个 '\n' 之前
-        var extendedRange = self
-        while extendedRange.upperBound < string.count - 1
-            && string.substring(NSRange(location: extendedRange.upperBound, length: 1)) != OutlineParser.Values.Character.linebreak {
-                extendedRange = NSRange(location: extendedRange.location, length: extendedRange.length + 1)
-        }
-
-        return extendedRange
     }
 }

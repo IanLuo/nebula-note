@@ -28,6 +28,14 @@ FOUNDATION_EXPORT const unsigned char TextStorageVersionString[];
 #define OUTLINE_ATTRIBUTE_LINK @"link"
 #define OUTLINE_ATTRIBUTE_LINK_TITLE @"link-title"
 
+@protocol GaterAttributeChanges<NSObject>
+
+- (void)changeAttributes:(NSString *)string range:(NSRange)range delta:(NSInteger)delta action:(NSTextStorageEditActions)action;
+
+@end
+
 @interface TextStorage: NSTextStorage<NSLayoutManagerDelegate>
+
+@property (nonatomic, weak) id<GaterAttributeChanges> attributeChangeDelegate;
 
 @end

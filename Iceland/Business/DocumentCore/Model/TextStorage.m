@@ -12,7 +12,7 @@
 
 @interface TextStorage()
 
-@property (strong) NSMutableAttributedString *backingStore;
+@property (strong) NSTextStorage *backingStore;
 
 @end
 
@@ -20,7 +20,7 @@
 
 - (instancetype)init {
     if ([super init]) {
-        self.backingStore = [[NSMutableAttributedString alloc]init];
+        self.backingStore = [[NSTextStorage alloc]init];
     }
     
     return self;
@@ -31,8 +31,10 @@
 }
 
 - (void)replaceCharactersInRange:(NSRange)range withString:(NSString *)str {
+    [self beginEditing];
     [self.backingStore replaceCharactersInRange:range withString:str];
-    [self edited: NSTextStorageEditedCharacters|NSTextStorageEditedAttributes range:range changeInLength: str.length - range.length];
+    [self edited: NSTextStorageEditedCharacters range:range changeInLength: str.length - range.length];
+    [self endEditing];
 }
 
 - (NSDictionary<NSAttributedStringKey,id> *)attributesAtIndex:(NSUInteger)location effectiveRange:(NSRangePointer)range {
@@ -40,18 +42,24 @@
 }
 
 - (void)setAttributes:(NSDictionary<NSAttributedStringKey,id> *)attrs range:(NSRange)range {
+    [self beginEditing];
     [self.backingStore setAttributes:attrs range:range];
     [super edited: NSTextStorageEditedAttributes range:range changeInLength:0];
+    [self endEditing];
 }
 
 - (void)processEditing {
+    if ([self.attributeChangeDelegate respondsToSelector: @selector(changeAttributes:range:delta:action:)]) {
+        [self.attributeChangeDelegate changeAttributes:self.string range: [super editedRange] delta: [super changeInLength] action: [super editedMask]];
+    }
+    
     [super processEditing];
 }
 
 - (NSUInteger)layoutManager:(NSLayoutManager *)layoutManager shouldGenerateGlyphs:(const CGGlyph *)glyphs properties:(const NSGlyphProperty *)props characterIndexes:(const NSUInteger *)charIndexes font:(UIFont *)aFont forGlyphRange:(NSRange)glyphRange {
     
     NSGlyphProperty *controlCharProps = malloc(sizeof(NSGlyphProperty) * glyphRange.length);
-    BOOL shouldGenerate = NO;
+    BOOL shouldGenerate = NO; // 如果标记为 YES，则表示有 glyph 需要修改，否则使用默认行为
     
     for (int i = 0; i < glyphRange.length; i++) {
         NSDictionary * attributes = [self attributesAtIndex: glyphRange.location + i effectiveRange: nil];
@@ -59,10 +67,12 @@
         if (attributes[OUTLINE_ATTRIBUTE_HEADING_FOLDED] != nil) {
             controlCharProps[i] = NSGlyphPropertyNull;
             shouldGenerate = YES;
-        } else if (attributes[OUTLINE_ATTRIBUTE_LINK] != nil && attributes[OUTLINE_ATTRIBUTE_LINK_TITLE] == nil) {
+        } else if (attributes[OUTLINE_ATTRIBUTE_LINK] != nil // 隐藏 link 中除了标题的部分
+                   && attributes[OUTLINE_ATTRIBUTE_LINK_TITLE] == nil) {
             controlCharProps[i] = NSGlyphPropertyNull;
             shouldGenerate = YES;
-        }  else if (attributes[OUTLINE_ATTRIBUTE_CHECKBOX_STATUS] != nil && attributes[OUTLINE_ATTRIBUTE_CHECKBOX_BOX] == nil) {
+        }  else if (attributes[OUTLINE_ATTRIBUTE_CHECKBOX_STATUS] == nil // 隐藏 checkbox 中 status 为 nil 并且 box 不为 nil 的部分
+                    && attributes[OUTLINE_ATTRIBUTE_CHECKBOX_BOX] != nil) {
             controlCharProps[i] = NSGlyphPropertyNull;
             shouldGenerate = YES;
         } else {

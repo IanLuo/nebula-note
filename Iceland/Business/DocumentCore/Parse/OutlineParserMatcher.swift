@@ -116,7 +116,7 @@ extension OutlineParser {
                 public static let code = "code"
             }
             
-            public static let paragraph = "paragraph"
+            public static let paragraph = "paragraph" // 普通文字
             public static let image = "image"
             public static let audio = "audio"
             public static let video = "video"
@@ -127,14 +127,15 @@ extension OutlineParser {
     }
     
     public struct RegexPattern {
-        private static let charactor = "\\p{L}"
+        private static let character = "\\p{L}"
+        
         public struct Node {
             public static let heading = "^(\\*+) (.+)((\n\(Element.Heading.schedule))|(\n\(Element.Heading.due))){0,2}"
             // FIXME: 如果 BEGIN 和 END 内部没有至少一个空行，则无法匹配成功
-            public static let codeBlock =       "^[\\t ]*\\#\\+BEGIN\\_SRC( [\(charactor)\\.]*)?\\n([^\\#\\+END\\_SRC]*)\\n\\s*\\#\\+END\\_SRC[\\t ]*\\n"
+            public static let codeBlock =       "^[\\t ]*\\#\\+BEGIN\\_SRC( [\(character)\\.]*)?\\n([^\\#\\+END\\_SRC]*)\\n\\s*\\#\\+END\\_SRC[\\t ]*\\n"
             public static let checkBox =        "[\\t ]*( \\[[X| |\\-]\\])"
             public static let unorderedList =   "^[\\t ]*[\\-\\+] .*"
-            public static let orderedList =     "^[\\t ]*([\(charactor)\\.])+[\\.\\)\\>] .*"
+            public static let orderedList =     "^[\\t ]*([\(character)\\.])+[\\.\\)\\>] .*"
             public static let seperator =       "^[\\t ]*(\\-{5,}[\\t ]*)"
             public static let attachment =      "\\#\\+Attachment\\:(image|video|audio|sketch|location)\\=([^\\=\\n]+)" // like: #+Attachment:image=xdafeljlfjeksjdf
         }
@@ -144,7 +145,7 @@ extension OutlineParser {
                 public static let schedule =    "(SCHEDULED\\: \\<([0-9]{4}\\-[0-9]{1,2}\\-[0-9]{1,2} [a-zA-Z]{3}( [0-9]{2}\\:[0-9]{1,2})?)\\>)"
                 public static let due =         "(DEADLINE\\: \\<([0-9]{4}\\-[0-9]{1,2}\\-[0-9]{1,2} [a-zA-Z]{3}( [0-9]{2}\\:[0-9]{1,2})?)\\>)"
                 public static let planning =    " (\(Values.Heading.Planning.pattern))? "
-                public static let tags =        "(\\:(\(charactor)+\\:)+)"
+                public static let tags =        "(\\:(\(character)+\\:)+)"
             }
             
             public struct TextMark {
@@ -182,9 +183,9 @@ extension OutlineParser {
         }
         
         public struct Checkbox {
-            public static let unchecked: String = "- [ ]"
-            public static let checked: String = "- [x]"
-            public static let halfChecked: String = "- [-]"
+            public static let unchecked: String = "[ ]"
+            public static let checked: String = "[x]"
+            public static let halfChecked: String = "[-]"
         }
         
         public struct Heading {

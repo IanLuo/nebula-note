@@ -18,6 +18,7 @@ public protocol OutlineTextStorageDataSource: class {
 }
 
 public class OutlineTextStorage: TextStorage {
+    public var parser: OutlineParser!
     
     public override var string: String {
         set { super.replaceCharacters(in: NSRange(location: 0, length: self.string.count), with: newValue) }
@@ -42,7 +43,7 @@ public class OutlineTextStorage: TextStorage {
             if let _ = oldValue {
                 self.removeAttribute(NSAttributedString.Key.backgroundColor, range: NSRange(location: 0, length: self.string.count))
             }
-            self.addAttributes([NSAttributedString.Key.backgroundColor: UIColor.red.withAlphaComponent(0.1)], range: currentParseRange!)
+            self.addAttributes([NSAttributedString.Key.backgroundColor: UIColor.red.withAlphaComponent(0.5)], range: currentParseRange!)
         }
     }
     
@@ -56,6 +57,33 @@ public class OutlineTextStorage: TextStorage {
     private var tempParsingResult: [[String: NSRange]] = []
     // 某些范围要忽略掉文字的样式，比如 link 内的文字样式
     private var ignoreTextMarkRanges: [NSRange] = []
+}
+
+extension OutlineTextStorage: GaterAttributeChanges {
+    public func changeAttributes(_ string: String!, range: NSRange, delta: Int, action: NSTextStorage.EditActions) {
+        log.info("editing in range: \(range), is non continouse: \(self.layoutManagers[0].hasNonContiguousLayout)")
+        
+        guard delta != 0 else { return } // 如果没有文字增删，则不进行解析
+        
+        /// 更新当前交互的位置
+        self.currentLocation = editedRange.location
+        
+        // 更新 item 索引缓存
+        self.updateItemIndexAndRange(delta: delta)
+        
+        // 调整需要解析的字符串范围
+        self.adjustParseRange(editedRange)
+        
+        parser.parse(str: self.string,
+                     range: self.currentParseRange!)
+        
+        // 更新当前状态缓存
+        self.updateCurrentInfo()
+        
+        // 设置文字默认样式
+        self.addAttributes([NSAttributedString.Key.foregroundColor : InterfaceTheme.Color.interactive],
+                                       range: editedRange)
+    }
 }
 
 extension OutlineTextStorage {
@@ -181,7 +209,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 newItems.append(Document.Item(range: value, name: key, data: [key: value]))
             }
         }
-        
+//
         newItems.sort { (lhs: Document.Item, rhs: Document.Item) -> Bool in
             if lhs.range.location != rhs.range.location {
                 return lhs.range.location < rhs.range.location
@@ -275,8 +303,8 @@ extension OutlineTextStorage: OutlineParserDelegate {
         checkboxRanges.forEach { checkbox in
             for (key, range) in checkbox {
                 if key == OutlineParser.Key.Element.Checkbox.status {
-                    self.addAttribute(OutlineAttribute.Checkbox.box, value: checkbox, range: NSRange(location: range.location, length: 1))
-                    self.addAttribute(OutlineAttribute.Checkbox.status, value: range, range: range)
+                    self.addAttribute(OutlineAttribute.Checkbox.box, value: checkbox, range: range)
+                    self.addAttribute(OutlineAttribute.Checkbox.status, value: range, range: NSRange(location: range.location, length: 1))
                 }
             }
         }
@@ -297,17 +325,13 @@ extension OutlineTextStorage: OutlineParserDelegate {
     public func didFoundCodeBlock(text: String, codeBlockRanges: [[String : NSRange]]) {
         self.tempParsingResult.append(contentsOf: codeBlockRanges)
     }
-    
+
     public func didFoundHeadings(text: String, headingDataRanges: [[String : NSRange]]) {
         self.tempParsingResult.append(contentsOf: headingDataRanges)
         self.updateHeadingIfNeeded(headingDataRanges)
         
         headingDataRanges.forEach {
             if let levelRange = $0[OutlineParser.Key.Element.Heading.level] {
-                let attachment = NSTextAttachment()
-                attachment.bounds = CGRect(origin: .zero, size: CGSize(width: 24, height: 24))
-                attachment.image = UIImage.create(with: UIColor.lightGray, size: attachment.bounds.size)
-                self.addAttribute(NSAttributedString.Key.attachment, value: attachment, range: levelRange)
                 self.addAttribute(OutlineAttribute.Heading.level, value: $0, range: levelRange)
             }
             
@@ -340,13 +364,18 @@ extension OutlineTextStorage: OutlineParserDelegate {
     }
     
     public func didCompleteParsing(text: String) {
+        // 添加接续出来的 item 到 items 列表
         if self.tempParsingResult.count > 0 {
             self.insertItems(items: self.tempParsingResult)
         }
         
+        // 更新段落长度信息
         self.updateHeadingParagraphLength()
         
+        // 更新段落缩进样式
         self.setParagraphIndent()
+        
+        print(self.debugDescription)
     }
     
     private func setParagraphIndent() {
@@ -371,6 +400,24 @@ extension OutlineTextStorage: OutlineParserDelegate {
         }
     }
     
+    public func addUnfoldedIconAttachment(at range: NSRange) {
+        self.setAttributes([NSAttributedString.Key.attachment: self.attachment(image: "right", size: CGSize(width: 10, height: 10))],
+                           range: range)
+    }
+    
+    public func addFoldedIconAttachment(at range: NSRange) {
+        self.setAttributes([NSAttributedString.Key.attachment: self.attachment(image: "down", size: CGSize(width: 10, height: 10))],
+                           range: range)
+    }
+    
+    /// 用图片创建 attachment
+    private func attachment(image name: String, size: CGSize) -> NSTextAttachment {
+        let attachment = NSTextAttachment()
+        attachment.bounds = CGRect(origin: .zero, size: size)
+        attachment.image = UIImage(named: name)
+        return attachment
+    }
+    
     /// 获得用 heading 分割的段落的 range 列表
     private func updateHeadingParagraphLength() {
         var endOfParagraph = self.string.count
@@ -378,5 +425,57 @@ extension OutlineTextStorage: OutlineParserDelegate {
             $0.contentLength = endOfParagraph - $0.range.upperBound
             endOfParagraph = $0.range.location
         }
+    }
+    
+    internal func adjustParseRange(_ range: NSRange) {
+        var tempRange = range.expandFoward(string: self.string)
+        tempRange = tempRange.expandBackward(string: self.string)
+        self.currentParseRange = tempRange
+        
+        // 如果范围在某个 item 内，并且小于这个 item 原来的范围，则扩大至这个 item 原来的范围
+        if let currrentParseRange = self.currentParseRange {
+            for item in self.itemRanges {
+                if item.location <= currrentParseRange.location
+                    && item.upperBound >= currrentParseRange.upperBound {
+                    self.currentParseRange = item
+                    return
+                }
+            }
+        }
+    }
+}
+
+extension NSRange {
+    /// 将在字符串中的选择区域扩展到前一个换行符之后，后一个换行符之前
+    internal func expandBackward(string: String) -> NSRange {
+        var extendedRange = self
+        // 向上, 到上一个 '\n' 之后
+        while extendedRange.location > 0
+            && string.substring(NSRange(location: extendedRange.location - 1, length: 1)) != OutlineParser.Values.Character.linebreak {
+                extendedRange = NSRange(location: extendedRange.location - 1, length: extendedRange.length + 1)
+        }
+        
+        return extendedRange
+    }
+    
+    internal func expandFoward(string: String) -> NSRange {
+        // 向下，下一个 '\n' 之前
+        var extendedRange = self
+        while extendedRange.upperBound < string.count - 1
+            && string.substring(NSRange(location: extendedRange.upperBound, length: 1)) != OutlineParser.Values.Character.linebreak {
+                extendedRange = NSRange(location: extendedRange.location, length: extendedRange.length + 1)
+        }
+        
+        return extendedRange
+    }
+}
+
+extension OutlineTextStorage {
+    public override var debugDescription: String {
+        return """
+        length: \(self.string.count)
+        heading count: \(self.savedHeadings.count)
+        items count: \(self.itemRanges.count)
+"""
     }
 }
