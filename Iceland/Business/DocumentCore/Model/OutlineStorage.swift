@@ -65,6 +65,10 @@ extension OutlineTextStorage: GaterAttributeChanges {
         
         guard delta != 0 else { return } // 如果没有文字增删，则不进行解析
         
+        // 设置文字默认样式
+        self.addAttributes([NSAttributedString.Key.foregroundColor : InterfaceTheme.Color.interactive],
+                           range: editedRange)
+        
         /// 更新当前交互的位置
         self.currentLocation = editedRange.location
         
@@ -79,10 +83,6 @@ extension OutlineTextStorage: GaterAttributeChanges {
         
         // 更新当前状态缓存
         self.updateCurrentInfo()
-        
-        // 设置文字默认样式
-        self.addAttributes([NSAttributedString.Key.foregroundColor : InterfaceTheme.Color.interactive],
-                                       range: editedRange)
     }
 }
 
@@ -227,7 +227,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 self.itemRanges = newItems.map { $0.range }
             } else {
                 let index = findInsertPosition(new: first.range.location, ranges: self.itemRanges)
-                log.verbose("insert at: \(index)")
+                log.info("insert at: \(index)")
                 if index == self.itemRanges.count - 1 {
                     self.itemRanges.append(contentsOf: newItems.map { $0.range })
                 } else {
