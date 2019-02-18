@@ -422,7 +422,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
     private func updateHeadingParagraphLength() {
         var endOfParagraph = self.string.count
         self.savedHeadings.reversed().forEach {
-            $0.contentLength = endOfParagraph - $0.range.upperBound
+            $0.contentLength = endOfParagraph - $0.range.upperBound - 1
             endOfParagraph = $0.range.location
         }
     }
