@@ -184,7 +184,7 @@ extension OutlineParser {
         
         public struct Checkbox {
             public static let unchecked: String = "[ ]"
-            public static let checked: String = "[x]"
+            public static let checked: String = "[X]"
             public static let halfChecked: String = "[-]"
         }
         

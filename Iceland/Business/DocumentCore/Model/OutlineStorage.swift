@@ -65,7 +65,7 @@ extension OutlineTextStorage: GaterAttributeChanges {
     public func changeAttributes(_ string: String!, range: NSRange, delta: Int, action: NSTextStorage.EditActions) {
         log.info("editing in range: \(range), is non continouse: \(self.layoutManagers[0].hasNonContiguousLayout)")
         
-        guard delta != 0 else { return } // 如果没有文字增删，则不进行解析
+        guard action != .editedAttributes else { return } // 如果是修改属性，则不进行解析
         
         /// 更新当前交互的位置
         self.currentLocation = editedRange.location
@@ -240,6 +240,8 @@ extension OutlineTextStorage: OutlineParserDelegate {
             }
         }
     }
+    
+    // MARK: - handle parse result
     
     public func didFoundTextMark(text: String, markRanges: [[String: NSRange]]) {
         var markRanges = markRanges
@@ -422,6 +424,8 @@ extension OutlineTextStorage: OutlineParserDelegate {
             }
         }
     }
+    
+    // MARK: - utils
     
     public func addUnfoldedIconAttachment(at range: NSRange) {
         self.setAttributes([NSAttributedString.Key.attachment: self.attachment(image: "right")],
