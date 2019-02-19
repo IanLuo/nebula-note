@@ -357,6 +357,36 @@ extension OutlineTextStorage: OutlineParserDelegate {
     
     public func didFoundCodeBlock(text: String, codeBlockRanges: [[String : NSRange]]) {
         self.tempParsingResult.append(contentsOf: codeBlockRanges)
+        
+        codeBlockRanges.forEach { range in
+            if let range = range[OutlineParser.Key.Node.codeBlock] {
+                self.addAttributes([NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.descriptive,
+                                    NSAttributedString.Key.font: InterfaceTheme.Font.footnote,
+                                    NSAttributedString.Key.backgroundColor: InterfaceTheme.Color.background2], range: range)
+            }
+            
+            if let content = range[OutlineParser.Key.Element.CodeBlock.content] {
+                self.addAttributes([NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.interactive,
+                                    NSAttributedString.Key.font: InterfaceTheme.Font.body], range: content)
+            }
+        }
+    }
+    
+    public func didFoundQuote(text: String, quoteRanges: [[String : NSRange]]) {
+        self.tempParsingResult.append(contentsOf: quoteRanges)
+        
+        quoteRanges.forEach { quoteRange in
+            if let range = quoteRange[OutlineParser.Key.Node.quote] {
+                self.addAttributes([NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.descriptive,
+                                    NSAttributedString.Key.font: InterfaceTheme.Font.footnote,
+                                    NSAttributedString.Key.backgroundColor: InterfaceTheme.Color.background2], range: range)
+            }
+            
+            if let content = quoteRange[OutlineParser.Key.Element.Quote.content] {
+                self.addAttributes([NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.interactive,
+                                    NSAttributedString.Key.font: InterfaceTheme.Font.body], range: content)
+            }
+        }
     }
 
     public func didFoundHeadings(text: String, headingDataRanges: [[String : NSRange]]) {
@@ -403,7 +433,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
             
             if let planningRange = $0[OutlineParser.Key.Element.Heading.planning] {
                 self.addAttribute(OutlineAttribute.Heading.due, value: planningRange, range: planningRange)
-                self.addAttribute(NSAttributedString.Key.font, value: UIFont.boldSystemFont(ofSize: 12), range: planningRange)
+                self.addAttribute(NSAttributedString.Key.font, value: InterfaceTheme.Font.title, range: planningRange)
                 self.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.red, range: planningRange)
             }
         }
@@ -482,6 +512,11 @@ extension OutlineTextStorage: OutlineParserDelegate {
     }
     
     internal func adjustParseRange(_ range: NSRange) {
+        guard range.length < self.string.count else {
+            self.currentParseRange = NSRange(location: 0, length: self.string.count)
+            return
+        }
+        
         var tempRange = range.expandFoward(string: self.string)
         tempRange = tempRange.expandBackward(string: self.string)
         self.currentParseRange = tempRange
@@ -503,9 +538,10 @@ extension NSRange {
     /// 将在字符串中的选择区域扩展到前一个换行符之后，后一个换行符之前
     internal func expandBackward(string: String) -> NSRange {
         var extendedRange = self
-        // 向上, 到上一个 '\n' 之后
+        var characterBuf: String = ""
+        // 向上, 到上一个空行之后
         while extendedRange.location > 0
-            && string.substring(NSRange(location: extendedRange.location - 1, length: 1)) != OutlineParser.Values.Character.linebreak {
+            && !self.checkIsBlankLine(buf: &characterBuf, next: string.substring(NSRange(location: extendedRange.location - 1, length: 1))) {
                 extendedRange = NSRange(location: extendedRange.location - 1, length: extendedRange.length + 1)
         }
         
@@ -513,14 +549,26 @@ extension NSRange {
     }
     
     internal func expandFoward(string: String) -> NSRange {
-        // 向下，下一个 '\n' 之前
+        // 向下，下一个空行之前
         var extendedRange = self
+        var characterBuf: String = ""
         while extendedRange.upperBound < string.count - 1
-            && string.substring(NSRange(location: extendedRange.upperBound, length: 1)) != OutlineParser.Values.Character.linebreak {
+            && !self.checkIsBlankLine(buf: &characterBuf, next: string.substring(NSRange(location: extendedRange.upperBound, length: 1))) {
                 extendedRange = NSRange(location: extendedRange.location, length: extendedRange.length + 1)
         }
         
         return extendedRange
+    }
+    
+    // 检查是否空行
+    private func checkIsBlankLine(buf: inout String, next character: String) -> Bool {
+        if character == OutlineParser.Values.Character.linebreak {
+            buf.append(character)
+        } else {
+            buf = ""
+        }
+        
+        return buf == (OutlineParser.Values.Character.linebreak + OutlineParser.Values.Character.linebreak)
     }
 }
 

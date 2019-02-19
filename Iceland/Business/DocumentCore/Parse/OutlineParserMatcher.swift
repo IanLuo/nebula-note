@@ -21,8 +21,8 @@ extension OutlineParser {
         public static let seperator: ParseeTypes = ParseeTypes(rawValue: 1 << 5)
         public static let attachment: ParseeTypes = ParseeTypes(rawValue: 1 << 6)
         public static let link: ParseeTypes = ParseeTypes(rawValue: 1 << 7)
-        public static let quote: ParseeTypes = ParseeTypes(rawValue: 1 << 8) // TOOD:
-        public static let footnote: ParseeTypes = ParseeTypes(rawValue: 1 << 9) // TODO:
+        public static let quote: ParseeTypes = ParseeTypes(rawValue: 1 << 8)
+        public static let footnote: ParseeTypes = ParseeTypes(rawValue: 1 << 9)
         
         public static let all: ParseeTypes = [.heading, .checkbox, orderedList, unorderedList, codeBlock, seperator, attachment, link, .quote, .footnote]
         public static let onlyHeading: ParseeTypes = [.checkbox, orderedList, unorderedList, codeBlock, seperator, attachment, link, .quote, .footnote]
@@ -36,8 +36,9 @@ extension OutlineParser {
             public static var unorderedList = try? NSRegularExpression(pattern: RegexPattern.Node.unorderedList, options: [.anchorsMatchLines])
             public static var codeBlock = try? NSRegularExpression(pattern: RegexPattern.Node.codeBlock, options: [.anchorsMatchLines])
             public static var seperator = try? NSRegularExpression(pattern: RegexPattern.Node.seperator, options: [.anchorsMatchLines])
-            public static var attachment = try? NSRegularExpression(pattern: RegexPattern.Node.attachment, options: [])
-            
+            public static var attachment = try? NSRegularExpression(pattern: RegexPattern.Node.attachment, options: [.anchorsMatchLines])
+            public static var quote = try? NSRegularExpression(pattern: RegexPattern.Node.quote, options: [.anchorsMatchLines])
+            public static var footnote = try? NSRegularExpression(pattern: RegexPattern.Node.footnote, options: [.anchorsMatchLines])
         }
         
         public struct Element {
@@ -70,6 +71,8 @@ extension OutlineParser {
             public static let codeBlock = "codeBlock"
             public static let seperator = "seperator"
             public static let attachment = "attachment"
+            public static let quote = "qoute"
+            public static let footnode = "footnode"
         }
         
         public struct Element {
@@ -121,6 +124,14 @@ extension OutlineParser {
                 public static let code = "code"
             }
             
+            public struct Quote {
+                public static let content = "content"
+            }
+            
+            public struct Footnote {
+                public static let content = "content"
+            }
+            
             public static let paragraph = "paragraph" // 普通文字
             public static let image = "image"
             public static let audio = "audio"
@@ -135,14 +146,15 @@ extension OutlineParser {
         private static let character = "\\p{L}"
         
         public struct Node {
-            public static let heading = "^(\\*+) (.+)((\n\(Element.Heading.schedule))|(\n\(Element.Heading.due))){0,2}"
-            // FIXME: 如果 BEGIN 和 END 内部没有至少一个空行，则无法匹配成功
+            public static let heading =         "^(\\*+) (.+)((\n\(Element.Heading.schedule))|(\n\(Element.Heading.due))){0,2}"
             public static let codeBlock =       "^[\\t ]*\\#\\+BEGIN\\_SRC( [\(character)\\.]*)?\\n([^\\#\\+END\\_SRC]*)\\n\\s*\\#\\+END\\_SRC[\\t ]*\\n"
             public static let checkBox =        "[\\t ]* (\\[[X| |\\-]\\])"
             public static let unorderedList =   "^[\\t ]*([\\-\\+]) .*"
             public static let orderedList =     "^[\\t ]*([a-zA-Z0-9]+[\\.\\)\\>]) .*"
             public static let seperator =       "^[\\t ]*(\\-{5,}[\\t ]*)"
             public static let attachment =      "\\#\\+Attachment\\:([image|video|audio|sketch|location])\\=([^\\=\\n]+)" // like: #+Attachment:image=xdafeljlfjeksjdf
+            public static let quote =           "^[\\t ]*\\#\\+BEGIN\\_QUOTE\\n([^\\#\\+END\\_QUOTE]*)\\n\\s*\\#\\+END\\_QUOTE[\\t ]*\\n"
+            public static let footnote =        "" // TODO: footnote regex pattern imp
         }
         
         public struct Element {
@@ -154,19 +166,19 @@ extension OutlineParser {
             }
             
             public struct TextMark {
+                private static let ignoredCharacters: String = "\\n\\,\\'\\\""
                 private static let pre =            "[ \\(\\{\\'\\\"]?"
                 private static let post =           "[ \\-\\.\\,\\:\\!\\?\\'\\)\\}\\\"]?"
-                public static let bold =            "\(pre)(\\*([^\\n\\,\\'\\\"\\*]+)\\*)\(post)"
-                public static let italic =          "\(pre)(\\/([^\\n\\,\\'\\\"\\/]+)\\/)\(post)"
-                public static let underscore =      "\(pre)(\\_([^\\n\\,\\'\\\"\\_]+)\\_)\(post)"
-                public static let strikeThough =    "\(pre)(\\+([^\\n\\,\\'\\\"\\+]+)\\+)\(post)"
-                public static let verbatim =        "\(pre)(\\=([^\\n\\,\\'\\\"\\=]+)\\=)\(post)"
-                public static let code =            "\(pre)(\\~([^\\n\\,\\'\\\"\\~]+)\\~)\(post)"
+                public static let bold =            "\(pre)(\\*([^\(ignoredCharacters)\\*]+)\\*)\(post)"
+                public static let italic =          "\(pre)(\\/([^\(ignoredCharacters)\\/]+)\\/)\(post)"
+                public static let underscore =      "\(pre)(\\_([^\(ignoredCharacters)\\_]+)\\_)\(post)"
+                public static let strikeThough =    "\(pre)(\\+([^\(ignoredCharacters)\\+]+)\\+)\(post)"
+                public static let verbatim =        "\(pre)(\\=([^\(ignoredCharacters)\\=]+)\\=)\(post)"
+                public static let code =            "\(pre)(\\~([^\(ignoredCharacters)\\~]+)\\~)\(post)"
             }
             
             public static let link = "\\[\\[((http|https|file)\\:.*)\\]\\[(.*)\\]\\]"
         }
-        
     }
     
     public struct Values {

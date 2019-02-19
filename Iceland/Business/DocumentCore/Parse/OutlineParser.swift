@@ -99,6 +99,23 @@ public class OutlineParser {
             }
         }
         
+        // MARK: 解析 quote
+        if let quote = Matcher.Node.quote, includeParsee.contains(.quote) {
+            let result: [[String: NSRange]] = quote
+                .matches(in: str, options: [], range: totalRange)
+                .map { (result: NSTextCheckingResult) -> [String: NSRange] in
+                    var comp: [String: NSRange] = [:]
+                    comp[Key.Node.quote] = result.range(at: 0)
+                    comp[Key.Element.Quote.content] = result.range(at: 1)
+                    return comp.filter { _, value in value.location != Int.max }
+            }
+            
+            if result.count > 0 {
+                self.logResult(result)
+                self.delegate?.didFoundQuote(text: str, quoteRanges: result)
+            }
+        }
+        
         // MARK: 解析 ordered list
         if let orderedList = Matcher.Node.ordedList, includeParsee.contains(.orderedList) {
             let result: [[String: NSRange]] = orderedList
@@ -227,6 +244,7 @@ public protocol OutlineParserDelegate: class {
     func didFoundUnOrderedList(text: String, unOrderedListRnages: [[String: NSRange]])
     func didFoundSeperator(text: String, seperatorRanges: [[String: NSRange]])
     func didFoundCodeBlock(text: String, codeBlockRanges: [[String: NSRange]])
+    func didFoundQuote(text: String, quoteRanges: [[String: NSRange]])
     func didFoundAttachment(text: String, attachmentRanges: [[String: NSRange]])
     func didFoundLink(text: String, urlRanges: [[String: NSRange]])
     func didFoundTextMark(text: String, markRanges: [[String: NSRange]])
@@ -245,6 +263,7 @@ extension OutlineParserDelegate {
     public func didFoundUnOrderedList(text: String, unOrderedListRnages: [[String : NSRange]]) {}
     public func didFoundSeperator(text: String, seperatorRanges: [[String : NSRange]]) {}
     public func didFoundCodeBlock(text: String, codeBlockRanges: [[String : NSRange]]) {}
+    public func didFoundQuote(text: String, quoteRanges: [[String : NSRange]]) {}
     public func didFoundAttachment(text: String, attachmentRanges: [[String : NSRange]]) {}
     public func didFoundLink(text: String, urlRanges: [[String : NSRange]]) {}
     public func didFoundTextMark(text: String, markRanges: [[String : NSRange]]) {}

@@ -32,6 +32,9 @@ public class OutlineTextView: UITextView {
         self.tapGestureRecognizer.delegate = self
         self.addGestureRecognizer(self.tapGestureRecognizer)
         self.alwaysBounceVertical = true
+        self.textContainerInset = UIEdgeInsets(top: 80, left: 0, bottom: 500, right: 0)
+        self.autocapitalizationType = .none
+        self.autocorrectionType = .no
         
         self.tintColor = InterfaceTheme.Color.spotLight
         self.backgroundColor = InterfaceTheme.Color.background1
@@ -46,7 +49,10 @@ public class OutlineTextView: UITextView {
         
         guard self.text.count > 0 else { return true }
         
-        let location = gesture.location(in: self)
+        let location = gesture.location(in: self).applying(CGAffineTransform(translationX: 0,
+                                                                             y: -self.textContainerInset.top))
+        
+        guard self.bounds.contains(location) else { return true }
         
         let characterIndex = self.layoutManager.characterIndex(for: location,
                                                                in: self.textContainer,
