@@ -37,6 +37,7 @@ extension OutlineParser {
             public static var codeBlock = try? NSRegularExpression(pattern: RegexPattern.Node.codeBlock, options: [.anchorsMatchLines])
             public static var seperator = try? NSRegularExpression(pattern: RegexPattern.Node.seperator, options: [.anchorsMatchLines])
             public static var attachment = try? NSRegularExpression(pattern: RegexPattern.Node.attachment, options: [])
+            
         }
         
         public struct Element {
@@ -94,6 +95,10 @@ extension OutlineParser {
                 public static let index = "index"
             }
             
+            public struct UnorderedList {
+                public static let prefix = "prefix"
+            }
+            
             public struct Attachment {
                 public static let type = "type"
                 public static let value = "value"
@@ -134,10 +139,10 @@ extension OutlineParser {
             // FIXME: 如果 BEGIN 和 END 内部没有至少一个空行，则无法匹配成功
             public static let codeBlock =       "^[\\t ]*\\#\\+BEGIN\\_SRC( [\(character)\\.]*)?\\n([^\\#\\+END\\_SRC]*)\\n\\s*\\#\\+END\\_SRC[\\t ]*\\n"
             public static let checkBox =        "[\\t ]* (\\[[X| |\\-]\\])"
-            public static let unorderedList =   "^[\\t ]*[\\-\\+] .*"
-            public static let orderedList =     "^[\\t ]*([\(character)\\.])+[\\.\\)\\>] .*"
+            public static let unorderedList =   "^[\\t ]*([\\-\\+]) .*"
+            public static let orderedList =     "^[\\t ]*([a-zA-Z0-9]+[\\.\\)\\>]) .*"
             public static let seperator =       "^[\\t ]*(\\-{5,}[\\t ]*)"
-            public static let attachment =      "\\#\\+Attachment\\:(image|video|audio|sketch|location)\\=([^\\=\\n]+)" // like: #+Attachment:image=xdafeljlfjeksjdf
+            public static let attachment =      "\\#\\+Attachment\\:([image|video|audio|sketch|location])\\=([^\\=\\n]+)" // like: #+Attachment:image=xdafeljlfjeksjdf
         }
         
         public struct Element {

@@ -31,6 +31,7 @@ public class OutlineTextView: UITextView {
     private func setup() {
         self.tapGestureRecognizer.delegate = self
         self.addGestureRecognizer(self.tapGestureRecognizer)
+        self.alwaysBounceVertical = true
         
         self.tintColor = InterfaceTheme.Color.spotLight
         self.backgroundColor = InterfaceTheme.Color.background1

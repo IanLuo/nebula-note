@@ -14,6 +14,16 @@ public struct OutlineAttribute {
         public static let link: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_LINK)
     }
     
+    public struct UnorderedList {
+        public static let range: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_UNORDERED_LIST)
+        public static let prefix: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_UNORDERED_LIST_PREFIX)
+    }
+    
+    public struct OrderedList {
+        public static let range: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_ORDERED_LIST)
+        public static let index: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_ORDERED_LIST_INDEX)
+    }
+    
     public struct Checkbox {
         public static let box: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_CHECKBOX_BOX)
         public static let status: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_CHECKBOX_STATUS)

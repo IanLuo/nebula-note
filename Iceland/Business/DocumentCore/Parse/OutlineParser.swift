@@ -123,6 +123,7 @@ public class OutlineParser {
                 .map { (result: NSTextCheckingResult) -> [String: NSRange] in
                     var comp: [String: NSRange] = [:]
                     comp[Key.Node.unordedList] = result.range(at: 0)
+                    comp[Key.Element.UnorderedList.prefix] = result.range(at: 1)
                     return comp
             }
             

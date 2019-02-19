@@ -47,6 +47,12 @@ public class OutlineTextStorage: TextStorage {
         }
     }
     
+    /// 当前所在编辑位置的最外层，或者最前面的 item 类型, 某些 item 在某些编辑操作是会有特殊行为，例如:
+    /// 当前 item 为 unordered list 时，换行将会自动添加一个新的 unordered list 前缀
+    public var currentItem: Document.Item? {
+        return self.item(after: self.currentLocation)
+    }
+    
     /// 找到的 node 的 location 在此，用于保存 element 的索引，在编辑过后，更新所有的索引，从而不需要把所有的字符串都重新解析一次
     public var itemRanges: [NSRange] = []
     
@@ -213,7 +219,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 newItems.append(Document.Item(range: value, name: key, data: [key: value]))
             }
         }
-//
+
         newItems.sort { (lhs: Document.Item, rhs: Document.Item) -> Bool in
             if lhs.range.location != rhs.range.location {
                 return lhs.range.location < rhs.range.location
@@ -311,7 +317,8 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 if key == OutlineParser.Key.Element.Checkbox.status {
                     self.addAttribute(OutlineAttribute.Checkbox.box, value: checkbox, range: range)
                     self.addAttribute(OutlineAttribute.Checkbox.status, value: range, range: NSRange(location: range.location, length: 1))
-                    self.addAttribute(NSAttributedString.Key.foregroundColor, value: InterfaceTheme.Color.spotLight, range: range)
+                    self.addAttributes([NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.spotLight,
+                                        NSAttributedString.Key.font: InterfaceTheme.Font.title], range: range)
                 }
             }
         }
@@ -319,10 +326,29 @@ extension OutlineTextStorage: OutlineParserDelegate {
     
     public func didFoundOrderedList(text: String, orderedListRnages: [[String : NSRange]]) {
         self.tempParsingResult.append(contentsOf: orderedListRnages)
+        
+        orderedListRnages.forEach { list in
+            if let index = list[OutlineParser.Key.Element.OrderedList.index] {
+                self.addAttributes([NSAttributedString.Key.font: InterfaceTheme.Font.title,
+                                    NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.descriptive,
+                                    OutlineAttribute.OrderedList.index: index], range: index)
+            }
+            
+            if let range = list[OutlineParser.Key.Node.ordedList] {
+                self.addAttribute(OutlineAttribute.OrderedList.range, value: range, range: range)
+            }
+        }
     }
     
     public func didFoundUnOrderedList(text: String, unOrderedListRnages: [[String : NSRange]]) {
         self.tempParsingResult.append(contentsOf: unOrderedListRnages)
+        
+        unOrderedListRnages.forEach { list in
+            if let prefix = list[OutlineParser.Key.Element.UnorderedList.prefix] {
+                self.addAttributes([NSAttributedString.Key.font: InterfaceTheme.Font.title,
+                                    NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.descriptive], range: prefix)
+            }
+        }
     }
     
     public func didFoundSeperator(text: String, seperatorRanges: [[String: NSRange]]) {

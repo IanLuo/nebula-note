@@ -28,6 +28,12 @@ FOUNDATION_EXPORT const unsigned char TextStorageVersionString[];
 #define OUTLINE_ATTRIBUTE_LINK @"link"
 #define OUTLINE_ATTRIBUTE_LINK_TITLE @"link-title"
 
+#define OUTLINE_ATTRIBUTE_UNORDERED_LIST @"unordered-list"
+#define OUTLINE_ATTRIBUTE_UNORDERED_LIST_PREFIX @"unordered-list-prefix"
+
+#define OUTLINE_ATTRIBUTE_ORDERED_LIST @"ordered-list"
+#define OUTLINE_ATTRIBUTE_ORDERED_LIST_INDEX @"ordered-list-index"
+
 @protocol GaterAttributeChanges<NSObject>
 
 - (void)changeAttributes:(NSString *)string range:(NSRange)range delta:(NSInteger)delta action:(NSTextStorageEditActions)action;
