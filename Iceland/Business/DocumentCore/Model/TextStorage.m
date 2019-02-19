@@ -71,11 +71,14 @@
                    && attributes[OUTLINE_ATTRIBUTE_LINK_TITLE] == nil) {
             controlCharProps[i] = NSGlyphPropertyNull;
             shouldGenerate = YES;
-        }  else if (attributes[OUTLINE_ATTRIBUTE_CHECKBOX_STATUS] == nil // 隐藏 checkbox 中 status 为 nil 并且 box 不为 nil 的部分
-                    && attributes[OUTLINE_ATTRIBUTE_CHECKBOX_BOX] != nil) {
-            controlCharProps[i] = NSGlyphPropertyNull;
-            shouldGenerate = YES;
-        } else {
+        }
+        // 暂时不隐藏
+//        else if (attributes[OUTLINE_ATTRIBUTE_CHECKBOX_STATUS] == nil // 隐藏 checkbox 中 status 为 nil 并且 box 不为 nil 的部分
+//                    && attributes[OUTLINE_ATTRIBUTE_CHECKBOX_BOX] != nil) {
+//            controlCharProps[i] = NSGlyphPropertyNull;
+//            shouldGenerate = YES;
+//        }
+        else {
             controlCharProps[i] = props[i];
         }
     }

@@ -105,34 +105,18 @@ extension EditorController {
     }
     
     public func changeCheckBoxStatus(range: NSRange) {
-        let attachment = NSTextAttachment()
-        attachment.bounds = CGRect(origin: .zero, size: CGSize(width: 24, height: 24))
         let status = self.string.substring(range)
-        let color = status == OutlineParser.Values.Checkbox.unchecked // FIXME: check box 渲染相关
-            ? UIColor.green
-            : status == OutlineParser.Values.Checkbox.checked ? UIColor.red : UIColor.purple
         
-        attachment.image = UIImage.create(with: color, size: attachment.bounds.size)
-        self.textStorage.addAttribute(NSAttributedString.Key.attachment, value: attachment, range: NSRange(location: range.location, length: 1))
-    }
-    
-    public func didTapOnCheckbox(textView: UITextView,
-                                 characterIndex: Int,
-                                 statusRange: NSRange,
-                                 point: CGPoint) {
-        var replacement: String = ""
-        let offsetedRange = statusRange.offset(statusRange.location - characterIndex)
-        
-        switch (textView.text as NSString).substring(with: offsetedRange) {
-        case OutlineParser.Values.Checkbox.unchecked: replacement = OutlineParser.Values.Checkbox.checked
-        case OutlineParser.Values.Checkbox.checked: replacement = OutlineParser.Values.Checkbox.unchecked
-        case OutlineParser.Values.Checkbox.halfChecked: replacement = OutlineParser.Values.Checkbox.checked
-        default: break
+        var nextStatus: String = status
+        switch status {
+        case OutlineParser.Values.Checkbox.checked: fallthrough
+        case OutlineParser.Values.Checkbox.halfChecked: 
+            nextStatus = OutlineParser.Values.Checkbox.unchecked
+        default:
+            nextStatus = OutlineParser.Values.Checkbox.checked
         }
         
-        if replacement.count > 0 {
-            self.textStorage.replaceCharacters(in: offsetedRange, with: replacement)
-        }
+        self.textStorage.replaceCharacters(in: range, with: nextStatus)
     }
 }
 

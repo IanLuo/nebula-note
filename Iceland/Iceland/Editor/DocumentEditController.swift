@@ -105,7 +105,7 @@ extension DocumentEditViewController: OutlineTextViewDelegate {
     }
     
     public func didTapOnCheckbox(textView: UITextView, characterIndex: Int, checkbox: [String : NSRange], point: CGPoint) {
-        self.viewModel.changeCheckboxStatus(range: checkbox["checkbox-box"]!)
+        self.viewModel.changeCheckboxStatus(range: checkbox["status"]!)
     }
 }
 

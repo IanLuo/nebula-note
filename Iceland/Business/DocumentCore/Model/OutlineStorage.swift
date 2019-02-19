@@ -59,15 +59,13 @@ public class OutlineTextStorage: TextStorage {
     private var ignoreTextMarkRanges: [NSRange] = []
 }
 
+// MARK: - Update Attributes -
+
 extension OutlineTextStorage: GaterAttributeChanges {
     public func changeAttributes(_ string: String!, range: NSRange, delta: Int, action: NSTextStorage.EditActions) {
         log.info("editing in range: \(range), is non continouse: \(self.layoutManagers[0].hasNonContiguousLayout)")
         
         guard delta != 0 else { return } // 如果没有文字增删，则不进行解析
-        
-        // 设置文字默认样式
-        self.addAttributes([NSAttributedString.Key.foregroundColor : InterfaceTheme.Color.interactive],
-                           range: editedRange)
         
         /// 更新当前交互的位置
         self.currentLocation = editedRange.location
@@ -78,6 +76,12 @@ extension OutlineTextStorage: GaterAttributeChanges {
         // 调整需要解析的字符串范围
         self.adjustParseRange(editedRange)
         
+        // 设置文字默认样式
+        self.addAttributes([NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.interactive,
+                            NSAttributedString.Key.font: InterfaceTheme.Font.body],
+                           range: self.currentParseRange!)
+        
+        // 解析文字，添加样式
         parser.parse(str: self.string,
                      range: self.currentParseRange!)
         
@@ -305,6 +309,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 if key == OutlineParser.Key.Element.Checkbox.status {
                     self.addAttribute(OutlineAttribute.Checkbox.box, value: checkbox, range: range)
                     self.addAttribute(OutlineAttribute.Checkbox.status, value: range, range: NSRange(location: range.location, length: 1))
+                    self.addAttribute(NSAttributedString.Key.foregroundColor, value: InterfaceTheme.Color.spotLight, range: range)
                 }
             }
         }
@@ -333,21 +338,39 @@ extension OutlineTextStorage: OutlineParserDelegate {
         headingDataRanges.forEach {
             if let levelRange = $0[OutlineParser.Key.Element.Heading.level] {
                 self.addAttribute(OutlineAttribute.Heading.level, value: $0, range: levelRange)
+                self.addAttribute(NSAttributedString.Key.font, value: UIFont.boldSystemFont(ofSize: 20), range: levelRange)
+                
+                // display arrow based on wheather the next character is hidden (if there is one)
+//                if let range = $0[OutlineParser.Key.Node.heading] {
+//                    let nextCharacterLocation: Int = range.upperBound + 1
+//                    let nextCharacter: String = self.string.substring(NSRange(location: nextCharacterLocation, length: 1))
+//
+//                    let isEndOfFile: Bool = range.upperBound >= self.string.count - 1
+//                    let isEndOfHeading: Bool = nextCharacter == OutlineParser.Values.Heading.level
+//
+//                    if !isEndOfFile && !isEndOfHeading {
+//                        if self.attributes(at: nextCharacterLocation, effectiveRange: nil)[OutlineAttribute.Heading.folded] == nil {
+//                            self.addUnfoldedIconAttachment(at: levelRange)
+//                        } else {
+//                            self.addFoldedIconAttachment(at: levelRange)
+//                        }
+//                    }
+//                }
             }
             
             if let scheduleRange = $0[OutlineParser.Key.Element.Heading.schedule] {
                 self.addAttribute(OutlineAttribute.Heading.schedule, value: scheduleRange, range: scheduleRange)
-                self.addAttribute(NSAttributedString.Key.backgroundColor, value: UIColor.orange, range: scheduleRange)
+                self.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.orange, range: scheduleRange)
             }
             
             if let dueRange = $0[OutlineParser.Key.Element.Heading.due] {
                 self.addAttribute(OutlineAttribute.Heading.due, value: dueRange, range: dueRange)
-                self.addAttribute(NSAttributedString.Key.backgroundColor, value: UIColor.purple, range: dueRange)
+                self.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.purple, range: dueRange)
             }
             
             if let tagsRange = $0[OutlineParser.Key.Element.Heading.tags] {
                 self.addAttribute(OutlineAttribute.Heading.due, value: tagsRange, range: tagsRange)
-                self.addAttribute(NSAttributedString.Key.backgroundColor, value: UIColor.cyan, range: tagsRange)
+                self.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.cyan, range: tagsRange)
             }
             
             if let planningRange = $0[OutlineParser.Key.Element.Heading.planning] {
@@ -401,20 +424,21 @@ extension OutlineTextStorage: OutlineParserDelegate {
     }
     
     public func addUnfoldedIconAttachment(at range: NSRange) {
-        self.setAttributes([NSAttributedString.Key.attachment: self.attachment(image: "right", size: CGSize(width: 10, height: 10))],
+        self.setAttributes([NSAttributedString.Key.attachment: self.attachment(image: "right")],
                            range: range)
     }
     
     public func addFoldedIconAttachment(at range: NSRange) {
-        self.setAttributes([NSAttributedString.Key.attachment: self.attachment(image: "down", size: CGSize(width: 10, height: 10))],
+        self.setAttributes([NSAttributedString.Key.attachment: self.attachment(image: "down")],
                            range: range)
     }
     
     /// 用图片创建 attachment
-    private func attachment(image name: String, size: CGSize) -> NSTextAttachment {
+    private func attachment(image name: String) -> NSTextAttachment {
+        let image = UIImage(named: name)!
         let attachment = NSTextAttachment()
-        attachment.bounds = CGRect(origin: .zero, size: size)
-        attachment.image = UIImage(named: name)
+        attachment.bounds = CGRect(origin: .zero, size: image.size)
+        attachment.image = image
         return attachment
     }
     

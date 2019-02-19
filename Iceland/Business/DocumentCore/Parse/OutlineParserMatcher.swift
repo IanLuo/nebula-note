@@ -133,7 +133,7 @@ extension OutlineParser {
             public static let heading = "^(\\*+) (.+)((\n\(Element.Heading.schedule))|(\n\(Element.Heading.due))){0,2}"
             // FIXME: 如果 BEGIN 和 END 内部没有至少一个空行，则无法匹配成功
             public static let codeBlock =       "^[\\t ]*\\#\\+BEGIN\\_SRC( [\(character)\\.]*)?\\n([^\\#\\+END\\_SRC]*)\\n\\s*\\#\\+END\\_SRC[\\t ]*\\n"
-            public static let checkBox =        "[\\t ]*( \\[[X| |\\-]\\])"
+            public static let checkBox =        "[\\t ]* (\\[[X| |\\-]\\])"
             public static let unorderedList =   "^[\\t ]*[\\-\\+] .*"
             public static let orderedList =     "^[\\t ]*([\(character)\\.])+[\\.\\)\\>] .*"
             public static let seperator =       "^[\\t ]*(\\-{5,}[\\t ]*)"
@@ -189,6 +189,7 @@ extension OutlineParser {
         }
         
         public struct Heading {
+            public static let level: String = "*"
             public struct Planning {
                 public static let todo: String = "TODO"
                 public static let done: String = "DONE"
