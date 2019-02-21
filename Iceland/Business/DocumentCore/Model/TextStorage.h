@@ -36,16 +36,14 @@ FOUNDATION_EXPORT const unsigned char TextStorageVersionString[];
 #define OUTLINE_ATTRIBUTE_ORDERED_LIST @"ordered-list"
 #define OUTLINE_ATTRIBUTE_ORDERED_LIST_INDEX @"ordered-list-index"
 
-@protocol GaterAttributeChanges<NSObject>
+@protocol ContentUpdatingProtocol<NSObject>
 
-- (void)changeAttributes:(NSString *)string range:(NSRange)range delta:(NSInteger)delta action:(NSTextStorageEditActions)action;
-
-- (void)completedLayoutForContainer: (NSTextContainer *)container;
+- (void)performContentUpdate:(NSString *)string range:(NSRange)range delta:(NSInteger)delta action:(NSTextStorageEditActions)action;
 
 @end
 
 @interface TextStorage: NSTextStorage<NSLayoutManagerDelegate>
 
-@property (nonatomic, weak) id<GaterAttributeChanges> attributeChangeDelegate;
+@property (nonatomic, weak) id<ContentUpdatingProtocol> attributeChangeDelegate;
 
 @end

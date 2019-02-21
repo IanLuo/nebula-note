@@ -107,7 +107,7 @@ public class DocumentSearchViewController: UIViewController {
         self.view.addSubview(self.preservedSearchItemsTableView)
         self.view.addSubview(self.searchResultTableView)
         
-        self.searchInputView.sideAnchor(for: [.left, .top, .right], to: self.view, edgeInset: 0)
+        self.searchInputView.sideAnchor(for: [.left, .top, .right], to: self.view, edgeInset: 0, considerSafeArea: true)
         self.searchInputView.sizeAnchor(height: 80)
         self.searchInputView.columnAnchor(view: self.preservedSearchItemsTableView)
         self.searchInputView.columnAnchor(view: self.searchResultTableView)

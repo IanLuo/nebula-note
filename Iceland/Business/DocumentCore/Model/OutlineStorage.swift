@@ -69,22 +69,11 @@ public class OutlineTextStorage: TextStorage {
 }
 
 // MARK: - Update Attributes
-extension OutlineTextStorage: GaterAttributeChanges {
-    public func completedLayout(for container: NSTextContainer!) {
-        guard self.isParsedActionsAfterLayoutInprocess == false else { return }
-        guard self.parsedActionsAfterLayout.count > 0 else { return }
-        
-        self.isParsedActionsAfterLayoutInprocess = true
-        
-        self.parsedActionsAfterLayout.forEach { $0() }
-        self.parsedActionsAfterLayout = []
-        
-        self.isParsedActionsAfterLayoutInprocess = false
-    }
-    
-    public func changeAttributes(_ string: String!, range: NSRange, delta: Int, action: NSTextStorage.EditActions) {
+extension OutlineTextStorage: ContentUpdatingProtocol {
+    public func performContentUpdate(_ string: String!, range: NSRange, delta: Int, action: NSTextStorage.EditActions) {
         log.info("editing in range: \(range), is non continouse: \(self.layoutManagers[0].hasNonContiguousLayout)")
         
+        guard string.count > 0 else { return }
         guard action != .editedAttributes else { return } // 如果是修改属性，则不进行解析
         
         /// 更新当前交互的位置

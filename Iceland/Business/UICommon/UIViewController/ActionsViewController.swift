@@ -73,9 +73,12 @@ public class ActionsViewController: UIViewController {
         self.cancelAction = action
     }
     
+    private let transitionDelegate = FadeBackgroundTransition(animator: MoveUpAnimtor())
+    
     public init() {
         super.init(nibName: nil, bundle: nil)
         self.modalPresentationStyle = .overCurrentContext
+        self.transitioningDelegate = transitionDelegate
     }
     
     public required init?(coder aDecoder: NSCoder) {
@@ -128,7 +131,7 @@ public class ActionsViewController: UIViewController {
         return view
     }()
     
-    private let contentView: UIView = {
+    public let contentView: UIView = {
         let view = UIView()
         view.backgroundColor = InterfaceTheme.Color.background1
         return view
@@ -202,6 +205,12 @@ public class ActionsViewController: UIViewController {
         let title: String
         let action: (ActionsViewController) -> Void
         let style: ActionsViewController.Style
+    }
+}
+
+extension ActionsViewController: TransitionProtocol {
+    public var fromView: UIView? {
+        return nil
     }
 }
 

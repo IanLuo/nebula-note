@@ -90,6 +90,10 @@
 		E455868A21DF643F00381FA8 /* HeadingOutlineTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E455868921DF643F00381FA8 /* HeadingOutlineTableViewCell.swift */; };
 		E466D186221D930A007F140B /* SeparaterAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = E466D185221D930A007F140B /* SeparaterAttachment.swift */; };
 		E466D18D221E3E65007F140B /* RenderAttachmentProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E466D18C221E3E65007F140B /* RenderAttachmentProtocol.swift */; };
+		E466D192221EAC14007F140B /* TransitionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E466D191221EAC14007F140B /* TransitionProtocol.swift */; };
+		E466D194221EAD29007F140B /* FadeBackgroundTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = E466D193221EAD29007F140B /* FadeBackgroundTransition.swift */; };
+		E466D196221ED586007F140B /* MoveToAnimtor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E466D195221ED586007F140B /* MoveToAnimtor.swift */; };
+		E466D198221ED6A1007F140B /* MoveUpAnimtor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E466D197221ED6A1007F140B /* MoveUpAnimtor.swift */; };
 		E4729B9F2202B70200F22885 /* SquareButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4729B9E2202B70200F22885 /* SquareButton.swift */; };
 		E4729BA22202BBE300F22885 /* Rotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4729BA12202BBE300F22885 /* Rotation.swift */; };
 		E4729BA42202E6BA00F22885 /* Range.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4729BA32202E6BA00F22885 /* Range.swift */; };
@@ -302,6 +306,10 @@
 		E464BBB021A69C9000D34C88 /* OutlineTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineTheme.swift; sourceTree = "<group>"; };
 		E466D185221D930A007F140B /* SeparaterAttachment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeparaterAttachment.swift; sourceTree = "<group>"; };
 		E466D18C221E3E65007F140B /* RenderAttachmentProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderAttachmentProtocol.swift; sourceTree = "<group>"; };
+		E466D191221EAC14007F140B /* TransitionProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransitionProtocol.swift; sourceTree = "<group>"; };
+		E466D193221EAD29007F140B /* FadeBackgroundTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FadeBackgroundTransition.swift; sourceTree = "<group>"; };
+		E466D195221ED586007F140B /* MoveToAnimtor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveToAnimtor.swift; sourceTree = "<group>"; };
+		E466D197221ED6A1007F140B /* MoveUpAnimtor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MoveUpAnimtor.swift; sourceTree = "<group>"; };
 		E4729B9E2202B70200F22885 /* SquareButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SquareButton.swift; sourceTree = "<group>"; };
 		E4729BA12202BBE300F22885 /* Rotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rotation.swift; sourceTree = "<group>"; };
 		E4729BA32202E6BA00F22885 /* Range.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Range.swift; sourceTree = "<group>"; };
@@ -789,6 +797,17 @@
 			path = RenderAttachment;
 			sourceTree = "<group>";
 		};
+		E466D190221EAB74007F140B /* Transition */ = {
+			isa = PBXGroup;
+			children = (
+				E466D191221EAC14007F140B /* TransitionProtocol.swift */,
+				E466D193221EAD29007F140B /* FadeBackgroundTransition.swift */,
+				E466D195221ED586007F140B /* MoveToAnimtor.swift */,
+				E466D197221ED6A1007F140B /* MoveUpAnimtor.swift */,
+			);
+			path = Transition;
+			sourceTree = "<group>";
+		};
 		E4729BA02202BBD700F22885 /* Animation */ = {
 			isa = PBXGroup;
 			children = (
@@ -827,6 +846,7 @@
 		E4A46A1C21AE6CDC00FBDA04 /* UICommon */ = {
 			isa = PBXGroup;
 			children = (
+				E466D190221EAB74007F140B /* Transition */,
 				E4729BA02202BBD700F22885 /* Animation */,
 				E41B893A21E4DCF1009C5AD7 /* Button */,
 				E4895FF421D91D5A00D2B19D /* UIViewController */,
@@ -1304,6 +1324,7 @@
 				E466D18D221E3E65007F140B /* RenderAttachmentProtocol.swift in Sources */,
 				E41CB1D621D8921B00EF0A3C /* SettingsAccessor.swift in Sources */,
 				E41CB1C721D88DFD00EF0A3C /* AttachmentManager.swift in Sources */,
+				E466D192221EAC14007F140B /* TransitionProtocol.swift in Sources */,
 				E4F9ECDF21FBF61B009A08CD /* RecentFiles.swift in Sources */,
 				E466D186221D930A007F140B /* SeparaterAttachment.swift in Sources */,
 				E41B892C21E34297009C5AD7 /* AudioPlayer.swift in Sources */,
@@ -1318,6 +1339,9 @@
 				E4F9ECE121FECE5C009A08CD /* FileManager.swift in Sources */,
 				E4895FF721D9244000D2B19D /* EditRecord.swift in Sources */,
 				E41CB1D221D890E200EF0A3C /* Border.swift in Sources */,
+				E466D196221ED586007F140B /* MoveToAnimtor.swift in Sources */,
+				E466D194221EAD29007F140B /* FadeBackgroundTransition.swift in Sources */,
+				E466D198221ED6A1007F140B /* MoveUpAnimtor.swift in Sources */,
 				E4729BA42202E6BA00F22885 /* Range.swift in Sources */,
 				E41CB1C621D88DFD00EF0A3C /* Attachment.swift in Sources */,
 				E489600221DB06C800D2B19D /* Localization.swift in Sources */,

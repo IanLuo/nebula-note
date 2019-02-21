@@ -49,8 +49,8 @@
 }
 
 - (void)processEditing {
-    if ([self.attributeChangeDelegate respondsToSelector: @selector(changeAttributes:range:delta:action:)]) {
-        [self.attributeChangeDelegate changeAttributes:self.string range: [super editedRange] delta: [super changeInLength] action: [super editedMask]];
+    if ([self.attributeChangeDelegate respondsToSelector: @selector(performContentUpdate:range:delta:action:)]) {
+        [self.attributeChangeDelegate performContentUpdate:self.string range: [super editedRange] delta: [super changeInLength] action: [super editedMask]];
     }
     
     [super processEditing];
@@ -78,12 +78,6 @@
         return glyphRange.length;
     } else {
         return 0;
-    }
-}
-
-- (void)layoutManager:(NSLayoutManager *)layoutManager didCompleteLayoutForTextContainer:(NSTextContainer *)textContainer atEnd:(BOOL)layoutFinishedFlag {
-    if ([self.attributeChangeDelegate respondsToSelector:@selector(completedLayoutForContainer:)] && layoutFinishedFlag) {
-        [self.attributeChangeDelegate completedLayoutForContainer:textContainer];
     }
 }
 

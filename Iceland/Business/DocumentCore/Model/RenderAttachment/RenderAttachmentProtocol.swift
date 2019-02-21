@@ -30,8 +30,8 @@ public class RenderAttachment: NSTextAttachment, RenderAttachmentProtocol {
         super.init(data: nil, ofType: nil)
         
         let location = ranges[OutlineParser.Key.Node.attachment]!.location
-        if let typeRange = ranges[OutlineParser.Key.Element.Attachment.type]?.offset(location),
-            let valueRange = ranges[OutlineParser.Key.Element.Attachment.value]?.offset(location) {
+        if let typeRange = ranges[OutlineParser.Key.Element.Attachment.type]?.offset(-location),
+            let valueRange = ranges[OutlineParser.Key.Element.Attachment.value]?.offset(-location) {
             let type = rawString.substring(typeRange)
             let value = rawString.substring(valueRange)
 

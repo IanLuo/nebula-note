@@ -31,12 +31,12 @@ extension OutlineParser {
     public struct Matcher {
         public struct Node {
             public static var heading = try? NSRegularExpression(pattern: RegexPattern.Node.heading, options: [.anchorsMatchLines])
-            public static var checkbox = try? NSRegularExpression(pattern: RegexPattern.Node.checkBox, options: [.anchorsMatchLines])
+            public static var checkbox = try? NSRegularExpression(pattern: RegexPattern.Node.checkBox, options: [])
             public static var ordedList = try? NSRegularExpression(pattern: RegexPattern.Node.orderedList, options: [.anchorsMatchLines])
             public static var unorderedList = try? NSRegularExpression(pattern: RegexPattern.Node.unorderedList, options: [.anchorsMatchLines])
             public static var codeBlock = try? NSRegularExpression(pattern: RegexPattern.Node.codeBlock, options: [.anchorsMatchLines])
             public static var seperator = try? NSRegularExpression(pattern: RegexPattern.Node.seperator, options: [.anchorsMatchLines])
-            public static var attachment = try? NSRegularExpression(pattern: RegexPattern.Node.attachment, options: [.anchorsMatchLines])
+            public static var attachment = try? NSRegularExpression(pattern: RegexPattern.Node.attachment, options: [])
             public static var quote = try? NSRegularExpression(pattern: RegexPattern.Node.quote, options: [.anchorsMatchLines])
             public static var footnote = try? NSRegularExpression(pattern: RegexPattern.Node.footnote, options: [.anchorsMatchLines])
         }
@@ -152,7 +152,7 @@ extension OutlineParser {
             public static let unorderedList =   "^[\\t ]*([\\-\\+]) .*"
             public static let orderedList =     "^[\\t ]*([a-zA-Z0-9]+[\\.\\)\\>]) .*"
             public static let seperator =       "^[\\t ]*(\\-{5,}[\\t ]*)"
-            public static let attachment =      "\\#\\+Attachment\\:([image|video|audio|sketch|location])\\=([^\\=\\n]+)" // like: #+Attachment:image=xdafeljlfjeksjdf
+            public static let attachment =      "\\#\\+ATTACHMENT\\:(image|video|audio|sketch|location)=([a-zA-Z0-9\\-]+)" // like: #+ATTACHMENT:LKSJDLFJSDLJFLSDF)
             public static let quote =           "^[\\t ]*\\#\\+BEGIN\\_QUOTE\\n([^\\#\\+END\\_QUOTE]*)\\n\\s*\\#\\+END\\_QUOTE[\\t ]*\\n"
             public static let footnote =        "" // TODO: footnote regex pattern imp
         }
@@ -194,12 +194,12 @@ extension OutlineParser {
                     do { return try String(contentsOf: attachment.url) }
                     catch { return "\(error)" }
                 default:
-                    return "#+Attachment:\(attachment.type.rawValue)=\(attachment.url.path)"
+                    return "#+ATTACHMENT:\(attachment.type.rawValue)=\(attachment.url.path)"
                 }
             }
             
             public static func serialize(type: String , value: String) -> String {
-                return "#+Attachment:\(type)=\(type)"
+                return "#+ATTACHMENT:\(type)=\(value)"
             }
         }
         

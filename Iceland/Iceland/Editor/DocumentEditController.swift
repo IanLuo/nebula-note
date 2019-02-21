@@ -84,6 +84,10 @@ public class DocumentEditViewController: UIViewController {
         self.viewModel.coordinator?.search()
     }
     
+    private func attachmentPicker() {
+        
+    }
+    
     private func createActionButton(icon: UIImage?) -> UIButton {
         let button = UIButton()
         button.setImage(icon, for: .normal)

@@ -82,6 +82,8 @@ open class SelectorViewController: UIViewController {
     public weak var delegate: SelectorViewControllerDelegate?
     public var name: String?
     
+    private let transitionDelegate = FadeBackgroundTransition(animator: MoveToAnimtor())
+    
     public func addItem(icon: UIImage? = nil, title: String, description: String? = nil) {
         let item = Item(icon: icon, title: title, attributedString: nil, description: description)
         self.items.append(item)
@@ -105,7 +107,7 @@ open class SelectorViewController: UIViewController {
     public var transiteFromView: UIView?
     public func show(from: UIView?, on viewController: UIViewController) {
         self.modalPresentationStyle = .custom
-        self.transitioningDelegate = self
+        self.transitioningDelegate = self.transitionDelegate
         self.transiteFromView = from
 
         viewController.present(self, animated: true)
@@ -210,6 +212,16 @@ extension SelectorViewController: UITableViewDataSource, UITableViewDelegate {
     }
 }
 
+extension SelectorViewController: TransitionProtocol {
+    public var fromView: UIView? {
+        return self.transiteFromView
+    }
+    
+    public func didTransiteToShow() {
+        self.scrollToDefaultValue()
+    }
+}
+
 extension SelectorViewController: UIGestureRecognizerDelegate {
     public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
         return touch.view == self.view
@@ -295,92 +307,3 @@ fileprivate class ActionCell: UITableViewCell {
     }
 }
 
-
-extension SelectorViewController: UIViewControllerTransitioningDelegate {
-    public func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return Animator(isPresenting: false)
-    }
-    
-    public func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return Animator()
-    }
-}
-
-private class Animator: NSObject, UIViewControllerAnimatedTransitioning {
-    public var isPresenting: Bool
-    
-    public init(isPresenting: Bool = true) {
-        self.isPresenting = isPresenting
-    }
-    
-    func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
-        return 0.2
-    }
-    
-    func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
-        let containner = transitionContext.containerView
-        guard let to = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.to) else { return }
-        guard let from = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.from) else { return }
-        
-        
-        if self.isPresenting {
-            if let selectorViewcontroller = to as? SelectorViewController {
-                let fromView = selectorViewcontroller.transiteFromView
-                
-                containner.addSubview(selectorViewcontroller.view)
-                selectorViewcontroller.view.layoutIfNeeded()
-                selectorViewcontroller.scrollToDefaultValue()
-                let toImage = selectorViewcontroller.contentView.snapshot
-                let destRect = selectorViewcontroller.contentView.frame
-                // 如果没有设置显示位置的 UIView，使用屏幕正中心的点作为显示位置
-                let startRect = fromView != nil ? fromView!.superview!.convert(fromView!.frame, to: from.view) : CGRect(origin: selectorViewcontroller.view.center, size: .zero)
-                let animatableView = UIImageView(frame: startRect)
-                animatableView.image = toImage
-                animatableView.clipsToBounds = true
-                animatableView.alpha = 0
-                
-                containner.addSubview(animatableView)
-                selectorViewcontroller.contentView.alpha = 0
-                
-                UIView.animate(withDuration: self.transitionDuration(using: transitionContext), delay: 0.0, options: .curveEaseOut, animations: ({
-                    animatableView.frame = destRect
-                    animatableView.alpha = 1
-                }), completion: { completeion in
-                    selectorViewcontroller.contentView.alpha = 1
-                    animatableView.removeFromSuperview()
-                    transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
-                })
-            } else {
-                transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
-            }
-        } else {
-            if let selectorViewcontroller = from as? SelectorViewController {
-                let toView = selectorViewcontroller.transiteFromView
-                guard let fromImage = selectorViewcontroller.contentView.snapshot else { return }
-                
-                selectorViewcontroller.contentView.alpha = 0
-                let bounds = from.view.bounds
-                let startRect = transitionContext.finalFrame(for: to).inset(by: UIEdgeInsets(top: bounds.height / 4, left: 30, bottom: bounds.height / 4, right: 30))
-                // 如果没有设置显示位置的 UIView，使用屏幕正中心的点作为显示位置
-                let destRect = toView != nil ? toView!.superview!.convert(toView!.frame, to: from.view) : CGRect(origin: selectorViewcontroller.view.center, size: .zero)
-                let animatableView = UIImageView(frame: startRect)
-                animatableView.backgroundColor = InterfaceTheme.Color.background2
-                animatableView.clipsToBounds = true
-                animatableView.image = fromImage
-                
-                containner.addSubview(animatableView)
-                
-                UIView.animate(withDuration: self.transitionDuration(using: transitionContext), delay: 0, options: .curveEaseIn, animations: ({
-                    animatableView.frame = destRect
-                    animatableView.alpha = 0
-                    selectorViewcontroller.view.backgroundColor = UIColor.black.withAlphaComponent(0)
-                }), completion: { completeion in
-                    animatableView.removeFromSuperview()
-                    transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
-                })
-            } else {
-                transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
-            }
-        }
-    }
-}
