@@ -35,6 +35,9 @@ public class OutlineTextView: UITextView {
         self.textContainerInset = UIEdgeInsets(top: 80, left: 0, bottom: 500, right: 0)
         self.autocapitalizationType = .none
         self.autocorrectionType = .no
+        if #available(iOS 11.0, *) {
+            self.smartDashesType = .no
+        }
         
         self.tintColor = InterfaceTheme.Color.spotLight
         self.backgroundColor = InterfaceTheme.Color.background1

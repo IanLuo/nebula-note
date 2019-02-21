@@ -9,6 +9,8 @@
 import Foundation
 
 public struct OutlineAttribute {
+    public static let hidden: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_HIDDEN)
+    
     public struct Link {
         public static let title: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_LINK_TITLE)
         public static let link: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_LINK)

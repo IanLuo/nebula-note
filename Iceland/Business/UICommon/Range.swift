@@ -33,3 +33,21 @@ extension NSRange {
         return self.moveLeft(by: diff)
     }
 }
+
+extension NSRange {
+    public func tail(_ length: Int) -> NSRange {
+        if length <= self.length {
+            return NSRange(location: self.location + (self.length - length), length: length)
+        } else {
+            return self
+        }
+    }
+    
+    public func head(_ length: Int) -> NSRange {
+        if length <= self.length {
+            return NSRange(location: self.location, length: length)
+        } else {
+            return self
+        }
+    }
+}

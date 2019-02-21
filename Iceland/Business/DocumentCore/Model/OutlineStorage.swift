@@ -63,11 +63,25 @@ public class OutlineTextStorage: TextStorage {
     private var tempParsingResult: [[String: NSRange]] = []
     // 某些范围要忽略掉文字的样式，比如 link 内的文字样式
     private var ignoreTextMarkRanges: [NSRange] = []
+    
+    private var parsedActionsAfterLayout: [() -> Void] = []
+    private var isParsedActionsAfterLayoutInprocess: Bool = false
 }
 
-// MARK: - Update Attributes -
-
+// MARK: - Update Attributes
 extension OutlineTextStorage: GaterAttributeChanges {
+    public func completedLayout(for container: NSTextContainer!) {
+        guard self.isParsedActionsAfterLayoutInprocess == false else { return }
+        guard self.parsedActionsAfterLayout.count > 0 else { return }
+        
+        self.isParsedActionsAfterLayoutInprocess = true
+        
+        self.parsedActionsAfterLayout.forEach { $0() }
+        self.parsedActionsAfterLayout = []
+        
+        self.isParsedActionsAfterLayoutInprocess = false
+    }
+    
     public func changeAttributes(_ string: String!, range: NSRange, delta: Int, action: NSTextStorage.EditActions) {
         log.info("editing in range: \(range), is non continouse: \(self.layoutManagers[0].hasNonContiguousLayout)")
         
@@ -81,6 +95,15 @@ extension OutlineTextStorage: GaterAttributeChanges {
         
         // 调整需要解析的字符串范围
         self.adjustParseRange(editedRange)
+        
+        if let parsingRange = self.currentParseRange {
+            // 清空 attributes (折叠的状态除外)
+            for (key, _) in self.attributes(at: parsingRange.location, longestEffectiveRange: nil, in: parsingRange) {
+                if key == OutlineAttribute.Heading.folded { continue }
+                if key == NSAttributedString.Key.backgroundColor { continue }
+                self.removeAttribute(key, range: parsingRange)
+            }
+        }
         
         // 设置文字默认样式
         self.addAttributes([NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.interactive,
@@ -96,6 +119,7 @@ extension OutlineTextStorage: GaterAttributeChanges {
     }
 }
 
+// MARK: -
 extension OutlineTextStorage {
     /// 找到对应位置之后的第一个 item
     public func item(after: Int) -> Document.Item? {
@@ -291,6 +315,10 @@ extension OutlineTextStorage: OutlineParserDelegate {
         self.ignoreTextMarkRanges.append(contentsOf: urlRanges.map { $0[OutlineParser.Key.Element.link]! })
         urlRanges.forEach { urlRangeData in
             urlRangeData.forEach {
+                if let range = urlRangeData[OutlineParser.Key.Element.link] {
+                    self.addAttribute(OutlineAttribute.hidden, value: 1, range: range)
+                }
+                
                 // range 为整个链接时，添加自定义属性，值为解析的链接结构
                 if $0.key == OutlineParser.Key.Element.link {
                     self.addAttribute(OutlineAttribute.Link.link, value: urlRangeData, range: $0.value)
@@ -299,14 +327,18 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 // range 为链接的 title 时，添加自定义属性，值为 title 的内容
                 } else if $0.key == OutlineParser.Key.Element.Link.title {
                     self.addAttribute(OutlineAttribute.Link.title, value: $0.value, range: $0.value)
+                    self.removeAttribute(OutlineAttribute.hidden, range: $0.value)
                 }
             }
         }
     }
     
     public func didFoundAttachment(text: String, attachmentRanges: [[String : NSRange]]) {
-        self.tempParsingResult.append(contentsOf: attachmentRanges)
-        // TODO:
+        attachmentRanges.forEach { rangeData in
+            guard let attachmentRange = rangeData[OutlineParser.Key.Node.attachment] else { return }
+            
+            self.setAttachment(RenderAttachment(rawString: self.string.substring(attachmentRange), ranges: rangeData), range: attachmentRange)
+        }
     }
     
     public func didFoundCheckbox(text: String, checkboxRanges: [[String : NSRange]]) {
@@ -352,7 +384,12 @@ extension OutlineTextStorage: OutlineParserDelegate {
     }
     
     public func didFoundSeperator(text: String, seperatorRanges: [[String: NSRange]]) {
-        self.tempParsingResult.append(contentsOf: seperatorRanges)
+        seperatorRanges.forEach { range in
+            if let seperatorRange = range[OutlineParser.Key.Node.seperator] {
+                let attachment = SeparaterAttachment(rawString: self.string.substring(seperatorRange), ranges: range)
+                self.setAttachment(attachment, range: seperatorRange)
+            }
+        }
     }
     
     public func didFoundCodeBlock(text: String, codeBlockRanges: [[String : NSRange]]) {
@@ -376,10 +413,14 @@ extension OutlineTextStorage: OutlineParserDelegate {
         self.tempParsingResult.append(contentsOf: quoteRanges)
         
         quoteRanges.forEach { quoteRange in
+            let paragraph = NSMutableParagraphStyle()
+            paragraph.paragraphSpacingBefore = 10
+            paragraph.headIndent = 100
+            
             if let range = quoteRange[OutlineParser.Key.Node.quote] {
                 self.addAttributes([NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.descriptive,
                                     NSAttributedString.Key.font: InterfaceTheme.Font.footnote,
-                                    NSAttributedString.Key.backgroundColor: InterfaceTheme.Color.background2], range: range)
+                                    NSAttributedString.Key.paragraphStyle: paragraph], range: range)
             }
             
             if let content = quoteRange[OutlineParser.Key.Element.Quote.content] {
@@ -399,21 +440,21 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 self.addAttribute(NSAttributedString.Key.font, value: UIFont.boldSystemFont(ofSize: 20), range: levelRange)
                 
                 // display arrow based on wheather the next character is hidden (if there is one)
-//                if let range = $0[OutlineParser.Key.Node.heading] {
-//                    let nextCharacterLocation: Int = range.upperBound + 1
-//                    let nextCharacter: String = self.string.substring(NSRange(location: nextCharacterLocation, length: 1))
-//
-//                    let isEndOfFile: Bool = range.upperBound >= self.string.count - 1
-//                    let isEndOfHeading: Bool = nextCharacter == OutlineParser.Values.Heading.level
-//
-//                    if !isEndOfFile && !isEndOfHeading {
-//                        if self.attributes(at: nextCharacterLocation, effectiveRange: nil)[OutlineAttribute.Heading.folded] == nil {
-//                            self.addUnfoldedIconAttachment(at: levelRange)
-//                        } else {
-//                            self.addFoldedIconAttachment(at: levelRange)
-//                        }
-//                    }
-//                }
+                if let range = $0[OutlineParser.Key.Node.heading] {
+                    let nextCharacterLocation: Int = range.upperBound + 1
+                    let nextCharacter: String = self.string.substring(NSRange(location: nextCharacterLocation, length: 1))
+                    
+                    let isEndOfFile: Bool = range.upperBound >= self.string.count - 1
+                    let isEndOfHeading: Bool = nextCharacter == OutlineParser.Values.Heading.level
+                    
+                    if !isEndOfFile && !isEndOfHeading {
+                        if self.attributes(at: nextCharacterLocation, effectiveRange: nil)[OutlineAttribute.Heading.folded] == nil {
+                            
+                        } else {
+                            
+                        }
+                    }
+                }
             }
             
             if let scheduleRange = $0[OutlineParser.Key.Element.Heading.schedule] {
@@ -440,8 +481,9 @@ extension OutlineTextStorage: OutlineParserDelegate {
     }
     
     public func didStartParsing(text: String) {
-        tempParsingResult = []
-        ignoreTextMarkRanges = []
+        self.tempParsingResult = []
+        self.ignoreTextMarkRanges = []
+        self.parsedActionsAfterLayout = []
     }
     
     public func didCompleteParsing(text: String) {
@@ -483,25 +525,10 @@ extension OutlineTextStorage: OutlineParserDelegate {
     
     // MARK: - utils
     
-    public func addUnfoldedIconAttachment(at range: NSRange) {
-        self.setAttributes([NSAttributedString.Key.attachment: self.attachment(image: "right")],
-                           range: range)
+    private func setAttachment(_ attachment: NSTextAttachment, range: NSRange) {
+        self.replaceCharacters(in: range, with: NSAttributedString(attachment: attachment))
     }
-    
-    public func addFoldedIconAttachment(at range: NSRange) {
-        self.setAttributes([NSAttributedString.Key.attachment: self.attachment(image: "down")],
-                           range: range)
-    }
-    
-    /// 用图片创建 attachment
-    private func attachment(image name: String) -> NSTextAttachment {
-        let image = UIImage(named: name)!
-        let attachment = NSTextAttachment()
-        attachment.bounds = CGRect(origin: .zero, size: image.size)
-        attachment.image = image
-        return attachment
-    }
-    
+
     /// 获得用 heading 分割的段落的 range 列表
     private func updateHeadingParagraphLength() {
         var endOfParagraph = self.string.count

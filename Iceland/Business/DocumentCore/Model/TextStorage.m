@@ -64,22 +64,12 @@
     for (int i = 0; i < glyphRange.length; i++) {
         NSDictionary * attributes = [self attributesAtIndex: glyphRange.location + i effectiveRange: nil];
         
-        if (attributes[OUTLINE_ATTRIBUTE_HEADING_FOLDED] != nil) {
+        if (attributes[OUTLINE_ATTRIBUTE_HIDDEN] != nil) {
             controlCharProps[i] = NSGlyphPropertyNull;
             shouldGenerate = YES;
-        } else if (attributes[OUTLINE_ATTRIBUTE_LINK] != nil // 隐藏 link 中除了标题的部分
-                   && attributes[OUTLINE_ATTRIBUTE_LINK_TITLE] == nil) {
+        } else if (attributes[OUTLINE_ATTRIBUTE_HEADING_FOLDED] != nil) {
             controlCharProps[i] = NSGlyphPropertyNull;
             shouldGenerate = YES;
-        }
-        // 暂时不隐藏
-//        else if (attributes[OUTLINE_ATTRIBUTE_CHECKBOX_STATUS] == nil // 隐藏 checkbox 中 status 为 nil 并且 box 不为 nil 的部分
-//                    && attributes[OUTLINE_ATTRIBUTE_CHECKBOX_BOX] != nil) {
-//            controlCharProps[i] = NSGlyphPropertyNull;
-//            shouldGenerate = YES;
-//        }
-        else {
-            controlCharProps[i] = props[i];
         }
     }
     
@@ -88,6 +78,12 @@
         return glyphRange.length;
     } else {
         return 0;
+    }
+}
+
+- (void)layoutManager:(NSLayoutManager *)layoutManager didCompleteLayoutForTextContainer:(NSTextContainer *)textContainer atEnd:(BOOL)layoutFinishedFlag {
+    if ([self.attributeChangeDelegate respondsToSelector:@selector(completedLayoutForContainer:)] && layoutFinishedFlag) {
+        [self.attributeChangeDelegate completedLayoutForContainer:textContainer];
     }
 }
 

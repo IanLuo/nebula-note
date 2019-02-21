@@ -16,6 +16,8 @@ FOUNDATION_EXPORT const unsigned char TextStorageVersionString[];
 
 // In this header, you should import all the public headers of your framework using statements like #import <TextStorage/PublicHeader.h>
 
+#define OUTLINE_ATTRIBUTE_HIDDEN @"hidden"
+
 #define OUTLINE_ATTRIBUTE_HEADING_FOLDED @"heading-folded"
 #define OUTLINE_ATTRIBUTE_HEADING_LEVEL @"heading-level"
 #define OUTLINE_ATTRIBUTE_HEADING_SCHEDULE @"heading-schedule"
@@ -37,6 +39,8 @@ FOUNDATION_EXPORT const unsigned char TextStorageVersionString[];
 @protocol GaterAttributeChanges<NSObject>
 
 - (void)changeAttributes:(NSString *)string range:(NSRange)range delta:(NSInteger)delta action:(NSTextStorageEditActions)action;
+
+- (void)completedLayoutForContainer: (NSTextContainer *)container;
 
 @end
 

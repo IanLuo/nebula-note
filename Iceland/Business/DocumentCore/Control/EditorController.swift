@@ -44,7 +44,7 @@ public class EditorController: NSObject {
         self.layoutManager.delegate = self.textStorage
         self.layoutManager.allowsNonContiguousLayout = true
         self.layoutManager.addTextContainer(self.textContainer)
-        self.layoutManager.showsInvisibleCharacters = true
+        self.layoutManager.showsInvisibleCharacters = false
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -75,6 +75,17 @@ extension EditorController {
     public var string: String {
         set { self.textStorage.string = newValue }
         get { return self.textStorage.string }
+    }
+    
+    public var serialized: String {
+        var string = self.string
+        self.textStorage.enumerateAttribute(NSAttributedString.Key.attachment, in: NSRange(location:0, length: string.count), options: .longestEffectiveRangeNotRequired) { (value, range, stop) in
+            if let attachment = value as? RenderAttachment {
+                string.replaceSubrange(Range<String.Index>(range, in: string)!, with: attachment.serialize())
+            }
+        }
+        
+        return string
     }
 }
 
@@ -110,7 +121,7 @@ extension EditorController {
         var nextStatus: String = status
         switch status {
         case OutlineParser.Values.Checkbox.checked: fallthrough
-        case OutlineParser.Values.Checkbox.halfChecked: 
+        case OutlineParser.Values.Checkbox.halfChecked:
             nextStatus = OutlineParser.Values.Checkbox.unchecked
         default:
             nextStatus = OutlineParser.Values.Checkbox.checked

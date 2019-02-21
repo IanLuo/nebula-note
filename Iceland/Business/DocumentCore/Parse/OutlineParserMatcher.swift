@@ -197,6 +197,10 @@ extension OutlineParser {
                     return "#+Attachment:\(attachment.type.rawValue)=\(attachment.url.path)"
                 }
             }
+            
+            public static func serialize(type: String , value: String) -> String {
+                return "#+Attachment:\(type)=\(type)"
+            }
         }
         
         public struct Checkbox {
