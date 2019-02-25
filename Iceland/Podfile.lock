@@ -8,6 +8,7 @@ PODS:
     - RxSwift (~> 4.0)
   - RxSwift (4.4.0):
     - RxAtomic (~> 4.4)
+  - SwiftGen (6.0.2)
   - SwiftyBeaver (1.6.1)
 
 DEPENDENCIES:
@@ -17,6 +18,7 @@ DEPENDENCIES:
   - Result
   - RxCocoa
   - RxSwift
+  - SwiftGen (~> 6.0)
   - SwiftyBeaver
 
 SPEC REPOS:
@@ -28,6 +30,7 @@ SPEC REPOS:
     - RxAtomic
     - RxCocoa
     - RxSwift
+    - SwiftGen
     - SwiftyBeaver
 
 SPEC CHECKSUMS:
@@ -38,8 +41,9 @@ SPEC CHECKSUMS:
   RxAtomic: eacf60db868c96bfd63320e28619fe29c179656f
   RxCocoa: df63ebf7b9a70d6b4eeea407ed5dd4efc8979749
   RxSwift: 5976ecd04fc2fefd648827c23de5e11157faa973
+  SwiftGen: e5b047067aa84082826a0c4f1c4c2ddc95bcf74c
   SwiftyBeaver: ccfcdf85a04d429f1633f668650b0ce8020bda3a
 
-PODFILE CHECKSUM: bb5321849bf169ca13ab84a8108fa785ac6918d8
+PODFILE CHECKSUM: 2e7052a952bd68ffa6a1d7a5fdf31645712b3600
 
 COCOAPODS: 1.5.3

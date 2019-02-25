@@ -102,11 +102,15 @@ extension EditorController {
         if let heading = self.textStorage.heading(at: location) {
             log.info("fold range: \(heading.contentRange)")
             
-            if self.textStorage.attributes(at: heading.contentRange.location, effectiveRange: nil)[OutlineAttribute.Heading.folded] == nil {
+            guard heading.contentRange.length > 0 else { return }
+            
+            if self.textStorage.attribute(OutlineAttribute.Heading.folded, at: heading.contentRange.location, effectiveRange: nil) == nil {
                 // 标记内容为隐藏
                 self.textStorage.addAttribute(OutlineAttribute.Heading.folded,
                                               value: 1,
                                               range: heading.contentRange)
+                var effectiveRange: NSRange = NSRange(location: 0, length: 0)
+                self.textStorage.attribute(OutlineAttribute.Heading.folded, at: heading.contentRange.location, longestEffectiveRange: &effectiveRange, in: heading.contentRange)
             } else {
                 // 移除内容隐藏标记
                 self.textStorage.removeAttribute(OutlineAttribute.Heading.folded,

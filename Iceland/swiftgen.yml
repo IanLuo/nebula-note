@@ -1,0 +1,12 @@
+string:
+    inputs: 
+        - Iceland/Resources/Localizable.strings
+    outputs:
+        - templateName: structured-swift4
+          output: Iceland/Generated/swiftgen/strings.swift4
+xcassets:
+    inputs:
+        - Iceland/Resources/Assets.xcassets
+    outputs:
+        - templateName: swift4
+          output: Iceland/Generated/swiftgen/assets-images.swift

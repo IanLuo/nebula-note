@@ -8,7 +8,8 @@ target 'Iceland' do
     pod 'SwiftyBeaver'
     pod 'Result'
     pod 'Haptico' # https://github.com/iSapozhnik/Haptico
-    pod 'Drawsana' # https://github.com/Asana/Drawsana
+    pod 'Drawsana' # https://github.com/Asana/Drawsan   a
+    pod 'SwiftGen', '~> 6.0'
 end
 
 target 'IcelandTests' do

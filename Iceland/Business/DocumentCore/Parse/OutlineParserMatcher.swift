@@ -184,6 +184,7 @@ extension OutlineParser {
     public struct Values {
         public struct Character {
             public static let linebreak = "\n"
+            public static let tab = "\t"
         }
         
         public struct Attachment {

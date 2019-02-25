@@ -71,10 +71,10 @@ public class OutlineTextStorage: TextStorage {
 // MARK: - Update Attributes
 extension OutlineTextStorage: ContentUpdatingProtocol {
     public func performContentUpdate(_ string: String!, range: NSRange, delta: Int, action: NSTextStorage.EditActions) {
-        log.info("editing in range: \(range), is non continouse: \(self.layoutManagers[0].hasNonContiguousLayout)")
-        
-        guard string.count > 0 else { return }
+//        log.info("editing in range: \(range), is non continouse: \(self.layoutManagers[0].hasNonContiguousLayout)")
+//        
         guard action != .editedAttributes else { return } // 如果是修改属性，则不进行解析
+        guard string.count > 0 else { return }
         
         /// 更新当前交互的位置
         self.currentLocation = editedRange.location
@@ -304,19 +304,11 @@ extension OutlineTextStorage: OutlineParserDelegate {
         self.ignoreTextMarkRanges.append(contentsOf: urlRanges.map { $0[OutlineParser.Key.Element.link]! })
         urlRanges.forEach { urlRangeData in
             urlRangeData.forEach {
-                if let range = urlRangeData[OutlineParser.Key.Element.link] {
-                    self.addAttribute(OutlineAttribute.hidden, value: 1, range: range)
-                }
-                
                 // range 为整个链接时，添加自定义属性，值为解析的链接结构
-                if $0.key == OutlineParser.Key.Element.link {
-                    self.addAttribute(OutlineAttribute.Link.link, value: urlRangeData, range: $0.value)
-                    self.addAttribute(NSAttributedString.Key.link, value: 1, range: $0.value)
-                    
-                // range 为链接的 title 时，添加自定义属性，值为 title 的内容
-                } else if $0.key == OutlineParser.Key.Element.Link.title {
+                if $0.key == OutlineParser.Key.Element.Link.title {
                     self.addAttribute(OutlineAttribute.Link.title, value: $0.value, range: $0.value)
-                    self.removeAttribute(OutlineAttribute.hidden, range: $0.value)
+                } else if $0.key == OutlineParser.Key.Element.Link.url {
+                    self.addAttribute(OutlineAttribute.Link.link, value: $0.value, range: $0.value)
                 }
             }
         }
@@ -528,14 +520,9 @@ extension OutlineTextStorage: OutlineParserDelegate {
     }
     
     internal func adjustParseRange(_ range: NSRange) {
-        guard range.length < self.string.count else {
-            self.currentParseRange = NSRange(location: 0, length: self.string.count)
-            return
-        }
-        
-        var tempRange = range.expandFoward(string: self.string)
-        tempRange = tempRange.expandBackward(string: self.string)
-        self.currentParseRange = tempRange
+        var start: Int = 0, end: Int = 0
+        (self.string as NSString).getParagraphStart(&start, end: &end, contentsEnd: nil, for: range)
+        self.currentParseRange = NSRange(location: start, length: end - start)
         
         // 如果范围在某个 item 内，并且小于这个 item 原来的范围，则扩大至这个 item 原来的范围
         if let currrentParseRange = self.currentParseRange {
@@ -584,7 +571,7 @@ extension NSRange {
             buf = ""
         }
         
-        return buf == (OutlineParser.Values.Character.linebreak + OutlineParser.Values.Character.linebreak)
+        return buf == (OutlineParser.Values.Character.linebreak)
     }
 }
 
