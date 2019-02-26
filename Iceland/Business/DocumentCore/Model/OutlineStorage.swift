@@ -310,7 +310,8 @@ extension OutlineTextStorage: OutlineParserDelegate {
             urlRangeData.forEach {
                 // range 为整个链接时，添加自定义属性，值为解析的链接结构
                 if $0.key == OutlineParser.Key.Element.Link.title {
-                    self.addAttribute(OutlineAttribute.Link.title, value: $0.value, range: $0.value)
+                    self.addAttributes([OutlineAttribute.Link.title: $0.value,
+                                        NSAttributedString.Key.link: 1], range: $0.value)
                     self.removeAttribute(OutlineAttribute.Link.other, range: $0.value)
                 } else if $0.key == OutlineParser.Key.Element.Link.url {
                     self.addAttribute(OutlineAttribute.Link.url, value: $0.value, range: $0.value)
