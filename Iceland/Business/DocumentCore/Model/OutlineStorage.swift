@@ -302,13 +302,19 @@ extension OutlineTextStorage: OutlineParserDelegate {
     public func didFoundLink(text: String, urlRanges: [[String : NSRange]]) {
         self.tempParsingResult.append(contentsOf: urlRanges)
         self.ignoreTextMarkRanges.append(contentsOf: urlRanges.map { $0[OutlineParser.Key.Element.link]! })
+        
         urlRanges.forEach { urlRangeData in
+            if let range = urlRangeData[OutlineParser.Key.Element.link] {
+                self.addAttribute(OutlineAttribute.Link.other, value: range, range: range)
+            }
             urlRangeData.forEach {
                 // range 为整个链接时，添加自定义属性，值为解析的链接结构
                 if $0.key == OutlineParser.Key.Element.Link.title {
                     self.addAttribute(OutlineAttribute.Link.title, value: $0.value, range: $0.value)
+                    self.removeAttribute(OutlineAttribute.Link.other, range: $0.value)
                 } else if $0.key == OutlineParser.Key.Element.Link.url {
-                    self.addAttribute(OutlineAttribute.Link.link, value: $0.value, range: $0.value)
+                    self.addAttribute(OutlineAttribute.Link.url, value: $0.value, range: $0.value)
+                    self.removeAttribute(OutlineAttribute.Link.other, range: $0.value)
                 }
             }
         }

@@ -13,7 +13,8 @@ public struct OutlineAttribute {
     
     public struct Link {
         public static let title: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_LINK_TITLE)
-        public static let link: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_LINK)
+        public static let url: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_LINK_URL)
+        public static let other: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_LINK_OTHER)
     }
     
     public struct UnorderedList {

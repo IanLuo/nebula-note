@@ -27,8 +27,9 @@ FOUNDATION_EXPORT const unsigned char TextStorageVersionString[];
 #define OUTLINE_ATTRIBUTE_CHECKBOX_STATUS @"checkbox-status"
 #define OUTLINE_ATTRIBUTE_CHECKBOX_BOX @"checkbox-box"
 
-#define OUTLINE_ATTRIBUTE_LINK @"link"
+#define OUTLINE_ATTRIBUTE_LINK_OTHER @"link-other"
 #define OUTLINE_ATTRIBUTE_LINK_TITLE @"link-title"
+#define OUTLINE_ATTRIBUTE_LINK_URL @"link-URL"
 
 #define OUTLINE_ATTRIBUTE_UNORDERED_LIST @"unordered-list"
 #define OUTLINE_ATTRIBUTE_UNORDERED_LIST_PREFIX @"unordered-list-prefix"

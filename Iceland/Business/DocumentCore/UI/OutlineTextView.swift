@@ -70,7 +70,7 @@ public class OutlineTextView: UITextView {
             self.outlineDelegate?.didTapOnLevel(textView: self, chracterIndex: characterIndex, heading: heading, point: location)
         } else if let checkbox = attributes[OutlineAttribute.Checkbox.box] as? [String: NSRange] {
             self.outlineDelegate?.didTapOnCheckbox(textView: self, characterIndex: characterIndex, checkbox: checkbox, point: location)
-        } else if let linkStructure = attributes[OutlineAttribute.Link.link] as? [String: NSRange] {
+        } else if let linkStructure = attributes[OutlineAttribute.Link.url] as? [String: NSRange] {
             self.outlineDelegate?.didTapOnLink(textView: self, characterIndex: characterIndex, linkStructure: linkStructure, point: location)
         } else {
             shouldPassTapToOtherGuestureRecognizers = true

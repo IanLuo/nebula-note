@@ -10,6 +10,11 @@
 #import "TextStorage.h"
 #import <UIKit/UIKit.h>
 
+static NSTextAttachment *foldingAttachment;
+static NSTextAttachment *linkAttachment;
+
+static NSDictionary *attachmentMap;
+
 @interface TextStorage()
 
 @property (strong) NSTextStorage *backingStore;
@@ -17,6 +22,23 @@
 @end
 
 @implementation TextStorage
+
++ (void)initialize {
+    if ([self class] == [TextStorage class]) {
+        foldingAttachment = [[NSTextAttachment alloc] init];;
+        foldingAttachment.image = [UIImage imageNamed: @"more"];
+        foldingAttachment.bounds = CGRectMake(0, 0, 14, 4);
+        
+        linkAttachment = [[NSTextAttachment alloc] init];;
+        linkAttachment.image = [UIImage imageNamed: @"document"];
+        linkAttachment.bounds = CGRectMake(0, 0, 20, 20);
+        
+        attachmentMap = @{
+                          OUTLINE_ATTRIBUTE_HEADING_FOLDED: foldingAttachment,
+                          OUTLINE_ATTRIBUTE_LINK_URL: linkAttachment
+                          };
+    }
+}
 
 - (instancetype)init {
     if ([super init]) {
@@ -31,10 +53,7 @@
 }
 
 + (NSTextAttachment *)foldingAttachment {
-    NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
-    attachment.image = [UIImage imageNamed: @"left"];
-    attachment.bounds = CGRectMake(0, 0, 20, 20);
-    return attachment;
+    return foldingAttachment;
 }
 
 - (void)replaceCharactersInRange:(NSRange)range withString:(NSString *)str {
@@ -45,18 +64,21 @@
 }
 
 - (NSDictionary<NSAttributedStringKey,id> *)attributesAtIndex:(NSUInteger)location effectiveRange:(NSRangePointer)range {
-    id value;
     NSRange effectiveRange;
     NSDictionary *attributes = [self.backingStore attributesAtIndex:location effectiveRange:range];
 
-    value = [attributes objectForKey: OUTLINE_ATTRIBUTE_HEADING_FOLDED];
-    if (value && [value intValue]) {
-        [self.backingStore attribute: OUTLINE_ATTRIBUTE_HEADING_FOLDED atIndex:location longestEffectiveRange:&effectiveRange inRange:NSMakeRange(0, [self.backingStore length])];
-
-            // We adds NSAttachmentAttributeName if in lineFoldingAttributeName
-        if (location == effectiveRange.location) { // beginning of a folded range
+    NSTextAttachment *attachment;
+    
+    attachment = [self findAttachmentForAt:location key:OUTLINE_ATTRIBUTE_HEADING_FOLDED in:attributes effectiveRange:&effectiveRange];
+    
+    if (!attachment) {
+        attachment = [self findAttachmentForAt:location key:OUTLINE_ATTRIBUTE_LINK_URL in:attributes effectiveRange:&effectiveRange];
+    }
+    
+    if (attachment) {
+        if (location == effectiveRange.location) {
             NSMutableDictionary *dict = [attributes mutableCopyWithZone:NULL];
-            [dict setObject: [TextStorage foldingAttachment] forKey:NSAttachmentAttributeName];
+            [dict setObject: attachment forKey:NSAttachmentAttributeName];
             attributes = dict;
             effectiveRange.length = 1;
         } else {
@@ -65,28 +87,19 @@
 
         if (range) *range = effectiveRange;
     }
-    
+
     return attributes;
 }
 
-    // Attribute Fixing Overrides
-- (void)fixAttributesInRange:(NSRange)range {
-    [super fixAttributesInRange:range];
+- (NSTextAttachment *)findAttachmentForAt:(NSUInteger)location key:(NSString*)key in:(NSDictionary *)attributes effectiveRange:(NSRange *)range {
+    if ([attributes objectForKey: key]) {
+        [self.backingStore attribute: key atIndex:location longestEffectiveRange:range inRange:NSMakeRange(0, [self.backingStore length])];
+        
+        return attachmentMap[key];
+    }
     
-        // we want to avoid extending to the last paragraph separator
-    [self enumerateAttribute:OUTLINE_ATTRIBUTE_HEADING_FOLDED inRange:range options:0 usingBlock:^(id value, NSRange range, BOOL *stop) {
-        if (value && (range.length > 1)) {
-            NSUInteger paragraphStart, paragraphEnd, contentsEnd;
-
-            [[self string] getParagraphStart:&paragraphStart end:&paragraphEnd contentsEnd:&contentsEnd forRange:range];
-
-            if ((NSMaxRange(range) == paragraphEnd) && (contentsEnd < paragraphEnd)) {
-                [self removeAttribute:OUTLINE_ATTRIBUTE_HEADING_FOLDED range:NSMakeRange(contentsEnd, paragraphEnd - contentsEnd)];
-            }
-        }
-    }];
+    return nil;
 }
-
 
 - (void)setAttributes:(NSDictionary<NSAttributedStringKey,id> *)attrs range:(NSRange)range {
     [self beginEditing];
@@ -105,31 +118,43 @@
 
 - (NSUInteger)layoutManager:(NSLayoutManager *)layoutManager shouldGenerateGlyphs:(const CGGlyph *)glyphs properties:(const NSGlyphProperty *)props characterIndexes:(const NSUInteger *)charIndexes font:(UIFont *)aFont forGlyphRange:(NSRange)glyphRange {
     
-    NSRange effectiveRange;
-    id attribute;
-    
     NSGlyphProperty * properties = NULL;
+
+    properties = [self replaceGlyphPropertiesAtCharacterLocation:charIndexes[0] glyphRange:glyphRange hasAttachment:YES for:OUTLINE_ATTRIBUTE_HEADING_FOLDED];
     
-        // find folding
-    attribute = [self attribute: OUTLINE_ATTRIBUTE_HEADING_FOLDED atIndex: charIndexes[0] longestEffectiveRange: &effectiveRange inRange: NSMakeRange(0, [self.backingStore length])];
-    if (attribute && [attribute intValue]) {
-        NSInteger propertiesSize = sizeof(NSGlyphProperty) * glyphRange.length;
-        NSGlyphProperty aProperty = NSGlyphPropertyNull;
-        properties = NSZoneMalloc(NULL, propertiesSize);
-        memset_pattern4(properties, &aProperty, propertiesSize);
-        
-        if (charIndexes[0] == effectiveRange.location) {
-            properties[0] = NSGlyphPropertyControlCharacter;
-        }
-        
-        [layoutManager setGlyphs:glyphs properties:properties characterIndexes:charIndexes font:aFont forGlyphRange:glyphRange];
-        
-        if (properties) NSZoneFree(NULL, properties);
-        
-        return glyphRange.length;
+    if (!properties) {
+        properties = [self replaceGlyphPropertiesAtCharacterLocation:charIndexes[0] glyphRange:glyphRange hasAttachment:YES for:OUTLINE_ATTRIBUTE_LINK_URL];
     }
     
+    if (!properties) {
+        properties = [self replaceGlyphPropertiesAtCharacterLocation:charIndexes[0] glyphRange:glyphRange hasAttachment:NO for:OUTLINE_ATTRIBUTE_LINK_OTHER];
+    }
+    
+    if (properties) {
+        [layoutManager setGlyphs:glyphs properties:properties characterIndexes:charIndexes font:aFont forGlyphRange:glyphRange];
+
+        free(properties);
+
+        return glyphRange.length;
+    }
+
     return 0;
+}
+
+- (NSGlyphProperty *)replaceGlyphPropertiesAtCharacterLocation:(NSUInteger)location glyphRange:(NSRange)glyphRange hasAttachment:(BOOL)hasAttachment for:(NSString*)key {
+    NSRange effectiveRange;
+    NSGlyphProperty * properties = NULL;
+    if ([self attribute: key atIndex: location longestEffectiveRange: &effectiveRange inRange: NSMakeRange(0, [self.backingStore length])]) {
+        NSInteger propertiesSize = sizeof(NSGlyphProperty) * glyphRange.length;
+        NSGlyphProperty aProperty = NSGlyphPropertyNull;
+        properties = malloc(propertiesSize);
+        memset_pattern4(properties, &aProperty, propertiesSize);
+        
+        if (location == effectiveRange.location && hasAttachment) {
+            properties[0] = NSGlyphPropertyControlCharacter;
+        }
+    }
+    return properties;
 }
 
 - (NSControlCharacterAction)layoutManager:(NSLayoutManager *)layoutManager shouldUseAction:(NSControlCharacterAction)action forControlCharacterAtIndex:(NSUInteger)charIndex {
