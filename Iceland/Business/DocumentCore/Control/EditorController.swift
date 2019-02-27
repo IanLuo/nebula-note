@@ -79,7 +79,7 @@ extension EditorController {
 }
 
 extension EditorController: OutlineTextStorageDelegate {
-    public func didSetHeading(newHeading: Document.Heading?, oldHeading: Document.Heading?) {
+    public func didSetCurrentHeading(newHeading: Document.Heading?, oldHeading: Document.Heading?) {
         if oldHeading?.range.location != newHeading?.range.location {
             self.delegate?.currentHeadingDidChange(heading: newHeading)
         }

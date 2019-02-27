@@ -9,7 +9,7 @@
 import Foundation
 
 public protocol OutlineTextStorageDelegate: class {
-    func didSetHeading(newHeading: Document.Heading?, oldHeading: Document.Heading?)
+    func didSetCurrentHeading(newHeading: Document.Heading?, oldHeading: Document.Heading?)
 }
 
 /// 提供渲染的对象，如 attachment, checkbox 等
@@ -24,7 +24,7 @@ public class OutlineTextStorage: TextStorage {
         set { super.replaceCharacters(in: NSRange(location: 0, length: self.string.count), with: newValue) }
         get { return super.string }
     }
-
+    
     public var theme: OutlineTheme = OutlineTheme()
     
     public weak var outlineDelegate: OutlineTextStorageDelegate?
@@ -40,14 +40,14 @@ public class OutlineTextStorage: TextStorage {
     /// 当前的解析范围，需要进行解析的字符串范围，用于对 item，索引 等缓存数据进行重新组织
     public var currentParseRange: NSRange?
     // MARK: - Selection highlight
-//    {
-//        didSet {
-//            if let _ = oldValue {
-//                self.removeAttribute(NSAttributedString.Key.backgroundColor, range: NSRange(location: 0, length: self.string.count))
-//            }
-//            self.addAttributes([NSAttributedString.Key.backgroundColor: UIColor.red.withAlphaComponent(0.5)], range: currentParseRange!)
-//        }
-//    }
+    //    {
+    //        didSet {
+    //            if let _ = oldValue {
+    //                self.removeAttribute(NSAttributedString.Key.backgroundColor, range: NSRange(location: 0, length: self.string.count))
+    //            }
+    //            self.addAttributes([NSAttributedString.Key.backgroundColor: UIColor.red.withAlphaComponent(0.5)], range: currentParseRange!)
+    //        }
+    //    }
     
     /// 当前所在编辑位置的最外层，或者最前面的 item 类型, 某些 item 在某些编辑操作是会有特殊行为，例如:
     /// 当前 item 为 unordered list 时，换行将会自动添加一个新的 unordered list 前缀
@@ -55,11 +55,14 @@ public class OutlineTextStorage: TextStorage {
         return self.item(after: self.currentLocation)
     }
     
-    /// 找到的 node 的 location 在此，用于保存 element 的索引，在编辑过后，更新所有的索引，从而不需要把所有的字符串都重新解析一次
-    public var itemRanges: [NSRange] = []
-    
-    /// 找到的 node 的 location 与之 data 的映射
-    public var itemRangeDataMapping: [NSRange: Document.Item] = [:]
+    //    /// 找到的 node 的 location 在此，用于保存 element 的索引，在编辑过后，更新所有的索引，从而不需要把所有的字符串都重新解析一次
+    //    public var itemRanges: [NSRange] = []
+    //
+    //    /// 找到的 node 的 location 与之 data 的映射
+    //    public var itemRangeDataMapping: [NSRange: Document.Item] = [:]
+    //
+    /// 所有解析获得的 item, 对应当前的文档结构解析状态
+    public var allItems: [Document.Item] = []
     
     // 用于解析过程中临时数据处理
     private var tempParsingResult: [[String: NSRange]] = []
@@ -73,8 +76,8 @@ public class OutlineTextStorage: TextStorage {
 // MARK: - Update Attributes
 extension OutlineTextStorage: ContentUpdatingProtocol {
     public func performContentUpdate(_ string: String!, range: NSRange, delta: Int, action: NSTextStorage.EditActions) {
-//        log.info("editing in range: \(range), is non continouse: \(self.layoutManagers[0].hasNonContiguousLayout)")
-//        
+        //        log.info("editing in range: \(range), is non continouse: \(self.layoutManagers[0].hasNonContiguousLayout)")
+        //
         guard action != .editedAttributes else { return } // 如果是修改属性，则不进行解析
         guard string.count > 0 else { return }
         
@@ -114,9 +117,9 @@ extension OutlineTextStorage: ContentUpdatingProtocol {
 extension OutlineTextStorage {
     /// 找到对应位置之后的第一个 item
     public func item(after: Int) -> Document.Item? {
-        for itemRange in self.itemRanges {
-            if itemRange.upperBound >= after {
-                return self.itemRangeDataMapping[itemRange]
+        for item in self.allItems {
+            if item.range.upperBound >= after {
+                return item
             }
         }
         
@@ -126,9 +129,9 @@ extension OutlineTextStorage {
     /// 获取范围内的 item range 的索引
     public func indexsOfItem(in: NSRange) -> [Int]? {
         var items: [Int] = []
-        for (index, itemRange) in self.itemRanges.enumerated() {
-            if itemRange.location >= `in`.location &&
-                itemRange.upperBound <= `in`.upperBound {
+        for (index, item) in self.allItems.enumerated() {
+            if item.range.location >= `in`.location &&
+                item.range.upperBound <= `in`.upperBound {
                 items.append(index)
             }
         }
@@ -137,23 +140,9 @@ extension OutlineTextStorage {
     }
     
     public func updateItemIndexAndRange(delta: Int) {
-        guard let currentParseRange = self.currentParseRange else { return }
-        
-        if let indexs = self.indexsOfItem(in: currentParseRange) {
-            // 清除 currentParseRange 内的所有保存的 index 和对应的 Item
-            
-            log.verbose("remove indexs: \(indexs)")
-            indexs.reversed().forEach {
-                self.itemRangeDataMapping.removeValue(forKey: self.itemRanges.remove(at: $0))
-            }
-            
-            // 没有在 currentParseRange 内的 item 和 index，修改 offset
-            if let lastDeletedIndex = indexs.last {
-                if lastDeletedIndex < self.itemRanges.count - 1 {
-                    self.itemRangeDataMapping[self.itemRanges[lastDeletedIndex]]?.offset(delta)
-                }
-            }
-        }
+        self.allItems
+            .filter { $0.range.location > self.currentLocation }
+            .forEach { $0.offset(delta) }
         
         self.savedHeadings
             .filter { $0.range.location > self.currentLocation }
@@ -190,7 +179,7 @@ extension OutlineTextStorage {
         
         let oldHeading = self.currentHeading
         self.currentHeading = self.heading(at: self.currentLocation)
-        self.outlineDelegate?.didSetHeading(newHeading: self.currentHeading, oldHeading: oldHeading)
+        self.outlineDelegate?.didSetCurrentHeading(newHeading: self.currentHeading, oldHeading: oldHeading)
     }
 }
 
@@ -225,15 +214,15 @@ extension OutlineTextStorage: OutlineParserDelegate {
         }
     }
     
-    /// 添加数据到 itemRanges 以及 itemRangeDataMapping 中
-    private func insertItems(items: [[String: NSRange]]) {
+    /// 更新 items 中的数据
+    private func updateItems(new items: [[String: NSRange]]) {
         var newItems: [Document.Item] = []
         items.forEach {
             for (key, value) in $0 {
                 newItems.append(Document.Item(range: value, name: key, data: [key: value]))
             }
         }
-
+        
         newItems.sort { (lhs: Document.Item, rhs: Document.Item) -> Bool in
             if lhs.range.location != rhs.range.location {
                 return lhs.range.location < rhs.range.location
@@ -242,23 +231,27 @@ extension OutlineTextStorage: OutlineParserDelegate {
             }
         }
         
-        newItems.forEach {
-            self.itemRangeDataMapping[$0.range] = $0
-        }
-        
-        if let first = newItems.first {
-            if self.itemRanges.count == 0 {
-                self.itemRanges = newItems.map { $0.range }
-            } else {
-                let index = findInsertPosition(new: first.range.location, ranges: self.itemRanges)
-                log.info("insert at: \(index)")
-                if index == self.itemRanges.count - 1 {
-                    self.itemRanges.append(contentsOf: newItems.map { $0.range })
-                } else {
-                    self.itemRanges.insert(contentsOf: newItems.map { $0.range }, at: index)
+        let oldCount = self.allItems.count
+        // remove items that intersects with current parsing range
+        var firstIndex = max(0, self.allItems.count - 1)
+        var indexsToRemove: [Int] = []
+        if let currentParseRange = self.currentParseRange, self.allItems.count > 0 {
+            for (index, item) in self.allItems.reversed().enumerated() {
+                if item.range.intersection(currentParseRange) != nil {
+                    let i = self.allItems.count - index - 1
+                    indexsToRemove.append(i)
+                    firstIndex = i
                 }
             }
         }
+        
+        if indexsToRemove.count > 0 {
+            self.allItems.removeSubrange(Range<Int>(NSRange(location: firstIndex, length: indexsToRemove.count))!)
+        }
+        
+        // add new found items
+        self.allItems.insert(contentsOf: newItems, at: firstIndex)
+        log.info("[item count changed] \(self.allItems.count - oldCount)")
     }
     
     // MARK: - handle parse result
@@ -422,7 +415,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
             }
         }
     }
-
+    
     public func didFoundHeadings(text: String, headingDataRanges: [[String : NSRange]]) {
         self.tempParsingResult.append(contentsOf: headingDataRanges)
         self.updateHeadingIfNeeded(headingDataRanges)
@@ -480,10 +473,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
     }
     
     public func didCompleteParsing(text: String) {
-        // 添加接续出来的 item 到 items 列表
-        if self.tempParsingResult.count > 0 {
-            self.insertItems(items: self.tempParsingResult)
-        }
+        self.updateItems(new: self.tempParsingResult)
         
         // 更新段落长度信息
         self.updateHeadingParagraphLength()
@@ -493,6 +483,8 @@ extension OutlineTextStorage: OutlineParserDelegate {
         
         print(self.debugDescription)
     }
+    
+    // MARK: - utils
     
     private func setParagraphIndent() {
         for heading in self.savedHeadings {
@@ -516,8 +508,6 @@ extension OutlineTextStorage: OutlineParserDelegate {
         }
     }
     
-    // MARK: - utils
-
     /// 获得用 heading 分割的段落的 range 列表
     private func updateHeadingParagraphLength() {
         var endOfParagraph = self.string.count
@@ -534,10 +524,10 @@ extension OutlineTextStorage: OutlineParserDelegate {
         
         // 如果范围在某个 item 内，并且小于这个 item 原来的范围，则扩大至这个 item 原来的范围
         if let currrentParseRange = self.currentParseRange {
-            for item in self.itemRanges {
-                if item.location <= currrentParseRange.location
-                    && item.upperBound >= currrentParseRange.upperBound {
-                    self.currentParseRange = item
+            for item in self.allItems {
+                if item.range.location <= currrentParseRange.location
+                    && item.range.upperBound >= currrentParseRange.upperBound {
+                    self.currentParseRange = item.range
                     return
                 }
             }
@@ -588,7 +578,7 @@ extension OutlineTextStorage {
         return """
         length: \(self.string.count)
         heading count: \(self.savedHeadings.count)
-        items count: \(self.itemRanges.count)
-"""
+        items count: \(self.allItems.count)
+        """
     }
 }

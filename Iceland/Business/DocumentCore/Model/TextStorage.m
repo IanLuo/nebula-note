@@ -83,7 +83,7 @@ static NSDictionary *attachmentMap;
     if (!attachment) {
         attachment = [self findAttachmentForAt:location key:OUTLINE_ATTRIBUTE_SEPARATOR in:attributes effectiveRange:&effectiveRange];
     }
-    
+
     if (!attachment) {
         attachment = [self findAttachmentForAt:location key:OUTLINE_ATTRIBUTE_ATTACHMENT in:attributes effectiveRange:&effectiveRange];
     }
@@ -105,19 +105,20 @@ static NSDictionary *attachmentMap;
 }
 
 - (NSTextAttachment *)findAttachmentForAt:(NSUInteger)location key:(NSString*)key in:(NSDictionary *)attributes effectiveRange:(NSRange *)range {
-    if ([key isEqual: OUTLINE_ATTRIBUTE_ATTACHMENT]) {
-        NSString *key = [self attribute:OUTLINE_ATTRIBUTE_ATTACHMENT_VALUE atIndex:location effectiveRange:nil];
-        if (key) {
-            NSTextAttachment *attachment = [[self attachmentCache] objectForKey:key];
-            if (!attachment) {
-                NSString *type = [self attribute:OUTLINE_ATTRIBUTE_ATTACHMENT_TYPE atIndex:location effectiveRange:nil];
-                attachment = [[RenderAttachment alloc] initWithType:type value:key];
-                [[self attachmentCache] setValue:attachment forKey:key];
-            }
-            
-            return attachment;
-        }
-    } else if ([attributes objectForKey: key]) {
+//    if ([key isEqual: OUTLINE_ATTRIBUTE_ATTACHMENT]) {
+//        NSString *key = [self attribute:OUTLINE_ATTRIBUTE_ATTACHMENT_VALUE atIndex:location effectiveRange:nil];
+//        if (key) {
+//            NSTextAttachment *attachment = [[self attachmentCache] objectForKey:key];
+//            if (!attachment) {
+//                NSString *type = [self attribute:OUTLINE_ATTRIBUTE_ATTACHMENT_TYPE atIndex:location effectiveRange:nil];
+//                attachment = [[RenderAttachment alloc] initWithType:type value:key];
+//                [[self attachmentCache] setValue:attachment forKey:key];
+//            }
+//
+//            return attachment;
+//        }
+//    } else
+    if ([attributes objectForKey: key]) {
         [self.backingStore attribute: key atIndex:location longestEffectiveRange:range inRange:NSMakeRange(0, [self.backingStore length])];
         
         return attachmentMap[key];
@@ -158,11 +159,11 @@ static NSDictionary *attachmentMap;
     if (!properties) {
         properties = [self replaceGlyphPropertiesAtCharacterLocation:charIndexes[0] glyphRange:glyphRange hasAttachment:YES for:OUTLINE_ATTRIBUTE_SEPARATOR];
     }
-    
+
     if (!properties) {
         properties = [self replaceGlyphPropertiesAtCharacterLocation:charIndexes[0] glyphRange:glyphRange hasAttachment:YES for:OUTLINE_ATTRIBUTE_ATTACHMENT];
     }
-    
+
     if (properties) {
         [layoutManager setGlyphs:glyphs properties:properties characterIndexes:charIndexes font:aFont forGlyphRange:glyphRange];
 

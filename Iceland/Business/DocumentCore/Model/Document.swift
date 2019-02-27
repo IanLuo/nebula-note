@@ -145,8 +145,8 @@ public class Document: UIDocument {
                 log.verbose("offset did set: \(offset)")
             }
         }
-        private var previouse: Item?
-        private var next: Item?
+//        private var previouse: Item?
+//        private var next: Item?
         private var _range: NSRange
         public var range: NSRange {
             set { _range = newValue }
@@ -163,7 +163,7 @@ public class Document: UIDocument {
         
         public func offset(_ offset: Int) {
             self.offset += offset
-            next?.offset(offset)
+//            next?.offset(offset)
         }
     }
     

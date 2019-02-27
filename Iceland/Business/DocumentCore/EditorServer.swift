@@ -96,6 +96,8 @@ public class OutlineEditorServer {
     }
 }
 
+// MARK: - Service - 
+
 public class EditorService {
     private let editorController = EditorController(parser: OutlineParser())
     fileprivate var document: Document!
