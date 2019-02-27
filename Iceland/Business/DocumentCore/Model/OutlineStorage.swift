@@ -38,14 +38,16 @@ public class OutlineTextStorage: TextStorage {
     public var currentHeading: Document.Heading?
     
     /// 当前的解析范围，需要进行解析的字符串范围，用于对 item，索引 等缓存数据进行重新组织
-    public var currentParseRange: NSRange? {
-        didSet {
-            if let _ = oldValue {
-                self.removeAttribute(NSAttributedString.Key.backgroundColor, range: NSRange(location: 0, length: self.string.count))
-            }
-            self.addAttributes([NSAttributedString.Key.backgroundColor: UIColor.red.withAlphaComponent(0.5)], range: currentParseRange!)
-        }
-    }
+    public var currentParseRange: NSRange?
+    // MARK: - Selection highlight
+//    {
+//        didSet {
+//            if let _ = oldValue {
+//                self.removeAttribute(NSAttributedString.Key.backgroundColor, range: NSRange(location: 0, length: self.string.count))
+//            }
+//            self.addAttributes([NSAttributedString.Key.backgroundColor: UIColor.red.withAlphaComponent(0.5)], range: currentParseRange!)
+//        }
+//    }
     
     /// 当前所在编辑位置的最外层，或者最前面的 item 类型, 某些 item 在某些编辑操作是会有特殊行为，例如:
     /// 当前 item 为 unordered list 时，换行将会自动添加一个新的 unordered list 前缀
@@ -192,8 +194,7 @@ extension OutlineTextStorage {
     }
 }
 
-// MARK: - parse result -
-
+// MARK: - Parse result -
 extension OutlineTextStorage: OutlineParserDelegate {
     /// 更新找到的 heading
     /// - Parameter newHeadings:
@@ -324,8 +325,13 @@ extension OutlineTextStorage: OutlineParserDelegate {
     public func didFoundAttachment(text: String, attachmentRanges: [[String : NSRange]]) {
         attachmentRanges.forEach { rangeData in
             guard let attachmentRange = rangeData[OutlineParser.Key.Node.attachment] else { return }
+            guard let typeRange = rangeData[OutlineParser.Key.Element.Attachment.type] else { return }
+            guard let valueRange = rangeData[OutlineParser.Key.Element.Attachment.value] else { return }
             
-            self.setAttachment(RenderAttachment(rawString: self.string.substring(attachmentRange), ranges: rangeData), range: attachmentRange)
+            self.addAttributes([OutlineAttribute.Attachment.attachment: 1,
+                                OutlineAttribute.Attachment.type: self.string.substring(typeRange),
+                                OutlineAttribute.Attachment.value: self.string.substring(valueRange)],
+                               range: attachmentRange)
         }
     }
     
@@ -374,8 +380,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
     public func didFoundSeperator(text: String, seperatorRanges: [[String: NSRange]]) {
         seperatorRanges.forEach { range in
             if let seperatorRange = range[OutlineParser.Key.Node.seperator] {
-                let attachment = SeparaterAttachment(rawString: self.string.substring(seperatorRange), ranges: range)
-                self.setAttachment(attachment, range: seperatorRange)
+                self.addAttributes([OutlineAttribute.separator: 1], range: seperatorRange)
             }
         }
     }
@@ -512,10 +517,6 @@ extension OutlineTextStorage: OutlineParserDelegate {
     }
     
     // MARK: - utils
-    
-    private func setAttachment(_ attachment: NSTextAttachment, range: NSRange) {
-        self.replaceCharacters(in: range, with: NSAttributedString(attachment: attachment))
-    }
 
     /// 获得用 heading 分割的段落的 range 列表
     private func updateHeadingParagraphLength() {

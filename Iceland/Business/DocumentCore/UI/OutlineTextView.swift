@@ -83,14 +83,13 @@ public class OutlineTextView: UITextView {
 extension OutlineTextView: UIGestureRecognizerDelegate {
     public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         // 拦截 textView 中点击到需要与用户交互的 tap, 比如折叠，checkbox，link 等
-//        if gestureRecognizer == self.tapGestureRecognizer {
-////            return self.tapped(gesture: self.tapGestureRecognizer)
-//            let should = lastTap.1
-//            lastTap = (gestureRecognizer.location(in: self), true)
-//            return should
-//        } else {
-//            return true
-//        }
-        return false
+        if gestureRecognizer == self.tapGestureRecognizer {
+//            return self.tapped(gesture: self.tapGestureRecognizer)
+            let should = lastTap.1
+            lastTap = (gestureRecognizer.location(in: self), true)
+            return should
+        } else {
+            return true
+        }
     }
 }

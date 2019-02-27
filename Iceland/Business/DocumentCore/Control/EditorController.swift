@@ -76,17 +76,6 @@ extension EditorController {
         set { self.textStorage.string = newValue }
         get { return self.textStorage.string }
     }
-    
-    public var serialized: String {
-        var string = self.string
-        self.textStorage.enumerateAttribute(NSAttributedString.Key.attachment, in: NSRange(location:0, length: string.count), options: .longestEffectiveRangeNotRequired) { (value, range, stop) in
-            if let attachment = value as? RenderAttachment {
-                string.replaceSubrange(Range<String.Index>(range, in: string)!, with: attachment.serialize())
-            }
-        }
-        
-        return string
-    }
 }
 
 extension EditorController: OutlineTextStorageDelegate {

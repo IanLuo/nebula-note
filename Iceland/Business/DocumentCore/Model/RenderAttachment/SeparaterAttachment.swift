@@ -9,15 +9,8 @@
 import Foundation
 import UIKit
 
-public class SeparaterAttachment: NSTextAttachment, RenderAttachmentProtocol {
-    public var rawString: String
-    
-    public var value: String = ""
-    
-    public var type: String = ""
-    
-    public required init(rawString: String, ranges: [String : NSRange]) {
-        self.rawString = rawString
+@objc public class SeparaterAttachment: NSTextAttachment {
+    public required init() {
         super.init(data: nil, ofType: nil)
         
         let image = UIImage.create(with: InterfaceTheme.Color.background2, size: CGSize(width: UIScreen.main.bounds.width, height: 1))
@@ -25,11 +18,7 @@ public class SeparaterAttachment: NSTextAttachment, RenderAttachmentProtocol {
         self.bounds = CGRect(origin: .zero, size: image.size)
     }
     
-    public func serialize() -> String {
-        return rawString
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError()
+    public required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }

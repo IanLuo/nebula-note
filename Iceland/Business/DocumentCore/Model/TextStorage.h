@@ -37,6 +37,12 @@ FOUNDATION_EXPORT const unsigned char TextStorageVersionString[];
 #define OUTLINE_ATTRIBUTE_ORDERED_LIST @"ordered-list"
 #define OUTLINE_ATTRIBUTE_ORDERED_LIST_INDEX @"ordered-list-index"
 
+#define OUTLINE_ATTRIBUTE_SEPARATOR @"separator"
+
+#define OUTLINE_ATTRIBUTE_ATTACHMENT @"attachment"
+#define OUTLINE_ATTRIBUTE_ATTACHMENT_TYPE @"attachment-type"
+#define OUTLINE_ATTRIBUTE_ATTACHMENT_VALUE @"attachment-value"
+
 @protocol ContentUpdatingProtocol<NSObject>
 
 - (void)performContentUpdate:(NSString *)string range:(NSRange)range delta:(NSInteger)delta action:(NSTextStorageEditActions)action;

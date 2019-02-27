@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "TextStorage.h"
 #import <UIKit/UIKit.h>
+#import <Business/Business-Swift.h>
 
 static NSTextAttachment *foldingAttachment;
 static NSTextAttachment *linkAttachment;
@@ -19,13 +20,15 @@ static NSDictionary *attachmentMap;
 
 @property (strong) NSTextStorage *backingStore;
 
+@property (strong) NSDictionary *attachmentCache; // user added attachment saved here
+
 @end
 
 @implementation TextStorage
 
 + (void)initialize {
     if ([self class] == [TextStorage class]) {
-        foldingAttachment = [[NSTextAttachment alloc] init];;
+        foldingAttachment = [[NSTextAttachment alloc] init];
         foldingAttachment.image = [UIImage imageNamed: @"more"];
         foldingAttachment.bounds = CGRectMake(0, 0, 14, 4);
         
@@ -35,7 +38,8 @@ static NSDictionary *attachmentMap;
         
         attachmentMap = @{
                           OUTLINE_ATTRIBUTE_HEADING_FOLDED: foldingAttachment,
-                          OUTLINE_ATTRIBUTE_LINK_URL: linkAttachment
+                          OUTLINE_ATTRIBUTE_LINK_URL: linkAttachment,
+                          OUTLINE_ATTRIBUTE_SEPARATOR: [[SeparaterAttachment alloc]init]
                           };
     }
 }
@@ -43,6 +47,7 @@ static NSDictionary *attachmentMap;
 - (instancetype)init {
     if ([super init]) {
         self.backingStore = [[NSTextStorage alloc]init];
+        self.attachmentCache = @{};
     }
     
     return self;
@@ -75,6 +80,14 @@ static NSDictionary *attachmentMap;
         attachment = [self findAttachmentForAt:location key:OUTLINE_ATTRIBUTE_LINK_URL in:attributes effectiveRange:&effectiveRange];
     }
     
+    if (!attachment) {
+        attachment = [self findAttachmentForAt:location key:OUTLINE_ATTRIBUTE_SEPARATOR in:attributes effectiveRange:&effectiveRange];
+    }
+    
+    if (!attachment) {
+        attachment = [self findAttachmentForAt:location key:OUTLINE_ATTRIBUTE_ATTACHMENT in:attributes effectiveRange:&effectiveRange];
+    }
+    
     if (attachment) {
         if (location == effectiveRange.location) {
             NSMutableDictionary *dict = [attributes mutableCopyWithZone:NULL];
@@ -92,7 +105,19 @@ static NSDictionary *attachmentMap;
 }
 
 - (NSTextAttachment *)findAttachmentForAt:(NSUInteger)location key:(NSString*)key in:(NSDictionary *)attributes effectiveRange:(NSRange *)range {
-    if ([attributes objectForKey: key]) {
+    if ([key isEqual: OUTLINE_ATTRIBUTE_ATTACHMENT]) {
+        NSString *key = [self attribute:OUTLINE_ATTRIBUTE_ATTACHMENT_VALUE atIndex:location effectiveRange:nil];
+        if (key) {
+            NSTextAttachment *attachment = [[self attachmentCache] objectForKey:key];
+            if (!attachment) {
+                NSString *type = [self attribute:OUTLINE_ATTRIBUTE_ATTACHMENT_TYPE atIndex:location effectiveRange:nil];
+                attachment = [[RenderAttachment alloc] initWithType:type value:key];
+                [[self attachmentCache] setValue:attachment forKey:key];
+            }
+            
+            return attachment;
+        }
+    } else if ([attributes objectForKey: key]) {
         [self.backingStore attribute: key atIndex:location longestEffectiveRange:range inRange:NSMakeRange(0, [self.backingStore length])];
         
         return attachmentMap[key];
@@ -128,6 +153,14 @@ static NSDictionary *attachmentMap;
     
     if (!properties) {
         properties = [self replaceGlyphPropertiesAtCharacterLocation:charIndexes[0] glyphRange:glyphRange hasAttachment:NO for:OUTLINE_ATTRIBUTE_LINK_OTHER];
+    }
+    
+    if (!properties) {
+        properties = [self replaceGlyphPropertiesAtCharacterLocation:charIndexes[0] glyphRange:glyphRange hasAttachment:YES for:OUTLINE_ATTRIBUTE_SEPARATOR];
+    }
+    
+    if (!properties) {
+        properties = [self replaceGlyphPropertiesAtCharacterLocation:charIndexes[0] glyphRange:glyphRange hasAttachment:YES for:OUTLINE_ATTRIBUTE_ATTACHMENT];
     }
     
     if (properties) {
