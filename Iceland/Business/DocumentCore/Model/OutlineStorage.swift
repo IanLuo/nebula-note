@@ -40,14 +40,14 @@ public class OutlineTextStorage: TextStorage {
     /// 当前的解析范围，需要进行解析的字符串范围，用于对 item，索引 等缓存数据进行重新组织
     public var currentParseRange: NSRange?
     // MARK: - Selection highlight
-    //    {
-    //        didSet {
-    //            if let _ = oldValue {
-    //                self.removeAttribute(NSAttributedString.Key.backgroundColor, range: NSRange(location: 0, length: self.string.count))
-    //            }
-    //            self.addAttributes([NSAttributedString.Key.backgroundColor: UIColor.red.withAlphaComponent(0.5)], range: currentParseRange!)
-    //        }
-    //    }
+        {
+            didSet {
+                if let _ = oldValue {
+                    self.removeAttribute(NSAttributedString.Key.backgroundColor, range: NSRange(location: 0, length: self.string.count))
+                }
+                self.addAttributes([NSAttributedString.Key.backgroundColor: UIColor.red.withAlphaComponent(0.5)], range: currentParseRange!)
+            }
+        }
     
     /// 当前所在编辑位置的最外层，或者最前面的 item 类型, 某些 item 在某些编辑操作是会有特殊行为，例如:
     /// 当前 item 为 unordered list 时，换行将会自动添加一个新的 unordered list 前缀
@@ -78,18 +78,18 @@ extension OutlineTextStorage: ContentUpdatingProtocol {
     public func performContentUpdate(_ string: String!, range: NSRange, delta: Int, action: NSTextStorage.EditActions) {
         //        log.info("editing in range: \(range), is non continouse: \(self.layoutManagers[0].hasNonContiguousLayout)")
         //
-        guard action != .editedAttributes else { return } // 如果是修改属性，则不进行解析
-        guard string.count > 0 else { return }
+        guard self.editedMask != .editedAttributes else { return } // 如果是修改属性，则不进行解析
+        guard self.string.count > 0 else { return }
         
         /// 更新当前交互的位置
         self.currentLocation = editedRange.location
-        
+
         // 更新 item 索引缓存
-        self.updateItemIndexAndRange(delta: delta)
-        
+        self.updateItemIndexAndRange(delta: self.changeInLength)
+
         // 调整需要解析的字符串范围
         self.adjustParseRange(editedRange)
-        
+
         if let parsingRange = self.currentParseRange {
             // 清空 attributes (折叠的状态除外)
             for (key, _) in self.attributes(at: parsingRange.location, longestEffectiveRange: nil, in: parsingRange) {
@@ -98,16 +98,16 @@ extension OutlineTextStorage: ContentUpdatingProtocol {
                 self.removeAttribute(key, range: parsingRange)
             }
         }
-        
+
         // 设置文字默认样式
         self.addAttributes([NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.interactive,
                             NSAttributedString.Key.font: InterfaceTheme.Font.body],
                            range: self.currentParseRange!)
-        
+
         // 解析文字，添加样式
         parser.parse(str: self.string,
                      range: self.currentParseRange!)
-        
+
         // 更新当前状态缓存
         self.updateCurrentInfo()
     }
@@ -299,17 +299,16 @@ extension OutlineTextStorage: OutlineParserDelegate {
         
         urlRanges.forEach { urlRangeData in
             if let range = urlRangeData[OutlineParser.Key.Element.link] {
-                self.addAttribute(OutlineAttribute.Link.other, value: range, range: range)
+                self.addAttribute(OutlineAttribute.hidden, value: 1, range: range)
             }
             urlRangeData.forEach {
                 // range 为整个链接时，添加自定义属性，值为解析的链接结构
                 if $0.key == OutlineParser.Key.Element.Link.title {
-                    self.addAttributes([OutlineAttribute.Link.title: $0.value,
-                                        NSAttributedString.Key.link: 1], range: $0.value)
-                    self.removeAttribute(OutlineAttribute.Link.other, range: $0.value)
+                    self.addAttributes([NSAttributedString.Key.link: 1], range: $0.value)
+                    self.removeAttribute(OutlineAttribute.hidden, range: $0.value)
                 } else if $0.key == OutlineParser.Key.Element.Link.url {
-                    self.addAttribute(OutlineAttribute.Link.url, value: $0.value, range: $0.value)
-                    self.removeAttribute(OutlineAttribute.Link.other, range: $0.value)
+                    self.addAttributes([OutlineAttribute.hidden: 2,
+                                        OutlineAttribute.showAttachment: OutlineAttribute.Link.url], range: $0.value)
                 }
             }
         }
@@ -321,7 +320,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
             guard let typeRange = rangeData[OutlineParser.Key.Element.Attachment.type] else { return }
             guard let valueRange = rangeData[OutlineParser.Key.Element.Attachment.value] else { return }
             
-            self.addAttributes([OutlineAttribute.Attachment.attachment: 1,
+            self.addAttributes([OutlineAttribute.Attachment.attachment: OUTLINE_ATTRIBUTE_ATTACHMENT,
                                 OutlineAttribute.Attachment.type: self.string.substring(typeRange),
                                 OutlineAttribute.Attachment.value: self.string.substring(valueRange)],
                                range: attachmentRange)
@@ -373,7 +372,8 @@ extension OutlineTextStorage: OutlineParserDelegate {
     public func didFoundSeperator(text: String, seperatorRanges: [[String: NSRange]]) {
         seperatorRanges.forEach { range in
             if let seperatorRange = range[OutlineParser.Key.Node.seperator] {
-                self.addAttributes([OutlineAttribute.separator: 1], range: seperatorRange)
+                self.addAttributes([OutlineAttribute.hidden: 2,
+                                    OutlineAttribute.showAttachment: OUTLINE_ATTRIBUTE_SEPARATOR], range: seperatorRange)
             }
         }
     }
@@ -434,7 +434,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
                     let isEndOfHeading: Bool = nextCharacter == OutlineParser.Values.Heading.level
                     
                     if !isEndOfFile && !isEndOfHeading {
-                        if self.attributes(at: nextCharacterLocation, effectiveRange: nil)[OutlineAttribute.Heading.folded] == nil {
+                        if self.attributes(at: nextCharacterLocation, effectiveRange: nil)[OutlineAttribute.hidden] == nil {
                             
                         } else {
                             
@@ -532,6 +532,22 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 }
             }
         }
+    }
+}
+
+extension OutlineTextStorage: NSTextStorageDelegate {
+    public func textStorage(_ textStorage: NSTextStorage,
+                            willProcessEditing editedMask: NSTextStorage.EditActions,
+                            range editedRange: NSRange,
+                            changeInLength delta: Int) {
+        
+    }
+    
+    /// 添加文字属性
+    public func textStorage(_ textStorage: NSTextStorage,
+                            didProcessEditing editedMask: NSTextStorage.EditActions,
+                            range editedRange: NSRange,
+                            changeInLength delta: Int) {
     }
 }
 

@@ -13,6 +13,7 @@ public struct OutlineAttribute {
     
     public static let separator: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_SEPARATOR)
     
+    public static let showAttachment: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_SHOW_ATTACHMENT)    
     
     public struct Attachment {
         public static let attachment: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_ATTACHMENT)

@@ -125,8 +125,9 @@ extension DocumentEditViewController: UITextViewDelegate {
 
 extension DocumentEditViewController: DocumentEditViewModelDelegate {
     public func didReadyToEdit() {
+        self.viewModel.save {}
         self.textView.selectedRange = NSRange(location: self.viewModel.onLoadingLocation,
-                                                    length: 0)
+                                              length: 0)
         self.textView.scrollRangeToVisible(self.textView.selectedRange)
     }
     

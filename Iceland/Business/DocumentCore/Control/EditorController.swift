@@ -38,7 +38,7 @@ public class EditorController: NSObject {
         
         super.init()
         
-        self.textStorage.delegate = self
+        self.textStorage.delegate = self.textStorage
         self.textStorage.outlineDelegate = self
         self.textStorage.addLayoutManager(self.layoutManager)
         self.layoutManager.delegate = self.textStorage
@@ -93,16 +93,16 @@ extension EditorController {
             
             guard heading.contentRange.length > 0 else { return }
             
-            if self.textStorage.attribute(OutlineAttribute.Heading.folded, at: heading.contentRange.location, effectiveRange: nil) == nil {
+            if self.textStorage.attribute(OutlineAttribute.hidden, at: heading.contentRange.location, effectiveRange: nil) == nil {
                 // 标记内容为隐藏
-                self.textStorage.addAttribute(OutlineAttribute.Heading.folded,
-                                              value: 1,
+                self.textStorage.addAttributes([OutlineAttribute.hidden: 2,
+                                                OutlineAttribute.showAttachment: OutlineAttribute.Heading.folded],
                                               range: heading.contentRange)
-                var effectiveRange: NSRange = NSRange(location: 0, length: 0)
-                self.textStorage.attribute(OutlineAttribute.Heading.folded, at: heading.contentRange.location, longestEffectiveRange: &effectiveRange, in: heading.contentRange)
             } else {
                 // 移除内容隐藏标记
-                self.textStorage.removeAttribute(OutlineAttribute.Heading.folded,
+                self.textStorage.removeAttribute(OutlineAttribute.hidden,
+                                                 range: heading.contentRange)
+                self.textStorage.removeAttribute(OutlineAttribute.showAttachment,
                                                  range: heading.contentRange)
             }
         }
@@ -121,22 +121,5 @@ extension EditorController {
         }
         
         self.textStorage.replaceCharacters(in: range, with: nextStatus)
-    }
-}
-
-// MARK: - Text Storage Delegate -
-// 每次编辑触发时，首先删除所在范围的属性(folding 除外),然后视情况看是否需要进行解析
-extension EditorController: NSTextStorageDelegate {
-    public func textStorage(_ textStorage: NSTextStorage,
-                            willProcessEditing editedMask: NSTextStorage.EditActions,
-                            range editedRange: NSRange,
-                            changeInLength delta: Int) {
-    }
-    
-    /// 添加文字属性
-    public func textStorage(_ textStorage: NSTextStorage,
-                            didProcessEditing editedMask: NSTextStorage.EditActions,
-                            range editedRange: NSRange,
-                            changeInLength delta: Int) {
     }
 }
