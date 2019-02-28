@@ -518,9 +518,8 @@ extension OutlineTextStorage: OutlineParserDelegate {
     }
     
     internal func adjustParseRange(_ range: NSRange) {
-        var start: Int = 0, end: Int = 0
-        (self.string as NSString).getParagraphStart(&start, end: &end, contentsEnd: nil, for: range)
-        self.currentParseRange = NSRange(location: start, length: end - start)
+        let range = range.expandFoward(string: self.string).expandBackward(string: self.string)
+        self.currentParseRange = range
         
         // 如果范围在某个 item 内，并且小于这个 item 原来的范围，则扩大至这个 item 原来的范围
         if let currrentParseRange = self.currentParseRange {
@@ -556,9 +555,9 @@ extension NSRange {
     internal func expandBackward(string: String) -> NSRange {
         var extendedRange = self
         var characterBuf: String = ""
-        // 向上, 到上一个空行之后
+
         while extendedRange.location > 0
-            && !self.checkIsBlankLine(buf: &characterBuf, next: string.substring(NSRange(location: extendedRange.location - 1, length: 1))) {
+            && !self.checkShouldContinueExpand(buf: &characterBuf, next: string.substring(NSRange(location: extendedRange.location - 1, length: 1)), lineCount: 2) {
                 extendedRange = NSRange(location: extendedRange.location - 1, length: extendedRange.length + 1)
         }
         
@@ -566,26 +565,24 @@ extension NSRange {
     }
     
     internal func expandFoward(string: String) -> NSRange {
-        // 向下，下一个空行之前
         var extendedRange = self
         var characterBuf: String = ""
+        
         while extendedRange.upperBound < string.count - 1
-            && !self.checkIsBlankLine(buf: &characterBuf, next: string.substring(NSRange(location: extendedRange.upperBound, length: 1))) {
+            && !self.checkShouldContinueExpand(buf: &characterBuf, next: string.substring(NSRange(location: extendedRange.upperBound, length: 1)), lineCount: 3) {
                 extendedRange = NSRange(location: extendedRange.location, length: extendedRange.length + 1)
         }
         
         return extendedRange
     }
     
-    // 检查是否空行
-    private func checkIsBlankLine(buf: inout String, next character: String) -> Bool {
+    // 检查是否继续 expand
+    private func checkShouldContinueExpand(buf: inout String, next character: String, lineCount: Int) -> Bool {
         if character == OutlineParser.Values.Character.linebreak {
             buf.append(character)
-        } else {
-            buf = ""
         }
         
-        return buf == (OutlineParser.Values.Character.linebreak)
+        return buf.count == lineCount
     }
 }
 
