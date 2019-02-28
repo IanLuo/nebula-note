@@ -139,7 +139,7 @@ extension DocumentEditViewController: DocumentEditViewModelDelegate {
         
     }
     
-    public func updateHeadingInfo(heading: Document.Heading?) {
+    public func updateHeadingInfo(heading: Heading?) {
         
     }
 }

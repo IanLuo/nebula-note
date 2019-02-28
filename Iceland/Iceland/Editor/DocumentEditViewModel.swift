@@ -11,7 +11,7 @@ import Business
 
 public protocol DocumentEditViewModelDelegate: class {
     func showLink(url: URL)
-    func updateHeadingInfo(heading: Document.Heading?)
+    func updateHeadingInfo(heading: Heading?)
     func documentStatesChange(state: UIDocument.State)
     func didReadyToEdit()
 }
@@ -60,7 +60,7 @@ public class DocumentEditViewModel {
         set { self.editorService.cover = newValue }
     }
     
-    public var headings: [Document.Heading] {
+    public var headings: [Heading] {
         return self.editorService.headings
     }
     
@@ -159,7 +159,7 @@ public class DocumentEditViewModel {
     }
     
     /// 交换两个 paragraph 的内容
-    public func replace(heading: Document.Heading, with: Document.Heading) {
+    public func replace(heading: Heading, with: Heading) {
         self.editorService.replace(heading: heading, with: with)
     }
 }
@@ -176,7 +176,7 @@ extension DocumentEditViewModel: EditorControllerDelegate {
         }
     }
     
-    public func currentHeadingDidChange(heading: Document.Heading?) {
+    public func currentHeadingDidChange(heading: Heading?) {
         self.delegate?.updateHeadingInfo(heading: heading)
     }
 }

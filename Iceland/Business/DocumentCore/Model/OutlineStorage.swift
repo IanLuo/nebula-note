@@ -9,7 +9,7 @@
 import Foundation
 
 public protocol OutlineTextStorageDelegate: class {
-    func didSetCurrentHeading(newHeading: Document.Heading?, oldHeading: Document.Heading?)
+    func didSetCurrentHeading(newHeading: Heading?, oldHeading: Heading?)
 }
 
 /// 提供渲染的对象，如 attachment, checkbox 等
@@ -30,12 +30,12 @@ public class OutlineTextStorage: TextStorage {
     public weak var outlineDelegate: OutlineTextStorageDelegate?
     
     /// 用于保存已经找到的 heading
-    public var savedHeadings: [Document.Heading] = []
+    public var savedHeadings: [Heading] = []
     
     /// 当前交互的文档位置，当前解析部分相对于文档开始的偏移量，不同于 currentParseRange 中的 location
     public var currentLocation: Int = 0
     
-    public var currentHeading: Document.Heading?
+    public var currentHeading: Heading?
     
     /// 当前的解析范围，需要进行解析的字符串范围，用于对 item，索引 等缓存数据进行重新组织
     public var currentParseRange: NSRange?
@@ -51,7 +51,7 @@ public class OutlineTextStorage: TextStorage {
     
     /// 当前所在编辑位置的最外层，或者最前面的 item 类型, 某些 item 在某些编辑操作是会有特殊行为，例如:
     /// 当前 item 为 unordered list 时，换行将会自动添加一个新的 unordered list 前缀
-    public var currentItem: Document.Item? {
+    public var currentItem: Item? {
         return self.item(after: self.currentLocation)
     }
     
@@ -62,7 +62,7 @@ public class OutlineTextStorage: TextStorage {
     //    public var itemRangeDataMapping: [NSRange: Document.Item] = [:]
     //
     /// 所有解析获得的 item, 对应当前的文档结构解析状态
-    public var allItems: [Document.Item] = []
+    public var allItems: [Item] = []
     
     // 用于解析过程中临时数据处理
     private var tempParsingResult: [[String: NSRange]] = []
@@ -116,7 +116,7 @@ extension OutlineTextStorage: ContentUpdatingProtocol {
 // MARK: -
 extension OutlineTextStorage {
     /// 找到对应位置之后的第一个 item
-    public func item(after: Int) -> Document.Item? {
+    public func item(after: Int) -> Item? {
         for item in self.allItems {
             if item.range.upperBound >= after {
                 return item
@@ -163,7 +163,7 @@ extension OutlineTextStorage {
         return ranges.count - 1
     }
     
-    public func heading(at location: Int) -> Document.Heading? {
+    public func heading(at location: Int) -> Heading? {
         for heading in self.savedHeadings {
             if heading.paragraphRange.contains(location) {
                 return heading
@@ -191,7 +191,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
     private func updateHeadingIfNeeded(_ newHeadings: [[String: NSRange]]) {
         // 如果已保存的 heading 为空，直接全部添加
         if savedHeadings.count == 0 {
-            self.savedHeadings = newHeadings.map { Document.Heading(data: $0) } // OutlineParser.Key.Node.heading 总是存在
+            self.savedHeadings = newHeadings.map { Heading(data: $0) } // OutlineParser.Key.Node.heading 总是存在
         } else {
             // 删除 currentParsingRange 范围内包含的所有 heading, 删除后，将新的 headings 插入删除掉的位置
             if let currentRange = self.currentParseRange {
@@ -207,7 +207,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 }
                 
                 if indexsToRemove.count > 0 {
-                    let newHeadingRanges = newHeadings.map { Document.Heading(data: $0) }
+                    let newHeadingRanges = newHeadings.map { Heading(data: $0) }
                     self.savedHeadings.insert(contentsOf: newHeadingRanges, at: indexsToRemove[0])
                 }
             }
@@ -216,14 +216,14 @@ extension OutlineTextStorage: OutlineParserDelegate {
     
     /// 更新 items 中的数据
     private func updateItems(new items: [[String: NSRange]]) {
-        var newItems: [Document.Item] = []
+        var newItems: [Item] = []
         items.forEach {
             for (key, value) in $0 {
-                newItems.append(Document.Item(range: value, name: key, data: [key: value]))
+                newItems.append(Item(range: value, name: key, data: [key: value]))
             }
         }
         
-        newItems.sort { (lhs: Document.Item, rhs: Document.Item) -> Bool in
+        newItems.sort { (lhs: Item, rhs: Item) -> Bool in
             if lhs.range.location != rhs.range.location {
                 return lhs.range.location < rhs.range.location
             } else {

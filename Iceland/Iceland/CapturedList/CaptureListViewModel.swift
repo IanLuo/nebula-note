@@ -38,7 +38,7 @@ public class CaptureListViewModel {
     }
     
     public func refile(editorService: EditorService,
-                       heading: Document.Heading) {
+                       heading: Heading) {
         
         guard let attachment = self.currentCapture else { return }
         

@@ -85,6 +85,7 @@
 		E434280F2121BF5F00EC6DC3 /* IcelandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E434280E2121BF5F00EC6DC3 /* IcelandTests.swift */; };
 		E434281A2121BF6000EC6DC3 /* IcelandUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43428192121BF6000EC6DC3 /* IcelandUITests.swift */; };
 		E4357B4A21A995DA006DDD72 /* CaptureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4357B4921A995DA006DDD72 /* CaptureTests.swift */; };
+		E43B909C2227CBC60008B44C /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43B909B2227CBC60008B44C /* Token.swift */; };
 		E44825A3219722C300C17568 /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44825A2219722C300C17568 /* Application.swift */; };
 		E44E60F521E9F2C0005AC25F /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44E60F421E9F2C0005AC25F /* Location.swift */; };
 		E455868A21DF643F00381FA8 /* HeadingOutlineTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E455868921DF643F00381FA8 /* HeadingOutlineTableViewCell.swift */; };
@@ -297,6 +298,7 @@
 		E43428192121BF6000EC6DC3 /* IcelandUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IcelandUITests.swift; sourceTree = "<group>"; };
 		E434281B2121BF6000EC6DC3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E4357B4921A995DA006DDD72 /* CaptureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureTests.swift; sourceTree = "<group>"; };
+		E43B909B2227CBC60008B44C /* Token.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
 		E44825A2219722C300C17568 /* Application.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Application.swift; sourceTree = "<group>"; };
 		E44825A6219810E100C17568 /* OutlineLayoutManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineLayoutManager.swift; sourceTree = "<group>"; };
 		E44825A8219810FF00C17568 /* EditorController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorController.swift; sourceTree = "<group>"; };
@@ -536,6 +538,7 @@
 				E4A46A1821AA8E9F00FBDA04 /* OutlineStorage.swift */,
 				E4BFD45521F71184003C048C /* TextStorage.h */,
 				E4BFD47021F711A2003C048C /* TextStorage.m */,
+				E43B909B2227CBC60008B44C /* Token.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1376,6 +1379,7 @@
 				E4729BA22202BBE300F22885 /* Rotation.swift in Sources */,
 				E41CB1C921D88E2300EF0A3C /* Log.swift in Sources */,
 				E41B892921E34238009C5AD7 /* AudioRecorder.swift in Sources */,
+				E43B909C2227CBC60008B44C /* Token.swift in Sources */,
 				E41CB1C321D88DD700EF0A3C /* DocumentManager.swift in Sources */,
 				E41CB1D421D890E200EF0A3C /* CalendarView.swift in Sources */,
 				E41CB1BF21D88DD400EF0A3C /* EditorController.swift in Sources */,

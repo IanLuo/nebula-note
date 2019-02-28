@@ -12,10 +12,10 @@ public struct DocumentSearchResult {
     public let url: URL
     public let highlightRange: NSRange
     public let context: String
-    public let heading: Document.Heading?
+    public let heading: Heading?
     public let documentInfo: DocumentInfo
     
-    public init(url: URL, highlightRange: NSRange, context: String, heading: Document.Heading?) {
+    public init(url: URL, highlightRange: NSRange, context: String, heading: Heading?) {
         self.url = url
         self.highlightRange = highlightRange
         self.context = context
@@ -114,7 +114,7 @@ public class DocumentSearchManager {
         
         self.doSearchHeading(resultAdded: resultAdded,
                              complete: complete,
-                             failed: failed) { (string: String, url: URL, headings: [Document.Heading]) -> [DocumentSearchResult] in
+                             failed: failed) { (string: String, url: URL, headings: [Heading]) -> [DocumentSearchResult] in
                                 var searchResults: [DocumentSearchResult] = []
                                 for heading in headings {
                                     if let tagsRange = heading.tags {
@@ -148,7 +148,7 @@ public class DocumentSearchManager {
         
         self.doSearchHeading(resultAdded: resultAdded,
                              complete: complete,
-                             failed: failed) { (string: String, url: URL, headings: [Document.Heading]) -> [DocumentSearchResult] in
+                             failed: failed) { (string: String, url: URL, headings: [Heading]) -> [DocumentSearchResult] in
                                 var searchResults: [DocumentSearchResult] = []
                                 for heading in headings {
                                     if let scheduleRange = heading.schedule {
@@ -182,7 +182,7 @@ public class DocumentSearchManager {
         
         self.doSearchHeading(resultAdded:resultAdded,
                              complete: complete,
-                             failed: failed) { (string: String, url: URL, headings: [Document.Heading]) -> [DocumentSearchResult] in
+                             failed: failed) { (string: String, url: URL, headings: [Heading]) -> [DocumentSearchResult] in
                                 var searchResults: [DocumentSearchResult] = []
                                 for heading in headings {
                                     if let dueRange = heading.due {
@@ -217,7 +217,7 @@ public class DocumentSearchManager {
         
         self.doSearchHeading(resultAdded:resultAdded,
                              complete: complete,
-                             failed: failed) { (string: String, url: URL, headings: [Document.Heading]) -> [DocumentSearchResult] in
+                             failed: failed) { (string: String, url: URL, headings: [Heading]) -> [DocumentSearchResult] in
                                 var searchResults: [DocumentSearchResult] = []
                                 for heading in headings {
                                     if let planningRange = heading.planning {
@@ -248,7 +248,7 @@ public class DocumentSearchManager {
     private func doSearchHeading(resultAdded: @escaping ([DocumentSearchResult]) -> Void,
                                  complete: @escaping () -> Void,
                                  failed: ((Error) -> Void)?,
-                                 onEachHeadingMatch: @escaping (String, URL, [Document.Heading]) -> [DocumentSearchResult]) {
+                                 onEachHeadingMatch: @escaping (String, URL, [Heading]) -> [DocumentSearchResult]) {
         
         let operation = BlockOperation()
         
@@ -261,11 +261,11 @@ public class DocumentSearchManager {
         operation.addExecutionBlock {
             
             class ParseDelegate: OutlineParserDelegate {
-                var headings: [Document.Heading] = []
+                var headings: [Heading] = []
                 func didFoundHeadings(text: String,
                                       headingDataRanges: [[String: NSRange]]) {
                     
-                    self.headings = headingDataRanges.map { Document.Heading(data: $0) }
+                    self.headings = headingDataRanges.map { Heading(data: $0) }
                 }
                 
                 func didCompleteParsing(text: String) {

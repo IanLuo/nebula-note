@@ -17,10 +17,10 @@ public class AgendaCellModel {
     public var schedule: DateAndTimeType? = nil
     public var due: DateAndTimeType? = nil
     public var tags: [String]? = nil
-    public let heading: Document.Heading
+    public let heading: Heading
     public let contentSummary: String
     
-    public init(heading: Document.Heading, paragraph: String, url: URL, textTrimmer: OutlineTextTrimmer) {
+    public init(heading: Heading, paragraph: String, url: URL, textTrimmer: OutlineTextTrimmer) {
         self.headingLocation = heading.range.location
         self.url = url
         self.heading = heading
