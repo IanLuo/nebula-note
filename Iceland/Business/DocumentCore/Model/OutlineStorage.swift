@@ -68,9 +68,6 @@ public class OutlineTextStorage: TextStorage {
     private var tempParsingResult: [[String: NSRange]] = []
     // 某些范围要忽略掉文字的样式，比如 link 内的文字样式
     private var ignoreTextMarkRanges: [NSRange] = []
-    
-    private var parsedActionsAfterLayout: [() -> Void] = []
-    private var isParsedActionsAfterLayoutInprocess: Bool = false
 }
 
 // MARK: - Update Attributes
@@ -469,7 +466,6 @@ extension OutlineTextStorage: OutlineParserDelegate {
     public func didStartParsing(text: String) {
         self.tempParsingResult = []
         self.ignoreTextMarkRanges = []
-        self.parsedActionsAfterLayout = []
     }
     
     public func didCompleteParsing(text: String) {

@@ -15,8 +15,7 @@ public class Item {
             log.verbose("offset did set: \(offset)")
         }
     }
-    //        private var previouse: Item?
-    //        private var next: Item?
+
     private var _range: NSRange
     public var range: NSRange {
         set { _range = newValue }
@@ -33,7 +32,6 @@ public class Item {
     
     public func offset(_ offset: Int) {
         self.offset += offset
-        //            next?.offset(offset)
     }
 }
 
@@ -127,6 +125,5 @@ public class Heading: Item {
     
     public convenience init(data: [String: NSRange]) {
         self.init(range: data[OutlineParser.Key.Node.heading]!, name: OutlineParser.Key.Node.heading, data: data)
-        log.verbose("new heading: \(range)")
     }
 }
