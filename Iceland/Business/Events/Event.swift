@@ -51,3 +51,21 @@ public class RecentDocumentRenamedEvent: RenameDocumentEvent {
         super.init(oldUrl: renameDocumentEvent.oldUrl, newUrl: renameDocumentEvent.newUrl)
     }
 }
+
+// MARK: -
+
+public class DocumentHeadingChangeEvent {
+    public enum Kind {
+        case new
+        case modified
+        case delete
+    }
+    
+    let url: URL
+    let kind: Kind
+    
+    public init(url: URL, kind: Kind) {
+        self.url = url
+        self.kind = kind
+    }
+}

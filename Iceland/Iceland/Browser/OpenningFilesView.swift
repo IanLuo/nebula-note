@@ -51,7 +51,6 @@ public class OpenningFilesView: UIView {
     }
     
     deinit {
-//        NotificationCenter.default.removeObserver(self)
         self.eventObserver?.unregister(for: self, eventType: ChangeDocumentCoverEvent.self)
     }
 

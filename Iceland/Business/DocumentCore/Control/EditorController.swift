@@ -9,7 +9,7 @@
 import Foundation
 
 public protocol EditorControllerDelegate: class {
-    func currentHeadingDidChange(heading: Heading?)
+    func currentHeadingDidChange(heading: HeadingToken?)
     func didTapLink(url: String, title: String, point: CGPoint)
 }
 
@@ -54,11 +54,11 @@ public class EditorController: NSObject {
 
 /// API
 extension EditorController {
-    public func getParagraphs() -> [Heading] {
+    public func getParagraphs() -> [HeadingToken] {
         return self.textStorage.savedHeadings // FIXME: may be not the best way, this function should be called on Agenda to load content of heading
     }
     
-    public func insertToParagraph(at heading: Heading, content: String) {
+    public func insertToParagraph(at heading: HeadingToken, content: String) {
         let location = heading.range.location + heading.contentLength
         let content = "\n" + content
         self.textStorage.replaceCharacters(in: NSRange(location: location, length: 0), with: content)
@@ -79,7 +79,7 @@ extension EditorController {
 }
 
 extension EditorController: OutlineTextStorageDelegate {
-    public func didSetCurrentHeading(newHeading: Heading?, oldHeading: Heading?) {
+    public func didSetCurrentHeading(newHeading: HeadingToken?, oldHeading: HeadingToken?) {
         if oldHeading?.range.location != newHeading?.range.location {
             self.delegate?.currentHeadingDidChange(heading: newHeading)
         }

@@ -82,7 +82,7 @@ extension HomeCoordinator: BrowserCoordinatorDelegate {
         self.openDocument(url: url, location: 0)
     }
     
-    public func didSelectHeading(url: URL, heading: Heading) {
+    public func didSelectHeading(url: URL, heading: HeadingToken) {
         // ignore
     }
 }

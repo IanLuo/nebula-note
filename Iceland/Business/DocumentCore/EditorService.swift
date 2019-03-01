@@ -74,7 +74,7 @@ public class EditorService {
         return self.trimmer.trim(string: string, range: range)
     }
     
-    public var headings: [Heading] {
+    public var headings: [HeadingToken] {
         return self.editorController.getParagraphs()
     }
     
@@ -321,7 +321,7 @@ public class EditorService {
     }
     
     // 返回 location 所在的 heading
-    internal func heading(at location: Int) -> Heading? {
+    internal func heading(at location: Int) -> HeadingToken? {
         for heading in self.editorController.getParagraphs() {
             if heading.paragraphRange.contains(location) {
                 return heading
@@ -330,12 +330,12 @@ public class EditorService {
         return nil
     }
     
-    internal func headingList() -> [Heading] {
+    internal func headingList() -> [HeadingToken] {
         return self.editorController.getParagraphs()
     }
     
     /// 交换两个 paragraph 的内容
-    public func replace(heading: Heading, with: Heading) {
+    public func replace(heading: HeadingToken, with: HeadingToken) {
         let temp = self.editorController.string.substring(heading.paragraphRange)
         self.editorController.replace(text: self.editorController.string.substring(with.paragraphRange), in: heading.paragraphRange)
         self.editorController.replace(text: temp, in: with.paragraphRange)

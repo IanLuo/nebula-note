@@ -8,8 +8,8 @@
 
 import Foundation
 
-/// Node 和 element 都是 Item
-public class Item {
+/// Node 和 element 都是 Token
+public class Token {
     public var offset: Int = 0 {
         didSet {
             log.verbose("offset did set: \(offset)")
@@ -35,7 +35,7 @@ public class Item {
     }
 }
 
-public class Heading: Item {
+public class HeadingToken: Token {
     /// 当前的 heading 的 planning TODO|DONE|CANCELD 等
     public var planning: NSRange? {
         return data[OutlineParser.Key.Element.Heading.planning]?.offset(offset)
