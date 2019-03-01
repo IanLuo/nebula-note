@@ -10,7 +10,7 @@ pool:
   vmImage: 'macOS-10.13'
 
 steps:
-- script: /usr/local/bin/pod install
+- script: cd Iceland;/usr/local/bin/pod install
   displayName: 'pod install using a script'
   
 - task: Xcode@5
