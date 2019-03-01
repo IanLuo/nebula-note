@@ -35,6 +35,6 @@ extension CaptureListCoordinator: BrowserCoordinatorDelegate {
     public func didSelectDocument(url: URL) {}
     
     public func didSelectHeading(url: URL, heading: Heading) {
-        self.viewModel.refile(editorService: OutlineEditorServer.request(url: url), heading: heading)
+        self.viewModel.refile(editorService: self.dependency.editorContext.request(url: url), heading: heading)
     }
 }

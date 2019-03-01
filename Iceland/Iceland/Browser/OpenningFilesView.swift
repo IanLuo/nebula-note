@@ -10,31 +10,39 @@ import Foundation
 import UIKit
 import Business
 
-public protocol OpenningFilesViewDelegate: class {
+public protocol RecentFilesViewDelegate: class {
     func didSelectDocument(url: URL)
     func dataChanged(count: Int)
+    func recentFilesData() -> [RecentDocumentInfo]
 }
 
 public class OpenningFilesView: UIView {
-    public init() {
+    private var eventObserver: EventObserver?
+    public init(eventObserver: EventObserver?) {
+        self.eventObserver = eventObserver
         super.init(frame: .zero)
         
         self.setupUI()
         
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(fileOpened(notification:)),
-                                               name: RecentFileChangedNotification.openFile,
-                                               object: nil)
+        self.eventObserver?.registerForEvent(on: self, eventType: UpdateDocumentEvent.self, queue: .main, action: { [weak self] (event: UpdateDocumentEvent) in
+            self?.onFileInfoChanged(event: event)
+        })
         
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(fileInfoChanged(notification:)),
-                                               name: RecentFileChangedNotification.fileInfoChanged,
-                                               object: nil)
+        self.eventObserver?.registerForEvent(on: self, eventType: DeleteDocumentEvent.self, queue: .main, action: { [weak self] (event: DeleteDocumentEvent) in
+            self?.onFileInfoChanged(event: event)
+        })
         
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(handleCoverChange(notification:)),
-                                               name: DocumentManagerNotification.didChangeDocumentCover,
-                                               object: nil)
+        self.eventObserver?.registerForEvent(on: self, eventType: OpenDocumentEvent.self, queue: .main, action: { [weak self] (event: OpenDocumentEvent) in
+            self?.onFileInfoChanged(event: event)
+        })
+        
+        self.eventObserver?.registerForEvent(on: self, eventType: RecentDocumentRenamedEvent.self, queue: .main, action: { [weak self] (event: RecentDocumentRenamedEvent) in
+            self?.onFileInfoChanged(event: event)
+        })
+        
+        self.eventObserver?.registerForEvent(on: self, eventType: ChangeDocumentCoverEvent.self, queue: .main, action: { [weak self] (changeDocumentEvent: ChangeDocumentCoverEvent) in
+            self?.onCoverChange(event: changeDocumentEvent)
+        })
 
     }
     
@@ -43,10 +51,11 @@ public class OpenningFilesView: UIView {
     }
     
     deinit {
-        NotificationCenter.default.removeObserver(self)
+//        NotificationCenter.default.removeObserver(self)
+        self.eventObserver?.unregister(for: self, eventType: ChangeDocumentCoverEvent.self)
     }
 
-    public weak var delegate: OpenningFilesViewDelegate?
+    public weak var delegate: RecentFilesViewDelegate?
     
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -74,30 +83,28 @@ public class OpenningFilesView: UIView {
         self.collectionView.allSidesAnchors(to: self, edgeInset: 0)
     }
     
-    @objc private func handleCoverChange(notification: Notification) {
-        if let url = notification.userInfo?[DocumentManagerNotification.keyDocumentURL] as? URL {
-            for (index, documentInfo) in self.data.enumerated() {
-                if documentInfo.url.documentRelativePath == url.documentRelativePath {
-                    let indexPath = IndexPath(row: index, section: 0)
-                    self.collectionView.reloadItems(at: [indexPath])
-                }
+    @objc private func onCoverChange(event: ChangeDocumentCoverEvent) {
+        for (index, documentInfo) in self.data.enumerated() {
+            if documentInfo.url.documentRelativePath == event.url.documentRelativePath {
+                let indexPath = IndexPath(row: index, section: 0)
+                self.collectionView.reloadItems(at: [indexPath])
             }
         }
     }
     
-    @objc private func fileInfoChanged(notification: Notification) {
+    @objc private func onFileInfoChanged(event: Event) {
         self.loadData()
         self.collectionView.reloadData()
     }
     
-    @objc private func fileOpened(notification: Notification) {
-        if let url = notification.userInfo?["url"] as? URL {
+    @objc private func onFileOpened(event: OpenDocumentEvent) {
+//        if let url = notification.userInfo?["url"] as? URL {
             var oldIndex: Int = 0
             
             for (index, documentInfo) in self.data.enumerated() {
-                if documentInfo.url.documentRelativePath == url.documentRelativePath {
+                if documentInfo.url.documentRelativePath == event.url.documentRelativePath {
                     oldIndex = index
-                    self.data = OutlineEditorServer.instance.recentFilesManager.recentFiles
+                    self.data = self.delegate?.recentFilesData() ?? []
                     if self.data.count > 0 {
                         self.collectionView.moveItem(at: IndexPath(row: oldIndex, section: 0), to: IndexPath(row: 0, section: 0))
                     }
@@ -105,13 +112,13 @@ public class OpenningFilesView: UIView {
                 }
             }
             
-            self.data = OutlineEditorServer.instance.recentFilesManager.recentFiles
+            self.data = self.delegate?.recentFilesData() ?? []
             self.collectionView.reloadData()
-        }
+//        }
     }
     
     private func loadData() {
-        self.data = OutlineEditorServer.instance.recentFilesManager.recentFiles
+        self.data = self.delegate?.recentFilesData() ?? []
         self.delegate?.dataChanged(count: self.data.count)
     }
 }

@@ -29,7 +29,7 @@ public class EditorCoordinator: Coordinator {
         
         switch usage {
         case .editor(let url, let location):
-            let viewModel = DocumentEditViewModel(editorService: OutlineEditorServer.request(url: url))
+            let viewModel = DocumentEditViewModel(editorService: dependency.editorContext.request(url: url))
             viewModel.onLoadingLocation = location
             super.init(stack: stack, dependency: dependency)
             let viewController = DocumentEditViewController(viewModel: viewModel)
@@ -37,7 +37,7 @@ public class EditorCoordinator: Coordinator {
             viewModel.coordinator = self
             self.viewController = viewController
         case .outline(let url):
-            let viewModel = DocumentEditViewModel(editorService: OutlineEditorServer.request(url: url))
+            let viewModel = DocumentEditViewModel(editorService: dependency.editorContext.request(url: url))
             super.init(stack: stack, dependency: dependency)
             let viewController = HeadingsOutlineViewController(viewModel: viewModel)
             viewController.outlineDelegate = self

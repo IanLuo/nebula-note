@@ -52,7 +52,7 @@ public class DocumentBrowserViewController: UIViewController {
     }()
     
     private lazy var openningFilesView: OpenningFilesView = {
-        let view = OpenningFilesView()
+        let view = OpenningFilesView(eventObserver: self.viewModel.coordinator?.dependency.eventObserver)
         view.delegate = self
         return view
     }()
@@ -110,7 +110,11 @@ public class DocumentBrowserViewController: UIViewController {
     }
 }
 
-extension DocumentBrowserViewController: OpenningFilesViewDelegate {
+extension DocumentBrowserViewController: RecentFilesViewDelegate {
+    public func recentFilesData() -> [RecentDocumentInfo] {
+        return self.viewModel.coordinator?.dependency.editorContext.recentFilesManager.recentFiles ?? []
+    }
+    
     public func didSelectDocument(url: URL) {
         self.viewModel.coordinator?.openDocument(url: url, location: 0)
     }

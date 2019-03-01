@@ -13,9 +13,6 @@ import Business
 public class Application: Coordinator {
     weak var window: UIWindow?
     
-    private let documentManager = DocumentManager()
-    private let documentSearchManager = DocumentSearchManager()
-
     public init(window: UIWindow) {
         self.window = window
         
@@ -23,11 +20,14 @@ public class Application: Coordinator {
         navigationController.navigationBar.barTintColor = InterfaceTheme.Color.background1
         navigationController.navigationBar.tintColor = InterfaceTheme.Color.interactive
         
+        let eventObserver = EventObserver()
+        let editorContext = EditorContext(eventObserver: eventObserver)
         super.init(stack: navigationController,
-                   dependency: Dependency(documentManager: DocumentManager(),
-                                       documentSearchManager: DocumentSearchManager(),
-                                       editorServiceServer: OutlineEditorServer.instance,
-                                       textTrimmer: OutlineTextTrimmer(parser: OutlineParser())))
+                   dependency: Dependency(documentManager: DocumentManager(editorContext: editorContext, eventObserver: eventObserver),
+                                          documentSearchManager: DocumentSearchManager(),
+                                          editorContext: editorContext,
+                                          textTrimmer: OutlineTextTrimmer(parser: OutlineParser()),
+                                          eventObserver: EventObserver()))
         
         self.window?.rootViewController = self.stack
     }
@@ -42,8 +42,9 @@ public class Application: Coordinator {
 public struct Dependency {
     let documentManager: DocumentManager
     let documentSearchManager: DocumentSearchManager
-    let editorServiceServer: OutlineEditorServer
+    let editorContext: EditorContext
     let textTrimmer: OutlineTextTrimmer
+    let eventObserver: EventObserver
 }
 
 public class Coordinator {

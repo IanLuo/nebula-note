@@ -10,92 +10,6 @@ import Foundation
 import UIKit.UIDocument
 import Storage
 
-public class OutlineEditorServer {
-    private init() {}
-
-    private static let _instance = OutlineEditorServer()
-    
-    public let recentFilesManager: RecentFilesManager = RecentFilesManager()
-    
-    private var cachedServiceInstances: [URL: EditorService] = [:]
-    
-    private let editingQueue: DispatchQueue = DispatchQueue(label: "editor.doing.editing")
-    
-    public static var instance: OutlineEditorServer {
-        return _instance
-    }
-    
-    public static func request(url: URL) -> EditorService {
-        var url = url.wrapperURL
-        
-        let ext = url.path.hasSuffix(Document.fileExtension) ? "" : Document.fileExtension
-        url = url.appendingPathExtension(ext)
-        
-        // 打开文件时， 添加到最近使用的文件
-        self.instance.recentFilesManager.addRecentFile(url: url, lastLocation: 0) {
-            DispatchQueue.main.async {
-                NotificationCenter.default.post(name: RecentFileChangedNotification.openFile, object: nil, userInfo: ["url": url])
-            }
-        }
-
-        if let editorInstance = OutlineEditorServer._instance.cachedServiceInstances[url] {
-            return editorInstance
-        } else {
-            let newService = EditorService.connect(url: url, queue: OutlineEditorServer._instance.editingQueue)
-            OutlineEditorServer._instance.cachedServiceInstances[url] = newService
-            return newService
-        }
-    }
-    
-    public static func closeIfOpen(url: URL, complete: @escaping () -> Void) {
-        if let service = instance.cachedServiceInstances[url] {
-            
-            if service.document.documentState != .closed {
-                service.document.close { _ in
-                    instance.cachedServiceInstances[url] = nil
-                    complete()
-                }
-            } else {
-                complete()
-            }
-        } else {
-            complete()
-        }
-    }
-    
-    public static func closeIfOpen(dir: URL, complete: @escaping () -> Void) {
-        let dispatchGroup = DispatchGroup()
-        let queue = DispatchQueue(label: "close files")
-        let relatePath = dir.documentRelativePath
-        
-        queue.async {
-            for (url, service) in instance.cachedServiceInstances {
-                dispatchGroup.enter()
-                if url.path.contains(relatePath) {
-                    if service.document.documentState != .closed {
-                        DispatchQueue.main.async {
-                            service.document.close { _ in
-                                queue.async {
-                                    instance.cachedServiceInstances[url] = nil
-                                    dispatchGroup.leave()
-                                }
-                            }
-                        }
-                    } else {
-                        dispatchGroup.leave()
-                    }
-                } else {
-                    dispatchGroup.leave()
-                }
-            }
-        }
-        
-        dispatchGroup.notify(queue: queue) {
-            complete()
-        }
-    }
-}
-
 // MARK: - Service - 
 
 public class EditorService {
@@ -145,6 +59,10 @@ public class EditorService {
         }
     }
     
+    public var documentState: UIDocument.State {
+        return self.document.documentState
+    }
+    
     public var cover: UIImage? {
         set {
             self.document.updateCover(newValue)
@@ -170,7 +88,7 @@ public class EditorService {
         self.save()
     }
     
-    fileprivate static func connect(url: URL, queue: DispatchQueue) -> EditorService {
+    internal static func connect(url: URL, queue: DispatchQueue) -> EditorService {
         let instance = EditorService()
         instance.document = Document(fileURL: url)
         instance.queue = queue
