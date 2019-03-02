@@ -26,15 +26,37 @@ public struct DocumentSearchResult {
 }
 
 public class DocumentSearchManager {
+    public class DocumentSearchHeadingUpdateEvent: Event {
+        let oldHeadings: [DocumentSearchResult]
+        let newHeadings: [DocumentSearchResult]
+        public init(oldHeadings: [DocumentSearchResult], newHeadings: [DocumentSearchResult]) {
+            self.oldHeadings = oldHeadings
+            self.newHeadings = newHeadings
+        }
+    }
+    
     private let headingSearchOperationQueue: OperationQueue
     private let contentSearchOperationQueue: OperationQueue
+    private let headingChangeObservingQueue: OperationQueue
     
-    public init() {
+    private let eventObserver: EventObserver
+    
+    public init(eventObserver: EventObserver) {
         self.headingSearchOperationQueue = OperationQueue()
         self.contentSearchOperationQueue = OperationQueue()
+        self.headingChangeObservingQueue = OperationQueue()
         
         self.headingSearchOperationQueue.underlyingQueue = DispatchQueue.global(qos: DispatchQoS.QoSClass.userInteractive)
         self.contentSearchOperationQueue.underlyingQueue = DispatchQueue.global(qos: DispatchQoS.QoSClass.userInteractive)
+        self.headingChangeObservingQueue.underlyingQueue = DispatchQueue.global(qos: DispatchQoS.QoSClass.background)
+        
+        self.eventObserver = eventObserver
+        self.eventObserver.registerForEvent(on: self,
+                                            eventType: DocumentHeadingChangeEvent.self,
+                                            queue: self.headingChangeObservingQueue,
+                                            action: { [weak self] (event: DocumentHeadingChangeEvent) -> Void in
+                                                self?._handleDocumentHeadingsChange(event: event)
+        })
     }
     
     // MARK: -
@@ -388,5 +410,9 @@ public class DocumentSearchManager {
         }
         
         return result
+    }
+    
+    private func _handleDocumentHeadingsChange(event: DocumentHeadingChangeEvent) {
+        
     }
 }

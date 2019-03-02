@@ -8,14 +8,14 @@
 
 import Foundation
 
-/// Node 和 element 都是 Token
 public class Token {
     public var offset: Int = 0 {
         didSet {
             log.verbose("offset did set: \(offset)")
         }
     }
-
+    
+    public let identifier: String
     private var _range: NSRange
     public var range: NSRange {
         set { _range = newValue }
@@ -28,6 +28,7 @@ public class Token {
         self._range = range
         self.name = name
         self.data = data
+        self.identifier = UUID().uuidString
     }
     
     public func offset(_ offset: Int) {

@@ -13,14 +13,23 @@ import Storage
 // MARK: - Service - 
 
 public class EditorService {
-    private let editorController = EditorController(parser: OutlineParser())
+    private let editorController: EditorController
     fileprivate var document: Document!
     private lazy var trimmer: OutlineTextTrimmer = OutlineTextTrimmer(parser: OutlineParser())
     
-    fileprivate init() {}
+    private let eventObserver: EventObserver
     
     private var queue: DispatchQueue!
     
+    internal init(url: URL, queue: DispatchQueue, eventObserver: EventObserver) {
+        self.eventObserver = eventObserver
+        self.editorController = EditorController(parser: OutlineParser(), eventObserver: eventObserver)
+        self.document = Document(fileURL: url)
+        self.queue = queue
+        
+        self.editorController.delegate = self
+    }
+
     public var container: NSTextContainer {
         return editorController.textContainer
     }
@@ -29,12 +38,10 @@ public class EditorService {
         self.document.updateContent(editorController.string)
     }
     
-    public func changeFoldingStatus(location: Int) {
-        self.editorController.changeFoldingStatus(at: location)
-    }
-    
-    public func changeCheckboxStatus(range: NSRange) {
-        self.editorController.changeCheckBoxStatus(range: range)
+    public func toggleContentAction(command: DocumentContentCommand) {
+        if self.editorController.toggleAction(command: command) {
+            self.document.updateContent(editorController.string)
+        }
     }
     
     public func start(complete: @escaping (Bool, EditorService) -> Void) {
@@ -88,152 +95,8 @@ public class EditorService {
         self.save()
     }
     
-    internal static func connect(url: URL, queue: DispatchQueue) -> EditorService {
-        let instance = EditorService()
-        instance.document = Document(fileURL: url)
-        instance.queue = queue
-        return instance
-    }
-    
     public var fileURL: URL {
         return document.fileURL
-    }
-    
-    /// 删除 due date
-    public func removeDue(at headingLocation: Int) {
-        guard let heading = self.heading(at: headingLocation) else { return }
-        
-        if let dueRange = heading.due {
-            let extendedRange = NSRange(location: dueRange.location - 1, length: dueRange.length + 1) // 还有一个换行符
-            self.editorController.textStorage.replaceCharacters(in: extendedRange, with: "")
-        }
-        
-        self.document.updateContent(editorController.string)
-    }
-    
-    public func removeSchedule(at headingLocation: Int) {
-        guard let heading = self.heading(at: headingLocation) else { return }
-        
-        if let scheduleRange = heading.schedule {
-            let extendedRange = NSRange(location: scheduleRange.location - 1, length: scheduleRange.length + 1) // 还有一个换行符
-            self.editorController.textStorage.replaceCharacters(in: extendedRange, with: "")
-        }
-        
-        self.document.updateContent(editorController.string)
-    }
-    
-    public func remove(tag: String, at headingLocation: Int) {
-        guard let heading = self.heading(at: headingLocation) else { return }
-        
-        if let tagsRange = heading.tags {
-            var newTags = document.string.substring(tagsRange)
-            for t in document.string.substring(tagsRange).components(separatedBy: ":").filter({ $0.count > 0 }) {
-                if t == tag {
-                    newTags = newTags.replacingOccurrences(of: t, with: "")
-                    if newTags == "::" {
-                        newTags = ""
-                    } else {
-                        newTags = newTags.replacingOccurrences(of: "::", with: ":")
-                    }
-                    self.editorController.replace(text: newTags, in: tagsRange)
-                    break
-                }
-            }
-        }
-        
-        self.document.updateContent(editorController.string)
-    }
-    
-    public func removePlanning(at headingLocation: Int) {
-        guard let heading = self.heading(at: headingLocation) else { return }
-        
-        if let planningRange = heading.planning {
-            self.editorController.textStorage.replaceCharacters(in: planningRange, with: "")
-        }
-        
-        self.document.updateContent(editorController.string)
-    }
-    
-    public func update(planning: String, at headingLocation: Int) {
-        guard let heading = self.heading(at: headingLocation) else { return }
-        
-        var editRange: NSRange!
-        var replacement: String!
-        // 有旧的 planning，就直接替换这个字符串
-        if let oldPlanningRange = heading.planning {
-            editRange = oldPlanningRange
-            replacement = planning
-        } else {
-            // 没有 planning， 则直接放在 level 之后添加
-            editRange = NSRange(location: heading.level + 1, length: 0)
-            replacement = planning + " "
-        }
-        
-        editorController.textStorage.replaceCharacters(in: editRange, with: replacement)
-        
-        self.document.updateContent(editorController.string)
-    }
-    
-    public func update(schedule: DateAndTimeType, at headingLocation: Int) {
-        guard let heading = self.heading(at: headingLocation) else { return }
-        
-        var editRange: NSRange!
-        var replacement: String!
-        // 有旧的 schedule，就直接替换这个字符串
-        if let oldScheduleRange = heading.schedule {
-            editRange = oldScheduleRange
-            replacement = schedule.toScheduleString()
-        } else {
-            // 没有 due date， 则直接放在 heading range 最后，注意要在新的一行
-            editRange = NSRange(location: heading.range.upperBound, length: 0)
-            replacement = "\n" + schedule.toScheduleString()
-        }
-        
-        editorController.textStorage.replaceCharacters(in: editRange, with: replacement)
-        
-        self.document.updateContent(editorController.string)
-    }
-    
-    public func update(due: DateAndTimeType, at headingLocation: Int) {
-        guard let heading = self.heading(at: headingLocation) else { return }
-        
-        var editRange: NSRange!
-        var replacement: String!
-        
-        // 如果有旧的 due date，直接替换就行了
-        // 如果没有，添加到 heading range 的最后，注意要在新的一行
-        if let oldDueDateRange = heading.due {
-            editRange = oldDueDateRange
-            replacement = due.toDueDateString()
-        } else {
-            editRange = NSRange(location: heading.range.upperBound, length: 0)
-            replacement = "\n" + due.toScheduleString()
-        }
-        
-        editorController.textStorage.replaceCharacters(in: editRange, with: replacement)
-        
-        self.document.updateContent(editorController.string)
-    }
-    
-    /// 添加 tag 到 heading
-    public func add(tag: String, at headingLocation: Int) {
-        guard let heading = self.heading(at: headingLocation) else { return }
-        
-        if let tagsRange = heading.tags {
-            editorController.insert(string: "\(tag):", at: tagsRange.upperBound)
-        } else {
-            editorController.insert(string: " :\(tag):", at: heading.tagLocation)
-        }
-        
-        self.document.updateContent(editorController.string)
-    }
-    
-    public func archive(headingLocation: Int) {
-        self.add(tag: OutlineParser.Values.Heading.Tag.archive, at: headingLocation)
-    }
-    
-    public func unArchive(headingLocation: Int) {
-        self.remove(tag: OutlineParser.Values.Heading.Tag.archive, at: headingLocation)
     }
     
     public func open(completion:((String?) -> Void)? = nil) {
@@ -333,48 +196,20 @@ public class EditorService {
     internal func headingList() -> [HeadingToken] {
         return self.editorController.getParagraphs()
     }
-    
-    /// 交换两个 paragraph 的内容
-    public func replace(heading: HeadingToken, with: HeadingToken) {
-        let temp = self.editorController.string.substring(heading.paragraphRange)
-        self.editorController.replace(text: self.editorController.string.substring(with.paragraphRange), in: heading.paragraphRange)
-        self.editorController.replace(text: temp, in: with.paragraphRange)
-    }
 }
 
-/// 用来将 Outline 中的标记去掉，只留下纯文本内容
-public class OutlineTextTrimmer: OutlineParserDelegate {
-    private let parser: OutlineParser
-    
-    public func didFoundTextMark(text: String, markRanges: [[String : NSRange]]) {
-        markRanges.forEach {
-            result = result.replacingOccurrences(of: text.substring($0[OutlineParser.Key.Element.TextMark.mark]!),
-                                                 with: text.substring($0[OutlineParser.Key.Element.TextMark.content]!))
-        }
-    }
-    
-    public func didFoundLink(text: String, urlRanges: [[String : NSRange]]) {
-        urlRanges.forEach {
-            result = result.replacingOccurrences(of: text.substring($0[OutlineParser.Key.Element.link]!),
-                                                with: text.substring($0[OutlineParser.Key.Element.Link.title]!))
-        }
-    }
-    
-    public init(parser: OutlineParser) {
-        self.parser = parser
-        parser.delegate = self
-    }
-    
-    public func didCompleteParsing(text: String) {
+extension EditorService: EditorControllerDelegate {
+    public func currentHeadingDidChange(heading: HeadingToken?) {
         
     }
     
-    var result: String = ""
+    public func headingChanged(newHeadings: [HeadingToken], oldHeadings: [HeadingToken]) {
+        self.eventObserver.emit(DocumentHeadingChangeEvent(url: self.fileURL,
+                                                           oldHeadings: oldHeadings,
+                                                           newHeadings: newHeadings))
+    }
     
-    public func trim(string: String, range: NSRange? = nil) -> String {
-        let range = range ?? NSRange(location: 0, length: string.count)
-        self.result = string.substring(range)
-        self.parser.parse(str: string, range: range)
-        return result
+    public func didTapLink(url: String, title: String, point: CGPoint) {
+        
     }
 }

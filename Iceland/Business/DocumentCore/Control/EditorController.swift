@@ -8,14 +8,18 @@
 
 import Foundation
 
+/// 文档内容的更新，用户与文档的交互，通过这个代理，由上层(EditorService)来处理，因为文档内部对文档的外部属性，比如 url 等并不知道
 public protocol EditorControllerDelegate: class {
     func currentHeadingDidChange(heading: HeadingToken?)
+    func headingChanged(newHeadings: [HeadingToken], oldHeadings:[HeadingToken])
     func didTapLink(url: String, title: String, point: CGPoint)
 }
 
 public class EditorController: NSObject {
     
     private let layoutManager: NSLayoutManager
+    
+    private let eventObserver: EventObserver
 
     internal let textContainer: NSTextContainer
     
@@ -23,20 +27,18 @@ public class EditorController: NSObject {
     
     public weak var delegate: EditorControllerDelegate?
     
-    public convenience init(parser: OutlineParser) {
-        self.init()
-        self.textStorage.parser = parser
-        parser.delegate = self.textStorage
-        self.textStorage.attributeChangeDelegate = self.textStorage
-    }
-    
-    public override init() {
-        self.textStorage = OutlineTextStorage()
+    public init(parser: OutlineParser, eventObserver: EventObserver) {
+        self.textStorage = OutlineTextStorage(eventObserver: eventObserver)
         self.textContainer = NSTextContainer(size: CGSize(width: UIScreen.main.bounds.size.width, height: CGFloat(Int.max)))
         self.textContainer.widthTracksTextView = true
         self.layoutManager = OutlineLayoutManager()
+        self.eventObserver = eventObserver
         
         super.init()
+        
+        self.textStorage.parser = parser
+        parser.delegate = self.textStorage
+        self.textStorage.attributeChangeDelegate = self.textStorage
         
         self.textStorage.delegate = self.textStorage
         self.textStorage.outlineDelegate = self
@@ -79,6 +81,10 @@ extension EditorController {
 }
 
 extension EditorController: OutlineTextStorageDelegate {
+    public func didUpdateHeadings(newHeadings: [HeadingToken], oldHeadings: [HeadingToken]) {
+        self.delegate?.headingChanged(newHeadings: newHeadings, oldHeadings: oldHeadings)
+    }
+    
     public func didSetCurrentHeading(newHeading: HeadingToken?, oldHeading: HeadingToken?) {
         if oldHeading?.range.location != newHeading?.range.location {
             self.delegate?.currentHeadingDidChange(heading: newHeading)
@@ -87,39 +93,7 @@ extension EditorController: OutlineTextStorageDelegate {
 }
 
 extension EditorController {
-    public func changeFoldingStatus(at location: Int) {
-        if let heading = self.textStorage.heading(at: location) {
-            log.info("fold range: \(heading.contentRange)")
-            
-            guard heading.contentRange.length > 0 else { return }
-            
-            if self.textStorage.attribute(OutlineAttribute.hidden, at: heading.contentRange.location, effectiveRange: nil) == nil {
-                // 标记内容为隐藏
-                self.textStorage.addAttributes([OutlineAttribute.hidden: 2,
-                                                OutlineAttribute.showAttachment: OutlineAttribute.Heading.folded],
-                                              range: heading.contentRange)
-            } else {
-                // 移除内容隐藏标记
-                self.textStorage.removeAttribute(OutlineAttribute.hidden,
-                                                 range: heading.contentRange)
-                self.textStorage.removeAttribute(OutlineAttribute.showAttachment,
-                                                 range: heading.contentRange)
-            }
-        }
-    }
-    
-    public func changeCheckBoxStatus(range: NSRange) {
-        let status = self.string.substring(range)
-        
-        var nextStatus: String = status
-        switch status {
-        case OutlineParser.Values.Checkbox.checked: fallthrough
-        case OutlineParser.Values.Checkbox.halfChecked:
-            nextStatus = OutlineParser.Values.Checkbox.unchecked
-        default:
-            nextStatus = OutlineParser.Values.Checkbox.checked
-        }
-        
-        self.textStorage.replaceCharacters(in: range, with: nextStatus)
+    public func toggleAction(command: DocumentContentCommand) -> Bool {
+        return command.toggle(textStorage: self.textStorage)
     }
 }

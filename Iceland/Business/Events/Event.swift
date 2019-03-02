@@ -9,7 +9,6 @@
 import Foundation
 
 public class Event: NSObject {
-    
 }
 
 // MARK: -
@@ -54,18 +53,14 @@ public class RecentDocumentRenamedEvent: RenameDocumentEvent {
 
 // MARK: -
 
-public class DocumentHeadingChangeEvent {
-    public enum Kind {
-        case new
-        case modified
-        case delete
-    }
-    
+public class DocumentHeadingChangeEvent: Event {
     let url: URL
-    let kind: Kind
-    
-    public init(url: URL, kind: Kind) {
+    let oldHeadings: [HeadingToken]
+    let newHeadings: [HeadingToken]
+
+    public init(url: URL, oldHeadings: [HeadingToken], newHeadings: [HeadingToken]) {
         self.url = url
-        self.kind = kind
+        self.oldHeadings = oldHeadings
+        self.newHeadings = newHeadings
     }
 }

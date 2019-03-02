@@ -122,7 +122,8 @@ static NSDictionary *attachmentMap;
         properties = malloc(propertiesSize);
         memset_pattern4(properties, &aProperty, propertiesSize);
         
-        if (charIndexes[0] == effectiveRange.location && hiddenType.intValue == 2) {
+        if (charIndexes[0] == effectiveRange.location
+            && (hiddenType.intValue == 2 || hiddenType.intValue == 3)) {
             properties[0] = NSGlyphPropertyControlCharacter;
         }
     }

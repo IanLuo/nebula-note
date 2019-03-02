@@ -36,7 +36,7 @@ public class EditorContext {
         if let editorInstance = self.cachedServiceInstances[url] {
             return editorInstance
         } else {
-            let newService = EditorService.connect(url: url, queue: self.editingQueue)
+            let newService = EditorService(url: url, queue: self.editingQueue, eventObserver: self.eventObserver)
             self.cachedServiceInstances[url] = newService
             return newService
         }

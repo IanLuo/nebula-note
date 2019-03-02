@@ -65,11 +65,11 @@ public class DocumentEditViewModel {
     }
     
     public func changeFoldingStatus(location: Int) {
-        self.editorService.changeFoldingStatus(location: location)
+        self.editorService.toggleContentAction(command: FoldingCommand(location: location))
     }
     
     public func changeCheckboxStatus(range: NSRange) {
-        self.editorService.changeCheckboxStatus(range: range)
+        self.editorService.toggleContentAction(command: CheckboxCommand(range: range))
     }
     
     public func save(completion: @escaping () -> Void) {
@@ -97,48 +97,48 @@ public class DocumentEditViewModel {
     
     /// 删除 due date
     public func removeDue(at headingLocation: Int) {
-        self.editorService.removeDue(at: headingLocation)
+        self.editorService.toggleContentAction(command: DueCommand(location: headingLocation, kind: .remove))
     }
     
     public func removeSchedule(at headingLocation: Int) {
-        self.editorService.removeSchedule(at: headingLocation)
+        self.editorService.toggleContentAction(command: ScheduleCommand(location: headingLocation, kind: .remove))
     }
     
     public func remove(tag: String, at headingLocation: Int) {
-        self.editorService.remove(tag: tag, at: headingLocation)
+        self.editorService.toggleContentAction(command: TagCommand(location: headingLocation, kind: .remove(tag)))
     }
     
     public func removePlanning(at headingLocation: Int) {
-        self.editorService.removePlanning(at: headingLocation)
+        self.editorService.toggleContentAction(command: PlanningCommand(location: headingLocation, kind: .remove))
     }
     
     public func update(planning: String, at headingLocation: Int) {
-        self.editorService.update(planning: planning, at: headingLocation)
+        self.editorService.toggleContentAction(command: PlanningCommand(location: headingLocation, kind: .addOrUpdate(planning)))
     }
 
     public func update(schedule: DateAndTimeType, at headingLocation: Int) {
-        self.editorService.update(schedule: schedule, at: headingLocation)
+        self.editorService.toggleContentAction(command: ScheduleCommand(location: headingLocation, kind: .addOrUpdate(schedule)))
     }
     
     public func update(due: DateAndTimeType, at headingLocation: Int) {
-        self.editorService.update(due: due, at: headingLocation)
+        self.editorService.toggleContentAction(command: DueCommand(location: headingLocation, kind: .addOrUpdate(due)))
     }
     
     /// 添加 tag 到 heading
     public func add(tag: String, at headingLocation: Int) {
-        self.editorService.add(tag: tag, at: headingLocation)
+        self.editorService.toggleContentAction(command: TagCommand(location: headingLocation, kind: .add(tag)))
     }
     
     public func archive(headingLocation: Int) {
-        self.editorService.archive(headingLocation: headingLocation)
+        self.editorService.toggleContentAction(command: ArchiveCommand(location: headingLocation))
     }
     
     public func unArchive(headingLocation: Int) {
-        self.editorService.unArchive(headingLocation: headingLocation)
+        self.editorService.toggleContentAction(command: UnarchiveCommand(location: headingLocation))
     }
     
     public func insert(content: String, headingLocation: Int) {
-        self.editorService.insert(content: content, headingLocation: headingLocation)
+        self.editorService.toggleContentAction(command: InsertTextToHeadingCommand(location: headingLocation, textToInsert: content))
     }
     
     public func rename(newTitle: String, completion: ((Error?) -> Void)? = nil) {
@@ -159,25 +159,12 @@ public class DocumentEditViewModel {
     }
     
     /// 交换两个 paragraph 的内容
-    public func replace(heading: HeadingToken, with: HeadingToken) {
-        self.editorService.replace(heading: heading, with: with)
+    public func replace(fromLocation: Int, toLocation: Int) {
+        self.editorService.toggleContentAction(command: ReplaceHeadingCommand(fromLocation: fromLocation, toLocation: toLocation))
     }
-}
-
-// MARK: - EditorControllerDelegate
-extension DocumentEditViewModel: EditorControllerDelegate {
+    
     public func didUpdate() {
         self.editorService.markAsContentUpdated()
-    }
-    
-    public func didTapLink(url: String, title: String, point: CGPoint) {
-        if let url = URL(string: url) {
-            self.delegate?.showLink(url: url)
-        }
-    }
-    
-    public func currentHeadingDidChange(heading: HeadingToken?) {
-        self.delegate?.updateHeadingInfo(heading: heading)
     }
 }
 

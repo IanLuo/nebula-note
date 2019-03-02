@@ -89,6 +89,8 @@
 		E43B909E2228EDA00008B44C /* EditorContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43B909D2228EDA00008B44C /* EditorContext.swift */; };
 		E43B90A6222903100008B44C /* EventObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43B90A5222903100008B44C /* EventObserver.swift */; };
 		E43B90A8222903170008B44C /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43B90A7222903160008B44C /* Event.swift */; };
+		E43E7875222ACF780007EE4F /* OutlineTextTrimmer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43E7874222ACF780007EE4F /* OutlineTextTrimmer.swift */; };
+		E43E7877222AD0C70007EE4F /* DocumentContentCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43E7876222AD0C70007EE4F /* DocumentContentCommands.swift */; };
 		E44825A3219722C300C17568 /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44825A2219722C300C17568 /* Application.swift */; };
 		E44E60F521E9F2C0005AC25F /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44E60F421E9F2C0005AC25F /* Location.swift */; };
 		E455868A21DF643F00381FA8 /* HeadingOutlineTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E455868921DF643F00381FA8 /* HeadingOutlineTableViewCell.swift */; };
@@ -305,6 +307,8 @@
 		E43B909D2228EDA00008B44C /* EditorContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorContext.swift; sourceTree = "<group>"; };
 		E43B90A5222903100008B44C /* EventObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventObserver.swift; sourceTree = "<group>"; };
 		E43B90A7222903160008B44C /* Event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
+		E43E7874222ACF780007EE4F /* OutlineTextTrimmer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineTextTrimmer.swift; sourceTree = "<group>"; };
+		E43E7876222AD0C70007EE4F /* DocumentContentCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentContentCommands.swift; sourceTree = "<group>"; };
 		E44825A2219722C300C17568 /* Application.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Application.swift; sourceTree = "<group>"; };
 		E44825A6219810E100C17568 /* OutlineLayoutManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineLayoutManager.swift; sourceTree = "<group>"; };
 		E44825A8219810FF00C17568 /* EditorController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorController.swift; sourceTree = "<group>"; };
@@ -649,6 +653,8 @@
 				E41A539021D62095002B11E9 /* EditorService.swift */,
 				E43B909D2228EDA00008B44C /* EditorContext.swift */,
 				E4F9ECDE21FBF61B009A08CD /* RecentFilesManager.swift */,
+				E43E7874222ACF780007EE4F /* OutlineTextTrimmer.swift */,
+				E43E7876222AD0C70007EE4F /* DocumentContentCommands.swift */,
 			);
 			path = DocumentCore;
 			sourceTree = "<group>";
@@ -1380,6 +1386,7 @@
 				E4773BAC21F9A203000F8F3F /* CoverPickerViewController.swift in Sources */,
 				E4BC264421F587BC00B0F2B9 /* FrameLayout+Shortcuts.swift in Sources */,
 				E41CB1C121D88DD700EF0A3C /* OutlineParser.swift in Sources */,
+				E43E7875222ACF780007EE4F /* OutlineTextTrimmer.swift in Sources */,
 				E41B892421E2F1C1009C5AD7 /* SelectorViewController.swift in Sources */,
 				E41CB1BA21D88DCE00EF0A3C /* Document.swift in Sources */,
 				E41CB1C521D88DD700EF0A3C /* EditorService.swift in Sources */,
@@ -1407,6 +1414,7 @@
 				E41CB1B921D88DCE00EF0A3C /* OutlineAttribute.swift in Sources */,
 				E4F9ECE121FECE5C009A08CD /* FileManager.swift in Sources */,
 				E4895FF721D9244000D2B19D /* EditRecord.swift in Sources */,
+				E43E7877222AD0C70007EE4F /* DocumentContentCommands.swift in Sources */,
 				E41CB1D221D890E200EF0A3C /* Border.swift in Sources */,
 				E466D196221ED586007F140B /* MoveToAnimtor.swift in Sources */,
 				E466D194221EAD29007F140B /* FadeBackgroundTransition.swift in Sources */,
