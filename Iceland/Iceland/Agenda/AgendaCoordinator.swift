@@ -24,7 +24,7 @@ public class AgendaCoordinator: Coordinator {
     
     public override init(stack: UINavigationController, dependency: Dependency) {
         super.init(stack: stack, dependency: dependency)
-        let viewModel = AgendaViewModel(documentSearchManager: dependency.documentSearchManager, textTrimmer: dependency.textTrimmer)
+        let viewModel = AgendaViewModel(documentSearchManager: dependency.documentSearchManager)
         viewModel.coordinator = self
         let viewController = AgendaViewController(viewModel: viewModel)
         self.viewController = viewController
@@ -33,7 +33,7 @@ public class AgendaCoordinator: Coordinator {
     /// 显示指定 tag 的所有 heading 列表
     public init(filterType: FilterType, stack: UINavigationController, dependency: Dependency) {
         super.init(stack: stack, dependency: dependency)
-        let viewModel = AgendaViewModel(documentSearchManager: dependency.documentSearchManager, textTrimmer: dependency.textTrimmer)
+        let viewModel = AgendaViewModel(documentSearchManager: dependency.documentSearchManager)
         viewModel.filterType = filterType
         viewModel.coordinator = self
         let viewController = FilteredItemsViewController(viewModel: viewModel)

@@ -24,7 +24,7 @@ public class Application: Coordinator {
         let editorContext = EditorContext(eventObserver: eventObserver)
         super.init(stack: navigationController,
                    dependency: Dependency(documentManager: DocumentManager(editorContext: editorContext, eventObserver: eventObserver),
-                                          documentSearchManager: DocumentSearchManager(eventObserver: eventObserver),
+                                          documentSearchManager: DocumentSearchManager(eventObserver: eventObserver, editorContext: editorContext),
                                           editorContext: editorContext,
                                           textTrimmer: OutlineTextTrimmer(parser: OutlineParser()),
                                           eventObserver: EventObserver()))

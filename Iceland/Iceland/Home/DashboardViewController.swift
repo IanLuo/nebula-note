@@ -43,8 +43,7 @@ public class DashboardViewController: UIViewController {
         self.view.addSubview(self.tableView)
         self.tableView.fill(view: self.view)
         
-        self.viewModel.loadAllTags()
-        self.viewModel.loadPlanned()
+        self.viewModel.loadData()
     }
     
     private lazy var tableView: UITableView = {
@@ -322,49 +321,41 @@ extension DashboardViewController: UITableViewDelegate, UITableViewDataSource {
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.selectOnSubtab(tab: indexPath.section, subtab: indexPath.row)
     }
+    
+    public func reloadDataIfNeeded() {
+        self.viewModel.loadDataIfNeeded()
+    }
 }
 
 extension DashboardViewController: DashboardViewModelDelegate {
-    public func didLoadScheduled() {
+    public func didCompleteLoadFilteredData() {
+        self.tabs[0].sub.removeAll()
+        
         if self.viewModel.scheduled.count > 0 {
             self.tabs[0].sub.append(Subtab(type: DashboardViewController.SubtabType.scheduled(self.viewModel.scheduled.count)))
-            self.tableView.reloadSections([0], with: UITableView.RowAnimation.none)
         }
-    }
-    
-    public func didLoadOverdue() {
+
         if self.viewModel.overdue.count > 0 {
             self.tabs[0].sub.append(Subtab(type: DashboardViewController.SubtabType.overdue(self.viewModel.overdue.count)))
-            self.tableView.reloadSections([0], with: UITableView.RowAnimation.none)
         }
-    }
-    
-    public func didLoadScheduledSoon() {
+
         if self.viewModel.scheduledSoon.count > 0 {
             self.tabs[0].sub.append(Subtab(type: DashboardViewController.SubtabType.scheduledSoon(self.viewModel.scheduledSoon.count)))
-            self.tableView.reloadSections([0], with: UITableView.RowAnimation.none)
         }
-    }
-    
-    public func didLoadOverdueSoon() {
-        if self.viewModel.overdue.count > 0 {
+
+        if self.viewModel.overdueSoon.count > 0 {
             self.tabs[0].sub.append(Subtab(type: DashboardViewController.SubtabType.overdueSoon(self.viewModel.overdueSoon.count)))
-            self.tableView.reloadSections([0], with: UITableView.RowAnimation.none)
         }
-    }
-    
-    public func didLoadWithoutTag() {
+
         if self.viewModel.withoutTag.count > 0 {
             self.tabs[0].sub.append(Subtab(type: DashboardViewController.SubtabType.withoutDate(self.viewModel.withoutTag.count)))
-            self.tableView.reloadSections([0], with: UITableView.RowAnimation.none)
         }
-    }
-    
-    public func didLoadAllTags() {
+
         if self.viewModel.allTags.count > 0 {
-            self.tabs[0].sub.append(Subtab(type: DashboardViewController.SubtabType.tags(self.viewModel.allTags)))
-            self.tableView.reloadSections([0], with: UITableView.RowAnimation.none)
+            self.tabs[0].sub.append(Subtab(type: DashboardViewController.SubtabType.tags(Array(Set(self.viewModel.allTags)))))
         }
+        
+        self.tableView.reloadSections([0], with: UITableView.RowAnimation.none)
     }
 }
 

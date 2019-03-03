@@ -10,14 +10,29 @@ import Foundation
 import UIKit
 import Business
 
+public protocol HomeViewControllerDelegate: class {
+    func didShowMasterView()
+    func didShowDetailView()
+}
+
 public class HomeViewController: UIViewController {
-    internal var currentChildViewController: UIViewController?
+    internal var currentDetailViewController: UIViewController?
     
     private let masterViewWidth: CGFloat = UIScreen.main.bounds.width * 3 / 4
     
-    public var isShowingMaster: Bool = false
+    public var isShowingMaster: Bool = false {
+        didSet {
+            if isShowingMaster {
+                self.delegate?.didShowMasterView()
+            } else {
+                self.delegate?.didShowDetailView()
+            }
+        }
+    }
     
     public var masterViewController: UIViewController
+    
+    public weak var delegate: HomeViewControllerDelegate?
     
     private lazy var pan = UIPanGestureRecognizer(target: self, action: #selector(didPan(gesture:)))
     private lazy var tap = UITapGestureRecognizer(target: self, action: #selector(didTap(gesture:)))
@@ -52,13 +67,13 @@ public class HomeViewController: UIViewController {
     }
     
     internal func showChildViewController(_ viewController: UIViewController) {
-        if let current = self.currentChildViewController {
+        if let current = self.currentDetailViewController {
             current.removeFromParent()
             current.view.removeFromSuperview()
         }
         
         self.addChild(viewController)
-        self.currentChildViewController = viewController
+        self.currentDetailViewController = viewController
         self.view.insertSubview(viewController.view, at: 0)
     }
     
@@ -76,12 +91,12 @@ public class HomeViewController: UIViewController {
                     self.navigationController?.navigationBar.frame = frame.offsetX(-newLocation)
                 }
             }
-            self.updateChildViewAlpha(offset: -newLocation)
+            self._updateDetailViewAlpha(offset: -newLocation)
         case .ended: fallthrough
         case .cancelled:
             if self.view.bounds.origin.x >= -self.masterViewWidth / 3
                 || gesture.velocity(in: self.view!).x < -0.5 {
-                self.showChildView()
+                self.showDetailView()
             } else {
                 self.showMasterView()
             }
@@ -91,19 +106,19 @@ public class HomeViewController: UIViewController {
     
     @objc private func didTap(gesture: UIGestureRecognizer) {
         if self.isShowingMaster {
-            self.showChildView()
+            self.showDetailView()
         }
     }
     
-    @objc internal func showChildView() {
+    @objc internal func showDetailView() {
         UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseInOut, animations: {
             self.view.bounds = CGRect(origin: .zero, size: self.view.bounds.size)
             if let frame = self.navigationController?.navigationBar.frame {
                 self.navigationController?.navigationBar.frame = CGRect(origin: CGPoint(x: 0, y: frame.origin.y), size: frame.size)
             }
-            self.updateChildViewAlpha(offset: 0)
+            self._updateDetailViewAlpha(offset: 0)
         }, completion: { _ in
-            self.currentChildViewController?.becomeFirstResponder()
+            self.currentDetailViewController?.becomeFirstResponder()
             self.isShowingMaster = false
         })
     }
@@ -114,16 +129,16 @@ public class HomeViewController: UIViewController {
             if let frame = self.navigationController?.navigationBar.frame {
                 self.navigationController?.navigationBar.frame = frame.offsetX(-self.view.bounds.origin.x)
             }
-            self.updateChildViewAlpha(offset: self.masterViewWidth)
+            self._updateDetailViewAlpha(offset: self.masterViewWidth)
         }, completion: { _ in
-            self.currentChildViewController?.resignFirstResponder()
+            self.currentDetailViewController?.resignFirstResponder()
             self.isShowingMaster = true
         })
     }
 
-    private func updateChildViewAlpha(offset: CGFloat) {
+    private func _updateDetailViewAlpha(offset: CGFloat) {
         let alphaComponent = max(0.3, 1 - offset / self.masterViewWidth) // 透明度不小于 0.3
-        self.currentChildViewController?.view.alpha = alphaComponent
+        self.currentDetailViewController?.view.alpha = alphaComponent
         self.navigationController?.navigationBar.alpha = alphaComponent
     }
 }

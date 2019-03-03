@@ -8,6 +8,55 @@
 
 import Foundation
 
+public struct DocumentHeading {
+    public let rawHeadingToken: HeadingToken
+    public let level: Int
+    public let tags: [String]?
+    public let planning: String?
+    public let due: DateAndTimeType?
+    public let schedule: DateAndTimeType?
+    public let text: String
+    public let paragraphSummery: String
+    public let length: Int
+    public let url: URL
+    
+    public init(documentString: String, headingToken: HeadingToken, url: URL) {
+        self.url = url
+        self.rawHeadingToken = headingToken
+        self.level = headingToken.level
+        self.length = headingToken.paragraphRange.length
+        
+        if let tagRange = headingToken.tags {
+            self.tags = documentString.substring(tagRange).components(separatedBy: ":").filter { $0.count != 0 }
+        } else {
+            self.tags = nil
+        }
+        
+        if let planning = headingToken.planning {
+            self.planning = documentString.substring(planning)
+        } else {
+            self.planning = nil
+        }
+        
+        if let due = headingToken.due {
+            self.due = DateAndTimeType.createFromDue(documentString.substring(due))
+        } else {
+            self.due = nil
+        }
+        
+        if let schedule = headingToken.schedule {
+            self.schedule = DateAndTimeType.createFromSchedule(documentString.substring(schedule))
+        } else {
+            self.schedule = nil
+        }
+        
+        self.text = documentString.substring(headingToken.range)
+        
+        self.paragraphSummery = documentString.substring(NSRange(location: headingToken.range.upperBound + min(1, headingToken.contentLength),
+                                                                 length: min(100, headingToken.contentLength)))
+    }
+}
+
 public struct DocumentSearchResult {
     public let url: URL
     public let highlightRange: NSRange
@@ -25,35 +74,48 @@ public struct DocumentSearchResult {
     }
 }
 
-public class DocumentSearchManager {
-    public class DocumentSearchHeadingUpdateEvent: Event {
-        let oldHeadings: [DocumentSearchResult]
-        let newHeadings: [DocumentSearchResult]
-        public init(oldHeadings: [DocumentSearchResult], newHeadings: [DocumentSearchResult]) {
-            self.oldHeadings = oldHeadings
-            self.newHeadings = newHeadings
-        }
+public class DocumentSearchHeadingUpdateEvent: Event {
+    let oldHeadings: [DocumentSearchResult]
+    let newHeadings: [DocumentSearchResult]
+    public init(oldHeadings: [DocumentSearchResult], newHeadings: [DocumentSearchResult]) {
+        self.oldHeadings = oldHeadings
+        self.newHeadings = newHeadings
     }
+}
+
+public struct DocumentHeadingSearchOptions: OptionSet {
+    public var rawValue: Int
+    public init(rawValue: Int) { self.rawValue = rawValue }
     
-    private let headingSearchOperationQueue: OperationQueue
-    private let contentSearchOperationQueue: OperationQueue
-    private let headingChangeObservingQueue: OperationQueue
+    public static let tag: DocumentHeadingSearchOptions = DocumentHeadingSearchOptions(rawValue: 1 << 1)
+    public static let due: DocumentHeadingSearchOptions = DocumentHeadingSearchOptions(rawValue: 1 << 2)
+    public static let schedule: DocumentHeadingSearchOptions = DocumentHeadingSearchOptions(rawValue: 1 << 3)
+    public static let archived: DocumentHeadingSearchOptions = DocumentHeadingSearchOptions(rawValue: 1 << 5)
+    public static let planning: DocumentHeadingSearchOptions = DocumentHeadingSearchOptions(rawValue: 1 << 4)
+}
+
+public class DocumentSearchManager {
+    private let _headingSearchOperationQueue: OperationQueue
+    private let _contentSearchOperationQueue: OperationQueue
+    private let _headingChangeObservingQueue: OperationQueue
     
-    private let eventObserver: EventObserver
+    private let _eventObserver: EventObserver
+    private let _editorContext: EditorContext
     
-    public init(eventObserver: EventObserver) {
-        self.headingSearchOperationQueue = OperationQueue()
-        self.contentSearchOperationQueue = OperationQueue()
-        self.headingChangeObservingQueue = OperationQueue()
+    public init(eventObserver: EventObserver, editorContext: EditorContext) {
+        self._headingSearchOperationQueue = OperationQueue()
+        self._contentSearchOperationQueue = OperationQueue()
+        self._headingChangeObservingQueue = OperationQueue()
         
-        self.headingSearchOperationQueue.underlyingQueue = DispatchQueue.global(qos: DispatchQoS.QoSClass.userInteractive)
-        self.contentSearchOperationQueue.underlyingQueue = DispatchQueue.global(qos: DispatchQoS.QoSClass.userInteractive)
-        self.headingChangeObservingQueue.underlyingQueue = DispatchQueue.global(qos: DispatchQoS.QoSClass.background)
+        self._headingSearchOperationQueue.underlyingQueue = DispatchQueue.global(qos: DispatchQoS.QoSClass.userInteractive)
+        self._contentSearchOperationQueue.underlyingQueue = DispatchQueue.global(qos: DispatchQoS.QoSClass.userInteractive)
+        self._headingChangeObservingQueue.underlyingQueue = DispatchQueue.global(qos: DispatchQoS.QoSClass.background)
         
-        self.eventObserver = eventObserver
-        self.eventObserver.registerForEvent(on: self,
+        self._editorContext = editorContext
+        self._eventObserver = eventObserver
+        self._eventObserver.registerForEvent(on: self,
                                             eventType: DocumentHeadingChangeEvent.self,
-                                            queue: self.headingChangeObservingQueue,
+                                            queue: self._headingChangeObservingQueue,
                                             action: { [weak self] (event: DocumentHeadingChangeEvent) -> Void in
                                                 self?._handleDocumentHeadingsChange(event: event)
         })
@@ -71,7 +133,7 @@ public class DocumentSearchManager {
                        complete: @escaping () -> Void,
                        failed: ((Error) -> Void)?) {
         
-        self.contentSearchOperationQueue.cancelAllOperations()
+        self._contentSearchOperationQueue.cancelAllOperations()
         let operation = BlockOperation()
         
         operation.completionBlock = {
@@ -119,186 +181,56 @@ public class DocumentSearchManager {
             }
         }
         
-        self.contentSearchOperationQueue.addOperation(operation)
+        self._contentSearchOperationQueue.addOperation(operation)
     }
     
-    // MARK: -
-    /// 搜索包含指定 tag 的所有 heading
-    /// - parameter tags, 字符串数组，需要搜索的所有 tag
-    /// - parameter resultAdded: 每个文件的搜索完成后会调用这个 closure
-    /// - parameter result: 封装的搜索结果, 其中, url 为对应的文件 url，context 为整个 heading，提供搜索结果的上下文, highlightRange 为 context 中搜索结果的 range, heading 为 整个 heading 对象
-    /// - parameter complete: 所有文件搜索完成后调用
-    /// - parameter failed: 有错误产生的时候调用
-    public func search(tags: [String],
-                       resultAdded: @escaping ([DocumentSearchResult]) -> Void,
-                       complete: @escaping () -> Void,
-                       failed: ((Error) -> Void)?) {
-        
-        self.doSearchHeading(resultAdded: resultAdded,
-                             complete: complete,
-                             failed: failed) { (string: String, url: URL, headings: [HeadingToken]) -> [DocumentSearchResult] in
-                                var searchResults: [DocumentSearchResult] = []
-                                for heading in headings {
-                                    if let tagsRange = heading.tags {
-                                        let tagString = string.substring(tagsRange)
-                                        for t in tags {
-                                            let range = (tagString as NSString).range(of: t)
-                                            if range.location != Int.max {
-                                                searchResults.append(DocumentSearchResult(url: url.wrapperURL,
-                                                                                          highlightRange: range.offset(-heading.range.location),
-                                                                                          context: string.substring(heading.paragraphRange),
-                                                                                          heading: heading))
-                                            }
-                                        }
-                                    }
-                                }
-                                
-                                return searchResults
-        }
-    }
-    
-    // MARK: -
-    /// - parameter schedule: 搜索 schedule 整个日期之前的所有 heading
-    /// - parameter resultAdded: 每个文件的搜索完成后会调用这个 closure
-    /// - parameter result: 封装的搜索结果, 其中, url 为对应的文件 url，context 为整个 heading，提供搜索结果的上下文, highlightRange 为 context 中搜索结果的 range, heading 为 整个 heading 对象
-    /// - parameter complete: 所有文件搜索完成后调用
-    /// - parameter failed: 有错误产生的时候调用
-    public func search(schedule: Date,
-                       resultAdded: @escaping ([DocumentSearchResult]) -> Void,
-                       complete: @escaping () -> Void,
-                       failed: ((Error) -> Void)?) {
-        
-        self.doSearchHeading(resultAdded: resultAdded,
-                             complete: complete,
-                             failed: failed) { (string: String, url: URL, headings: [HeadingToken]) -> [DocumentSearchResult] in
-                                var searchResults: [DocumentSearchResult] = []
-                                for heading in headings {
-                                    if let scheduleRange = heading.schedule {
-                                        let headingString = string.substring(heading.range)
-                                        if let scheduleDate = DateAndTimeType.createFromSchedule(headingString)?.date {
-                                            if scheduleDate <= schedule {
-                                                searchResults.append(DocumentSearchResult(url: url.wrapperURL,
-                                                                                          highlightRange: scheduleRange,
-                                                                                          context: string.substring(heading.paragraphRange),
-                                                                                          heading: heading))
-                                            }
-                                        }
-                                    }
-                                }
-                                
-                                return searchResults
-        }
-        
-    }
-    
-    // MARK: -
-    /// - parameter schedule: 搜索 due 整个日期之前的所有 heading
-    /// - parameter resultAdded: 每个文件的搜索完成后会调用这个 closure
-    /// - parameter result: 封装的搜索结果, 其中, url 为对应的文件 url，context 为整个 heading，提供搜索结果的上下文, highlightRange 为 context 中搜索结果的 range, heading 为 整个 heading 对象
-    /// - parameter complete: 所有文件搜索完成后调用
-    /// - parameter failed: 有错误产生的时候调用
-    public func search(due: Date,
-                       resultAdded: @escaping ([DocumentSearchResult]) -> Void,
-                       complete: @escaping () -> Void,
-                       failed: ((Error) -> Void)?) {
-        
-        self.doSearchHeading(resultAdded:resultAdded,
-                             complete: complete,
-                             failed: failed) { (string: String, url: URL, headings: [HeadingToken]) -> [DocumentSearchResult] in
-                                var searchResults: [DocumentSearchResult] = []
-                                for heading in headings {
-                                    if let dueRange = heading.due {
-                                        let headingString = (string as NSString).substring(with: heading.range)
-                                        
-                                        if let dueDate = DateAndTimeType.createFromDue(headingString)?.date {
-                                            if dueDate <= due {
-                                                searchResults.append(DocumentSearchResult(url: url.wrapperURL,
-                                                                                          highlightRange: dueRange,
-                                                                                          context: string.substring(heading.paragraphRange),
-                                                                                          heading: heading))
-                                            }
-                                        }
-                                    }
-                                }
-                                
-                                return searchResults
-        }
-        
-    }
-    
-    // MARK: -
-    /// - parameter planning: 搜索包含这些 planning 的所有 heading
-    /// - parameter resultAdded: 每个文件的搜索完成后会调用这个 closure
-    /// - parameter result: 封装的搜索结果, 其中, url 为对应的文件 url，context 为整个 heading，提供搜索结果的上下文, highlightRange 为 context 中搜索结果的 range, heading 为 整个 heading 对象
-    /// - parameter complete: 所有文件搜索完成后调用
-    /// - parameter failed: 有错误产生的时候调用
-    public func search(plannings: [String],
-                       resultAdded: @escaping ([DocumentSearchResult]) -> Void,
-                       complete: @escaping () -> Void,
-                       failed: ((Error) -> Void)?) {
-        
-        self.doSearchHeading(resultAdded:resultAdded,
-                             complete: complete,
-                             failed: failed) { (string: String, url: URL, headings: [HeadingToken]) -> [DocumentSearchResult] in
-                                var searchResults: [DocumentSearchResult] = []
-                                for heading in headings {
-                                    if let planningRange = heading.planning {
-                                        let planningString = string.substring(planningRange)
-                                        
-                                        if plannings.contains(planningString) {
-                                            searchResults.append(DocumentSearchResult(url: url.wrapperURL,
-                                                                                      highlightRange: planningRange,
-                                                                                      context: string.substring(heading.paragraphRange),
-                                                                                      heading: heading))
-                                        }
-                                    }
-                                }
-                                
-                                return searchResults
-        }
-    }
-    
-    public func headingHasPlanning(contained in: [String], text: String, heading: [String: NSRange]) -> Bool {
-        if let planningRange = heading[OutlineParser.Key.Element.Heading.planning] {
-            return `in`.contains(text.substring(planningRange))
-        } else {
-            return false
-        }
-    }
-    
-    /// 搜索所有的 heading
-    private func doSearchHeading(resultAdded: @escaping ([DocumentSearchResult]) -> Void,
-                                 complete: @escaping () -> Void,
-                                 failed: ((Error) -> Void)?,
-                                 onEachHeadingMatch: @escaping (String, URL, [HeadingToken]) -> [DocumentSearchResult]) {
-        
-        let operation = BlockOperation()
-        
-        operation.completionBlock = {
-            OperationQueue.main.addOperation {
-                complete()
-            }
-        }
-        
-        operation.addExecutionBlock {
-            
-            class ParseDelegate: OutlineParserDelegate {
-                var headings: [HeadingToken] = []
-                func didFoundHeadings(text: String,
-                                      headingDataRanges: [[String: NSRange]]) {
-                    
-                    self.headings = headingDataRanges.map { HeadingToken(data: $0) }
-                }
-                
-                func didCompleteParsing(text: String) {
-                    var lastUpperBound = text.count
-                    headings.reversed().forEach {
-                        $0.contentLength = lastUpperBound - $0.range.upperBound
-                        lastUpperBound = $0.range.location
+    public func searchHeading(tags: [String], complete: @escaping ([DocumentHeading]) -> Void) {
+        var data: [DocumentHeading] = []
+        self.searchHeading(options: .tag, filter: { (heading: DocumentHeading) -> Bool in
+            if let ts = heading.tags {
+                for t in ts {
+                    if tags.contains(t) {
+                        return true
                     }
                 }
             }
             
+            return false
+        }, resultAdded: { (results: [DocumentHeading]) in
+            data.append(contentsOf: results)
+        }, complete: {
+            complete(data)
+        }, failed: { error in
+            print(error)
+        })
+    }
+    
+    class ParseDelegate: OutlineParserDelegate {
+        var headings: [HeadingToken] = []
+        func didFoundHeadings(text: String,
+                              headingDataRanges: [[String: NSRange]]) {
+            
+            self.headings = headingDataRanges.map { HeadingToken(data: $0) }
+        }
+        
+        func didCompleteParsing(text: String) {
+            var lastUpperBound = text.count
+            headings.reversed().forEach {
+                $0.contentLength = lastUpperBound - $0.range.upperBound
+                lastUpperBound = $0.range.location
+            }
+        }
+    }
+    
+    public func searchHeading(options: DocumentHeadingSearchOptions,
+                              filter: ((DocumentHeading) -> Bool)? = nil,
+                              resultAdded: @escaping ([DocumentHeading]) -> Void,
+                              complete: @escaping () -> Void,
+                              failed: @escaping (Error) -> Void) {
+        
+        let operation = BlockOperation()
+        
+        operation.addExecutionBlock {
             let parseDelegate = ParseDelegate()
             let parser = OutlineParser()
             parser.delegate = parseDelegate
@@ -310,9 +242,22 @@ public class DocumentSearchManager {
                     parser.parse(str: string)
                     
                     if parseDelegate.headings.count > 0 {
-                        let documentSearchResult = onEachHeadingMatch(string, url, parseDelegate.headings)
+                        
+                        let documentSearchResult = parseDelegate.headings.filter { heading in
+                            if options.contains(DocumentHeadingSearchOptions.tag) && heading.tags != nil { return true }
+                            if options.contains(DocumentHeadingSearchOptions.due) && heading.due != nil { return true }
+                            if options.contains(DocumentHeadingSearchOptions.schedule) && heading.schedule != nil { return true }
+                            if options.contains(DocumentHeadingSearchOptions.planning) && heading.planning != nil { return true }
+                            return false
+                        }
+                        .map { heading in
+                            DocumentHeading(documentString: string, headingToken: heading, url: url)
+                        }
+                        
                         if documentSearchResult.count > 0 {
-                            OperationQueue.main.addOperation {
+                            if let filter = filter {
+                                resultAdded(documentSearchResult.filter(filter))
+                            } else {
                                 resultAdded(documentSearchResult)
                             }
                         }
@@ -320,79 +265,21 @@ public class DocumentSearchManager {
                         parseDelegate.headings = []
                     }
                 }
-            } catch {
-                OperationQueue.main.addOperation {
-                    failed?(error)
-                }
-            }
+                
+                DispatchQueue.main.async { complete() }
+            } catch { DispatchQueue.main.async { failed(error) } }
         }
         
-        headingSearchOperationQueue.addOperation(operation)
+        self._headingSearchOperationQueue.addOperation(operation)
     }
     
-    public func loadAllHeadingsThatIsUnfinished(complete: @escaping (([DocumentSearchResult]) -> Void),
-                                                failure: @escaping (Error) -> Void) {
-        var searchResults: [DocumentSearchResult] = []
-        self.doSearchHeading(resultAdded: { result in
-            searchResults.append(contentsOf: result)
-        }, complete: {
-            complete(searchResults)
-        }, failed: { error in
-            failure(error)
-        }) { (text, url, headings) -> [DocumentSearchResult] in
-            var resultsInThisFile: [DocumentSearchResult] = []
-            for heading in headings {
-                var shouldAppendThis = false
-                if self.headingHasPlanning(contained: SettingsAccessor.shared.finishedPlanning,
-                                           text: text,
-                                           heading: heading.data) {
-                    shouldAppendThis = false
-                } else {
-                    if self.headingHasPlanning(contained: SettingsAccessor.shared.unfinishedPlanning,
-                                               text: text,
-                                               heading: heading.data) {
-                        shouldAppendThis = true
-                    } else if heading.schedule != nil &&
-                        heading.closed == nil {
-                        shouldAppendThis = true
-                    } else if heading.due != nil &&
-                        heading.closed == nil  {
-                        shouldAppendThis = true
-                    }
-                }
-                
-                if shouldAppendThis {
-                    resultsInThisFile.append(DocumentSearchResult(url: url.wrapperURL,
-                                                                  highlightRange: heading.range,
-                                                                  context: text.substring(heading.paragraphRange),
-                                                                  heading: heading))
-                }
-            }
-            
-            return resultsInThisFile
-        }
-    }
     
-    public func loadAllTags(_ completion: @escaping ([DocumentSearchResult]) -> Void) {
-        var allTagsSearchResult: [DocumentSearchResult] = []
-        self.doSearchHeading(resultAdded: { searchResults in
-            allTagsSearchResult.append(contentsOf: searchResults)
-        }, complete: {
-            completion(allTagsSearchResult)
-        }, failed: { error in
-            log.error(error)
-        }) { (text, url, headings) -> [DocumentSearchResult] in
-            var resultsInSingleFile: [DocumentSearchResult] = []
-            for heading in headings {
-                if let tagsRange = heading.tags {
-                    let tags = text.substring(tagsRange).components(separatedBy: ":").filter { $0.count > 0 }
-                    for tag in tags {
-                        resultsInSingleFile.append(DocumentSearchResult(url: url.wrapperURL, highlightRange: tagsRange, context: tag, heading: nil))
-                    }
-                }
-            }
-            
-            return resultsInSingleFile
+    
+    public func headingHasPlanning(contained in: [String], text: String, heading: [String: NSRange]) -> Bool {
+        if let planningRange = heading[OutlineParser.Key.Element.Heading.planning] {
+            return `in`.contains(text.substring(planningRange))
+        } else {
+            return false
         }
     }
     
@@ -413,6 +300,19 @@ public class DocumentSearchManager {
     }
     
     private func _handleDocumentHeadingsChange(event: DocumentHeadingChangeEvent) {
+        let newHeadings = event.newHeadings.map { (headingToken: HeadingToken) -> DocumentSearchResult in
+            // 这里能收到 heading change 的 document 肯定是已经 open 了的，因为发 heading change 事件是在 OutlineTextStorage 文档解析完成的时候
+            let headingString = self._editorContext.request(url: event.url).string.substring(headingToken.range)
+            return DocumentSearchResult(url: event.url, highlightRange: headingToken.range.offset(-headingToken.range.location), context: headingString, heading: headingToken)
+        }
         
+        let oldHeadings = event.oldHeadings.map { (headingToken: HeadingToken) -> DocumentSearchResult in
+            // 这里能收到 heading change 的 document 肯定是已经 open 了的，因为发 heading change 事件是在 OutlineTextStorage 文档解析完成的时候
+            let headingString = self._editorContext.request(url: event.url).string.substring(headingToken.range)
+            return DocumentSearchResult(url: event.url, highlightRange: headingToken.range.offset(-headingToken.range.location), context: headingString, heading: headingToken)
+        }
+        
+        let documentSearchHeadingChangeEvent = DocumentSearchHeadingUpdateEvent(oldHeadings: oldHeadings, newHeadings: newHeadings)
+        self._eventObserver.emit(documentSearchHeadingChangeEvent)
     }
 }

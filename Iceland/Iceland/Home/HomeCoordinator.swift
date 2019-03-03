@@ -13,6 +13,8 @@ import Business
 public class HomeCoordinator: Coordinator {
     private let homeViewController: HomeViewController
     
+    private let _dashboardViewController: DashboardViewController
+    
     public override init(stack: UINavigationController, dependency: Dependency) {
         let viewModel = DashboardViewModel(documentSearchManager: dependency.documentSearchManager)
         let dashboardViewController = DashboardViewController(viewModel: viewModel)
@@ -21,15 +23,16 @@ public class HomeCoordinator: Coordinator {
         navigationController.navigationBar.barTintColor = InterfaceTheme.Color.background1
         navigationController.navigationBar.tintColor = InterfaceTheme.Color.interactive
         
-        let viewController = HomeViewController(masterViewController: navigationController)
-        self.homeViewController = viewController
-        
+        let homeViewController = HomeViewController(masterViewController: navigationController)
+        self.homeViewController = homeViewController
+        self._dashboardViewController = dashboardViewController
         super.init(stack: stack, dependency: dependency)
         
         viewModel.coordinator = self
         dashboardViewController.delegate = self
+        homeViewController.delegate = self
         
-        self.viewController = viewController
+        self.viewController = homeViewController
         
         let agendaCoordinator = AgendaCoordinator(stack: stack, dependency: dependency)
         self.addPersistentCoordinator(agendaCoordinator)
@@ -59,7 +62,7 @@ public class HomeCoordinator: Coordinator {
         self.tempCoordinator = nil
         self.tempCoordinator = coordinator
         self.homeViewController.showChildViewController(coordinator.viewController!)
-        self.homeViewController.showChildView()
+        self.homeViewController.showDetailView()
     }
     
     public func addPersistentCoordinator(_ coordinator: Coordinator) {
@@ -84,6 +87,15 @@ extension HomeCoordinator: BrowserCoordinatorDelegate {
     
     public func didSelectHeading(url: URL, heading: HeadingToken) {
         // ignore
+    }
+}
+
+extension HomeCoordinator: HomeViewControllerDelegate {
+    public func didShowMasterView() {
+        self._dashboardViewController.reloadDataIfNeeded()
+    }
+    
+    public func didShowDetailView() {
     }
 }
 
@@ -120,6 +132,6 @@ extension HomeCoordinator: DashboardViewControllerDelegate {
     
     public func didSelectTab(at index: Int, viewController: UIViewController) {
         self.homeViewController.showChildViewController(viewController)
-        self.homeViewController.showChildView()
+        self.homeViewController.showDetailView()
     }
 }

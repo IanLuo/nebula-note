@@ -17,34 +17,18 @@ public class AgendaCellModel {
     public var schedule: DateAndTimeType? = nil
     public var due: DateAndTimeType? = nil
     public var tags: [String]? = nil
-    public let heading: HeadingToken
+    public let heading: DocumentHeading
     public let contentSummary: String
     
-    public init(heading: HeadingToken, paragraph: String, url: URL, textTrimmer: OutlineTextTrimmer) {
-        self.headingLocation = heading.range.location
-        self.url = url
+    public init(heading: DocumentHeading) {
+        self.headingLocation = heading.rawHeadingToken.range.location
+        self.url = heading.url
         self.heading = heading
-        self.headingText = paragraph.substring(heading.headingTextRange)
-        self.contentSummary = textTrimmer.trim(string: paragraph, range: heading.contentRange.offset(-heading.range.location)).trimmingCharacters(in: CharacterSet.controlCharacters)
-
-        if let schedule = heading.schedule {
-            let dateRange = schedule.offset(-heading.range.location)
-            self.schedule = DateAndTimeType.createFromSchedule(paragraph.substring(dateRange))
-        }
-        
-        if let due = heading.due {
-            let dateRange = due.offset(-heading.range.location)
-            self.due = DateAndTimeType.createFromDue(paragraph.substring(dateRange))
-        }
-        
-        if let planning = heading.planning {
-            let planningRange = planning.offset(-heading.range.location)
-            self.planning = paragraph.substring(planningRange)
-        }
-        
-        if let tags = heading.tags {
-            let tagsRange = tags.offset(-heading.range.location)
-            self.tags = paragraph.substring(tagsRange).components(separatedBy: ":").filter { $0.count > 0 }
-        }
+        self.headingText = heading.text.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        self.contentSummary = heading.paragraphSummery.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        self.schedule = heading.schedule
+        self.due = heading.due
+        self.planning = heading.planning
+        self.tags = heading.tags
     }
 }
