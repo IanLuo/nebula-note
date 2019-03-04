@@ -10,6 +10,9 @@ import Foundation
 
 public struct OutlineAttribute {
     public static let hidden: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_HIDDEN)
+    public static let hiddenValueDefault: NSNumber = NSNumber(value: OUTLINE_ATTRIBUTE_HIDDEN_VALUE_DEFAULT)
+    public static let hiddenValueWithAttachment: NSNumber = NSNumber(value: OUTLINE_ATTRIBUTE_HIDDEN_VALUE_WITH_ATTACHMENT)
+    public static let hiddenValueFolded: NSNumber = NSNumber(value: OUTLINE_ATTRIBUTE_HIDDEN_VALUE_FOLDED)
     
     public static let separator: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_SEPARATOR)
     
@@ -45,6 +48,8 @@ public struct OutlineAttribute {
     public struct Heading {
         public static let level: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_HEADING_LEVEL)
         public static let folded: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_HEADING_FOLDED)
+        public static let foldingFolded: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_HEADING_FOLD_FOLDED)
+        public static let foldingUnfolded: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_HEADING_FOLD_UNFOLDED)
         public static let schedule: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_HEADING_SCHEDULE)
         public static let due: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_HEADING_DUE)
         public static let tags: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_HEADING_TAGS)

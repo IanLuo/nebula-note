@@ -13,6 +13,8 @@
 
 static NSTextAttachment *foldingAttachment;
 static NSTextAttachment *linkAttachment;
+static NSTextAttachment *foldedAttachment;
+static NSTextAttachment *unfoldedAttachment;
 
 static NSDictionary *attachmentMap;
 
@@ -36,10 +38,20 @@ static NSDictionary *attachmentMap;
         linkAttachment.image = [UIImage imageNamed: @"document"];
         linkAttachment.bounds = CGRectMake(0, 0, 20, 20);
         
+        foldedAttachment = [[NSTextAttachment alloc] init];;
+        foldedAttachment.image = [UIImage imageNamed: @"add"];
+        foldedAttachment.bounds = CGRectMake(0, 0, 20, 20);
+        
+        unfoldedAttachment = [[NSTextAttachment alloc] init];
+        unfoldedAttachment.image = [UIImage imageNamed: @"minus"];
+        unfoldedAttachment.bounds = CGRectMake(0, 0, 18, 2);
+        
         attachmentMap = @{
                           OUTLINE_ATTRIBUTE_HEADING_FOLDED: foldingAttachment,
                           OUTLINE_ATTRIBUTE_LINK_URL: linkAttachment,
-                          OUTLINE_ATTRIBUTE_SEPARATOR: [[SeparaterAttachment alloc]init]
+                          OUTLINE_ATTRIBUTE_SEPARATOR: [[SeparaterAttachment alloc]init],
+                          OUTLINE_ATTRIBUTE_HEADING_FOLD_FOLDED: foldedAttachment,
+                          OUTLINE_ATTRIBUTE_HEADING_FOLD_UNFOLDED: unfoldedAttachment,
                           };
     }
 }
@@ -123,7 +135,7 @@ static NSDictionary *attachmentMap;
         memset_pattern4(properties, &aProperty, propertiesSize);
         
         if (charIndexes[0] == effectiveRange.location
-            && (hiddenType.intValue == 2 || hiddenType.intValue == 3)) {
+            && (hiddenType.intValue == OUTLINE_ATTRIBUTE_HIDDEN_VALUE_WITH_ATTACHMENT || hiddenType.intValue == OUTLINE_ATTRIBUTE_HIDDEN_VALUE_FOLDED)) {
             properties[0] = NSGlyphPropertyControlCharacter;
         }
     }

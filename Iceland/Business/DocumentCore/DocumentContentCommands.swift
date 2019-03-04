@@ -82,15 +82,18 @@ public class FoldingCommand: DocumentContentCommand {
             
             if textStorage.attribute(OutlineAttribute.hidden, at: heading.contentRange.location, effectiveRange: nil) == nil {
                 // 标记内容为隐藏
-                textStorage.addAttributes([OutlineAttribute.hidden: 3,
+                textStorage.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueFolded,
                                                 OutlineAttribute.showAttachment: OutlineAttribute.Heading.folded],
                                                range: heading.contentRange)
+                
+                textStorage.addAttribute(OutlineAttribute.showAttachment, value: OutlineAttribute.Heading.foldingFolded, range: heading.levelRange)
             } else {
                 // 移除内容隐藏标记
                 textStorage.removeAttribute(OutlineAttribute.hidden,
                                                  range: heading.contentRange)
                 textStorage.removeAttribute(OutlineAttribute.showAttachment,
                                                  range: heading.contentRange)
+                textStorage.addAttribute(OutlineAttribute.showAttachment, value: OutlineAttribute.Heading.foldingUnfolded, range: heading.levelRange)
             }
         }
         

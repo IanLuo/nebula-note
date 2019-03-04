@@ -98,8 +98,8 @@ extension OutlineTextStorage: ContentUpdatingProtocol {
             var effectiveRange: NSRange = NSRange(location:0, length: 0)
             let value = self.attribute(OutlineAttribute.Heading.folded, at: parsingRange.location, longestEffectiveRange: &effectiveRange, in: parsingRange)
             self.setAttributes([:], range: parsingRange)
-            if let value = value as? Int, value == 3 {
-                self.addAttribute(OutlineAttribute.Heading.folded, value: 3, range: effectiveRange)
+            if let value = value as? NSNumber, value.intValue == OutlineAttribute.hiddenValueFolded.intValue {
+                self.addAttribute(OutlineAttribute.Heading.folded, value: OutlineAttribute.hiddenValueFolded, range: effectiveRange)
             }
             self.addAttributes([NSAttributedString.Key.backgroundColor: UIColor.red.withAlphaComponent(0.5)], range: self.currentParseRange!)
         }
@@ -345,24 +345,9 @@ extension OutlineTextStorage: OutlineParserDelegate {
         headingDataRanges.forEach {
             if let levelRange = $0[OutlineParser.Key.Element.Heading.level] {
                 self.addAttribute(OutlineAttribute.Heading.level, value: $0, range: levelRange)
-                self.addAttribute(NSAttributedString.Key.font, value: UIFont.boldSystemFont(ofSize: 20), range: levelRange)
-                
-                // display arrow based on wheather the next character is hidden (if there is one)
-                if let range = $0[OutlineParser.Key.Node.heading] {
-                    let nextCharacterLocation: Int = range.upperBound + 1
-                    let nextCharacter: String = self.string.substring(NSRange(location: nextCharacterLocation, length: 1))
-                    
-                    let isEndOfFile: Bool = range.upperBound >= self.string.count - 1
-                    let isEndOfHeading: Bool = nextCharacter == OutlineParser.Values.Heading.level
-                    
-                    if !isEndOfFile && !isEndOfHeading {
-                        if self.attributes(at: nextCharacterLocation, effectiveRange: nil)[OutlineAttribute.hidden] == nil {
-                            
-                        } else {
-                            
-                        }
-                    }
-                }
+                self.addAttribute(OutlineAttribute.hidden, value: OutlineAttribute.hiddenValueWithAttachment, range: levelRange)
+                // 默认状态为 unfolded
+                self.addAttribute(OutlineAttribute.showAttachment, value: OutlineAttribute.Heading.foldingUnfolded, range: levelRange)
             }
             
             if let scheduleRange = $0[OutlineParser.Key.Element.Heading.schedule] {

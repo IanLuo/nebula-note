@@ -116,6 +116,10 @@ public class HeadingToken: Token {
         return headingContentRange
     }
     
+    public var levelRange: NSRange {
+        return NSRange(location: self.range.location, length: self.level)
+    }
+    
     public var contentRange: NSRange {
         return NSRange(location: self.range.upperBound, length: self.contentLength)
     }

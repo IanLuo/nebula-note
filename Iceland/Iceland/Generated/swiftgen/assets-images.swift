@@ -31,6 +31,7 @@ internal enum Asset {
   internal static let imageLibrary = ImageAsset(name: "image library")
   internal static let `left` = ImageAsset(name: "left")
   internal static let master = ImageAsset(name: "master")
+  internal static let minus = ImageAsset(name: "minus")
   internal static let more = ImageAsset(name: "more")
   internal static let `right` = ImageAsset(name: "right")
   internal static let scheduled = ImageAsset(name: "scheduled")
