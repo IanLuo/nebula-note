@@ -18,10 +18,12 @@ public class DocumentEditTests: XCTestCase {
         }
     }
     
+    let editorContext = EditorContext(eventObserver: EventObserver())
+    
     func testCreateDocument() throws {
         let url = URL(fileURLWithPath: "testCreateDocument.org", relativeTo: File.Folder.document("files").url)
         try "1".write(to: url, atomically: true, encoding: .utf8)
-        let service = OutlineEditorServer.request(url: url)
+        let service = editorContext.request(url: url)
         let ex = expectation(description: "")
         service.start { isOpen, s in
             XCTAssert(isOpen)
@@ -39,7 +41,7 @@ public class DocumentEditTests: XCTestCase {
     
     func testLoadDocument() {
         let ex = expectation(description: "load")
-        let service = OutlineEditorServer.request(url: URL(fileURLWithPath: "load test.org", relativeTo: File.Folder.document("files").url))
+        let service = editorContext.request(url: URL(fileURLWithPath: "load test.org", relativeTo: File.Folder.document("files").url))
         
         service.start {_, s in
             s.replace(text: "testLoadDocument", range: NSRange(location: 0, length: 0))
@@ -56,11 +58,11 @@ public class DocumentEditTests: XCTestCase {
     
     func testRenameDocument() {
         let ex = expectation(description: "")
-        OutlineEditorServer.request(url: URL(fileURLWithPath: "rename test", relativeTo: File.Folder.document("files").url))
+        editorContext.request(url: URL(fileURLWithPath: "rename test", relativeTo: File.Folder.document("files").url))
             .start {_, s in
                 s.string = "testRenameDocument"
                 s.rename(newTitle: "changed test") { _ in
-                    OutlineEditorServer.request(url: URL(fileURLWithPath: "changed test", relativeTo: File.Folder.document("files").url))
+                    self.editorContext.request(url: URL(fileURLWithPath: "changed test", relativeTo: File.Folder.document("files").url))
                         .start {_, s in
                             XCTAssertEqual(s.string, "testRenameDocument")
                             ex.fulfill()
@@ -76,7 +78,7 @@ public class DocumentEditTests: XCTestCase {
         let url = URL(fileURLWithPath: "delete test.org", relativeTo: File.Folder.document("files").url)
         try "1".write(to: url, atomically: true, encoding: .utf8)
         XCTAssertEqual(FileManager.default.fileExists(atPath: url.path), true)
-        OutlineEditorServer.request(url: url)
+        editorContext.request(url: url)
             .start {_, s in
                 s.string = "testDeleteDocument"
                 s.delete { _ in
@@ -98,7 +100,7 @@ content in second
 content in third
 """
         
-        let editorController = EditorController(parser: OutlineParser())
+        let editorController = EditorController(parser: OutlineParser(), eventObserver: EventObserver())
         editorController.string = text
         
         let paragraphs = editorController.getParagraphs()
@@ -122,7 +124,7 @@ content in second
 content in third
 """
         
-        let editorController = EditorController(parser: OutlineParser())
+        let editorController = EditorController(parser: OutlineParser(), eventObserver: EventObserver())
         editorController.string = text
         
         let paragraphs = editorController.getParagraphs()
@@ -155,7 +157,7 @@ content in third
         let tempURL = File(folder, fileName: "\(UUID().uuidString).org").url
         
         let document = Document(fileURL: tempURL)
-        OutlineEditorServer.request(url: document.fileURL).close()
+        editorContext.request(url: document.fileURL).close()
         document.string = text
         document.save(to: tempURL, for: UIDocument.SaveOperation.forCreating) {
             if $0 {
@@ -183,9 +185,9 @@ content in third
         createDocumentForTest(text: text) { document in
             guard let document = document else { XCTAssert(false); return }
             
-            OutlineEditorServer.request(url: document.fileURL).start {_, s in
+            self.editorContext.request(url: document.fileURL).start {_, s in
                 var isHit = false
-                s.add(tag: "test", at: s.headingList()[0].range.location)
+                s.toggleContentAction(command: TagCommand(location: s.headingList()[0].range.location, kind: .add("test")))
                 if let tags = s.headingList()[0].tags {
                     XCTAssertEqual(s.string.substring(tags), ":test:")
                     isHit = true
@@ -194,7 +196,7 @@ content in third
                 XCTAssertTrue(isHit)
                 isHit = false
                 
-                s.add(tag: "test2", at: s.headingList()[0].range.location)
+                s.toggleContentAction(command: TagCommand(location: s.headingList()[0].range.location, kind: .add("tests")))
                 if let tags = s.headingList()[0].tags {
                     XCTAssertEqual(s.string.substring(tags), ":test:test2:")
                     isHit = true
@@ -207,7 +209,7 @@ content in third
                 
                 XCTAssertEqual(s.string.substring(heading.range), "* first heading :test:test2:")
                 
-                s.add(tag: "test3", at: s.headingList()[1].range.location)
+                s.toggleContentAction(command: TagCommand(location: s.headingList()[0].range.location, kind: .add("test3")))
                 if let tags = s.headingList()[1].tags {
                     XCTAssertEqual(s.string.substring(tags), ":test3:")
                     isHit = true
@@ -216,7 +218,7 @@ content in third
                 XCTAssertTrue(isHit)
                 isHit = false
                 
-                s.add(tag: "test4", at: s.headingList()[1].range.location)
+                s.toggleContentAction(command: TagCommand(location: s.headingList()[0].range.location, kind: .add("test4")))
                 if let tags = s.headingList()[1].tags {
                     XCTAssertEqual(s.string.substring(tags), ":test3:test4:")
                     isHit = true
@@ -229,7 +231,7 @@ content in third
                 
                 XCTAssertEqual(s.string.substring(heading1.range), "** second heading :test3:test4:")
                 
-                s.add(tag: "test5", at: s.headingList()[2].range.location)
+                s.toggleContentAction(command: TagCommand(location: s.headingList()[0].range.location, kind: .add("test5")))
                 if let tags = s.headingList()[2].tags {
                     XCTAssertEqual(s.string.substring(tags), ":test5:")
                     isHit = true
@@ -238,7 +240,7 @@ content in third
                 XCTAssertTrue(isHit)
                 isHit = false
                 
-                s.add(tag: "test6", at: s.headingList()[2].range.location)
+                s.toggleContentAction(command: TagCommand(location: s.headingList()[0].range.location, kind: .add("test6")))
                 if let tags = s.headingList()[2].tags {
                     XCTAssertEqual(s.string.substring(tags), ":test5:test6:")
                     isHit = true
@@ -274,14 +276,14 @@ content in third
         createDocumentForTest(text: text) { (document) in
             
             guard let document = document else {  XCTAssert(false);return }
-            OutlineEditorServer.request(url: document.fileURL).start {_, s in
+            self.editorContext.request(url: document.fileURL).start {_, s in
                 
                 
-                s.remove(tag: "test", at: s.headingList()[0].range.location)
+                s.toggleContentAction(command: TagCommand(location: s.headingList()[0].range.location, kind: .remove("test")))
                 
                 XCTAssertEqual("* first heading ", s.string.substring(s.headingList()[0].range))
                 
-                s.remove(tag: "tag2", at: s.headingList()[1].range.location)
+                s.toggleContentAction(command: TagCommand(location: s.headingList()[1].range.location, kind: .remove("test")))
                 
                 XCTAssertEqual("** second heading :tag1:", s.string.substring(s.headingList()[1].range))
                 

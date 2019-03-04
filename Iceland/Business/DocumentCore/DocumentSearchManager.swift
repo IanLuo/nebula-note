@@ -183,28 +183,7 @@ public class DocumentSearchManager {
         
         self._contentSearchOperationQueue.addOperation(operation)
     }
-    
-    public func searchHeading(tags: [String], complete: @escaping ([DocumentHeading]) -> Void) {
-        var data: [DocumentHeading] = []
-        self.searchHeading(options: .tag, filter: { (heading: DocumentHeading) -> Bool in
-            if let ts = heading.tags {
-                for t in ts {
-                    if tags.contains(t) {
-                        return true
-                    }
-                }
-            }
-            
-            return false
-        }, resultAdded: { (results: [DocumentHeading]) in
-            data.append(contentsOf: results)
-        }, complete: {
-            complete(data)
-        }, failed: { error in
-            print(error)
-        })
-    }
-    
+
     class ParseDelegate: OutlineParserDelegate {
         var headings: [HeadingToken] = []
         func didFoundHeadings(text: String,
