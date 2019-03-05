@@ -96,7 +96,7 @@ extension OutlineTextStorage: ContentUpdatingProtocol {
         if let parsingRange = self.currentParseRange {
             // 清空 attributes (折叠的状态除外)
             var effectiveRange: NSRange = NSRange(location:0, length: 0)
-            let value = self.attribute(OutlineAttribute.Heading.folded, at: parsingRange.location, longestEffectiveRange: &effectiveRange, in: parsingRange)
+            let value = self.attribute(OutlineAttribute.hidden, at: parsingRange.location, longestEffectiveRange: &effectiveRange, in: parsingRange)
             self.setAttributes([:], range: parsingRange)
             if let value = value as? NSNumber, value.intValue == OutlineAttribute.hiddenValueFolded.intValue {
                 self.addAttribute(OutlineAttribute.Heading.folded, value: OutlineAttribute.hiddenValueFolded, range: effectiveRange)
@@ -350,23 +350,36 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 self.addAttribute(OutlineAttribute.showAttachment, value: OutlineAttribute.Heading.foldingUnfolded, range: levelRange)
             }
             
-            if let scheduleRange = $0[OutlineParser.Key.Element.Heading.schedule] {
-                self.addAttribute(OutlineAttribute.Heading.schedule, value: scheduleRange, range: scheduleRange)
-                self.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.orange, range: scheduleRange)
+            if let scheduleRange = $0[OutlineParser.Key.Element.Heading.schedule],
+                let scheduleDateAndTimeRange = $0[OutlineParser.Key.Element.Heading.scheduleDateAndTime] {
+                self.addAttribute(OutlineAttribute.hidden, value: OutlineAttribute.hiddenValueDefault, range: scheduleRange.moveLeft(by: 1))
+                self.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment,
+                                    OutlineAttribute.showAttachment: OUTLINE_ATTRIBUTE_HEADING_SCHEDULE], range: scheduleRange.head(1))
+                self.addAttributes([OutlineAttribute.Heading.schedule: scheduleRange,
+                                    OutlineAttribute.button: InterfaceTheme.Color.descriptive], range: scheduleRange)
+                self.removeAttribute(OutlineAttribute.hidden, range: scheduleDateAndTimeRange)
             }
             
-            if let dueRange = $0[OutlineParser.Key.Element.Heading.due] {
-                self.addAttribute(OutlineAttribute.Heading.due, value: dueRange, range: dueRange)
-                self.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.purple, range: dueRange)
+            if let dueRange = $0[OutlineParser.Key.Element.Heading.due],
+                let dueDateAndTimeRange = $0[OutlineParser.Key.Element.Heading.dueDateAndTime] {
+                self.addAttribute(OutlineAttribute.hidden, value: OutlineAttribute.hiddenValueDefault, range: dueRange.moveLeft(by: 1))
+                self.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment,
+                                    OutlineAttribute.showAttachment: OutlineAttribute.Heading.due], range: dueRange.head(1))
+                self.addAttributes([OutlineAttribute.Heading.due: dueRange,
+                                    OutlineAttribute.button: InterfaceTheme.Color.descriptive], range: dueRange)
+                self.removeAttribute(OutlineAttribute.hidden, range: dueDateAndTimeRange)
             }
             
             if let tagsRange = $0[OutlineParser.Key.Element.Heading.tags] {
-                self.addAttribute(OutlineAttribute.Heading.due, value: tagsRange, range: tagsRange)
-                self.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.cyan, range: tagsRange)
+                self.addAttribute(OutlineAttribute.Heading.tags, value: tagsRange, range: tagsRange)
+                self.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment,
+                                    OutlineAttribute.showAttachment: OutlineAttribute.Heading.tags], range: tagsRange.head(1))
+                self.addAttributes([OutlineAttribute.Heading.tags: tagsRange,
+                                    OutlineAttribute.button: InterfaceTheme.Color.descriptive], range: tagsRange)
             }
             
             if let planningRange = $0[OutlineParser.Key.Element.Heading.planning] {
-                self.addAttribute(OutlineAttribute.Heading.due, value: planningRange, range: planningRange)
+                self.addAttribute(OutlineAttribute.Heading.planning, value: planningRange, range: planningRange)
                 self.addAttribute(NSAttributedString.Key.font, value: InterfaceTheme.Font.title, range: planningRange)
                 self.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.red, range: planningRange)
             }

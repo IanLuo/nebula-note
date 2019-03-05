@@ -42,17 +42,34 @@ public class OutlineParser {
                         [Key.Node.heading: headingRange,
                          Key.Element.Heading.level: result.range(at: 1)]
                     
-                    [(Key.Element.Heading.planning, Matcher.Element.Heading.planning, 1),
-                     (Key.Element.Heading.schedule, Matcher.Element.Heading.schedule, 1),
-                     (Key.Element.Heading.due, Matcher.Element.Heading.due, 1),
-                     (Key.Element.Heading.tags, Matcher.Element.Heading.tags, 1)]
-                        .forEach {
-                            if let matcher = $0.1 {
-                                if let range = matcher.firstMatch(in: headingText, options: [], range: NSRange(location: 0, length: headingText.count))?
-                                    .range(at: $0.2), range.location != Int.max {
-                                    comp[$0.0] = NSRange(location: headingRange.location + range.location, length: range.length)
-                                }
+                    // 分别对 heading 中的其他部分进行解析
+                    let headingContentParse: [(NSRegularExpression?, (NSTextCheckingResult) -> Void)] = [
+                        (Matcher.Element.Heading.planning, { result in
+                            guard result.range(at: 1).location != NSNotFound else { return }
+                            comp[Key.Element.Heading.planning] = result.range(at: 1)
+                        }),
+                        (Matcher.Element.Heading.tags, { result in
+                            guard result.range(at: 1).location != NSNotFound else { return }
+                            comp[Key.Element.Heading.tags] = result.range(at: 1)
+                        }),
+                        (Matcher.Element.Heading.schedule, { result in
+                            guard result.range(at: 1).location != NSNotFound else { return }
+                            comp[Key.Element.Heading.schedule] = result.range(at: 1)
+                            comp[Key.Element.Heading.scheduleDateAndTime] = result.range(at: 2)
+                        }),
+                        (Matcher.Element.Heading.due, { result in
+                            guard result.range(at: 1).location != NSNotFound else { return }
+                            comp[Key.Element.Heading.due] = result.range(at: 1)
+                            comp[Key.Element.Heading.dueDateAndTime] = result.range(at: 2)
+                        })
+                        ]
+                    
+                    headingContentParse.forEach { regex, action in
+                        if let r = regex {
+                            if let result = r.firstMatch(in: str, options: [], range: headingRange) {
+                                action(result)
                             }
+                        }
                     }
                     
                     return comp

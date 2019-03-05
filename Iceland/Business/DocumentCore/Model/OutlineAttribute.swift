@@ -14,6 +14,8 @@ public struct OutlineAttribute {
     public static let hiddenValueWithAttachment: NSNumber = NSNumber(value: OUTLINE_ATTRIBUTE_HIDDEN_VALUE_WITH_ATTACHMENT)
     public static let hiddenValueFolded: NSNumber = NSNumber(value: OUTLINE_ATTRIBUTE_HIDDEN_VALUE_FOLDED)
     
+    public static let button: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_BUTTON)
+    
     public static let separator: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_SEPARATOR)
     
     public static let showAttachment: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_SHOW_ATTACHMENT)    
@@ -53,5 +55,6 @@ public struct OutlineAttribute {
         public static let schedule: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_HEADING_SCHEDULE)
         public static let due: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_HEADING_DUE)
         public static let tags: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_HEADING_TAGS)
+        public static let planning: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_HEADING_PLANNING)
     }
 }

@@ -15,6 +15,9 @@ static NSTextAttachment *foldingAttachment;
 static NSTextAttachment *linkAttachment;
 static NSTextAttachment *foldedAttachment;
 static NSTextAttachment *unfoldedAttachment;
+static NSTextAttachment *scheduleAttachment;
+static NSTextAttachment *dueAttachment;
+static NSTextAttachment *tagAttachment;
 
 static NSDictionary *attachmentMap;
 
@@ -46,12 +49,27 @@ static NSDictionary *attachmentMap;
         unfoldedAttachment.image = [UIImage imageNamed: @"minus"];
         unfoldedAttachment.bounds = CGRectMake(0, 0, 18, 2);
         
+        scheduleAttachment = [[NSTextAttachment alloc] init];
+        scheduleAttachment.image = [UIImage imageNamed: @"scheduled"];
+        scheduleAttachment.bounds = CGRectMake(0, 0, 20, 20);
+        
+        dueAttachment = [[NSTextAttachment alloc] init];
+        dueAttachment.image = [UIImage imageNamed: @"due"];
+        dueAttachment.bounds = CGRectMake(0, 0, 20, 20);
+        
+        tagAttachment = [[NSTextAttachment alloc] init];
+        tagAttachment.image = [UIImage imageNamed: @"tag"];
+        tagAttachment.bounds = CGRectMake(0, 0, 20, 20);
+        
         attachmentMap = @{
                           OUTLINE_ATTRIBUTE_HEADING_FOLDED: foldingAttachment,
                           OUTLINE_ATTRIBUTE_LINK_URL: linkAttachment,
                           OUTLINE_ATTRIBUTE_SEPARATOR: [[SeparaterAttachment alloc]init],
                           OUTLINE_ATTRIBUTE_HEADING_FOLD_FOLDED: foldedAttachment,
                           OUTLINE_ATTRIBUTE_HEADING_FOLD_UNFOLDED: unfoldedAttachment,
+                          OUTLINE_ATTRIBUTE_HEADING_SCHEDULE: scheduleAttachment,
+                          OUTLINE_ATTRIBUTE_HEADING_DUE: dueAttachment,
+                          OUTLINE_ATTRIBUTE_HEADING_TAGS: tagAttachment
                           };
     }
 }

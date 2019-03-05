@@ -80,8 +80,10 @@ extension OutlineParser {
                 public static let level = "level"
                 public static let planning = "planning"
                 public static let schedule = "schedule"
+                public static let scheduleDateAndTime = "scheduleDateAndTime"
                 public static let closed = "closed" // 暂时没有使用
                 public static let due = "due"
+                public static let dueDateAndTime = "dueDate"
                 public static let tags = "tags"
             }
             
