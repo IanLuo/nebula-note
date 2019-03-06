@@ -23,11 +23,13 @@ public class Application: Coordinator {
         let eventObserver = EventObserver()
         let editorContext = EditorContext(eventObserver: eventObserver)
         super.init(stack: navigationController,
-                   dependency: Dependency(documentManager: DocumentManager(editorContext: editorContext, eventObserver: eventObserver),
-                                          documentSearchManager: DocumentSearchManager(eventObserver: eventObserver, editorContext: editorContext),
+                   dependency: Dependency(documentManager: DocumentManager(editorContext: editorContext,
+                                                                           eventObserver: eventObserver),
+                                          documentSearchManager: DocumentSearchManager(eventObserver: eventObserver,
+                                                                                       editorContext: editorContext),
                                           editorContext: editorContext,
                                           textTrimmer: OutlineTextTrimmer(parser: OutlineParser()),
-                                          eventObserver: EventObserver()))
+                                          eventObserver: eventObserver))
         
         self.window?.rootViewController = self.stack
     }
@@ -60,7 +62,8 @@ public class Coordinator {
     
     public let dependency: Dependency
     
-    public init(stack: UINavigationController, dependency: Dependency) {
+    public init(stack: UINavigationController,
+                dependency: Dependency) {
         self.stack = stack
         self.dependency = dependency
     }
@@ -82,14 +85,16 @@ public class Coordinator {
         if self.stack == parent?.stack {
             self.stack.popViewController(animated: animated)
         } else {
-            top.dismiss(animated: animated, completion: nil)
+            top.dismiss(animated: animated,
+                        completion: nil)
         }
     }
     
     open func moveIn(top: UIViewController?, animated: Bool) {
         if let viewController = self.viewController {
             if self.stack == self.parent?.stack {
-                self.stack.pushViewController(viewController, animated: animated)
+                self.stack.pushViewController(viewController,
+                                              animated: animated)
             } else {
                 self.isModal = true
                 self.stack.pushViewController(viewController, animated: false)
@@ -120,12 +125,15 @@ extension Coordinator {
         let navigationController = UINavigationController()
         navigationController.isNavigationBarHidden = true
         
-        let documentCoordinator = EditorCoordinator(stack: navigationController, dependency: self.dependency, usage: EditorCoordinator.Usage.editor(url, location))
+        let documentCoordinator = EditorCoordinator(stack: navigationController, dependency: self.dependency,
+                                                    usage: EditorCoordinator.Usage.editor(url, location))
         documentCoordinator.start(from: self)
     }
     
     public func showAttachmentPicker(type: Attachment.AttachmentType, complete: @escaping (String) -> Void) {
-        let attachmentCoordinator = AttachmentCoordinator(stack: self.stack, dependency: self.dependency, type: type)
+        let attachmentCoordinator = AttachmentCoordinator(stack: self.stack,
+                                                          dependency: self.dependency,
+                                                          type: type)
         attachmentCoordinator.onSaveAttachment = complete
         attachmentCoordinator.start(from: self)
     }

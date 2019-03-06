@@ -66,7 +66,7 @@ public class DashboardViewModel {
     
     public func loadData() {
         let today = Date()
-        let soon = Date(timeInterval: 3 * 24 * 60 * 1000, since: today)
+        let soon = Date(timeInterval: 3 * 24 * 60, since: today)
         
         self.allTags = []
         self.withoutTag = []

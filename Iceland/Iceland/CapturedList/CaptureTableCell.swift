@@ -39,7 +39,7 @@ public class CaptureTableCell: UITableViewCell {
         let button = UIButton()
         button.titleLabel?.font = InterfaceTheme.Font.body
         button.setTitleColor(InterfaceTheme.Color.interactive, for: .normal)
-        button.setTitle("…", for: .normal)
+        button.setImage(UIImage(named: "more")?.withRenderingMode(.alwaysTemplate), for: .normal)
         button.addTarget(self, action: #selector(didTapActionButton), for: .touchUpInside)
         return button
     }()

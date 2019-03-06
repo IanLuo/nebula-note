@@ -10,11 +10,17 @@ import Foundation
 import UIKit
 import Business
 
+public protocol CaptureListCoordinatorDelegate: class {
+    func didSelectAttachment(attachment: Attachment, coordinator: CaptureListCoordinator)
+}
+
 public class CaptureListCoordinator: Coordinator {
     let viewModel: CaptureListViewModel
     
-    public override init(stack: UINavigationController, dependency: Dependency) {
-        self.viewModel = CaptureListViewModel(service: CaptureService())
+    public weak var delegate: CaptureListCoordinatorDelegate?
+    
+    public init(stack: UINavigationController, dependency: Dependency, mode: CaptureListViewModel.Mode) {
+        self.viewModel = CaptureListViewModel(service: CaptureService(), mode: mode)
         let viewController = CaptureListViewController(viewModel: self.viewModel)
         
         super.init(stack: stack, dependency: dependency)

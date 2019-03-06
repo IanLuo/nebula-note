@@ -101,6 +101,25 @@ public class FoldingCommand: DocumentContentCommand {
     }
 }
 
+// MARK: - AddAttachmentCommand
+public class AddAttachmentCommand: DocumentContentCommand {
+    let attachmentId: String
+    let location: Int
+    let type: String
+    
+    public init(attachmentId: String, location: Int, type: String) {
+        self.attachmentId = attachmentId
+        self.location = location
+        self.type = type
+    }
+    
+    public func toggle(textStorage: OutlineTextStorage) -> Bool {
+        let content = OutlineParser.Values.Attachment.serialize(type: type, value: self.attachmentId)
+        
+        return InsertTextCommand(location: self.location, textToInsert: content).toggle(textStorage: textStorage)
+    }
+}
+
 // MARK: - CheckboxCommand
 public class CheckboxCommand: DocumentContentCommand {
     public func toggle(textStorage: OutlineTextStorage) -> Bool {

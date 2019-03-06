@@ -48,7 +48,9 @@ public class AgendaViewModel {
         self.data = self._allData.filter {
             switch ($0.schedule?.date, $0.due?.date) {
             case (let schedule?, nil): return schedule <= date
-            default: return true
+            case (nil, let due?): return due <= date
+            case (let schedule?, let due?): return schedule <= date || due <= date
+            case (nil, nil): return true
             }
         }
         
@@ -69,7 +71,7 @@ public class AgendaViewModel {
         if let filterType = self.filterType {
             var data: [DocumentHeading] = []
             let today = Date()
-            let soon = Date(timeInterval: 3 * 24 * 60 * 1000, since: today)
+            let soon = Date(timeInterval: 3 * 24 * 60, since: today)
             self._documentSearchManager.searchHeading(options: [.tag, .due, .schedule, .planning], filter: { [weak self] (heading: DocumentHeading) -> Bool in
                 self?._isHeadingsNeedsReload = false
                 switch filterType {
@@ -101,7 +103,7 @@ public class AgendaViewModel {
     public func loadAllData() {
         var searchResults: [DocumentHeading] = []
         let today = Date()
-        self._documentSearchManager.searchHeading(options: [.tag, .due, .schedule], filter: { (heading: DocumentHeading) -> Bool in
+        self._documentSearchManager.searchHeading(options: [.tag, .due, .schedule, .planning], filter: { (heading: DocumentHeading) -> Bool in
             if let planning = heading.planning {
                 if SettingsAccessor.shared.unfinishedPlanning.contains(planning) {
                     return true
@@ -116,7 +118,19 @@ public class AgendaViewModel {
             
             return false
         }, resultAdded: { (results: [DocumentHeading]) in
-            searchResults.append(contentsOf: results)
+            let sorted = results.sorted { left, right in
+                switch (left.due, left.schedule, right.due, right.schedule) {
+                case (let leftDue?, _, let rightDue?, _): return leftDue.date.timeIntervalSince1970 < rightDue.date.timeIntervalSince1970
+                case (_?, _, nil, _): return true
+                case (nil, _, _?, _): return false
+                case (nil, let leftSchedule?, nil, let rightSchedule?): return leftSchedule.date.timeIntervalSince1970 < rightSchedule.date.timeIntervalSince1970
+                case (_, _?, _, nil): return true
+                case (_, nil, _, _?): return false
+                default: return true
+                }
+            }
+            
+            searchResults.append(contentsOf: sorted)
         }, complete: { [weak self] in
             self?._isHeadingsNeedsReload = false
             self?._allData = searchResults.map { AgendaCellModel(heading: $0) }

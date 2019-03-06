@@ -25,7 +25,7 @@ private struct ThemeConfig {
 }
 
 public struct Layout {
-    public static let edgeInsets: UIEdgeInsets = UIEdgeInsets(top: 80, left: 30, bottom: 80, right: 30)
+    public static let edgeInsets: UIEdgeInsets = UIEdgeInsets(top: 30, left: 30, bottom: 80, right: 30)
     public static let backButtonSize: CGSize = CGSize(width: 40, height: 40)
 }
 
@@ -46,7 +46,7 @@ public struct Layout {
         @objc public static let background1: UIColor = UIColor(red:0.03, green:0.03, blue:0.03, alpha:1.00)
         @objc public static let background2: UIColor = UIColor(red:0.12, green:0.12, blue:0.12, alpha:1.00)
         @objc public static let background3: UIColor = UIColor(red:0.20, green:0.21, blue:0.22, alpha:1.00)
-        @objc public static let backgroundHighlight: UIColor = UIColor(red:0.21, green:0.51, blue:0.44, alpha:1.00)
+        @objc public static let backgroundHighlight: UIColor = UIColor(red:35.0/255, green:255.0/255, blue:131.0/255, alpha:1.00)
         @objc public static let backgroundWarning: UIColor = UIColor(red:0.51, green:0.13, blue:0.17, alpha:1.00)
     }
 }

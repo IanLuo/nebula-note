@@ -18,6 +18,13 @@ public protocol CaptureListViewModelDelegate: class {
 }
 
 public class CaptureListViewModel {
+    public enum Mode {
+        case pick
+        case manage
+    }
+    
+    public let mode: Mode
+
     public weak var delegate: CaptureListViewModelDelegate?
     public weak var coordinator: CaptureListCoordinator?
     
@@ -29,8 +36,9 @@ public class CaptureListViewModel {
     
     private var currentIndex: Int?
     
-    public init(service: CaptureServiceProtocol) {
+    public init(service: CaptureServiceProtocol, mode: Mode) {
         self.service = service
+        self.mode = mode
     }
 
     public var currentCapture: Attachment? {
@@ -100,5 +108,11 @@ public class CaptureListViewModel {
     public func chooseRefileLocation(index: Int) {
         self.currentIndex = index
         self.coordinator?.showDocumentHeadingSelector()
+    }
+    
+    public func selectAttachment(index: Int) {
+        if let coordinator = self.coordinator {
+            self.coordinator?.delegate?.didSelectAttachment(attachment: self.data[index], coordinator: coordinator)
+        }
     }
 }

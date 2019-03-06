@@ -30,7 +30,7 @@ public class CaptureListViewController: UIViewController {
     private lazy var cancelButton: UIButton = {
         let button = UIButton()
         button.addTarget(self, action: #selector(cancel), for: .touchUpInside)
-        button.setTitle("✕", for: .normal)
+        button.setImage(Asset.cross.image.withRenderingMode(.alwaysTemplate), for: .normal)
         button.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.background1, size: .singlePoint), for: .normal)
         button.setTitleColor(InterfaceTheme.Color.interactive, for: .normal)
         return button
@@ -70,7 +70,7 @@ public class CaptureListViewController: UIViewController {
     }
     
     @objc private func cancel() {
-        self.dismiss(animated: true, completion: nil)
+        self.viewModel.coordinator?.stop()
     }
 }
 
@@ -117,16 +117,25 @@ extension CaptureListViewController: CaptureTableCellDelegate {
     private func createActionsViewController(index: Int) -> ActionsViewController {
         let actionsViewController = ActionsViewController()
         
-        actionsViewController.addAction(icon: nil, title: "delete".localizable) { viewController in
-            viewController.dismiss(animated: true, completion: {
-                self.viewModel.delete(index: index)
-            })
-        }
-        
-        actionsViewController.addAction(icon: nil, title: "refile".localizable) { viewController in
-            viewController.dismiss(animated: true, completion: {
-                self.viewModel.chooseRefileLocation(index: index)
-            })
+        switch self.viewModel.mode {
+        case .manage:
+            actionsViewController.addAction(icon: nil, title: "delete".localizable) { viewController in
+                viewController.dismiss(animated: true, completion: {
+                    self.viewModel.delete(index: index)
+                })
+            }
+            
+            actionsViewController.addAction(icon: nil, title: "refile".localizable) { viewController in
+                viewController.dismiss(animated: true, completion: {
+                    self.viewModel.chooseRefileLocation(index: index)
+                })
+            }
+        case .pick:
+            actionsViewController.addAction(icon: nil, title: "insert".localizable) { viewController in
+                viewController.dismiss(animated: true, completion: {
+                    self.viewModel.selectAttachment(index: index)
+                })
+            }
         }
         
         actionsViewController.setCancel { viewController in

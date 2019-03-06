@@ -27,7 +27,8 @@ public class DocumentBrowserViewController: UIViewController {
         tableView.register(DocumentBrowserCell.self, forCellReuseIdentifier: DocumentBrowserCell.reuseIdentifier)
         tableView.backgroundColor = InterfaceTheme.Color.background1
         tableView.tableFooterView = UIView()
-        tableView.separatorColor = InterfaceTheme.Color.background3
+        tableView.separatorStyle = .none
+//        tableView.separatorColor = InterfaceTheme.Color.background3
         tableView.contentInset = UIEdgeInsets(top: Constants.recentViewsHeight, left: 0, bottom: Layout.edgeInsets.bottom, right: 0)
         return tableView
     }()
@@ -35,7 +36,7 @@ public class DocumentBrowserViewController: UIViewController {
     private let createNewDocumentButton: SquareButton = {
         let button = SquareButton()
         button.title.text = "browser_create_new".localizable
-        button.icon.image = UIImage(named: "add")?.withRenderingMode(.alwaysTemplate)
+        button.icon.image = Asset.add.image.withRenderingMode(.alwaysTemplate)
         button.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.background2, size: .singlePoint),
                                   for: .normal)
         button.addTarget(self, action: #selector(createNewDocumentAtRoot), for: .touchUpInside)
@@ -44,7 +45,7 @@ public class DocumentBrowserViewController: UIViewController {
     
     private let cancelButton: UIButton = {
         let button = UIButton()
-        button.setImage(UIImage(named: "cross")?.withRenderingMode(.alwaysTemplate), for: .normal)
+        button.setImage(Asset.cross.image.withRenderingMode(.alwaysTemplate), for: .normal)
         button.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.background1, size: .singlePoint),
                                   for: .normal)
         button.addTarget(self, action: #selector(cancel), for: .touchUpInside)

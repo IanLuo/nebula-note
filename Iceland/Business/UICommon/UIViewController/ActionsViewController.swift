@@ -157,14 +157,13 @@ public class ActionsViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.backgroundColor = InterfaceTheme.Color.background2
-        tableView.separatorColor = InterfaceTheme.Color.background3
+        tableView.separatorStyle = .none
+//        tableView.separatorColor = InterfaceTheme.Color.background3
         tableView.register(ActionCell.self, forCellReuseIdentifier: ActionCell.reuseIdentifier)
         return tableView
     }()
     
     private func setupUI() {
-        self.view.backgroundColor = UIColor.black.withAlphaComponent(0.2)
-        
         self.view.addSubview(self.contentView)
         
         self.contentView.addSubview(self.tableView)

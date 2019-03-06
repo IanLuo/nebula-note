@@ -37,7 +37,7 @@ public class HomeCoordinator: Coordinator {
         let agendaCoordinator = AgendaCoordinator(stack: stack, dependency: dependency)
         self.addPersistentCoordinator(agendaCoordinator)
         
-        let captureCoordinator = CaptureListCoordinator(stack: stack, dependency: dependency)
+        let captureCoordinator = CaptureListCoordinator(stack: stack, dependency: dependency, mode: CaptureListViewModel.Mode.manage)
         self.addPersistentCoordinator(captureCoordinator)
         
         let searchCoordinator = SearchCoordinator(stack: stack, dependency: dependency)

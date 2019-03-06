@@ -52,7 +52,7 @@ public class AttachmentCoordinator: Coordinator {
         viewController.delegate = self
         
         self.viewController = viewController
-    }
+    } 
 }
 
 extension AttachmentCoordinator: AttachmentViewControllerDelegate {

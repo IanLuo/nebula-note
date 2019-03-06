@@ -31,6 +31,7 @@ public class MoveUpAnimtor: NSObject, Animator {
                 containner.addSubview(transitionViewController.view)
                 transitionViewController.view.layoutIfNeeded()
                 transitionViewController.didTransiteToShow()
+                transitionViewController.view.backgroundColor = .clear
                 
                 let toRect = transitionViewController.contentView.frame
                 transitionViewController.contentView.frame = CGRect(x: 0,
@@ -40,6 +41,7 @@ public class MoveUpAnimtor: NSObject, Animator {
                 
                 UIView.animate(withDuration: self.transitionDuration(using: transitionContext), delay: 0.0, options: .curveEaseInOut, animations: ({
                     transitionViewController.contentView.frame = toRect
+                    transitionViewController.view.backgroundColor = UIColor.black.withAlphaComponent(0.5)
                 }), completion: { completeion in
                     transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
                 })
@@ -49,6 +51,7 @@ public class MoveUpAnimtor: NSObject, Animator {
         } else {
             if let transitionViewController = from as? TransitionViewController {
                 UIView.animate(withDuration: self.transitionDuration(using: transitionContext), delay: 0, options: .curveEaseInOut, animations: ({
+                    transitionViewController.view.backgroundColor = .clear
                     transitionViewController.contentView.frame = CGRect(x: 0,
                                                                         y: transitionViewController.view.bounds.height,
                                                                         width: transitionViewController.contentView.bounds.width,

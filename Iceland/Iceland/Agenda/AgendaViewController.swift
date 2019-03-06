@@ -13,7 +13,7 @@ import Business
 public class AgendaViewController: UIViewController {
     public struct Constants {
         static let edgeInsets: UIEdgeInsets = UIEdgeInsets(top: Layout.edgeInsets.top, left: 120, bottom: Layout.edgeInsets.bottom, right: Layout.edgeInsets.right)
-        static let besideDateBarHeight: CGFloat = 120
+        static let besideDateBarHeight: CGFloat = edgeInsets.left
         static let dateLabelHeight: CGFloat = DateView.Constants.height
     }
     
@@ -129,38 +129,46 @@ extension AgendaViewController: UITableViewDelegate {
         actionsViewController.title = "Perform actions".localizable
         
         actionsViewController.addAction(icon: nil, title: "Reschedule") { viewController in
-            viewController.dismiss(animated: true, completion: nil)
+            viewController.dismiss(animated: true, completion: {
+                tableView.deselectRow(at: indexPath, animated: true)
+            })
         }
         
         actionsViewController.addAction(icon: nil, title: "Delay") { viewController in
-            viewController.dismiss(animated: true, completion: nil)
+            viewController.dismiss(animated: true, completion: {
+                tableView.deselectRow(at: indexPath, animated: true)
+            })
         }
         
         actionsViewController.addAction(icon: nil, title: "Change Status") { viewController in
-            viewController.dismiss(animated: true, completion: nil)
+            viewController.dismiss(animated: true, completion: {
+                tableView.deselectRow(at: indexPath, animated: true)
+            })
         }
         
         actionsViewController.addAction(icon: UIImage(named: "up"), title: "Open", style: ActionsViewController.Style.highlight) { viewController in
-            viewController.dismiss(animated: true, completion: nil)
+            viewController.dismiss(animated: true, completion: {
+                tableView.deselectRow(at: indexPath, animated: true)
+            })
             let data = self.viewModel.data[indexPath.row]
             self.viewModel.coordinator?.openDocument(url: data.url, location: data.heading.rawHeadingToken.range.location)
         }
         
         actionsViewController.setCancel { viewController in
-            viewController.dismiss(animated: true, completion: nil)
+            viewController.dismiss(animated: true, completion: {
+                tableView.deselectRow(at: indexPath, animated: true)
+            })
         }
         
-        self.present(actionsViewController, animated: true)
-        
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
-            tableView.deselectRow(at: indexPath, animated: true)
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now()) {
+            self.present(actionsViewController, animated: true)
         }
     }
     
     /// 当向上滚动时，同时滚动日期选择和日期显示 view，往下则不动
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if scrollView.contentOffset.y + scrollView.contentInset.top > 0 {
-            self.besideDatesView.constraint(for: Position.top)?.constant = Constants.edgeInsets.top - scrollView.contentOffset.y  - scrollView.contentInset.top
+        if scrollView.contentOffset.y + scrollView.contentInset.top + Constants.dateLabelHeight > 0 {
+            self.besideDatesView.constraint(for: Position.top)?.constant = Constants.edgeInsets.top - scrollView.contentOffset.y  - scrollView.contentInset.top - Constants.dateLabelHeight
             self.view.layoutIfNeeded()
         } else {
             self.besideDatesView.constraint(for: Position.top)?.constant = Constants.edgeInsets.top

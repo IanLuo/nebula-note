@@ -132,6 +132,8 @@ public class DocumentSearchManager {
                        resultAdded: @escaping (_ result: [DocumentSearchResult]) -> Void,
                        complete: @escaping () -> Void,
                        failed: ((Error) -> Void)?) {
+
+        guard contain.count > 0 else { return }
         
         self._contentSearchOperationQueue.cancelAllOperations()
         let operation = BlockOperation()

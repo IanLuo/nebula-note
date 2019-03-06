@@ -15,7 +15,7 @@ public protocol DocumentEditViewControllerDelegate: class {
 }
 
 public class DocumentEditViewController: UIViewController {
-    private let textView: OutlineTextView
+    public let textView: OutlineTextView
     private let viewModel: DocumentEditViewModel
     
     public weak var delegate: DocumentEditViewControllerDelegate?
@@ -96,6 +96,55 @@ public class DocumentEditViewController: UIViewController {
         button.layer.cornerRadius = 20
         button.layer.masksToBounds = true
         return button
+    }
+    
+    private func _showAttachmentSelections() {
+        let actionViewController = ActionsViewController()
+        actionViewController.addAction(icon: UIImage(named: "image"), title: "images".localizable) { controller in
+            controller.dismiss(animated: true, completion: {
+                self.viewModel.coordinator?.showAttachmentPicker(type: Attachment.AttachmentType.image, complete: { [unowned self] attachmentId in
+                    self.viewModel.addAttachment(at: self.textView.selectedRange.location, attachmentId: attachmentId, type: Attachment.AttachmentType.image.rawValue)
+                })
+            })
+        }
+        
+        actionViewController.addAction(icon: UIImage(named: "location"), title: "location".localizable) { controller in
+            controller.dismiss(animated: true, completion: {
+                self.viewModel.coordinator?.showAttachmentPicker(type: Attachment.AttachmentType.location, complete: { [unowned self] attachmentId in
+                    self.viewModel.addAttachment(at: self.textView.selectedRange.location, attachmentId: attachmentId, type: Attachment.AttachmentType.location.rawValue)
+                })
+            })
+        }
+        
+        actionViewController.addAction(icon: UIImage(named: "audio"), title: "audio".localizable) { controller in
+            controller.dismiss(animated: true, completion: {
+                self.viewModel.coordinator?.showAttachmentPicker(type: Attachment.AttachmentType.audio, complete: { [unowned self] attachmentId in
+                    self.viewModel.addAttachment(at: self.textView.selectedRange.location, attachmentId: attachmentId, type: Attachment.AttachmentType.audio.rawValue)
+                })
+            })
+        }
+        
+        actionViewController.addAction(icon: UIImage(named: "video"), title: "video".localizable) { controller in
+            controller.dismiss(animated: true, completion: {
+                self.viewModel.coordinator?.showAttachmentPicker(type: Attachment.AttachmentType.video, complete: { [unowned self] attachmentId in
+                    self.viewModel.addAttachment(at: self.textView.selectedRange.location, attachmentId: attachmentId, type: Attachment.AttachmentType.video.rawValue)
+                })
+            })
+        }
+        
+        actionViewController.addAction(icon: UIImage(named: "sketch"), title: "sketch".localizable) { controller in
+            controller.dismiss(animated: true, completion: {
+                self.viewModel.coordinator?.showAttachmentPicker(type: Attachment.AttachmentType.sketch, complete: { [unowned self] attachmentId in
+                    self.viewModel.addAttachment(at: self.textView.selectedRange.location, attachmentId: attachmentId, type: Attachment.AttachmentType.sketch.rawValue)
+                })
+            })
+        }
+        
+        actionViewController.addAction(icon: UIImage(named: "captured"), title: "captured".localizable) { controller in
+            controller.dismiss(animated: true, completion: {
+                self.viewModel.coordinator?.showCapturedList()
+            })
+        }
     }
 }
 

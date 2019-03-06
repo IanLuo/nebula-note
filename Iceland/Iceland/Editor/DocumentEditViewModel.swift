@@ -95,7 +95,10 @@ public class DocumentEditViewModel {
         return self.headings[index].level
     }
     
-    /// 删除 due date
+    public func addAttachment(at location: Int, attachmentId: String, type: String) {
+        self.editorService.toggleContentAction(command: AddAttachmentCommand(attachmentId: attachmentId, location: location, type: type))
+    }
+    
     public func removeDue(at headingLocation: Int) {
         self.editorService.toggleContentAction(command: DueCommand(location: headingLocation, kind: .remove))
     }

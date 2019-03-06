@@ -24,6 +24,8 @@ public class EditorCoordinator: Coordinator {
     
     private let usage: Usage
     
+    private let _viewModel: DocumentEditViewModel
+    
     public init(stack: UINavigationController, dependency: Dependency, usage: Usage) {
         self.usage = usage
         
@@ -31,6 +33,7 @@ public class EditorCoordinator: Coordinator {
         case .editor(let url, let location):
             let viewModel = DocumentEditViewModel(editorService: dependency.editorContext.request(url: url))
             viewModel.onLoadingLocation = location
+            self._viewModel = viewModel
             super.init(stack: stack, dependency: dependency)
             let viewController = DocumentEditViewController(viewModel: viewModel)
             viewController.delegate = self
@@ -38,6 +41,7 @@ public class EditorCoordinator: Coordinator {
             self.viewController = viewController
         case .outline(let url):
             let viewModel = DocumentEditViewModel(editorService: dependency.editorContext.request(url: url))
+            self._viewModel = viewModel
             super.init(stack: stack, dependency: dependency)
             let viewController = HeadingsOutlineViewController(viewModel: viewModel)
             viewController.outlineDelegate = self
@@ -56,6 +60,23 @@ public class EditorCoordinator: Coordinator {
             if let top = top {
                 (viewController as? HeadingsOutlineViewController)?.show(from: nil, on: top)
             }
+        }
+    }
+    
+    public func showCapturedList() {
+        let navigationController = UINavigationController()
+        navigationController.isNavigationBarHidden = true
+        let capturedListCoordinator = CaptureListCoordinator(stack: navigationController, dependency: self.dependency, mode: CaptureListViewModel.Mode.pick)
+        capturedListCoordinator.delegate = self
+    }
+}
+
+extension EditorCoordinator: CaptureListCoordinatorDelegate {
+    public func didSelectAttachment(attachment: Attachment, coordinator: CaptureListCoordinator) {
+        if let editViewController = self.viewController as? DocumentEditViewController {
+            self._viewModel.addAttachment(at: editViewController.textView.selectedRange.location,
+                                          attachmentId: attachment.key,
+                                          type: attachment.type.rawValue)
         }
     }
 }
