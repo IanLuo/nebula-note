@@ -112,7 +112,7 @@ public class AttachmentSketchViewController: AttachmentViewController, Attachmen
             let url = URL.file(directory: URL.sketchCacheURL, name: UUID().uuidString, extension: "png").createDirectorysIfNeeded()
             do {
                 try image.pngData()?.write(to: url)
-                self.viewModel.save(content: url.path, type: Attachment.AttachmentType.sketch, description: "sketch")
+                self.viewModel.save(content: url.path, kind: .sketch, description: "sketch")
             } catch {
                 log.error(error)
             }
@@ -207,7 +207,7 @@ public class AttachmentSketchViewController: AttachmentViewController, Attachmen
         self.viewModel.coordinator?.stop()
     }
     
-    public func didFailToSave(error: Error, content: String, type: Attachment.AttachmentType, descritpion: String) {
+    public func didFailToSave(error: Error, content: String, kind: Attachment.Kind, descritpion: String) {
         log.error(error)
     }
 }

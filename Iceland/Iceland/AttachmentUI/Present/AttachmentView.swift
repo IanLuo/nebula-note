@@ -21,7 +21,7 @@ public typealias AttachmentViewType = AttachmentViewProtocol & UIView
 public class AttachmentViewFactory {
     public static func create(attachment: Attachment) -> AttachmentViewType {
         var attachmentView: AttachmentViewType?
-        switch attachment.type {
+        switch attachment.kind {
         case .image:
             attachmentView = ImageAttachmentView()
         case .text:

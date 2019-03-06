@@ -102,40 +102,48 @@ public class DocumentEditViewController: UIViewController {
         let actionViewController = ActionsViewController()
         actionViewController.addAction(icon: UIImage(named: "image"), title: "images".localizable) { controller in
             controller.dismiss(animated: true, completion: {
-                self.viewModel.coordinator?.showAttachmentPicker(type: Attachment.AttachmentType.image, complete: { [unowned self] attachmentId in
-                    self.viewModel.addAttachment(at: self.textView.selectedRange.location, attachmentId: attachmentId, type: Attachment.AttachmentType.image.rawValue)
+                self.viewModel.coordinator?.showAttachmentPicker(kind: Attachment.Kind.image, complete: { [unowned self] attachmentId in
+                    self.viewModel.addAttachment(at: self.textView.selectedRange.location, attachmentId: attachmentId, kind: Attachment.Kind.image.rawValue)
                 })
             })
         }
         
         actionViewController.addAction(icon: UIImage(named: "location"), title: "location".localizable) { controller in
             controller.dismiss(animated: true, completion: {
-                self.viewModel.coordinator?.showAttachmentPicker(type: Attachment.AttachmentType.location, complete: { [unowned self] attachmentId in
-                    self.viewModel.addAttachment(at: self.textView.selectedRange.location, attachmentId: attachmentId, type: Attachment.AttachmentType.location.rawValue)
+                self.viewModel.coordinator?.showAttachmentPicker(kind: .location, complete: { [unowned self] attachmentId in
+                    self.viewModel.addAttachment(at: self.textView.selectedRange.location, attachmentId: attachmentId, kind: Attachment.Kind.location.rawValue)
                 })
             })
         }
         
         actionViewController.addAction(icon: UIImage(named: "audio"), title: "audio".localizable) { controller in
             controller.dismiss(animated: true, completion: {
-                self.viewModel.coordinator?.showAttachmentPicker(type: Attachment.AttachmentType.audio, complete: { [unowned self] attachmentId in
-                    self.viewModel.addAttachment(at: self.textView.selectedRange.location, attachmentId: attachmentId, type: Attachment.AttachmentType.audio.rawValue)
+                self.viewModel.coordinator?.showAttachmentPicker(kind: .audio, complete: { [unowned self] attachmentId in
+                    self.viewModel.addAttachment(at: self.textView.selectedRange.location, attachmentId: attachmentId, kind: Attachment.Kind.audio.rawValue)
                 })
             })
         }
         
         actionViewController.addAction(icon: UIImage(named: "video"), title: "video".localizable) { controller in
             controller.dismiss(animated: true, completion: {
-                self.viewModel.coordinator?.showAttachmentPicker(type: Attachment.AttachmentType.video, complete: { [unowned self] attachmentId in
-                    self.viewModel.addAttachment(at: self.textView.selectedRange.location, attachmentId: attachmentId, type: Attachment.AttachmentType.video.rawValue)
+                self.viewModel.coordinator?.showAttachmentPicker(kind: .video, complete: { [unowned self] attachmentId in
+                    self.viewModel.addAttachment(at: self.textView.selectedRange.location, attachmentId: attachmentId, kind: Attachment.Kind.video.rawValue)
                 })
             })
         }
         
         actionViewController.addAction(icon: UIImage(named: "sketch"), title: "sketch".localizable) { controller in
             controller.dismiss(animated: true, completion: {
-                self.viewModel.coordinator?.showAttachmentPicker(type: Attachment.AttachmentType.sketch, complete: { [unowned self] attachmentId in
-                    self.viewModel.addAttachment(at: self.textView.selectedRange.location, attachmentId: attachmentId, type: Attachment.AttachmentType.sketch.rawValue)
+                self.viewModel.coordinator?.showAttachmentPicker(kind: .sketch, complete: { [unowned self] attachmentId in
+                    self.viewModel.addAttachment(at: self.textView.selectedRange.location, attachmentId: attachmentId, kind: Attachment.Kind.sketch.rawValue)
+                })
+            })
+        }
+        
+        actionViewController.addAction(icon: UIImage(named: "link"), title: "link".localizable) { controller in
+            controller.dismiss(animated: true, completion: {
+                self.viewModel.coordinator?.showAttachmentPicker(kind: .link, complete: { [unowned self] attachmentId in
+                    self.viewModel.addAttachment(at: self.textView.selectedRange.location, attachmentId: attachmentId, kind: Attachment.Kind.link.rawValue)
                 })
             })
         }

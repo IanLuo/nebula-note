@@ -51,29 +51,4 @@ public class DocumentSearchViewModel {
         self.data = []
         self.delegate?.didClearResults()
     }
-    
-    public func loadOverDue() {
-        let calendar = Calendar.current
-        let beforeToday = calendar.date(from: calendar.dateComponents([.year, .month, .day], from: Date()))!
-        
-    }
-    
-    public func loadOverDueToday() {
-        let calendar = Calendar.current
-        var components = calendar.dateComponents([.year, .month, .day], from: Date())
-        components.setValue(23, for: Calendar.Component.hour)
-        components.setValue(59, for: Calendar.Component.minute)
-        components.setValue(59, for: Calendar.Component.second)
-        let endOfToday = calendar.date(from: components)!
-    }
-    
-    public func loadHasDueDate() {
-        var newData: [SearchTabelCellModel] = []
-        
-    }
-    
-    public func loadScheduled() {
-        var newData: [SearchTabelCellModel] = []
-        
-    }
 }

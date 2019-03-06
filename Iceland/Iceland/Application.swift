@@ -130,10 +130,10 @@ extension Coordinator {
         documentCoordinator.start(from: self)
     }
     
-    public func showAttachmentPicker(type: Attachment.AttachmentType, complete: @escaping (String) -> Void) {
+    public func showAttachmentPicker(kind: Attachment.Kind, complete: @escaping (String) -> Void) {
         let attachmentCoordinator = AttachmentCoordinator(stack: self.stack,
                                                           dependency: self.dependency,
-                                                          type: type)
+                                                          kind: kind)
         attachmentCoordinator.onSaveAttachment = complete
         attachmentCoordinator.start(from: self)
     }

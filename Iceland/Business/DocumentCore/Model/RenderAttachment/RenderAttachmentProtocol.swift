@@ -33,7 +33,7 @@ public class RenderAttachment: NSTextAttachment {
     
     private func createImage() {
         switch self.type {
-        case Attachment.AttachmentType.image.rawValue:
+        case Attachment.Kind.image.rawValue:
             let size = CGSize(width: UIScreen.main.bounds.width,
                               height: UIScreen.main.bounds.width)
             self.image = UIImage(contentsOfFile: self.url?.path ?? "")?.resize(upto: size)

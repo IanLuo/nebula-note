@@ -14,12 +14,12 @@ extension Attachment {
                   url: URL,
                   key: String,
                   description: String,
-                  type: AttachmentType) {
+                  kind: Kind) {
         self.date = date
         self.key = key
         self.description = description
         self.url = url
-        self.type = type
+        self.kind = kind
     }
 }
 
@@ -46,7 +46,7 @@ public struct AttachmentManager {
     /// - parameter description: 附件描述
     /// - returns: 保存的附件的 key
     public func insert(content: String,
-                       type: Attachment.AttachmentType,
+                       kind: Attachment.Kind,
                        description: String,
                        complete: @escaping (String) throws -> Void,
                        failure: @escaping (Error) -> Void) rethrows {
@@ -65,14 +65,14 @@ public struct AttachmentManager {
                                         url: fileURL,
                                         key: newKey,
                                         description: description,
-                                        type: type)
+                                        kind: kind)
             
             jsonEncoder.dateEncodingStrategy = .secondsSince1970
             let encodedAttachment = try jsonEncoder.encode(attachment)
             try encodedAttachment.write(to: jsonURL)
         }
         
-        switch type {
+        switch kind {
         case .text: fallthrough
         case .location: fallthrough
         case .link:

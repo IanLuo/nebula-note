@@ -67,7 +67,7 @@ public class AttachmentImageViewController: AttachmentViewController, Attachment
         self.viewModel.coordinator?.stop()
     }
     
-    public func didFailToSave(error: Error, content: String, type: Attachment.AttachmentType, descritpion: String) {
+    public func didFailToSave(error: Error, content: String, kind: Attachment.Kind, descritpion: String) {
         log.error(error)
     }
 }
@@ -85,7 +85,7 @@ extension AttachmentImageViewController: UIImagePickerControllerDelegate, UINavi
             let file = URL.file(directory: URL.imageCacheURL, name: fileName, extension: "png").createDirectorysIfNeeded()
             do {
                 try image.pngData()?.write(to: file)
-                self.viewModel.save(content: file.path, type: .image, description: "image")
+                self.viewModel.save(content: file.path, kind: .image, description: "image")
             } catch {
                 log.error(error)
             }

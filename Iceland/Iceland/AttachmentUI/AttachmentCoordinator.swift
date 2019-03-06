@@ -19,20 +19,20 @@ public class AttachmentCoordinator: Coordinator {
     
     public var onSaveAttachment: ((String) -> Void)?
     
-    public var type: Attachment.AttachmentType
+    public var kind: Attachment.Kind
     
-    public init(stack: UINavigationController, dependency: Dependency, type: Attachment.AttachmentType) {
+    public init(stack: UINavigationController, dependency: Dependency, kind: Attachment.Kind) {
 
         let attachmentViewModel = AttachmentViewModel(attachmentManager: AttachmentManager())
         
-        self.type = type
+        self.kind = kind
         
         super.init(stack: stack, dependency: dependency)
         
         attachmentViewModel.coordinator = self
 
         let viewController: AttachmentViewController!
-        switch type {
+        switch kind {
         case .text:
             viewController = AttachmentTextViewController(viewModel: attachmentViewModel)
         case .link:

@@ -39,15 +39,15 @@ public struct Layout {
     }
     
     @objc public class Color: NSObject {
-        @objc public static let interactive: UIColor = .white
-        @objc public static let descriptive: UIColor = UIColor(red:0.29, green:0.29, blue:0.29, alpha:1.00)
-        @objc public static let enphersizedDescriptive: UIColor = UIColor(red:0.39, green:0.39, blue:0.39, alpha:1.00)
-        @objc public static let spotLight: UIColor = UIColor(red:0.32, green:0.87, blue:0.73, alpha:1.00)
-        @objc public static let background1: UIColor = UIColor(red:0.03, green:0.03, blue:0.03, alpha:1.00)
-        @objc public static let background2: UIColor = UIColor(red:0.12, green:0.12, blue:0.12, alpha:1.00)
-        @objc public static let background3: UIColor = UIColor(red:0.20, green:0.21, blue:0.22, alpha:1.00)
-        @objc public static let backgroundHighlight: UIColor = UIColor(red:35.0/255, green:255.0/255, blue:131.0/255, alpha:1.00)
-        @objc public static let backgroundWarning: UIColor = UIColor(red:0.51, green:0.13, blue:0.17, alpha:1.00)
+        @objc public static let interactive: UIColor = UIColor(red:0.88, green:0.88, blue:0.88, alpha:1.00)
+        @objc public static let descriptive: UIColor = UIColor(red:0.27, green:0.28, blue:0.30, alpha:1.00)
+        @objc public static let enphersizedDescriptive: UIColor = UIColor(red:0.51, green:0.53, blue:0.59, alpha:1.00)
+        @objc public static let spotLight: UIColor = UIColor(red:0.28, green:0.59, blue:0.98, alpha:1.00)
+        @objc public static let background1: UIColor = UIColor(red:0.05, green:0.05, blue:0.05, alpha:1.00)
+        @objc public static let background2: UIColor = UIColor(red:0.12, green:0.13, blue:0.16, alpha:1.00)
+        @objc public static let background3: UIColor = UIColor(red:0.19, green:0.20, blue:0.26, alpha:1.00)
+        @objc public static let backgroundHighlight: UIColor = UIColor(red:0.29, green:0.59, blue:0.98, alpha:1.00)
+        @objc public static let backgroundWarning: UIColor = UIColor(red:1.00, green:0.13, blue:0.10, alpha:1.00)
     }
 }
 

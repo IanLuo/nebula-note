@@ -87,14 +87,14 @@ public class CaptureTableCell: UITableViewCell {
     }
     
     private func setupAttachmentUI(attachmentView: AttachmentViewType) {
-        self.titleLabel.text = attachmentView.attachment.type.rawValue
+        self.titleLabel.text = attachmentView.attachment.kind.rawValue
         self.attachmentContentView.addSubview(attachmentView)
         attachmentView.allSidesAnchors(to: self.attachmentContentView, edgeInset: 0)
     }
     
     @objc private func didTapActionButton() {
         guard let attachment = self.cellModel?.attachmentView.attachment else { return }
-        switch attachment.type {
+        switch attachment.kind {
         case .link:
             do {
                 let jsonDecoder = JSONDecoder()

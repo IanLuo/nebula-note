@@ -37,7 +37,6 @@ public class OutlineParser {
                 .matches(in: str, options: [], range: totalRange)
                 .map { (result: NSTextCheckingResult) -> [String: NSRange] in
                     let headingRange = result.range(at: 0)
-                    let headingText = safeSubstring(with: str, range: headingRange)
                     var comp: [String: NSRange] =
                         [Key.Node.heading: headingRange,
                          Key.Element.Heading.level: result.range(at: 1)]

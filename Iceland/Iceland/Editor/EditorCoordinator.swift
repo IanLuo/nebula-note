@@ -76,7 +76,7 @@ extension EditorCoordinator: CaptureListCoordinatorDelegate {
         if let editViewController = self.viewController as? DocumentEditViewController {
             self._viewModel.addAttachment(at: editViewController.textView.selectedRange.location,
                                           attachmentId: attachment.key,
-                                          type: attachment.type.rawValue)
+                                          kind: attachment.kind.rawValue)
         }
     }
 }

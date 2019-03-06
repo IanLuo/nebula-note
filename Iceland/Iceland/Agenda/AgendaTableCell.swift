@@ -190,18 +190,22 @@ public class AgendaTableCell: UITableViewCell {
     }
     
     override public func setHighlighted(_ highlighted: Bool, animated: Bool) {
-        if highlighted {
-            self.backgroundColor = InterfaceTheme.Color.background2
-        } else {
-            self.backgroundColor = InterfaceTheme.Color.background1
+        UIView.animate(withDuration: 0.3) {
+            if highlighted {
+                self.backgroundColor = InterfaceTheme.Color.background2
+            } else {
+                self.backgroundColor = InterfaceTheme.Color.background1
+            }
         }
     }
     
     override public func setSelected(_ selected: Bool, animated: Bool) {
-        if selected {
-            self.backgroundColor = InterfaceTheme.Color.background2
-        } else {
-            self.backgroundColor = InterfaceTheme.Color.background1
+        UIView.animate(withDuration: 0.3) {
+            if selected {
+                self.backgroundColor = InterfaceTheme.Color.background2
+            } else {
+                self.backgroundColor = InterfaceTheme.Color.background1
+            }
         }
     }
     

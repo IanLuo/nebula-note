@@ -29,7 +29,7 @@ public class AttachmentVideoViewController: AttachmentViewController, Attachment
         self.viewModel.coordinator?.stop(animated: false)
     }
     
-    public func didFailToSave(error: Error, content: String, type: Attachment.AttachmentType, descritpion: String) {
+    public func didFailToSave(error: Error, content: String, kind: Attachment.Kind, descritpion: String) {
         log.error(error)
     }
 }
@@ -43,7 +43,7 @@ extension AttachmentVideoViewController: UINavigationControllerDelegate, UIImage
     public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         picker.dismiss(animated: true, completion: nil)
         if let url = info[UIImagePickerController.InfoKey.mediaURL] as? URL {
-            self.viewModel.save(content: url.path, type: .video, description: "video recorded")
+            self.viewModel.save(content: url.path, kind: .video, description: "video recorded")
         }
     }
 }

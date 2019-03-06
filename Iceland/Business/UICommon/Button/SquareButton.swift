@@ -43,7 +43,5 @@ public class SquareButton: UIButton {
         
         self.title.sideAnchor(for: [.left, .top, .bottom], to: self, edgeInsets: .init(top: 15, left: 30, bottom: -15, right: 0))
         self.icon.sideAnchor(for: [.top, .bottom, .right], to: self, edgeInsets: .init(top: 15, left: 0, bottom: -15, right: -30))
-        
-        self.setBorder(position: [.top, .bottom], color: InterfaceTheme.Color.background3, width: 0.5)
     }
 }

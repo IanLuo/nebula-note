@@ -95,8 +95,8 @@ public class DocumentEditViewModel {
         return self.headings[index].level
     }
     
-    public func addAttachment(at location: Int, attachmentId: String, type: String) {
-        self.editorService.toggleContentAction(command: AddAttachmentCommand(attachmentId: attachmentId, location: location, type: type))
+    public func addAttachment(at location: Int, attachmentId: String, kind: String) {
+        self.editorService.toggleContentAction(command: AddAttachmentCommand(attachmentId: attachmentId, location: location, kind: kind))
     }
     
     public func removeDue(at headingLocation: Int) {

@@ -105,16 +105,16 @@ public class FoldingCommand: DocumentContentCommand {
 public class AddAttachmentCommand: DocumentContentCommand {
     let attachmentId: String
     let location: Int
-    let type: String
+    let kind: String
     
-    public init(attachmentId: String, location: Int, type: String) {
+    public init(attachmentId: String, location: Int, kind: String) {
         self.attachmentId = attachmentId
         self.location = location
-        self.type = type
+        self.kind = kind
     }
     
     public func toggle(textStorage: OutlineTextStorage) -> Bool {
-        let content = OutlineParser.Values.Attachment.serialize(type: type, value: self.attachmentId)
+        let content = OutlineParser.Values.Attachment.serialize(kind: kind, value: self.attachmentId)
         
         return InsertTextCommand(location: self.location, textToInsert: content).toggle(textStorage: textStorage)
     }

@@ -191,18 +191,18 @@ extension OutlineParser {
         
         public struct Attachment {
             public static func serialize(attachment: Business.Attachment) -> String {
-                switch attachment.type {
+                switch attachment.kind {
                 case .text: fallthrough
                 case .link:
                     do { return try String(contentsOf: attachment.url) }
                     catch { return "\(error)" }
                 default:
-                    return "#+ATTACHMENT:\(attachment.type.rawValue)=\(attachment.url.path)"
+                    return "#+ATTACHMENT:\(attachment.kind.rawValue)=\(attachment.url.path)"
                 }
             }
             
-            public static func serialize(type: String , value: String) -> String {
-                return "#+ATTACHMENT:\(type)=\(value)"
+            public static func serialize(kind: String , value: String) -> String {
+                return "#+ATTACHMENT:\(kind)=\(value)"
             }
         }
         

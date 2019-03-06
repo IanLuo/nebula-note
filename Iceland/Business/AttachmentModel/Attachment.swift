@@ -21,7 +21,7 @@ import Foundation
 /// 附件对象
 public struct Attachment: Codable {
     /// 附件的类型
-    public enum AttachmentType: String {
+    public enum Kind: String, CaseIterable {
         case text, link, image, sketch, audio, video, location
     }
     
@@ -29,7 +29,7 @@ public struct Attachment: Codable {
     private enum CodingKeys: CodingKey {
         case url
         case date
-        case type
+        case kind
         case description
         case key
     }
@@ -38,7 +38,7 @@ public struct Attachment: Codable {
     public let date: Date
     
     /// 附件类型
-    public let type: Attachment.AttachmentType
+    public let kind: Attachment.Kind
     
     /// 附件位置
     public let url: URL
@@ -53,7 +53,7 @@ public struct Attachment: Codable {
     
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        type = try Attachment.AttachmentType(rawValue: values.decode(String.self, forKey: .type))!
+        kind = try Attachment.Kind(rawValue: values.decode(String.self, forKey: .kind))!
         date = try values.decode(Date.self, forKey: .date)
         
         let fileName = try values.decode(String.self, forKey: .url)
@@ -64,7 +64,7 @@ public struct Attachment: Codable {
     
     public func encode(to encoder: Encoder) throws {
         var encoder = encoder.container(keyedBy: CodingKeys.self)
-        try encoder.encode(type.rawValue, forKey: .type)
+        try encoder.encode(kind.rawValue, forKey: .kind)
         
         let relativeFileURL = url.lastPathComponent // 只保存文件名的部分，文件的位置在同步之后会改变
         try encoder.encode(relativeFileURL, forKey: .url)
@@ -83,13 +83,13 @@ extension Attachment {
     /// - Parameter description
     /// 附件描述
     public static func save(content: String,
-                            type: Attachment.AttachmentType,
+                            kind: Attachment.Kind,
                             description: String,
                             complete: @escaping (String) -> Void,
                             failure: @escaping (Error) -> Void) {
         let manager = AttachmentManager()
         manager.insert(content: content,
-                                  type: type,
+                                  kind: kind,
                                   description: description,
                                   complete: complete,
                                   failure: failure)

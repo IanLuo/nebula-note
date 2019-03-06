@@ -31,7 +31,7 @@ public class AttachmentTextViewController: AttachmentViewController, AttachmentV
         self.viewModel.coordinator?.stop()
     }
     
-    public func didFailToSave(error: Error, content: String, type: Attachment.AttachmentType, descritpion: String) {
+    public func didFailToSave(error: Error, content: String, kind: Attachment.Kind, descritpion: String) {
         log.error(error)
     }
 }
@@ -47,6 +47,6 @@ extension AttachmentTextViewController: ModalFormViewControllerDelegate {
     
     public func modalFormDidSave(viewController: ModalFormViewController, formData: [String : Codable]) {
         let string = formData["text"] as? String ?? ""
-        self.viewModel.save(content: string, type: Attachment.AttachmentType.text, description: "user write text")
+        self.viewModel.save(content: string, kind: .text, description: "user write text")
     }
 }

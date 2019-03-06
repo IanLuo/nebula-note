@@ -34,7 +34,7 @@ public class AttachmentLinkViewController: AttachmentViewController, AttachmentV
         self.viewModel.coordinator?.stop()
     }
     
-    public func didFailToSave(error: Error, content: String, type: Attachment.AttachmentType, descritpion: String) {
+    public func didFailToSave(error: Error, content: String, kind: Attachment.Kind, descritpion: String) {
         log.error(error)
     }
 }
@@ -53,7 +53,7 @@ extension AttachmentLinkViewController: ModalFormViewControllerDelegate {
         do {
             let data = try jsonEncoder.encode(formData)
             let string = String(data: data, encoding: .utf8) ?? ""
-            self.viewModel.save(content: string, type: .link, description: "link by user input")
+            self.viewModel.save(content: string, kind: .link, description: "link by user input")
             viewController.dismiss(animated: true) {
                 self.viewModel.coordinator?.stop()
             }

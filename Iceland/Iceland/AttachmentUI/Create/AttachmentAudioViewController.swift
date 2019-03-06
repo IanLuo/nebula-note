@@ -66,7 +66,7 @@ public class AttachmentAudioViewController: AttachmentViewController, Attachment
         self.viewModel.coordinator?.stop(animated: false)
     }
     
-    public func didFailToSave(error: Error, content: String, type: Attachment.AttachmentType, descritpion: String) {
+    public func didFailToSave(error: Error, content: String, kind: Attachment.Kind, descritpion: String) {
         log.error(error)
     }
 }
@@ -88,7 +88,7 @@ extension AttachmentAudioViewController: AudioRecorderDelegate {
         
         // 显示保存按钮
         self.actionsViewController.addAction(icon: nil, title: "save".localizable, style: .highlight) { [unowned self] (actionController) in
-            self.viewModel.save(content: url.path, type: .audio, description: "recorded voice")
+            self.viewModel.save(content: url.path, kind: .audio, description: "recorded voice")
         }
         
         // 初始化播放器

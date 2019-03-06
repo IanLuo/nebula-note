@@ -47,7 +47,7 @@ public class AttachmentLocationViewController: AttachmentViewController, Attachm
             do {
                 let data = try jsonEncoder.encode(mapView.centerCoordinate)
                 if let string = String(data: data, encoding: String.Encoding.utf8) {
-                    self.viewModel.save(content: string, type: Attachment.AttachmentType.location, description: "location choosen by user".localizable)
+                    self.viewModel.save(content: string, kind: .location, description: "location choosen by user".localizable)
                 } else {
                     log.error("can't encode for location: \(mapView.centerCoordinate)")
                 }
@@ -94,7 +94,7 @@ public class AttachmentLocationViewController: AttachmentViewController, Attachm
         self.viewModel.coordinator?.stop(animated: false)
     }
     
-    public func didFailToSave(error: Error, content: String, type: Attachment.AttachmentType, descritpion: String) {
+    public func didFailToSave(error: Error, content: String, kind: Attachment.Kind, descritpion: String) {
         log.error(error)
     }
 }

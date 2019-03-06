@@ -175,14 +175,14 @@ private class OpenningFileCell: UICollectionViewCell {
     }
     
     private func setupUI() {
+        self.contentView.backgroundColor = InterfaceTheme.Color.background2
+        
         self.contentView.addSubview(self.coverView)
         self.contentView.addSubview(self.titleLabel)
         
         self.coverView.allSidesAnchors(to: self.contentView, edgeInset: 0)
         self.titleLabel.sideAnchor(for: [.left, .right], to: self.contentView, edgeInset: 0)
         self.titleLabel.centerAnchors(position: .centerY, to: self.contentView)
-        
-        self.contentView.setBorder(position: [.left, .top, .right, .bottom], color: InterfaceTheme.Color.descriptive, width: 0.5)
     }
 }
 

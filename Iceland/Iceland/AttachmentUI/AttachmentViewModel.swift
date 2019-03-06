@@ -11,7 +11,7 @@ import Business
 
 public protocol AttachmentViewModelDelegate: class {
     func didSaveAttachment(key: String)
-    func didFailToSave(error: Error, content: String, type: Attachment.AttachmentType, descritpion: String)
+    func didFailToSave(error: Error, content: String, kind: Attachment.Kind, descritpion: String)
 }
 
 public class AttachmentViewModel {
@@ -24,16 +24,16 @@ public class AttachmentViewModel {
     }
     
     public func save(content: String,
-                     type: Attachment.AttachmentType,
+                     kind: Attachment.Kind,
                      description: String) {
         self.attachmentManager
-            .insert(content: content, type: type, description: description, complete: { [weak self] key in
+            .insert(content: content, kind: kind, description: description, complete: { [weak self] key in
                 self?.delegate?.didSaveAttachment(key: key)
                 self?.coordinator?.stop()
             }, failure: { [weak self] error in
                 self?.delegate?.didFailToSave(error: error,
                                               content: content,
-                                              type: type,
+                                              kind: kind,
                                               descritpion: description)
             })
     }
