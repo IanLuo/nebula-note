@@ -20,6 +20,25 @@ public protocol TransitionProtocol {
     func didTransiteToShow()
 }
 
+// 显示 navigation controller 的时候，使用第一个 viewController 的 transition delegate
+extension UINavigationController: TransitionProtocol {
+    public var contentView: UIView {
+        if let rootViewController = self.topViewController as? TransitionProtocol {
+            return rootViewController.contentView
+        } else {
+            return self.topViewController?.view ?? self.view
+        }
+    }
+    
+    public var fromView: UIView? {
+        if let rootViewController = self.topViewController as? TransitionProtocol {
+            return rootViewController.fromView
+        } else {
+            return nil
+        }
+    }
+}
+
 extension TransitionProtocol {
     public func didTransiteToShow() {}
 }

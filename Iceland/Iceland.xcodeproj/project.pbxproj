@@ -100,7 +100,7 @@
 		E466D192221EAC14007F140B /* TransitionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E466D191221EAC14007F140B /* TransitionProtocol.swift */; };
 		E466D194221EAD29007F140B /* FadeBackgroundTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = E466D193221EAD29007F140B /* FadeBackgroundTransition.swift */; };
 		E466D196221ED586007F140B /* MoveToAnimtor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E466D195221ED586007F140B /* MoveToAnimtor.swift */; };
-		E466D198221ED6A1007F140B /* MoveUpAnimtor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E466D197221ED6A1007F140B /* MoveUpAnimtor.swift */; };
+		E466D198221ED6A1007F140B /* MoveInAnimtor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E466D197221ED6A1007F140B /* MoveInAnimtor.swift */; };
 		E4729B9F2202B70200F22885 /* SquareButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4729B9E2202B70200F22885 /* SquareButton.swift */; };
 		E4729BA22202BBE300F22885 /* Rotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4729BA12202BBE300F22885 /* Rotation.swift */; };
 		E4729BA42202E6BA00F22885 /* Range.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4729BA32202E6BA00F22885 /* Range.swift */; };
@@ -149,6 +149,7 @@
 		E4EA857721D3B0AC00DD92F9 /* EditorCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EA857621D3B0AC00DD92F9 /* EditorCoordinator.swift */; };
 		E4EFA45D222F681700611FF5 /* CaptureCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EFA45C222F681700611FF5 /* CaptureCoordinator.swift */; };
 		E4EFA45F222F684B00611FF5 /* CaptureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EFA45E222F684B00611FF5 /* CaptureViewController.swift */; };
+		E4EFA4632230C42F00611FF5 /* CaptureGlobalEntrance.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EFA4622230C42F00611FF5 /* CaptureGlobalEntrance.swift */; };
 		E4F3029C21D74E8700BDE178 /* CaptureTableCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4F3029B21D74E8700BDE178 /* CaptureTableCellModel.swift */; };
 		E4F9ECDB21FAD826009A08CD /* OpenningFilesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4F9ECDA21FAD826009A08CD /* OpenningFilesView.swift */; };
 		E4F9ECDF21FBF61B009A08CD /* RecentFilesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4F9ECDE21FBF61B009A08CD /* RecentFilesManager.swift */; };
@@ -326,7 +327,7 @@
 		E466D191221EAC14007F140B /* TransitionProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransitionProtocol.swift; sourceTree = "<group>"; };
 		E466D193221EAD29007F140B /* FadeBackgroundTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FadeBackgroundTransition.swift; sourceTree = "<group>"; };
 		E466D195221ED586007F140B /* MoveToAnimtor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveToAnimtor.swift; sourceTree = "<group>"; };
-		E466D197221ED6A1007F140B /* MoveUpAnimtor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MoveUpAnimtor.swift; sourceTree = "<group>"; };
+		E466D197221ED6A1007F140B /* MoveInAnimtor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MoveInAnimtor.swift; sourceTree = "<group>"; };
 		E4729B9E2202B70200F22885 /* SquareButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SquareButton.swift; sourceTree = "<group>"; };
 		E4729BA12202BBE300F22885 /* Rotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rotation.swift; sourceTree = "<group>"; };
 		E4729BA32202E6BA00F22885 /* Range.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Range.swift; sourceTree = "<group>"; };
@@ -389,6 +390,7 @@
 		E4EA857621D3B0AC00DD92F9 /* EditorCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorCoordinator.swift; sourceTree = "<group>"; };
 		E4EFA45C222F681700611FF5 /* CaptureCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureCoordinator.swift; sourceTree = "<group>"; };
 		E4EFA45E222F684B00611FF5 /* CaptureViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureViewController.swift; sourceTree = "<group>"; };
+		E4EFA4622230C42F00611FF5 /* CaptureGlobalEntrance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureGlobalEntrance.swift; sourceTree = "<group>"; };
 		E4F3028B21D7397900BDE178 /* ImageAttachmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageAttachmentView.swift; sourceTree = "<group>"; };
 		E4F3028D21D73D9800BDE178 /* TextAttachmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextAttachmentView.swift; sourceTree = "<group>"; };
 		E4F3028F21D73DC500BDE178 /* AttachmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentView.swift; sourceTree = "<group>"; };
@@ -863,7 +865,7 @@
 				E466D191221EAC14007F140B /* TransitionProtocol.swift */,
 				E466D193221EAD29007F140B /* FadeBackgroundTransition.swift */,
 				E466D195221ED586007F140B /* MoveToAnimtor.swift */,
-				E466D197221ED6A1007F140B /* MoveUpAnimtor.swift */,
+				E466D197221ED6A1007F140B /* MoveInAnimtor.swift */,
 			);
 			path = Transition;
 			sourceTree = "<group>";
@@ -950,6 +952,7 @@
 			children = (
 				E4EFA45C222F681700611FF5 /* CaptureCoordinator.swift */,
 				E4EFA45E222F684B00611FF5 /* CaptureViewController.swift */,
+				E4EFA4622230C42F00611FF5 /* CaptureGlobalEntrance.swift */,
 			);
 			path = Capture;
 			sourceTree = "<group>";
@@ -1314,6 +1317,7 @@
 				"${SRCROOT}/Pods/Target Support Files/Pods-Iceland/Pods-Iceland-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Drawsana/Drawsana.framework",
 				"${BUILT_PRODUCTS_DIR}/Haptico/Haptico.framework",
+				"${BUILT_PRODUCTS_DIR}/JTAppleCalendar/JTAppleCalendar.framework",
 				"${BUILT_PRODUCTS_DIR}/Result/Result.framework",
 				"${BUILT_PRODUCTS_DIR}/RxAtomic/RxAtomic.framework",
 				"${BUILT_PRODUCTS_DIR}/RxCocoa/RxCocoa.framework",
@@ -1325,6 +1329,7 @@
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Drawsana.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Haptico.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/JTAppleCalendar.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Result.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxAtomic.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxCocoa.framework",
@@ -1435,7 +1440,7 @@
 				E41CB1D221D890E200EF0A3C /* Border.swift in Sources */,
 				E466D196221ED586007F140B /* MoveToAnimtor.swift in Sources */,
 				E466D194221EAD29007F140B /* FadeBackgroundTransition.swift in Sources */,
-				E466D198221ED6A1007F140B /* MoveUpAnimtor.swift in Sources */,
+				E466D198221ED6A1007F140B /* MoveInAnimtor.swift in Sources */,
 				E4729BA42202E6BA00F22885 /* Range.swift in Sources */,
 				E41CB1C621D88DFD00EF0A3C /* Attachment.swift in Sources */,
 				E489600221DB06C800D2B19D /* Localization.swift in Sources */,
@@ -1530,6 +1535,7 @@
 				E41CB15521D7E0F200EF0A3C /* DocumentBrowserCell.swift in Sources */,
 				E49F3E4A21B9186D003F468D /* SettingsViewController.swift in Sources */,
 				E41CB16221D8897400EF0A3C /* HomeCoordinator.swift in Sources */,
+				E4EFA4632230C42F00611FF5 /* CaptureGlobalEntrance.swift in Sources */,
 				E49F3E4621B8EDC8003F468D /* AgendaViewModel.swift in Sources */,
 				E4EFA45D222F681700611FF5 /* CaptureCoordinator.swift in Sources */,
 				E4F9ECDB21FAD826009A08CD /* OpenningFilesView.swift in Sources */,

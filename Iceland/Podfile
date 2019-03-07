@@ -10,6 +10,7 @@ target 'Iceland' do
     pod 'Haptico' # https://github.com/iSapozhnik/Haptico
     pod 'Drawsana' # https://github.com/Asana/Drawsan   a
     pod 'SwiftGen', '~> 6.0'
+    pod 'JTAppleCalendar', '~> 7.0'
 end
 
 target 'IcelandTests' do

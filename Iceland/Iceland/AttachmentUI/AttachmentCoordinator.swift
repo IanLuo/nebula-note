@@ -12,12 +12,14 @@ import Business
 
 public protocol AttachmentCoordinatorDelegate: class {
     func didSaveAttachment(key: String)
+    func didCancelAttachment(coordinator: AttachmentCoordinator)
 }
 
 public class AttachmentCoordinator: Coordinator {
     public weak var delegate: AttachmentCoordinatorDelegate?
     
     public var onSaveAttachment: ((String) -> Void)?
+    public var onCancel: (() -> Void)?
     
     public var kind: Attachment.Kind
     
@@ -56,6 +58,11 @@ public class AttachmentCoordinator: Coordinator {
 }
 
 extension AttachmentCoordinator: AttachmentViewControllerDelegate {
+    public func didCancelAttachment() {
+        self.delegate?.didCancelAttachment(coordinator: self)
+        self.onCancel?()
+    }
+    
     public func didSaveAttachment(key: String) {
         self.delegate?.didSaveAttachment(key: key)
         self.onSaveAttachment?(key)

@@ -93,6 +93,7 @@ public class AttachmentSketchViewController: AttachmentViewController, Attachmen
     
     @objc private func cancel() {
         self.viewModel.coordinator?.stop()
+        self.delegate?.didCancelAttachment()
     }
     
     @objc private func undo() {
@@ -124,17 +125,17 @@ public class AttachmentSketchViewController: AttachmentViewController, Attachmen
     
     private func setupUI() {
         self.view.addSubview(self.exitButton)
-        self.exitButton.sideAnchor(for: [.top, .right], to: self.view, edgeInsets: .init(top: 10, left: 0, bottom: 0, right: -30))
+        self.exitButton.sideAnchor(for: [.top, .right], to: self.view, edgeInsets: .init(top: 10, left: 0, bottom: 0, right: -30), considerSafeArea: true)
         self.exitButton.sizeAnchor(width: 44, height: 44)
         
         self.view.addSubview(self.undoButton)
         self.view.addSubview(self.redoButton)
 
-        self.undoButton.sideAnchor(for: [.left, .top], to: self.view, edgeInsets: .init(top: 10, left: 30, bottom: 0, right: 0))
+        self.undoButton.sideAnchor(for: [.left, .top], to: self.view, edgeInsets: .init(top: 10, left: 30, bottom: 0, right: 0), considerSafeArea: true)
         self.undoButton.rowAnchor(view: self.redoButton, space: 20)
         self.undoButton.sizeAnchor(width: 44, height: 44)
         self.redoButton.sizeAnchor(width: 44, height: 44)
-        self.redoButton.sideAnchor(for: .top, to: self.view, edgeInset: 10)
+        self.redoButton.sideAnchor(for: .top, to: self.view, edgeInset: 10, considerSafeArea: true)
         
         self.view.addSubview(self.drawingView)
         self.drawingView.sideAnchor(for: [.left, .right], to: self.view, edgeInset: 30)
@@ -157,7 +158,7 @@ public class AttachmentSketchViewController: AttachmentViewController, Attachmen
 
         self.view.addSubview(self.saveButton)
         
-        self.saveButton.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 0)
+        self.saveButton.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 0, considerSafeArea: true)
         self.saveButton.sizeAnchor(height: 60)
     }
     

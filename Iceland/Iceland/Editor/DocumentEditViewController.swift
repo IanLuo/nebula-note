@@ -104,6 +104,8 @@ public class DocumentEditViewController: UIViewController {
             controller.dismiss(animated: true, completion: {
                 self.viewModel.coordinator?.showAttachmentPicker(kind: Attachment.Kind.image, complete: { [unowned self] attachmentId in
                     self.viewModel.addAttachment(at: self.textView.selectedRange.location, attachmentId: attachmentId, kind: Attachment.Kind.image.rawValue)
+                    }, cancel: {
+                        
                 })
             })
         }
@@ -112,6 +114,8 @@ public class DocumentEditViewController: UIViewController {
             controller.dismiss(animated: true, completion: {
                 self.viewModel.coordinator?.showAttachmentPicker(kind: .location, complete: { [unowned self] attachmentId in
                     self.viewModel.addAttachment(at: self.textView.selectedRange.location, attachmentId: attachmentId, kind: Attachment.Kind.location.rawValue)
+                }, cancel: {
+                        
                 })
             })
         }
@@ -120,6 +124,8 @@ public class DocumentEditViewController: UIViewController {
             controller.dismiss(animated: true, completion: {
                 self.viewModel.coordinator?.showAttachmentPicker(kind: .audio, complete: { [unowned self] attachmentId in
                     self.viewModel.addAttachment(at: self.textView.selectedRange.location, attachmentId: attachmentId, kind: Attachment.Kind.audio.rawValue)
+                }, cancel: {
+                        
                 })
             })
         }
@@ -128,6 +134,8 @@ public class DocumentEditViewController: UIViewController {
             controller.dismiss(animated: true, completion: {
                 self.viewModel.coordinator?.showAttachmentPicker(kind: .video, complete: { [unowned self] attachmentId in
                     self.viewModel.addAttachment(at: self.textView.selectedRange.location, attachmentId: attachmentId, kind: Attachment.Kind.video.rawValue)
+                }, cancel: {
+                        
                 })
             })
         }
@@ -136,6 +144,8 @@ public class DocumentEditViewController: UIViewController {
             controller.dismiss(animated: true, completion: {
                 self.viewModel.coordinator?.showAttachmentPicker(kind: .sketch, complete: { [unowned self] attachmentId in
                     self.viewModel.addAttachment(at: self.textView.selectedRange.location, attachmentId: attachmentId, kind: Attachment.Kind.sketch.rawValue)
+                }, cancel: {
+                        
                 })
             })
         }
@@ -144,6 +154,8 @@ public class DocumentEditViewController: UIViewController {
             controller.dismiss(animated: true, completion: {
                 self.viewModel.coordinator?.showAttachmentPicker(kind: .link, complete: { [unowned self] attachmentId in
                     self.viewModel.addAttachment(at: self.textView.selectedRange.location, attachmentId: attachmentId, kind: Attachment.Kind.link.rawValue)
+                }, cancel: {
+                        
                 })
             })
         }

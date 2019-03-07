@@ -27,6 +27,7 @@ public class AttachmentLinkViewController: AttachmentViewController, AttachmentV
         formViewController.title = "Create link".localizable
 
         self.view.addSubview(formViewController.view)
+        self.formViewController.view.allSidesAnchors(to: self.view, edgeInset: 0, considerSafeArea: true)
     }
     
     public func didSaveAttachment(key: String) {
@@ -46,6 +47,7 @@ extension AttachmentLinkViewController: ModalFormViewControllerDelegate {
     
     public func modalFormDidCancel(viewController: ModalFormViewController) {
         self.viewModel.coordinator?.stop()
+        self.delegate?.didCancelAttachment()
     }
     
     public func modalFormDidSave(viewController: ModalFormViewController, formData: [String: Codable]) {

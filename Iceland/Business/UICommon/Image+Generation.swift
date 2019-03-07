@@ -44,6 +44,17 @@ extension UIImage {
         return image!
     }
     
+    public func fill(color: UIColor) -> UIImage {
+        var image: UIImage!
+        UIGraphicsBeginImageContextWithOptions(self.size, false, self.scale)
+        guard let context = UIGraphicsGetCurrentContext() else { fatalError("no image context") }
+        context.setFillColor(color.cgColor)
+        self.draw(at: .zero)
+        image = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+        return image
+    }
+    
     public func resize(upto: CGSize) -> UIImage {
         let newSize = self.size.aspectFitSizeScale(for: upto)
         

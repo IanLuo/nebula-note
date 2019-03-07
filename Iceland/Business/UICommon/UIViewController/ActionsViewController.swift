@@ -73,7 +73,7 @@ public class ActionsViewController: UIViewController {
         self.cancelAction = action
     }
     
-    private let transitionDelegate = FadeBackgroundTransition(animator: MoveUpAnimtor())
+    private let transitionDelegate = FadeBackgroundTransition(animator: MoveInAnimtor())
     
     public init() {
         super.init(nibName: nil, bundle: nil)

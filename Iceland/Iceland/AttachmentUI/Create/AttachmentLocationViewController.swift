@@ -40,6 +40,7 @@ public class AttachmentLocationViewController: AttachmentViewController, Attachm
         
         actionsViewController.setCancel { viewController in
             self.viewModel.coordinator?.stop()
+            self.delegate?.didCancelAttachment()
         }
         
         actionsViewController.addAction(icon: nil, title: "save".localizable, style: ActionsViewController.Style.highlight) { viewController in
@@ -57,6 +58,7 @@ public class AttachmentLocationViewController: AttachmentViewController, Attachm
         }
         
         self.view.addSubview(actionsViewController.view)
+        self.actionsViewController.view.allSidesAnchors(to: self.view, edgeInset: 0, considerSafeArea: true)
         
         self.showCurrentLocation(on: mapView, animated: false)
     }

@@ -56,9 +56,11 @@ public class AttachmentAudioViewController: AttachmentViewController, Attachment
             // 两个动画同时开始
             viewController.dismiss(animated: true, completion: {})
             self.viewModel.coordinator?.stop()
+            self.delegate?.didCancelAttachment()
         }
         
         self.view.addSubview(self.actionsViewController.view)
+        self.actionsViewController.view.allSidesAnchors(to: self.view, edgeInset: 0, considerSafeArea: true)
     }
     
     public func didSaveAttachment(key: String) {

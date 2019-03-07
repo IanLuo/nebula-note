@@ -11,15 +11,19 @@ import UIKit
 import Business
 import Storage
 
-public class AttachmentImageViewController: AttachmentViewController, AttachmentViewModelDelegate {
+public class AttachmentImageViewController: AttachmentViewController, AttachmentViewModelDelegate, TransitionProtocol {
+    public var contentView: UIView {
+        return self.actionsViewController.contentView
+    }
+    
+    public var fromView: UIView?
+    
     let actionsViewController = ActionsViewController()
     
     public override func viewDidLoad() {
         super.viewDidLoad()
         
         self.viewModel.delegate = self
-        
-        self.setupUI()
         
         self.showImageSourcePicker()
     }
@@ -38,10 +42,6 @@ public class AttachmentImageViewController: AttachmentViewController, Attachment
         self.present(imagePicker, animated: true, completion: nil)
     }
     
-    private func setupUI() {
-     
-    }
-    
     public func showImageSourcePicker() {
         actionsViewController.title = "Add image".localizable
         
@@ -57,9 +57,12 @@ public class AttachmentImageViewController: AttachmentViewController, Attachment
         
         actionsViewController.setCancel { viewController in
             self.viewModel.coordinator?.stop()
+            self.delegate?.didCancelAttachment()
         }
         
         self.view.addSubview(self.actionsViewController.view)
+        
+        self.actionsViewController.view.allSidesAnchors(to: self.view, edgeInset: 0, considerSafeArea: true)
     }
     
     public func didSaveAttachment(key: String) {
@@ -82,10 +85,11 @@ extension AttachmentImageViewController: UIImagePickerControllerDelegate, UINavi
        
         if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
             let fileName = UUID().uuidString
-            let file = URL.file(directory: URL.imageCacheURL, name: fileName, extension: "png").createDirectorysIfNeeded()
+            let file = URL.file(directory: URL.imageCacheURL, name: fileName, extension: "png")
+            file.deletingLastPathComponent().createDirectorysIfNeeded()
             do {
                 try image.pngData()?.write(to: file)
-                self.viewModel.save(content: file.path, kind: .image, description: "image")
+                self.viewModel.save(content: file.path, kind: .image, description: "pick image")
             } catch {
                 log.error(error)
             }

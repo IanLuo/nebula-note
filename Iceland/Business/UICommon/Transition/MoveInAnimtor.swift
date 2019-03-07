@@ -9,7 +9,13 @@
 import Foundation
 import UIKit
 
-public class MoveUpAnimtor: NSObject, Animator {
+public class MoveInAnimtor: NSObject, Animator {
+    public enum From {
+        case bottom
+        case right
+    }
+    
+    public var from: From = .bottom
     public var isPresenting: Bool
     
     required public init(isPresenting: Bool = true) {
@@ -25,19 +31,28 @@ public class MoveUpAnimtor: NSObject, Animator {
         guard let to = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.to) else { return }
         guard let from = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.from) else { return }
         
-        
         if self.isPresenting {
             if let transitionViewController = to as? TransitionViewController {
                 containner.addSubview(transitionViewController.view)
                 transitionViewController.view.layoutIfNeeded()
                 transitionViewController.didTransiteToShow()
                 transitionViewController.view.backgroundColor = .clear
-                
+                transitionViewController.view.layoutIfNeeded()
                 let toRect = transitionViewController.contentView.frame
-                transitionViewController.contentView.frame = CGRect(x: 0,
-                                                                    y: transitionViewController.view.bounds.height,
-                                                                    width: transitionViewController.contentView.bounds.width,
-                                                                    height: transitionViewController.contentView.bounds.height)
+                
+                switch self.from {
+                case .bottom:
+                    transitionViewController.contentView.frame = CGRect(x: 0,
+                                                                        y: transitionViewController.view.bounds.height,
+                                                                        width: transitionViewController.contentView.bounds.width,
+                                                                        height: transitionViewController.contentView.bounds.height)
+                case .right:
+                    transitionViewController.contentView.frame = CGRect(x: transitionViewController.view.bounds.width,
+                                                                        y: toRect.origin.y,
+                                                                        width: transitionViewController.contentView.bounds.width,
+                                                                        height: transitionViewController.contentView.bounds.height)
+
+                }
                 
                 UIView.animate(withDuration: self.transitionDuration(using: transitionContext), delay: 0.0, options: .curveEaseInOut, animations: ({
                     transitionViewController.contentView.frame = toRect
@@ -52,10 +67,18 @@ public class MoveUpAnimtor: NSObject, Animator {
             if let transitionViewController = from as? TransitionViewController {
                 UIView.animate(withDuration: self.transitionDuration(using: transitionContext), delay: 0, options: .curveEaseInOut, animations: ({
                     transitionViewController.view.backgroundColor = .clear
-                    transitionViewController.contentView.frame = CGRect(x: 0,
-                                                                        y: transitionViewController.view.bounds.height,
-                                                                        width: transitionViewController.contentView.bounds.width,
-                                                                        height: transitionViewController.contentView.bounds.height)
+                    switch self.from {
+                    case .bottom:
+                        transitionViewController.contentView.frame = CGRect(x: 0,
+                                                                            y: transitionViewController.view.bounds.height,
+                                                                            width: transitionViewController.contentView.bounds.width,
+                                                                            height: transitionViewController.contentView.bounds.height)
+                    case .right:
+                        transitionViewController.contentView.frame = CGRect(x: transitionViewController.view.bounds.width,
+                                                                            y: 0,
+                                                                            width: transitionViewController.contentView.bounds.width,
+                                                                            height: transitionViewController.contentView.bounds.height)
+                    }
                 }), completion: { completeion in
                     transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
                 })

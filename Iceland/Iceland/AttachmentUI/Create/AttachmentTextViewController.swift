@@ -24,6 +24,7 @@ public class AttachmentTextViewController: AttachmentViewController, AttachmentV
         self.formViewController.addTextView(title: "text".localizable, defaultValue: nil)
         
         self.view.addSubview(self.formViewController.view)
+        self.formViewController.view.allSidesAnchors(to: self.view, edgeInset: 0, considerSafeArea: true)
     }
     
     public func didSaveAttachment(key: String) {
@@ -43,6 +44,7 @@ extension AttachmentTextViewController: ModalFormViewControllerDelegate {
     
     public func modalFormDidCancel(viewController: ModalFormViewController) {
         self.viewModel.coordinator?.stop()
+        self.delegate?.didCancelAttachment()
     }
     
     public func modalFormDidSave(viewController: ModalFormViewController, formData: [String : Codable]) {

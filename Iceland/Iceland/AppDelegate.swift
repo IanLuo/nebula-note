@@ -31,11 +31,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         self.application = Application(window: window!)
         
-        window?.makeKeyAndVisible()
         window?.tintColor = InterfaceTheme.Color.interactive
+        window?.makeKeyAndVisible()
         
         self.application?.start(from: nil, animated: false)
-        
+                
         return true
     }
 

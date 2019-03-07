@@ -38,6 +38,7 @@ extension AttachmentVideoViewController: UINavigationControllerDelegate, UIImage
     public func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true, completion: nil)
         self.viewModel.coordinator?.stop()
+        self.delegate?.didCancelAttachment()
     }
     
     public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
