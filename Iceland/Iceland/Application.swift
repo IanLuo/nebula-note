@@ -104,7 +104,7 @@ public class Coordinator {
                 completion?()
             }
         } else {
-            top.dismiss(animated: animated,
+            top.topModalHost.dismiss(animated: animated,
                         completion: completion)
         }
     }
@@ -120,7 +120,8 @@ public class Coordinator {
                 
                 self.stack.modalPresentationStyle = viewController.modalPresentationStyle
                 self.stack.transitioningDelegate = viewController.transitioningDelegate
-                top?.present(self.stack, animated: animated, completion: nil)
+                
+                top?.topModalHost.present(self.stack, animated: animated, completion: nil)
             }
         }
     }
@@ -179,11 +180,14 @@ extension Coordinator {
         if let topCoordinator = self.topCoordinator {
             captureCoordinator.start(from: topCoordinator)
             self.dependency.globalCaptureEntryWindow?.hide()
+            log.info("showing capture entry on top of: \(topCoordinator)")
         } else {
             log.error("can't find a coordinator to start")
         }
     }
-    
+}
+
+extension Coordinator {
     public var topCoordinator: Coordinator? {
         for child in self.children {
             if child.isShowing {
@@ -193,6 +197,16 @@ extension Coordinator {
             }
         }
         return nil
+    }
+}
+
+extension UIViewController {
+    var topModalHost: UIViewController {
+        if let presented = self.presentedViewController {
+            return presented.topModalHost
+        } else {
+            return self
+        }
     }
 }
 
