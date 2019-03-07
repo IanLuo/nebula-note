@@ -204,11 +204,13 @@ extension Coordinator: CaptureCoordinatorDelegate {
     public func didSelect(attachmentKind: Attachment.Kind, coordinator: CaptureCoordinator) {
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now()) {
             coordinator.stop {
-                self.showAttachmentPicker(kind: attachmentKind, complete: { attachmentId in
-                    self.dependency.globalCaptureEntryWindow?.show()
-                    coordinator.addAttachment(attachmentId: attachmentId)
-                }, cancel: {
-                    self.dependency.globalCaptureEntryWindow?.show()
+                self.showAttachmentPicker(kind: attachmentKind, complete: { [weak self] attachmentId in
+                    self?.dependency.globalCaptureEntryWindow?.show()
+                    coordinator.addAttachment(attachmentId: attachmentId) {
+                        self?.dependency.eventObserver.emit(NewCaptureAddedEvent(attachmentId: attachmentId, kind: attachmentKind.rawValue))
+                    }
+                }, cancel: { [weak self] in
+                    self?.dependency.globalCaptureEntryWindow?.show()
                 })
             }
         }

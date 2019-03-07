@@ -28,8 +28,8 @@ public class CaptureCoordinator: Coordinator {
         self.viewController = viewController
     }
     
-    public func addAttachment(attachmentId: String) {
-        self.captureService.save(key: attachmentId)
+    public func addAttachment(attachmentId: String, competion: @escaping () -> Void) {
+        self.captureService.save(key: attachmentId, completion: competion)
     }
 }
 

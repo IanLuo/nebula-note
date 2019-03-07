@@ -26,7 +26,13 @@ public class CaptureListViewModel {
     public let mode: Mode
 
     public weak var delegate: CaptureListViewModelDelegate?
-    public weak var coordinator: CaptureListCoordinator?
+    public weak var coordinator: CaptureListCoordinator? {
+        didSet {
+            coordinator?.dependency.eventObserver.registerForEvent(on: self, eventType: NewCaptureAddedEvent.self, queue: .main, action: { [weak self] (event: NewCaptureAddedEvent) in
+                self?.loadAllCapturedData()
+            })
+        }
+    }
     
     private let service: CaptureServiceProtocol
     
@@ -39,6 +45,10 @@ public class CaptureListViewModel {
     public init(service: CaptureServiceProtocol, mode: Mode) {
         self.service = service
         self.mode = mode
+    }
+    
+    deinit {
+        coordinator?.dependency.eventObserver.unregister(for: self, eventType: nil)
     }
 
     public var currentCapture: Attachment? {

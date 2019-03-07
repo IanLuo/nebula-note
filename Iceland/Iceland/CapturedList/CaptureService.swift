@@ -12,7 +12,7 @@ import Storage
 import Business
 
 public protocol CaptureServiceProtocol {
-    func save(key: String)
+    func save(key: String, completion: @escaping () -> Void)
     func loadAll(completion: ([Attachment]) -> Void, failure: (Error) -> Void)
     func delete(key: String)
     func load(id: String) throws -> Attachment?
@@ -30,9 +30,11 @@ public struct CaptureService: CaptureServiceProtocol {
     }
     
     /// 创建一个新的 attachment, 并添加到 capture 列表中
-    public func save(key: String) {
+    public func save(key: String, completion: @escaping () -> Void) {
         let plist = KeyValueStoreFactory.store(type: .plist(.custom("capture")))
-        plist.set(value: "", key: key) {} // value 没用
+        plist.set(value: "", key: key) {
+            completion()
+        } // value 没用
     }
     
     /// 删除 capture 中的 attachment

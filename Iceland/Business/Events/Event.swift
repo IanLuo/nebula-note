@@ -64,3 +64,23 @@ public class DocumentHeadingChangeEvent: Event {
         self.newHeadings = newHeadings
     }
 }
+
+
+// MARK: -
+
+public class AttachmentAddedEvent: Event {
+    let attachmentId: String
+    
+    public init(attachmentId: String) {
+        self.attachmentId = attachmentId
+    }
+}
+
+public class NewCaptureAddedEvent: AttachmentAddedEvent {
+    let kind: String
+    
+    public init(attachmentId: String, kind: String) {
+        self.kind = kind
+        super.init(attachmentId: attachmentId)
+    }
+}
