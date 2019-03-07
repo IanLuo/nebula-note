@@ -75,7 +75,7 @@ public class Coordinator {
     public let dependency: Dependency
     
     public var isShowing: Bool {
-        return self.viewController?.view.window != nil
+        return self.viewController?.topModalHost.view.window != nil
     }
     
     public init(stack: UINavigationController,
@@ -189,6 +189,7 @@ extension Coordinator {
 
 extension Coordinator {
     public var topCoordinator: Coordinator? {
+        // 1. search child coordinator for presenting view controller
         for child in self.children {
             if child.isShowing {
                 return child
@@ -196,7 +197,18 @@ extension Coordinator {
                 return child.topCoordinator
             }
         }
-        return nil
+        
+        // 2. if self is presenting, use self
+        if self.isShowing {
+            return self
+        } else {
+            // 3. search parent
+            if let parent = self.parent {
+                return parent.topCoordinator
+            } else {
+                return nil
+            }
+        }
     }
 }
 
