@@ -61,8 +61,7 @@ extension EditorController {
     }
     
     public func insertToParagraph(at heading: HeadingToken, content: String) {
-        let location = heading.range.location + heading.contentLength
-        let content = "\n" + content
+        let location = heading.paragraphRange.upperBound
         self.textStorage.replaceCharacters(in: NSRange(location: location, length: 0), with: content)
     }
     

@@ -192,12 +192,23 @@ extension OutlineParser {
         public struct Attachment {
             public static func serialize(attachment: Business.Attachment) -> String {
                 switch attachment.kind {
-                case .text: fallthrough
-                case .link:
+                case .text:
                     do { return try String(contentsOf: attachment.url) }
                     catch { return "\(error)" }
+                case .link:
+                    do {
+                        if let json = try JSONSerialization.jsonObject(with: Data(contentsOf: attachment.url), options: []) as? NSDictionary {
+                            let title = json["title"] ?? ""
+                            let url = json["link"] ?? ""
+                            return "[[\(url)][\(title)]]"
+                        } else {
+                            return "#<wrong form of link>"
+                        }
+                    } catch {
+                        return "\(error)"
+                    }
                 default:
-                    return "#+ATTACHMENT:\(attachment.kind.rawValue)=\(attachment.url.path)"
+                    return "#+ATTACHMENT:\(attachment.kind.rawValue)=\(attachment.key)"
                 }
             }
             

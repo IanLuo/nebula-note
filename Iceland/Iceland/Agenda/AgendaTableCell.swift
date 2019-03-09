@@ -53,7 +53,8 @@ public class AgendaTableCell: UITableViewCell {
         let label = UILabel()
         label.textColor = InterfaceTheme.Color.interactive
         label.font = InterfaceTheme.Font.footnote
-        label.numberOfLines = 3
+        label.numberOfLines = 0
+        label.lineBreakMode = .byCharWrapping
         label.textAlignment = .left
         return label
     }()
@@ -134,9 +135,10 @@ public class AgendaTableCell: UITableViewCell {
         self.tagsView.addSubview(self.tagsIcon)
         self.tagsView.addSubview(self.tagsLabel)
         
-        self.tagsIcon.sideAnchor(for: [.left, .top, .bottom], to: self.tagsView, edgeInset: 0)
+        self.tagsIcon.sideAnchor(for: .left, to: self.tagsView, edgeInset: 0)
         self.tagsIcon.ratioAnchor(1)
-        self.tagsIcon.rowAnchor(view: self.tagsLabel, space: 10)
+        self.tagsIcon.sizeAnchor(width: 10)
+        self.tagsIcon.rowAnchor(view: self.tagsLabel, space: 3)
         self.tagsLabel.sideAnchor(for: [.top, .right, .bottom], to: self.tagsView, edgeInsets: .init(top: 0, left: 0, bottom: 0, right: -Layout.edgeInsets.right))
         
         self.tagsView.columnAnchor(view: self.scheduleAndDueLabel)

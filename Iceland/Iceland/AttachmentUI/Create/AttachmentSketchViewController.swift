@@ -186,7 +186,10 @@ public class AttachmentSketchViewController: AttachmentViewController, Attachmen
         }
         
         selector.currentTitle = button.title
-        selector.show(from: button, on: self)
+        
+        selector.fromView = button
+        
+        self.viewModel.coordinator?.showTempModal(selector)
     }
     
     private func showBrushPicker(button: RoundButton) {
@@ -201,7 +204,10 @@ public class AttachmentSketchViewController: AttachmentViewController, Attachmen
         }
         
         selector.currentTitle = button.title
-        selector.show(from: button, on: self)
+        
+        selector.fromView = button
+        
+        self.viewModel.coordinator?.showTempModal(selector)
     }
     
     public func didSaveAttachment(key: String) {

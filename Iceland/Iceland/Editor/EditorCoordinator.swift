@@ -52,18 +52,6 @@ public class EditorCoordinator: Coordinator {
         }
     }
     
-    public override func moveIn(top: UIViewController?, animated: Bool) {
-        guard let viewController = self.viewController else { return }
-        switch self.usage {
-        case .editor:
-            super.moveIn(top: top, animated: animated)
-        case .outline:
-            if let top = top {
-                (viewController as? HeadingsOutlineViewController)?.show(from: nil, on: top)
-            }
-        }
-    }
-    
     public func showCapturedList() {
         let navigationController = UINavigationController()
         navigationController.isNavigationBarHidden = true

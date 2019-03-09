@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-public class ActionsViewController: UIViewController {
+public class ActionsViewController: UIViewController, TransitionProtocol {
     fileprivate struct Constants {
         static let rowHeight: CGFloat = 50
         static let specialItemSeparatorHeight: CGFloat = 10
@@ -74,6 +74,8 @@ public class ActionsViewController: UIViewController {
     }
     
     private let transitionDelegate = FadeBackgroundTransition(animator: MoveInAnimtor())
+    
+    public var fromView: UIView?
     
     public init() {
         super.init(nibName: nil, bundle: nil)
@@ -202,12 +204,6 @@ public class ActionsViewController: UIViewController {
         let title: String
         let action: (ActionsViewController) -> Void
         let style: ActionsViewController.Style
-    }
-}
-
-extension ActionsViewController: TransitionProtocol {
-    public var fromView: UIView? {
-        return nil
     }
 }
 

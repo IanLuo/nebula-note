@@ -111,7 +111,7 @@ public class HomeViewController: UIViewController {
     }
     
     @objc internal func showDetailView() {
-        UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseInOut, animations: {
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: {
             self.view.bounds = CGRect(origin: .zero, size: self.view.bounds.size)
             if let frame = self.navigationController?.navigationBar.frame {
                 self.navigationController?.navigationBar.frame = CGRect(origin: CGPoint(x: 0, y: frame.origin.y), size: frame.size)
@@ -124,7 +124,7 @@ public class HomeViewController: UIViewController {
     }
     
     @objc private func showMasterView() {
-        UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseInOut, animations: {
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: {
             self.view.bounds = CGRect(origin: .init(x: -self.masterViewWidth, y: 0), size: self.view.bounds.size)
             if let frame = self.navigationController?.navigationBar.frame {
                 self.navigationController?.navigationBar.frame = frame.offsetX(-self.view.bounds.origin.x)

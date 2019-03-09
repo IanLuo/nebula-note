@@ -39,6 +39,8 @@ public class CaptureViewController: UIViewController, TransitionProtocol {
         fatalError("init(coder:) has not been implemented")
     }
     
+    public let contentView: UIView = UIView()
+    
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
         tableView.delegate = self
@@ -46,19 +48,38 @@ public class CaptureViewController: UIViewController, TransitionProtocol {
         tableView.separatorStyle = .none
         tableView.backgroundColor = InterfaceTheme.Color.background2
         tableView.register(CaptureCell.self, forCellReuseIdentifier: CaptureCell.reuseIdentifier)
+        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: Layout.edgeInsets.bottom + 60, right: 0)
+        tableView.setBorder(position: .left, color: InterfaceTheme.Color.background3, width: 0.5)
         return tableView
     }()
     
-    public var contentView: UIView { return self.tableView }
+    private lazy var cancelButton: RoundButton = {
+        let button = RoundButton()
+        button.setIcon(Asset.cross.image.withRenderingMode(.alwaysTemplate), for: .normal)
+        button.setBackgroundColor(InterfaceTheme.Color.background3, for: .normal)
+        button.setBorder(color: nil)
+        button.tapped({ _ in
+            self.cancel()
+        })
+        return button
+    }()
     
     public var fromView: UIView?
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+        self.view.addSubview(self.contentView)
         
-        self.view.addSubview(self.tableView)
+        self.contentView.addSubview(self.tableView)
+        self.contentView.addSubview(self.cancelButton)
         
-        self.tableView.allSidesAnchors(to: self.view, edgeInsets: .init(top: 0, left: self.view.bounds.width / 2, bottom: 0, right: 0))
+        self.contentView.allSidesAnchors(to: self.view, edgeInsets: .init(top: 0, left: self.view.bounds.width / 3, bottom: 0, right: 0))
+        
+        self.tableView.allSidesAnchors(to: self.contentView, edgeInset: 0)
+        
+        self.cancelButton.sideAnchor(for: .bottom, to: self.contentView, edgeInset: 0, considerSafeArea: true)
+        self.cancelButton.sizeAnchor(width: 60)
+        self.cancelButton.centerAnchors(position: .centerX, to: self.contentView)
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(cancel))
         tap.delegate = self
@@ -90,7 +111,7 @@ extension CaptureViewController: UITableViewDelegate, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: CaptureCell.reuseIdentifier, for: indexPath) as! CaptureCell
         
         let attachmentKind = Attachment.Kind.allCases[indexPath.row]
-        cell.iconView.image = attachmentKind.icon
+        cell.iconView.image = attachmentKind.icon.withRenderingMode(.alwaysTemplate)
         cell.titleLabel.text = attachmentKind.rawValue
         return cell
     }
@@ -116,6 +137,7 @@ private class CaptureCell: UITableViewCell {
     internal let iconView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
+        imageView.tintColor = InterfaceTheme.Color.descriptive
         return imageView
     }()
     
@@ -142,12 +164,13 @@ private class CaptureCell: UITableViewCell {
         self.contentView.addSubview(self.iconView)
         self.contentView.addSubview(self.titleLabel)
         
-        self.iconView.sideAnchor(for: [.left, .top], to: self.contentView, edgeInset: Layout.edgeInsets.left)
+        self.iconView.sideAnchor(for: .left, to: self.contentView, edgeInset:  Layout.edgeInsets.left)
         self.iconView.size(width: 15, height: 15)
+        self.iconView.setContentHuggingPriority(UILayoutPriority.required, for: NSLayoutConstraint.Axis.horizontal)
         self.iconView.centerAnchors(position: .centerY, to: self.contentView)
         self.iconView.rowAnchor(view: self.titleLabel, space: 20)
         
-        self.titleLabel.sideAnchor(for: [.right, .top], to: self.contentView, edgeInset: Layout.edgeInsets.right)
+        self.titleLabel.sideAnchor(for: [.right, .top], to: self.contentView, edgeInsets: .init(top: Layout.edgeInsets.top, left: Layout.edgeInsets.left, bottom: -Layout.edgeInsets.bottom, right: -Layout.edgeInsets.left))
         self.titleLabel.centerAnchors(position: .centerY, to: self.contentView)
     }
     

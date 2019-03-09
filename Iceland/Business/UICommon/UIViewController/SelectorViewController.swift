@@ -17,6 +17,17 @@ public protocol SelectorViewControllerDelegate: class {
 open class SelectorViewController: UIViewController {
     public var rowHeight: CGFloat = 80
     
+    public init() {
+        super.init(nibName: nil, bundle: nil)
+        
+        self.modalPresentationStyle = .custom
+        self.transitioningDelegate = self.transitionDelegate
+    }
+    
+    required public init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
         tableView.delegate = self
@@ -104,15 +115,8 @@ open class SelectorViewController: UIViewController {
     }
     
     // transite delegate will access this
-    public var transiteFromView: UIView?
-    public func show(from: UIView?, on viewController: UIViewController) {
-        self.modalPresentationStyle = .custom
-        self.transitioningDelegate = self.transitionDelegate
-        self.transiteFromView = from
+    public var fromView: UIView?
 
-        viewController.present(self, animated: true)
-    }
-    
     private func setupUI() {
         self.view.addSubview(self.contentView)
         self.contentView.addSubview(self.tableView)
@@ -213,10 +217,6 @@ extension SelectorViewController: UITableViewDataSource, UITableViewDelegate {
 }
 
 extension SelectorViewController: TransitionProtocol {
-    public var fromView: UIView? {
-        return self.transiteFromView
-    }
-    
     public func didTransiteToShow() {
         self.scrollToDefaultValue()
     }

@@ -17,7 +17,10 @@ public class Application: Coordinator {
     public init(window: UIWindow) {
         self.window = window
         
-        _entranceWindow = CaptureGlobalEntranceWindow(frame: CGRect(x: UIScreen.main.bounds.width - 90, y: UIScreen.main.bounds.height - 90, width: 60, height: 60))
+        _entranceWindow = CaptureGlobalEntranceWindow(frame: CGRect(x: UIScreen.main.bounds.width - 90,
+                                                                    y: UIScreen.main.bounds.height - 90 - window.safeArea.bottom,
+                                                                    width: 60,
+                                                                    height: 60))
         _entranceWindow.makeKeyAndVisible()
         
         let navigationController = UINavigationController()
@@ -48,7 +51,6 @@ public class Application: Coordinator {
         let homeCoord = HomeCoordinator(stack: self.stack,
                                         dependency: self.dependency)
         homeCoord.start(from: self, animated: animated)
-        
     }
 }
 

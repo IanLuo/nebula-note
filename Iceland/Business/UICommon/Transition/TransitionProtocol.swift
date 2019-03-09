@@ -15,7 +15,7 @@ public typealias Animator = UIViewControllerAnimatedTransitioning & AnimatorProt
 
 public protocol TransitionProtocol {
     var contentView: UIView { get }
-    var fromView: UIView? { get }
+    var fromView: UIView? { get set }
     
     func didTransiteToShow()
 }
@@ -31,10 +31,18 @@ extension UINavigationController: TransitionProtocol {
     }
     
     public var fromView: UIView? {
-        if let rootViewController = self.topViewController as? TransitionProtocol {
-            return rootViewController.fromView
-        } else {
-            return nil
+        get {
+            if let rootViewController = self.topViewController as? TransitionProtocol {
+                return rootViewController.fromView
+            } else {
+                return nil
+            }
+        }
+        
+        set {
+            if var rootViewController = self.topViewController as? TransitionProtocol {
+                 rootViewController.fromView = newValue
+            }
         }
     }
 }

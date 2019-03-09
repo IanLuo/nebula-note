@@ -117,7 +117,7 @@ extension DocumentBrowserViewController: RecentFilesViewDelegate {
     }
     
     public func didSelectDocument(url: URL) {
-        self.viewModel.coordinator?.openDocument(url: url, location: 0)
+        self.delegate?.didSelectDocument(url: url)
     }
     
     public func dataChanged(count: Int) {

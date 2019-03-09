@@ -22,7 +22,7 @@ public class HeadingsOutlineViewController: SelectorViewController {
     
     public init(viewModel: DocumentEditViewModel) {
         self.viewModel = viewModel
-        super.init(nibName: nil, bundle: nil)
+        super.init()
         self.delegate = self
         viewModel.delegate = self
         self.emptyDataText = "There's no heading in this document yet"

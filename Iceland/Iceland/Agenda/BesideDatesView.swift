@@ -23,6 +23,7 @@ public class BesideDatesView: UIView {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.delegate = self
         collectionView.dataSource = self
+        collectionView.backgroundColor = InterfaceTheme.Color.background1
         collectionView.register(DateCell.self, forCellWithReuseIdentifier: DateCell.reuseIdentifier)
         return collectionView
     }()
