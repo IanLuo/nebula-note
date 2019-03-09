@@ -58,8 +58,11 @@ public class HomeCoordinator: Coordinator {
     
     
     private var tempCoordinator: Coordinator?
+    
     public func showTempCoordinator(_ coordinator: Coordinator) {
-        self.tempCoordinator = nil
+        // set temp coordinator as child of current coordinator
+        coordinator.parent = self
+        self.addChild(coordinator)
         self.tempCoordinator = coordinator
         self.homeViewController.showChildViewController(coordinator.viewController!)
         self.homeViewController.showDetailView()
@@ -81,13 +84,13 @@ extension HomeCoordinator: SearchCoordinatorDelegate {
 }
 
 extension HomeCoordinator: BrowserCoordinatorDelegate {
-    public func didSelectDocument(url: URL) {
+    public func didSelectDocument(url: URL, coordinator: BrowserCoordinator) {
         self.openDocument(url: url, location: 0)
     }
     
-    public func didSelectHeading(url: URL, heading: HeadingToken) {
-        // ignore
-    }
+    public func didSelectHeading(url: URL, heading: HeadingToken, coordinator: BrowserCoordinator) {}
+    
+    public func didCancel(coordinator: BrowserCoordinator) {}
 }
 
 extension HomeCoordinator: HomeViewControllerDelegate {
@@ -131,6 +134,11 @@ extension HomeCoordinator: DashboardViewControllerDelegate {
     }
     
     public func didSelectTab(at index: Int, viewController: UIViewController) {
+        // if last showing temp view controller, remove from children
+        if let tempCoordinator = self.tempCoordinator {
+            self.remove(tempCoordinator)
+            self.tempCoordinator = nil
+        }
         self.homeViewController.showChildViewController(viewController)
         self.homeViewController.showDetailView()
     }

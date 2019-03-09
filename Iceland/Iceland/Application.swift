@@ -40,7 +40,7 @@ public class Application: Coordinator {
         self.window?.rootViewController = self.stack
         
         _entranceWindow.entryAction = { [weak self] in
-            self?.showCaptureEntry()
+            self?.showCaptureEntrance()
         }
     }
     
@@ -65,6 +65,12 @@ public class Coordinator {
     private let id: String = UUID().uuidString
     private var children: [Coordinator] = []
     public let stack: UINavigationController
+    
+    /// modal level
+    public private(set) var level: Int = 0
+    
+    /// navigation index
+    public private(set) var index: Int = 0
 
     public var viewController: UIViewController?
     
@@ -72,10 +78,13 @@ public class Coordinator {
     
     public weak var parent: Coordinator?
     
+    // 临时显示的 view controller，比如 alert, actions 等
+    public var tempViewControllers: [UIViewController] = []
+    
     public let dependency: Dependency
     
     public var isShowing: Bool {
-        return self.viewController?.topModalHost.view.window != nil
+        return self.topViewController?.view.window != nil
     }
     
     public init(stack: UINavigationController,
@@ -104,8 +113,8 @@ public class Coordinator {
                 completion?()
             }
         } else {
-            top.topModalHost.dismiss(animated: animated,
-                        completion: completion)
+            self.stack.presentingViewController?.dismiss(animated: animated,
+                               completion: completion)
         }
     }
     
@@ -114,19 +123,25 @@ public class Coordinator {
             if self.stack == self.parent?.stack {
                 self.stack.pushViewController(viewController,
                                               animated: animated)
-            } else {
+                
+                self.index = self.parent!.index + 1
+            } else { // means it's a modal
                 self.isModal = true
-                self.stack.pushViewController(viewController, animated: false)
+                self.stack.pushViewController(viewController,
+                                              animated: false)
                 
                 self.stack.modalPresentationStyle = viewController.modalPresentationStyle
                 self.stack.transitioningDelegate = viewController.transitioningDelegate
                 
-                top?.topModalHost.present(self.stack, animated: animated, completion: nil)
+                top?.present(self.stack, animated: animated, completion: nil)
+                
+                self.level = self.parent!.level + 1
             }
         }
     }
     
     @objc public func stop(animated: Bool = true, completion: (() -> Void)? = nil) {
+        self.tempViewControllers.forEach { $0.dismiss(animated: false, completion: nil) }
         if let viewController = self.viewController {
             self.moveOut(top: viewController, animated: animated, completion: {
                 self.parent?.remove(self)
@@ -138,7 +153,22 @@ public class Coordinator {
     open func start(from: Coordinator?, animated: Bool = true) {
         if let f = from {
             f.addChild(self)
-            self.moveIn(top: f.viewController, animated: animated)
+            self.moveIn(top: f.topViewController, animated: animated)
+        }
+    }
+}
+
+extension Coordinator {
+    public func addToTemp(viewController: UIViewController) {
+        self.tempViewControllers.append(viewController)
+    }
+    
+    public func removeFromTemp(viewController: UIViewController) {
+        for (index, v) in self.tempViewControllers.enumerated() {
+            if v == viewController {
+                self.tempViewControllers.remove(at: index)
+                return
+            }
         }
     }
 }
@@ -170,7 +200,7 @@ extension Coordinator {
         }
     }
     
-    public func showCaptureEntry() {
+    public func showCaptureEntrance() {
         let navigationController = UINavigationController()
         navigationController.isNavigationBarHidden = true
 
@@ -182,42 +212,57 @@ extension Coordinator {
             self.dependency.globalCaptureEntryWindow?.hide()
             log.info("showing capture entry on top of: \(topCoordinator)")
         } else {
-            log.error("can't find a coordinator to start")
+            log.error("can't find a coordinator to start \n\(self.debugDescription)")
         }
     }
 }
 
 extension Coordinator {
     public var topCoordinator: Coordinator? {
-        // 1. search child coordinator for presenting view controller
-        for child in self.children {
-            if child.isShowing {
-                return child
-            } else {
-                return child.topCoordinator
-            }
-        }
-        
-        // 2. if self is presenting, use self
         if self.isShowing {
             return self
         } else {
-            // 3. search parent
-            if let parent = self.parent {
-                return parent.topCoordinator
-            } else {
-                return nil
+            for child in self.children.reversed() {
+                if let top = child.topCoordinator {
+                    return top
+                }
             }
         }
+        
+        return nil
+    }
+    
+    // find the top view controller in this coordinator
+    public var topViewController: UIViewController? {
+        if let presented = self.viewController?.presentedViewController {
+            // 当前的 view controller 之上还有 modal view controller，如果在当前 coordinator 范围内，则返回之，否则属于其他的 coordinator，则忽略
+            if self.tempViewControllers.contains(presented) {
+                return presented
+            }
+        } else {
+            return self.viewController
+        }
+        
+        return nil
     }
 }
 
-extension UIViewController {
-    var topModalHost: UIViewController {
-        if let presented = self.presentedViewController {
-            return presented.topModalHost
-        } else {
-            return self
+extension Coordinator {
+    public func showTempModal(_ viewController: UIViewController,
+                            completion: (() -> Void)? = nil) {
+        self.viewController?.present(viewController,
+                                     animated: true,
+                                     completion: { [weak self] in
+                                        self?.addToTemp(viewController: viewController)
+                                        completion?()
+        })
+    }
+    
+    public func dismisTempModal(_ viewController: UIViewController,
+                            completion: (() -> Void)? = nil) {
+        viewController.dismiss(animated: true) { [weak self] in
+            self?.removeFromTemp(viewController: viewController)
+            completion?()
         }
     }
 }
@@ -240,5 +285,29 @@ extension Coordinator: CaptureCoordinatorDelegate {
                 })
             }
         }
+    }
+}
+
+extension Coordinator: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        var string = "\n\(type(of:self)) \(level) \(index)\n\(vcs)"
+        for child in self.children {
+            string.append("\n | \(child.debugDescription)")
+        }
+        
+        return "\(string)"
+    }
+    
+    private var vcs: String {
+        var string = "   ↳ "
+        if let vc = self.viewController {
+            string.append("\(vc))")
+        }
+        
+        for vc in self.tempViewControllers {
+            string.append("\n     + \(vc) +")
+        }
+        
+        return string
     }
 }

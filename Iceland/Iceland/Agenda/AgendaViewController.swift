@@ -161,7 +161,7 @@ extension AgendaViewController: UITableViewDelegate {
         }
         
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now()) {
-            self.present(actionsViewController, animated: true)
+            self.viewModel.coordinator?.showTempModal(actionsViewController)
         }
     }
     

@@ -12,6 +12,7 @@ import Business
 
 public protocol HeadingsOutlineViewControllerDelegate: class {
     func didSelectHeading(url: URL, heading: HeadingToken)
+    func didCancel()
 }
 
 public class HeadingsOutlineViewController: SelectorViewController {
@@ -39,7 +40,7 @@ public class HeadingsOutlineViewController: SelectorViewController {
 
 extension HeadingsOutlineViewController: SelectorViewControllerDelegate {
     public func SelectorDidCancel(viewController: SelectorViewController) {
-        self.viewModel.coordinator?.stop()
+        self.outlineDelegate?.didCancel()
     }
     
     public func SelectorDidSelect(index: Int, viewController: SelectorViewController) {

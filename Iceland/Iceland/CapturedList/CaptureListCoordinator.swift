@@ -29,18 +29,22 @@ public class CaptureListCoordinator: Coordinator {
     }
     
     public func showDocumentHeadingSelector() {
-        let documentCoord = BrowserCoordinator(stack: self.stack,
+        let navigationController = UINavigationController()
+        navigationController.isNavigationBarHidden = true
+        
+        let documentCoord = BrowserCoordinator(stack: navigationController,
                                                dependency: super.dependency,
                                                usage: .chooseHeading)
-        documentCoord.delegate = self
+        
+        documentCoord.didSelectHeadingAction = { [weak documentCoord]  url, heading in
+            documentCoord?.stop()
+            self.viewModel.refile(editorService: self.dependency.editorContext.request(url: url), heading: heading)
+        }
+        
+        documentCoord.didCancelAction = { [weak documentCoord] in
+            documentCoord?.stop()
+        }
+        
         documentCoord.start(from: self)
-    }
-}
-
-extension CaptureListCoordinator: BrowserCoordinatorDelegate {
-    public func didSelectDocument(url: URL) {}
-    
-    public func didSelectHeading(url: URL, heading: HeadingToken) {
-        self.viewModel.refile(editorService: self.dependency.editorContext.request(url: url), heading: heading)
     }
 }

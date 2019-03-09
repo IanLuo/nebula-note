@@ -204,21 +204,23 @@ extension DocumentBrowserViewController: DocumentBrowserCellDelegate {
 
             // 重命名
             actionsViewController.addAction(icon: nil, title: "rename".localizable) { viewController in
-                viewController.dismiss(animated: true, completion: {
+                self.viewModel.coordinator?.dismisTempModal(viewController) { [weak self] in
                     let renameFormViewController = ModalFormViewController()
                     let title = "new name".localizable
                     renameFormViewController.addTextFied(title: title, placeHoder: "", defaultValue: url.fileName) // 不需要显示 placeholder, default value 有值
                     renameFormViewController.onSaveValue = { formValue, viewController in
                         if let newName = formValue[title] as? String {
-                            viewController.dismiss(animated: true, completion: {
-                                self.viewModel.rename(index: index, to: newName)
-                            })
+                            self?.viewModel.coordinator?.dismisTempModal(viewController) {
+                                self?.viewModel.rename(index: index, to: newName)
+                            }
                         }
                     }
                     
                     // 显示给用户，是否可以使用这个文件名
                     renameFormViewController.onValidating = { formData in
-                        if !self.viewModel.isNameAvailable(newName: formData[title] as! String, index: index) {
+                        guard let strongSelf = self else { return [:] }
+                        
+                        if !strongSelf.viewModel.isNameAvailable(newName: formData[title] as! String, index: index) {
                             return [title: "name is taken".localizable]
                         }
                         
@@ -226,41 +228,41 @@ extension DocumentBrowserViewController: DocumentBrowserCellDelegate {
                     }
                     
                     renameFormViewController.onCancel = { viewController in
-                        viewController.dismiss(animated: true, completion: nil)
+                        self?.viewModel.coordinator?.dismisTempModal(viewController)
                     }
                     
-                    self.present(renameFormViewController, animated: true, completion: nil)
-                })
+                    self?.viewModel.coordinator?.showTempModal(renameFormViewController)
+                }
             }
             
             actionsViewController.addAction(icon: nil, title: "duplicate".localizable) { viewController in
-                viewController.dismiss(animated: true, completion: {
-                    self.viewModel.duplicate(index: index)
-                })
+                self.viewModel.coordinator?.dismisTempModal(viewController) { [weak self] in
+                    self?.viewModel.duplicate(index: index)
+                }
             }
             
             actionsViewController.addAction(icon: nil, title: "cover".localizable) { viewController in
-                viewController.dismiss(animated: true, completion: {
+                self.viewModel.coordinator?.dismisTempModal(viewController) { [weak self] in
                     let coverPicker = CoverPickerViewController()
-                    coverPicker.onSelecedCover = { [weak self] cover in
+                    coverPicker.onSelecedCover = { cover in
                         self?.viewModel.setCover(cover, index: index)
                     }
                     
-                    self.present(coverPicker, animated: true, completion: nil)
-                })
+                    self?.viewModel.coordinator?.showTempModal(coverPicker)
+                }
             }
             
             actionsViewController.addAction(icon: UIImage(named: "trash"), title: "delete".localizable, style: .warning) { viewController in
-                viewController.dismiss(animated: true, completion: {
-                    self.viewModel.deleteDocument(index: index)
-                })
+                self.viewModel.coordinator?.dismisTempModal(viewController) { [weak self] in
+                    self?.viewModel.deleteDocument(index: index)
+                }
             }
             
             actionsViewController.setCancel { viewController in
-                viewController.dismiss(animated: true, completion: nil)
+                self.viewModel.coordinator?.dismisTempModal(viewController)
             }
             
-            self.present(actionsViewController, animated: true, completion: nil)
+            self.viewModel.coordinator?.showTempModal(actionsViewController)
         }
     }
     

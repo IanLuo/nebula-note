@@ -11,8 +11,9 @@ import UIKit
 import Business
 
 public protocol BrowserCoordinatorDelegate: class {
-    func didSelectDocument(url: URL)
-    func didSelectHeading(url: URL, heading: HeadingToken)
+    func didSelectDocument(url: URL, coordinator: BrowserCoordinator)
+    func didSelectHeading(url: URL, heading: HeadingToken, coordinator: BrowserCoordinator)
+    func didCancel(coordinator: BrowserCoordinator)
 }
 
 public class BrowserCoordinator: Coordinator {
@@ -23,6 +24,10 @@ public class BrowserCoordinator: Coordinator {
     
     public let usage: Usage
     public weak var delegate: BrowserCoordinatorDelegate?
+    
+    public var didSelectDocumentAction: ((URL) -> Void)?
+    public var didSelectHeadingAction: ((URL, HeadingToken) -> Void)?
+    public var didCancelAction: (() -> Void)?
     
     public init(stack: UINavigationController, dependency: Dependency, usage: Usage) {
         let viewModel = DocumentBrowserViewModel(documentManager: dependency.documentManager)
@@ -47,7 +52,8 @@ extension BrowserCoordinator: DocumentBrowserViewControllerDelegate {
     public func didSelectDocument(url: URL) {
         switch self.usage {
         case .chooseDocument:
-            self.delegate?.didSelectDocument(url: url)
+            self.delegate?.didSelectDocument(url: url, coordinator: self)
+            self.didSelectDocumentAction?(url)
         case .chooseHeading:
             self.showOutlineHeadings(url: url)
         }
@@ -55,8 +61,17 @@ extension BrowserCoordinator: DocumentBrowserViewControllerDelegate {
 }
 
 extension BrowserCoordinator: EditorCoordinatorSelectHeadingDelegate {
-    public func didSelectHeading(url: URL, heading: HeadingToken) {
-        self.delegate?.didSelectHeading(url: url, heading: heading)
-        self.stop()
+    public func didSelectHeading(url: URL, heading: HeadingToken, coordinator: EditorCoordinator) {
+        coordinator.stop {
+            self.delegate?.didSelectHeading(url: url, heading: heading, coordinator: self)
+            self.didSelectHeadingAction?(url, heading)
+        }
+    }
+    
+    public func didCancel(coordinator: EditorCoordinator) {
+        coordinator.stop {
+            self.delegate?.didCancel(coordinator: self)
+            self.didCancelAction?()
+        }
     }
 }

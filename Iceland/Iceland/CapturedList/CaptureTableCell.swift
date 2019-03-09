@@ -12,9 +12,9 @@ import Business
 import CoreLocation
 
 public protocol CaptureTableCellDelegate: class {
-    func didTapActions(cell: UITableViewCell)
-    func didTapActionsWithLink(cell: UITableViewCell, link: String?)
-    func didTapActionsWithLocation(cell: UITableViewCell, location: CLLocationCoordinate2D)
+    func didTapActions(attachment: Attachment)
+    func didTapActionsWithLink(attachment: Attachment, link: String?)
+    func didTapActionsWithLocation(attachment: Attachment, location: CLLocationCoordinate2D)
 }
 
 public class CaptureTableCell: UITableViewCell {
@@ -99,7 +99,7 @@ public class CaptureTableCell: UITableViewCell {
             do {
                 let jsonDecoder = JSONDecoder()
                 let dic = try jsonDecoder.decode([String : String].self, from: try Data(contentsOf: attachment.url))
-                self.delegate?.didTapActionsWithLink(cell: self, link: dic["link"])
+                self.delegate?.didTapActionsWithLink(attachment: attachment, link: dic["link"])
             } catch {
                 log.error(error)
             }
@@ -107,11 +107,11 @@ public class CaptureTableCell: UITableViewCell {
             do {
                 let jsonDecoder = JSONDecoder()
                 let coord = try jsonDecoder.decode(CLLocationCoordinate2D.self, from: try Data(contentsOf: attachment.url))
-                self.delegate?.didTapActionsWithLocation(cell: self, location: coord)
+                self.delegate?.didTapActionsWithLocation(attachment: attachment, location: coord)
             } catch {
                 log.error(error)
             }
-        default: self.delegate?.didTapActions(cell: self)
+        default: self.delegate?.didTapActions(attachment: attachment)
         }
     }
     

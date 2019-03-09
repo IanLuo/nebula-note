@@ -458,9 +458,9 @@ private class TabView: UITableViewHeaderFooterView {
         self.contentView.addSubview(self.iconView)
         self.contentView.addSubview(self.showSubtabsButton)
         
-        self.iconView.sideAnchor(for: .left, to: self.contentView, edgeInsets: .init(top: 0, left: 30, bottom: 0, right: 0))
+        self.iconView.sideAnchor(for: .left, to: self.contentView, edgeInsets: .init(top: 0, left: Layout.edgeInsets.left, bottom: 0, right: 0))
         self.iconView.centerAnchors(position: .centerY, to: self.contentView)
-        self.iconView.sizeAnchor(width: 20, height: 20)
+        self.iconView.sizeAnchor(width: 15, height: 15)
         
         self.titleButton.allSidesAnchors(to: self.contentView, edgeInset: 0)
         self.titleButton.contentEdgeInsets = UIEdgeInsets(top: 20, left: 70, bottom: 20, right: 0)
@@ -517,15 +517,15 @@ private class SubtabCell: UITableViewCell {
         
         self.iconView.sideAnchor(for: .left, to: self.contentView, edgeInsets: .init(top: 0, left: 60, bottom: 0, right: 0))
         self.iconView.centerAnchors(position: .centerY, to: self.contentView)
-        self.iconView.sizeAnchor(width: 20, height: 20)
-        self.iconView.rowAnchor(view: self.titleLabel, space: 10)
+        self.iconView.sizeAnchor(width: 15, height: 15)
+        self.iconView.rowAnchor(view: self.titleLabel, space: 20)
         self.titleLabel.sideAnchor(for: [.top, .bottom], to: self.contentView, edgeInsets: .init(top: 15, left: 0, bottom: -15, right: 0))
         
-        self.titleLabel.rowAnchor(view: self.subtitleLabel)
+        self.titleLabel.rowAnchor(view: self.subtitleLabel, space: 3)
         self.subtitleLabel.sideAnchor(for: [.top, .bottom], to: self.contentView, edgeInsets: .init(top: 0, left: 0, bottom: 0, right: 0))
         
         self.subtitleLabel.rowAnchor(view: self.detailIconView, space: 3)
-        self.detailIconView.sideAnchor(for: .right, to: self.contentView, edgeInset: 30)
+        self.detailIconView.sideAnchor(for: .right, to: self.contentView, edgeInset: Layout.edgeInsets.right)
         self.detailIconView.sizeAnchor(width: 10, height: 10)
     }
     

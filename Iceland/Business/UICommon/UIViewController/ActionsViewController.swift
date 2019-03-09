@@ -104,14 +104,13 @@ public class ActionsViewController: UIViewController {
     
     public var accessoryView: UIView? {
         didSet {
-            // 如果没有，则隐藏 accessoryViewContainer
-            accessoryViewContainer.isHidden = accessoryView == nil
-            
             if let accessoryView = accessoryView {
+                accessoryViewContainer.isHidden = false
                 accessoryViewContainer.subviews.forEach { $0.removeFromSuperview() }
                 accessoryViewContainer.addSubview(accessoryView)
                 accessoryView.allSidesAnchors(to: accessoryViewContainer, edgeInset: 0)
             } else {
+                accessoryViewContainer.isHidden = true
                 let emptyView = UIView()
                 accessoryViewContainer.addSubview(emptyView)
                 emptyView.sizeAnchor(height: 0)
@@ -158,7 +157,6 @@ public class ActionsViewController: UIViewController {
         tableView.dataSource = self
         tableView.backgroundColor = InterfaceTheme.Color.background2
         tableView.separatorStyle = .none
-//        tableView.separatorColor = InterfaceTheme.Color.background3
         tableView.register(ActionCell.self, forCellReuseIdentifier: ActionCell.reuseIdentifier)
         return tableView
     }()
@@ -265,6 +263,7 @@ fileprivate class ActionCell: UITableViewCell {
             case .warning:
                 self.contentView.setBorder(position: .top, color: InterfaceTheme.Color.background1, width: ActionsViewController.Constants.specialItemSeparatorHeight)
                 self.titleLabel.constraint(for: .top)?.constant = ActionsViewController.Constants.specialItemSeparatorHeight / 2
+                self.titleLabel.constraint(for: .bottom)?.constant = -ActionsViewController.Constants.specialItemSeparatorHeight / 2
                 self.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
             }
         }
