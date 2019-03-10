@@ -40,6 +40,7 @@ public class RenderAttachment: NSTextAttachment {
     private func createImage() {
         guard let url = self.url else { return }
         switch self.type {
+        case Attachment.Kind.sketch.rawValue: fallthrough
         case Attachment.Kind.image.rawValue:
             let size = self.bounds.size
             self.image = UIImage(contentsOfFile: url.path)?.resize(upto: size)
