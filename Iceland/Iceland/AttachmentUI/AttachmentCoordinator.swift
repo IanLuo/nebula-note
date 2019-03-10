@@ -66,6 +66,5 @@ extension AttachmentCoordinator: AttachmentViewControllerDelegate {
     public func didSaveAttachment(key: String) {
         self.delegate?.didSaveAttachment(key: key)
         self.onSaveAttachment?(key)
-        self.stop()
     }
 }

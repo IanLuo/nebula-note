@@ -22,8 +22,10 @@ public class OutlineTextStorage: TextStorage {
     public var parser: OutlineParser!
     
     private let eventObserver: EventObserver
+    private let _attachmentManager: AttachmentManager
     
-    public init(eventObserver: EventObserver) {
+    public init(eventObserver: EventObserver, attachmentManager: AttachmentManager) {
+        self._attachmentManager = attachmentManager
         self.eventObserver = eventObserver
         super.init()
     }
@@ -97,8 +99,8 @@ extension OutlineTextStorage: ContentUpdatingProtocol {
             // 清空 attributes (折叠的状态除外)
             var effectiveRange: NSRange = NSRange(location:0, length: 0)
             let value = self.attribute(OutlineAttribute.hidden, at: parsingRange.location, longestEffectiveRange: &effectiveRange, in: parsingRange)
-            self.setAttributes([:], range: parsingRange)
             if let value = value as? NSNumber, value.intValue == OutlineAttribute.hiddenValueFolded.intValue {
+                self.setAttributes([:], range: parsingRange)
                 self.addAttribute(OutlineAttribute.Heading.folded, value: OutlineAttribute.hiddenValueFolded, range: effectiveRange)
             }
             self.addAttributes([NSAttributedString.Key.backgroundColor: UIColor.red.withAlphaComponent(0.5)], range: self.currentParseRange!)
@@ -221,7 +223,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
         
         urlRanges.forEach { urlRangeData in
             if let range = urlRangeData[OutlineParser.Key.Element.link] {
-                self.addAttribute(OutlineAttribute.hidden, value: 1, range: range)
+                self.addAttribute(OutlineAttribute.hidden, value: OutlineAttribute.hiddenValueDefault, range: range)
             }
             urlRangeData.forEach {
                 // range 为整个链接时，添加自定义属性，值为解析的链接结构
@@ -229,8 +231,9 @@ extension OutlineTextStorage: OutlineParserDelegate {
                     self.addAttributes([NSAttributedString.Key.link: 1], range: $0.value)
                     self.removeAttribute(OutlineAttribute.hidden, range: $0.value)
                 } else if $0.key == OutlineParser.Key.Element.Link.url {
-                    self.addAttributes([OutlineAttribute.hidden: 2,
-                                        OutlineAttribute.showAttachment: OutlineAttribute.Link.url], range: $0.value)
+                    self.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment,
+                                        OutlineAttribute.showAttachment: OutlineAttribute.Link.url],
+                                       range: $0.value)
                 }
             }
         }
@@ -242,10 +245,22 @@ extension OutlineTextStorage: OutlineParserDelegate {
             guard let typeRange = rangeData[OutlineParser.Key.Element.Attachment.type] else { return }
             guard let valueRange = rangeData[OutlineParser.Key.Element.Attachment.value] else { return }
             
-            self.addAttributes([OutlineAttribute.Attachment.attachment: OUTLINE_ATTRIBUTE_ATTACHMENT,
-                                OutlineAttribute.Attachment.type: self.string.substring(typeRange),
-                                OutlineAttribute.Attachment.value: self.string.substring(valueRange)],
+            self.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment],
                                range: attachmentRange)
+        
+            let type = text.substring(typeRange)
+            let value = text.substring(valueRange)
+            if let attachment: NSTextAttachment = RenderAttachment(type: type, value: value, manager: self._attachmentManager) {
+                if !super.isAttachmentExists(withKey: value) {
+                    super.add(attachment, for: value)
+                }
+                
+                self.addAttributes([OutlineAttribute.showAttachment: value],
+                                  range: attachmentRange.head(1))
+            } else {
+                self.addAttributes([OutlineAttribute.showAttachment: OutlineAttribute.Attachment.unavailable],
+                                   range: attachmentRange.head(1))
+            }
         }
     }
     

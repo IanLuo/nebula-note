@@ -53,14 +53,21 @@ FOUNDATION_EXPORT const unsigned char TextStorageVersionString[];
 #define OUTLINE_ATTRIBUTE_ATTACHMENT_TYPE @"attachment-type"
 #define OUTLINE_ATTRIBUTE_ATTACHMENT_VALUE @"attachment-value"
 
+#define OUTLINE_ATTRIBUTE_ATTACHMENT_UNAVAILABLE @"OUTLINE_ATTRIBUTE_ATTACHMENT_UNAVAILABLE"
+
 @protocol ContentUpdatingProtocol<NSObject>
-
+    
 - (void)performContentUpdate:(NSString *)string range:(NSRange)range delta:(NSInteger)delta action:(NSTextStorageEditActions)action;
-
+    
 @end
 
 @interface TextStorage: NSTextStorage<NSLayoutManagerDelegate>
-
+    
 @property (nonatomic, weak) id<ContentUpdatingProtocol> attributeChangeDelegate;
 
+- (void)addAttachment:(NSTextAttachment *)attachment for:(NSString *)key;
+    
+- (BOOL)isAttachmentExistsWithKey:(NSString *)key;
+    
 @end
+

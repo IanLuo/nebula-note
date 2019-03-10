@@ -28,8 +28,8 @@ public enum AttachmentError: Error {
     case noSuchFileToSave(String)
 }
 
-public struct AttachmentManager {
-    public init() {
+@objc public class AttachmentManager: NSObject {
+    public override init() {
         // 确保附件文件夹存在
         File.Folder.document("attachment").createFolderIfNeeded()
     }

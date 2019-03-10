@@ -29,7 +29,6 @@ public class AttachmentViewModel {
         self.attachmentManager
             .insert(content: content, kind: kind, description: description, complete: { [weak self] key in
                 self?.delegate?.didSaveAttachment(key: key)
-                self?.coordinator?.stop()
             }, failure: { [weak self] error in
                 self?.delegate?.didFailToSave(error: error,
                                               content: content,

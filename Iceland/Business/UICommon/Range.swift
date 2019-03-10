@@ -50,4 +50,17 @@ extension NSRange {
             return self
         }
     }
+    
+    public func xor(_ range: NSRange) -> [NSRange]? {
+        if self.lowerBound >= range.lowerBound && self.upperBound <= range.upperBound {
+            return nil
+        } else if self.lowerBound < range.lowerBound && self.upperBound <= range.upperBound {
+            return [NSRange(location: range.location, length: range.lowerBound - self.upperBound)]
+        } else if self.lowerBound >= range.lowerBound && self.upperBound > range.upperBound {
+            return [NSRange(location: self.location, length: range.upperBound - self.upperBound)]
+        } else {
+            return [NSRange(location: self.location, length: range.location - self.location),
+                    NSRange(location: range.location, length: self.upperBound - range.upperBound)]
+        }
+    }
 }

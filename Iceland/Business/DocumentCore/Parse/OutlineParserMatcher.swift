@@ -154,7 +154,7 @@ extension OutlineParser {
             public static let unorderedList =   "^[\\t ]*([\\-\\+]) .*"
             public static let orderedList =     "^[\\t ]*([a-zA-Z0-9]+[\\.\\)\\>]) .*"
             public static let seperator =       "^[\\t ]*(\\-{5,}[\\t ]*)"
-            public static let attachment =      "\\#\\+ATTACHMENT\\:(image|video|audio|sketch|location)=([a-zA-Z0-9\\-]+)" // like: #+ATTACHMENT:LKSJDLFJSDLJFLSDF)
+            public static let attachment =      "\\#\\+ATTACHMENT\\:(image|video|audio|sketch|location)=([A-Z0-9\\-]+)" // like: #+ATTACHMENT:LKSJDLFJSDLJFLSDF)
             public static let quote =           "^[\\t ]*\\#\\+BEGIN\\_QUOTE\\n([^\\#\\+END\\_QUOTE]*)\\n\\s*\\#\\+END\\_QUOTE[\\t ]*\\n"
             public static let footnote =        "" // TODO: footnote regex pattern imp
         }

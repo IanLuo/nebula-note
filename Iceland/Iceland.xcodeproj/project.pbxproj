@@ -97,7 +97,7 @@
 		E44E60F521E9F2C0005AC25F /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44E60F421E9F2C0005AC25F /* Location.swift */; };
 		E455868A21DF643F00381FA8 /* HeadingOutlineTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E455868921DF643F00381FA8 /* HeadingOutlineTableViewCell.swift */; };
 		E466D186221D930A007F140B /* SeparaterAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = E466D185221D930A007F140B /* SeparaterAttachment.swift */; };
-		E466D18D221E3E65007F140B /* RenderAttachmentProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E466D18C221E3E65007F140B /* RenderAttachmentProtocol.swift */; };
+		E466D18D221E3E65007F140B /* RenderAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = E466D18C221E3E65007F140B /* RenderAttachment.swift */; };
 		E466D192221EAC14007F140B /* TransitionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E466D191221EAC14007F140B /* TransitionProtocol.swift */; };
 		E466D194221EAD29007F140B /* FadeBackgroundTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = E466D193221EAD29007F140B /* FadeBackgroundTransition.swift */; };
 		E466D196221ED586007F140B /* MoveToAnimtor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E466D195221ED586007F140B /* MoveToAnimtor.swift */; };
@@ -325,7 +325,7 @@
 		E455868921DF643F00381FA8 /* HeadingOutlineTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadingOutlineTableViewCell.swift; sourceTree = "<group>"; };
 		E464BBB021A69C9000D34C88 /* OutlineTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineTheme.swift; sourceTree = "<group>"; };
 		E466D185221D930A007F140B /* SeparaterAttachment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeparaterAttachment.swift; sourceTree = "<group>"; };
-		E466D18C221E3E65007F140B /* RenderAttachmentProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderAttachmentProtocol.swift; sourceTree = "<group>"; };
+		E466D18C221E3E65007F140B /* RenderAttachment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderAttachment.swift; sourceTree = "<group>"; };
 		E466D191221EAC14007F140B /* TransitionProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransitionProtocol.swift; sourceTree = "<group>"; };
 		E466D193221EAD29007F140B /* FadeBackgroundTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FadeBackgroundTransition.swift; sourceTree = "<group>"; };
 		E466D195221ED586007F140B /* MoveToAnimtor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveToAnimtor.swift; sourceTree = "<group>"; };
@@ -857,7 +857,7 @@
 			isa = PBXGroup;
 			children = (
 				E466D185221D930A007F140B /* SeparaterAttachment.swift */,
-				E466D18C221E3E65007F140B /* RenderAttachmentProtocol.swift */,
+				E466D18C221E3E65007F140B /* RenderAttachment.swift */,
 			);
 			path = RenderAttachment;
 			sourceTree = "<group>";
@@ -1419,7 +1419,7 @@
 				E4729B9F2202B70200F22885 /* SquareButton.swift in Sources */,
 				E4B802022200437A00AD5AD8 /* TextStorage.m in Sources */,
 				E43B90A8222903170008B44C /* Event.swift in Sources */,
-				E466D18D221E3E65007F140B /* RenderAttachmentProtocol.swift in Sources */,
+				E466D18D221E3E65007F140B /* RenderAttachment.swift in Sources */,
 				E41CB1D621D8921B00EF0A3C /* SettingsAccessor.swift in Sources */,
 				E41CB1C721D88DFD00EF0A3C /* AttachmentManager.swift in Sources */,
 				E466D192221EAC14007F140B /* TransitionProtocol.swift in Sources */,

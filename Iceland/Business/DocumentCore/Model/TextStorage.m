@@ -18,14 +18,15 @@ static NSTextAttachment *unfoldedAttachment;
 static NSTextAttachment *scheduleAttachment;
 static NSTextAttachment *dueAttachment;
 static NSTextAttachment *tagAttachment;
+static NSTextAttachment *unavailableAttachment;
 
-static NSDictionary *attachmentMap;
+static NSMutableDictionary *attachmentMap;
 
 @interface TextStorage()
 
 @property (strong) NSTextStorage *backingStore;
 
-@property (strong) NSDictionary *attachmentCache; // user added attachment saved here
+@property (strong) NSMutableDictionary *attachmentCache; // user added attachment saved here
 
 @end
 
@@ -59,9 +60,13 @@ static NSDictionary *attachmentMap;
         
         tagAttachment = [[NSTextAttachment alloc] init];
         tagAttachment.image = [UIImage imageNamed: @"tag"];
-        tagAttachment.bounds = CGRectMake(0, 0, 20, 20);
+        tagAttachment.bounds = CGRectMake(0, 0, 15, 15);
         
-        attachmentMap = @{
+        unavailableAttachment = [[NSTextAttachment alloc] init];
+        unavailableAttachment.image = [UIImage imageNamed: @"cross"];
+        unavailableAttachment.bounds = CGRectMake(0, 0, 20, 20);
+        
+        attachmentMap = [@{
                           OUTLINE_ATTRIBUTE_HEADING_FOLDED: foldingAttachment,
                           OUTLINE_ATTRIBUTE_LINK_URL: linkAttachment,
                           OUTLINE_ATTRIBUTE_SEPARATOR: [[SeparaterAttachment alloc]init],
@@ -69,18 +74,26 @@ static NSDictionary *attachmentMap;
                           OUTLINE_ATTRIBUTE_HEADING_FOLD_UNFOLDED: unfoldedAttachment,
                           OUTLINE_ATTRIBUTE_HEADING_SCHEDULE: scheduleAttachment,
                           OUTLINE_ATTRIBUTE_HEADING_DUE: dueAttachment,
-                          OUTLINE_ATTRIBUTE_HEADING_TAGS: tagAttachment
-                          };
+                          OUTLINE_ATTRIBUTE_HEADING_TAGS: tagAttachment,
+                          OUTLINE_ATTRIBUTE_ATTACHMENT_UNAVAILABLE: unavailableAttachment
+                          } mutableCopy];
     }
 }
 
 - (instancetype)init {
     if ([super init]) {
         self.backingStore = [[NSTextStorage alloc]init];
-        self.attachmentCache = @{};
     }
     
     return self;
+}
+
+- (void)addAttachment:(NSTextAttachment *)attachment for:(NSString *)key {
+    [attachmentMap setObject:attachment forKey:key];
+}
+    
+- (BOOL)isAttachmentExistsWithKey:(NSString *)key {
+    return [attachmentMap objectForKey:key] != nil;
 }
 
 - (NSString *)string {
@@ -103,17 +116,25 @@ static NSDictionary *attachmentMap;
     NSDictionary *attributes = [self.backingStore attributesAtIndex:location effectiveRange: range];
 
     NSTextAttachment *attachment;
+    BOOL isUserAdded = NO;
     NSString *attachmentKey = [attributes objectForKey: OUTLINE_ATTRIBUTE_SHOW_ATTACHMENT];
     if (attachmentKey) {
-        attachment = attachmentMap[attachmentKey];
+        if ([attachmentKey isEqualToString: @"user_added"]) {
+            NSLog(@"found user added attachment at location: %d", (int)location);
+            isUserAdded = YES;
+        } else {
+            attachment = attachmentMap[attachmentKey];
+        }
     }
 
-    if (attachment) {
+    if (attachment || isUserAdded) {
         [self.backingStore attribute: OUTLINE_ATTRIBUTE_SHOW_ATTACHMENT atIndex:location longestEffectiveRange:&effectiveRange inRange:NSMakeRange(0, [self.backingStore length])];
         if (location == effectiveRange.location) {
-            NSMutableDictionary *dict = [attributes mutableCopyWithZone:NULL];
-            [dict setObject: attachment forKey:NSAttachmentAttributeName];
-            attributes = dict;
+            if (!isUserAdded) { // attachment already added
+                NSMutableDictionary *dict = [attributes mutableCopyWithZone:NULL];
+                [dict setObject: attachment forKey:NSAttachmentAttributeName];
+                attributes = dict;
+            }
             effectiveRange.length = 1;
         } else {
             ++(effectiveRange.location); --(effectiveRange.length);

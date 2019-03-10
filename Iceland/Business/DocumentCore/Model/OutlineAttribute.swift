@@ -24,6 +24,7 @@ public struct OutlineAttribute {
         public static let attachment: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_ATTACHMENT)
         public static let value: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_ATTACHMENT_VALUE)
         public static let type: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_ATTACHMENT_TYPE)
+        public static let unavailable: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_ATTACHMENT_UNAVAILABLE)
     }
     
     public struct Link {

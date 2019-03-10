@@ -27,8 +27,8 @@ public class EditorController: NSObject {
     
     public weak var delegate: EditorControllerDelegate?
     
-    public init(parser: OutlineParser, eventObserver: EventObserver) {
-        self.textStorage = OutlineTextStorage(eventObserver: eventObserver)
+    public init(parser: OutlineParser, eventObserver: EventObserver, attachmentManager: AttachmentManager) {
+        self.textStorage = OutlineTextStorage(eventObserver: eventObserver, attachmentManager: attachmentManager)
         self.textContainer = NSTextContainer(size: CGSize(width: UIScreen.main.bounds.size.width, height: CGFloat(Int.max)))
         self.textContainer.widthTracksTextView = true
         self.layoutManager = OutlineLayoutManager()

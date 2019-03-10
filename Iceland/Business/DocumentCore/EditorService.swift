@@ -23,7 +23,7 @@ public class EditorService {
     
     internal init(url: URL, queue: DispatchQueue, eventObserver: EventObserver) {
         self.eventObserver = eventObserver
-        self.editorController = EditorController(parser: OutlineParser(), eventObserver: eventObserver)
+        self.editorController = EditorController(parser: OutlineParser(), eventObserver: eventObserver, attachmentManager: AttachmentManager())
         self.document = Document(fileURL: url)
         self.queue = queue
         
