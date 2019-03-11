@@ -17,9 +17,9 @@ public protocol EditorControllerDelegate: class {
 
 public class EditorController: NSObject {
     
-    private let layoutManager: NSLayoutManager
+    private let _layoutManager: NSLayoutManager
     
-    private let eventObserver: EventObserver
+    private let _eventObserver: EventObserver
 
     internal let textContainer: NSTextContainer
     
@@ -31,8 +31,8 @@ public class EditorController: NSObject {
         self.textStorage = OutlineTextStorage(eventObserver: eventObserver, attachmentManager: attachmentManager)
         self.textContainer = NSTextContainer(size: CGSize(width: UIScreen.main.bounds.size.width, height: CGFloat(Int.max)))
         self.textContainer.widthTracksTextView = true
-        self.layoutManager = OutlineLayoutManager()
-        self.eventObserver = eventObserver
+        self._layoutManager = OutlineLayoutManager()
+        self._eventObserver = eventObserver
         
         super.init()
         
@@ -42,11 +42,11 @@ public class EditorController: NSObject {
         
         self.textStorage.delegate = self.textStorage
         self.textStorage.outlineDelegate = self
-        self.textStorage.addLayoutManager(self.layoutManager)
-        self.layoutManager.delegate = self.textStorage
-        self.layoutManager.allowsNonContiguousLayout = true
-        self.layoutManager.addTextContainer(self.textContainer)
-        self.layoutManager.showsInvisibleCharacters = false
+        self.textStorage.addLayoutManager(self._layoutManager)
+        self._layoutManager.delegate = self.textStorage
+        self._layoutManager.allowsNonContiguousLayout = true
+        self._layoutManager.addTextContainer(self.textContainer)
+        self._layoutManager.showsInvisibleCharacters = false
     }
     
     required init?(coder aDecoder: NSCoder) {

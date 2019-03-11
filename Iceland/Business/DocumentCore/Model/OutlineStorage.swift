@@ -21,12 +21,12 @@ public protocol OutlineTextStorageDataSource: class {
 public class OutlineTextStorage: TextStorage {
     public var parser: OutlineParser!
     
-    private let eventObserver: EventObserver
+    private let _eventObserver: EventObserver
     private let _attachmentManager: AttachmentManager
     
     public init(eventObserver: EventObserver, attachmentManager: AttachmentManager) {
         self._attachmentManager = attachmentManager
-        self.eventObserver = eventObserver
+        self._eventObserver = eventObserver
         super.init()
     }
     
@@ -72,10 +72,10 @@ public class OutlineTextStorage: TextStorage {
     public var allTokens: [Token] = []
     
     // 用于解析过程中临时数据处理
-    private var tempParsingTokenResult: [[String: NSRange]] = []
-    private var tempParsingHeadingTokenResult: [[String: NSRange]] = []
+    private var _tempParsingTokenResult: [[String: NSRange]] = []
+    private var _tempParsingHeadingTokenResult: [[String: NSRange]] = []
     // 某些范围要忽略掉文字的样式，比如 link 内的文字样式
-    private var ignoreTextMarkRanges: [NSRange] = []
+    private var _ignoreTextMarkRanges: [NSRange] = []
 }
 
 // MARK: - Update Attributes
@@ -93,7 +93,7 @@ extension OutlineTextStorage: ContentUpdatingProtocol {
         self.updateItemIndexAndRange(delta: self.changeInLength)
 
         // 调整需要解析的字符串范围
-        self.adjustParseRange(editedRange)
+        self._adjustParseRange(editedRange)
 
         if let parsingRange = self.currentParseRange {
             // 清空 attributes (折叠的状态除外)
@@ -186,7 +186,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
         for (index, dict) in markRanges.reversed().enumerated() {
             let range = dict.first!.value
             
-            for ignorRange in self.ignoreTextMarkRanges {
+            for ignorRange in self._ignoreTextMarkRanges {
                 if ignorRange.location <= range.location && ignorRange.upperBound >= range.upperBound {
                     markRanges.remove(at: count - index)
                     break
@@ -194,7 +194,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
             }
         }
         
-        self.tempParsingTokenResult.append(contentsOf: markRanges)
+        self._tempParsingTokenResult.append(contentsOf: markRanges)
         
         for dict in markRanges {
             for (key, range) in dict {
@@ -218,8 +218,8 @@ extension OutlineTextStorage: OutlineParserDelegate {
     }
     
     public func didFoundLink(text: String, urlRanges: [[String : NSRange]]) {
-        self.tempParsingTokenResult.append(contentsOf: urlRanges)
-        self.ignoreTextMarkRanges.append(contentsOf: urlRanges.map { $0[OutlineParser.Key.Element.link]! })
+        self._tempParsingTokenResult.append(contentsOf: urlRanges)
+        self._ignoreTextMarkRanges.append(contentsOf: urlRanges.map { $0[OutlineParser.Key.Element.link]! })
         
         urlRanges.forEach { urlRangeData in
             if let range = urlRangeData[OutlineParser.Key.Element.link] {
@@ -265,7 +265,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
     }
     
     public func didFoundCheckbox(text: String, checkboxRanges: [[String : NSRange]]) {
-        self.tempParsingTokenResult.append(contentsOf: checkboxRanges)
+        self._tempParsingTokenResult.append(contentsOf: checkboxRanges)
         
         checkboxRanges.forEach { checkbox in
             for (key, range) in checkbox {
@@ -280,7 +280,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
     }
     
     public func didFoundOrderedList(text: String, orderedListRnages: [[String : NSRange]]) {
-        self.tempParsingTokenResult.append(contentsOf: orderedListRnages)
+        self._tempParsingTokenResult.append(contentsOf: orderedListRnages)
         
         orderedListRnages.forEach { list in
             if let index = list[OutlineParser.Key.Element.OrderedList.index] {
@@ -296,7 +296,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
     }
     
     public func didFoundUnOrderedList(text: String, unOrderedListRnages: [[String : NSRange]]) {
-        self.tempParsingTokenResult.append(contentsOf: unOrderedListRnages)
+        self._tempParsingTokenResult.append(contentsOf: unOrderedListRnages)
         
         unOrderedListRnages.forEach { list in
             if let prefix = list[OutlineParser.Key.Element.UnorderedList.prefix] {
@@ -316,7 +316,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
     }
     
     public func didFoundCodeBlock(text: String, codeBlockRanges: [[String : NSRange]]) {
-        self.tempParsingTokenResult.append(contentsOf: codeBlockRanges)
+        self._tempParsingTokenResult.append(contentsOf: codeBlockRanges)
         
         codeBlockRanges.forEach { range in
             if let range = range[OutlineParser.Key.Node.codeBlock] {
@@ -333,7 +333,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
     }
     
     public func didFoundQuote(text: String, quoteRanges: [[String : NSRange]]) {
-        self.tempParsingTokenResult.append(contentsOf: quoteRanges)
+        self._tempParsingTokenResult.append(contentsOf: quoteRanges)
         
         quoteRanges.forEach { quoteRange in
             let paragraph = NSMutableParagraphStyle()
@@ -354,8 +354,8 @@ extension OutlineTextStorage: OutlineParserDelegate {
     }
     
     public func didFoundHeadings(text: String, headingDataRanges: [[String : NSRange]]) {
-        self.tempParsingTokenResult.append(contentsOf: headingDataRanges)
-        self.tempParsingHeadingTokenResult.append(contentsOf: headingDataRanges)
+        self._tempParsingTokenResult.append(contentsOf: headingDataRanges)
+        self._tempParsingHeadingTokenResult.append(contentsOf: headingDataRanges)
         
         headingDataRanges.forEach {
             if let levelRange = $0[OutlineParser.Key.Element.Heading.level] {
@@ -402,20 +402,20 @@ extension OutlineTextStorage: OutlineParserDelegate {
     }
     
     public func didStartParsing(text: String) {
-        self.tempParsingTokenResult = []
-        self.ignoreTextMarkRanges = []
-        self.tempParsingHeadingTokenResult = []
+        self._tempParsingTokenResult = []
+        self._ignoreTextMarkRanges = []
+        self._tempParsingHeadingTokenResult = []
     }
     
     public func didCompleteParsing(text: String) {
-        self.updateItems(new: self.tempParsingTokenResult)
-        self.updateHeadings(new: self.tempParsingHeadingTokenResult)
+        self._updateItems(new: self._tempParsingTokenResult)
+        self._updateHeadings(new: self._tempParsingHeadingTokenResult)
         
         // 更新段落长度信息
-        self.updateHeadingParagraphLength()
+        self._updateHeadingParagraphLength()
         
         // 更新段落缩进样式
-        self.setParagraphIndent()
+        self._setParagraphIndent()
         
         print(self.debugDescription)
     }
@@ -424,7 +424,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
     /// 更新找到的 heading
     /// - Parameter newHeadings:
     ///   新找到的 heading 数据
-    private func updateHeadings(new headings: [[String: NSRange]]) {
+    private func _updateHeadings(new headings: [[String: NSRange]]) {
         // 如果已保存的 heading 为空，直接全部添加
         if savedHeadings.count == 0 {
             self.savedHeadings = headings.map { HeadingToken(data: $0) } // OutlineParser.Key.Node.heading 总是存在
@@ -432,12 +432,12 @@ extension OutlineTextStorage: OutlineParserDelegate {
             // 删除 currentParsingRange 范围内包含的所有 heading, 删除后，将新的 headings 插入删除掉的位置
             if let currentRange = self.currentParseRange {
                 var removedHeadings: [HeadingToken] = []
-                for index in self.findIntersectionTokenIndex(in: currentRange, tokens: self.savedHeadings).reversed() {
+                for index in self._findIntersectionTokenIndex(in: currentRange, tokens: self.savedHeadings).reversed() {
                     removedHeadings.append(self.savedHeadings.remove(at: index))
                 }
                 
                 let newHeadingRanges = headings.map { HeadingToken(data: $0) }
-                self.savedHeadings.insert(contentsOf: newHeadingRanges, at: self.findNextTokenIndex(after: currentRange, tokens: self.savedHeadings))
+                self.savedHeadings.insert(contentsOf: newHeadingRanges, at: self._findNextTokenIndex(after: currentRange, tokens: self.savedHeadings))
                 
                 // notify everyone that using headings
                 self.outlineDelegate?.didUpdateHeadings(newHeadings: newHeadingRanges, oldHeadings: removedHeadings)
@@ -446,7 +446,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
     }
     
     /// 更新 items 中的数据
-    private func updateItems(new items: [[String: NSRange]]) {
+    private func _updateItems(new items: [[String: NSRange]]) {
         var newItems: [Token] = []
         items.forEach {
             for (key, value) in $0 {
@@ -467,12 +467,12 @@ extension OutlineTextStorage: OutlineParserDelegate {
         } else {
             guard let currentParseRange = self.currentParseRange else { return }
             let oldCount = self.allTokens.count
-            for index in self.findIntersectionTokenIndex(in: currentParseRange, tokens: self.allTokens).reversed() {
+            for index in self._findIntersectionTokenIndex(in: currentParseRange, tokens: self.allTokens).reversed() {
                 self.allTokens.remove(at: index)
             }
             
             // add new found items
-            self.allTokens.insert(contentsOf: newItems, at: self.findNextTokenIndex(after: currentParseRange, tokens: self.allTokens))
+            self.allTokens.insert(contentsOf: newItems, at: self._findNextTokenIndex(after: currentParseRange, tokens: self.allTokens))
             log.info("[item count changed] \(self.allTokens.count - oldCount)")
         }
     }
@@ -480,7 +480,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
     
     // MARK: - utils
     
-    private func findIntersectionTokenIndex(in range: NSRange, tokens: [Token]) -> [Int] {
+    private func _findIntersectionTokenIndex(in range: NSRange, tokens: [Token]) -> [Int] {
         var indexes: [Int] = []
         for (index, token) in tokens.enumerated() {
             if token.range.intersection(range) != nil {
@@ -491,7 +491,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
     }
     
     
-    private func findNextTokenIndex(after range: NSRange, tokens: [Token]) -> Int {
+    private func _findNextTokenIndex(after range: NSRange, tokens: [Token]) -> Int {
         var indexToInserNewHeadings: Int = tokens.count - 1
         for (index, heading) in tokens.enumerated() {
             if heading.range.upperBound <= range.upperBound {
@@ -506,7 +506,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
         return indexToInserNewHeadings
     }
     
-    private func setParagraphIndent() {
+    private func _setParagraphIndent() {
         for heading in self.savedHeadings {
 //            let paragraphStyle = NSMutableParagraphStyle()
 //            paragraphStyle.firstLineHeadIndent = CGFloat(heading.level * 8) // FIXME: 设置 indent 的宽度
@@ -529,7 +529,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
     }
     
     /// 获得用 heading 分割的段落的 range 列表
-    private func updateHeadingParagraphLength() {
+    private func _updateHeadingParagraphLength() {
         var endOfParagraph = self.string.count
         self.savedHeadings.reversed().forEach {
             $0.contentLength = endOfParagraph - $0.range.upperBound - 1
@@ -537,8 +537,8 @@ extension OutlineTextStorage: OutlineParserDelegate {
         }
     }
     
-    internal func adjustParseRange(_ range: NSRange) {
-        let range = range.expandFoward(string: self.string).expandBackward(string: self.string)
+    internal func _adjustParseRange(_ range: NSRange) {
+        let range = range._expandFoward(string: self.string)._expandBackward(string: self.string)
         self.currentParseRange = range
         
         // 如果范围在某个 item 内，并且小于这个 item 原来的范围，则扩大至这个 item 原来的范围
@@ -572,24 +572,24 @@ extension OutlineTextStorage: NSTextStorageDelegate {
 
 extension NSRange {
     /// 将在字符串中的选择区域扩展到前一个换行符之后，后一个换行符之前
-    internal func expandBackward(string: String) -> NSRange {
+    internal func _expandBackward(string: String) -> NSRange {
         var extendedRange = self
         var characterBuf: String = ""
 
         while extendedRange.location > 0
-            && !self.checkShouldContinueExpand(buf: &characterBuf, next: string.substring(NSRange(location: extendedRange.location - 1, length: 1)), lineCount: 2) {
+            && !self._checkShouldContinueExpand(buf: &characterBuf, next: string.substring(NSRange(location: extendedRange.location - 1, length: 1)), lineCount: 2) {
                 extendedRange = NSRange(location: extendedRange.location - 1, length: extendedRange.length + 1)
         }
         
         return extendedRange
     }
     
-    internal func expandFoward(string: String) -> NSRange {
+    internal func _expandFoward(string: String) -> NSRange {
         var extendedRange = self
         var characterBuf: String = ""
         
         while extendedRange.upperBound < string.count - 1
-            && !self.checkShouldContinueExpand(buf: &characterBuf, next: string.substring(NSRange(location: extendedRange.upperBound, length: 1)), lineCount: 3) {
+            && !self._checkShouldContinueExpand(buf: &characterBuf, next: string.substring(NSRange(location: extendedRange.upperBound, length: 1)), lineCount: 3) {
                 extendedRange = NSRange(location: extendedRange.location, length: extendedRange.length + 1)
         }
         
@@ -597,7 +597,7 @@ extension NSRange {
     }
     
     // 检查是否继续 expand
-    private func checkShouldContinueExpand(buf: inout String, next character: String, lineCount: Int) -> Bool {
+    private func _checkShouldContinueExpand(buf: inout String, next character: String, lineCount: Int) -> Bool {
         if character == OutlineParser.Values.Character.linebreak {
             buf.append(character)
         }

@@ -9,37 +9,26 @@
 import Foundation
 import Storage
 
-//public struct DocumentManagerNotification {
-//    public static let keyDidChangeDocumentNameOld = "old-url"
-//    public static let keyDidChangeDocumentNameNew = "new-url"
-//    public static let keyDocumentURL = "url"
-//
-//    public static let didChangeDocumentName = Notification.Name(rawValue: "didChangeDocumentName")
-//    public static let didChangeDocumentCover = Notification.Name(rawValue: "didChangeDocumentCover")
-//    public static let didDeleteDocument = Notification.Name(rawValue: "didDeleteDocument")
-//    public static let didAddNewDocument = Notification.Name(rawValue: "didAddNewDocument")
-//}
-
 public struct DocumentManager {
     public init(editorContext: EditorContext, eventObserver: EventObserver) {
-        self.editorContext = editorContext
-        self.eventObserver = eventObserver
+        self._editorContext = editorContext
+        self._eventObserver = eventObserver
         URL.documentBaseURL.createDirectorysIfNeeded()
     }
     
-    private let editorContext: EditorContext
-    private let eventObserver: EventObserver
+    private let _editorContext: EditorContext
+    private let _eventObserver: EventObserver
     
     public var recentFiles: [RecentDocumentInfo] {
-        return self.editorContext.recentFilesManager.recentFiles
+        return self._editorContext.recentFilesManager.recentFiles
     }
     
     public func removeRecentFile(url: URL) {
-        self.editorContext.recentFilesManager.removeRecentFile(url: url) {}
+        self._editorContext.recentFilesManager.removeRecentFile(url: url) {}
     }
     
     public func closeFile(url: URL, last selectionLocation: Int) {
-        self.editorContext.recentFilesManager.addRecentFile(url: url, lastLocation: selectionLocation) {}
+        self._editorContext.recentFilesManager.addRecentFile(url: url, lastLocation: selectionLocation) {}
     }
     
     /// 查找指定目录下的 iceland 文件包
@@ -51,17 +40,12 @@ public struct DocumentManager {
     }
     
     public func setCover(_ image: UIImage?, url: URL) {
-        let service = self.editorContext.request(url: url)
+        let service = self._editorContext.request(url: url)
         service.open { [service] _ in
             service.cover = image
             
             service.save(completion: { _ in
-                self.eventObserver.emit(ChangeDocumentCoverEvent(url: url, image: image))
-//                DispatchQueue.main.async {
-//                    NotificationCenter.default.post(name: DocumentManagerNotification.didChangeDocumentCover,
-//                                                    object: nil,
-//                                                    userInfo: [DocumentManagerNotification.keyDocumentURL: url])
-//                }
+                self._eventObserver.emit(ChangeDocumentCoverEvent(url: url, image: image))
             })
         }
     }
@@ -70,7 +54,7 @@ public struct DocumentManager {
         return UIImage(contentsOfFile: url.coverURL.path)
     }
     
-    private func createFolderIfNeeded(url: URL) -> URL {
+    private func _createFolderIfNeeded(url: URL) -> URL {
         let folderURL = url.convertoFolderURL
         var isDIR = ObjCBool(true)
         if !Foundation.FileManager.default.fileExists(atPath: folderURL.path, isDirectory: &isDIR) {
@@ -86,7 +70,7 @@ public struct DocumentManager {
                         completion: ((URL?) -> Void)? = nil) {
         var newURL: URL = URL.documentBaseURL.appendingPathComponent(title).appendingPathExtension(Document.fileExtension)
         if let below = below {
-            let folderURL = self.createFolderIfNeeded(url: below)
+            let folderURL = self._createFolderIfNeeded(url: below)
             newURL = folderURL.appendingPathComponent(title).appendingPathExtension(Document.fileExtension)
         }
         
@@ -104,10 +88,7 @@ public struct DocumentManager {
         document.save(to: newURL, for: UIDocument.SaveOperation.forCreating) { [document] success in
             DispatchQueue.main.async {
                 if success {
-                    self.eventObserver.emit(AddDocumentEvent(url: newURL))
-//                    NotificationCenter.default.post(name: DocumentManagerNotification.didAddNewDocument,
-//                                                    object: nil,
-//                                                    userInfo: [DocumentManagerNotification.keyDocumentURL: newURL])
+                    self._eventObserver.emit(AddDocumentEvent(url: newURL))
                     completion?(newURL)
                 } else {
                     completion?(nil)
@@ -126,7 +107,7 @@ public struct DocumentManager {
         // 如果有子文件, 先删除子文件
         if fm.fileExists(atPath: subFolder.path, isDirectory: &isDir) {
             // 关闭文件夹下的文件
-            self.editorContext.closeIfOpen(dir: subFolder) {
+            self._editorContext.closeIfOpen(dir: subFolder) {
                 // 先删除子文件中的文件
                 subFolder.delete { error in
                     if let error = error {
@@ -134,21 +115,17 @@ public struct DocumentManager {
                             completion?(error)
                         }
                     } else {
-                        DispatchQueue.main.async {
-                            self.eventObserver.emit(DeleteDocumentEvent(url: subFolder))
-//                            NotificationCenter.default.post(name: DocumentManagerNotification.didDeleteDocument, object: nil, userInfo: [DocumentManagerNotification.keyDocumentURL: subFolder])
-                        }
+                        self._eventObserver.emit(DeleteDocumentEvent(url: subFolder))
                         
                         // 然后在删除此文件
-                        self.editorContext.closeIfOpen(url: url, complete: {
+                        self._editorContext.closeIfOpen(url: url, complete: {
                             url.delete { error in
                                 DispatchQueue.main.async {
                                     // 执行回调
                                     completion?(error)
                                     // 如果没有失败，则通知外部，此文件已删除
                                     if error == nil {
-                                        self.eventObserver.emit(DeleteDocumentEvent(url: url))
-//                                        NotificationCenter.default.post(name: DocumentManagerNotification.didDeleteDocument, object: nil, userInfo: [DocumentManagerNotification.keyDocumentURL: url])
+                                        self._eventObserver.emit(DeleteDocumentEvent(url: url))
                                     }
                                 }
                             }
@@ -158,15 +135,14 @@ public struct DocumentManager {
             }
         // 如果没有子文件夹，直接删除
         } else {
-            self.editorContext.closeIfOpen(url: url) {
+            self._editorContext.closeIfOpen(url: url) {
                 url.delete { error in
                     DispatchQueue.main.async {
                         // 执行回调
                         completion?(error)
                         if error == nil {
                             // 如果没有失败，则通知外部，此文件已删除
-                            self.eventObserver.emit(DeleteDocumentEvent(url: url))
-//                            NotificationCenter.default.post(name: DocumentManagerNotification.didDeleteDocument, object: nil, userInfo: [DocumentManagerNotification.keyDocumentURL: url])
+                            self._eventObserver.emit(DeleteDocumentEvent(url: url))
                         }
                     }
                 }
@@ -181,7 +157,7 @@ public struct DocumentManager {
                 failure: @escaping (Error) -> Void) {
         var newURL: URL = url
         if let below = below {
-            let folderURL = self.createFolderIfNeeded(url: below)
+            let folderURL = self._createFolderIfNeeded(url: below)
             newURL = folderURL.appendingPathComponent(to).appendingPathExtension(Document.fileExtension)
         } else {
             newURL.deleteLastPathComponent()
@@ -206,7 +182,7 @@ public struct DocumentManager {
                             // 通知文件名更改
                             DispatchQueue.main.async {
                                 completion(newURL)
-                                self.eventObserver.emit(RenameDocumentEvent(oldUrl: url, newUrl: newURL))
+                                self._eventObserver.emit(RenameDocumentEvent(oldUrl: url, newUrl: newURL))
                             }
                         }
                     }
@@ -214,7 +190,7 @@ public struct DocumentManager {
                     // 通知文件名更改
                     DispatchQueue.main.async {
                         completion(newURL)
-                        self.eventObserver.emit(RenameDocumentEvent(oldUrl: url, newUrl: newURL))
+                        self._eventObserver.emit(RenameDocumentEvent(oldUrl: url, newUrl: newURL))
                     }
                 }
             }
@@ -226,7 +202,7 @@ public struct DocumentManager {
             DispatchQueue.main.async {
                 if error == nil {
                     complete(url!)
-                    self.eventObserver.emit(AddDocumentEvent(url: url!))
+                    self._eventObserver.emit(AddDocumentEvent(url: url!))
                 } else {
                     failure(error!)
                 }

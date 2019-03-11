@@ -33,9 +33,9 @@ public class AudioPlayer: NSObject {
     
     public var isReady: Bool = false
     
-    private var player: AVAudioPlayer!
+    private var _player: AVAudioPlayer!
     
-    private let audioSession: AVAudioSession = AVAudioSession.sharedInstance()
+    private let _audioSession: AVAudioSession = AVAudioSession.sharedInstance()
     
     public override init() {
         super.init()
@@ -50,13 +50,13 @@ public class AudioPlayer: NSObject {
     public func getReady() {
         do {
             if let url = self.url {
-                try audioSession.setCategory(AVAudioSession.Category.playAndRecord, mode: AVAudioSession.Mode.default, options: AVAudioSession.CategoryOptions.defaultToSpeaker)
-                try audioSession.setActive(true)
+                try _audioSession.setCategory(AVAudioSession.Category.playAndRecord, mode: AVAudioSession.Mode.default, options: AVAudioSession.CategoryOptions.defaultToSpeaker)
+                try _audioSession.setActive(true)
                 
-                try self.player = AVAudioPlayer(contentsOf: url)
-                self.player.delegate = self
+                try self._player = AVAudioPlayer(contentsOf: url)
+                self._player.delegate = self
                 
-                if self.player.prepareToPlay() {
+                if self._player.prepareToPlay() {
                     self.isReady = true
                     self.delegate?.playerDidReadyToPlay()
                 } else {
@@ -72,8 +72,8 @@ public class AudioPlayer: NSObject {
     
     public func start() {
         guard isReady else { return }
-        if !self.player.isPlaying {
-            self.player.play()
+        if !self._player.isPlaying {
+            self._player.play()
             self.delegate?.playerDidStartPlaying()
         }
     }
@@ -81,24 +81,24 @@ public class AudioPlayer: NSObject {
     public func `continue`() {
         guard isReady else { return }
 
-        self.player.play()
+        self._player.play()
         self.delegate?.playerDidContinuePlaying()
     }
     
     public func pause() {
-        if self.player.isPlaying {
-            self.player.pause()
+        if self._player.isPlaying {
+            self._player.pause()
             self.delegate?.playerDidPaused()
         }
     }
     
     public func stop() {
-        if self.player.isPlaying {
-            self.player.pause()
+        if self._player.isPlaying {
+            self._player.pause()
         }
         
-        self.player.stop()
-        self.player.currentTime = 0
+        self._player.stop()
+        self._player.currentTime = 0
         self.delegate?.playerDidStopPlaying()
     }
 }
@@ -134,7 +134,7 @@ extension AudioPlayer: AVAudioPlayerDelegate {
     }
     
     public func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
-        self.player.stop()
+        self._player.stop()
         self.delegate?.playerDidStopPlaying()
         if !flag {
             self.delegate?.playerDidFail(with: AudioPlayerError.failToEnd)

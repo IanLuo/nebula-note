@@ -12,15 +12,14 @@ public class EditorContext {
     
     public init(eventObserver: EventObserver) {
          self.recentFilesManager = RecentFilesManager(eventObserver: eventObserver)
-        self.eventObserver = eventObserver
+        self._eventObserver = eventObserver
     }
     
     public let recentFilesManager: RecentFilesManager
-    private let eventObserver: EventObserver
     
-    private var cachedServiceInstances: [URL: EditorService] = [:]
-    
-    private let editingQueue: DispatchQueue = DispatchQueue(label: "editor.doing.editing")
+    private let _eventObserver: EventObserver
+    private var _cachedServiceInstances: [URL: EditorService] = [:]
+    private let _editingQueue: DispatchQueue = DispatchQueue(label: "editor.doing.editing")
     
     public func request(url: URL) -> EditorService {
         var url = url.wrapperURL
@@ -30,24 +29,24 @@ public class EditorContext {
         
         // 打开文件时， 添加到最近使用的文件
         self.recentFilesManager.addRecentFile(url: url, lastLocation: 0) { [weak self] in
-            self?.eventObserver.emit(OpenDocumentEvent(url: url))
+            self?._eventObserver.emit(OpenDocumentEvent(url: url))
         }
         
-        if let editorInstance = self.cachedServiceInstances[url] {
+        if let editorInstance = self._cachedServiceInstances[url] {
             return editorInstance
         } else {
-            let newService = EditorService(url: url, queue: self.editingQueue, eventObserver: self.eventObserver)
-            self.cachedServiceInstances[url] = newService
+            let newService = EditorService(url: url, queue: self._editingQueue, eventObserver: self._eventObserver)
+            self._cachedServiceInstances[url] = newService
             return newService
         }
     }
     
     public func closeIfOpen(url: URL, complete: @escaping () -> Void) {
-        if let service = self.cachedServiceInstances[url] {
+        if let service = self._cachedServiceInstances[url] {
             
             if service.documentState != .closed {
                 service.close { _ in
-                    self.cachedServiceInstances[url] = nil
+                    self._cachedServiceInstances[url] = nil
                     complete()
                 }
             } else {
@@ -64,14 +63,14 @@ public class EditorContext {
         let relatePath = dir.documentRelativePath
         
         queue.async {
-            for (url, service) in self.cachedServiceInstances {
+            for (url, service) in self._cachedServiceInstances {
                 dispatchGroup.enter()
                 if url.path.contains(relatePath) {
                     if service.documentState != .closed {
                         DispatchQueue.main.async {
                             service.close { _ in
                                 queue.async {
-                                    self.cachedServiceInstances[url] = nil
+                                    self._cachedServiceInstances[url] = nil
                                     dispatchGroup.leave()
                                 }
                             }

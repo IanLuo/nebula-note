@@ -8,6 +8,11 @@
 
 import Foundation
 
+public enum BlockType {
+    case quote
+    case src
+}
+
 public class Token {
     public var offset: Int = 0 {
         didSet {
@@ -35,6 +40,32 @@ public class Token {
         self.offset += offset
     }
 }
+
+// MARK: - Block
+
+public class BlockToken: Token {
+    public let blockType: BlockType
+    fileprivate init(range: NSRange, name: String, data: [String: NSRange], blockType: BlockType) {
+        self.blockType = blockType
+        super.init(range: range, name: name, data: data)
+    }
+}
+
+public class BlockBeginToken: BlockToken {
+    public weak var endToken: BlockEndToken?
+    public override init(range: NSRange, name: String, data: [String: NSRange], blockType: BlockType) {
+        super.init(range: range, name: name, data: data, blockType: blockType)
+    }
+}
+
+public class BlockEndToken: BlockToken {
+    public weak var beginToken: BlockBeginToken?
+    public override init(range: NSRange, name: String, data: [String: NSRange], blockType: BlockType) {
+        super.init(range: range, name: name, data: data, blockType: blockType)
+    }
+}
+
+// MARK: - Heading
 
 public class HeadingToken: Token {
     /// 当前的 heading 的 planning TODO|DONE|CANCELD 等

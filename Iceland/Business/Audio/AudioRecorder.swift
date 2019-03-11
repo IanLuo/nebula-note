@@ -29,17 +29,17 @@ public protocol AudioRecorderDelegate: class {
 }
 
 public class AudioRecorder: NSObject {
-    private var recorder: AVAudioRecorder!
-    private let url: URL
-    private let settings: [String: Any]
-    private let audioSession = AVAudioSession.sharedInstance()
-    private var meteringTimer: Timer?
+    private var _recorder: AVAudioRecorder!
+    private let _url: URL
+    private let _settings: [String: Any]
+    private let _audioSession = AVAudioSession.sharedInstance()
+    private var _meteringTimer: Timer?
     
     public var isReady: Bool = false
 
     public init(url: URL) {
-        self.url = url
-        self.settings = [AVFormatIDKey: kAudioFormatMPEG4AAC,
+        self._url = url
+        self._settings = [AVFormatIDKey: kAudioFormatMPEG4AAC,
                          AVSampleRateKey: 44100,
                          AVNumberOfChannelsKey: 1]
         
@@ -53,32 +53,32 @@ public class AudioRecorder: NSObject {
     }
     
     public func startUpdateMetering() {
-        self.recorder.isMeteringEnabled = true
-        self.meteringTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: { _ in
-            self.recorder.updateMeters()
-            let power = self.recorder.averagePower(forChannel: 0)
+        self._recorder.isMeteringEnabled = true
+        self._meteringTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: { _ in
+            self._recorder.updateMeters()
+            let power = self._recorder.averagePower(forChannel: 0)
             self.delegate?.recorderDidMeterChanged(meter: power)
         })
     }
     
-    private func stopUpdateMetering() {
-        self.recorder.isMeteringEnabled = false
-        self.meteringTimer?.invalidate()
-        self.meteringTimer = nil
+    private func _stopUpdateMetering() {
+        self._recorder.isMeteringEnabled = false
+        self._meteringTimer?.invalidate()
+        self._meteringTimer = nil
     }
     
     public func getReady() {
         AVAudioSession.sharedInstance().requestRecordPermission () { [unowned self] allowed in
             if allowed {
                 do {
-                    try self.audioSession.setCategory(AVAudioSession.Category.playAndRecord, mode: AVAudioSession.Mode.default, options: AVAudioSession.CategoryOptions.defaultToSpeaker)
-                    try self.audioSession.setActive(true)
+                    try self._audioSession.setCategory(AVAudioSession.Category.playAndRecord, mode: AVAudioSession.Mode.default, options: AVAudioSession.CategoryOptions.defaultToSpeaker)
+                    try self._audioSession.setActive(true)
                     
-                    try self.recorder = AVAudioRecorder(url: self.url, settings: self.settings)
-                    self.recorder.delegate = self
+                    try self._recorder = AVAudioRecorder(url: self._url, settings: self._settings)
+                    self._recorder.delegate = self
                     
-                    log.info("start recording to: \(self.url)")
-                    if self.recorder.prepareToRecord() {
+                    log.info("start recording to: \(self._url)")
+                    if self._recorder.prepareToRecord() {
                         self.isReady = true
                         self.delegate?.recorderDidReadyToRecord()
                     } else {
@@ -96,14 +96,14 @@ public class AudioRecorder: NSObject {
     public weak var delegate: AudioRecorderDelegate?
     
     public func delete() {
-        if !self.recorder.isRecording {
-            self.recorder.deleteRecording()
+        if !self._recorder.isRecording {
+            self._recorder.deleteRecording()
         }
     }
     
     public func start() {
         if self.isReady {
-            self.recorder.record()
+            self._recorder.record()
             self.delegate?.recorderDidStartRecording()
             self.startUpdateMetering()
         } else {
@@ -112,16 +112,16 @@ public class AudioRecorder: NSObject {
     }
     
     public func pause() {
-        if self.recorder.isRecording {
-            self.stopUpdateMetering()
-            self.recorder.pause()
+        if self._recorder.isRecording {
+            self._stopUpdateMetering()
+            self._recorder.pause()
             self.delegate?.recorderDidPaused()
         }
     }
     
     public func stop() {
-        self.stopUpdateMetering()
-        self.recorder.stop()
+        self._stopUpdateMetering()
+        self._recorder.stop()
     }
 }
 
@@ -150,8 +150,8 @@ extension AudioRecorder: AVAudioRecorderDelegate {
     }
     
     public func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
-        self.stopUpdateMetering()
-        self.delegate?.recorderDidStopRecording(url: self.url)
+        self._stopUpdateMetering()
+        self.delegate?.recorderDidStopRecording(url: self._url)
         if !flag {
             self.delegate?.recorderDidFail(with: AudioRecorderError.audioEndFailed)
         }

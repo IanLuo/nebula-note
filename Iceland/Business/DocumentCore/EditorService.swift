@@ -13,45 +13,43 @@ import Storage
 // MARK: - Service - 
 
 public class EditorService {
-    private let editorController: EditorController
-    fileprivate var document: Document!
-    private lazy var trimmer: OutlineTextTrimmer = OutlineTextTrimmer(parser: OutlineParser())
-    
-    private let eventObserver: EventObserver
-    
-    private var queue: DispatchQueue!
+    private let _editorController: EditorController
+    fileprivate var _document: Document!
+    private lazy var _trimmer: OutlineTextTrimmer = OutlineTextTrimmer(parser: OutlineParser())
+    private let _eventObserver: EventObserver
+    private var _queue: DispatchQueue!
     
     internal init(url: URL, queue: DispatchQueue, eventObserver: EventObserver) {
-        self.eventObserver = eventObserver
-        self.editorController = EditorController(parser: OutlineParser(), eventObserver: eventObserver, attachmentManager: AttachmentManager())
-        self.document = Document(fileURL: url)
-        self.queue = queue
+        self._eventObserver = eventObserver
+        self._editorController = EditorController(parser: OutlineParser(), eventObserver: eventObserver, attachmentManager: AttachmentManager())
+        self._document = Document(fileURL: url)
+        self._queue = queue
         
-        self.editorController.delegate = self
+        self._editorController.delegate = self
     }
 
     public var container: NSTextContainer {
-        return editorController.textContainer
+        return _editorController.textContainer
     }
     
     public func markAsContentUpdated() {
-        self.document.updateContent(editorController.string)
+        self._document.updateContent(_editorController.string)
     }
     
     public func toggleContentAction(command: DocumentContentCommand) {
-        if self.editorController.toggleAction(command: command) {
-            self.document.updateContent(editorController.string)
+        if self._editorController.toggleAction(command: command) {
+            self._document.updateContent(_editorController.string)
         }
     }
     
     public func start(complete: @escaping (Bool, EditorService) -> Void) {
-        queue.async { [unowned self] in
-            if self.document.documentState == UIDocument.State.normal {
+        _queue.async { [unowned self] in
+            if self._document.documentState == UIDocument.State.normal {
                 complete(true, self)
             } else {
-                self.document.open {
+                self._document.open {
                     if $0 {
-                        self.editorController.string = self.document.string
+                        self._editorController.string = self._document.string
                         DispatchQueue.main.async {
                             complete(true, self)
                         }
@@ -67,55 +65,55 @@ public class EditorService {
     }
     
     public var documentState: UIDocument.State {
-        return self.document.documentState
+        return self._document.documentState
     }
     
     public var cover: UIImage? {
         set {
-            self.document.updateCover(newValue)
+            self._document.updateCover(newValue)
         }
-        get { return self.document.cover }
+        get { return self._document.cover }
     }
     
     public func trim(string: String, range: NSRange) -> String {
-        return self.trimmer.trim(string: string, range: range)
+        return self._trimmer.trim(string: string, range: range)
     }
     
     public var headings: [HeadingToken] {
-        return self.editorController.getParagraphs()
+        return self._editorController.getParagraphs()
     }
     
     public var string: String {
-        get { return editorController.string }
-        set { self.replace(text: newValue, range: NSRange(location: 0, length: editorController.string.count)) }
+        get { return _editorController.string }
+        set { self.replace(text: newValue, range: NSRange(location: 0, length: _editorController.string.count)) }
     }
     
     public func replace(text: String, range: NSRange) {
-        self.editorController.replace(text: text, in: range)
+        self._editorController.replace(text: text, in: range)
         self.save()
     }
     
     public var fileURL: URL {
-        return document.fileURL
+        return _document.fileURL
     }
     
     public func open(completion:((String?) -> Void)? = nil) {
-        self.queue.async { [weak self] in
+        self._queue.async { [weak self] in
             // 如果文档已经打开，则直接返回
-            if self?.document.documentState == .normal {
+            if self?._document.documentState == .normal {
                 guard let strongSelf = self else { return }
                 DispatchQueue.main.async {
-                    completion?(strongSelf.document.string)
+                    completion?(strongSelf._document.string)
                 }
             } else {
                 // 打开文档，触发解析，然后返回
-                self?.document.open { (isOpenSuccessfully: Bool) in
+                self?._document.open { (isOpenSuccessfully: Bool) in
                     guard let strongSelf = self else { return }
                     
                     if isOpenSuccessfully {
                         DispatchQueue.main.async {
-                            strongSelf.editorController.string = strongSelf.document.string // 触发解析
-                            completion?(strongSelf.document.string)
+                            strongSelf._editorController.string = strongSelf._document.string // 触发解析
+                            completion?(strongSelf._document.string)
                         }
                     } else {
                         DispatchQueue.main.async {
@@ -130,26 +128,26 @@ public class EditorService {
     public func insert(content: String, headingLocation: Int) {
         guard let heading = self.heading(at: headingLocation) else { return }
         
-        editorController.insertToParagraph(at: heading, content: content)
+        _editorController.insertToParagraph(at: heading, content: content)
         
-        self.document.updateContent(editorController.string)
+        self._document.updateContent(_editorController.string)
     }
     
     public func close(completion:((Bool) -> Void)? = nil) {
-        document.close {
+        _document.close {
             completion?($0)
         }
     }
     
     public func rename(newTitle: String, completion: ((Error?) -> Void)? = nil) {
-        let newURL = self.document.fileURL.deletingLastPathComponent().appendingPathComponent(newTitle).appendingPathExtension(Document.fileExtension)
-        document.fileURL.rename(url: newURL, completion: completion)
+        let newURL = self._document.fileURL.deletingLastPathComponent().appendingPathComponent(newTitle).appendingPathExtension(Document.fileExtension)
+        _document.fileURL.rename(url: newURL, completion: completion)
     }
     
     public func save(completion: ((Bool) -> Void)? = nil) {
-        queue.async {
-            self.document.string = self.editorController.string
-            self.document.save(to: self.document.fileURL, for: UIDocument.SaveOperation.forOverwriting) { success in
+        _queue.async {
+            self._document.string = self._editorController.string
+            self._document.save(to: self._document.fileURL, for: UIDocument.SaveOperation.forOverwriting) { success in
                 
                 DispatchQueue.main.async {
                     completion?(success)
@@ -159,14 +157,14 @@ public class EditorService {
     }
     
     public func delete(completion: ((Error?) -> Void)? = nil) {
-        self.document.fileURL.delete {
+        self._document.fileURL.delete {
             completion?($0)
         }
     }
     
     public func find(target: String, found: @escaping ([NSRange]) -> Void) throws {
         let matcher = try NSRegularExpression(pattern: "\(target)", options: .caseInsensitive)
-        let string = self.document.string
+        let string = self._document.string
         var matchedRanges: [NSRange] = []
         
         DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
@@ -185,7 +183,7 @@ public class EditorService {
     
     // 返回 location 所在的 heading
     internal func heading(at location: Int) -> HeadingToken? {
-        for heading in self.editorController.getParagraphs() {
+        for heading in self._editorController.getParagraphs() {
             if heading.paragraphRange.contains(location) {
                 return heading
             }
@@ -194,7 +192,7 @@ public class EditorService {
     }
     
     internal func headingList() -> [HeadingToken] {
-        return self.editorController.getParagraphs()
+        return self._editorController.getParagraphs()
     }
 }
 
@@ -204,7 +202,7 @@ extension EditorService: EditorControllerDelegate {
     }
     
     public func headingChanged(newHeadings: [HeadingToken], oldHeadings: [HeadingToken]) {
-        self.eventObserver.emit(DocumentHeadingChangeEvent(url: self.fileURL,
+        self._eventObserver.emit(DocumentHeadingChangeEvent(url: self.fileURL,
                                                            oldHeadings: oldHeadings,
                                                            newHeadings: newHeadings))
     }

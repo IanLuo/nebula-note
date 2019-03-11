@@ -10,8 +10,8 @@ import Foundation
 
 extension OutlineParser {
     public struct ParseeTypes: OptionSet {
-        public init(rawValue: Int) { self.rawValue = rawValue }
-        public let rawValue: Int
+        public init(rawValue: Int64) { self.rawValue = rawValue }
+        public let rawValue: Int64
         
         public static let heading: ParseeTypes = ParseeTypes(rawValue: 1 << 0)
         public static let checkbox: ParseeTypes = ParseeTypes(rawValue: 1 << 1)
@@ -23,8 +23,12 @@ extension OutlineParser {
         public static let link: ParseeTypes = ParseeTypes(rawValue: 1 << 7)
         public static let quote: ParseeTypes = ParseeTypes(rawValue: 1 << 8)
         public static let footnote: ParseeTypes = ParseeTypes(rawValue: 1 << 9)
+        public static let codeBlockBegin: ParseeTypes = ParseeTypes(rawValue: 1 << 10)
+        public static let codeBlockEnd: ParseeTypes = ParseeTypes(rawValue: 1 << 11)
+        public static let quoteBlockBegin: ParseeTypes = ParseeTypes(rawValue: 1 << 12)
+        public static let quoteBlockEnd: ParseeTypes = ParseeTypes(rawValue: 1 << 13)
         
-        public static let all: ParseeTypes = [.heading, .checkbox, orderedList, unorderedList, codeBlock, seperator, attachment, link, .quote, .footnote]
+        public static let all: ParseeTypes = [.heading, .checkbox, orderedList, unorderedList, codeBlock, seperator, attachment, link, .quote, .footnote, .codeBlockBegin, .codeBlockEnd, .quoteBlockBegin, .quoteBlockEnd]
         public static let onlyHeading: ParseeTypes = [.checkbox, orderedList, unorderedList, codeBlock, seperator, attachment, link, .quote, .footnote]
     }
     
@@ -92,6 +96,8 @@ extension OutlineParser {
             }
             
             public struct CodeBlock {
+                public static let begin = "begin"
+                public static let end = "end"
                 public static let language = "language"
                 public static let content = "content"
             }
@@ -127,6 +133,8 @@ extension OutlineParser {
             }
             
             public struct Quote {
+                public static let begin = "begin"
+                public static let end = "end"
                 public static let content = "content"
             }
             
@@ -157,6 +165,16 @@ extension OutlineParser {
             public static let attachment =      "\\#\\+ATTACHMENT\\:(image|video|audio|sketch|location)=([A-Z0-9\\-]+)" // like: #+ATTACHMENT:LKSJDLFJSDLJFLSDF)
             public static let quote =           "^[\\t ]*\\#\\+BEGIN\\_QUOTE\\n([^\\#\\+END\\_QUOTE]*)\\n\\s*\\#\\+END\\_QUOTE[\\t ]*\\n"
             public static let footnote =        "" // TODO: footnote regex pattern imp
+        }
+        
+        public struct CodeBlock {
+            public static let begin =           "^[\\t ]*\\#\\+BEGIN\\_SRC( [\(character)\\.]*)?\\n"
+            public static let end =             "\\#\\+END\\_SRC[\\t ]*\\n"
+        }
+        
+        public struct QuoteBlock {
+            public static let begin =           "^[\\t ]*\\#\\+BEGIN\\_QUOTE\\n"
+            public static let end =             "\\#\\+END\\_QUOTE[\\t ]*\\n"
         }
         
         public struct Element {

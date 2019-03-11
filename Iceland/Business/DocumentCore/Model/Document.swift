@@ -42,10 +42,10 @@ public class Document: UIDocument {
     public static let coverFileExtension = "jpg"
     public static let logsFileExtension = "log"
     
-    var string: String = ""
-    var logs: String = ""
-    var cover: UIImage?
-    var wrapper: FileWrapper?
+    public var string: String = ""
+    public var logs: String = ""
+    public var cover: UIImage?
+    public var wrapper: FileWrapper?
     
     public static let contentKey: String = "content.org"
     public static let coverKey: String = "cover.jpg"

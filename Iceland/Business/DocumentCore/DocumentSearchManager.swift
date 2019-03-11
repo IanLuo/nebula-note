@@ -75,8 +75,8 @@ public struct DocumentSearchResult {
 }
 
 public class DocumentSearchHeadingUpdateEvent: Event {
-    let oldHeadings: [DocumentSearchResult]
-    let newHeadings: [DocumentSearchResult]
+    public let oldHeadings: [DocumentSearchResult]
+    public let newHeadings: [DocumentSearchResult]
     public init(oldHeadings: [DocumentSearchResult], newHeadings: [DocumentSearchResult]) {
         self.oldHeadings = oldHeadings
         self.newHeadings = newHeadings

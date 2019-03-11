@@ -24,27 +24,27 @@ public class RecentDocumentInfo: DocumentInfo, Codable {
         super.init(wrapperURL: wrapperURL)
     }
     
-    private enum CodingKeys: CodingKey {
+    private enum _CodingKeys: CodingKey {
         case lastRequestTime
         case path
         case location
     }
     
     public required init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let container = try decoder.container(keyedBy: _CodingKeys.self)
         
-        self.lastRequestTime = try container.decode(Date.self, forKey: CodingKeys.lastRequestTime)
-        self.location = try container.decode(Int.self, forKey: CodingKeys.location)
-        let relatedPath = try container.decode(String.self, forKey: CodingKeys.path)
+        self.lastRequestTime = try container.decode(Date.self, forKey: _CodingKeys.lastRequestTime)
+        self.location = try container.decode(Int.self, forKey: _CodingKeys.location)
+        let relatedPath = try container.decode(String.self, forKey: _CodingKeys.path)
 
         super.init(wrapperURL: URL.documentBaseURL.appendingPathComponent(relatedPath))
     }
     
     public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(self.lastRequestTime, forKey: CodingKeys.lastRequestTime)
-        try container.encode(self.location, forKey: CodingKeys.location)
-        try container.encode(url.documentRelativePath, forKey: CodingKeys.path)
+        var container = encoder.container(keyedBy: _CodingKeys.self)
+        try container.encode(self.lastRequestTime, forKey: _CodingKeys.lastRequestTime)
+        try container.encode(self.location, forKey: _CodingKeys.location)
+        try container.encode(url.documentRelativePath, forKey: _CodingKeys.path)
     }
 }
 

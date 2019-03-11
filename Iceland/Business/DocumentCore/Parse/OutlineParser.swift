@@ -14,7 +14,7 @@ public class OutlineParser {
     
     public init() {}
     
-    private func safeSubstring(with str: String, range: NSRange) -> String {
+    private func _safeSubstring(with str: String, range: NSRange) -> String {
         if range.location != Int.max {
             return (str as NSString).substring(with: range)
         }

@@ -26,7 +26,7 @@ public struct Attachment: Codable {
     }
     
     /// 序列化的 key
-    private enum CodingKeys: CodingKey {
+    private enum _CodingKeys: CodingKey {
         case url
         case date
         case kind
@@ -52,7 +52,7 @@ public struct Attachment: Codable {
     // MARK: - 序列化反序列化
     
     public init(from decoder: Decoder) throws {
-        let values = try decoder.container(keyedBy: CodingKeys.self)
+        let values = try decoder.container(keyedBy: _CodingKeys.self)
         kind = try Attachment.Kind(rawValue: values.decode(String.self, forKey: .kind))!
         date = try values.decode(Date.self, forKey: .date)
         
@@ -63,7 +63,7 @@ public struct Attachment: Codable {
     }
     
     public func encode(to encoder: Encoder) throws {
-        var encoder = encoder.container(keyedBy: CodingKeys.self)
+        var encoder = encoder.container(keyedBy: _CodingKeys.self)
         try encoder.encode(kind.rawValue, forKey: .kind)
         
         let relativeFileURL = url.lastPathComponent // 只保存文件名的部分，文件的位置在同步之后会改变
