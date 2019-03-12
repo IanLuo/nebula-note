@@ -49,6 +49,7 @@ public struct OutlineAttribute {
     }
     
     public struct Heading {
+        public static let content: NSAttributedString.Key = NSAttributedString.Key("heading-content")
         public static let level: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_HEADING_LEVEL)
         public static let folded: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_HEADING_FOLDED)
         public static let foldingFolded: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_HEADING_FOLD_FOLDED)

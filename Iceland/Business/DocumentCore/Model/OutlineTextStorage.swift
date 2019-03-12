@@ -44,12 +44,14 @@ public class OutlineTextStorage: TextStorage {
     public weak var outlineDelegate: OutlineTextStorageDelegate?
     
     /// 用于保存已经找到的 heading
-    public var savedHeadings: [HeadingToken] = []
+    private var _savedHeadings: WeakArray<HeadingToken> = WeakArray()
+    private var _codeBlocks: WeakArray<BlockToken> = WeakArray()
+    private var _quoteBlocks: WeakArray<BlockToken> = WeakArray()
     
     /// 当前交互的文档位置，当前解析部分相对于文档开始的偏移量，不同于 currentParseRange 中的 location
     public var currentLocation: Int = 0
     
-    public var currentHeading: HeadingToken?
+    public weak var currentHeading: HeadingToken?
     
     /// 当前的解析范围，需要进行解析的字符串范围，用于对 item，索引 等缓存数据进行重新组织
     public var currentParseRange: NSRange?
@@ -62,18 +64,21 @@ public class OutlineTextStorage: TextStorage {
             }
         }
     
+    public var headingTokens: [HeadingToken] {
+        return self._savedHeadings.allObjects
+    }
+    
     /// 当前所在编辑位置的最外层，或者最前面的 item 类型, 某些 item 在某些编辑操作是会有特殊行为，例如:
     /// 当前 item 为 unordered list 时，换行将会自动添加一个新的 unordered list 前缀
     public var currentItem: Token? {
-        return self.item(after: self.currentLocation)
+        return self.token(after: self.currentLocation)
     }
     
     /// 所有解析获得的 item, 对应当前的文档结构解析状态
     public var allTokens: [Token] = []
     
     // 用于解析过程中临时数据处理
-    private var _tempParsingTokenResult: [[String: NSRange]] = []
-    private var _tempParsingHeadingTokenResult: [[String: NSRange]] = []
+    private var _tempParsingTokenResult: [Token] = []
     // 某些范围要忽略掉文字的样式，比如 link 内的文字样式
     private var _ignoreTextMarkRanges: [NSRange] = []
 }
@@ -90,7 +95,7 @@ extension OutlineTextStorage: ContentUpdatingProtocol {
         self.currentLocation = editedRange.location
 
         // 更新 item 索引缓存
-        self.updateItemIndexAndRange(delta: self.changeInLength)
+        self.updateTokenRangeOffset(delta: self.changeInLength)
 
         // 调整需要解析的字符串范围
         self._adjustParseRange(editedRange)
@@ -122,8 +127,8 @@ extension OutlineTextStorage: ContentUpdatingProtocol {
 
 // MARK: -
 extension OutlineTextStorage {
-    /// 找到对应位置之后的第一个 item
-    public func item(after: Int) -> Token? {
+    /// 找到对应位置之后的第一个 token
+    public func token(after: Int) -> Token? {
         for item in self.allTokens {
             if item.range.upperBound >= after {
                 return item
@@ -134,7 +139,7 @@ extension OutlineTextStorage {
     }
     
     /// 获取范围内的 item range 的索引
-    public func indexsOfItem(in: NSRange) -> [Int]? {
+    public func indexsOfToken(in: NSRange) -> [Int]? {
         var items: [Int] = []
         for (index, item) in self.allTokens.enumerated() {
             if item.range.location >= `in`.location &&
@@ -146,20 +151,14 @@ extension OutlineTextStorage {
         return items.count > 0 ? items : nil
     }
     
-    public func updateItemIndexAndRange(delta: Int) {
+    public func updateTokenRangeOffset(delta: Int) {
         self.allTokens
             .filter { $0.range.location > self.currentLocation }
             .forEach { $0.offset(delta) }
-        
-        self.savedHeadings
-            .filter { $0.range.location > self.currentLocation }
-            .forEach { $0.offset(delta) }
-        
-        self.currentHeading?.contentLength += delta
     }
     
     public func heading(contains location: Int) -> HeadingToken? {
-        for heading in self.savedHeadings {
+        for heading in self.headingTokens {
             if heading.paragraphRange.contains(location) {
                 return heading
             }
@@ -170,7 +169,8 @@ extension OutlineTextStorage {
     
     /// 更新和当前位置相关的其他信息
     public func updateCurrentInfo() {
-        guard self.savedHeadings.count > 0 else { return }
+        
+        guard self._savedHeadings.count > 0 else { return }
         
         let oldHeading = self.currentHeading
         self.currentHeading = self.heading(contains: self.currentLocation)
@@ -194,22 +194,27 @@ extension OutlineTextStorage: OutlineParserDelegate {
             }
         }
         
-        self._tempParsingTokenResult.append(contentsOf: markRanges)
         
         for dict in markRanges {
             for (key, range) in dict {
                 switch key {
                 case OutlineParser.Key.Element.TextMark.bold:
+                    self._tempParsingTokenResult.append(Token(range: range, name: key, data: dict))
                     self.addAttributes(OutlineTheme.Attributes.TextMark.bold, range: range)
                 case OutlineParser.Key.Element.TextMark.italic:
+                    self._tempParsingTokenResult.append(Token(range: range, name: key, data: dict))
                     self.addAttributes(OutlineTheme.Attributes.TextMark.italic, range: range)
                 case OutlineParser.Key.Element.TextMark.strikeThough:
+                    self._tempParsingTokenResult.append(Token(range: range, name: key, data: dict))
                     self.addAttributes(OutlineTheme.Attributes.TextMark.strikeThough, range: range)
                 case OutlineParser.Key.Element.TextMark.code:
+                    self._tempParsingTokenResult.append(Token(range: range, name: key, data: dict))
                     self.addAttributes(OutlineTheme.Attributes.TextMark.code, range: range)
                 case OutlineParser.Key.Element.TextMark.underscore:
+                    self._tempParsingTokenResult.append(Token(range: range, name: key, data: dict))
                     self.addAttributes(OutlineTheme.Attributes.TextMark.underscore, range: range)
                 case OutlineParser.Key.Element.TextMark.verbatim:
+                    self._tempParsingTokenResult.append(Token(range: range, name: key, data: dict))
                     self.addAttributes(OutlineTheme.Attributes.TextMark.verbatim, range: range)
                 default: break
                 }
@@ -218,11 +223,14 @@ extension OutlineTextStorage: OutlineParserDelegate {
     }
     
     public func didFoundLink(text: String, urlRanges: [[String : NSRange]]) {
-        self._tempParsingTokenResult.append(contentsOf: urlRanges)
-        self._ignoreTextMarkRanges.append(contentsOf: urlRanges.map { $0[OutlineParser.Key.Element.link]! })
         
         urlRanges.forEach { urlRangeData in
+            
+            self._ignoreTextMarkRanges.append(contentsOf: urlRanges.map { $0[OutlineParser.Key.Element.link]! })
+            
             if let range = urlRangeData[OutlineParser.Key.Element.link] {
+                self._tempParsingTokenResult.append(Token(range: range, name: OutlineParser.Key.Element.link, data: urlRangeData))
+                
                 self.addAttribute(OutlineAttribute.hidden, value: OutlineAttribute.hiddenValueDefault, range: range)
             }
             urlRangeData.forEach {
@@ -241,9 +249,12 @@ extension OutlineTextStorage: OutlineParserDelegate {
     
     public func didFoundAttachment(text: String, attachmentRanges: [[String : NSRange]]) {
         attachmentRanges.forEach { rangeData in
+            
             guard let attachmentRange = rangeData[OutlineParser.Key.Node.attachment] else { return }
             guard let typeRange = rangeData[OutlineParser.Key.Element.Attachment.type] else { return }
             guard let valueRange = rangeData[OutlineParser.Key.Element.Attachment.value] else { return }
+            
+            self._tempParsingTokenResult.append(Token(range: attachmentRange, name: OutlineParser.Key.Node.attachment, data: rangeData))
             
             self.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment],
                                range: attachmentRange)
@@ -265,12 +276,16 @@ extension OutlineTextStorage: OutlineParserDelegate {
     }
     
     public func didFoundCheckbox(text: String, checkboxRanges: [[String : NSRange]]) {
-        self._tempParsingTokenResult.append(contentsOf: checkboxRanges)
         
-        checkboxRanges.forEach { checkbox in
-            for (key, range) in checkbox {
+        checkboxRanges.forEach { rangeData in
+            
+            guard let checkboxRange = rangeData[OutlineParser.Key.Node.checkbox] else { return }
+            
+            self._tempParsingTokenResult.append(Token(range: checkboxRange, name: OutlineParser.Key.Node.checkbox, data: rangeData))
+            
+            for (key, range) in rangeData {
                 if key == OutlineParser.Key.Element.Checkbox.status {
-                    self.addAttribute(OutlineAttribute.Checkbox.box, value: checkbox, range: range)
+                    self.addAttribute(OutlineAttribute.Checkbox.box, value: rangeData, range: range)
                     self.addAttribute(OutlineAttribute.Checkbox.status, value: range, range: NSRange(location: range.location, length: 1))
                     self.addAttributes([NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.spotLight,
                                         NSAttributedString.Key.font: InterfaceTheme.Font.title], range: range)
@@ -280,7 +295,6 @@ extension OutlineTextStorage: OutlineParserDelegate {
     }
     
     public func didFoundOrderedList(text: String, orderedListRnages: [[String : NSRange]]) {
-        self._tempParsingTokenResult.append(contentsOf: orderedListRnages)
         
         orderedListRnages.forEach { list in
             if let index = list[OutlineParser.Key.Element.OrderedList.index] {
@@ -290,15 +304,20 @@ extension OutlineTextStorage: OutlineParserDelegate {
             }
             
             if let range = list[OutlineParser.Key.Node.ordedList] {
+                self._tempParsingTokenResult.append(Token(range: range, name: OutlineParser.Key.Node.ordedList, data: list))
+                
                 self.addAttribute(OutlineAttribute.OrderedList.range, value: range, range: range)
             }
         }
     }
     
     public func didFoundUnOrderedList(text: String, unOrderedListRnages: [[String : NSRange]]) {
-        self._tempParsingTokenResult.append(contentsOf: unOrderedListRnages)
         
         unOrderedListRnages.forEach { list in
+            guard let listRange = list[OutlineParser.Key.Node.unordedList] else { return }
+            
+            self._tempParsingTokenResult.append(Token(range: listRange, name: OutlineParser.Key.Node.unordedList, data: list))
+            
             if let prefix = list[OutlineParser.Key.Element.UnorderedList.prefix] {
                 self.addAttributes([NSAttributedString.Key.font: InterfaceTheme.Font.title,
                                     NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.descriptive], range: prefix)
@@ -307,7 +326,13 @@ extension OutlineTextStorage: OutlineParserDelegate {
     }
     
     public func didFoundSeperator(text: String, seperatorRanges: [[String: NSRange]]) {
+        
         seperatorRanges.forEach { range in
+            
+            guard let separatorRange = range[OutlineParser.Key.Node.seperator] else { return }
+            
+            self._tempParsingTokenResult.append(Token(range: separatorRange, name: OutlineParser.Key.Node.seperator, data: range))
+            
             if let seperatorRange = range[OutlineParser.Key.Node.seperator] {
                 self.addAttributes([OutlineAttribute.hidden: 2,
                                     OutlineAttribute.showAttachment: OUTLINE_ATTRIBUTE_SEPARATOR], range: seperatorRange)
@@ -315,49 +340,86 @@ extension OutlineTextStorage: OutlineParserDelegate {
         }
     }
     
-    public func didFoundCodeBlock(text: String, codeBlockRanges: [[String : NSRange]]) {
-        self._tempParsingTokenResult.append(contentsOf: codeBlockRanges)
+    public func didFoundCodeBlockBegin(text: String, ranges: [[String : NSRange]]) {
         
-        codeBlockRanges.forEach { range in
-            if let range = range[OutlineParser.Key.Node.codeBlock] {
-                self.addAttributes([NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.descriptive,
-                                    NSAttributedString.Key.font: InterfaceTheme.Font.footnote,
-                                    NSAttributedString.Key.backgroundColor: InterfaceTheme.Color.background2], range: range)
-            }
+        ranges.forEach { rangeData in
             
-            if let content = range[OutlineParser.Key.Element.CodeBlock.content] {
-                self.addAttributes([NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.interactive,
-                                    NSAttributedString.Key.font: InterfaceTheme.Font.body], range: content)
-            }
+            guard let range = rangeData[OutlineParser.Key.Node.codeBlockBegin] else { return }
+            
+            self.addAttributes([NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.descriptive,
+                                NSAttributedString.Key.font: InterfaceTheme.Font.footnote,
+                                NSAttributedString.Key.backgroundColor: InterfaceTheme.Color.background2], range: range)
+            
+            let token = BlockBeginToken(data: rangeData, blockType: BlockType.sourceCode)
+            self._tempParsingTokenResult.append(token)
         }
     }
     
-    public func didFoundQuote(text: String, quoteRanges: [[String : NSRange]]) {
-        self._tempParsingTokenResult.append(contentsOf: quoteRanges)
+    public func didFoundCodeBlockEnd(text: String, ranges: [[String : NSRange]]) {
         
-        quoteRanges.forEach { quoteRange in
+        ranges.forEach { rangeData in
+            
+            guard let range = rangeData[OutlineParser.Key.Node.codeBlockEnd] else { return }
+            
+            self.addAttributes([NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.descriptive,
+                                NSAttributedString.Key.font: InterfaceTheme.Font.footnote,
+                                NSAttributedString.Key.backgroundColor: InterfaceTheme.Color.background2], range: range)
+            
+            let token = BlockEndToken(data: rangeData, blockType: BlockType.sourceCode)
+            self._tempParsingTokenResult.append(token)
+        }
+    }
+    
+    public func didFoundQuoteBlockBegin(text: String, ranges: [[String : NSRange]]) {
+        
+        ranges.forEach { rangeData in
+            
             let paragraph = NSMutableParagraphStyle()
             paragraph.paragraphSpacingBefore = 10
             paragraph.headIndent = 100
             
-            if let range = quoteRange[OutlineParser.Key.Node.quote] {
-                self.addAttributes([NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.descriptive,
-                                    NSAttributedString.Key.font: InterfaceTheme.Font.footnote,
-                                    NSAttributedString.Key.paragraphStyle: paragraph], range: range)
-            }
+            guard let range = rangeData[OutlineParser.Key.Node.quoteBlockBegin] else { return }
             
-            if let content = quoteRange[OutlineParser.Key.Element.Quote.content] {
-                self.addAttributes([NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.interactive,
-                                    NSAttributedString.Key.font: InterfaceTheme.Font.body], range: content)
-            }
+            self.addAttributes([NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.descriptive,
+                                NSAttributedString.Key.font: InterfaceTheme.Font.footnote,
+                                NSAttributedString.Key.paragraphStyle: paragraph], range: range)
+            
+            
+            let token = BlockBeginToken(data: rangeData, blockType: BlockType.quote)
+            self._tempParsingTokenResult.append(token)
+        }
+    }
+    
+    public func didFoundQuoteBlockEnd(text: String, ranges: [[String : NSRange]]) {
+
+        ranges.forEach { quoteRange in
+            
+            let paragraph = NSMutableParagraphStyle()
+            paragraph.paragraphSpacingBefore = 10
+            paragraph.headIndent = 100
+            
+            guard let range = quoteRange[OutlineParser.Key.Node.quoteBlockEnd] else { return }
+            
+            self.addAttributes([NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.descriptive,
+                                NSAttributedString.Key.font: InterfaceTheme.Font.footnote,
+                                NSAttributedString.Key.paragraphStyle: paragraph], range: range)
+            
+            let token = BlockEndToken(data: quoteRange, blockType: BlockType.quote)
+            self._tempParsingTokenResult.append(token)
         }
     }
     
     public func didFoundHeadings(text: String, headingDataRanges: [[String : NSRange]]) {
-        self._tempParsingTokenResult.append(contentsOf: headingDataRanges)
-        self._tempParsingHeadingTokenResult.append(contentsOf: headingDataRanges)
         
         headingDataRanges.forEach {
+            guard let headingRange = $0[OutlineParser.Key.Node.heading] else { return }
+            
+            let token = HeadingToken(data: $0)
+            
+            self._tempParsingTokenResult.append(token)
+            
+            self.addAttribute(OutlineAttribute.Heading.content, value: headingRange, range: headingRange)
+            
             if let levelRange = $0[OutlineParser.Key.Element.Heading.level] {
                 self.addAttribute(OutlineAttribute.Heading.level, value: $0, range: levelRange)
                 self.addAttribute(OutlineAttribute.hidden, value: OutlineAttribute.hiddenValueWithAttachment, range: levelRange)
@@ -404,12 +466,10 @@ extension OutlineTextStorage: OutlineParserDelegate {
     public func didStartParsing(text: String) {
         self._tempParsingTokenResult = []
         self._ignoreTextMarkRanges = []
-        self._tempParsingHeadingTokenResult = []
     }
     
     public func didCompleteParsing(text: String) {
-        self._updateItems(new: self._tempParsingTokenResult)
-        self._updateHeadings(new: self._tempParsingHeadingTokenResult)
+        self._updateTokens(new: self._tempParsingTokenResult)
         
         // 更新段落长度信息
         self._updateHeadingParagraphLength()
@@ -420,41 +480,11 @@ extension OutlineTextStorage: OutlineParserDelegate {
         print(self.debugDescription)
     }
     
-    // MARK: -
-    /// 更新找到的 heading
-    /// - Parameter newHeadings:
-    ///   新找到的 heading 数据
-    private func _updateHeadings(new headings: [[String: NSRange]]) {
-        // 如果已保存的 heading 为空，直接全部添加
-        if savedHeadings.count == 0 {
-            self.savedHeadings = headings.map { HeadingToken(data: $0) } // OutlineParser.Key.Node.heading 总是存在
-        } else {
-            // 删除 currentParsingRange 范围内包含的所有 heading, 删除后，将新的 headings 插入删除掉的位置
-            if let currentRange = self.currentParseRange {
-                var removedHeadings: [HeadingToken] = []
-                for index in self._findIntersectionTokenIndex(in: currentRange, tokens: self.savedHeadings).reversed() {
-                    removedHeadings.append(self.savedHeadings.remove(at: index))
-                }
-                
-                let newHeadingRanges = headings.map { HeadingToken(data: $0) }
-                self.savedHeadings.insert(contentsOf: newHeadingRanges, at: self._findNextTokenIndex(after: currentRange, tokens: self.savedHeadings))
-                
-                // notify everyone that using headings
-                self.outlineDelegate?.didUpdateHeadings(newHeadings: newHeadingRanges, oldHeadings: removedHeadings)
-            }
-        }
-    }
-    
     /// 更新 items 中的数据
-    private func _updateItems(new items: [[String: NSRange]]) {
-        var newItems: [Token] = []
-        items.forEach {
-            for (key, value) in $0 {
-                newItems.append(Token(range: value, name: key, data: [key: value]))
-            }
-        }
-        
-        newItems.sort { (lhs: Token, rhs: Token) -> Bool in
+    private func _updateTokens(new tokens: [Token]) {
+        var newTokens: [Token] = tokens
+
+        newTokens.sort { (lhs: Token, rhs: Token) -> Bool in
             if lhs.range.location != rhs.range.location {
                 return lhs.range.location < rhs.range.location
             } else {
@@ -463,7 +493,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
         }
         
         if self.allTokens.count == 0 {
-            self.allTokens.append(contentsOf: newItems)
+            self.allTokens.append(contentsOf: newTokens)
         } else {
             guard let currentParseRange = self.currentParseRange else { return }
             let oldCount = self.allTokens.count
@@ -472,13 +502,58 @@ extension OutlineTextStorage: OutlineParserDelegate {
             }
             
             // add new found items
-            self.allTokens.insert(contentsOf: newItems, at: self._findNextTokenIndex(after: currentParseRange, tokens: self.allTokens))
+            self.allTokens.insert(contentsOf: newTokens, at: self._findNextTokenIndex(after: currentParseRange, tokens: self.allTokens))
             log.info("[item count changed] \(self.allTokens.count - oldCount)")
         }
+        
+        self._savedHeadings.compact()
+        let newHeadings = newTokens.filter { $0 is HeadingToken }.map { $0 as! HeadingToken }
+        
+        self._updateTokenCache(self._savedHeadings, with: newHeadings)
+        
+        self._codeBlocks.compact()
+        let newCodeBlocks = newTokens.filter {
+            if let t = $0 as? BlockToken {
+                return t.blockType == .sourceCode
+            } else {
+                return false
+            }
+        }
+        .map { $0 as! BlockToken }
+        
+        self._updateTokenCache(self._codeBlocks, with: newCodeBlocks)
+        
+        self._quoteBlocks.compact()
+        let newQuoteBlocks = newTokens.filter {
+            if let t = $0 as? BlockToken {
+                return t.blockType == .sourceCode
+            } else {
+                return false
+            }
+        }
+        .map { $0 as! BlockToken }
+        
+        self._updateTokenCache(self._quoteBlocks, with: newQuoteBlocks)
     }
     
     
     // MARK: - utils
+    private func _updateTokenCache<T: Token>(_ cache: WeakArray<T>, with newTokens: [T]) {
+        if cache.count == 0 {
+            cache.insert(newTokens, at: 0)
+        } else {
+            if let first = newTokens.first {
+                for i in 0..<cache.count {
+                    if let token = cache[i] {
+                        if first.range.upperBound < token.range.location {
+                            cache.insert(newTokens, at: i)
+                            return
+                        }
+                    }
+                }
+            }
+        }
+    }
     
     private func _findIntersectionTokenIndex(in range: NSRange, tokens: [Token]) -> [Int] {
         var indexes: [Int] = []
@@ -507,7 +582,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
     }
     
     private func _setParagraphIndent() {
-        for heading in self.savedHeadings {
+        for heading in self.headingTokens {
 //            let paragraphStyle = NSMutableParagraphStyle()
 //            paragraphStyle.firstLineHeadIndent = CGFloat(heading.level * 8) // FIXME: 设置 indent 的宽度
 //            paragraphStyle.headIndent = paragraphStyle.firstLineHeadIndent
@@ -531,7 +606,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
     /// 获得用 heading 分割的段落的 range 列表
     private func _updateHeadingParagraphLength() {
         var endOfParagraph = self.string.count
-        self.savedHeadings.reversed().forEach {
+        self.headingTokens.reversed().forEach {
             $0.contentLength = endOfParagraph - $0.range.upperBound - 1
             endOfParagraph = $0.range.location
         }
@@ -610,7 +685,7 @@ extension OutlineTextStorage {
     public override var debugDescription: String {
         return """
         length: \(self.string.count)
-        heading count: \(self.savedHeadings.count)
+        heading count: \(self._savedHeadings.count)
         items count: \(self.allTokens.count)
         """
     }

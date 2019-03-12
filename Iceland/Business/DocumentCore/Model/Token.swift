@@ -10,7 +10,7 @@ import Foundation
 
 public enum BlockType {
     case quote
-    case src
+    case sourceCode
 }
 
 public class Token {
@@ -53,15 +53,25 @@ public class BlockToken: Token {
 
 public class BlockBeginToken: BlockToken {
     public weak var endToken: BlockEndToken?
-    public override init(range: NSRange, name: String, data: [String: NSRange], blockType: BlockType) {
-        super.init(range: range, name: name, data: data, blockType: blockType)
+    public init(data: [String: NSRange], blockType: BlockType) {
+        switch blockType {
+        case .quote:
+            super.init(range: data[OutlineParser.Key.Node.codeBlockBegin]!, name: OutlineParser.Key.Node.codeBlockBegin, data: data, blockType: blockType)
+        case .sourceCode:
+            super.init(range: data[OutlineParser.Key.Node.codeBlockBegin]!, name: OutlineParser.Key.Node.quoteBlockBegin, data: data, blockType: blockType)
+        }
     }
 }
 
 public class BlockEndToken: BlockToken {
     public weak var beginToken: BlockBeginToken?
-    public override init(range: NSRange, name: String, data: [String: NSRange], blockType: BlockType) {
-        super.init(range: range, name: name, data: data, blockType: blockType)
+    public init(data: [String: NSRange], blockType: BlockType) {
+        switch blockType {
+        case .quote:
+            super.init(range: data[OutlineParser.Key.Node.codeBlockEnd]!, name: OutlineParser.Key.Node.codeBlockEnd, data: data, blockType: blockType)
+        case .sourceCode:
+            super.init(range: data[OutlineParser.Key.Node.quoteBlockEnd]!, name: OutlineParser.Key.Node.quoteBlockEnd, data: data, blockType: blockType)
+        }
     }
 }
 
@@ -161,5 +171,14 @@ public class HeadingToken: Token {
     
     public convenience init(data: [String: NSRange]) {
         self.init(range: data[OutlineParser.Key.Node.heading]!, name: OutlineParser.Key.Node.heading, data: data)
+    }
+}
+
+extension Token: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        return """
+        \(self.name)
+        from \(self.range.location) to \(self.range.upperBound)
+        """
     }
 }

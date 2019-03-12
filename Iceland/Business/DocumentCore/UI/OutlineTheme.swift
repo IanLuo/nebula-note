@@ -39,11 +39,11 @@ public struct Layout {
     }
     
     @objc public class Color: NSObject {
-        @objc public static let interactive: UIColor = UIColor(red:0.88, green:0.88, blue:0.88, alpha:1.00)
-        @objc public static let descriptive: UIColor = UIColor(red:0.27, green:0.28, blue:0.30, alpha:1.00)
-        @objc public static let enphersizedDescriptive: UIColor = UIColor(red:0.51, green:0.53, blue:0.59, alpha:1.00)
-        @objc public static let spotLight: UIColor = UIColor(red:0.28, green:0.59, blue:0.98, alpha:1.00)
-        @objc public static let background1: UIColor = UIColor(red:0.05, green:0.05, blue:0.05, alpha:1.00)
+        @objc public static let interactive: UIColor = UIColor(red:1.00, green:1.00, blue:1.00, alpha:1.00)
+        @objc public static let descriptive: UIColor = UIColor(red:0.64, green:0.64, blue:0.64, alpha:1.00)
+        @objc public static let enphersizedDescriptive: UIColor = UIColor(red:0.41, green:0.41, blue:0.41, alpha:1.00)
+        @objc public static let spotLight: UIColor = UIColor(red:0.07, green:0.37, blue:0.98, alpha:1.00)
+        @objc public static let background1: UIColor = UIColor(red:0.09, green:0.09, blue:0.09, alpha:1.00)
         @objc public static let background2: UIColor = UIColor(red:0.12, green:0.13, blue:0.16, alpha:1.00)
         @objc public static let background3: UIColor = UIColor(red:0.19, green:0.20, blue:0.26, alpha:1.00)
         @objc public static let backgroundHighlight: UIColor = UIColor(red:0.29, green:0.59, blue:0.98, alpha:1.00)
@@ -62,27 +62,6 @@ public struct Layout {
             @objc public static let strikeThough = [NSAttributedString.Key.strikethroughStyle: ThemeConfig.shared[OutlineParser.Key.Element.TextMark.strikeThough]!]
             @objc public static let verbatim = [NSAttributedString.Key.font: ThemeConfig.shared[OutlineParser.Key.Element.TextMark.verbatim]!]
             @objc public static let code = [NSAttributedString.Key.backgroundColor: ThemeConfig.shared[OutlineParser.Key.Element.TextMark.code]!]
-        }
-    }
-}
-
-extension UIColor {
-    public class func hexString(_ hexString: String) -> UIColor? {
-        if hexString.count > 7 || hexString.count < 7 {
-            return nil
-        } else {
-            
-            let hexInt = Int(hexString.substring(from: hexString.index(hexString.startIndex, offsetBy: 1)), radix: 16)
-            if let hex = hexInt {
-                let components = (
-                    R: CGFloat((hex >> 16) & 0xff) / 255,
-                    G: CGFloat((hex >> 08) & 0xff) / 255,
-                    B: CGFloat((hex >> 00) & 0xff) / 255
-                )
-                return UIColor(red: components.R, green: components.G, blue: components.B, alpha: 1)
-            } else {
-                return nil
-            }
         }
     }
 }

@@ -57,7 +57,7 @@ public class EditorController: NSObject {
 /// API
 extension EditorController {
     public func getParagraphs() -> [HeadingToken] {
-        return self.textStorage.savedHeadings // FIXME: may be not the best way, this function should be called on Agenda to load content of heading
+        return self.textStorage.headingTokens
     }
     
     public func insertToParagraph(at heading: HeadingToken, content: String) {

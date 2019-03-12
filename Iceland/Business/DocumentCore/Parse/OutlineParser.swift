@@ -97,38 +97,68 @@ public class OutlineParser {
             }
         }
         
-        // MARK: 解析 code block
-        if let codeBlock = Matcher.Node.codeBlock, includeParsee.contains(.codeBlock) {
-            let result: [[String: NSRange]] = codeBlock
+        // MARK: 解析 code block begin
+        if let codeBlockBegin = Matcher.Node.codeBlockBegin, includeParsee.contains(.codeBlockBegin) {
+            let result: [[String: NSRange]] = codeBlockBegin
                 .matches(in: str, options: [], range: totalRange)
                 .map { (result: NSTextCheckingResult) -> [String: NSRange] in
                     var comp: [String: NSRange] = [:]
-                    comp[Key.Node.codeBlock] = result.range(at: 0)
+                    comp[Key.Node.codeBlockBegin] = result.range(at: 0)
                     comp[Key.Element.CodeBlock.language] = result.range(at: 1)
-                    comp[Key.Element.CodeBlock.content] = result.range(at: 2)
                     return comp.filter { _, value in value.location != Int.max }
             }
             
             if result.count > 0 {
                 self.logResult(result)
-                self.delegate?.didFoundCodeBlock(text: str, codeBlockRanges: result)
+                self.delegate?.didFoundCodeBlockBegin(text: str, ranges: result)
             }
         }
         
-        // MARK: 解析 quote
-        if let quote = Matcher.Node.quote, includeParsee.contains(.quote) {
-            let result: [[String: NSRange]] = quote
+        // MARK: 解析 code block end
+        if let codeBlockEnd = Matcher.Node.codeBlockEnd, includeParsee.contains(.codeBlockEnd) {
+            let result: [[String: NSRange]] = codeBlockEnd
                 .matches(in: str, options: [], range: totalRange)
                 .map { (result: NSTextCheckingResult) -> [String: NSRange] in
                     var comp: [String: NSRange] = [:]
-                    comp[Key.Node.quote] = result.range(at: 0)
-                    comp[Key.Element.Quote.content] = result.range(at: 1)
+                    comp[Key.Node.codeBlockEnd] = result.range(at: 0)
                     return comp.filter { _, value in value.location != Int.max }
             }
             
             if result.count > 0 {
                 self.logResult(result)
-                self.delegate?.didFoundQuote(text: str, quoteRanges: result)
+                self.delegate?.didFoundCodeBlockEnd(text: str, ranges: result)
+            }
+        }
+        
+        // MARK: 解析 quote begin
+        if let quoteBlockBegin = Matcher.Node.quoteBlockBegin, includeParsee.contains(.quoteBlockBegin) {
+            let result: [[String: NSRange]] = quoteBlockBegin
+                .matches(in: str, options: [], range: totalRange)
+                .map { (result: NSTextCheckingResult) -> [String: NSRange] in
+                    var comp: [String: NSRange] = [:]
+                    comp[Key.Node.quoteBlockBegin] = result.range(at: 0)
+                    return comp.filter { _, value in value.location != Int.max }
+            }
+            
+            if result.count > 0 {
+                self.logResult(result)
+                self.delegate?.didFoundQuoteBlockBegin(text: str, ranges: result)
+            }
+        }
+        
+        // MARK: 解析 quote block end
+        if let quoteBlockEnd = Matcher.Node.quoteBlockEnd, includeParsee.contains(.quoteBlockEnd) {
+            let result: [[String: NSRange]] = quoteBlockEnd
+                .matches(in: str, options: [], range: totalRange)
+                .map { (result: NSTextCheckingResult) -> [String: NSRange] in
+                    var comp: [String: NSRange] = [:]
+                    comp[Key.Node.quoteBlockEnd] = result.range(at: 0)
+                    return comp.filter { _, value in value.location != Int.max }
+            }
+            
+            if result.count > 0 {
+                self.logResult(result)
+                self.delegate?.didFoundQuoteBlockEnd(text: str, ranges: result)
             }
         }
         
@@ -259,8 +289,10 @@ public protocol OutlineParserDelegate: class {
     func didFoundOrderedList(text: String, orderedListRnages: [[String: NSRange]])
     func didFoundUnOrderedList(text: String, unOrderedListRnages: [[String: NSRange]])
     func didFoundSeperator(text: String, seperatorRanges: [[String: NSRange]])
-    func didFoundCodeBlock(text: String, codeBlockRanges: [[String: NSRange]])
-    func didFoundQuote(text: String, quoteRanges: [[String: NSRange]])
+    func didFoundCodeBlockBegin(text: String, ranges: [[String: NSRange]])
+    func didFoundCodeBlockEnd(text: String, ranges: [[String: NSRange]])
+    func didFoundQuoteBlockBegin(text: String, ranges: [[String: NSRange]])
+    func didFoundQuoteBlockEnd(text: String, ranges: [[String: NSRange]])
     func didFoundAttachment(text: String, attachmentRanges: [[String: NSRange]])
     func didFoundLink(text: String, urlRanges: [[String: NSRange]])
     func didFoundTextMark(text: String, markRanges: [[String: NSRange]])
@@ -278,8 +310,10 @@ extension OutlineParserDelegate {
     public func didFoundOrderedList(text: String, orderedListRnages: [[String : NSRange]]) {}
     public func didFoundUnOrderedList(text: String, unOrderedListRnages: [[String : NSRange]]) {}
     public func didFoundSeperator(text: String, seperatorRanges: [[String : NSRange]]) {}
-    public func didFoundCodeBlock(text: String, codeBlockRanges: [[String : NSRange]]) {}
-    public func didFoundQuote(text: String, quoteRanges: [[String : NSRange]]) {}
+    public func didFoundCodeBlockBegin(text: String, ranges: [[String: NSRange]]) {}
+    public func didFoundCodeBlockEnd(text: String, ranges: [[String: NSRange]]) {}
+    public func didFoundQuoteBlockBegin(text: String, ranges: [[String: NSRange]]) {}
+    public func didFoundQuoteBlockEnd(text: String, ranges: [[String: NSRange]]) {}
     public func didFoundAttachment(text: String, attachmentRanges: [[String : NSRange]]) {}
     public func didFoundLink(text: String, urlRanges: [[String : NSRange]]) {}
     public func didFoundTextMark(text: String, markRanges: [[String : NSRange]]) {}

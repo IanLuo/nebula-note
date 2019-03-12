@@ -17,19 +17,17 @@ extension OutlineParser {
         public static let checkbox: ParseeTypes = ParseeTypes(rawValue: 1 << 1)
         public static let orderedList: ParseeTypes = ParseeTypes(rawValue: 1 << 2)
         public static let unorderedList: ParseeTypes = ParseeTypes(rawValue: 1 << 3)
-        public static let codeBlock: ParseeTypes = ParseeTypes(rawValue: 1 << 4)
-        public static let seperator: ParseeTypes = ParseeTypes(rawValue: 1 << 5)
-        public static let attachment: ParseeTypes = ParseeTypes(rawValue: 1 << 6)
-        public static let link: ParseeTypes = ParseeTypes(rawValue: 1 << 7)
-        public static let quote: ParseeTypes = ParseeTypes(rawValue: 1 << 8)
-        public static let footnote: ParseeTypes = ParseeTypes(rawValue: 1 << 9)
-        public static let codeBlockBegin: ParseeTypes = ParseeTypes(rawValue: 1 << 10)
-        public static let codeBlockEnd: ParseeTypes = ParseeTypes(rawValue: 1 << 11)
-        public static let quoteBlockBegin: ParseeTypes = ParseeTypes(rawValue: 1 << 12)
-        public static let quoteBlockEnd: ParseeTypes = ParseeTypes(rawValue: 1 << 13)
+        public static let seperator: ParseeTypes = ParseeTypes(rawValue: 1 << 4)
+        public static let attachment: ParseeTypes = ParseeTypes(rawValue: 1 << 5)
+        public static let link: ParseeTypes = ParseeTypes(rawValue: 1 << 6)
+        public static let footnote: ParseeTypes = ParseeTypes(rawValue: 1 << 7)
+        public static let codeBlockBegin: ParseeTypes = ParseeTypes(rawValue: 1 << 8)
+        public static let codeBlockEnd: ParseeTypes = ParseeTypes(rawValue: 1 << 9)
+        public static let quoteBlockBegin: ParseeTypes = ParseeTypes(rawValue: 1 << 10)
+        public static let quoteBlockEnd: ParseeTypes = ParseeTypes(rawValue: 1 << 11)
         
-        public static let all: ParseeTypes = [.heading, .checkbox, orderedList, unorderedList, codeBlock, seperator, attachment, link, .quote, .footnote, .codeBlockBegin, .codeBlockEnd, .quoteBlockBegin, .quoteBlockEnd]
-        public static let onlyHeading: ParseeTypes = [.checkbox, orderedList, unorderedList, codeBlock, seperator, attachment, link, .quote, .footnote]
+        public static let all: ParseeTypes = [.heading, .checkbox, orderedList, unorderedList, seperator, attachment, link, .footnote, .codeBlockBegin, .codeBlockEnd, .quoteBlockBegin, .quoteBlockEnd]
+        public static let onlyHeading: ParseeTypes = [.checkbox, orderedList, unorderedList, seperator, attachment, link, .footnote]
     }
     
     public struct Matcher {
@@ -38,11 +36,13 @@ extension OutlineParser {
             public static var checkbox = try? NSRegularExpression(pattern: RegexPattern.Node.checkBox, options: [])
             public static var ordedList = try? NSRegularExpression(pattern: RegexPattern.Node.orderedList, options: [.anchorsMatchLines])
             public static var unorderedList = try? NSRegularExpression(pattern: RegexPattern.Node.unorderedList, options: [.anchorsMatchLines])
-            public static var codeBlock = try? NSRegularExpression(pattern: RegexPattern.Node.codeBlock, options: [.anchorsMatchLines])
             public static var seperator = try? NSRegularExpression(pattern: RegexPattern.Node.seperator, options: [.anchorsMatchLines])
             public static var attachment = try? NSRegularExpression(pattern: RegexPattern.Node.attachment, options: [])
-            public static var quote = try? NSRegularExpression(pattern: RegexPattern.Node.quote, options: [.anchorsMatchLines])
             public static var footnote = try? NSRegularExpression(pattern: RegexPattern.Node.footnote, options: [.anchorsMatchLines])
+            public static var codeBlockBegin = try? NSRegularExpression(pattern: RegexPattern.Element.CodeBlock.begin, options: [])
+            public static var codeBlockEnd = try? NSRegularExpression(pattern: RegexPattern.Element.CodeBlock.end, options: [])
+            public static var quoteBlockBegin = try? NSRegularExpression(pattern: RegexPattern.Element.QuoteBlock.begin, options: [])
+            public static var quoteBlockEnd = try? NSRegularExpression(pattern: RegexPattern.Element.QuoteBlock.end, options: [])
         }
         
         public struct Element {
@@ -72,11 +72,13 @@ extension OutlineParser {
             public static let checkbox = "checkbox"
             public static let ordedList = "ordedList"
             public static let unordedList = "unordedList"
-            public static let codeBlock = "codeBlock"
             public static let seperator = "seperator"
             public static let attachment = "attachment"
-            public static let quote = "qoute"
             public static let footnode = "footnode"
+            public static let codeBlockBegin = "codeBlockBegin"
+            public static let codeBlockEnd = "codeBlockEnd"
+            public static let quoteBlockBegin = "quoteBlockBegin"
+            public static let quoteBlockEnd = "codeBlockEnd"
         }
         
         public struct Element {
@@ -96,8 +98,6 @@ extension OutlineParser {
             }
             
             public struct CodeBlock {
-                public static let begin = "begin"
-                public static let end = "end"
                 public static let language = "language"
                 public static let content = "content"
             }
@@ -167,17 +167,17 @@ extension OutlineParser {
             public static let footnote =        "" // TODO: footnote regex pattern imp
         }
         
-        public struct CodeBlock {
-            public static let begin =           "^[\\t ]*\\#\\+BEGIN\\_SRC( [\(character)\\.]*)?\\n"
-            public static let end =             "\\#\\+END\\_SRC[\\t ]*\\n"
-        }
-        
-        public struct QuoteBlock {
-            public static let begin =           "^[\\t ]*\\#\\+BEGIN\\_QUOTE\\n"
-            public static let end =             "\\#\\+END\\_QUOTE[\\t ]*\\n"
-        }
-        
         public struct Element {
+            public struct CodeBlock {
+                public static let begin =           "^[\\t ]*\\#\\+BEGIN\\_SRC( [\(character)\\.]*)?\\n"
+                public static let end =             "\\#\\+END\\_SRC[\\t ]*\\n"
+            }
+            
+            public struct QuoteBlock {
+                public static let begin =           "^[\\t ]*\\#\\+BEGIN\\_QUOTE\\n"
+                public static let end =             "\\#\\+END\\_QUOTE[\\t ]*\\n"
+            }
+            
             public struct Heading {
                 public static let schedule =    "(SCHEDULED\\: \\<([0-9]{4}\\-[0-9]{1,2}\\-[0-9]{1,2} [a-zA-Z]{3}( [0-9]{2}\\:[0-9]{1,2})?)\\>)"
                 public static let due =         "(DEADLINE\\: \\<([0-9]{4}\\-[0-9]{1,2}\\-[0-9]{1,2} [a-zA-Z]{3}( [0-9]{2}\\:[0-9]{1,2})?)\\>)"

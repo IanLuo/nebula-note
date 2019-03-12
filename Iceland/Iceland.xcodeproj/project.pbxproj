@@ -41,7 +41,7 @@
 		E41CB1B121D88D9400EF0A3C /* Business.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E41CB19B21D88D9300EF0A3C /* Business.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E41CB1B921D88DCE00EF0A3C /* OutlineAttribute.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A2421B0DA1300FBDA04 /* OutlineAttribute.swift */; };
 		E41CB1BA21D88DCE00EF0A3C /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A3121B4D07500FBDA04 /* Document.swift */; };
-		E41CB1BB21D88DCE00EF0A3C /* OutlineStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A1821AA8E9F00FBDA04 /* OutlineStorage.swift */; };
+		E41CB1BB21D88DCE00EF0A3C /* OutlineTextStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A1821AA8E9F00FBDA04 /* OutlineTextStorage.swift */; };
 		E41CB1BC21D88DD100EF0A3C /* OutlineTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A1F21AF90B200FBDA04 /* OutlineTextView.swift */; };
 		E41CB1BD21D88DD100EF0A3C /* OutlineTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = E464BBB021A69C9000D34C88 /* OutlineTheme.swift */; };
 		E41CB1BE21D88DD100EF0A3C /* OutlineLayoutManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44825A6219810E100C17568 /* OutlineLayoutManager.swift */; };
@@ -112,6 +112,7 @@
 		E4773BAC21F9A203000F8F3F /* CoverPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4773BAB21F9A203000F8F3F /* CoverPickerViewController.swift */; };
 		E47829FD222E683B0054513E /* DocumentEditToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = E47829FC222E683B0054513E /* DocumentEditToolbar.swift */; };
 		E47A9A5221F1F7690050ABC9 /* DateHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E47A9A5121F1F7690050ABC9 /* DateHelper.swift */; };
+		E4821DB122374C420063C0B2 /* WeakArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4821DB022374C420063C0B2 /* WeakArray.swift */; };
 		E4895FF721D9244000D2B19D /* EditRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4895FF621D9244000D2B19D /* EditRecord.swift */; };
 		E489600021DB065000D2B19D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E4895FFF21DB065000D2B19D /* Localizable.strings */; };
 		E489600221DB06C800D2B19D /* Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = E489600121DB06C800D2B19D /* Localization.swift */; };
@@ -340,6 +341,7 @@
 		E4773BAB21F9A203000F8F3F /* CoverPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverPickerViewController.swift; sourceTree = "<group>"; };
 		E47829FC222E683B0054513E /* DocumentEditToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentEditToolbar.swift; sourceTree = "<group>"; };
 		E47A9A5121F1F7690050ABC9 /* DateHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateHelper.swift; sourceTree = "<group>"; };
+		E4821DB022374C420063C0B2 /* WeakArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeakArray.swift; sourceTree = "<group>"; };
 		E4895FF621D9244000D2B19D /* EditRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditRecord.swift; sourceTree = "<group>"; };
 		E4895FFF21DB065000D2B19D /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		E489600121DB06C800D2B19D /* Localization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Localization.swift; sourceTree = "<group>"; };
@@ -352,7 +354,7 @@
 		E49F3E4B21B91885003F468D /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		E49FF46321A429F9003A5B3C /* OutlineStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineStorageTests.swift; sourceTree = "<group>"; };
 		E4A46A1621A9A26300FBDA04 /* AttachmentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentTests.swift; sourceTree = "<group>"; };
-		E4A46A1821AA8E9F00FBDA04 /* OutlineStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineStorage.swift; sourceTree = "<group>"; };
+		E4A46A1821AA8E9F00FBDA04 /* OutlineTextStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineTextStorage.swift; sourceTree = "<group>"; };
 		E4A46A1D21AE6CF400FBDA04 /* Image+Generation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Image+Generation.swift"; sourceTree = "<group>"; };
 		E4A46A1F21AF90B200FBDA04 /* OutlineTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineTextView.swift; sourceTree = "<group>"; };
 		E4A46A2421B0DA1300FBDA04 /* OutlineAttribute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineAttribute.swift; sourceTree = "<group>"; };
@@ -555,7 +557,7 @@
 				E4A46A2421B0DA1300FBDA04 /* OutlineAttribute.swift */,
 				E4A46A3121B4D07500FBDA04 /* Document.swift */,
 				E4F9ECE021FECE5C009A08CD /* FileManager.swift */,
-				E4A46A1821AA8E9F00FBDA04 /* OutlineStorage.swift */,
+				E4A46A1821AA8E9F00FBDA04 /* OutlineTextStorage.swift */,
 				E4BFD45521F71184003C048C /* TextStorage.h */,
 				E4BFD47021F711A2003C048C /* TextStorage.m */,
 				E43B909B2227CBC60008B44C /* Token.swift */,
@@ -634,6 +636,7 @@
 				E47A9A5121F1F7690050ABC9 /* DateHelper.swift */,
 				E489600121DB06C800D2B19D /* Localization.swift */,
 				E44E60F421E9F2C0005AC25F /* Location.swift */,
+				E4821DB022374C420063C0B2 /* WeakArray.swift */,
 			);
 			path = Business;
 			sourceTree = "<group>";
@@ -1416,6 +1419,7 @@
 				E41CB1BA21D88DCE00EF0A3C /* Document.swift in Sources */,
 				E41CB1C521D88DD700EF0A3C /* EditorService.swift in Sources */,
 				E41CB1BE21D88DD100EF0A3C /* OutlineLayoutManager.swift in Sources */,
+				E4821DB122374C420063C0B2 /* WeakArray.swift in Sources */,
 				E4729B9F2202B70200F22885 /* SquareButton.swift in Sources */,
 				E4B802022200437A00AD5AD8 /* TextStorage.m in Sources */,
 				E43B90A8222903170008B44C /* Event.swift in Sources */,
@@ -1457,7 +1461,7 @@
 				E41CB1E221D8BD9B00EF0A3C /* UIView+Processing.swift in Sources */,
 				E41CB1C021D88DD700EF0A3C /* OutlineParserMatcher.swift in Sources */,
 				E41CB1D521D890E200EF0A3C /* Autolayout+Shortcuts.swift in Sources */,
-				E41CB1BB21D88DCE00EF0A3C /* OutlineStorage.swift in Sources */,
+				E41CB1BB21D88DCE00EF0A3C /* OutlineTextStorage.swift in Sources */,
 				E4BC264221F56DB900B0F2B9 /* Rect.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2009,6 +2013,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = wod.Iceland;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ENABLE_BATCH_MODE = NO;
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -2030,6 +2035,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = wod.Iceland;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ENABLE_BATCH_MODE = NO;
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
