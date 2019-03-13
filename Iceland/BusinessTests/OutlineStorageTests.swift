@@ -32,22 +32,22 @@ review and summary
 use voice to record remember task is handy
 """
     
-        var extendedRange = NSRange(location: 10, length: 1).expandFoward(string: text).expandBackward(string: text)
+        var extendedRange = NSRange(location: 10, length: 1)._expandFoward(string: text, lineCount: 1)._expandBackward(string: text, lineCount: 1)
         
         XCTAssertEqual(0, extendedRange.location)
         XCTAssertEqual(18, extendedRange.length)
         
-        extendedRange = NSRange(location: 31, length: 1).expandFoward(string: text).expandBackward(string: text)
+        extendedRange = NSRange(location: 31, length: 1)._expandFoward(string: text, lineCount: 1)._expandBackward(string: text, lineCount: 1)
         XCTAssertEqual(18, extendedRange.location)
         XCTAssertEqual(23, extendedRange.length)
         
-        extendedRange = NSRange(location: 16, length: 2).expandFoward(string: text).expandBackward(string: text)
+        extendedRange = NSRange(location: 16, length: 2)._expandFoward(string: text, lineCount: 1)._expandBackward(string: text, lineCount: 1)
         XCTAssertEqual(0, extendedRange.location)
         XCTAssertEqual(41, extendedRange.length)
     }
     
     func testCurrentLocation() {
-        let storage = EditorController(parser: OutlineParser(), eventObserver: EventObserver())
+        let storage = EditorController(parser: OutlineParser(), eventObserver: EventObserver(), attachmentManager: AttachmentManager())
         let textView = UITextView(frame: .zero, textContainer: storage.textContainer)
         textView.text =
         """
@@ -72,8 +72,8 @@ use voice to record remember task is handy
         """
         
         XCTAssertEqual(storage.textStorage.currentLocation, 0)
-        XCTAssertEqual(2, storage.textStorage.savedHeadings.count)
-        XCTAssertEqual(2, storage.textStorage.savedHeadings.count)
+        XCTAssertEqual(2, storage.textStorage.headingTokens.count)
+        XCTAssertEqual(2, storage.textStorage.headingTokens.count)
         XCTAssertEqual(storage.textStorage.currentHeading?.level, 1)
         XCTAssertEqual(textView.text.substring(storage.textStorage.currentHeading!.planning!), "TODO")
         XCTAssertEqual(textView.text.substring(storage.textStorage.currentHeading!.schedule!), "SCHEDULED: <2018-12-05 Wed>")
@@ -90,7 +90,7 @@ use voice to record remember task is handy
     }
     
     func testNewLoadItems() {
-        let storage = EditorController(parser: OutlineParser(), eventObserver: EventObserver())
+        let storage = EditorController(parser: OutlineParser(), eventObserver: EventObserver(), attachmentManager: AttachmentManager())
         let textView = UITextView(frame: .zero, textContainer: storage.textContainer)
         textView.text = """
         * TODO fastlane design :movie:entertainment:
@@ -130,7 +130,7 @@ use voice to record remember task is handy
     }
     
     func testEditItems() {
-        let controller = EditorController(parser: OutlineParser(), eventObserver: EventObserver())
+        let controller = EditorController(parser: OutlineParser(), eventObserver: EventObserver(), attachmentManager: AttachmentManager())
         let textView = UITextView(frame: .zero, textContainer: controller.textContainer)
         textView.text = """
         * TODO fastlane design :movie:entertainment:
@@ -177,7 +177,7 @@ use voice to record remember task is handy
         
         controller.textStorage.currentLocation = 150
         controller.textStorage._adjustParseRange(NSRange(location: 150, length: 10))
-        controller.textStorage.updateItemIndexAndRange(delta: 0)
+        controller.textStorage.updateTokenRangeOffset(delta: 0)
         controller.textStorage.parser.parse(str: textView.text!, range: controller.textStorage.currentParseRange)
         controller.textStorage.updateCurrentInfo()
         

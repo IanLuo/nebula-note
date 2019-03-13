@@ -26,12 +26,12 @@ public class AttachmentTests: XCTestCase {
         let manager = AttachmentManager()
         
         let ex = expectation(description: "save")
-        try manager.insert(content: "test attachment", type: Attachment.AttachmentType.text, description: "test", complete: { key in
+        try manager.insert(content: "test attachment", kind: Attachment.Kind.text, description: "test", complete: { key in
             let saved = try manager.attachment(with: key)
             
             XCTAssertEqual(saved.key, key)
             XCTAssertEqual(saved.description, "test")
-            XCTAssertEqual(saved.type, Attachment.AttachmentType.text)
+            XCTAssertEqual(saved.kind, Attachment.Kind.text)
             XCTAssertEqual(try String(contentsOf: saved.url), "test attachment")
             
             ex.fulfill()
@@ -47,12 +47,12 @@ public class AttachmentTests: XCTestCase {
         try data?.write(to: tempFile)
         
         let ex2 = expectation(description: "audio")
-        try manager.insert(content: tempFile.path, type: Attachment.AttachmentType.audio, description: "audio", complete: { key in
+        try manager.insert(content: tempFile.path, kind: Attachment.Kind.audio, description: "audio", complete: { key in
             let saved = try manager.attachment(with: key)
             
             XCTAssertEqual(saved.key, key)
             XCTAssertEqual(saved.description, "audio")
-            XCTAssertEqual(saved.type, Attachment.AttachmentType.audio)
+            XCTAssertEqual(saved.kind, Attachment.Kind.audio)
             XCTAssertEqual(try String(contentsOf: saved.url), "the fake audio data")
             
             ex2.fulfill()
@@ -66,7 +66,7 @@ public class AttachmentTests: XCTestCase {
     func testDeleteAttachment() throws {
         let manager = AttachmentManager()
         let ex = expectation(description: "delete")
-        try manager.insert(content: "test attachment", type: Attachment.AttachmentType.text, description: "test", complete: { key in
+        try manager.insert(content: "test attachment", kind: Attachment.Kind.text, description: "test", complete: { key in
             try manager.delete(key: key)
             XCTAssertThrowsError(try manager.attachment(with: key))
             ex.fulfill()

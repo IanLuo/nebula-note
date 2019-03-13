@@ -90,20 +90,20 @@ DEADLINE: <2018-12-05 Wed>
     func testCheckbox() {
         class TestDelegate_: TestDelegate {
             override func didFoundCheckbox(text: String, checkboxRanges: [[String : NSRange]]) {
-                XCTAssertEqual("- [-] do something", (text as NSString).substring(with: checkboxRanges[0][OutlineParser.Key.Node.checkbox]!))
-                XCTAssertEqual("- [-]", (text as NSString).substring(with: checkboxRanges[0][OutlineParser.Key.Element.Checkbox.status]!))
+                XCTAssertEqual(" [-]", (text as NSString).substring(with: checkboxRanges[0][OutlineParser.Key.Node.checkbox]!))
+                XCTAssertEqual("-", (text as NSString).substring(with: checkboxRanges[0][OutlineParser.Key.Element.Checkbox.status]!))
                 
-                XCTAssertEqual("    - [x] sub task 1", (text as NSString).substring(with: checkboxRanges[1][OutlineParser.Key.Node.checkbox]!))
-                XCTAssertEqual("- [x]", (text as NSString).substring(with: checkboxRanges[1][OutlineParser.Key.Element.Checkbox.status]!))
+                XCTAssertEqual(" [X]", (text as NSString).substring(with: checkboxRanges[1][OutlineParser.Key.Node.checkbox]!))
+                XCTAssertEqual("X", (text as NSString).substring(with: checkboxRanges[1][OutlineParser.Key.Element.Checkbox.status]!))
                 
-                XCTAssertEqual("    - [ ] sub task 2", (text as NSString).substring(with: checkboxRanges[2][OutlineParser.Key.Node.checkbox]!))
-                XCTAssertEqual("- [ ]", (text as NSString).substring(with: checkboxRanges[2][OutlineParser.Key.Element.Checkbox.status]!))
+                XCTAssertEqual(" [ ]", (text as NSString).substring(with: checkboxRanges[2][OutlineParser.Key.Node.checkbox]!))
+                XCTAssertEqual(" ", (text as NSString).substring(with: checkboxRanges[2][OutlineParser.Key.Element.Checkbox.status]!))
                 
-                XCTAssertEqual("- [ ] do another", (text as NSString).substring(with: checkboxRanges[3][OutlineParser.Key.Node.checkbox]!))
-                XCTAssertEqual("- [ ]", (text as NSString).substring(with: checkboxRanges[3][OutlineParser.Key.Element.Checkbox.status]!))
+                XCTAssertEqual(" [ ]", (text as NSString).substring(with: checkboxRanges[3][OutlineParser.Key.Node.checkbox]!))
+                XCTAssertEqual(" ", (text as NSString).substring(with: checkboxRanges[3][OutlineParser.Key.Element.Checkbox.status]!))
                 
-                XCTAssertEqual("- [ ] lastly", (text as NSString).substring(with: checkboxRanges[4][OutlineParser.Key.Node.checkbox]!))
-                XCTAssertEqual("- [ ]", (text as NSString).substring(with: checkboxRanges[4][OutlineParser.Key.Element.Checkbox.status]!))
+                XCTAssertEqual(" [ ]", (text as NSString).substring(with: checkboxRanges[4][OutlineParser.Key.Node.checkbox]!))
+                XCTAssertEqual(" ", (text as NSString).substring(with: checkboxRanges[4][OutlineParser.Key.Element.Checkbox.status]!))
                 
                 didHit = true
             }
@@ -117,7 +117,7 @@ DEADLINE: <2018-12-05 Wed>
         let text = """
         *** header 1
         - [-] do something
-            - [x] sub task 1
+            - [X] sub task 1
             - [ ] sub task 2
         - [ ] do another
         - [ ] lastly
@@ -171,12 +171,12 @@ DEADLINE: <2018-12-05 Wed>
                 XCTAssertEqual("    2. three point two", (text as NSString).substring(with: orderedListRnages[4][OutlineParser.Key.Node.ordedList]!))
                 XCTAssertEqual("4. four", (text as NSString).substring(with: orderedListRnages[5][OutlineParser.Key.Node.ordedList]!))
                 
-                XCTAssertEqual("1", (text as NSString).substring(with: orderedListRnages[0][OutlineParser.Key.Element.OrderedList.index]!))
-                XCTAssertEqual("2", (text as NSString).substring(with: orderedListRnages[1][OutlineParser.Key.Element.OrderedList.index]!))
-                XCTAssertEqual("3", (text as NSString).substring(with: orderedListRnages[2][OutlineParser.Key.Element.OrderedList.index]!))
-                XCTAssertEqual("1", (text as NSString).substring(with: orderedListRnages[3][OutlineParser.Key.Element.OrderedList.index]!))
-                XCTAssertEqual("2", (text as NSString).substring(with: orderedListRnages[4][OutlineParser.Key.Element.OrderedList.index]!))
-                XCTAssertEqual("4", (text as NSString).substring(with: orderedListRnages[5][OutlineParser.Key.Element.OrderedList.index]!))
+                XCTAssertEqual("1.", (text as NSString).substring(with: orderedListRnages[0][OutlineParser.Key.Element.OrderedList.index]!))
+                XCTAssertEqual("2.", (text as NSString).substring(with: orderedListRnages[1][OutlineParser.Key.Element.OrderedList.index]!))
+                XCTAssertEqual("3.", (text as NSString).substring(with: orderedListRnages[2][OutlineParser.Key.Element.OrderedList.index]!))
+                XCTAssertEqual("1.", (text as NSString).substring(with: orderedListRnages[3][OutlineParser.Key.Element.OrderedList.index]!))
+                XCTAssertEqual("2.", (text as NSString).substring(with: orderedListRnages[4][OutlineParser.Key.Element.OrderedList.index]!))
+                XCTAssertEqual("4.", (text as NSString).substring(with: orderedListRnages[5][OutlineParser.Key.Element.OrderedList.index]!))
                 didHit = true
             }
         }
@@ -259,7 +259,7 @@ DEADLINE: <2018-12-05 Wed>
         class TestDelegate_: TestDelegate {
             override func didFoundAttachment(text: String, attachmentRanges: [[String : NSRange]]) {
                 XCTAssertEqual("image", (text as NSString).substring(with: attachmentRanges[0][OutlineParser.Key.Element.Attachment.type]!))
-                XCTAssertEqual("xdafeljlfjeksjdf", (text as NSString).substring(with: attachmentRanges[0][OutlineParser.Key.Element.Attachment.value]!))
+                XCTAssertEqual("LKJSL-DFJL-SDJF-LKDSD234234", (text as NSString).substring(with: attachmentRanges[0][OutlineParser.Key.Element.Attachment.value]!))
                 didHit = true
             }
         }
@@ -271,7 +271,7 @@ DEADLINE: <2018-12-05 Wed>
         let text = """
         *** some title
         some paragraph
-        //Attachment:image=xdafeljlfjeksjdf
+        #+ATTACHMENT:image=LKJSL-DFJL-SDJF-LKDSD234234
         """
         
         parser.parse(str: text)
@@ -379,6 +379,92 @@ DEADLINE: <2018-12-05 Wed>
             XCTAssertEqual(Calendar.current.component(.year, from: date), 2018)
             XCTAssertEqual(Calendar.current.component(.month, from: date), 11)
             XCTAssertEqual(Calendar.current.component(.day, from: date), 23)
+            XCTAssert(true)
+        } else {
+            XCTAssert(false)
+        }
+    }
+    
+    func testRepeat() {
+        let string = "**** TODO Demo heading                         \n<2018-12-05 Wed 9:00-21:00 +1d>"
+        if let dateAndTime = DateAndTimeType.createFromDue(string) {
+            XCTAssertEqual(Calendar.current.component(.year, from: dateAndTime.date), 2018)
+            XCTAssertEqual(Calendar.current.component(.month, from: dateAndTime.date), 12)
+            XCTAssertEqual(Calendar.current.component(.day, from: dateAndTime.date), 5)
+            switch dateAndTime.repeateMode {
+            case .day(let d)?: XCTAssertEqual(d, 1)
+            default: XCTAssert(false)
+            }
+            XCTAssert(true)
+        } else {
+            XCTAssert(false)
+        }
+    }
+    
+    func testTimeRange() {
+        var string = "**** TODO Demo heading                         \n<2018-12-05 Wed 9:00-21:00>"
+        if let dateAndTime = DateAndTimeType.createFromTimeRange(string) {
+            XCTAssertEqual(Calendar.current.component(.year, from: dateAndTime.date), 2018)
+            XCTAssertEqual(Calendar.current.component(.month, from: dateAndTime.date), 12)
+            XCTAssertEqual(Calendar.current.component(.day, from: dateAndTime.date), 5)
+            XCTAssertEqual(dateAndTime.duration, 12 * 60 * 60)
+            XCTAssert(true)
+        } else {
+            XCTAssert(false)
+        }
+        
+        string = "**** TODO Demo heading                         \n<2018-12-05 9:00-21:00>"
+        if let dateAndTime = DateAndTimeType.createFromTimeRange(string) {
+            XCTAssertEqual(Calendar.current.component(.year, from: dateAndTime.date), 2018)
+            XCTAssertEqual(Calendar.current.component(.month, from: dateAndTime.date), 12)
+            XCTAssertEqual(Calendar.current.component(.day, from: dateAndTime.date), 5)
+            XCTAssertEqual(dateAndTime.duration, 12 * 60 * 60)
+            XCTAssert(true)
+        } else {
+            XCTAssert(false)
+        }
+    }
+    
+    func testDateRange() {
+        var string = "**** TODO Demo heading                         \n<2018-12-05 Wed 9:00>--<2018-12-06 Thu 21:00>"
+        if let dateAndTime = DateAndTimeType.createFromDateRange(string) {
+            XCTAssertEqual(Calendar.current.component(.year, from: dateAndTime.date), 2018)
+            XCTAssertEqual(Calendar.current.component(.month, from: dateAndTime.date), 12)
+            XCTAssertEqual(Calendar.current.component(.day, from: dateAndTime.date), 5)
+            XCTAssertEqual(dateAndTime.duration, 36 * 60 * 60)
+            XCTAssert(true)
+        } else {
+            XCTAssert(false)
+        }
+        
+        string = "**** TODO Demo heading                         \n<2018-12-05 9:00>--<2018-12-06 21:00>"
+        if let dateAndTime = DateAndTimeType.createFromDateRange(string) {
+            XCTAssertEqual(Calendar.current.component(.year, from: dateAndTime.date), 2018)
+            XCTAssertEqual(Calendar.current.component(.month, from: dateAndTime.date), 12)
+            XCTAssertEqual(Calendar.current.component(.day, from: dateAndTime.date), 5)
+            XCTAssertEqual(dateAndTime.duration, 36 * 60 * 60)
+            XCTAssert(true)
+        } else {
+            XCTAssert(false)
+        }
+        
+        string = "**** TODO Demo heading                         \n<2018-12-05 Wed>--<2018-12-06 Thu>"
+        if let dateAndTime = DateAndTimeType.createFromDateRange(string) {
+            XCTAssertEqual(Calendar.current.component(.year, from: dateAndTime.date), 2018)
+            XCTAssertEqual(Calendar.current.component(.month, from: dateAndTime.date), 12)
+            XCTAssertEqual(Calendar.current.component(.day, from: dateAndTime.date), 5)
+            XCTAssertEqual(dateAndTime.duration, 24 * 60 * 60)
+            XCTAssert(true)
+        } else {
+            XCTAssert(false)
+        }
+        
+        string = "**** TODO Demo heading                         \n<2018-12-05>--<2018-12-06>"
+        if let dateAndTime = DateAndTimeType.createFromDateRange(string) {
+            XCTAssertEqual(Calendar.current.component(.year, from: dateAndTime.date), 2018)
+            XCTAssertEqual(Calendar.current.component(.month, from: dateAndTime.date), 12)
+            XCTAssertEqual(Calendar.current.component(.day, from: dateAndTime.date), 5)
+            XCTAssertEqual(dateAndTime.duration, 24 * 60 * 60)
             XCTAssert(true)
         } else {
             XCTAssert(false)

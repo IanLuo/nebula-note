@@ -100,7 +100,7 @@ content in second
 content in third
 """
         
-        let editorController = EditorController(parser: OutlineParser(), eventObserver: EventObserver())
+        let editorController = EditorController(parser: OutlineParser(), eventObserver: EventObserver(), attachmentManager: AttachmentManager())
         editorController.string = text
         
         let paragraphs = editorController.getParagraphs()
@@ -124,7 +124,7 @@ content in second
 content in third
 """
         
-        let editorController = EditorController(parser: OutlineParser(), eventObserver: EventObserver())
+        let editorController = EditorController(parser: OutlineParser(), eventObserver: EventObserver(), attachmentManager: AttachmentManager())
         editorController.string = text
         
         let paragraphs = editorController.getParagraphs()
@@ -174,11 +174,11 @@ content in third
 * first heading
 content in first
 ** second heading
-SCHEDULE:[2018-12-11]
+SCHEDULE: <2018-12-11>
 content in second
 *** third heading
-SCHEDULE:[2018-12-11]
-DEADLINE:[2018-12-11]
+SCHEDULE: <2018-12-11>
+DEADLINE: <2018-12-11>
 content in third
 """
         let ex = expectation(description: "add tag")

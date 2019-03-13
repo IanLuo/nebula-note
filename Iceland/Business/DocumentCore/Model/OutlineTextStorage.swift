@@ -526,7 +526,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
         self._quoteBlocks.compact()
         let newQuoteBlocks = newTokens.filter {
             if let t = $0 as? BlockToken {
-                return t.blockType == .sourceCode
+                return t.blockType == .quote
             } else {
                 return false
             }
@@ -613,15 +613,14 @@ extension OutlineTextStorage: OutlineParserDelegate {
     }
     
     internal func _adjustParseRange(_ range: NSRange) {
-        let range = range._expandFoward(string: self.string)._expandBackward(string: self.string)
+        let range = range._expandFoward(string: self.string, lineCount: 1)._expandBackward(string: self.string, lineCount: 1)
         self.currentParseRange = range
         
         // 如果范围在某个 item 内，并且小于这个 item 原来的范围，则扩大至这个 item 原来的范围
-        if let currrentParseRange = self.currentParseRange {
+        if let currentParseRange = self.currentParseRange {
             for item in self.allTokens {
-                if item.range.location <= currrentParseRange.location
-                    && item.range.upperBound >= currrentParseRange.upperBound {
-                    self.currentParseRange = item.range
+                if item.range.intersection(currentParseRange) != nil {
+                    self.currentParseRange = item.range.union(currentParseRange)
                     return
                 }
             }
@@ -647,24 +646,24 @@ extension OutlineTextStorage: NSTextStorageDelegate {
 
 extension NSRange {
     /// 将在字符串中的选择区域扩展到前一个换行符之后，后一个换行符之前
-    internal func _expandBackward(string: String) -> NSRange {
+    internal func _expandBackward(string: String, lineCount: Int) -> NSRange {
         var extendedRange = self
         var characterBuf: String = ""
 
         while extendedRange.location > 0
-            && !self._checkShouldContinueExpand(buf: &characterBuf, next: string.substring(NSRange(location: extendedRange.location - 1, length: 1)), lineCount: 2) {
+            && !self._checkShouldContinueExpand(buf: &characterBuf, next: string.substring(NSRange(location: extendedRange.location - 1, length: 1)), lineCount: lineCount) {
                 extendedRange = NSRange(location: extendedRange.location - 1, length: extendedRange.length + 1)
         }
         
         return extendedRange
     }
     
-    internal func _expandFoward(string: String) -> NSRange {
+    internal func _expandFoward(string: String, lineCount: Int) -> NSRange {
         var extendedRange = self
         var characterBuf: String = ""
         
         while extendedRange.upperBound < string.count - 1
-            && !self._checkShouldContinueExpand(buf: &characterBuf, next: string.substring(NSRange(location: extendedRange.upperBound, length: 1)), lineCount: 3) {
+            && !self._checkShouldContinueExpand(buf: &characterBuf, next: string.substring(NSRange(location: extendedRange.upperBound, length: 1)), lineCount: lineCount) {
                 extendedRange = NSRange(location: extendedRange.location, length: extendedRange.length + 1)
         }
         
@@ -686,6 +685,8 @@ extension OutlineTextStorage {
         return """
         length: \(self.string.count)
         heading count: \(self._savedHeadings.count)
+        codeBlock count: \(self._codeBlocks.count)
+        quoteBlock count: \(self._quoteBlocks.count)
         items count: \(self.allTokens.count)
         """
     }

@@ -24,8 +24,8 @@ public class Application: Coordinator {
         _entranceWindow.makeKeyAndVisible()
         
         let navigationController = UINavigationController()
-        navigationController.navigationBar.barTintColor = InterfaceTheme.Color.background1
         navigationController.navigationBar.tintColor = InterfaceTheme.Color.interactive
+        navigationController.navigationBar.setBackgroundImage(UIImage(), for: .default)
         
         let eventObserver = EventObserver()
         let editorContext = EditorContext(eventObserver: eventObserver)

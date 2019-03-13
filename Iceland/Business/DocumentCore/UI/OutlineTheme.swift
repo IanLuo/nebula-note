@@ -40,11 +40,11 @@ public struct Layout {
     
     @objc public class Color: NSObject {
         @objc public static let interactive: UIColor = UIColor(red:1.00, green:1.00, blue:1.00, alpha:1.00)
-        @objc public static let descriptive: UIColor = UIColor(red:0.64, green:0.64, blue:0.64, alpha:1.00)
+        @objc public static let descriptive: UIColor = UIColor(red:0.27, green:0.27, blue:0.27, alpha:1.00)
         @objc public static let enphersizedDescriptive: UIColor = UIColor(red:0.41, green:0.41, blue:0.41, alpha:1.00)
         @objc public static let spotLight: UIColor = UIColor(red:0.07, green:0.37, blue:0.98, alpha:1.00)
         @objc public static let background1: UIColor = UIColor(red:0.09, green:0.09, blue:0.09, alpha:1.00)
-        @objc public static let background2: UIColor = UIColor(red:0.12, green:0.13, blue:0.16, alpha:1.00)
+        @objc public static let background2: UIColor = UIColor(red:0.12, green:0.12, blue:0.12, alpha:1.00)
         @objc public static let background3: UIColor = UIColor(red:0.19, green:0.20, blue:0.26, alpha:1.00)
         @objc public static let backgroundHighlight: UIColor = UIColor(red:0.29, green:0.59, blue:0.98, alpha:1.00)
         @objc public static let backgroundWarning: UIColor = UIColor(red:1.00, green:0.13, blue:0.10, alpha:1.00)

@@ -39,10 +39,10 @@ extension OutlineParser {
             public static var seperator = try? NSRegularExpression(pattern: RegexPattern.Node.seperator, options: [.anchorsMatchLines])
             public static var attachment = try? NSRegularExpression(pattern: RegexPattern.Node.attachment, options: [])
             public static var footnote = try? NSRegularExpression(pattern: RegexPattern.Node.footnote, options: [.anchorsMatchLines])
-            public static var codeBlockBegin = try? NSRegularExpression(pattern: RegexPattern.Element.CodeBlock.begin, options: [])
-            public static var codeBlockEnd = try? NSRegularExpression(pattern: RegexPattern.Element.CodeBlock.end, options: [])
-            public static var quoteBlockBegin = try? NSRegularExpression(pattern: RegexPattern.Element.QuoteBlock.begin, options: [])
-            public static var quoteBlockEnd = try? NSRegularExpression(pattern: RegexPattern.Element.QuoteBlock.end, options: [])
+            public static var codeBlockBegin = try? NSRegularExpression(pattern: RegexPattern.Element.CodeBlock.begin, options: [.anchorsMatchLines])
+            public static var codeBlockEnd = try? NSRegularExpression(pattern: RegexPattern.Element.CodeBlock.end, options: [.anchorsMatchLines])
+            public static var quoteBlockBegin = try? NSRegularExpression(pattern: RegexPattern.Element.QuoteBlock.begin, options: [.anchorsMatchLines])
+            public static var quoteBlockEnd = try? NSRegularExpression(pattern: RegexPattern.Element.QuoteBlock.end, options: [.anchorsMatchLines])
         }
         
         public struct Element {
@@ -50,6 +50,8 @@ extension OutlineParser {
                 public static var planning = try? NSRegularExpression(pattern: RegexPattern.Element.Heading.planning, options: [])
                 public static var schedule = try? NSRegularExpression(pattern: RegexPattern.Element.Heading.schedule, options: [])
                 public static var due = try? NSRegularExpression(pattern: RegexPattern.Element.Heading.due, options: [])
+                public static var timeRange = try? NSRegularExpression(pattern: RegexPattern.Element.Heading.timeRangePattern, options: [])
+                public static var dateRange = try? NSRegularExpression(pattern: RegexPattern.Element.Heading.dateAndTimeRange, options: [])
                 public static var tags = try? NSRegularExpression(pattern: RegexPattern.Element.Heading.tags, options: [])
             }
             
@@ -87,9 +89,11 @@ extension OutlineParser {
                 public static let planning = "planning"
                 public static let schedule = "schedule"
                 public static let scheduleDateAndTime = "scheduleDateAndTime"
+                public static let timeRange = "timeRange"
+                public static let dateRange = "dateRange"
                 public static let closed = "closed" // 暂时没有使用
                 public static let due = "due"
-                public static let dueDateAndTime = "dueDate"
+                public static let dueDateAndTime = "dueDateAndTime"
                 public static let tags = "tags"
             }
             
@@ -156,9 +160,9 @@ extension OutlineParser {
         private static let character = "\\p{L}"
         
         public struct Node {
-            public static let heading =         "^(\\*+) (.+)((\n\(Element.Heading.schedule))|(\n\(Element.Heading.due))){0,2}"
+            public static let heading =         "^(\\*+) (.+)((\n\(Element.Heading.schedule))|(\n\(Element.Heading.due))|(\n\(Element.Heading.timeRangePattern))|(\n\(Element.Heading.dateAndTimeRange))){0,2}"
             public static let codeBlock =       "^[\\t ]*\\#\\+BEGIN\\_SRC( [\(character)\\.]*)?\\n([^\\#\\+END\\_SRC]*)\\n\\s*\\#\\+END\\_SRC[\\t ]*\\n"
-            public static let checkBox =        "[\\t ]* (\\[[X| |\\-]\\])"
+            public static let checkBox =        "[\\t ]* \\[(X| |\\-)\\]"
             public static let unorderedList =   "^[\\t ]*([\\-\\+]) .*"
             public static let orderedList =     "^[\\t ]*([a-zA-Z0-9]+[\\.\\)\\>]) .*"
             public static let seperator =       "^[\\t ]*(\\-{5,}[\\t ]*)"
@@ -169,20 +173,26 @@ extension OutlineParser {
         
         public struct Element {
             public struct CodeBlock {
-                public static let begin =           "^[\\t ]*\\#\\+BEGIN\\_SRC( [\(character)\\.]*)?\\n"
-                public static let end =             "\\#\\+END\\_SRC[\\t ]*\\n"
+                public static let begin =           "^[\\t ]*\\#\\+BEGIN\\_SRC( [\(character)\\.]*)?[\\t ]*\\n"
+                public static let end =             "^[\\t ]*\\#\\+END\\_SRC[\\t ]*\\n"
             }
             
             public struct QuoteBlock {
-                public static let begin =           "^[\\t ]*\\#\\+BEGIN\\_QUOTE\\n"
-                public static let end =             "\\#\\+END\\_QUOTE[\\t ]*\\n"
+                public static let begin =           "^[\\t ]*\\#\\+BEGIN\\_QUOTE[\\t ]*\\n"
+                public static let end =             "^[\\t ]*\\#\\+END\\_QUOTE[\\t ]*\\n"
             }
             
             public struct Heading {
-                public static let schedule =    "(SCHEDULED\\: \\<([0-9]{4}\\-[0-9]{1,2}\\-[0-9]{1,2} [a-zA-Z]{3}( [0-9]{2}\\:[0-9]{1,2})?)\\>)"
-                public static let due =         "(DEADLINE\\: \\<([0-9]{4}\\-[0-9]{1,2}\\-[0-9]{1,2} [a-zA-Z]{3}( [0-9]{2}\\:[0-9]{1,2})?)\\>)"
-                public static let planning =    " (\(Values.Heading.Planning.pattern))? "
-                public static let tags =        "(\\:(\(character)+\\:)+)"
+                private static let timePattern =            "[0-9]{1,2}\\:[0-9]{1,2}"
+                private static let dateRepeatPattern =      "\\+[0-9]+(d|w|m|y){1}"
+                private static let weekdayPattern =         "[A-Z]{1}[a-z]{2}"
+                public static let dateAndTimePattern =     "\\<\\d{4}\\-\\d{1,2}\\-\\d{1,2}( \(weekdayPattern))?( (\(timePattern)))?( \(dateRepeatPattern))?\\>"
+                public static let dateAndTimeRange =        "(\(dateAndTimePattern))\\-\\-(\(dateAndTimePattern))"
+                public static let timeRangePattern =       "\\<(\\d{4}\\-\\d{1,2}\\-\\d{1,2}( \(weekdayPattern))?) (\(timePattern))\\-(\(timePattern))"
+                public static let schedule =                "(SCHEDULED\\: (\(dateAndTimePattern)))"
+                public static let due =                     "(DEADLINE\\: (\(dateAndTimePattern)))"
+                public static let planning =                " (\(Values.Heading.Planning.pattern))? "
+                public static let tags =                    "(\\:([a-zA-Z0-9]+\\:)+)"
             }
             
             public struct TextMark {
