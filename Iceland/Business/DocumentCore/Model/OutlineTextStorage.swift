@@ -538,6 +538,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
         
         if newCodeBlocks.count > 0 || codeBlocksRemovedCount > 0 {
             self._figureOutBlocks(self._codeBlocks)
+            self._addStylesForCodeBlock()
         }
         
         let quoteBlocksRemovedCount = self._quoteBlocks.compact()
@@ -554,19 +555,48 @@ extension OutlineTextStorage: OutlineParserDelegate {
         
         if newQuoteBlocks.count > 0 || quoteBlocksRemovedCount > 0 {
             self._figureOutBlocks(self._quoteBlocks)
+            self._addStylesForQuoteBlock()
         }
     }
     
     // MARK: - utils
     
+    private func _addStylesForCodeBlock() {
+        guard let currentRange = self.currentParseRange else { return }
+        
+        for blockBeginToken in self._pairedCodeBlocks {
+            // find current block range
+            if blockBeginToken.range.intersection(currentRange) != nil {
+                if let contentRange = blockBeginToken.contentRange {
+                    self.addAttributes([NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.descriptive,
+                                        NSAttributedString.Key.font: InterfaceTheme.Font.body], range: contentRange)
+                }
+            }
+        }
+    }
+    
+    private func _addStylesForQuoteBlock() {
+        guard let currentRange = self.currentParseRange else { return }
+        
+        for blockBeginToken in self._pairedQuoteBlocks {
+            // find current block range
+            if blockBeginToken.range.intersection(currentRange) != nil {
+                if let contentRange = blockBeginToken.contentRange {
+                    self.addAttributes([NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.spotlight,
+                                        NSAttributedString.Key.font: InterfaceTheme.Font.title], range: contentRange)
+                }
+            }
+        }
+    }
+    
     // make internal begin-end connection to build paired block ranges
     private func _figureOutBlocks<T: BlockToken>(_ blocks: WeakArray<T>) {
         for i in 0..<blocks.count {
-            // 1. i 为 BlockBeginToken
+            // condition 1. i 为 BlockBeginToken
             if let token = blocks[i] as? BlockBeginToken,
-                // 2. i 不为最后一个 token
-                blocks.count - 1 > i + 1,
-                 // 3. i + 1 为 BlockEndToken
+                // condition 2. i 不为最后一个 token
+                blocks.count - 1 >= i + 1,
+                 // condition 3. i + 1 为 BlockEndToken
                 let endToken = blocks[i + 1] as? BlockEndToken {
                 token.endToken = endToken
             }

@@ -71,6 +71,14 @@ public class BlockBeginToken: BlockToken {
             return super.range
         }
     }
+    
+    public var contentRange: NSRange? {
+        if let endToken = self.endToken {
+            return self.range.moveLeft(by: super.range.length).moveRight(by: -endToken.range.length)
+        } else {
+            return nil
+        }
+    }
 }
 
 public class BlockEndToken: BlockToken {
