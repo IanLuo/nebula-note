@@ -66,7 +66,7 @@ public class AgendaTableCell: UITableViewCell {
     
     private let tagsIcon: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "tag.png")?.withRenderingMode(UIImage.RenderingMode.alwaysTemplate)
+        imageView.image = Asset.Assets.tag.image.withRenderingMode(UIImage.RenderingMode.alwaysTemplate)
         imageView.tintColor = InterfaceTheme.Color.descriptive
         return imageView
     }()

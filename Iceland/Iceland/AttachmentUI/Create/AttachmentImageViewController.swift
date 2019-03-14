@@ -46,12 +46,12 @@ public class AttachmentImageViewController: AttachmentViewController, Attachment
         actionsViewController.title = "Add image".localizable
         
         if UIImagePickerController.isSourceTypeAvailable(UIImagePickerController.SourceType.camera) {
-            actionsViewController.addAction(icon: UIImage(named: "camera")?.withRenderingMode(.alwaysTemplate), title: "Camera".localizable, action: { vc in
+            actionsViewController.addAction(icon: Asset.Assets.camera.image.withRenderingMode(.alwaysTemplate), title: "Camera".localizable, action: { vc in
                 self.showCamera()
             })
         }
         
-        actionsViewController.addAction(icon: UIImage(named: "image library")?.withRenderingMode(.alwaysTemplate), title: "Image Library".localizable, action: { vc in
+        actionsViewController.addAction(icon: Asset.Assets.imageLibrary.image.withRenderingMode(.alwaysTemplate), title: "Image Library".localizable, action: { vc in
             self.showImageLibrary()
         })
         

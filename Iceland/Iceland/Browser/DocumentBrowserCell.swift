@@ -20,7 +20,7 @@ public class DocumentBrowserCell: UITableViewCell {
     public static let reuseIdentifier: String = "DocumentBrowserCell"
     private let arrowButton: UIButton = {
         let button = UIButton()
-        button.setImage(UIImage(named: "down")?.resize(upto: CGSize(width: 10, height: 10)).withRenderingMode(.alwaysTemplate), for: .normal)
+        button.setImage(Asset.Assets.down.image.resize(upto: CGSize(width: 10, height: 10)).withRenderingMode(.alwaysTemplate), for: .normal)
         button.isHidden = true
         button.tintColor = InterfaceTheme.Color.descriptiveHighlighted
         return button
@@ -35,7 +35,7 @@ public class DocumentBrowserCell: UITableViewCell {
     }()
     private let actionButton: UIButton = {
         let button = UIButton()
-        button.setImage(UIImage(named: "more")?.withRenderingMode(.alwaysTemplate), for: .normal)
+        button.setImage(Asset.Assets.more.image.withRenderingMode(.alwaysTemplate), for: .normal)
         button.tintColor = InterfaceTheme.Color.interactive
         return button
     }()

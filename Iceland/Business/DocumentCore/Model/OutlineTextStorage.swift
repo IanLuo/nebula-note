@@ -358,8 +358,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
             guard let range = rangeData[OutlineParser.Key.Node.codeBlockBegin] else { return }
             
             self.addAttributes([NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.descriptive,
-                                NSAttributedString.Key.font: InterfaceTheme.Font.footnote,
-                                NSAttributedString.Key.backgroundColor: InterfaceTheme.Color.background2], range: range)
+                                NSAttributedString.Key.font: InterfaceTheme.Font.footnote], range: range)
             
             let token = BlockBeginToken(data: rangeData, blockType: BlockType.sourceCode)
             self._tempParsingTokenResult.append(token)
@@ -373,8 +372,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
             guard let range = rangeData[OutlineParser.Key.Node.codeBlockEnd] else { return }
             
             self.addAttributes([NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.descriptive,
-                                NSAttributedString.Key.font: InterfaceTheme.Font.footnote,
-                                NSAttributedString.Key.backgroundColor: InterfaceTheme.Color.background2], range: range)
+                                NSAttributedString.Key.font: InterfaceTheme.Font.footnote], range: range)
             
             let token = BlockEndToken(data: rangeData, blockType: BlockType.sourceCode)
             self._tempParsingTokenResult.append(token)
@@ -385,15 +383,10 @@ extension OutlineTextStorage: OutlineParserDelegate {
         
         ranges.forEach { rangeData in
             
-            let paragraph = NSMutableParagraphStyle()
-            paragraph.paragraphSpacingBefore = 10
-            paragraph.headIndent = 100
-            
             guard let range = rangeData[OutlineParser.Key.Node.quoteBlockBegin] else { return }
             
             self.addAttributes([NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.descriptive,
-                                NSAttributedString.Key.font: InterfaceTheme.Font.footnote,
-                                NSAttributedString.Key.paragraphStyle: paragraph], range: range)
+                                NSAttributedString.Key.font: InterfaceTheme.Font.footnote], range: range)
             
             
             let token = BlockBeginToken(data: rangeData, blockType: BlockType.quote)
@@ -405,15 +398,10 @@ extension OutlineTextStorage: OutlineParserDelegate {
 
         ranges.forEach { quoteRange in
             
-            let paragraph = NSMutableParagraphStyle()
-            paragraph.paragraphSpacingBefore = 10
-            paragraph.headIndent = 100
-            
             guard let range = quoteRange[OutlineParser.Key.Node.quoteBlockEnd] else { return }
             
             self.addAttributes([NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.descriptive,
-                                NSAttributedString.Key.font: InterfaceTheme.Font.footnote,
-                                NSAttributedString.Key.paragraphStyle: paragraph], range: range)
+                                NSAttributedString.Key.font: InterfaceTheme.Font.footnote], range: range)
             
             let token = BlockEndToken(data: quoteRange, blockType: BlockType.quote)
             self._tempParsingTokenResult.append(token)
@@ -568,8 +556,8 @@ extension OutlineTextStorage: OutlineParserDelegate {
             // find current block range
             if blockBeginToken.range.intersection(currentRange) != nil {
                 if let contentRange = blockBeginToken.contentRange {
-                    self.addAttributes([NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.descriptive,
-                                        NSAttributedString.Key.font: InterfaceTheme.Font.body], range: contentRange)
+                    self.addAttributes([NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.spotlight,
+                                        NSAttributedString.Key.font: InterfaceTheme.Font.footnote], range: contentRange)
                 }
             }
         }

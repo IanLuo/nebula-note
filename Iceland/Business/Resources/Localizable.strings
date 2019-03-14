@@ -6,4 +6,11 @@
   Copyright © 2019 wod. All rights reserved.
 */
 
-"browser_create_new" = "Create New Document";
+"document.action.new" = "Create New Document";
+"document.title.untitled" = "Untitled";
+"document.actions.title" = "Perform Actions";
+"document.actions.new-sub" = "New Sub Document";
+"document.actions.duplicate" = "Duplicate";
+"document.actions.cover" = "Edit Cover";
+"document.actions.delete" = "Delete";
+"document.actions.rename" = "Rename";

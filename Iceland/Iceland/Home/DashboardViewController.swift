@@ -182,16 +182,16 @@ public class DashboardViewController: UIViewController {
         
         var icon: UIImage? {
             switch self {
-            case .tags(_): return UIImage(named: "tag")
-            case .scheduled: return UIImage(named: "scheduled")
-            case .overdue: return UIImage(named: "due")
+            case .tags(_): return Asset.Assets.tag.image
+            case .scheduled: return Asset.Assets.scheduled.image
+            case .overdue: return Asset.Assets.due.image
             default: return nil
             }
         }
         
         var detailIcon: UIImage? {
             switch self {
-            case .tags(_): return UIImage(named: "right")?.resize(upto: CGSize(width: 10, height: 10))
+            case .tags(_): return Asset.Assets.right.image.resize(upto: CGSize(width: 10, height: 10))
             default: return nil
             }
         }
@@ -411,7 +411,7 @@ private class TabView: UITableViewHeaderFooterView {
         let button = UIButton()
         button.tintColor = InterfaceTheme.Color.descriptiveHighlighted
         button.addTarget(self, action: #selector(subtabActionTapped), for: .touchUpInside)
-        button.setImage(UIImage(named: "down")?.resize(upto: CGSize(width: 10, height: 10)).withRenderingMode(.alwaysTemplate), for: .normal)
+        button.setImage(Asset.Assets.down.image.resize(upto: CGSize(width: 10, height: 10)).withRenderingMode(.alwaysTemplate), for: .normal)
         button.imageView?.contentMode = .scaleAspectFit
         return button
     }()

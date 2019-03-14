@@ -173,13 +173,13 @@ extension OutlineParser {
         
         public struct Element {
             public struct CodeBlock {
-                public static let begin =           "^[\\t ]*\\#\\+BEGIN\\_SRC( [\(character)\\.]*)?[\\t ]*\\n"
-                public static let end =             "^[\\t ]*\\#\\+END\\_SRC[\\t ]*\\n"
+                public static let begin =           "^[\\t ]*\\#\\+BEGIN\\_SRC( [\(character)\\.]*)?[\\t ]*"
+                public static let end =             "^[\\t ]*\\#\\+END\\_SRC[\\t ]*"
             }
             
             public struct QuoteBlock {
-                public static let begin =           "^[\\t ]*\\#\\+BEGIN\\_QUOTE[\\t ]*\\n"
-                public static let end =             "^[\\t ]*\\#\\+END\\_QUOTE[\\t ]*\\n"
+                public static let begin =           "^[\\t ]*\\#\\+BEGIN\\_QUOTE[\\t ]*"
+                public static let end =             "^[\\t ]*\\#\\+END\\_QUOTE[\\t ]*"
             }
             
             public struct Heading {

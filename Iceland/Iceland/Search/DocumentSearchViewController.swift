@@ -83,7 +83,7 @@ public class DocumentSearchViewController: UIViewController {
         viewModel.delegate = self
         
         self.title = "Search".localizable
-        self.tabBarItem = UITabBarItem(title: "", image: UIImage(named: "zoom"), tag: 0)
+        self.tabBarItem = UITabBarItem(title: "", image: Asset.Assets.zoom.image, tag: 0)
     }
     
     public override func viewDidLoad() {
@@ -197,7 +197,7 @@ private class SearchInputView: UIView, UITextFieldDelegate {
     private lazy var startEditButton: UIButton = {
         let icon = UIButton(frame: CGRect(origin: .zero, size: CGSize(width: 20, height: 20)))
         icon.addTarget(self, action: #selector(beginEdit), for: .touchUpInside)
-        icon.setImage(UIImage(named: "zoom")?.withRenderingMode(.alwaysTemplate), for: .normal)
+        icon.setImage(Asset.Assets.zoom.image.withRenderingMode(.alwaysTemplate), for: .normal)
         return icon
     }()
     
@@ -220,7 +220,7 @@ private class SearchInputView: UIView, UITextFieldDelegate {
         
         let clearButton = UIButton(frame: CGRect(origin: .zero, size: CGSize(width: 20, height: 20)))
         clearButton.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.descriptive, size: .singlePoint), for: .normal)
-        clearButton.setImage(UIImage(named: "cross")?.withRenderingMode(.alwaysTemplate), for: .normal)
+        clearButton.setImage(Asset.Assets.cross.image.withRenderingMode(.alwaysTemplate), for: .normal)
         clearButton.tintColor = InterfaceTheme.Color.interactive
         clearButton.addTarget(self, action: #selector(clear), for: .touchUpInside)
         clearButton.layer.cornerRadius = 10

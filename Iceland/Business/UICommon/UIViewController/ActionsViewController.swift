@@ -140,7 +140,7 @@ public class ActionsViewController: UIViewController, TransitionProtocol {
     
     private lazy var cancelButton: UIButton = {
         let button = UIButton()
-        button.setImage(UIImage(named: "cross")?.withRenderingMode(.alwaysTemplate), for: .normal)
+        button.setImage(Asset.Assets.cross.image.withRenderingMode(.alwaysTemplate), for: .normal)
         button.addTarget(self, action: #selector(cancel), for: .touchUpInside)
         return button
     }()

@@ -49,7 +49,7 @@ public class AgendaViewController: UIViewController {
         viewModel.delegate = self
         
         self.title = "Agenda".localizable
-        self.tabBarItem = UITabBarItem(title: "Agenda".localizable, image: UIImage(named: "agenda"), tag: 0)
+        self.tabBarItem = UITabBarItem(title: "Agenda".localizable, image: Asset.Assets.agenda.image, tag: 0)
     }
     
     public required init?(coder aDecoder: NSCoder) {
@@ -146,7 +146,7 @@ extension AgendaViewController: UITableViewDelegate {
             })
         }
         
-        actionsViewController.addAction(icon: UIImage(named: "up"), title: "Open", style: ActionsViewController.Style.highlight) { viewController in
+        actionsViewController.addAction(icon: Asset.Assets.up.image, title: "Open", style: ActionsViewController.Style.highlight) { viewController in
             viewController.dismiss(animated: true, completion: {
                 tableView.deselectRow(at: indexPath, animated: true)
                 let data = self.viewModel.data[indexPath.row]

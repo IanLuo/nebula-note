@@ -35,35 +35,35 @@ static NSMutableDictionary *attachmentMap;
 + (void)initialize {
     if ([self class] == [TextStorage class]) {
         foldingAttachment = [[NSTextAttachment alloc] init];
-        foldingAttachment.image = [UIImage imageNamed: @"more"];
+        foldingAttachment.image = [UIImage imageNamed:@"more" inBundle:[NSBundle bundleForClass:[TextStorage class]] compatibleWithTraitCollection:nil];
         foldingAttachment.bounds = CGRectMake(0, 0, 14, 4);
         
         linkAttachment = [[NSTextAttachment alloc] init];;
-        linkAttachment.image = [UIImage imageNamed: @"document"];
+        linkAttachment.image = [UIImage imageNamed: @"document" inBundle:[NSBundle bundleForClass:[TextStorage class]] compatibleWithTraitCollection:nil];
         linkAttachment.bounds = CGRectMake(0, 0, 20, 20);
         
         foldedAttachment = [[NSTextAttachment alloc] init];;
-        foldedAttachment.image = [UIImage imageNamed: @"add"];
+        foldedAttachment.image = [UIImage imageNamed: @"add" inBundle:[NSBundle bundleForClass:[TextStorage class]] compatibleWithTraitCollection:nil];
         foldedAttachment.bounds = CGRectMake(0, 0, 20, 20);
         
         unfoldedAttachment = [[NSTextAttachment alloc] init];
-        unfoldedAttachment.image = [UIImage imageNamed: @"minus"];
+        unfoldedAttachment.image = [UIImage imageNamed: @"minus" inBundle:[NSBundle bundleForClass:[TextStorage class]] compatibleWithTraitCollection:nil];
         unfoldedAttachment.bounds = CGRectMake(0, 0, 18, 2);
         
         scheduleAttachment = [[NSTextAttachment alloc] init];
-        scheduleAttachment.image = [UIImage imageNamed: @"scheduled"];
+        scheduleAttachment.image = [UIImage imageNamed: @"scheduled" inBundle:[NSBundle bundleForClass:[TextStorage class]] compatibleWithTraitCollection:nil];
         scheduleAttachment.bounds = CGRectMake(0, 0, 20, 20);
         
         dueAttachment = [[NSTextAttachment alloc] init];
-        dueAttachment.image = [UIImage imageNamed: @"due"];
+        dueAttachment.image = [UIImage imageNamed: @"due" inBundle:[NSBundle bundleForClass:[TextStorage class]] compatibleWithTraitCollection:nil];
         dueAttachment.bounds = CGRectMake(0, 0, 20, 20);
         
         tagAttachment = [[NSTextAttachment alloc] init];
-        tagAttachment.image = [UIImage imageNamed: @"tag"];
+        tagAttachment.image = [UIImage imageNamed: @"tag" inBundle:[NSBundle bundleForClass:[TextStorage class]] compatibleWithTraitCollection:nil];
         tagAttachment.bounds = CGRectMake(0, 0, 15, 15);
         
         unavailableAttachment = [[NSTextAttachment alloc] init];
-        unavailableAttachment.image = [UIImage imageNamed: @"cross"];
+        unavailableAttachment.image = [UIImage imageNamed: @"cross" inBundle:[NSBundle bundleForClass:[TextStorage class]] compatibleWithTraitCollection:nil];
         unavailableAttachment.bounds = CGRectMake(0, 0, 20, 20);
         
         attachmentMap = [@{

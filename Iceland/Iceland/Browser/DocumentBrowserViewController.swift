@@ -35,7 +35,7 @@ public class DocumentBrowserViewController: UIViewController {
     
     private let createNewDocumentButton: SquareButton = {
         let button = SquareButton()
-        button.title.text = "browser_create_new".localizable
+        button.title.text = L10n.Document.Action.new
         button.icon.image = Asset.Assets.add.image.withRenderingMode(.alwaysTemplate)
         button.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.background2, size: .singlePoint),
                                   for: .normal)
@@ -66,7 +66,7 @@ public class DocumentBrowserViewController: UIViewController {
         viewModel.delegate = self
         
         self.title = "Documents".localizable
-        self.tabBarItem = UITabBarItem(title: "", image: UIImage(named: "document"), tag: 0)
+        self.tabBarItem = UITabBarItem(title: "", image: Asset.Assets.document.image, tag: 0)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -103,7 +103,7 @@ public class DocumentBrowserViewController: UIViewController {
     }
     
     @objc private func createNewDocumentAtRoot() {
-        self.viewModel.createDocument(title: "untitled".localizable, below: nil)
+        self.viewModel.createDocument(title: L10n.Document.Title.untitled, below: nil)
     }
     
     @objc private func cancel() {
@@ -194,16 +194,16 @@ extension DocumentBrowserViewController: DocumentBrowserCellDelegate {
         if let index = self.viewModel.index(of: url) {
             let actionsViewController = ActionsViewController()
             
-            actionsViewController.title = "Perform Actions".localizable
+            actionsViewController.title = L10n.Document.Actions.title
             // 创建新文档，使用默认的新文档名
-            actionsViewController.addAction(icon: UIImage(named: "add"), title: "new sub document".localizable) { viewController in
+            actionsViewController.addAction(icon: Asset.Assets.add.image, title: L10n.Document.Action.new) { viewController in
                 viewController.dismiss(animated: true, completion: {
-                    self.viewModel.createDocument(title: "untitled".localizable, below: self.viewModel.data[index].url)
+                    self.viewModel.createDocument(title: L10n.Document.Title.untitled, below: self.viewModel.data[index].url)
                 })
             }
 
             // 重命名
-            actionsViewController.addAction(icon: nil, title: "rename".localizable) { viewController in
+            actionsViewController.addAction(icon: nil, title: L10n.Document.Actions.rename) { viewController in
                 self.viewModel.coordinator?.dismisTempModal(viewController) { [weak self] in
                     let renameFormViewController = ModalFormViewController()
                     let title = "new name".localizable
@@ -235,13 +235,13 @@ extension DocumentBrowserViewController: DocumentBrowserCellDelegate {
                 }
             }
             
-            actionsViewController.addAction(icon: nil, title: "duplicate".localizable) { viewController in
+            actionsViewController.addAction(icon: nil, title: L10n.Document.Actions.duplicate) { viewController in
                 self.viewModel.coordinator?.dismisTempModal(viewController) { [weak self] in
                     self?.viewModel.duplicate(index: index)
                 }
             }
             
-            actionsViewController.addAction(icon: nil, title: "cover".localizable) { viewController in
+            actionsViewController.addAction(icon: nil, title: L10n.Document.Actions.cover) { viewController in
                 self.viewModel.coordinator?.dismisTempModal(viewController) { [weak self] in
                     let coverPicker = CoverPickerViewController()
                     coverPicker.onSelecedCover = { cover in
@@ -252,7 +252,7 @@ extension DocumentBrowserViewController: DocumentBrowserCellDelegate {
                 }
             }
             
-            actionsViewController.addAction(icon: UIImage(named: "trash"), title: "delete".localizable, style: .warning) { viewController in
+            actionsViewController.addAction(icon: Asset.Assets.trash.image, title: L10n.Document.Actions.delete, style: .warning) { viewController in
                 self.viewModel.coordinator?.dismisTempModal(viewController) { [weak self] in
                     self?.viewModel.deleteDocument(index: index)
                 }
