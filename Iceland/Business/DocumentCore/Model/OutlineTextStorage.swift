@@ -43,14 +43,17 @@ public class OutlineTextStorage: TextStorage {
     
     public weak var outlineDelegate: OutlineTextStorageDelegate?
     
-    /// 用于保存已经找到的 heading
+    /// 用于 cache 已经找到的 heading
     private var _savedHeadings: WeakArray<HeadingToken> = WeakArray()
+    // cache parsed code block border line
     private var _codeBlocks: WeakArray<BlockToken> = WeakArray()
+    // cache parsed quote block border line
     private var _quoteBlocks: WeakArray<BlockToken> = WeakArray()
     
     /// 当前交互的文档位置，当前解析部分相对于文档开始的偏移量，不同于 currentParseRange 中的 location
     public var currentLocation: Int = 0
     
+    // refering to current heading, when use change selection, this value changes
     public weak var currentHeading: HeadingToken?
     
     /// 当前的解析范围，需要进行解析的字符串范围，用于对 item，索引 等缓存数据进行重新组织
@@ -64,8 +67,17 @@ public class OutlineTextStorage: TextStorage {
             }
         }
     
+    // return the references of saved heading token
     public var headingTokens: [HeadingToken] {
         return self._savedHeadings.allObjects
+    }
+    
+    public var codeBlocks: [BlockBeginToken] {
+        return self._pairedCodeBlocks
+    }
+    
+    public var quoteBlocks: [BlockBeginToken] {
+        return self._pairedQuoteBlocks
     }
     
     /// 当前所在编辑位置的最外层，或者最前面的 item 类型, 某些 item 在某些编辑操作是会有特殊行为，例如:
@@ -74,20 +86,19 @@ public class OutlineTextStorage: TextStorage {
         return self.token(after: self.currentLocation)
     }
     
-    /// 所有解析获得的 item, 对应当前的文档结构解析状态
+    /// 所有解析获得的 token, 对应当前的文档结构解析状态
     public var allTokens: [Token] = []
     
-    // 用于解析过程中临时数据处理
+    // 用于解析过程中临时数据处理, only useful during parsing
     private var _tempParsingTokenResult: [Token] = []
-    // 某些范围要忽略掉文字的样式，比如 link 内的文字样式
+    // 某些范围要忽略掉文字的样式，比如 link 内的文字样式, only usefule during parsing
     private var _ignoreTextMarkRanges: [NSRange] = []
 }
 
 // MARK: - Update Attributes
 extension OutlineTextStorage: ContentUpdatingProtocol {
     public func performContentUpdate(_ string: String!, range: NSRange, delta: Int, action: NSTextStorage.EditActions) {
-        //        log.info("editing in range: \(range), is non continouse: \(self.layoutManagers[0].hasNonContiguousLayout)")
-        //
+
         guard self.editedMask != .editedAttributes else { return } // 如果是修改属性，则不进行解析
         guard self.string.count > 0 else { return }
         
@@ -101,7 +112,7 @@ extension OutlineTextStorage: ContentUpdatingProtocol {
         self._adjustParseRange(editedRange)
 
         if let parsingRange = self.currentParseRange {
-            // 清空 attributes (折叠的状态除外)
+            // 清空 attributes (折叠的状态除外) // FIXME: after editing, folded attributes and ranges are lost, including heading ranges
             var effectiveRange: NSRange = NSRange(location:0, length: 0)
             let value = self.attribute(OutlineAttribute.hidden, at: parsingRange.location, longestEffectiveRange: &effectiveRange, in: parsingRange)
             if let value = value as? NSNumber, value.intValue == OutlineAttribute.hiddenValueFolded.intValue {
@@ -139,7 +150,7 @@ extension OutlineTextStorage {
     }
     
     /// 获取范围内的 item range 的索引
-    public func indexsOfToken(in: NSRange) -> [Int]? {
+    private func _indexsOfToken(in: NSRange) -> [Int]? {
         var items: [Int] = []
         for (index, item) in self.allTokens.enumerated() {
             if item.range.location >= `in`.location &&
@@ -287,7 +298,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 if key == OutlineParser.Key.Element.Checkbox.status {
                     self.addAttribute(OutlineAttribute.Checkbox.box, value: rangeData, range: range)
                     self.addAttribute(OutlineAttribute.Checkbox.status, value: range, range: NSRange(location: range.location, length: 1))
-                    self.addAttributes([NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.spotLight,
+                    self.addAttributes([NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.spotlight,
                                         NSAttributedString.Key.font: InterfaceTheme.Font.title], range: range)
                 }
             }
@@ -484,6 +495,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
     private func _updateTokens(new tokens: [Token]) {
         var newTokens: [Token] = tokens
 
+        // 对新的 token 进行排序
         newTokens.sort { (lhs: Token, rhs: Token) -> Bool in
             if lhs.range.location != rhs.range.location {
                 return lhs.range.location < rhs.range.location
@@ -492,6 +504,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
             }
         }
         
+        // 第一次解析，将所有结果直接加入缓存
         if self.allTokens.count == 0 {
             self.allTokens.append(contentsOf: newTokens)
         } else {
@@ -506,15 +519,15 @@ extension OutlineTextStorage: OutlineParserDelegate {
             log.info("[item count changed] \(self.allTokens.count - oldCount)")
         }
         
-        self._savedHeadings.compact()
+        _ = self._savedHeadings.compact()
         let newHeadings = newTokens.filter { $0 is HeadingToken }.map { $0 as! HeadingToken }
         
         self._updateTokenCache(self._savedHeadings, with: newHeadings)
         
-        self._codeBlocks.compact()
+        let codeBlocksRemovedCount = self._codeBlocks.compact()
         let newCodeBlocks = newTokens.filter {
-            if let t = $0 as? BlockToken {
-                return t.blockType == .sourceCode
+            if let t = $0 as? BlockToken, t.blockType == .sourceCode {
+                return true
             } else {
                 return false
             }
@@ -523,10 +536,14 @@ extension OutlineTextStorage: OutlineParserDelegate {
         
         self._updateTokenCache(self._codeBlocks, with: newCodeBlocks)
         
-        self._quoteBlocks.compact()
+        if newCodeBlocks.count > 0 || codeBlocksRemovedCount > 0 {
+            self._figureOutBlocks(self._codeBlocks)
+        }
+        
+        let quoteBlocksRemovedCount = self._quoteBlocks.compact()
         let newQuoteBlocks = newTokens.filter {
-            if let t = $0 as? BlockToken {
-                return t.blockType == .quote
+            if let t = $0 as? BlockToken, t.blockType == .quote {
+                return true
             } else {
                 return false
             }
@@ -534,10 +551,50 @@ extension OutlineTextStorage: OutlineParserDelegate {
         .map { $0 as! BlockToken }
         
         self._updateTokenCache(self._quoteBlocks, with: newQuoteBlocks)
+        
+        if newQuoteBlocks.count > 0 || quoteBlocksRemovedCount > 0 {
+            self._figureOutBlocks(self._quoteBlocks)
+        }
     }
     
-    
     // MARK: - utils
+    
+    // make internal begin-end connection to build paired block ranges
+    private func _figureOutBlocks<T: BlockToken>(_ blocks: WeakArray<T>) {
+        for i in 0..<blocks.count {
+            // 1. i 为 BlockBeginToken
+            if let token = blocks[i] as? BlockBeginToken,
+                // 2. i 不为最后一个 token
+                blocks.count - 1 > i + 1,
+                 // 3. i + 1 为 BlockEndToken
+                let endToken = blocks[i + 1] as? BlockEndToken {
+                token.endToken = endToken
+            }
+        }
+    }
+    
+    /// find pared code blocks, only return begin token, the end token is refered by begin token(weakly)
+    private var _pairedCodeBlocks: [BlockBeginToken] {
+        return self._codeBlocks.allObjects.filter {
+            if let begin = $0 as? BlockBeginToken {
+                return begin.endToken != nil
+            } else {
+                return false
+            }
+            }.map { $0 as! BlockBeginToken }
+    }
+    
+    /// find pared code blocks, only return begin token, the end token is refered by begin token(weakly)
+    private var _pairedQuoteBlocks: [BlockBeginToken] {
+        return self._quoteBlocks.allObjects.filter {
+            if let begin = $0 as? BlockBeginToken {
+                return begin.endToken != nil
+            } else {
+                return false
+            }
+        }.map { $0 as! BlockBeginToken }
+    }
+    
     private func _updateTokenCache<T: Token>(_ cache: WeakArray<T>, with newTokens: [T]) {
         if cache.count == 0 {
             cache.insert(newTokens, at: 0)
@@ -564,7 +621,6 @@ extension OutlineTextStorage: OutlineParserDelegate {
         }
         return indexes
     }
-    
     
     private func _findNextTokenIndex(after range: NSRange, tokens: [Token]) -> Int {
         var indexToInserNewHeadings: Int = tokens.count - 1

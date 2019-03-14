@@ -60,7 +60,7 @@ public class FilteredItemTableCell: UITableViewCell {
     
     private let tagsIcon: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = Asset.tag.image.withRenderingMode(UIImage.RenderingMode.alwaysTemplate)
+        imageView.image = Asset.Assets.tag.image.withRenderingMode(UIImage.RenderingMode.alwaysTemplate)
         imageView.tintColor = InterfaceTheme.Color.descriptive
         imageView.contentMode = .scaleAspectFit
         return imageView

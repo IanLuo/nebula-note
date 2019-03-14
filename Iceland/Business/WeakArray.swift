@@ -53,9 +53,11 @@ public class WeakArray<Element: AnyObject> {
         return element
     }
     
-    public func compact() {
+    public func compact() -> Int {
+        let count = self.count
         self.elements.addPointer(nil) // work around http://www.openradar.me/15396578
         self.elements.compact()
+        return count - self.count
     }
     
     public var allObjects: [Element] {

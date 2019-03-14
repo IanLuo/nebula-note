@@ -26,7 +26,7 @@ public class RoundButton: UIView {
     private let button: UIButton = {
         let button = UIButton()
         button.layer.masksToBounds = true
-        button.titleLabel?.font = InterfaceTheme.Font.subTitle
+        button.titleLabel?.font = InterfaceTheme.Font.subtitle
         button.setTitleColor(InterfaceTheme.Color.interactive, for: .normal)
         button.addTarget(self, action: #selector(tapped_), for: .touchUpInside)
         return button
@@ -34,7 +34,7 @@ public class RoundButton: UIView {
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.font = InterfaceTheme.Font.subTitle
+        label.font = InterfaceTheme.Font.subtitle
         label.textColor = InterfaceTheme.Color.descriptive
         return label
     }()

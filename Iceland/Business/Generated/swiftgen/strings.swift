@@ -10,9 +10,9 @@ import Foundation
 
 // swiftlint:disable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:disable nesting type_body_length type_name
-internal enum L10n {
+public enum L10n {
   /// Create New Document
-  internal static let browserCreateNew = L10n.tr("Localizable", "browser_create_new")
+  public static let browserCreateNew = L10n.tr("Localizable", "browser_create_new")
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:enable nesting type_body_length type_name

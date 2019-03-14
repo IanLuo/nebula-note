@@ -30,7 +30,7 @@ public class CaptureListViewController: UIViewController {
     private lazy var cancelButton: UIButton = {
         let button = UIButton()
         button.addTarget(self, action: #selector(cancel), for: .touchUpInside)
-        button.setImage(Asset.cross.image.withRenderingMode(.alwaysTemplate), for: .normal)
+        button.setImage(Asset.Assets.cross.image.withRenderingMode(.alwaysTemplate), for: .normal)
         button.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.background1, size: .singlePoint), for: .normal)
         button.setTitleColor(InterfaceTheme.Color.interactive, for: .normal)
         return button

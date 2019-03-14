@@ -272,9 +272,9 @@ fileprivate class ActionCell: UITableViewCell {
         case .default:
             return InterfaceTheme.Color.background2
         case .highlight:
-            return InterfaceTheme.Color.backgroundHighlight
+            return InterfaceTheme.Color.spotlight
         case .warning:
-            return InterfaceTheme.Color.backgroundWarning
+            return InterfaceTheme.Color.warning
         }
     }
     

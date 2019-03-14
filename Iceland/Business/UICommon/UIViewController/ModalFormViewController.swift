@@ -304,7 +304,7 @@ private class InputTextViewCell: UITableViewCell, UITextViewDelegate, Validatabl
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.font = InterfaceTheme.Font.footnote
-        label.textColor = InterfaceTheme.Color.enphersizedDescriptive
+        label.textColor = InterfaceTheme.Color.descriptiveHighlighted
         return label
     }()
     
@@ -344,7 +344,7 @@ private class InputTextViewCell: UITableViewCell, UITextViewDelegate, Validatabl
     func showValidationResult(_ problem: String?) {
         if let problem = problem {
             self.titleLabel.text = "\(self.validateKey) \(problem)"
-            self.textView.backgroundColor = InterfaceTheme.Color.backgroundWarning
+            self.textView.backgroundColor = InterfaceTheme.Color.warning
         } else {
             self.titleLabel.text = self.validateKey
             self.textView.backgroundColor = InterfaceTheme.Color.background2
@@ -380,7 +380,7 @@ private class InputTextFieldCell: UITableViewCell, UITextFieldDelegate, Validata
         let label = UILabel()
         label.font = InterfaceTheme.Font.footnote
         label.textAlignment = .left
-        label.textColor = InterfaceTheme.Color.enphersizedDescriptive
+        label.textColor = InterfaceTheme.Color.descriptiveHighlighted
         return label
     }()
     
@@ -438,7 +438,7 @@ private class InputTextFieldCell: UITableViewCell, UITextFieldDelegate, Validata
     func showValidationResult(_ problem: String?) {
         if let problem = problem {
             self.titleLabel.text = "\(self.validateKey) \(problem)"
-            self.textField.backgroundColor = InterfaceTheme.Color.backgroundWarning
+            self.textField.backgroundColor = InterfaceTheme.Color.warning
         } else {
             self.titleLabel.text = self.validateKey
             self.textField.backgroundColor = InterfaceTheme.Color.background2

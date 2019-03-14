@@ -57,7 +57,7 @@ public class SearchTableCell: UITableViewCell {
         self.fileNameLabel.text = cellModel.fileName
 
         let attributedString = NSMutableAttributedString(string: cellModel.textString)
-        attributedString.addAttributes([NSAttributedString.Key.foregroundColor : InterfaceTheme.Color.spotLight], range: cellModel.hilightRange)
+        attributedString.addAttributes([NSAttributedString.Key.foregroundColor : InterfaceTheme.Color.spotlight], range: cellModel.hilightRange)
         self.foundTextLabel.attributedText = attributedString
     }
     

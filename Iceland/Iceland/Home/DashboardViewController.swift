@@ -409,7 +409,7 @@ private class TabView: UITableViewHeaderFooterView {
     
     let showSubtabsButton: UIButton = {
         let button = UIButton()
-        button.tintColor = InterfaceTheme.Color.enphersizedDescriptive
+        button.tintColor = InterfaceTheme.Color.descriptiveHighlighted
         button.addTarget(self, action: #selector(subtabActionTapped), for: .touchUpInside)
         button.setImage(UIImage(named: "down")?.resize(upto: CGSize(width: 10, height: 10)).withRenderingMode(.alwaysTemplate), for: .normal)
         button.imageView?.contentMode = .scaleAspectFit

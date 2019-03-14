@@ -55,7 +55,7 @@ public class CaptureViewController: UIViewController, TransitionProtocol {
     
     private lazy var cancelButton: RoundButton = {
         let button = RoundButton()
-        button.setIcon(Asset.cross.image.withRenderingMode(.alwaysTemplate), for: .normal)
+        button.setIcon(Asset.Assets.cross.image.withRenderingMode(.alwaysTemplate), for: .normal)
         button.setBackgroundColor(InterfaceTheme.Color.background3, for: .normal)
         button.setBorder(color: nil)
         button.tapped({ _ in
@@ -120,13 +120,13 @@ extension CaptureViewController: UITableViewDelegate, UITableViewDataSource {
 extension Attachment.Kind {
     var icon: UIImage {
         switch self {
-        case .audio: return Asset.add.image
-        case .video: return Asset.add.image
-        case .link: return Asset.add.image
-        case .location: return Asset.add.image
-        case .sketch: return Asset.add.image
-        case .text: return Asset.add.image
-        case .image: return Asset.imageLibrary.image
+        case .audio: return Asset.Assets.add.image
+        case .video: return Asset.Assets.add.image
+        case .link: return Asset.Assets.add.image
+        case .location: return Asset.Assets.add.image
+        case .sketch: return Asset.Assets.add.image
+        case .text: return Asset.Assets.add.image
+        case .image: return Asset.Assets.imageLibrary.image
         }
     }
 }

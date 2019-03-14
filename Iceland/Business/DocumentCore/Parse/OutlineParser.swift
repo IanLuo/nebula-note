@@ -447,7 +447,7 @@ extension DateAndTimeType {
         if let matcher = matcher {
             if let result = matcher.firstMatch(in: string, options: [], range: NSRange(location: 0, length: string.count)) {
                 let formatter = DateFormatter()
-                let dateString = matcher.replacementString(for: result, in: string, offset: 0, template: "$2")
+                let dateString = matcher.replacementString(for: result, in: string, offset: 0, template: "$2").replacingOccurrences(of: "<", with: "").replacingOccurrences(of: ">", with: "")
                 
                 let dateFormates: [(String, Bool)] = [
                     ("yyyy-MM-dd EEE HH:mm", true),

@@ -22,7 +22,7 @@ public class AgendaTableCell: UITableViewCell {
     
     private let planningLabel: UILabel = {
         let label = UILabel()
-        label.textColor = InterfaceTheme.Color.enphersizedDescriptive
+        label.textColor = InterfaceTheme.Color.descriptiveHighlighted
         label.font = InterfaceTheme.Font.title
         label.textAlignment = .center
         return label

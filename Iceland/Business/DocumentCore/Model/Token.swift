@@ -23,7 +23,7 @@ public class Token {
     public let identifier: String
     private var _range: NSRange
     public var range: NSRange {
-        set { _range = newValue }
+//        set { _range = newValue }
         get { return offset == 0 ? _range : _range.offset(self.offset) }
     }
     public var name: String
@@ -51,6 +51,7 @@ public class BlockToken: Token {
     }
 }
 
+/// if block is paired, BlockBeginToken means the whole block
 public class BlockBeginToken: BlockToken {
     public weak var endToken: BlockEndToken?
     public init(data: [String: NSRange], blockType: BlockType) {
@@ -61,10 +62,19 @@ public class BlockBeginToken: BlockToken {
             super.init(range: data[OutlineParser.Key.Node.codeBlockBegin]!, name: OutlineParser.Key.Node.codeBlockBegin, data: data, blockType: blockType)
         }
     }
+    
+    // the range from first of begin token to last of end token
+    public override var range: NSRange {
+        if let endToken = self.endToken {
+            return NSRange(location: super.range.location, length: endToken.range.upperBound - super.range.location)
+        } else {
+            return super.range
+        }
+    }
 }
 
 public class BlockEndToken: BlockToken {
-    public weak var beginToken: BlockBeginToken?
+//    public weak var beginToken: BlockBeginToken?
     public init(data: [String: NSRange], blockType: BlockType) {
         switch blockType {
         case .quote:

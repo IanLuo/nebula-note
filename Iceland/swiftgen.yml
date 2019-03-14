@@ -1,12 +1,18 @@
 strings:
+    publicAccess: true
     inputs: 
-        - Iceland/Resources/Localizable.strings
+        - Business/Resources/Localizable.strings
     outputs:
         - templateName: structured-swift4
-          output: Iceland/Generated/swiftgen/strings.swift
+          output: Business/Generated/swiftgen/strings.swift
+          params:
+            publicAccess: true
 xcassets:
     inputs:
-        - Iceland/Resources/Assets.xcassets
+        - Business/Resources/Assets.xcassets
+        - Business/Resources/Colors.xcassets
     outputs:
         - templateName: swift4
-          output: Iceland/Generated/swiftgen/assets-images.swift
+          output: Business/Generated/swiftgen/assets.swift
+          params:
+            publicAccess: true

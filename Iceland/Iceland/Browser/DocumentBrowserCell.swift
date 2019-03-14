@@ -22,12 +22,12 @@ public class DocumentBrowserCell: UITableViewCell {
         let button = UIButton()
         button.setImage(UIImage(named: "down")?.resize(upto: CGSize(width: 10, height: 10)).withRenderingMode(.alwaysTemplate), for: .normal)
         button.isHidden = true
-        button.tintColor = InterfaceTheme.Color.enphersizedDescriptive
+        button.tintColor = InterfaceTheme.Color.descriptiveHighlighted
         return button
     }()
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.font = InterfaceTheme.Font.subTitle
+        label.font = InterfaceTheme.Font.subtitle
         label.textColor = InterfaceTheme.Color.interactive
         label.textAlignment = .left
         label.numberOfLines = 0

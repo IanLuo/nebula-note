@@ -51,7 +51,7 @@ public class DashboardSubtypeItemViewController: UIViewController {
     
     private let backButton: UIButton = {
         let button = UIButton()
-        button.setImage(Asset.left.image.withRenderingMode(.alwaysTemplate), for: .normal)
+        button.setImage(Asset.Assets.left.image.withRenderingMode(.alwaysTemplate), for: .normal)
         button.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.background2, size: .singlePoint), for: .normal)
         button.tintColor = InterfaceTheme.Color.interactive
         button.layer.cornerRadius = 20

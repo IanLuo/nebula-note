@@ -25,10 +25,10 @@ public class HeadingOutlineTableViewCell: UITableViewCell {
             let labelString = prefix + infix + string
             let attributedString = NSMutableAttributedString(string: labelString)
             attributedString.setAttributes([NSAttributedString.Key.foregroundColor : InterfaceTheme.Color.descriptive,
-                                            NSAttributedString.Key.font : InterfaceTheme.Font.subTitle],
+                                            NSAttributedString.Key.font : InterfaceTheme.Font.subtitle],
                                            range: NSRange(location: 0, length: prefix.count))
             attributedString.setAttributes([NSAttributedString.Key.foregroundColor : InterfaceTheme.Color.interactive,
-                                            NSAttributedString.Key.font : InterfaceTheme.Font.subTitle],
+                                            NSAttributedString.Key.font : InterfaceTheme.Font.subtitle],
                                            range: NSRange(location: prefix.count, length: labelString.count - prefix.count))
             
             self.label.attributedText = attributedString
@@ -48,7 +48,7 @@ public class HeadingOutlineTableViewCell: UITableViewCell {
     
     private func setupUI() {
         self.contentView.backgroundColor = InterfaceTheme.Color.background2
-        self.label.font = InterfaceTheme.Font.subTitle
+        self.label.font = InterfaceTheme.Font.subtitle
         self.label.textColor = InterfaceTheme.Color.interactive
         
         self.contentView.addSubview(self.label)
