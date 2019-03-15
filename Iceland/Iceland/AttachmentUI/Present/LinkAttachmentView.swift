@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import Business
+import Interface
 
 public protocol LinkAttachmentViewDelegate {
     func didTapLink(url: String)

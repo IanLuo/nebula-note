@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import Business
+import Interface
 
 public class SearchTableCell: UITableViewCell {
     public static let reuseIdentifier = "SearchTableCell"

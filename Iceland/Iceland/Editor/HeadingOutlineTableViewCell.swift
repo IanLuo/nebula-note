@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import Business
+import Interface
 
 public class HeadingOutlineTableViewCell: UITableViewCell {
     public static let reuseIdentifier: String = "HeadingOutlineTableViewCell"

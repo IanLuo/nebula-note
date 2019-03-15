@@ -9,6 +9,7 @@
 import UIKit
 import SwiftyBeaver
 import Business
+import Interface
 
 internal let log = SwiftyBeaver.self
 

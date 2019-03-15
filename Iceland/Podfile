@@ -23,6 +23,10 @@ target 'Business' do
     pod 'Result'
 end
 
+target 'Interface' do
+    pod 'SwiftyBeaver'
+end
+
 target 'Storage' do
    pod 'KeychainAccess'
 end

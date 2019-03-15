@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import Business
+import Interface
 
 public class TextAttachmentView: UIView, AttachmentViewProtocol {
     public var attachment: Attachment!

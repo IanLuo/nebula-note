@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import Business
+import Interface
 
 public protocol DashboardViewControllerDelegate: class {
     func didSelectTab(at index: Int, viewController: UIViewController)

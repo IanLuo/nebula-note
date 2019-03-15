@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import Business
+import Interface
 
 public class Application: Coordinator {
     weak var window: UIWindow?

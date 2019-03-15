@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import Interface
 import Business
 
 public protocol HeadingsOutlineViewControllerDelegate: class {

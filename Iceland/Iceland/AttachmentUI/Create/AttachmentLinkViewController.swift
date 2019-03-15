@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import Business
+import Interface
 
 public class AttachmentLinkViewController: AttachmentViewController, AttachmentViewModelDelegate {
     public override func viewDidLoad() {

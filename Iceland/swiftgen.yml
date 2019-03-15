@@ -1,18 +1,18 @@
 strings:
     publicAccess: true
     inputs: 
-        - Business/Resources/Localizable.strings
+        - Interface/Resources/Localizable.strings
     outputs:
         - templateName: structured-swift4
-          output: Business/Generated/swiftgen/strings.swift
+          output: Interface/Generated/swiftgen/strings.swift
           params:
             publicAccess: true
 xcassets:
     inputs:
-        - Business/Resources/Assets.xcassets
-        - Business/Resources/Colors.xcassets
+        - Interface/Resources/Assets.xcassets
+        - Interface/Resources/Colors.xcassets
     outputs:
         - templateName: swift4
-          output: Business/Generated/swiftgen/assets.swift
+          output: Interface/Generated/swiftgen/assets.swift
           params:
             publicAccess: true

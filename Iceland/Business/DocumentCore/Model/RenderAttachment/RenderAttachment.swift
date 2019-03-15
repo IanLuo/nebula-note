@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Interface
 
 public class RenderAttachment: NSTextAttachment {
     public var type: String

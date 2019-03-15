@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import Business
+import Interface
 
 public protocol DocumentSearchViewControllerDelegate: class {
     func didSelectDocument(url: URL, location: Int)

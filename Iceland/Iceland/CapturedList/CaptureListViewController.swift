@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import Business
 import MapKit
+import Interface
 
 public class CaptureListViewController: UIViewController {
     let viewModel: CaptureListViewModel

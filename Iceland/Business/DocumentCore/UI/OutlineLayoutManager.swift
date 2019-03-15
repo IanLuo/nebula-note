@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import Interface
 
 public class OutlineLayoutManager: NSLayoutManager {
     public override init() {

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Interface
 
 public protocol OutlineTextStorageDelegate: class {
     func didSetCurrentHeading(newHeading: HeadingToken?, oldHeading: HeadingToken?)

@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import Business
 import Storage
+import Interface
 
 public class AttachmentImageViewController: AttachmentViewController, AttachmentViewModelDelegate, TransitionProtocol {
     public var contentView: UIView {

@@ -96,12 +96,12 @@ private struct OutlineThemeConfig {
     
     private static let defaultTheme: [String: AnyObject] = [
         "FONT": UIFont.preferredFont(forTextStyle: .body),
-        OutlineParser.Key.Element.TextMark.bold: UIFont.boldSystemFont(ofSize: 14),
-        OutlineParser.Key.Element.TextMark.italic: UIFont.italicSystemFont(ofSize: 14),
-        OutlineParser.Key.Element.TextMark.underscore: NSNumber(value: 1),
-        OutlineParser.Key.Element.TextMark.strikeThough: NSNumber(value: 1),
-        OutlineParser.Key.Element.TextMark.verbatim: UIFont.preferredFont(forTextStyle: UIFont.TextStyle.title1),
-        OutlineParser.Key.Element.TextMark.code: UIColor.gray
+        "BOLD": UIFont.boldSystemFont(ofSize: 14),
+        "ITALIC": UIFont.italicSystemFont(ofSize: 14),
+        "UNDERSCORE": NSNumber(value: 1),
+        "STRIKETHOUGH": NSNumber(value: 1),
+        "VERBATIM": UIFont.preferredFont(forTextStyle: UIFont.TextStyle.title1),
+        "CODE": UIColor.gray
     ]
 }
 
@@ -111,12 +111,12 @@ private struct OutlineThemeConfig {
         @objc public static let bold = [NSAttributedString.Key.font: OutlineThemeConfig.shared["FONT"]!]
         
         @objc public class TextMark: NSObject {
-            @objc public static let bold = [NSAttributedString.Key.font: OutlineThemeConfig.shared[OutlineParser.Key.Element.TextMark.bold]!]
-            @objc public static let italic = [NSAttributedString.Key.font: OutlineThemeConfig.shared[OutlineParser.Key.Element.TextMark.italic]!]
-            @objc public static let underscore = [NSAttributedString.Key.underlineStyle: OutlineThemeConfig.shared[OutlineParser.Key.Element.TextMark.underscore]!]
-            @objc public static let strikeThough = [NSAttributedString.Key.strikethroughStyle: OutlineThemeConfig.shared[OutlineParser.Key.Element.TextMark.strikeThough]!]
-            @objc public static let verbatim = [NSAttributedString.Key.font: OutlineThemeConfig.shared[OutlineParser.Key.Element.TextMark.verbatim]!]
-            @objc public static let code = [NSAttributedString.Key.backgroundColor: OutlineThemeConfig.shared[OutlineParser.Key.Element.TextMark.code]!]
+            @objc public static let bold = [NSAttributedString.Key.font: OutlineThemeConfig.shared["BOLD"]!]
+            @objc public static let italic = [NSAttributedString.Key.font: OutlineThemeConfig.shared["ITALIC"]!]
+            @objc public static let underscore = [NSAttributedString.Key.underlineStyle: OutlineThemeConfig.shared["UNDERSCORE"]!]
+            @objc public static let strikeThough = [NSAttributedString.Key.strikethroughStyle: OutlineThemeConfig.shared["STRIKETHOUGH"]!]
+            @objc public static let verbatim = [NSAttributedString.Key.font: OutlineThemeConfig.shared["VERBATIM"]!]
+            @objc public static let code = [NSAttributedString.Key.backgroundColor: OutlineThemeConfig.shared["CODE"]!]
         }
     }
 }

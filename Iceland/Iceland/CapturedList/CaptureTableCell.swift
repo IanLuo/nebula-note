@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import Business
 import CoreLocation
+import Interface
 
 public protocol CaptureTableCellDelegate: class {
     func didTapActions(attachment: Attachment)

@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import Interface
 
 @objc public class SeparaterAttachment: NSTextAttachment {
     public required init() {

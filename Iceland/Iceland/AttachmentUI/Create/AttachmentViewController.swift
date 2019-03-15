@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import Business
+import Interface
 
 public protocol AttachmentViewControllerDelegate: class {
     func didSaveAttachment(key: String)

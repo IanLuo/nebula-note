@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import Business
+import Interface
 
 public class AttachmentAudioViewController: AttachmentViewController, AttachmentViewModelDelegate {
     private lazy var recorder: AudioRecorder = {

@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import Interface
 
 public protocol OutlineTextViewDelegate: class {
     func didTapOnLevel(textView: UITextView, chracterIndex: Int, heading: [String: NSRange], point: CGPoint)

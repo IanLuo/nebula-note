@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import Business
+import Interface
 
 public protocol RecentFilesViewDelegate: class {
     func didSelectDocument(url: URL)

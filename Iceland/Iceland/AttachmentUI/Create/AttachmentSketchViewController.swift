@@ -11,6 +11,7 @@ import UIKit
 import Drawsana
 import Business
 import Storage
+import Interface
 
 public class AttachmentSketchViewController: AttachmentViewController, AttachmentViewModelDelegate {
     private lazy var drawingView: DrawsanaView = {

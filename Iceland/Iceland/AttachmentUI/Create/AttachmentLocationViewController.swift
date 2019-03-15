@@ -11,6 +11,7 @@ import UIKit
 import CoreLocation
 import MapKit
 import Business
+import Interface
 
 public class AttachmentLocationViewController: AttachmentViewController, AttachmentViewModelDelegate, MKMapViewDelegate {
     public override func viewDidLoad() {
