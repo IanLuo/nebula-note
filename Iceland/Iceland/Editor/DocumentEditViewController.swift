@@ -100,11 +100,15 @@ public class DocumentEditViewController: UIViewController {
     }
     
     private func _showAttachmentSelections() {
+        let performAddAttachmentAction: (Int, String, String) -> Void = {
+            self.viewModel.performAction(EditAction.addAttachment($0, $1, $2))
+        }
+        
         let actionViewController = ActionsViewController()
         actionViewController.addAction(icon: Asset.Assets.imageLibrary.image, title: "images".localizable) { controller in
             controller.dismiss(animated: true, completion: {
                 self.viewModel.coordinator?.showAttachmentPicker(kind: Attachment.Kind.image, complete: { [unowned self] attachmentId in
-                    self.viewModel.addAttachment(at: self.textView.selectedRange.location, attachmentId: attachmentId, kind: Attachment.Kind.image.rawValue)
+                    performAddAttachmentAction(self.textView.selectedRange.location, attachmentId, Attachment.Kind.image.rawValue)
                     }, cancel: {
                         
                 })
@@ -114,7 +118,7 @@ public class DocumentEditViewController: UIViewController {
         actionViewController.addAction(icon: Asset.Assets.add.image, title: "location".localizable) { controller in
             controller.dismiss(animated: true, completion: {
                 self.viewModel.coordinator?.showAttachmentPicker(kind: .location, complete: { [unowned self] attachmentId in
-                    self.viewModel.addAttachment(at: self.textView.selectedRange.location, attachmentId: attachmentId, kind: Attachment.Kind.location.rawValue)
+                    performAddAttachmentAction(self.textView.selectedRange.location, attachmentId, Attachment.Kind.location.rawValue)
                 }, cancel: {
                         
                 })
@@ -124,7 +128,7 @@ public class DocumentEditViewController: UIViewController {
         actionViewController.addAction(icon: Asset.Assets.add.image, title: "audio".localizable) { controller in
             controller.dismiss(animated: true, completion: {
                 self.viewModel.coordinator?.showAttachmentPicker(kind: .audio, complete: { [unowned self] attachmentId in
-                    self.viewModel.addAttachment(at: self.textView.selectedRange.location, attachmentId: attachmentId, kind: Attachment.Kind.audio.rawValue)
+                    performAddAttachmentAction(self.textView.selectedRange.location, attachmentId, Attachment.Kind.audio.rawValue)
                 }, cancel: {
                         
                 })
@@ -134,7 +138,7 @@ public class DocumentEditViewController: UIViewController {
         actionViewController.addAction(icon: Asset.Assets.add.image, title: "video".localizable) { controller in
             controller.dismiss(animated: true, completion: {
                 self.viewModel.coordinator?.showAttachmentPicker(kind: .video, complete: { [unowned self] attachmentId in
-                    self.viewModel.addAttachment(at: self.textView.selectedRange.location, attachmentId: attachmentId, kind: Attachment.Kind.video.rawValue)
+                    performAddAttachmentAction(self.textView.selectedRange.location, attachmentId, Attachment.Kind.video.rawValue)
                 }, cancel: {
                         
                 })
@@ -144,7 +148,7 @@ public class DocumentEditViewController: UIViewController {
         actionViewController.addAction(icon: Asset.Assets.add.image, title: "sketch".localizable) { controller in
             controller.dismiss(animated: true, completion: {
                 self.viewModel.coordinator?.showAttachmentPicker(kind: .sketch, complete: { [unowned self] attachmentId in
-                    self.viewModel.addAttachment(at: self.textView.selectedRange.location, attachmentId: attachmentId, kind: Attachment.Kind.sketch.rawValue)
+                    performAddAttachmentAction(self.textView.selectedRange.location, attachmentId, Attachment.Kind.sketch.rawValue)
                 }, cancel: {
                         
                 })
@@ -154,7 +158,7 @@ public class DocumentEditViewController: UIViewController {
         actionViewController.addAction(icon: Asset.Assets.add.image, title: "link".localizable) { controller in
             controller.dismiss(animated: true, completion: {
                 self.viewModel.coordinator?.showAttachmentPicker(kind: .link, complete: { [unowned self] attachmentId in
-                    self.viewModel.addAttachment(at: self.textView.selectedRange.location, attachmentId: attachmentId, kind: Attachment.Kind.link.rawValue)
+                    performAddAttachmentAction(self.textView.selectedRange.location, attachmentId, Attachment.Kind.link.rawValue)
                 }, cancel: {
                         
                 })
@@ -175,11 +179,11 @@ extension DocumentEditViewController: OutlineTextViewDelegate {
     }
     
     public func didTapOnLevel(textView: UITextView, chracterIndex: Int, heading: [String : NSRange], point: CGPoint) {
-        self.viewModel.changeFoldingStatus(location: chracterIndex)
+        self.viewModel.performAction(.toggleFoldStatus(chracterIndex))
     }
     
     public func didTapOnCheckbox(textView: UITextView, characterIndex: Int, checkbox: [String : NSRange], point: CGPoint) {
-        self.viewModel.changeCheckboxStatus(range: checkbox["status"]!)
+        self.viewModel.performAction(.toggleCheckboxStatus(checkbox["status"]!))
     }
 }
 

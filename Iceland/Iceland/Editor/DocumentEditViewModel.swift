@@ -16,6 +16,59 @@ public protocol DocumentEditViewModelDelegate: class {
     func didReadyToEdit()
 }
 
+public enum EditAction {
+    case toggleFoldStatus(Int)
+    case toggleCheckboxStatus(NSRange)
+    case addAttachment(Int, String, String)
+    case changeDue(DateAndTimeType, Int)
+    case removeDue(Int)
+    case changeSchedule(DateAndTimeType, Int)
+    case removeSchedule(Int)
+    case addTag(String, Int)
+    case removeTag(String, Int)
+    case changePlanning(String, Int)
+    case removePlanning(Int)
+    case insertText(String, Int)
+    case replaceHeading(Int, Int)
+    case archive(Int)
+    case unarchive(Int)
+    
+    public var command: DocumentContentCommand {
+        switch self {
+        case .toggleFoldStatus(let location):
+            return FoldingCommand(location: location)
+        case .toggleCheckboxStatus(let range):
+            return CheckboxCommand(range: range)
+        case let .addAttachment(location, attachmentId, kind):
+            return AddAttachmentCommand(attachmentId: attachmentId, location: location, kind: kind)
+        case let .changeDue(due, location):
+            return DueCommand(location: location, kind: .addOrUpdate(due))
+        case let .removeDue(location):
+            return DueCommand(location: location, kind: .remove)
+        case let .changeSchedule(schedule, location):
+            return ScheduleCommand(location: location, kind: .addOrUpdate(schedule))
+        case  let .removeSchedule(location):
+            return ScheduleCommand(location: location, kind: .remove)
+        case let .addTag(tag, location):
+            return TagCommand(location: location, kind: .add(tag))
+        case let .removeTag(tag, location):
+            return TagCommand(location: location, kind: .remove(tag))
+        case let .changePlanning(planning, location):
+            return PlanningCommand(location: location, kind: .addOrUpdate(planning))
+        case let .removePlanning(location):
+            return PlanningCommand(location: location, kind: .remove)
+        case let .insertText(text, location):
+            return InsertTextToHeadingCommand(location: location, textToInsert: text)
+        case let .replaceHeading(fromLocation, toLocation):
+            return ReplaceHeadingCommand(fromLocation: fromLocation, toLocation: toLocation)
+        case let .archive(location):
+            return ArchiveCommand(location: location)
+        case let .unarchive(location):
+            return UnarchiveCommand(location: location)
+        }
+    }
+}
+
 public class DocumentEditViewModel {
     public weak var delegate: DocumentEditViewModelDelegate? {
         didSet {
@@ -64,14 +117,6 @@ public class DocumentEditViewModel {
         return self.editorService.headings
     }
     
-    public func changeFoldingStatus(location: Int) {
-        self.editorService.toggleContentAction(command: FoldingCommand(location: location))
-    }
-    
-    public func changeCheckboxStatus(range: NSRange) {
-        self.editorService.toggleContentAction(command: CheckboxCommand(range: range))
-    }
-    
     public func save(completion: @escaping () -> Void) {
         editorService.save { _  in
             completion()
@@ -91,57 +136,12 @@ public class DocumentEditViewModel {
         return self.editorService.trim(string: self.editorService.string, range: NSRange(location: location, length: length))
     }
     
+    public func performAction(_ action: EditAction) {
+        self.editorService.toggleContentAction(command: action.command)
+    }
+    
     public func level(index: Int) -> Int {
         return self.headings[index].level
-    }
-    
-    public func addAttachment(at location: Int, attachmentId: String, kind: String) {
-        self.editorService.toggleContentAction(command: AddAttachmentCommand(attachmentId: attachmentId, location: location, kind: kind))
-    }
-    
-    public func removeDue(at headingLocation: Int) {
-        self.editorService.toggleContentAction(command: DueCommand(location: headingLocation, kind: .remove))
-    }
-    
-    public func removeSchedule(at headingLocation: Int) {
-        self.editorService.toggleContentAction(command: ScheduleCommand(location: headingLocation, kind: .remove))
-    }
-    
-    public func remove(tag: String, at headingLocation: Int) {
-        self.editorService.toggleContentAction(command: TagCommand(location: headingLocation, kind: .remove(tag)))
-    }
-    
-    public func removePlanning(at headingLocation: Int) {
-        self.editorService.toggleContentAction(command: PlanningCommand(location: headingLocation, kind: .remove))
-    }
-    
-    public func update(planning: String, at headingLocation: Int) {
-        self.editorService.toggleContentAction(command: PlanningCommand(location: headingLocation, kind: .addOrUpdate(planning)))
-    }
-
-    public func update(schedule: DateAndTimeType, at headingLocation: Int) {
-        self.editorService.toggleContentAction(command: ScheduleCommand(location: headingLocation, kind: .addOrUpdate(schedule)))
-    }
-    
-    public func update(due: DateAndTimeType, at headingLocation: Int) {
-        self.editorService.toggleContentAction(command: DueCommand(location: headingLocation, kind: .addOrUpdate(due)))
-    }
-    
-    /// 添加 tag 到 heading
-    public func add(tag: String, at headingLocation: Int) {
-        self.editorService.toggleContentAction(command: TagCommand(location: headingLocation, kind: .add(tag)))
-    }
-    
-    public func archive(headingLocation: Int) {
-        self.editorService.toggleContentAction(command: ArchiveCommand(location: headingLocation))
-    }
-    
-    public func unArchive(headingLocation: Int) {
-        self.editorService.toggleContentAction(command: UnarchiveCommand(location: headingLocation))
-    }
-    
-    public func insert(content: String, headingLocation: Int) {
-        self.editorService.toggleContentAction(command: InsertTextToHeadingCommand(location: headingLocation, textToInsert: content))
     }
     
     public func rename(newTitle: String, completion: ((Error?) -> Void)? = nil) {
@@ -159,11 +159,6 @@ public class DocumentEditViewModel {
         catch {
             log.error("\(error)")
         }
-    }
-    
-    /// 交换两个 paragraph 的内容
-    public func replace(fromLocation: Int, toLocation: Int) {
-        self.editorService.toggleContentAction(command: ReplaceHeadingCommand(fromLocation: fromLocation, toLocation: toLocation))
     }
     
     public func didUpdate() {

@@ -19,7 +19,7 @@ public class Application: Coordinator {
         self.window = window
         
         _entranceWindow = CaptureGlobalEntranceWindow(frame: CGRect(x: UIScreen.main.bounds.width - 90,
-                                                                    y: UIScreen.main.bounds.height - 90 - window.safeArea.bottom,
+                                                                    y: UIScreen.main.bounds.height - window.safeArea.bottom - 60 - 80,
                                                                     width: 60,
                                                                     height: 60))
         _entranceWindow.makeKeyAndVisible()

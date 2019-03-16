@@ -114,6 +114,9 @@
 		E44825A3219722C300C17568 /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44825A2219722C300C17568 /* Application.swift */; };
 		E44E60F521E9F2C0005AC25F /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44E60F421E9F2C0005AC25F /* Location.swift */; };
 		E455868A21DF643F00381FA8 /* HeadingOutlineTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E455868921DF643F00381FA8 /* HeadingOutlineTableViewCell.swift */; };
+		E462DB97223D251A00BF7AB4 /* DateAndTimeSelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E462DB96223D251A00BF7AB4 /* DateAndTimeSelectViewController.swift */; };
+		E462DB9A223D259F00BF7AB4 /* DateSelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E462DB99223D259F00BF7AB4 /* DateSelectViewController.swift */; };
+		E462DB9C223D264800BF7AB4 /* TimeSelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E462DB9B223D264800BF7AB4 /* TimeSelectViewController.swift */; };
 		E466D186221D930A007F140B /* SeparaterAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = E466D185221D930A007F140B /* SeparaterAttachment.swift */; };
 		E466D18D221E3E65007F140B /* RenderAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = E466D18C221E3E65007F140B /* RenderAttachment.swift */; };
 		E4729BA82204160200F22885 /* DashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4729BA72204160200F22885 /* DashboardViewController.swift */; };
@@ -342,6 +345,9 @@
 		E451B27A223A191B000BEA34 /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
 		E451B280223A1F80000BEA34 /* assets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = assets.swift; sourceTree = "<group>"; };
 		E455868921DF643F00381FA8 /* HeadingOutlineTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadingOutlineTableViewCell.swift; sourceTree = "<group>"; };
+		E462DB96223D251A00BF7AB4 /* DateAndTimeSelectViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateAndTimeSelectViewController.swift; sourceTree = "<group>"; };
+		E462DB99223D259F00BF7AB4 /* DateSelectViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateSelectViewController.swift; sourceTree = "<group>"; };
+		E462DB9B223D264800BF7AB4 /* TimeSelectViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSelectViewController.swift; sourceTree = "<group>"; };
 		E464BBB021A69C9000D34C88 /* OutlineTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineTheme.swift; sourceTree = "<group>"; };
 		E466D185221D930A007F140B /* SeparaterAttachment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeparaterAttachment.swift; sourceTree = "<group>"; };
 		E466D18C221E3E65007F140B /* RenderAttachment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderAttachment.swift; sourceTree = "<group>"; };
@@ -902,6 +908,16 @@
 			path = swiftgen;
 			sourceTree = "<group>";
 		};
+		E462DB98223D257100BF7AB4 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				E462DB96223D251A00BF7AB4 /* DateAndTimeSelectViewController.swift */,
+				E462DB99223D259F00BF7AB4 /* DateSelectViewController.swift */,
+				E462DB9B223D264800BF7AB4 /* TimeSelectViewController.swift */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
 		E465E4A3222396190014673D /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -975,6 +991,7 @@
 				E41FA5742191569C001D8C63 /* DocumentEditViewController.swift */,
 				E47829FC222E683B0054513E /* DocumentEditToolbar.swift */,
 				E4EA856221D1F83800DD92F9 /* HeadingsOutlineViewController.swift */,
+				E462DB98223D257100BF7AB4 /* UI */,
 				E4EA857621D3B0AC00DD92F9 /* EditorCoordinator.swift */,
 			);
 			path = Editor;
@@ -1628,6 +1645,7 @@
 				E4EFA45F222F684B00611FF5 /* CaptureViewController.swift in Sources */,
 				E41FA5752191569C001D8C63 /* DocumentEditViewController.swift in Sources */,
 				E4773BAA21F7507E000F8F3F /* SearchTabelCellModel.swift in Sources */,
+				E462DB9A223D259F00BF7AB4 /* DateSelectViewController.swift in Sources */,
 				E49F3E4C21B91885003F468D /* SettingsViewModel.swift in Sources */,
 				E41B893821E3497D009C5AD7 /* LocationAttachmentView.swift in Sources */,
 				E41B893921E3497D009C5AD7 /* AttachmentView.swift in Sources */,
@@ -1635,6 +1653,7 @@
 				E41B893421E3497D009C5AD7 /* LinkAttachmentView.swift in Sources */,
 				E42A87FD21CFC9B300151C90 /* AttachmentTextViewController.swift in Sources */,
 				E41F86C7218EF5D8006C4CDB /* CaptureService.swift in Sources */,
+				E462DB9C223D264800BF7AB4 /* TimeSelectViewController.swift in Sources */,
 				E4EA857521D3AF0D00DD92F9 /* BesideDatesView.swift in Sources */,
 				E4A46A2921B28ED800FBDA04 /* DocumentEditViewModel.swift in Sources */,
 				E4F3029C21D74E8700BDE178 /* CaptureTableCellModel.swift in Sources */,
@@ -1653,6 +1672,7 @@
 				E49F3E4621B8EDC8003F468D /* AgendaViewModel.swift in Sources */,
 				E4EFA45D222F681700611FF5 /* CaptureCoordinator.swift in Sources */,
 				E4F9ECDB21FAD826009A08CD /* OpenningFilesView.swift in Sources */,
+				E462DB97223D251A00BF7AB4 /* DateAndTimeSelectViewController.swift in Sources */,
 				E42A87FF21CFCAC500151C90 /* AttachmentViewModel.swift in Sources */,
 				E4AB056522068C7D00F98BEB /* FilteredItemsViewController.swift in Sources */,
 				E49F3E4821B9183F003F468D /* SettingsCoordinator.swift in Sources */,

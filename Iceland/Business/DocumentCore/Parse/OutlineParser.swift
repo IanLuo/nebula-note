@@ -355,7 +355,6 @@ public struct DateAndTimeType {
     public let date: Date
     public let includeTime: Bool // 是否包含时间
     public let repeateMode: RepeatMode? // 如果 repate 不为空，这个字段有值
-    public let duration: TimeInterval? // 如果 time 是 range，这个字段有值
     
     public var description: String {
         if includeTime {
@@ -365,11 +364,10 @@ public struct DateAndTimeType {
         }
     }
     
-    public init(date: Date, includeTime: Bool, repeateMode: RepeatMode? = nil, duration: TimeInterval? = nil) {
+    public init(date: Date, includeTime: Bool, repeateMode: RepeatMode? = nil) {
         self.date = date
         self.includeTime = includeTime
         self.repeateMode = repeateMode
-        self.duration = duration
     }
 }
 
@@ -382,12 +380,12 @@ extension DateAndTimeType {
         return _createSingleDateFrom(string: string, matcher: OutlineParser.Matcher.Element.Heading.due)
     }
     
-    public static func createFromDateRange(_ string: String) -> DateAndTimeType? {
+    public static func createFromDateRange(_ string: String) -> [DateAndTimeType]? {
         return _createDurationFrom(string: string, matcher: OutlineParser.Matcher.Element.Heading.dateRange)
     }
     
     // 这种情况单独处理，比较复杂
-    public static func createFromTimeRange(_ string: String) -> DateAndTimeType? {
+    public static func createFromTimeRange(_ string: String) -> [DateAndTimeType]? {
         if let matcher = OutlineParser.Matcher.Element.Heading.timeRange {
             if let result = matcher.firstMatch(in: string, options: [], range: NSRange(location: 0, length: string.count)) {
                 let date = string.substring(result.range(at: 1))
@@ -406,7 +404,9 @@ extension DateAndTimeType {
                     if let date1 = formatter.date(from: dateString(date, time1)),
                         let date2 = formatter.date(from: dateString(date, time2)) {
                         
-                        return DateAndTimeType(date: date1, includeTime: true, duration: date2.timeIntervalSinceReferenceDate - date1.timeIntervalSinceReferenceDate)
+                        return [DateAndTimeType(date: date1, includeTime: true),
+                                DateAndTimeType(date: date2, includeTime: true)]
+                        
                     }
                 }
             }
@@ -415,7 +415,7 @@ extension DateAndTimeType {
         return nil
     }
     
-    private static func _createDurationFrom(string: String, matcher: NSRegularExpression?) -> DateAndTimeType? {
+    private static func _createDurationFrom(string: String, matcher: NSRegularExpression?) -> [DateAndTimeType]? {
         if let matcher = matcher {
             if let result = matcher.firstMatch(in: string, options: [], range: NSRange(location: 0, length: string.count)) {
                 let formatter = DateFormatter()
@@ -434,7 +434,8 @@ extension DateAndTimeType {
                     
                     if let date1 = formatter.date(from: date1),
                         let date2 = formatter.date(from: date2) {
-                        return DateAndTimeType(date: date1, includeTime: includeTime, duration: date2.timeIntervalSinceReferenceDate - date1.timeIntervalSinceReferenceDate)
+                        return [DateAndTimeType(date: date1, includeTime: includeTime),
+                                DateAndTimeType(date: date2, includeTime: includeTime)]
                     }
                 }
             }

@@ -63,9 +63,9 @@ public class EditorCoordinator: Coordinator {
 extension EditorCoordinator: CaptureListCoordinatorDelegate {
     public func didSelectAttachment(attachment: Attachment, coordinator: CaptureListCoordinator) {
         if let editViewController = self.viewController as? DocumentEditViewController {
-            self._viewModel.addAttachment(at: editViewController.textView.selectedRange.location,
-                                          attachmentId: attachment.key,
-                                          kind: attachment.kind.rawValue)
+            self._viewModel.performAction(EditAction.addAttachment(editViewController.textView.selectedRange.location,
+                                                                   attachment.key,
+                                                                   attachment.kind.rawValue))
         }
     }
 }
