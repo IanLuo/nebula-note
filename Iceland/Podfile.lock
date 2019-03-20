@@ -1,7 +1,7 @@
 PODS:
   - Drawsana (0.9.2)
   - Haptico (1.0.2)
-  - JTAppleCalendar (7.1.7)
+  - KDCalendar (1.6.5)
   - KeychainAccess (3.1.2)
   - Result (4.1.0)
   - RxAtomic (4.4.0)
@@ -15,7 +15,7 @@ PODS:
 DEPENDENCIES:
   - Drawsana
   - Haptico
-  - JTAppleCalendar (~> 7.0)
+  - KDCalendar (~> 1.6.5)
   - KeychainAccess
   - Result
   - RxCocoa
@@ -27,7 +27,7 @@ SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - Drawsana
     - Haptico
-    - JTAppleCalendar
+    - KDCalendar
     - KeychainAccess
     - Result
     - RxAtomic
@@ -39,7 +39,7 @@ SPEC REPOS:
 SPEC CHECKSUMS:
   Drawsana: e6c738958804d69769b034019bc274fa58a56d10
   Haptico: ce38d1f993f3a0df9a6d7795a9dd2849648aa9d1
-  JTAppleCalendar: 96da4d8388fa6dc82d6a60d41ef36a015e167e2f
+  KDCalendar: 15e74f37bd3d206bf7549c594fd08e0347c276f4
   KeychainAccess: b3816fddcf28aa29d94b10ec305cd52be14c472b
   Result: bd966fac789cc6c1563440b348ab2598cc24d5c7
   RxAtomic: eacf60db868c96bfd63320e28619fe29c179656f
@@ -48,6 +48,6 @@ SPEC CHECKSUMS:
   SwiftGen: e5b047067aa84082826a0c4f1c4c2ddc95bcf74c
   SwiftyBeaver: ccfcdf85a04d429f1633f668650b0ce8020bda3a
 
-PODFILE CHECKSUM: 9e9c0638563d8f63ea556cc477416df37bb78019
+PODFILE CHECKSUM: 5612e657255fc80eb4f31d9edf8f702741e67454
 
 COCOAPODS: 1.5.3

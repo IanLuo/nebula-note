@@ -32,6 +32,12 @@ public enum EditAction {
     case replaceHeading(Int, Int)
     case archive(Int)
     case unarchive(Int)
+    case insertSeparator(Int)
+    case addMark(OutlineParser.MarkType, NSRange)
+    case increaseIndent(Int)
+    case decreaseIndent(Int)
+    case quoteBlock(NSRange)
+    case codeBlock(NSRange)
     
     public var command: DocumentContentCommand {
         switch self {
@@ -65,6 +71,18 @@ public enum EditAction {
             return ArchiveCommand(location: location)
         case let .unarchive(location):
             return UnarchiveCommand(location: location)
+        case .insertSeparator(let location):
+            return IncreaseIndentCommand(location: location)
+        case .addMark(let markType, let range):
+            return AddMarkCommand(markType: markType, range: range)
+        case .increaseIndent(let location):
+            return IncreaseIndentCommand(location: location)
+        case .decreaseIndent(let location):
+            return DecreaseIndentCommand(location: location)
+        case .quoteBlock(let range):
+            return QuoteBlockCommand(range: range)
+        case .codeBlock(let range):
+            return CodeBlockCommand(range: range)
         }
     }
 }
@@ -136,8 +154,9 @@ public class DocumentEditViewModel {
         return self.editorService.trim(string: self.editorService.string, range: NSRange(location: location, length: length))
     }
     
-    public func performAction(_ action: EditAction) {
-        self.editorService.toggleContentAction(command: action.command)
+    @discardableResult
+    public func performAction(_ action: EditAction) -> Bool {
+        return self.editorService.toggleContentAction(command: action.command)
     }
     
     public func level(index: Int) -> Int {

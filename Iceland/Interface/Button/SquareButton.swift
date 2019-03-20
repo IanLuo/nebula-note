@@ -10,14 +10,14 @@ import Foundation
 import UIKit
 
 public class SquareButton: UIButton {
-    public let title: UILabel = {
+    public var title: UILabel = {
         let label = UILabel()
         label.font = InterfaceTheme.Font.title
         label.textColor = InterfaceTheme.Color.interactive
         return label
     }()
     
-    public let icon: UIImageView = {
+    public var icon: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.tintColor = InterfaceTheme.Color.descriptive
@@ -34,7 +34,8 @@ public class SquareButton: UIButton {
     }
     
     public required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: aDecoder)
+        self.setupUI()
     }
     
     private func setupUI() {

@@ -494,13 +494,14 @@ extension OutlineTextStorage: OutlineParserDelegate {
         }
         
         // 第一次解析，将所有结果直接加入缓存
+        var removedToken: [Token] = []
         if self.allTokens.count == 0 {
             self.allTokens.append(contentsOf: newTokens)
         } else {
             guard let currentParseRange = self.currentParseRange else { return }
             let oldCount = self.allTokens.count
             for index in self._findIntersectionTokenIndex(in: currentParseRange, tokens: self.allTokens).reversed() {
-                self.allTokens.remove(at: index)
+                removedToken.append(self.allTokens.remove(at: index))
             }
             
             // add new found items
@@ -508,10 +509,16 @@ extension OutlineTextStorage: OutlineParserDelegate {
             log.info("[item count changed] \(self.allTokens.count - oldCount)")
         }
         
-        _ = self._savedHeadings.compact()
+        let removedHeadings = removedToken.filter{ $0 is HeadingToken }.map { $0 as! HeadingToken }
+        let cachedHeadingRemoveCount = self._savedHeadings.remove { s in removedHeadings.contains { $0.identifier == s.identifier } }
         let newHeadings = newTokens.filter { $0 is HeadingToken }.map { $0 as! HeadingToken }
         
         self._updateTokenCache(self._savedHeadings, with: newHeadings)
+        
+        if cachedHeadingRemoveCount > 0 || newHeadings.count > 0 {
+            self.outlineDelegate?.didUpdateHeadings(newHeadings: newHeadings,
+                                                    oldHeadings: removedToken.filter { $0 is HeadingToken }.map { $0 as! HeadingToken })
+        }
         
         let codeBlocksRemovedCount = self._codeBlocks.compact()
         let newCodeBlocks = newTokens.filter {
@@ -642,7 +649,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
     }
     
     private func _findNextTokenIndex(after range: NSRange, tokens: [Token]) -> Int {
-        var indexToInserNewHeadings: Int = tokens.count - 1
+        var indexToInserNewHeadings: Int = max(0, tokens.count - 1)
         for (index, heading) in tokens.enumerated() {
             if heading.range.upperBound <= range.upperBound {
                 if index + 1 < tokens.count - 1 {
@@ -688,7 +695,16 @@ extension OutlineTextStorage: OutlineParserDelegate {
     }
     
     internal func _adjustParseRange(_ range: NSRange) {
-        let range = range._expandFoward(string: self.string, lineCount: 1)._expandBackward(string: self.string, lineCount: 1)
+//        let range = range._expandFoward(string: self.string, lineCount: 1)._expandBackward(string: self.string, lineCount: 1)
+
+        var paragraphStart = 0
+        var paragraphEnd = 0
+        var contentsEnd = 0
+        
+        (string as NSString).getParagraphStart(&paragraphStart, end: &paragraphEnd, contentsEnd: &contentsEnd, for: range)
+        
+        let range = NSRange(location: paragraphStart, length: paragraphEnd - paragraphStart)
+        
         self.currentParseRange = range
         
         // 如果范围在某个 item 内，并且小于这个 item 原来的范围，则扩大至这个 item 原来的范围
@@ -699,6 +715,14 @@ extension OutlineTextStorage: OutlineParserDelegate {
                     return
                 }
             }
+        }
+        
+        if self.currentParseRange!.upperBound >= self.string.count - 1 {
+            self.currentParseRange = NSRange(location: self.currentParseRange!.location, length: self.string.count - 1 - self.currentParseRange!.location)
+        }
+        
+        if self.currentParseRange!.length < 0 {
+            self.currentParseRange = NSRange(location: self.currentParseRange!.location - self.currentParseRange!.location, length: -self.currentParseRange!.location)
         }
     }
 }

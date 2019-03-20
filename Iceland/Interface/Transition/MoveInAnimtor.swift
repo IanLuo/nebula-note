@@ -34,6 +34,7 @@ public class MoveInAnimtor: NSObject, Animator {
         if self.isPresenting {
             if let transitionViewController = to as? TransitionViewController {
                 containner.addSubview(transitionViewController.view)
+                transitionViewController.view.frame = containner.bounds
                 transitionViewController.view.layoutIfNeeded()
                 transitionViewController.didTransiteToShow()
                 transitionViewController.view.backgroundColor = .clear

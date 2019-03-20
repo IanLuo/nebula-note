@@ -162,27 +162,26 @@ public class DueCommand: DocumentContentCommand {
     public func toggle(textStorage: OutlineTextStorage) -> Bool {
         guard let heading = textStorage.heading(contains: self.location) else { return false }
         
-        if let dueRange = heading.due {
-            switch self.kind {
-            case .remove:
-                let extendedRange = NSRange(location: dueRange.location - 1, length: dueRange.length + 1) // 还有一个换行符
-                textStorage.replaceCharacters(in: extendedRange, with: "")
-            case .addOrUpdate(let date):
-                var editRange: NSRange!
-                var replacement: String!
-                
-                // 如果有旧的 due date，直接替换就行了
-                // 如果没有，添加到 heading range 的最后，注意要在新的一行
-                if let oldDueDateRange = heading.due {
-                    editRange = oldDueDateRange
-                    replacement = date.toDueDateString()
-                } else {
-                    editRange = NSRange(location: heading.range.upperBound, length: 0)
-                    replacement = "\n" + date.toScheduleString()
-                }
-                
-                textStorage.replaceCharacters(in: editRange, with: replacement)
+        switch self.kind {
+        case .remove:
+            guard let due = heading.due else { return false }
+            
+            let extendedRange = NSRange(location: due.location - 1, length: due.length + 1) // 还有一个换行符
+            textStorage.replaceCharacters(in: extendedRange, with: "")
+        case .addOrUpdate(let date):
+            // 如果有 due，添加在 due 之前
+            
+            var editRange: NSRange!
+            var replacement: String = date.toDueDateString()
+            
+            if let oldDue = heading.due {
+                editRange = oldDue
+            } else {
+                editRange = heading.range.tail(0)
+                replacement.insert("\n", at: replacement.startIndex)
             }
+            
+            textStorage.replaceCharacters(in: editRange, with: replacement)
         }
         
         return true
@@ -207,26 +206,26 @@ public class ScheduleCommand: DocumentContentCommand {
     public func toggle(textStorage: OutlineTextStorage) -> Bool {
         guard let heading = textStorage.heading(contains: self.location) else { return false }
         
-        if let scheduleRange = heading.due {
-            switch self.kind {
-            case .remove:
-                let extendedRange = NSRange(location: scheduleRange.location - 1, length: scheduleRange.length + 1) // 还有一个换行符
-                textStorage.replaceCharacters(in: extendedRange, with: "")
-            case .addOrUpdate(let date):
-                var editRange: NSRange!
-                var replacement: String!
-                // 有旧的 schedule，就直接替换这个字符串
-                if let oldScheduleRange = heading.schedule {
-                    editRange = oldScheduleRange
-                    replacement = date.toScheduleString()
-                } else {
-                    // 没有 due date， 则直接放在 heading range 最后，注意要在新的一行
-                    editRange = NSRange(location: heading.range.upperBound, length: 0)
-                    replacement = "\n" + date.toScheduleString()
-                }
-                
-                textStorage.replaceCharacters(in: editRange, with: replacement)
+        switch self.kind {
+        case .remove:
+            guard let scheduleRange = heading.schedule else { return false }
+            
+            let extendedRange = NSRange(location: scheduleRange.location - 1, length: scheduleRange.length + 1) // 还有一个换行符
+            textStorage.replaceCharacters(in: extendedRange, with: "")
+        case .addOrUpdate(let date):
+            // 如果有 due，添加在 due 之前
+            
+            var editRange: NSRange!
+            var replacement: String = date.toScheduleString()
+            
+            if let oldSchedule = heading.schedule {
+                editRange = oldSchedule
+            } else {
+                editRange = heading.range.tail(0)
+                replacement.insert("\n", at: replacement.startIndex)
             }
+            
+            textStorage.replaceCharacters(in: editRange, with: replacement)
         }
         
         return true
@@ -336,5 +335,119 @@ public class ArchiveCommand: TagCommand {
 public class UnarchiveCommand: TagCommand {
     public init(location: Int) {
         super.init(location: location, kind: .remove(OutlineParser.Values.Heading.Tag.archive))
+    }
+}
+
+// MARK: - AddMarkCommand
+public class AddMarkCommand: DocumentContentCommand {
+    public let markType: OutlineParser.MarkType
+    public let range: NSRange
+    
+    public init(markType: OutlineParser.MarkType, range: NSRange) {
+        self.markType = markType
+        self.range = range
+    }
+
+    public func toggle(textStorage: OutlineTextStorage) -> Bool {
+        let temp = textStorage.string.substring(self.range)
+        let replacement = self.markType.mark + temp + self.markType.mark
+        textStorage.replaceCharacters(in: self.range, with: replacement)
+        return true
+    }
+}
+
+// MARK: - AddSeparatorCommand
+public class AddSeparatorCommand: DocumentContentCommand {
+    public let location: Int
+    
+    public init(location: Int) {
+        self.location = location
+    }
+    
+    public func toggle(textStorage: OutlineTextStorage) -> Bool {
+        textStorage.replaceCharacters(in: NSRange(location: self.location, length: 0), with: OutlineParser.Values.separator)
+        return true
+    }
+}
+
+
+public class IncreaseIndentCommand: DocumentContentCommand {
+    public let location: Int
+    
+    public init(location: Int) {
+        self.location = location
+    }
+    
+    public func toggle(textStorage: OutlineTextStorage) -> Bool {
+        var start = 0
+        var end = 0
+        var content = 0
+        (textStorage.string as NSString).getLineStart(&start,
+                                                      end: &end,
+                                                      contentsEnd: &content,
+                                                      for: NSRange(location: self.location, length: 0))
+
+        textStorage.replaceCharacters(in: NSRange(location: start, length: 0),
+                                      with: OutlineParser.Values.Character.tab)
+        return true
+    }
+}
+
+public class DecreaseIndentCommand: DocumentContentCommand {
+    public let location: Int
+    
+    public init(location: Int) {
+        self.location = location
+    }
+    
+    public func toggle(textStorage: OutlineTextStorage) -> Bool {
+        var start = 0
+        var end = 0
+        var content = 0
+        (textStorage.string as NSString).getLineStart(&start,
+                                                      end: &end,
+                                                      contentsEnd: &content,
+                                                      for: NSRange(location: self.location, length: 0))
+
+        let line = textStorage.string.substring(NSRange(location: start, length: end - start))
+        
+        if line.hasPrefix(OutlineParser.Values.Character.tab) {
+            let range = (line as NSString).range(of: OutlineParser.Values.Character.tab).offset(start)
+            if range.length > 0 {
+                textStorage.replaceCharacters(in: range, with: "")
+                return true
+            } else {
+                return false
+            }
+        } else {
+            return false
+        }
+    }
+}
+
+
+// MARK: - QuoteBlockCommand
+public class QuoteBlockCommand: DocumentContentCommand {
+    public let range: NSRange
+    
+    public init(range: NSRange) {
+        self.range = range
+    }
+    
+    public func toggle(textStorage: OutlineTextStorage) -> Bool {
+        return false
+    }
+}
+
+// MARK: -
+public class CodeBlockCommand: DocumentContentCommand {
+    public let range: NSRange
+    
+    public init(range: NSRange) {
+        self.range = range
+    }
+    
+    public func toggle(textStorage: OutlineTextStorage) -> Bool {
+        return false
     }
 }

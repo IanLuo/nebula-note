@@ -6,6 +6,19 @@
   Copyright © 2019 wod. All rights reserved.
 */
 
+"general.button.title.save" = "Save";
+"general.button.title.open" = "Open";
+"general.button.title.cancel" = "Cancel";
+"general.button.title.delete" = "Delete";
+
+"attachment.kind.image" = "Image";
+"attachment.kind.audio" = "Audio";
+"attachment.kind.video" = "Video";
+"attachment.kind.link" = "Link";
+"attachment.kind.sketch" = "Sketch";
+"attachment.kind.location" = "Location";
+"attachment.kind.text" = "Text";
+
 "document.action.new" = "Create New Document";
 "document.title.untitled" = "Untitled";
 "document.actions.title" = "Perform Actions";
@@ -14,3 +27,36 @@
 "document.actions.cover" = "Edit Cover";
 "document.actions.delete" = "Delete";
 "document.actions.rename" = "Rename";
+
+"document.edit.date.all-day" = "All day";
+
+"agenda.actions.title" = "Choose an action";
+"agenda.actions.schedule" = "Schedule";
+"agenda.actions.due" = "Due";
+"agenda.actions.archive" = "Archieve";
+"agenda.actions.change-status" = "Change status";
+
+"document.edit.action.attachment" = "Attachment";
+"document.edit.action.schedule" = "Schedule";
+"document.edit.action.due" = "Due";
+"document.edit.action.planning" = "Planning";
+"document.edit.action.tag" = "Tag";
+"document.edit.action.move-up" = "Move up";
+"document.edit.action.move-down" = "Move down";
+"document.edit.action.separator" = "Separator";
+"document.edit.action.increase-indent" = "Tab right";
+"document.edit.action.decrease-indent" = "Tab left";
+"document.edit.action.mark.bold" = "Bold";
+"document.edit.action.mark.italic" = "Italic";
+"document.edit.action.mark.underscore" = "Underscore";
+"document.edit.action.mark.strikthrough" = "Strikthrough";
+"document.edit.action.mark.code" = "Code";
+"document.edit.action.mark.verbatim" = "Verbatim";
+"document.edit.action.undo" = "Undo";
+"document.edit.action.redo" = "Redo";
+"document.edit.action.arrow-left" = "Arrow left";
+"document.edit.action.arrow-right" = "Arrow right";
+"document.edit.action.arrow-up" = "Arrow up";
+"document.edit.action.arrow-down" = "Arrow down";
+"document.edit.action.quote-block" = "Quote block";
+"document.edit.action.code-block" = "Code block";

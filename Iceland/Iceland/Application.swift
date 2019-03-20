@@ -39,6 +39,7 @@ public class Application: Coordinator {
                                           editorContext: editorContext,
                                           textTrimmer: OutlineTextTrimmer(parser: OutlineParser()),
                                           eventObserver: eventObserver,
+                                          settingAccessor: SettingsAccessor.shared,
                                           globalCaptureEntryWindow: _entranceWindow))
         
         self.window?.rootViewController = self.stack
@@ -61,6 +62,7 @@ public struct Dependency {
     let editorContext: EditorContext
     let textTrimmer: OutlineTextTrimmer
     let eventObserver: EventObserver
+    let settingAccessor: SettingsAccessor
     weak var globalCaptureEntryWindow: CaptureGlobalEntranceWindow?
 }
 
@@ -217,6 +219,39 @@ extension Coordinator {
         } else {
             log.error("can't find a coordinator to start \n\(self.debugDescription)")
         }
+    }
+    
+    public func showDateSelector(title: String,
+                                 current: DateAndTimeType?,
+                                 add: @escaping (DateAndTimeType) -> Void,
+                                 delete: @escaping () -> Void) {
+        
+        self.dependency.globalCaptureEntryWindow?.hide()
+        
+        let dateAndTimeSelectViewController = DateAndTimeSelectViewController(nibName: "DateAndTimeSelectViewController", bundle: nil)
+        dateAndTimeSelectViewController.title = title
+        dateAndTimeSelectViewController.dateAndTime = current
+        dateAndTimeSelectViewController.didSelectAction = { dateAndTime in
+            self.dismisTempModal(dateAndTimeSelectViewController) { [unowned self] in
+                self.dependency.globalCaptureEntryWindow?.show()
+            }
+            add(dateAndTime)
+        }
+        
+        dateAndTimeSelectViewController.didDeleteAction = {
+            self.dismisTempModal(dateAndTimeSelectViewController) { [unowned self] in
+                self.dependency.globalCaptureEntryWindow?.show()
+            }
+            delete()
+        }
+        
+        dateAndTimeSelectViewController.didCancelAction = { [unowned dateAndTimeSelectViewController] in
+            self.dismisTempModal(dateAndTimeSelectViewController) { [unowned self] in
+                self.dependency.globalCaptureEntryWindow?.show()
+            }
+        }
+
+        self.showTempModal(dateAndTimeSelectViewController)
     }
 }
 

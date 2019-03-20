@@ -32,19 +32,17 @@ public class DocumentInfo {
     }
 }
 
-public struct DocumentNotification {
-    public static let didUpdateDocumentContent = Notification.Name(rawValue: "didUpdateDocumentContent")
-}
-
 public class Document: UIDocument {
     public static let fileExtension = "iceland"
     public static let contentFileExtension = "org"
     public static let coverFileExtension = "jpg"
     public static let logsFileExtension = "log"
     
-    public var string: String = ""
-    public var logs: String = ""
-    public var cover: UIImage?
+    public var didUpdateDocumentContentAction: (() -> Void)?
+    
+    public private(set) var string: String = ""
+    public private(set) var logs: String = ""
+    public private(set) var cover: UIImage?
     public var wrapper: FileWrapper?
     
     public static let contentKey: String = "content.org"
@@ -132,9 +130,17 @@ public class Document: UIDocument {
     
     public override func save(to url: URL, for saveOperation: UIDocument.SaveOperation, completionHandler: ((Bool) -> Void)? = nil) {
         if self.hasUnsavedChanges {
-            NotificationCenter.default.post(name: DocumentNotification.didUpdateDocumentContent, object: nil, userInfo: ["url": url])
+            self.didUpdateDocumentContentAction?()
         }
         
-        super.save(to: url, for: saveOperation, completionHandler: completionHandler)
+        log.info("begin to save ... \(url)")
+        super.save(to: url, for: saveOperation, completionHandler: { success in
+            completionHandler?(success)
+            if success {
+                log.info("save complete ++")
+            } else {
+                log.info("save faild --")
+            }
+        })
     }
 }

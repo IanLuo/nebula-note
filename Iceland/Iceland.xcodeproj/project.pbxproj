@@ -16,7 +16,6 @@
 		E40F6E8A223B78DB00FFF53F /* Autolayout+Shortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4F3029D21D750ED00BDE178 /* Autolayout+Shortcuts.swift */; };
 		E40F6E8C223B78DB00FFF53F /* FrameLayout+Shortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4BC264321F587BC00B0F2B9 /* FrameLayout+Shortcuts.swift */; };
 		E40F6E8D223B78DB00FFF53F /* Image+Generation.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A1D21AE6CF400FBDA04 /* Image+Generation.swift */; };
-		E40F6E8F223B78DB00FFF53F /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EA856421D1F8AE00DD92F9 /* CalendarView.swift */; };
 		E40F6E90223B78DB00FFF53F /* Border.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41CB14A21D78E5B00EF0A3C /* Border.swift */; };
 		E40F6E94223B7A1000FFF53F /* Range.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4729BA32202E6BA00F22885 /* Range.swift */; };
 		E40F6E95223B7A4000FFF53F /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E4895FFF21DB065000D2B19D /* Localizable.strings */; };
@@ -117,13 +116,16 @@
 		E462DB97223D251A00BF7AB4 /* DateAndTimeSelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E462DB96223D251A00BF7AB4 /* DateAndTimeSelectViewController.swift */; };
 		E462DB9A223D259F00BF7AB4 /* DateSelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E462DB99223D259F00BF7AB4 /* DateSelectViewController.swift */; };
 		E462DB9C223D264800BF7AB4 /* TimeSelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E462DB9B223D264800BF7AB4 /* TimeSelectViewController.swift */; };
+		E465F8792240E7CC00FA6E83 /* ToolbarAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = E465F8782240E7CC00FA6E83 /* ToolbarAction.swift */; };
+		E465F8802241FF6800FA6E83 /* TextViewCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = E465F87F2241FF6800FA6E83 /* TextViewCommand.swift */; };
+		E465F8822242269000FA6E83 /* EditViewController+Toolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = E465F8812242269000FA6E83 /* EditViewController+Toolbar.swift */; };
 		E466D186221D930A007F140B /* SeparaterAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = E466D185221D930A007F140B /* SeparaterAttachment.swift */; };
 		E466D18D221E3E65007F140B /* RenderAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = E466D18C221E3E65007F140B /* RenderAttachment.swift */; };
 		E4729BA82204160200F22885 /* DashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4729BA72204160200F22885 /* DashboardViewController.swift */; };
 		E4729BB02205372D00F22885 /* DashboardSubtypeItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4729BAF2205372D00F22885 /* DashboardSubtypeItemViewController.swift */; };
 		E4773BA821F7505E000F8F3F /* SearchTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4773BA721F7505E000F8F3F /* SearchTableCell.swift */; };
 		E4773BAA21F7507E000F8F3F /* SearchTabelCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4773BA921F7507E000F8F3F /* SearchTabelCellModel.swift */; };
-		E47829FD222E683B0054513E /* DocumentEditToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = E47829FC222E683B0054513E /* DocumentEditToolbar.swift */; };
+		E47829FD222E683B0054513E /* InputToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = E47829FC222E683B0054513E /* InputToolbar.swift */; };
 		E47A9A5221F1F7690050ABC9 /* DateHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E47A9A5121F1F7690050ABC9 /* DateHelper.swift */; };
 		E4821DB122374C420063C0B2 /* WeakArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4821DB022374C420063C0B2 /* WeakArray.swift */; };
 		E4895FF721D9244000D2B19D /* EditRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4895FF621D9244000D2B19D /* EditRecord.swift */; };
@@ -163,6 +165,8 @@
 		E4F9ECDB21FAD826009A08CD /* OpenningFilesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4F9ECDA21FAD826009A08CD /* OpenningFilesView.swift */; };
 		E4F9ECDF21FBF61B009A08CD /* RecentFilesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4F9ECDE21FBF61B009A08CD /* RecentFilesManager.swift */; };
 		E4F9ECE121FECE5C009A08CD /* FileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4F9ECE021FECE5C009A08CD /* FileManager.swift */; };
+		E4FD88E9223DE3C3005514C5 /* TimeSelectViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E4FD88E8223DE3C3005514C5 /* TimeSelectViewController.xib */; };
+		E4FD88EB223DE67E005514C5 /* DateAndTimeSelectViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E4FD88EA223DE67E005514C5 /* DateAndTimeSelectViewController.xib */; };
 		EE260FEBE701F7B91549B9B8 /* Pods_Iceland.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B03B21DC28F546E7D3A966E7 /* Pods_Iceland.framework */; };
 		F85572EA76AC1CC4A957C1E4 /* Pods_Interface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7AD86DEC929199B246F94293 /* Pods_Interface.framework */; };
 /* End PBXBuildFile section */
@@ -349,6 +353,9 @@
 		E462DB99223D259F00BF7AB4 /* DateSelectViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateSelectViewController.swift; sourceTree = "<group>"; };
 		E462DB9B223D264800BF7AB4 /* TimeSelectViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSelectViewController.swift; sourceTree = "<group>"; };
 		E464BBB021A69C9000D34C88 /* OutlineTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineTheme.swift; sourceTree = "<group>"; };
+		E465F8782240E7CC00FA6E83 /* ToolbarAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarAction.swift; sourceTree = "<group>"; };
+		E465F87F2241FF6800FA6E83 /* TextViewCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextViewCommand.swift; sourceTree = "<group>"; };
+		E465F8812242269000FA6E83 /* EditViewController+Toolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EditViewController+Toolbar.swift"; sourceTree = "<group>"; };
 		E466D185221D930A007F140B /* SeparaterAttachment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeparaterAttachment.swift; sourceTree = "<group>"; };
 		E466D18C221E3E65007F140B /* RenderAttachment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderAttachment.swift; sourceTree = "<group>"; };
 		E466D191221EAC14007F140B /* TransitionProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransitionProtocol.swift; sourceTree = "<group>"; };
@@ -363,7 +370,7 @@
 		E4773BA721F7505E000F8F3F /* SearchTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTableCell.swift; sourceTree = "<group>"; };
 		E4773BA921F7507E000F8F3F /* SearchTabelCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTabelCellModel.swift; sourceTree = "<group>"; };
 		E4773BAB21F9A203000F8F3F /* CoverPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverPickerViewController.swift; sourceTree = "<group>"; };
-		E47829FC222E683B0054513E /* DocumentEditToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentEditToolbar.swift; sourceTree = "<group>"; };
+		E47829FC222E683B0054513E /* InputToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputToolbar.swift; sourceTree = "<group>"; };
 		E47A9A5121F1F7690050ABC9 /* DateHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateHelper.swift; sourceTree = "<group>"; };
 		E4821DB022374C420063C0B2 /* WeakArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeakArray.swift; sourceTree = "<group>"; };
 		E4895FF621D9244000D2B19D /* EditRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditRecord.swift; sourceTree = "<group>"; };
@@ -411,7 +418,6 @@
 		E4EA855D21D1DAEB00DD92F9 /* AttachmentLocationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentLocationViewController.swift; sourceTree = "<group>"; };
 		E4EA855F21D1DB1400DD92F9 /* AttachmentSketchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentSketchViewController.swift; sourceTree = "<group>"; };
 		E4EA856221D1F83800DD92F9 /* HeadingsOutlineViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadingsOutlineViewController.swift; sourceTree = "<group>"; };
-		E4EA856421D1F8AE00DD92F9 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 		E4EA856F21D279A500DD92F9 /* DocumentManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentManager.swift; sourceTree = "<group>"; };
 		E4EA857121D27C3600DD92F9 /* DocumentSearchManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentSearchManager.swift; sourceTree = "<group>"; };
 		E4EA857421D3AF0D00DD92F9 /* BesideDatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BesideDatesView.swift; sourceTree = "<group>"; };
@@ -432,6 +438,8 @@
 		E4F9ECDA21FAD826009A08CD /* OpenningFilesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenningFilesView.swift; sourceTree = "<group>"; };
 		E4F9ECDE21FBF61B009A08CD /* RecentFilesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentFilesManager.swift; sourceTree = "<group>"; };
 		E4F9ECE021FECE5C009A08CD /* FileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManager.swift; sourceTree = "<group>"; };
+		E4FD88E8223DE3C3005514C5 /* TimeSelectViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TimeSelectViewController.xib; sourceTree = "<group>"; };
+		E4FD88EA223DE67E005514C5 /* DateAndTimeSelectViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DateAndTimeSelectViewController.xib; sourceTree = "<group>"; };
 		E68A1109AE2343C161D810A1 /* Pods-Business.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Business.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Business/Pods-Business.debug.xcconfig"; sourceTree = "<group>"; };
 		EE7066485686E586B5DADB73 /* Pods-Interface.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Interface.release.xcconfig"; path = "Pods/Target Support Files/Pods-Interface/Pods-Interface.release.xcconfig"; sourceTree = "<group>"; };
 		FC69118DDC07F2D89DFC636D /* Pods_IcelandTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_IcelandTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -554,7 +562,6 @@
 				E489600121DB06C800D2B19D /* Localization.swift */,
 				E464BBB021A69C9000D34C88 /* OutlineTheme.swift */,
 				E4A46A1D21AE6CF400FBDA04 /* Image+Generation.swift */,
-				E4EA856421D1F8AE00DD92F9 /* CalendarView.swift */,
 				E4CC0C5821EEF92900058E5D /* Size.swift */,
 				E4BC264121F56DB900B0F2B9 /* Rect.swift */,
 				E4F3029D21D750ED00BDE178 /* Autolayout+Shortcuts.swift */,
@@ -908,14 +915,16 @@
 			path = swiftgen;
 			sourceTree = "<group>";
 		};
-		E462DB98223D257100BF7AB4 /* UI */ = {
+		E462DB98223D257100BF7AB4 /* DateAndTimeSelect */ = {
 			isa = PBXGroup;
 			children = (
+				E4FD88EA223DE67E005514C5 /* DateAndTimeSelectViewController.xib */,
 				E462DB96223D251A00BF7AB4 /* DateAndTimeSelectViewController.swift */,
 				E462DB99223D259F00BF7AB4 /* DateSelectViewController.swift */,
 				E462DB9B223D264800BF7AB4 /* TimeSelectViewController.swift */,
+				E4FD88E8223DE3C3005514C5 /* TimeSelectViewController.xib */,
 			);
-			path = UI;
+			path = DateAndTimeSelect;
 			sourceTree = "<group>";
 		};
 		E465E4A3222396190014673D /* Resources */ = {
@@ -989,10 +998,13 @@
 				E4A46A2821B28ED800FBDA04 /* DocumentEditViewModel.swift */,
 				E455868921DF643F00381FA8 /* HeadingOutlineTableViewCell.swift */,
 				E41FA5742191569C001D8C63 /* DocumentEditViewController.swift */,
-				E47829FC222E683B0054513E /* DocumentEditToolbar.swift */,
+				E465F8812242269000FA6E83 /* EditViewController+Toolbar.swift */,
+				E47829FC222E683B0054513E /* InputToolbar.swift */,
+				E465F8782240E7CC00FA6E83 /* ToolbarAction.swift */,
 				E4EA856221D1F83800DD92F9 /* HeadingsOutlineViewController.swift */,
-				E462DB98223D257100BF7AB4 /* UI */,
+				E462DB98223D257100BF7AB4 /* DateAndTimeSelect */,
 				E4EA857621D3B0AC00DD92F9 /* EditorCoordinator.swift */,
+				E465F87F2241FF6800FA6E83 /* TextViewCommand.swift */,
 			);
 			path = Editor;
 			sourceTree = "<group>";
@@ -1328,7 +1340,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E4FD88EB223DE67E005514C5 /* DateAndTimeSelectViewController.xib in Resources */,
 				E43428042121BF5F00EC6DC3 /* LaunchScreen.storyboard in Resources */,
+				E4FD88E9223DE3C3005514C5 /* TimeSelectViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1438,7 +1452,7 @@
 				"${SRCROOT}/Pods/Target Support Files/Pods-Iceland/Pods-Iceland-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Drawsana/Drawsana.framework",
 				"${BUILT_PRODUCTS_DIR}/Haptico/Haptico.framework",
-				"${BUILT_PRODUCTS_DIR}/JTAppleCalendar/JTAppleCalendar.framework",
+				"${BUILT_PRODUCTS_DIR}/KDCalendar/KDCalendar.framework",
 				"${BUILT_PRODUCTS_DIR}/Result/Result.framework",
 				"${BUILT_PRODUCTS_DIR}/RxAtomic/RxAtomic.framework",
 				"${BUILT_PRODUCTS_DIR}/RxCocoa/RxCocoa.framework",
@@ -1450,7 +1464,7 @@
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Drawsana.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Haptico.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/JTAppleCalendar.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/KDCalendar.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Result.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxAtomic.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxCocoa.framework",
@@ -1539,7 +1553,6 @@
 				E40F6E9F223B7A6D00FFF53F /* RoundButton.swift in Sources */,
 				E40F6EAD223B7B7300FFF53F /* Rect.swift in Sources */,
 				E40F6E9D223B7A6300FFF53F /* MoveInAnimtor.swift in Sources */,
-				E40F6E8F223B78DB00FFF53F /* CalendarView.swift in Sources */,
 				E40F6E9C223B7A6000FFF53F /* MoveToAnimtor.swift in Sources */,
 				E40F6E8C223B78DB00FFF53F /* FrameLayout+Shortcuts.swift in Sources */,
 				E40F6EA4223B7A7200FFF53F /* CoverPickerViewController.swift in Sources */,
@@ -1660,6 +1673,7 @@
 				E455868A21DF643F00381FA8 /* HeadingOutlineTableViewCell.swift in Sources */,
 				E41CB15921D87CD100EF0A3C /* BrowserCoordinator.swift in Sources */,
 				E41B893621E3497D009C5AD7 /* VideoAttachmentView.swift in Sources */,
+				E465F8792240E7CC00FA6E83 /* ToolbarAction.swift in Sources */,
 				E4EA855C21D1DACE00DD92F9 /* AttachmentVideoViewController.swift in Sources */,
 				E41B892621E31B07009C5AD7 /* DashboardViewModel.swift in Sources */,
 				E4EA855821D1DA8700DD92F9 /* AttachmentLinkViewController.swift in Sources */,
@@ -1675,6 +1689,7 @@
 				E462DB97223D251A00BF7AB4 /* DateAndTimeSelectViewController.swift in Sources */,
 				E42A87FF21CFCAC500151C90 /* AttachmentViewModel.swift in Sources */,
 				E4AB056522068C7D00F98BEB /* FilteredItemsViewController.swift in Sources */,
+				E465F8802241FF6800FA6E83 /* TextViewCommand.swift in Sources */,
 				E49F3E4821B9183F003F468D /* SettingsCoordinator.swift in Sources */,
 				E498AAFF21BBE9B900D2A8EA /* CaptureListViewController.swift in Sources */,
 				E41CB16421D8899200EF0A3C /* HomeViewController.swift in Sources */,
@@ -1685,7 +1700,8 @@
 				E41CB15421D7E0F200EF0A3C /* DocumentBrowserCellModel.swift in Sources */,
 				E41B893321E3497D009C5AD7 /* TextAttachmentView.swift in Sources */,
 				E41B893521E3497D009C5AD7 /* AudioAttachmentView.swift in Sources */,
-				E47829FD222E683B0054513E /* DocumentEditToolbar.swift in Sources */,
+				E465F8822242269000FA6E83 /* EditViewController+Toolbar.swift in Sources */,
+				E47829FD222E683B0054513E /* InputToolbar.swift in Sources */,
 				E41F86C5218EF4E1006C4CDB /* AgendaCoordinator.swift in Sources */,
 				E4729BB02205372D00F22885 /* DashboardSubtypeItemViewController.swift in Sources */,
 			);

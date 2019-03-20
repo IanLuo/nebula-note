@@ -15,6 +15,10 @@ public protocol SelectorViewControllerDelegate: class {
 }
 
 open class SelectorViewController: UIViewController {
+    
+    public var onSelection:((Int) -> Void)?
+    public var onCancel: (() -> Void)?
+    
     public var rowHeight: CGFloat = 80
     
     public init() {
@@ -136,6 +140,7 @@ open class SelectorViewController: UIViewController {
     
     @objc private func cancel() {
         self.delegate?.SelectorDidCancel(viewController: self)
+        self.onCancel?()
     }
     
     public struct Item {
@@ -173,6 +178,7 @@ extension SelectorViewController: UITableViewDataSource, UITableViewDelegate {
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         self.delegate?.SelectorDidSelect(index: indexPath.row, viewController: self)
+        self.onSelection?(indexPath.row)
     }
     
     public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

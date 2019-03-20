@@ -21,7 +21,7 @@ public class AgendaCellModel {
     public let contentSummary: String
     
     public init(heading: DocumentHeading) {
-        self.headingLocation = heading.rawHeadingToken.range.location
+        self.headingLocation = heading.location
         self.url = heading.url
         self.heading = heading
         self.headingText = heading.text.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)

@@ -17,7 +17,7 @@ public protocol DocumentEditViewControllerDelegate: class {
 
 public class DocumentEditViewController: UIViewController {
     public let textView: OutlineTextView
-    private let viewModel: DocumentEditViewModel
+    internal let viewModel: DocumentEditViewModel
     
     public weak var delegate: DocumentEditViewControllerDelegate?
     
@@ -43,6 +43,8 @@ public class DocumentEditViewController: UIViewController {
     private var closeButton: UIButton!
     private var searchButton: UIButton!
     
+    private let _toolbar = InputToolbar()
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -60,6 +62,10 @@ public class DocumentEditViewController: UIViewController {
         
         self.toolBar.addSubview(closeButton)
         self.toolBar.addSubview(searchButton)
+        
+        self._toolbar.frame = CGRect(origin: .zero, size: .init(width: self.view.bounds.width, height: 44))
+        self._toolbar.delegate = self
+        self.textView.inputAccessoryView = self._toolbar
     }
     
     public override func viewDidLayoutSubviews() {

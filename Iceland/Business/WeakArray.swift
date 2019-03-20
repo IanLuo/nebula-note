@@ -60,6 +60,20 @@ public class WeakArray<Element: AnyObject> {
         return count - self.count
     }
     
+    public func remove(_ condition: (Element) -> Bool) -> Int {
+        var count = 0
+        for i in 0..<self.count {
+            if let e = self[i] {
+                if condition(e) {
+                    _ = self.remove(at: i)
+                    count += 1
+                }
+            }
+        }
+        
+        return count
+    }
+    
     public var allObjects: [Element] {
         return self.elements.allObjects.map { $0 as! Element }
     }

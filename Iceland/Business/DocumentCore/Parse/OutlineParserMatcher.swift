@@ -9,6 +9,27 @@
 import Foundation
 
 extension OutlineParser {
+    
+    public enum MarkType {
+        case bold
+        case italic
+        case underscore
+        case strikethrough
+        case code
+        case verbatim
+        
+        public var mark: String {
+            switch self {
+            case .bold: return OutlineParser.Values.TextMark.bold
+            case .italic: return OutlineParser.Values.TextMark.italic
+            case .underscore: return OutlineParser.Values.TextMark.underscore
+            case .strikethrough: return OutlineParser.Values.TextMark.strikthought
+            case .code: return OutlineParser.Values.TextMark.code
+            case .verbatim: return OutlineParser.Values.TextMark.verbatim
+            }
+        }
+    }
+    
     public struct ParseeTypes: OptionSet {
         public init(rawValue: Int64) { self.rawValue = rawValue }
         public let rawValue: Int64
@@ -212,6 +233,17 @@ extension OutlineParser {
     }
     
     public struct Values {
+        public struct TextMark {
+            public static let bold = "*"
+            public static let italic = "\\"
+            public static let underscore = "_"
+            public static let strikthought = "+"
+            public static let code = "~"
+            public static let verbatim = "="
+        }
+        
+        public static let separator: String = "\n-----\n"
+        
         public struct Character {
             public static let linebreak = "\n"
             public static let tab = "\t"

@@ -26,6 +26,10 @@ public class EditorService {
         self._queue = queue
         
         self._editorController.delegate = self
+        
+        self._document.didUpdateDocumentContentAction = { [weak self] in
+            
+        }
     }
 
     public var container: NSTextContainer {
@@ -36,10 +40,17 @@ public class EditorService {
         self._document.updateContent(_editorController.string)
     }
     
-    public func toggleContentAction(command: DocumentContentCommand) {
+    public func toggleContentAction(command: DocumentContentCommand, foreceWriteToFile: Bool = false) -> Bool {
         if self._editorController.toggleAction(command: command) {
-            self._document.updateContent(_editorController.string)
+            
+            if foreceWriteToFile {
+                self.save()
+            } else {
+                self.markAsContentUpdated()
+            }
+            return true
         }
+        return false
     }
     
     public func start(complete: @escaping (Bool, EditorService) -> Void) {
@@ -146,7 +157,7 @@ public class EditorService {
     
     public func save(completion: ((Bool) -> Void)? = nil) {
         _queue.async {
-            self._document.string = self._editorController.string
+            self._document.updateContent(self._editorController.string)
             self._document.save(to: self._document.fileURL, for: UIDocument.SaveOperation.forOverwriting) { success in
                 
                 DispatchQueue.main.async {

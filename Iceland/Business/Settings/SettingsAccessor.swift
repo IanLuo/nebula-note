@@ -40,4 +40,8 @@ public class SettingsAccessor {
     public var finishedPlanning: [String] {
         return (customizedFinishedPlannings ?? []) + [OutlineParser.Values.Heading.Planning.canceled, OutlineParser.Values.Heading.Planning.done]
     }
+    
+    public var allPlannings: [String] {
+        return unfinishedPlanning + finishedPlanning
+    }
 }

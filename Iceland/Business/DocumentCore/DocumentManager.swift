@@ -84,7 +84,7 @@ public struct DocumentManager {
         }
         
         let document = Document.init(fileURL: newURL)
-        document.string = "" // 新文档的内容为空字符串
+        document.updateContent("") // 新文档的内容为空字符串
         document.save(to: newURL, for: UIDocument.SaveOperation.forCreating) { [document] success in
             DispatchQueue.main.async {
                 if success {

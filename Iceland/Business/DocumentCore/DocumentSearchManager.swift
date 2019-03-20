@@ -9,7 +9,6 @@
 import Foundation
 
 public struct DocumentHeading {
-    public let rawHeadingToken: HeadingToken
     public let level: Int
     public let tags: [String]?
     public let planning: String?
@@ -19,12 +18,13 @@ public struct DocumentHeading {
     public let paragraphSummery: String
     public let length: Int
     public let url: URL
+    public let location: Int
     
     public init(documentString: String, headingToken: HeadingToken, url: URL) {
         self.url = url
-        self.rawHeadingToken = headingToken
         self.level = headingToken.level
         self.length = headingToken.paragraphRange.length
+        self.location = headingToken.range.location
         
         if let tagRange = headingToken.tags {
             self.tags = documentString.substring(tagRange).components(separatedBy: ":").filter { $0.count != 0 }
@@ -52,7 +52,7 @@ public struct DocumentHeading {
         
         self.text = documentString.substring(headingToken.range)
         
-        self.paragraphSummery = documentString.substring(NSRange(location: headingToken.range.upperBound + min(1, headingToken.contentLength),
+        self.paragraphSummery = documentString.substring(NSRange(location: headingToken.range.upperBound,
                                                                  length: min(100, headingToken.contentLength)))
     }
 }

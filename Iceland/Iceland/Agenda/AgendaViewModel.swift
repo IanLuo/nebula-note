@@ -28,9 +28,15 @@ public class AgendaViewModel {
         self._documentSearchManager = documentSearchManager
     }
     
-    public var data: [AgendaCellModel] = []
+    /// 用于显示的数据
+    public private(set) var data: [AgendaCellModel] = []
     
-    /// 在 agenda view controller 中，首先加载所有的数据，根据选择的日期来过滤要显示的 heading
+    private var _lastLoadTime: TimeInterval = 0
+    private let _reloadInterval: TimeInterval = 60
+    private var _headingsHasModification: Bool = true
+    public var isConnectingScreen: Bool = false
+    
+    /// 未经过过滤的数据
     private var _allData: [AgendaCellModel] = []
     
     private let _headingChangeObservingQueue: OperationQueue = {
@@ -39,8 +45,6 @@ public class AgendaViewModel {
         queue.underlyingQueue = dispatchQueue
         return queue
     }()
-    
-    private var _isHeadingsNeedsReload: Bool = true
     
     public var filterType: AgendaCoordinator.FilterType?
     
@@ -57,14 +61,18 @@ public class AgendaViewModel {
         self.delegate?.didLoadData()
     }
     
-    public func loadDataIfNeed() {
-        guard _isHeadingsNeedsReload else { return }
+    public func loadData() {
+        let loadTime = Date()
+        guard (loadTime.timeIntervalSince1970 - self._lastLoadTime > _reloadInterval && self._headingsHasModification)
+            || (isConnectingScreen && self._headingsHasModification) else { return }
         
         if self.filterType == nil {
-            self.loadAllData()
+            self.loadAgendaData()
         } else {
             self.loadFiltered()
         }
+        
+        self._lastLoadTime = loadTime.timeIntervalSince1970
     }
     
     public func loadFiltered() {
@@ -73,7 +81,9 @@ public class AgendaViewModel {
             let today = Date()
             let soon = Date(timeInterval: 3 * 24 * 60, since: today)
             self._documentSearchManager.searchHeading(options: [.tag, .due, .schedule, .planning], filter: { [weak self] (heading: DocumentHeading) -> Bool in
-                self?._isHeadingsNeedsReload = false
+                
+                self?._headingsHasModification = false
+                
                 switch filterType {
                 case .tag(let tag):
                     return heading.tags?.contains(tag) ?? false
@@ -100,10 +110,13 @@ public class AgendaViewModel {
     }
     
     // 加载 agenda 界面所有数据
-    public func loadAllData() {
+    public func loadAgendaData() {
         var searchResults: [DocumentHeading] = []
         let today = Date()
-        self._documentSearchManager.searchHeading(options: [.tag, .due, .schedule, .planning], filter: { (heading: DocumentHeading) -> Bool in
+        self._documentSearchManager.searchHeading(options: [.tag, .due, .schedule, .planning], filter: { [weak self] (heading: DocumentHeading) -> Bool in
+            
+            self?._headingsHasModification = false
+            
             if let planning = heading.planning {
                 if SettingsAccessor.shared.unfinishedPlanning.contains(planning) {
                     return true
@@ -132,7 +145,6 @@ public class AgendaViewModel {
             
             searchResults.append(contentsOf: sorted)
         }, complete: { [weak self] in
-            self?._isHeadingsNeedsReload = false
             self?._allData = searchResults.map { AgendaCellModel(heading: $0) }
             self?.delegate?.didCompleteLoadAllData()
         }, failed: { [weak self] error in
@@ -144,6 +156,61 @@ public class AgendaViewModel {
         // TODO: save to calendar
     }
     
+    public func updateSchedule(index: Int, _ schedule: DateAndTimeType?) {
+        let heading = self.data[index]
+        
+        if let editorService = self.coordinator?.dependency.editorContext.request(url: heading.url) {
+            editorService.open(completion: { [unowned editorService] _ in
+                if let schedule = schedule {
+                    if editorService.toggleContentAction(command: ScheduleCommand(location: heading.headingLocation, kind: .addOrUpdate(schedule)), foreceWriteToFile: true) {
+                        heading.schedule = schedule
+                        self.delegate?.didLoadData()
+                    }
+                } else {
+                    if editorService.toggleContentAction(command: ScheduleCommand(location: heading.headingLocation, kind: .remove), foreceWriteToFile: true) {
+                        heading.schedule = nil
+                        self.delegate?.didLoadData()
+                    }
+                }
+            })
+        }
+    }
+    
+    public func updateDue(index: Int, _ due: DateAndTimeType?) {
+        let heading = self.data[index]
+        
+        if let editorService = self.coordinator?.dependency.editorContext.request(url: heading.url) {
+            editorService.open(completion: { [unowned editorService] _ in
+                if let due = due {
+                    if editorService.toggleContentAction(command: DueCommand(location: heading.headingLocation, kind: .addOrUpdate(due)), foreceWriteToFile: true) {
+                        heading.due = due
+                        self.delegate?.didLoadData()
+                    }
+                } else {
+                    if editorService.toggleContentAction(command: DueCommand(location: heading.headingLocation, kind: .remove), foreceWriteToFile: true) {
+                        heading.due = nil
+                        self.delegate?.didLoadData()
+                    }
+                }
+            })
+        }
+    }
+    
+    public func updatePlanning(index: Int, _ planning: String?) {
+        let heading = self.data[index]
+        
+        if let editorService = self.coordinator?.dependency.editorContext.request(url: heading.url) {
+            editorService.open(completion: { [unowned editorService] _ in
+                if let planning = planning {
+                    if editorService.toggleContentAction(command: PlanningCommand(location: heading.headingLocation, kind: .addOrUpdate(planning)), foreceWriteToFile: true) {
+                        heading.planning = planning
+                        self.delegate?.didLoadData()
+                    }
+                }
+            })
+        }
+    }
+    
     public func openDocument(index: Int) {
         self.coordinator?.openDocument(url: self.data[index].url,
                                       location: self.data[index].headingLocation)
@@ -153,7 +220,7 @@ public class AgendaViewModel {
         self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
                                                                     eventType: DocumentSearchHeadingUpdateEvent.self,
                                                                     queue: self._headingChangeObservingQueue) { [weak self] (event: DocumentSearchHeadingUpdateEvent) -> Void in
-                                                                        self?._isHeadingsNeedsReload = true
+                                                                        self?._headingsHasModification = true
         }
     }
 }

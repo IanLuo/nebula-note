@@ -61,7 +61,7 @@ public class AgendaViewController: UIViewController {
         super.viewDidLoad()
         self.setupUI()
         
-        self.viewModel.loadAllData()
+        self.viewModel.loadData()
     }
     
     public override func viewDidAppear(_ animated: Bool) {
@@ -71,7 +71,13 @@ public class AgendaViewController: UIViewController {
             self.besideDatesView.moveToToday(animated: false)
         }
         
-        self.viewModel.loadDataIfNeed()
+        self.viewModel.loadData()
+        self.viewModel.isConnectingScreen = true
+    }
+    
+    public override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        self.viewModel.isConnectingScreen = false
     }
     
     private func setupUI() {
@@ -125,44 +131,104 @@ extension AgendaViewController: UITableViewDataSource {
 extension AgendaViewController: UITableViewDelegate {
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
+        let heading = self.viewModel.data[indexPath.row]
+        
         let actionsViewController = ActionsViewController()
         
-        actionsViewController.title = "Perform actions".localizable
+        actionsViewController.title = L10n.Agenda.Actions.title
         
-        actionsViewController.addAction(icon: nil, title: "Reschedule") { viewController in
-            viewController.dismiss(animated: true, completion: {
-                tableView.deselectRow(at: indexPath, animated: true)
+        actionsViewController.addAction(icon: nil, title: L10n.Agenda.Actions.schedule) { viewController in
+            self.viewModel.coordinator?.dismisTempModal(viewController, completion: {
+                
+                self.viewModel.coordinator?.showDateSelector(title: L10n.Agenda.Actions.schedule, current: heading.schedule, add: { [unowned self] dateAndTime in
+                    
+                    self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
+                    
+                    tableView.deselectRow(at: indexPath, animated: true)
+                    self.viewModel.updateSchedule(index: indexPath.row, dateAndTime)
+                }, delete: { [unowned self] in
+                    
+                    self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
+                    
+                    tableView.deselectRow(at: indexPath, animated: true)
+                    self.viewModel.updateSchedule(index: indexPath.row, nil)
+                })
             })
         }
         
-        actionsViewController.addAction(icon: nil, title: "Delay") { viewController in
-            viewController.dismiss(animated: true, completion: {
-                tableView.deselectRow(at: indexPath, animated: true)
+        actionsViewController.addAction(icon: nil, title: L10n.Agenda.Actions.due) { viewController in
+            self.viewModel.coordinator?.dismisTempModal(viewController, completion: {
+               
+                self.viewModel.coordinator?.showDateSelector(title: L10n.Agenda.Actions.due, current: heading.due, add: { [unowned self] dateAndTime in
+                    
+                    self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
+                    
+                    tableView.deselectRow(at: indexPath, animated: true)
+                    self.viewModel.updateDue(index: indexPath.row, dateAndTime)
+                }, delete: { [unowned self] in
+                    
+                    self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
+                    
+                   tableView.deselectRow(at: indexPath, animated: true)
+                    self.viewModel.updateDue(index: indexPath.row, nil)
+                })
             })
         }
         
-        actionsViewController.addAction(icon: nil, title: "Change Status") { viewController in
-            viewController.dismiss(animated: true, completion: {
-                tableView.deselectRow(at: indexPath, animated: true)
+        actionsViewController.addAction(icon: nil, title: L10n.Agenda.Actions.changeStatus) { viewController in
+            self.viewModel.coordinator?.dismisTempModal(viewController, completion: { [unowned self] in
+                
+                let selectorViewController = SelectorViewController()
+                let allPlannings = self.viewModel.coordinator?.dependency.settingAccessor.allPlannings ?? []
+                for title in allPlannings {
+                    selectorViewController.addItem(title: title)
+                }
+                
+                selectorViewController.currentTitle = heading.planning
+                
+                selectorViewController.onSelection = { index in
+                    self.viewModel.coordinator?.dismisTempModal(selectorViewController) { [unowned self] in
+                        
+                        self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
+                        
+                        self.viewModel.updatePlanning(index: indexPath.row, allPlannings[index])
+                        
+                        tableView.deselectRow(at: indexPath, animated: true)
+                    }
+                }
+                
+                selectorViewController.onCancel = {
+                    self.viewModel.coordinator?.dismisTempModal(selectorViewController) { [unowned self] in
+                        
+                        self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
+                        
+                        tableView.deselectRow(at: indexPath, animated: true)
+                    }
+                }
+                
+                self.viewModel.coordinator?.showTempModal(selectorViewController)
             })
         }
         
-        actionsViewController.addAction(icon: Asset.Assets.up.image, title: "Open", style: ActionsViewController.Style.highlight) { viewController in
-            viewController.dismiss(animated: true, completion: {
+        actionsViewController.addAction(icon: Asset.Assets.up.image, title: L10n.General.Button.Title.open, style: ActionsViewController.Style.highlight) { viewController in
+            self.viewModel.coordinator?.dismisTempModal(viewController, completion: { [unowned self] in
+                self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                 tableView.deselectRow(at: indexPath, animated: true)
                 let data = self.viewModel.data[indexPath.row]
-                self.viewModel.coordinator?.openDocument(url: data.url, location: data.heading.rawHeadingToken.range.location)
+                self.viewModel.coordinator?.openDocument(url: data.url, location: data.heading.location)
             })
         }
         
         actionsViewController.setCancel { viewController in
-            viewController.dismiss(animated: true, completion: {
+            self.viewModel.coordinator?.dismisTempModal(viewController, completion: { [unowned self] in
+                self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                 tableView.deselectRow(at: indexPath, animated: true)
             })
         }
         
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now()) {
             self.viewModel.coordinator?.showTempModal(actionsViewController)
+            self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.hide()
         }
     }
     
@@ -181,7 +247,6 @@ extension AgendaViewController: UITableViewDelegate {
 extension AgendaViewController: AgendaViewModelDelegate {
     public func didCompleteLoadAllData() {
         self.viewModel.load(date: self.besideDatesView.currentDate)
-        self.tableView.reloadData()
     }
     
     public func didLoadData() {
