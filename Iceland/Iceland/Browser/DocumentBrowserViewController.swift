@@ -254,9 +254,21 @@ extension DocumentBrowserViewController: DocumentBrowserCellDelegate {
             }
             
             actionsViewController.addAction(icon: Asset.Assets.trash.image, title: L10n.Document.Actions.delete, style: .warning) { viewController in
-                self.viewModel.coordinator?.dismisTempModal(viewController) { [weak self] in
-                    self?.viewModel.deleteDocument(index: index)
+                let confirmViewController = ConfirmViewController()
+                
+                confirmViewController.confirmAction = { [weak self] in
+                    $0.dismiss(animated: true, completion: {
+                        self?.viewModel.coordinator?.dismisTempModal(viewController) {
+                            self?.viewModel.deleteDocument(index: index)
+                        }
+                    })
                 }
+                
+                confirmViewController.cancelAction = { [weak self] in
+                    self?.viewModel.coordinator?.dismisTempModal($0)
+                }
+                
+                viewController.present(confirmViewController, animated: true, completion: nil)
             }
             
             actionsViewController.setCancel { viewController in

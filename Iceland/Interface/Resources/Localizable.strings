@@ -11,6 +11,8 @@
 "general.button.title.cancel" = "Cancel";
 "general.button.title.delete" = "Delete";
 
+"document.browser.delete.confirm" = "Delete this file?";
+
 "attachment.kind.image" = "Image";
 "attachment.kind.audio" = "Audio";
 "attachment.kind.video" = "Video";

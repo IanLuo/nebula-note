@@ -146,6 +146,7 @@
 		E4AB056522068C7D00F98BEB /* FilteredItemsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4AB056422068C7D00F98BEB /* FilteredItemsViewController.swift */; };
 		E4AB05692206E32700F98BEB /* FilteredItemTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4AB05682206E32700F98BEB /* FilteredItemTableCell.swift */; };
 		E4B19AB021C5363A00ED3463 /* SettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B19AAF21C5363A00ED3463 /* SettingsTests.swift */; };
+		E4B331DD22432F9400A7F44F /* ConfirmViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B331DC22432F9400A7F44F /* ConfirmViewController.swift */; };
 		E4B802022200437A00AD5AD8 /* TextStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = E4BFD47021F711A2003C048C /* TextStorage.m */; };
 		E4B802042201704E00AD5AD8 /* TextStorage.h in Headers */ = {isa = PBXBuildFile; fileRef = E4BFD45521F71184003C048C /* TextStorage.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E4C7FB8521BA916D006E3CD8 /* AgendaCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C7FB8421BA916D006E3CD8 /* AgendaCellModel.swift */; };
@@ -404,6 +405,7 @@
 		E4AB05682206E32700F98BEB /* FilteredItemTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilteredItemTableCell.swift; sourceTree = "<group>"; };
 		E4B19AAD21C5010100ED3463 /* SettingsAccessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsAccessor.swift; sourceTree = "<group>"; };
 		E4B19AAF21C5363A00ED3463 /* SettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTests.swift; sourceTree = "<group>"; };
+		E4B331DC22432F9400A7F44F /* ConfirmViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmViewController.swift; sourceTree = "<group>"; };
 		E4BC264121F56DB900B0F2B9 /* Rect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rect.swift; sourceTree = "<group>"; };
 		E4BC264321F587BC00B0F2B9 /* FrameLayout+Shortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FrameLayout+Shortcuts.swift"; sourceTree = "<group>"; };
 		E4BFD45521F71184003C048C /* TextStorage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TextStorage.h; sourceTree = "<group>"; };
@@ -972,6 +974,7 @@
 				E41B892321E2F1C1009C5AD7 /* SelectorViewController.swift */,
 				E4C46FE221EB311900F6374F /* ModalFormViewController.swift */,
 				E4773BAB21F9A203000F8F3F /* CoverPickerViewController.swift */,
+				E4B331DC22432F9400A7F44F /* ConfirmViewController.swift */,
 			);
 			path = UIViewController;
 			sourceTree = "<group>";
@@ -1544,6 +1547,7 @@
 				E40F6EA1223B7A7200FFF53F /* ActionsViewController.swift in Sources */,
 				E40F6E99223B7A5300FFF53F /* assets.swift in Sources */,
 				E40F6EAA223B7A7900FFF53F /* UIView+Processing.swift in Sources */,
+				E4B331DD22432F9400A7F44F /* ConfirmViewController.swift in Sources */,
 				E40F6E98223B7A5000FFF53F /* strings.swift in Sources */,
 				E40F6EA3223B7A7200FFF53F /* ModalFormViewController.swift in Sources */,
 				E40F6EAE223B7BA200FFF53F /* Localization.swift in Sources */,

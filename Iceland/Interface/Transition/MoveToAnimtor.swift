@@ -48,6 +48,7 @@ public class MoveToAnimtor: NSObject, Animator {
                 UIView.animate(withDuration: self.transitionDuration(using: transitionContext), delay: 0.0, options: .curveEaseOut, animations: ({
                     animatableView.frame = destRect
                     animatableView.alpha = 1
+                    transitionViewController.view.backgroundColor = UIColor.black.withAlphaComponent(0.5)
                 }), completion: { completeion in
                     transitionViewController.contentView.alpha = 1
                     animatableView.removeFromSuperview()
@@ -62,8 +63,7 @@ public class MoveToAnimtor: NSObject, Animator {
                 guard let fromImage = transitionViewController.contentView.snapshot else { return }
                 
                 transitionViewController.contentView.alpha = 0
-                let bounds = from.view.bounds
-                let startRect = transitionContext.finalFrame(for: to).inset(by: UIEdgeInsets(top: bounds.height / 4, left: 30, bottom: bounds.height / 4, right: 30))
+                let startRect = transitionViewController.contentView.frame
                 // 如果没有设置显示位置的 UIView，使用屏幕正中心的点作为显示位置
                 let destRect = toView != nil ? toView!.superview!.convert(toView!.frame, to: from.view) : CGRect(origin: transitionViewController.view.center, size: .zero)
                 let animatableView = UIImageView(frame: startRect)
