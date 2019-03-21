@@ -78,6 +78,10 @@ public class DateAndTimeSelectViewController: TransitionViewController {
         self._initValues()
         self._setupUI()
         self._loadSubViewControllers()
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(_cancel))
+        tap.delegate = self
+        self.view.addGestureRecognizer(tap)
     }
     
     private func _initValues() {
@@ -162,6 +166,12 @@ public class DateAndTimeSelectViewController: TransitionViewController {
         self.didCancelAction?()
     }
     
+}
+
+extension DateAndTimeSelectViewController: UIGestureRecognizerDelegate {
+    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        return touch.view == self.view
+    }
 }
 
 extension DateAndTimeSelectViewController: DateSelectViewControllerDelegate {

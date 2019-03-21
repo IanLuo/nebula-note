@@ -29,7 +29,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="h1G-gC-0Fo" userLabel="contentView">
-                    <rect key="frame" x="0.0" y="247" width="375" height="420"/>
+                    <rect key="frame" x="0.0" y="112" width="375" height="555"/>
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Hna-eT-vjg" userLabel="actions">
                             <rect key="frame" x="0.0" y="0.0" width="375" height="60"/>
@@ -61,25 +61,25 @@
                             </constraints>
                         </view>
                         <view contentMode="scaleToFill" placeholderIntrinsicWidth="infinite" placeholderIntrinsicHeight="60" translatesAutoresizingMaskIntoConstraints="NO" id="xRG-1i-JmQ" userLabel="time">
-                            <rect key="frame" x="0.0" y="300" width="375" height="60"/>
+                            <rect key="frame" x="0.0" y="435" width="375" height="60"/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         </view>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ceh-rr-2n0" userLabel="delete">
-                            <rect key="frame" x="187.5" y="360" width="187.5" height="60"/>
+                            <rect key="frame" x="187.5" y="495" width="187.5" height="60"/>
                             <state key="normal" title="Button"/>
                             <connections>
                                 <action selector="_delete" destination="-1" eventType="touchUpInside" id="ZOG-gv-Z5j"/>
                             </connections>
                         </button>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7hQ-pQ-mSX" userLabel="calendar">
-                            <rect key="frame" x="0.0" y="60" width="375" height="240"/>
+                            <rect key="frame" x="0.0" y="60" width="375" height="375"/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <constraints>
-                                <constraint firstAttribute="height" constant="240" id="qxn-59-MSH"/>
+                                <constraint firstAttribute="width" secondItem="7hQ-pQ-mSX" secondAttribute="height" id="89q-pS-gKL"/>
                             </constraints>
                         </view>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lQX-8v-OBe" userLabel="save">
-                            <rect key="frame" x="0.0" y="360" width="187.5" height="60"/>
+                            <rect key="frame" x="0.0" y="495" width="187.5" height="60"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="60" id="JJv-rH-6vc"/>
                             </constraints>

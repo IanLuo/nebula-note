@@ -152,6 +152,8 @@ extension AgendaViewController: UITableViewDelegate {
                     
                     tableView.deselectRow(at: indexPath, animated: true)
                     self.viewModel.updateSchedule(index: indexPath.row, nil)
+                }, cancel: {
+                    tableView.deselectRow(at: indexPath, animated: true)
                 })
             })
         }
@@ -171,6 +173,8 @@ extension AgendaViewController: UITableViewDelegate {
                     
                    tableView.deselectRow(at: indexPath, animated: true)
                     self.viewModel.updateDue(index: indexPath.row, nil)
+                }, cancel: {
+                    tableView.deselectRow(at: indexPath, animated: true)
                 })
             })
         }

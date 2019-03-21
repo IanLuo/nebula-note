@@ -224,7 +224,8 @@ extension Coordinator {
     public func showDateSelector(title: String,
                                  current: DateAndTimeType?,
                                  add: @escaping (DateAndTimeType) -> Void,
-                                 delete: @escaping () -> Void) {
+                                 delete: @escaping () -> Void,
+                                 cancel: @escaping () -> Void) {
         
         self.dependency.globalCaptureEntryWindow?.hide()
         
@@ -249,6 +250,7 @@ extension Coordinator {
             self.dismisTempModal(dateAndTimeSelectViewController) { [unowned self] in
                 self.dependency.globalCaptureEntryWindow?.show()
             }
+            cancel()
         }
 
         self.showTempModal(dateAndTimeSelectViewController)
