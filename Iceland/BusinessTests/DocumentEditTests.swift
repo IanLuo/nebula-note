@@ -158,7 +158,7 @@ content in third
         
         let document = Document(fileURL: tempURL)
         editorContext.request(url: document.fileURL).close()
-        document.string = text
+        document.updateContent(text)
         document.save(to: tempURL, for: UIDocument.SaveOperation.forCreating) {
             if $0 {
                 complete(document)

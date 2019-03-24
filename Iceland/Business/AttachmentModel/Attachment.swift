@@ -20,6 +20,18 @@ import Foundation
 
 /// 附件对象
 public struct Attachment: Codable {
+    public init(date: Date,
+                fileName: String,
+                key: String,
+                description: String,
+                kind: Kind) {
+        self.date = date
+        self.fileName = fileName
+        self.key = key
+        self.description = description
+        self.kind = kind
+    }
+
     /// 附件的类型
     public enum Kind: String, CaseIterable {
         case text, link, image, sketch, audio, video, location
@@ -27,11 +39,15 @@ public struct Attachment: Codable {
     
     /// 序列化的 key
     private enum _CodingKeys: CodingKey {
-        case url
+        case fileName
         case date
         case kind
         case description
         case key
+    }
+    
+    public var wrapperURL: URL {
+        return AttachmentManager.wrappterURL(key: self.key)
     }
     
     /// 附件创建的日期
@@ -41,7 +57,11 @@ public struct Attachment: Codable {
     public let kind: Attachment.Kind
     
     /// 附件位置
-    public let url: URL
+    public var url: URL {
+        return self.wrapperURL.appendingPathComponent(self.fileName)
+    }
+    
+    public let fileName: String
     
     /// 附件描述
     public let description: String
@@ -55,9 +75,7 @@ public struct Attachment: Codable {
         let values = try decoder.container(keyedBy: _CodingKeys.self)
         kind = try Attachment.Kind(rawValue: values.decode(String.self, forKey: .kind))!
         date = try values.decode(Date.self, forKey: .date)
-        
-        let fileName = try values.decode(String.self, forKey: .url)
-        url = URL.attachmentURL.appendingPathComponent(fileName)
+        fileName = try values.decode(String.self, forKey: .fileName)
         description = try values.decode(String.self, forKey: .description)
         key = try values.decode(String.self, forKey: .key)
     }
@@ -65,9 +83,7 @@ public struct Attachment: Codable {
     public func encode(to encoder: Encoder) throws {
         var encoder = encoder.container(keyedBy: _CodingKeys.self)
         try encoder.encode(kind.rawValue, forKey: .kind)
-        
-        let relativeFileURL = url.lastPathComponent // 只保存文件名的部分，文件的位置在同步之后会改变
-        try encoder.encode(relativeFileURL, forKey: .url)
+        try encoder.encode(fileName, forKey: .fileName)
         try encoder.encode(date, forKey: .date)
         try encoder.encode(description, forKey: .description)
         try encoder.encode(key, forKey: .key)
@@ -93,23 +109,5 @@ extension Attachment {
                                   description: description,
                                   complete: complete,
                                   failure: failure)
-    }
-    
-    /// 删除附件
-    public func delete(key: String) throws {
-        let manager = AttachmentManager()
-        try manager.delete(key: key)
-    }
-    
-    /// 通过保存在 key 加载附件
-    /// 对于 capture 来说，如果 key 为 sampleKey，对应的 json 字符串保存在 sampleKey.json，位于 capture.plist 同一个目录中
-    public static func load(with key: String) throws -> Attachment {
-        let manager = AttachmentManager()
-        return try manager.attachment(with: key)
-    }
-    
-    public func delete() throws {
-        let manager = AttachmentManager()
-        try manager.delete(key: self.key)
     }
 }

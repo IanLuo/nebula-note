@@ -401,73 +401,73 @@ DEADLINE: <2018-12-05 Wed>
         }
     }
     
-    func testTimeRange() {
-        var string = "**** TODO Demo heading                         \n<2018-12-05 Wed 9:00-21:00>"
-        if let dateAndTime = DateAndTimeType.createFromTimeRange(string) {
-            XCTAssertEqual(Calendar.current.component(.year, from: dateAndTime.date), 2018)
-            XCTAssertEqual(Calendar.current.component(.month, from: dateAndTime.date), 12)
-            XCTAssertEqual(Calendar.current.component(.day, from: dateAndTime.date), 5)
-            XCTAssertEqual(dateAndTime.duration, 12 * 60 * 60)
-            XCTAssert(true)
-        } else {
-            XCTAssert(false)
-        }
-        
-        string = "**** TODO Demo heading                         \n<2018-12-05 9:00-21:00>"
-        if let dateAndTime = DateAndTimeType.createFromTimeRange(string) {
-            XCTAssertEqual(Calendar.current.component(.year, from: dateAndTime.date), 2018)
-            XCTAssertEqual(Calendar.current.component(.month, from: dateAndTime.date), 12)
-            XCTAssertEqual(Calendar.current.component(.day, from: dateAndTime.date), 5)
-            XCTAssertEqual(dateAndTime.duration, 12 * 60 * 60)
-            XCTAssert(true)
-        } else {
-            XCTAssert(false)
-        }
-    }
-    
-    func testDateRange() {
-        var string = "**** TODO Demo heading                         \n<2018-12-05 Wed 9:00>--<2018-12-06 Thu 21:00>"
-        if let dateAndTime = DateAndTimeType.createFromDateRange(string) {
-            XCTAssertEqual(Calendar.current.component(.year, from: dateAndTime.date), 2018)
-            XCTAssertEqual(Calendar.current.component(.month, from: dateAndTime.date), 12)
-            XCTAssertEqual(Calendar.current.component(.day, from: dateAndTime.date), 5)
-            XCTAssertEqual(dateAndTime.duration, 36 * 60 * 60)
-            XCTAssert(true)
-        } else {
-            XCTAssert(false)
-        }
-        
-        string = "**** TODO Demo heading                         \n<2018-12-05 9:00>--<2018-12-06 21:00>"
-        if let dateAndTime = DateAndTimeType.createFromDateRange(string) {
-            XCTAssertEqual(Calendar.current.component(.year, from: dateAndTime.date), 2018)
-            XCTAssertEqual(Calendar.current.component(.month, from: dateAndTime.date), 12)
-            XCTAssertEqual(Calendar.current.component(.day, from: dateAndTime.date), 5)
-            XCTAssertEqual(dateAndTime.duration, 36 * 60 * 60)
-            XCTAssert(true)
-        } else {
-            XCTAssert(false)
-        }
-        
-        string = "**** TODO Demo heading                         \n<2018-12-05 Wed>--<2018-12-06 Thu>"
-        if let dateAndTime = DateAndTimeType.createFromDateRange(string) {
-            XCTAssertEqual(Calendar.current.component(.year, from: dateAndTime.date), 2018)
-            XCTAssertEqual(Calendar.current.component(.month, from: dateAndTime.date), 12)
-            XCTAssertEqual(Calendar.current.component(.day, from: dateAndTime.date), 5)
-            XCTAssertEqual(dateAndTime.duration, 24 * 60 * 60)
-            XCTAssert(true)
-        } else {
-            XCTAssert(false)
-        }
-        
-        string = "**** TODO Demo heading                         \n<2018-12-05>--<2018-12-06>"
-        if let dateAndTime = DateAndTimeType.createFromDateRange(string) {
-            XCTAssertEqual(Calendar.current.component(.year, from: dateAndTime.date), 2018)
-            XCTAssertEqual(Calendar.current.component(.month, from: dateAndTime.date), 12)
-            XCTAssertEqual(Calendar.current.component(.day, from: dateAndTime.date), 5)
-            XCTAssertEqual(dateAndTime.duration, 24 * 60 * 60)
-            XCTAssert(true)
-        } else {
-            XCTAssert(false)
-        }
-    }
+//    func testTimeRange() {
+//        var string = "**** TODO Demo heading                         \n<2018-12-05 Wed 9:00-21:00>"
+//        if let dateAndTime = DateAndTimeType.createFromTimeRange(string) {
+//            XCTAssertEqual(Calendar.current.component(.year, from: dateAndTime.date), 2018)
+//            XCTAssertEqual(Calendar.current.component(.month, from: dateAndTime.date), 12)
+//            XCTAssertEqual(Calendar.current.component(.day, from: dateAndTime.date), 5)
+//            XCTAssertEqual(dateAndTime.duration, 12 * 60 * 60)
+//            XCTAssert(true)
+//        } else {
+//            XCTAssert(false)
+//        }
+//        
+//        string = "**** TODO Demo heading                         \n<2018-12-05 9:00-21:00>"
+//        if let dateAndTime = DateAndTimeType.createFromTimeRange(string) {
+//            XCTAssertEqual(Calendar.current.component(.year, from: dateAndTime.date), 2018)
+//            XCTAssertEqual(Calendar.current.component(.month, from: dateAndTime.date), 12)
+//            XCTAssertEqual(Calendar.current.component(.day, from: dateAndTime.date), 5)
+//            XCTAssertEqual(dateAndTime.duration, 12 * 60 * 60)
+//            XCTAssert(true)
+//        } else {
+//            XCTAssert(false)
+//        }
+//    }
+//    
+//    func testDateRange() {
+//        var string = "**** TODO Demo heading                         \n<2018-12-05 Wed 9:00>--<2018-12-06 Thu 21:00>"
+//        if let dateAndTime = DateAndTimeType.createFromDateRange(string) {
+//            XCTAssertEqual(Calendar.current.component(.year, from: dateAndTime.date), 2018)
+//            XCTAssertEqual(Calendar.current.component(.month, from: dateAndTime.date), 12)
+//            XCTAssertEqual(Calendar.current.component(.day, from: dateAndTime.date), 5)
+//            XCTAssertEqual(dateAndTime.duration, 36 * 60 * 60)
+//            XCTAssert(true)
+//        } else {
+//            XCTAssert(false)
+//        }
+//        
+//        string = "**** TODO Demo heading                         \n<2018-12-05 9:00>--<2018-12-06 21:00>"
+//        if let dateAndTime = DateAndTimeType.createFromDateRange(string) {
+//            XCTAssertEqual(Calendar.current.component(.year, from: dateAndTime.date), 2018)
+//            XCTAssertEqual(Calendar.current.component(.month, from: dateAndTime.date), 12)
+//            XCTAssertEqual(Calendar.current.component(.day, from: dateAndTime.date), 5)
+//            XCTAssertEqual(dateAndTime.duration, 36 * 60 * 60)
+//            XCTAssert(true)
+//        } else {
+//            XCTAssert(false)
+//        }
+//        
+//        string = "**** TODO Demo heading                         \n<2018-12-05 Wed>--<2018-12-06 Thu>"
+//        if let dateAndTime = DateAndTimeType.createFromDateRange(string) {
+//            XCTAssertEqual(Calendar.current.component(.year, from: dateAndTime.date), 2018)
+//            XCTAssertEqual(Calendar.current.component(.month, from: dateAndTime.date), 12)
+//            XCTAssertEqual(Calendar.current.component(.day, from: dateAndTime.date), 5)
+//            XCTAssertEqual(dateAndTime.duration, 24 * 60 * 60)
+//            XCTAssert(true)
+//        } else {
+//            XCTAssert(false)
+//        }
+//        
+//        string = "**** TODO Demo heading                         \n<2018-12-05>--<2018-12-06>"
+//        if let dateAndTime = DateAndTimeType.createFromDateRange(string) {
+//            XCTAssertEqual(Calendar.current.component(.year, from: dateAndTime.date), 2018)
+//            XCTAssertEqual(Calendar.current.component(.month, from: dateAndTime.date), 12)
+//            XCTAssertEqual(Calendar.current.component(.day, from: dateAndTime.date), 5)
+//            XCTAssertEqual(dateAndTime.duration, 24 * 60 * 60)
+//            XCTAssert(true)
+//        } else {
+//            XCTAssert(false)
+//        }
+//    }
 }

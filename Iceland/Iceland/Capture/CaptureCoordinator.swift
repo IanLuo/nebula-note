@@ -17,9 +17,11 @@ public protocol CaptureCoordinatorDelegate: class {
 
 public class CaptureCoordinator: Coordinator {
     public weak var delegate: CaptureCoordinatorDelegate?
-    private let captureService = CaptureService()
+    private let captureService: CaptureService
     
     public override init(stack: UINavigationController, dependency: Dependency) {
+        self.captureService = CaptureService(attachmentManager: dependency.attachmentManager)
+        
         super.init(stack: stack, dependency: dependency)
         
         let viewController = CaptureViewController()

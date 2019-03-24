@@ -13,19 +13,25 @@ import Business
 
 public protocol CaptureServiceProtocol {
     func save(key: String, completion: @escaping () -> Void)
-    func loadAll(completion: ([Attachment]) -> Void, failure: (Error) -> Void)
+    func loadAll(completion: @escaping ([Attachment]) -> Void, failure: @escaping (Error) -> Void)
     func delete(key: String)
-    func load(id: String) throws -> Attachment?
+    func load(id: String, completion: @escaping (Attachment) -> Void, failure: @escaping (Error) -> Void)
 }
 
 public struct CaptureService: CaptureServiceProtocol {
-    public func load(id: String) throws -> Attachment? {
+    private let _attachmentManager: AttachmentManager
+    
+    public init(attachmentManager: AttachmentManager) {
+        self._attachmentManager = attachmentManager
+    }
+    
+    public func load(id: String, completion: @escaping (Attachment) -> Void, failure: @escaping (Error) -> Void) {
         let plist = KeyValueStoreFactory.store(type: .plist(.custom("capture")))
         
         if let attachmentKey = plist.get(key: id) as? String {
-            return try Attachment.load(with: attachmentKey)
+            self._attachmentManager.attachment(with: attachmentKey, completion: completion, failure: failure)
         } else {
-            return nil
+            
         }
     }
     
@@ -50,17 +56,18 @@ public struct CaptureService: CaptureServiceProtocol {
     }
     
     /// 从 capture 中找到对应的 attahcment 并返回
-    public func loadAll(completion: ([Attachment]) -> Void, failure: (Error) -> Void) {
+    public func loadAll(completion: @escaping ([Attachment]) -> Void, failure: @escaping (Error) -> Void) {
         let plist = KeyValueStoreFactory.store(type: .plist(.custom("capture")))
         
-        do {
-            let attachments = try plist.allKeys().map {
-                try Attachment.load(with: $0)
-            }
-            
-            completion(attachments)
-        } catch {
-            failure(error)
+        var attachments: [Attachment] = []
+        plist.allKeys().forEach {
+            self._attachmentManager.attachment(with: $0, completion: {
+                attachments.append($0)
+            }, failure: { (error) in
+                failure(error)
+            })
         }
+        
+        completion(attachments)
     }
 }

@@ -9,22 +9,11 @@
 import Foundation
 import Storage
 
-extension Attachment {
-    fileprivate init(date: Date,
-                  url: URL,
-                  key: String,
-                  description: String,
-                  kind: Kind) {
-        self.date = date
-        self.key = key
-        self.description = description
-        self.url = url
-        self.kind = kind
-    }
-}
-
 public enum AttachmentError: Error {
-    case failToSaveDocument
+    case noSuchAttachment(String)
+    case failToSaveAttachment
+    case failToOpenAttachment
+    case failToCloseDocument(String)
     case noSuchFileToSave(String)
 }
 
@@ -48,83 +37,93 @@ public enum AttachmentError: Error {
     public func insert(content: String,
                        kind: Attachment.Kind,
                        description: String,
-                       complete: @escaping (String) throws -> Void,
-                       failure: @escaping (Error) -> Void) rethrows {
-        let jsonEncoder = JSONEncoder()
+                       complete: @escaping (String) -> Void,
+                       failure: @escaping (Error) -> Void) {
+        
         let newKey = self.newKey()
         
-        /// 附件信息保存的文件路径
-        let jsonURL = URL(fileURLWithPath: newKey + ".json", relativeTo: URL.attachmentURL)
+        let fileURL: URL = URL(fileURLWithPath: newKey + "." + AttachmentDocument.fileType, relativeTo: URL.attachmentURL)
         
-        /// 附件内容保存的文件路径
-        var fileURL: URL!
-        
-        // 保存附件信息
-        let saveFileInfo = {
-            let attachment = Attachment(date: Date(),
-                                        url: fileURL,
-                                        key: newKey,
-                                        description: description,
-                                        kind: kind)
-            
-            jsonEncoder.dateEncodingStrategy = .secondsSince1970
-            let encodedAttachment = try jsonEncoder.encode(attachment)
-            try encodedAttachment.write(to: jsonURL)
-        }
-        
-        switch kind {
-        case .text: fallthrough
-        case .location: fallthrough
-        case .link:
-            fileURL = URL(fileURLWithPath: newKey + ".txt", relativeTo: URL.attachmentURL)
+        var attachmentURL: URL!
+        if let url = URL(string: content) {
+            attachmentURL = URL(fileURLWithPath: url.path)
+        } else {
+            let tempURL = File.init(File.Folder.temp("attachment"), fileName: "\(UUID().uuidString).txt", createFolderIfNeeded: true).url
             do {
-                try content.write(to: fileURL, atomically: true, encoding: .utf8) // FIXME: 改为 Document 的 save  方法
-                try saveFileInfo()
-                try complete(newKey)
+                try content.write(to: tempURL, atomically: true, encoding: .utf8)
+                attachmentURL = tempURL
             } catch {
                 failure(error)
             }
-        default:
-            let url = URL(fileURLWithPath: content)
-            fileURL = URL.attachmentURL.appendingPathComponent(newKey).appendingPathExtension(url.pathExtension)
-            let document = AttachmentFile(fileURL: url)
-            document.save(to: fileURL, for: .forCreating) { result in
-                if !result {
-                    failure(AttachmentError.failToSaveDocument)
-                } else {
-                    do {
-                        try saveFileInfo()
-                        try complete(newKey)
-                    } catch {
-                        failure(error)
-                    }
-                }
+        }
+        
+        let attachment = Attachment(date: Date(),
+                                    fileName: attachmentURL.lastPathComponent,
+                                    key: newKey,
+                                    description: description,
+                                    kind: kind)
+        
+        let attachmentDocument = AttachmentDocument(fileURL: fileURL)
+        attachmentDocument.attachment = attachment
+        attachmentDocument.fileToSave = attachmentURL
+        attachmentDocument.save(to: fileURL, for: UIDocument.SaveOperation.forCreating) {
+            if $0 {
+                complete(newKey)
+            } else {
+                failure(AttachmentError.failToSaveAttachment)
             }
         }
     }
     
     /// 通过附件的 key 来删除附件
     /// - parameter key: 附件的 key
-    public func delete(key: String) throws {
+    public func delete(key: String, completion: @escaping () -> Void, failure: @escaping (Error) -> Void) {
         
-        let jsonURL = URL(fileURLWithPath: key + ".json", relativeTo: URL.attachmentURL)
-        let fileURL = try attachment(with: key).url
-        
-        try FileManager.default.removeItem(at: jsonURL)
-        try FileManager.default.removeItem(at: fileURL)
+        self.attachment(with: key, completion: { attachment in
+            attachment.wrapperURL.delete(completion: { error in
+                if let error = error {
+                    failure(error)
+                } else {
+                    completion()
+                }
+            })
+        }, failure: failure)
     }
     
     /// 已经添加的文档的附件，直接使用 key 来加载
-    public func attachment(with key: String) throws -> Attachment {
-        let jsonDecoder = JSONDecoder()
-        jsonDecoder.dateDecodingStrategy = .secondsSince1970
-        let json = try Data(contentsOf: URL(fileURLWithPath: key + ".json", relativeTo: URL.attachmentURL))
-        return try jsonDecoder.decode(Attachment.self, from: json)
+    public func attachment(with key: String, completion: @escaping (Attachment) -> Void, failure: @escaping (Error) -> Void) {
+        
+        let url = AttachmentManager.wrappterURL(key: key)
+        var isDir = ObjCBool(true)
+        
+        guard FileManager.default.fileExists(atPath: url.path, isDirectory: &isDir) == true else {
+            failure(AttachmentError.noSuchAttachment(key))
+            return
+        }
+        
+        let document = AttachmentDocument(fileURL: url)
+        
+        document.open {
+            if $0 {
+                if let attachment = document.attachment {
+                    document.close(completionHandler: { completed in
+                        if completed {
+                            completion(attachment)
+                        } else {
+                            failure(AttachmentError.failToCloseDocument(attachment.wrapperURL.path))
+                        }
+                    })
+                } else {
+                    failure(AttachmentError.failToOpenAttachment)
+                }
+            } else {
+                failure(AttachmentError.failToOpenAttachment)
+            }
+        }
+    }
+    
+    public static func wrappterURL(key: String) -> URL {
+        return URL.attachmentURL.appendingPathComponent(key).appendingPathExtension(AttachmentDocument.fileType)
     }
 }
 
-public class AttachmentFile: UIDocument {
-    public override func contents(forType typeName: String) throws -> Any {
-        return try Data(contentsOf: self.fileURL)
-    }
-}

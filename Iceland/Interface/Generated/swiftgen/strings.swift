@@ -65,6 +65,12 @@ public enum L10n {
       /// Perform Actions
       public static let title = L10n.tr("Localizable", "document.actions.title")
     }
+    public enum Browser {
+      public enum Delete {
+        /// Delete this file?
+        public static let confirm = L10n.tr("Localizable", "document.browser.delete.confirm")
+      }
+    }
     public enum Edit {
       public enum Action {
         /// Arrow down

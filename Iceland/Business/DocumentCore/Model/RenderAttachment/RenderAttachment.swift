@@ -14,7 +14,7 @@ public class RenderAttachment: NSTextAttachment {
     public var value: String
     
     private let _manager: AttachmentManager
-    private let _attachment: Attachment
+    private var _attachment: Attachment?
     
     public var url: URL?
     
@@ -22,15 +22,16 @@ public class RenderAttachment: NSTextAttachment {
         self._manager = manager
         self.type = type
         self.value = value
-        do {
-            self._attachment = try self._manager.attachment(with: value)
-        } catch {
-            log.error("fail to create RenderAttachment with type: \(type), key: \(value)")
-            return nil
-        }
-        self.url = self._attachment.url
         super.init(data: nil, ofType: nil)
         self.bounds = CGRect(origin: .zero, size: .init(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width))
+        
+        self._manager.attachment(with: value, completion: { attachment in
+            self._attachment = attachment
+            self.url = attachment.url
+            self.image = UIImage(contentsOfFile: attachment.url.path)?.resize(upto: self.bounds.size)
+        }) { error in
+            
+        }
         self.createImage()
     }
     
@@ -39,12 +40,10 @@ public class RenderAttachment: NSTextAttachment {
     }
     
     private func createImage() {
-        guard let url = self.url else { return }
         switch self.type {
         case Attachment.Kind.sketch.rawValue: fallthrough
         case Attachment.Kind.image.rawValue:
             let size = self.bounds.size
-            self.image = UIImage(contentsOfFile: url.path)?.resize(upto: size)
             self.bounds = CGRect(origin: .zero, size: size)
         default: break
         }

@@ -40,6 +40,8 @@ public class Application: Coordinator {
                                           textTrimmer: OutlineTextTrimmer(parser: OutlineParser()),
                                           eventObserver: eventObserver,
                                           settingAccessor: SettingsAccessor.shared,
+                                          syncManager: SyncManager(),
+                                          attachmentManager: AttachmentManager(),
                                           globalCaptureEntryWindow: _entranceWindow))
         
         self.window?.rootViewController = self.stack
@@ -63,6 +65,8 @@ public struct Dependency {
     let textTrimmer: OutlineTextTrimmer
     let eventObserver: EventObserver
     let settingAccessor: SettingsAccessor
+    let syncManager: SyncManager
+    let attachmentManager: AttachmentManager
     weak var globalCaptureEntryWindow: CaptureGlobalEntranceWindow?
 }
 

@@ -20,7 +20,7 @@ public class CaptureListCoordinator: Coordinator {
     public weak var delegate: CaptureListCoordinatorDelegate?
     
     public init(stack: UINavigationController, dependency: Dependency, mode: CaptureListViewModel.Mode) {
-        self.viewModel = CaptureListViewModel(service: CaptureService(), mode: mode)
+        self.viewModel = CaptureListViewModel(service: CaptureService(attachmentManager: dependency.attachmentManager), mode: mode)
         let viewController = CaptureListViewController(viewModel: self.viewModel)
         
         super.init(stack: stack, dependency: dependency)

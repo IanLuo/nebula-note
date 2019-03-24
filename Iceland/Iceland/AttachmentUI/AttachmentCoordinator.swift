@@ -25,7 +25,7 @@ public class AttachmentCoordinator: Coordinator {
     
     public init(stack: UINavigationController, dependency: Dependency, kind: Attachment.Kind) {
 
-        let attachmentViewModel = AttachmentViewModel(attachmentManager: AttachmentManager())
+        let attachmentViewModel = AttachmentViewModel(attachmentManager: dependency.attachmentManager)
         
         self.kind = kind
         

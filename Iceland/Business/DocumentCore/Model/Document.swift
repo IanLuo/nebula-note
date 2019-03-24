@@ -43,7 +43,7 @@ public class Document: UIDocument {
     public private(set) var string: String = ""
     public private(set) var logs: String = ""
     public private(set) var cover: UIImage?
-    public var wrapper: FileWrapper?
+    private var _wrapper: FileWrapper?
     
     public static let contentKey: String = "content.org"
     public static let coverKey: String = "cover.jpg"
@@ -51,8 +51,8 @@ public class Document: UIDocument {
     
     public func updateCover(_ new: UIImage?) {
         self.cover = new
-        if let oldWrapper = self.wrapper?.fileWrappers?[Document.coverKey] {
-            self.wrapper?.removeFileWrapper(oldWrapper)
+        if let oldWrapper = self._wrapper?.fileWrappers?[Document.coverKey] {
+            self._wrapper?.removeFileWrapper(oldWrapper)
         }
         
         self.updateChangeCount(UIDocument.ChangeKind.done)
@@ -60,8 +60,8 @@ public class Document: UIDocument {
     
     public func updateContent(_ new: String) {
         self.string = new
-        if let oldWrapper = self.wrapper?.fileWrappers?[Document.contentKey] {
-            self.wrapper?.removeFileWrapper(oldWrapper)
+        if let oldWrapper = self._wrapper?.fileWrappers?[Document.contentKey] {
+            self._wrapper?.removeFileWrapper(oldWrapper)
         }
         
         self.updateChangeCount(UIDocument.ChangeKind.done)
@@ -69,50 +69,50 @@ public class Document: UIDocument {
     
     public func updateLogs(_ new: String) {
         self.string = new
-        if let oldWrapper = self.wrapper?.fileWrappers?[Document.logsKey] {
-            self.wrapper?.removeFileWrapper(oldWrapper)
+        if let oldWrapper = self._wrapper?.fileWrappers?[Document.logsKey] {
+            self._wrapper?.removeFileWrapper(oldWrapper)
         }
         
         self.updateChangeCount(UIDocument.ChangeKind.done)
     }
     
     public override func contents(forType typeName: String) throws -> Any {
-        if self.wrapper == nil {
-            self.wrapper = FileWrapper(directoryWithFileWrappers: [:])
+        if self._wrapper == nil {
+            self._wrapper = FileWrapper(directoryWithFileWrappers: [:])
         }
         
-        if self.wrapper?.fileWrappers?[Document.contentKey] == nil {
+        if self._wrapper?.fileWrappers?[Document.contentKey] == nil {
             if let data = self.string.data(using: .utf8) {
                 let textWrapper = FileWrapper(regularFileWithContents: data)
                 textWrapper.preferredFilename = Document.contentKey
-                self.wrapper?.addFileWrapper(textWrapper)
+                self._wrapper?.addFileWrapper(textWrapper)
             }
         }
         
-        if self.wrapper?.fileWrappers?[Document.coverKey] == nil {
+        if self._wrapper?.fileWrappers?[Document.coverKey] == nil {
             if let coverImage = self.cover {
                 if let coverData = coverImage.jpegData(compressionQuality: 0.8) {
                     let coverWrapper = FileWrapper(regularFileWithContents: coverData)
                     coverWrapper.preferredFilename = Document.coverKey
-                    self.wrapper?.addFileWrapper(coverWrapper)
+                    self._wrapper?.addFileWrapper(coverWrapper)
                 }
             }
         }
         
-        if self.wrapper?.fileWrappers?[Document.logsKey] == nil {
+        if self._wrapper?.fileWrappers?[Document.logsKey] == nil {
             if let logsData = self.logs.data(using: .utf8) {
                 let logsWrapper = FileWrapper(regularFileWithContents: logsData)
                 logsWrapper.preferredFilename = Document.logsKey
-                self.wrapper?.addFileWrapper(logsWrapper)
+                self._wrapper?.addFileWrapper(logsWrapper)
             }
         }
         
-        return self.wrapper!
+        return self._wrapper!
     }
     
     public override func load(fromContents contents: Any, ofType typeName: String?) throws {
         if let wrapper = contents as? FileWrapper {
-            self.wrapper = wrapper
+            self._wrapper = wrapper
             
             if let contentData = wrapper.fileWrappers?[Document.contentKey]?.regularFileContents {
                 self.string = String(data: contentData, encoding: .utf8) ?? ""
@@ -134,10 +134,11 @@ public class Document: UIDocument {
         }
         
         log.info("begin to save ... \(url)")
+        let time = CFAbsoluteTimeGetCurrent()
         super.save(to: url, for: saveOperation, completionHandler: { success in
             completionHandler?(success)
             if success {
-                log.info("save complete ++")
+                log.info("save complete \(CFAbsoluteTimeGetCurrent() - time) ms ++")
             } else {
                 log.info("save faild --")
             }

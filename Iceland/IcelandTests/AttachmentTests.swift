@@ -26,17 +26,23 @@ public class AttachmentTests: XCTestCase {
         let manager = AttachmentManager()
         
         let ex = expectation(description: "save")
-        try manager.insert(content: "test attachment", kind: Attachment.Kind.text, description: "test", complete: { key in
-            let saved = try manager.attachment(with: key)
+        manager.insert(content: "test attachment", kind: Attachment.Kind.text, description: "test", complete: { key in
             
-            XCTAssertEqual(saved.key, key)
-            XCTAssertEqual(saved.description, "test")
-            XCTAssertEqual(saved.kind, Attachment.Kind.text)
-            XCTAssertEqual(try String(contentsOf: saved.url), "test attachment")
-            
-            ex.fulfill()
+            manager.attachment(with: key, completion: { saved in
+                
+                XCTAssertEqual(saved.key, key)
+                XCTAssertEqual(saved.description, "test")
+                XCTAssertEqual(saved.kind, Attachment.Kind.text)
+                XCTAssertEqual(try? String(contentsOf: saved.url), "test attachment")
+                
+                ex.fulfill()
+            }, failure: { error in
+                print(error)
+                XCTAssert(false)
+            })
         }, failure: { error in
-            
+            print(error)
+            XCTAssert(false)
         })
         
         let folder = File.Folder.temp("attachment")
@@ -47,17 +53,23 @@ public class AttachmentTests: XCTestCase {
         try data?.write(to: tempFile)
         
         let ex2 = expectation(description: "audio")
-        try manager.insert(content: tempFile.path, kind: Attachment.Kind.audio, description: "audio", complete: { key in
-            let saved = try manager.attachment(with: key)
+        manager.insert(content: tempFile.path, kind: Attachment.Kind.audio, description: "audio", complete: { key in
+            manager.attachment(with: key, completion: { saved in
+                
+                XCTAssertEqual(saved.key, key)
+                XCTAssertEqual(saved.description, "audio")
+                XCTAssertEqual(saved.kind, Attachment.Kind.audio)
+                XCTAssertEqual(try? String(contentsOf: saved.url), "the fake audio data")
+                
+                ex2.fulfill()
+            }, failure: { error in
+                print(error)
+                XCTAssert(false)
+            })
             
-            XCTAssertEqual(saved.key, key)
-            XCTAssertEqual(saved.description, "audio")
-            XCTAssertEqual(saved.kind, Attachment.Kind.audio)
-            XCTAssertEqual(try String(contentsOf: saved.url), "the fake audio data")
-            
-            ex2.fulfill()
         }, failure: { error in
             print(error)
+            XCTAssert(false)
         })
         
         wait(for: [ex, ex2], timeout: 1)
@@ -66,14 +78,23 @@ public class AttachmentTests: XCTestCase {
     func testDeleteAttachment() throws {
         let manager = AttachmentManager()
         let ex = expectation(description: "delete")
-        try manager.insert(content: "test attachment", kind: Attachment.Kind.text, description: "test", complete: { key in
-            try manager.delete(key: key)
-            XCTAssertThrowsError(try manager.attachment(with: key))
-            ex.fulfill()
+        manager.insert(content: "test attachment", kind: Attachment.Kind.text, description: "test", complete: { key in
+            manager.delete(key: key, completion: {
+                manager.attachment(with: key, completion: { (_) in
+                    XCTAssert(false)
+                }, failure: { error in
+                    print(error)
+                    ex.fulfill()
+                })
+            }, failure: { error in
+                print(error)
+                XCTAssert(false)
+            })
         }, failure: { error in
             print(error)
+            XCTAssert(false)
         })
         
-        wait(for: [ex], timeout: 1)
+        wait(for: [ex], timeout: 2)
     }
 }
