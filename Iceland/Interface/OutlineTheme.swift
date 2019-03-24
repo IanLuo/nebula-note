@@ -42,11 +42,11 @@ public struct DefaultInterfaceColor: InterfaceThemeColorProtocol {
     public let interactive: UIColor = UIColor(red:1.00, green:1.00, blue:1.00, alpha:1.00)
     public let descriptive: UIColor = UIColor(red:0.27, green:0.27, blue:0.27, alpha:1.00)
     public let descriptiveHighlighted: UIColor = UIColor(red:0.41, green:0.41, blue:0.41, alpha:1.00)
-    public let background1: UIColor = UIColor(red:0.09, green:0.09, blue:0.09, alpha:1.00)
-    public let background2: UIColor = UIColor(red:0.12, green:0.12, blue:0.12, alpha:1.00)
+    public let background1: UIColor = UIColor(red:0.09, green:0.10, blue:0.11, alpha:1.00)
+    public let background2: UIColor = UIColor(red:0.13, green:0.13, blue:0.15, alpha:1.00)
     public let background3: UIColor = UIColor(red:0.19, green:0.20, blue:0.26, alpha:1.00)
-    public let spotlight: UIColor = Asset.Colors.green.color
-    public let warning: UIColor = UIColor(red:1.00, green:0.13, blue:0.10, alpha:1.00)
+    public let spotlight: UIColor = UIColor(red:0.20, green:0.34, blue:0.97, alpha:1.00)
+    public let warning: UIColor = UIColor(red:1.00, green:0.24, blue:0.51, alpha:1.00)
 }
 
 public struct DefaultInterfaceFont: InterfaceThemeFontProtocol {

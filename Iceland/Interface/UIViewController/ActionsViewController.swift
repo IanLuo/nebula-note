@@ -254,27 +254,20 @@ fileprivate class ActionCell: UITableViewCell {
                 self.contentView.removeBorders()
                 self.titleLabel.constraint(for: .top)?.constant = 0
                 self.separatorInset = UIEdgeInsets(top: 0, left: 30, bottom: 0, right: 30)
+                self.titleLabel.textColor = InterfaceTheme.Color.interactive
             case .highlight:
-                fallthrough
+                self.titleLabel.textColor = InterfaceTheme.Color.spotlight
+                self.contentView.setBorder(position: .top, color: InterfaceTheme.Color.background1, width: ActionsViewController.Constants.specialItemSeparatorHeight)
+                self.titleLabel.constraint(for: .top)?.constant = ActionsViewController.Constants.specialItemSeparatorHeight / 2
+                self.titleLabel.constraint(for: .bottom)?.constant = -ActionsViewController.Constants.specialItemSeparatorHeight / 2
+                self.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
             case .warning:
+                self.titleLabel.textColor = InterfaceTheme.Color.warning
                 self.contentView.setBorder(position: .top, color: InterfaceTheme.Color.background1, width: ActionsViewController.Constants.specialItemSeparatorHeight)
                 self.titleLabel.constraint(for: .top)?.constant = ActionsViewController.Constants.specialItemSeparatorHeight / 2
                 self.titleLabel.constraint(for: .bottom)?.constant = -ActionsViewController.Constants.specialItemSeparatorHeight / 2
                 self.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
             }
-        }
-    }
-    
-    private var cellBackgroundColor: UIColor {
-        guard let item = item else { return InterfaceTheme.Color.background2 }
-        
-        switch item.style {
-        case .default:
-            return InterfaceTheme.Color.background2
-        case .highlight:
-            return InterfaceTheme.Color.spotlight
-        case .warning:
-            return InterfaceTheme.Color.warning
         }
     }
     
@@ -318,7 +311,7 @@ fileprivate class ActionCell: UITableViewCell {
         if highlighted {
             self.backgroundColor = InterfaceTheme.Color.background3
         } else {
-            self.backgroundColor = self.cellBackgroundColor
+            self.backgroundColor = InterfaceTheme.Color.background2
         }
     }
 
@@ -326,7 +319,7 @@ fileprivate class ActionCell: UITableViewCell {
         if selected {
             self.backgroundColor = InterfaceTheme.Color.background3
         } else {
-            self.backgroundColor = self.cellBackgroundColor
+            self.backgroundColor = InterfaceTheme.Color.background2
         }
     }
 }

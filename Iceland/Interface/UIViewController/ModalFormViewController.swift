@@ -17,7 +17,12 @@ public protocol ModalFormViewControllerDelegate: class {
     func validate(formdata: [String: Codable]) -> [String: String]
 }
 
-public class ModalFormViewController: UIViewController {
+public class ModalFormViewController: TransitionViewController {
+    public var contentView: UIView = UIView()
+    
+    public var fromView: UIView?
+    
+    
     public enum InputType {
         case textField(String, String, String?, UIKeyboardType)
         case textView(String, String?, UIKeyboardType)
@@ -85,9 +90,12 @@ public class ModalFormViewController: UIViewController {
         return view
     }()
     
+    private let _transitionDelegate: UIViewControllerTransitioningDelegate = FadeBackgroundTransition(animator: MoveInAnimtor())
+    
     public init() {
         super.init(nibName: nil, bundle: nil)
         
+        self.transitioningDelegate = self._transitionDelegate
         self.modalPresentationStyle = .overCurrentContext
     }
     
@@ -123,15 +131,16 @@ public class ModalFormViewController: UIViewController {
     }
     
     private func setupUI() {
-        self.view.backgroundColor = UIColor.black.withAlphaComponent(0.2)
+        self.view.addSubview(self.contentView)
+        self.contentView.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 0)
         
-        self.view.addSubview(self.actionButtonsContainer)
+        self.contentView.addSubview(self.actionButtonsContainer)
         
         self.actionButtonsContainer.addSubview(self.saveButton)
         self.actionButtonsContainer.addSubview(self.cancelButton)
         self.actionButtonsContainer.addSubview(self.titleLabel)
         
-        self.actionButtonsContainer.sideAnchor(for: [.left, .right], to: self.view, edgeInset: 0)
+        self.actionButtonsContainer.sideAnchor(for: [.left, .right, .top], to: self.contentView, edgeInset: 0)
         self.actionButtonsContainer.setBorder(position: .bottom, color: InterfaceTheme.Color.background3, width: 0.5)
         
         self.saveButton.sideAnchor(for: [.left, .top, .bottom], to: actionButtonsContainer, edgeInset: 0)
@@ -142,10 +151,10 @@ public class ModalFormViewController: UIViewController {
         self.cancelButton.sizeAnchor(width: 80, height: 80)
         self.titleLabel.rowAnchor(view: self.cancelButton)
         
-        self.view.addSubview(self.tableView)
+        self.contentView.addSubview(self.tableView)
         actionButtonsContainer.columnAnchor(view: self.tableView)
         
-        self.tableView.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 0, considerSafeArea: true)
+        self.tableView.sideAnchor(for: [.left, .right, .bottom], to: self.contentView, edgeInset: 0, considerSafeArea: true)
         self.tableView.sizeAnchor(height: self.tabelHeight)
     }
     
