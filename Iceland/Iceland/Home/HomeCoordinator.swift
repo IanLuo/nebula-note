@@ -23,6 +23,7 @@ public class HomeCoordinator: Coordinator {
         let navigationController = UINavigationController(rootViewController: dashboardViewController)
         navigationController.navigationBar.tintColor = InterfaceTheme.Color.interactive
         navigationController.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        navigationController.navigationBar.shadowImage = UIImage()
         
         let homeViewController = HomeViewController(masterViewController: navigationController)
         self.homeViewController = homeViewController

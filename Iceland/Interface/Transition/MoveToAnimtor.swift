@@ -44,6 +44,7 @@ public class MoveToAnimtor: NSObject, Animator {
                 
                 containner.addSubview(animatableView)
                 transitionViewController.contentView.alpha = 0
+                transitionViewController.view.backgroundColor = UIColor.black.withAlphaComponent(0)
                 
                 UIView.animate(withDuration: self.transitionDuration(using: transitionContext), delay: 0.0, options: .curveEaseOut, animations: ({
                     animatableView.frame = destRect

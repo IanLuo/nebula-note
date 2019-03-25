@@ -200,28 +200,35 @@ extension DocumentBrowserViewController: DocumentBrowserCellDelegate {
             actionsViewController.addAction(icon: Asset.Assets.add.image, title: L10n.Document.Action.new) { viewController in
                 viewController.dismiss(animated: true, completion: {
                     self.viewModel.createDocument(title: L10n.Document.Title.untitled, below: self.viewModel.data[index].url)
+                    self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                 })
             }
 
             // 重命名
             actionsViewController.addAction(icon: nil, title: L10n.Document.Actions.rename) { viewController in
-                self.viewModel.coordinator?.dismisTempModal(viewController) { [weak self] in
+                viewController.dismiss(animated: true, completion: {
+                    
                     let renameFormViewController = ModalFormViewController()
                     let title = "new name".localizable
                     renameFormViewController.addTextFied(title: title, placeHoder: "", defaultValue: url.fileName) // 不需要显示 placeholder, default value 有值
                     renameFormViewController.onSaveValue = { formValue, viewController in
                         if let newName = formValue[title] as? String {
-                            self?.viewModel.coordinator?.dismisTempModal(viewController) {
-                                self?.viewModel.rename(index: index, to: newName)
-                            }
+                            viewController.dismiss(animated: true, completion: {
+                                self.viewModel.rename(index: index, to: newName)
+                            })
                         }
+                        
+                        self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
+                    }
+                    
+                    renameFormViewController.onCancel = { _ in
+                        self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                     }
                     
                     // 显示给用户，是否可以使用这个文件名
                     renameFormViewController.onValidating = { formData in
-                        guard let strongSelf = self else { return [:] }
-                        
-                        if !strongSelf.viewModel.isNameAvailable(newName: formData[title] as! String, index: index) {
+
+                        if !self.viewModel.isNameAvailable(newName: formData[title] as! String, index: index) {
                             return [title: "name is taken".localizable]
                         }
                         
@@ -229,53 +236,66 @@ extension DocumentBrowserViewController: DocumentBrowserCellDelegate {
                     }
                     
                     renameFormViewController.onCancel = { viewController in
-                        self?.viewModel.coordinator?.dismisTempModal(viewController)
+                        viewController.dismiss(animated: true, completion: nil)
+                        self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                     }
                     
-                    self?.viewModel.coordinator?.showTempModal(renameFormViewController)
-                }
+                    self.present(renameFormViewController, animated: true, completion: nil)
+                })
             }
             
             actionsViewController.addAction(icon: nil, title: L10n.Document.Actions.duplicate) { viewController in
-                self.viewModel.coordinator?.dismisTempModal(viewController) { [weak self] in
-                    self?.viewModel.duplicate(index: index)
-                }
+                viewController.dismiss(animated: true, completion: {
+                    self.viewModel.duplicate(index: index)
+                    self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
+                })
             }
             
             actionsViewController.addAction(icon: nil, title: L10n.Document.Actions.cover) { viewController in
-                self.viewModel.coordinator?.dismisTempModal(viewController) { [weak self] in
+                viewController.dismiss(animated: true, completion: {
+                    
                     let coverPicker = CoverPickerViewController()
                     coverPicker.onSelecedCover = { cover in
-                        self?.viewModel.setCover(cover, index: index)
+                        self.viewModel.setCover(cover, index: index)
+                        self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                     }
                     
-                    self?.viewModel.coordinator?.showTempModal(coverPicker)
-                }
+                    coverPicker.onCancel = {
+                        self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
+                    }
+                    
+                    self.present(coverPicker, animated: true, completion: nil)
+                })
+
             }
             
             actionsViewController.addAction(icon: Asset.Assets.trash.image, title: L10n.Document.Actions.delete, style: .warning) { viewController in
                 let confirmViewController = ConfirmViewController()
                 
-                confirmViewController.confirmAction = { [weak self] in
+                confirmViewController.confirmAction = {
                     $0.dismiss(animated: true, completion: {
-                        self?.viewModel.coordinator?.dismisTempModal(viewController) {
-                            self?.viewModel.deleteDocument(index: index)
-                        }
+                        viewController.dismiss(animated: true, completion: {
+                            self.viewModel.deleteDocument(index: index)
+                        })
+                        self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                     })
                 }
                 
-                confirmViewController.cancelAction = { [weak self] in
-                    self?.viewModel.coordinator?.dismisTempModal($0)
+                confirmViewController.cancelAction = {
+                    $0.dismiss(animated: true, completion: nil)
+                    self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                 }
                 
                 viewController.present(confirmViewController, animated: true, completion: nil)
             }
             
             actionsViewController.setCancel { viewController in
-                self.viewModel.coordinator?.dismisTempModal(viewController)
+                viewController.dismiss(animated: true, completion: nil)
+                self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
             }
             
-            self.viewModel.coordinator?.showTempModal(actionsViewController)
+            self.present(actionsViewController, animated: true, completion: nil)
+            self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.hide()
         }
     }
     

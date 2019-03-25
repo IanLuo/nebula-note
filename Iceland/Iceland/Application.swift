@@ -27,6 +27,7 @@ public class Application: Coordinator {
         let navigationController = UINavigationController()
         navigationController.navigationBar.tintColor = InterfaceTheme.Color.interactive
         navigationController.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        navigationController.navigationBar.shadowImage = UIImage()
         
         let eventObserver = EventObserver()
         let editorContext = EditorContext(eventObserver: eventObserver)
@@ -86,9 +87,6 @@ public class Coordinator {
     public var isModal: Bool = false
     
     public weak var parent: Coordinator?
-    
-    // 临时显示的 view controller，比如 alert, actions 等
-    public var tempViewControllers: [UIViewController] = []
     
     public let dependency: Dependency
     
@@ -150,7 +148,6 @@ public class Coordinator {
     }
     
     @objc public func stop(animated: Bool = true, completion: (() -> Void)? = nil) {
-        self.tempViewControllers.forEach { $0.dismiss(animated: false, completion: nil) }
         if let viewController = self.viewController {
             self.moveOut(top: viewController, animated: animated, completion: {
                 self.parent?.remove(self)
@@ -163,21 +160,6 @@ public class Coordinator {
         if let f = from {
             f.addChild(self)
             self.moveIn(top: f.topViewController, animated: animated)
-        }
-    }
-}
-
-extension Coordinator {
-    public func addToTemp(viewController: UIViewController) {
-        self.tempViewControllers.append(viewController)
-    }
-    
-    public func removeFromTemp(viewController: UIViewController) {
-        for (index, v) in self.tempViewControllers.enumerated() {
-            if v == viewController {
-                self.tempViewControllers.remove(at: index)
-                return
-            }
         }
     }
 }
@@ -236,28 +218,31 @@ extension Coordinator {
         let dateAndTimeSelectViewController = DateAndTimeSelectViewController(nibName: "DateAndTimeSelectViewController", bundle: nil)
         dateAndTimeSelectViewController.title = title
         dateAndTimeSelectViewController.dateAndTime = current
-        dateAndTimeSelectViewController.didSelectAction = { dateAndTime in
-            self.dismisTempModal(dateAndTimeSelectViewController) { [unowned self] in
+        dateAndTimeSelectViewController.didSelectAction = { [unowned dateAndTimeSelectViewController] dateAndTime in
+            dateAndTimeSelectViewController.dismiss(animated: true, completion: {
                 self.dependency.globalCaptureEntryWindow?.show()
-            }
+            })
+
             add(dateAndTime)
         }
         
-        dateAndTimeSelectViewController.didDeleteAction = {
-            self.dismisTempModal(dateAndTimeSelectViewController) { [unowned self] in
+        dateAndTimeSelectViewController.didDeleteAction = { [unowned dateAndTimeSelectViewController] in
+            dateAndTimeSelectViewController.dismiss(animated: true, completion: {
                 self.dependency.globalCaptureEntryWindow?.show()
-            }
+            })
+
             delete()
         }
         
         dateAndTimeSelectViewController.didCancelAction = { [unowned dateAndTimeSelectViewController] in
-            self.dismisTempModal(dateAndTimeSelectViewController) { [unowned self] in
+            dateAndTimeSelectViewController.dismiss(animated: true, completion: {
                 self.dependency.globalCaptureEntryWindow?.show()
-            }
+            })
+            
             cancel()
         }
-
-        self.showTempModal(dateAndTimeSelectViewController)
+        
+        self.viewController?.present(dateAndTimeSelectViewController, animated: true, completion: nil)
     }
 }
 
@@ -279,35 +264,12 @@ extension Coordinator {
     // find the top view controller in this coordinator
     public var topViewController: UIViewController? {
         if let presented = self.viewController?.presentedViewController {
-            // 当前的 view controller 之上还有 modal view controller，如果在当前 coordinator 范围内，则返回之，否则属于其他的 coordinator，则忽略
-            if self.tempViewControllers.contains(presented) {
-                return presented
-            }
+            return presented // FIXME: only go 2 levels
         } else {
             return self.viewController
         }
         
         return nil
-    }
-}
-
-extension Coordinator {
-    public func showTempModal(_ viewController: UIViewController,
-                            completion: (() -> Void)? = nil) {
-        self.viewController?.present(viewController,
-                                     animated: true,
-                                     completion: { [weak self] in
-                                        self?.addToTemp(viewController: viewController)
-                                        completion?()
-        })
-    }
-    
-    public func dismisTempModal(_ viewController: UIViewController,
-                            completion: (() -> Void)? = nil) {
-        viewController.dismiss(animated: true) { [weak self] in
-            self?.removeFromTemp(viewController: viewController)
-            completion?()
-        }
     }
 }
 
@@ -347,11 +309,6 @@ extension Coordinator: CustomDebugStringConvertible {
         if let vc = self.viewController {
             string.append("\(vc))")
         }
-        
-        for vc in self.tempViewControllers {
-            string.append("\n     + \(vc) +")
-        }
-        
         return string
     }
 }

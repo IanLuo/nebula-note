@@ -36,7 +36,7 @@ public class AgendaTableCell: UITableViewCell {
     
     private let documentNameLabel: UILabel = {
         let label = UILabel()
-        label.textColor = InterfaceTheme.Color.descriptive
+        label.textColor = InterfaceTheme.Color.descriptiveHighlighted
         label.font = InterfaceTheme.Font.footnote
         label.textAlignment = .left
         return label
@@ -44,7 +44,7 @@ public class AgendaTableCell: UITableViewCell {
     
     private let headingTextLabel: UILabel = {
         let label = UILabel()
-        label.textColor = InterfaceTheme.Color.descriptive
+        label.textColor = InterfaceTheme.Color.interactive
         label.font = InterfaceTheme.Font.footnote
         label.textAlignment = .left
         return label
@@ -52,7 +52,7 @@ public class AgendaTableCell: UITableViewCell {
     
     private let summaryLabel: UILabel = {
         let label = UILabel()
-        label.textColor = InterfaceTheme.Color.interactive
+        label.textColor = InterfaceTheme.Color.descriptive
         label.font = InterfaceTheme.Font.footnote
         label.numberOfLines = 0
         label.lineBreakMode = .byCharWrapping
@@ -68,13 +68,13 @@ public class AgendaTableCell: UITableViewCell {
     private let tagsIcon: UIImageView = {
         let imageView = UIImageView()
         imageView.image = Asset.Assets.tag.image.withRenderingMode(UIImage.RenderingMode.alwaysTemplate)
-        imageView.tintColor = InterfaceTheme.Color.descriptive
+        imageView.tintColor = InterfaceTheme.Color.descriptiveHighlighted
         return imageView
     }()
     
     private let tagsLabel: UILabel = {
         let label = UILabel()
-        label.textColor = InterfaceTheme.Color.descriptive
+        label.textColor = InterfaceTheme.Color.descriptiveHighlighted
         label.textAlignment = .left
         label.font = InterfaceTheme.Font.footnote
         return label
@@ -82,7 +82,7 @@ public class AgendaTableCell: UITableViewCell {
     
     private let scheduleAndDueLabel: UILabel = {
         let label = UILabel()
-        label.textColor = InterfaceTheme.Color.descriptive
+        label.textColor = InterfaceTheme.Color.descriptiveHighlighted
         label.font = InterfaceTheme.Font.footnote
         label.textAlignment = .left
         return label

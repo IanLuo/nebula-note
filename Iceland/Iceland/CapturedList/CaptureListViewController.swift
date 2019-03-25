@@ -90,7 +90,7 @@ extension CaptureListViewController: CaptureTableCellDelegate {
         
         let actionsViewController = self.createActionsViewController(index: index)
         
-        self.viewModel.coordinator?.showTempModal(actionsViewController)
+        self.present(actionsViewController, animated: true, completion: nil)
     }
     
     public func didTapActionsWithLink(attachment: Attachment, link: String?) {
@@ -99,14 +99,14 @@ extension CaptureListViewController: CaptureTableCellDelegate {
         let actionsViewController = self.createActionsViewController(index: index)
         
         actionsViewController.addAction(icon: nil, title: "open link") { viewController in
-            self.viewModel.coordinator?.dismisTempModal(viewController) {
+            viewController.dismiss(animated: true, completion: {
                 if let url = URL(string: link ?? "") {
                     UIApplication.shared.open(url, options: [:], completionHandler: nil)
                 }
-            }
+            })
         }
         
-        self.viewModel.coordinator?.showTempModal(actionsViewController)
+        self.present(actionsViewController, animated: true, completion: nil)
     }
     
     public func didTapActionsWithLocation(attachment: Attachment, location: CLLocationCoordinate2D) {
@@ -115,13 +115,13 @@ extension CaptureListViewController: CaptureTableCellDelegate {
         let actionsViewController = self.createActionsViewController(index: index)
         
         actionsViewController.addAction(icon: nil, title: "open location") { viewController in
-            self.viewModel.coordinator?.dismisTempModal(viewController) {
+            viewController.dismiss(animated: true, completion: {
                 let mapItem = MKMapItem(placemark: MKPlacemark(coordinate: location, addressDictionary:nil))
                 mapItem.openInMaps(launchOptions: [:])
-            }
+            })
         }
         
-        self.viewModel.coordinator?.showTempModal(actionsViewController)
+        self.present(actionsViewController, animated: true, completion: nil)
     }
     
     private func createActionsViewController(index: Int) -> ActionsViewController {
@@ -130,26 +130,26 @@ extension CaptureListViewController: CaptureTableCellDelegate {
         switch self.viewModel.mode {
         case .manage:
             actionsViewController.addAction(icon: nil, title: "delete".localizable) { viewController in
-                self.viewModel.coordinator?.dismisTempModal(viewController) { [weak self] in
-                    self?.viewModel.delete(index: index)
-                }
+                viewController.dismiss(animated: true, completion: {
+                    self.viewModel.delete(index: index)
+                })
             }
             
             actionsViewController.addAction(icon: nil, title: "refile".localizable) { viewController in
-                self.viewModel.coordinator?.dismisTempModal(viewController) { [weak self] in
-                    self?.viewModel.chooseRefileLocation(index: index)
-                }
+                viewController.dismiss(animated: true, completion: {
+                    self.viewModel.chooseRefileLocation(index: index)
+                })
             }
         case .pick:
             actionsViewController.addAction(icon: nil, title: "insert".localizable) { viewController in
-                self.viewModel.coordinator?.dismisTempModal(viewController) { [weak self] in
-                    self?.viewModel.selectAttachment(index: index)
-                }
+                viewController.dismiss(animated: true, completion: {
+                    self.viewModel.selectAttachment(index: index)
+                })
             }
         }
         
         actionsViewController.setCancel { viewController in
-            self.viewModel.coordinator?.dismisTempModal(viewController)
+            viewController.dismiss(animated: true, completion: nil)
         }
         
         return actionsViewController

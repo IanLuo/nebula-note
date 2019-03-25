@@ -112,6 +112,8 @@ extension OutlineTextStorage: ContentUpdatingProtocol {
         // 调整需要解析的字符串范围
         self._adjustParseRange(editedRange)
 
+        guard self.currentParseRange!.length > 0 else { return }
+        
         if let parsingRange = self.currentParseRange {
             // 清空 attributes (折叠的状态除外) // FIXME: after editing, folded attributes and ranges are lost, including heading ranges
             var effectiveRange: NSRange = NSRange(location:0, length: 0)
@@ -717,8 +719,8 @@ extension OutlineTextStorage: OutlineParserDelegate {
             }
         }
         
-        if self.currentParseRange!.upperBound >= self.string.count - 1 {
-            self.currentParseRange = NSRange(location: self.currentParseRange!.location, length: self.string.count - 1 - self.currentParseRange!.location)
+        if self.currentParseRange!.upperBound >= self.string.count {
+            self.currentParseRange = NSRange(location: self.currentParseRange!.location, length: self.string.count - self.currentParseRange!.location)
         }
         
         if self.currentParseRange!.length < 0 {

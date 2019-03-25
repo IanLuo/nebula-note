@@ -11,6 +11,7 @@ import UIKit
 
 public class CoverPickerViewController: UIImagePickerController {
     public var onSelecedCover: ((UIImage) -> Void)?
+    public var onCancel: (() -> Void)?
     
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,6 +23,7 @@ public class CoverPickerViewController: UIImagePickerController {
 extension CoverPickerViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     public func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         self.dismiss(animated: true)
+        self.onCancel?()
     }
     
     public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
