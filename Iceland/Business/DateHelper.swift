@@ -111,7 +111,7 @@ extension Date {
   }
 }
 
-public extension Date {
+extension Date {
   public var dayBegin:Date {
     let cal = DateConstants.calendar
     if let date = ((cal as NSCalendar).components([.year, .month, .day], from: self) as NSDateComponents).date {

@@ -172,13 +172,39 @@ extension OutlineTextStorage {
     }
     
     public func heading(contains location: Int) -> HeadingToken? {
-        for heading in self.headingTokens {
-            if heading.paragraphRange.contains(location) {
+        for heading in self.headingTokens.reversed() {
+            if location >= heading.range.location {
                 return heading
             }
         }
         
         return nil
+    }
+    
+    
+    /// 计算 heading 所在的内容长度(包含 heading)
+    public func parangraphsRange(at location: Int) -> NSRange {
+
+        var range = NSRange(location: 0, length: self.string.count)
+        let reversedIndex: (Int) -> Int = { index in
+            return self.headingTokens.count - index - 1
+        }
+
+        for (index, heading) in self.headingTokens.reversed().enumerated() {
+            if location >= heading.range.location {
+                range.location = heading.range.location
+                let reversedIndex = reversedIndex(index)
+                if reversedIndex + 1 < self.headingTokens.count {
+                    range.length = self.headingTokens[reversedIndex + 1].range.location - heading.range.location - 1
+                } else {
+                    range.length = self.string.count - heading.range.location - 1
+                }
+                
+                break
+            }
+        }
+        
+        return range
     }
     
     /// 更新和当前位置相关的其他信息
@@ -417,7 +443,8 @@ extension OutlineTextStorage: OutlineParserDelegate {
             guard let headingRange = $0[OutlineParser.Key.Node.heading] else { return }
             
             let token = HeadingToken(data: $0)
-            
+            token.outlineTextStorage = self
+
             self._tempParsingTokenResult.append(token)
             
             self.addAttribute(OutlineAttribute.Heading.content, value: headingRange, range: headingRange)
@@ -472,9 +499,6 @@ extension OutlineTextStorage: OutlineParserDelegate {
     
     public func didCompleteParsing(text: String) {
         self._updateTokens(new: self._tempParsingTokenResult)
-        
-        // 更新段落长度信息
-        self._updateHeadingParagraphLength()
         
         // 更新段落缩进样式
         self._setParagraphIndent()
@@ -629,13 +653,16 @@ extension OutlineTextStorage: OutlineParserDelegate {
         } else {
             if let first = newTokens.first {
                 for i in 0..<cache.count {
-                    if let token = cache[i] {
-                        if first.range.upperBound < token.range.location {
+                    if let cachedToken = cache[i] {
+                        if first.range.upperBound < cachedToken.range.location {
                             cache.insert(newTokens, at: i)
                             return
                         }
                     }
                 }
+                
+                /// 如果没有找到合适的插入位置，添加到最后
+                cache.append(contentsOf: newTokens)
             }
         }
     }
@@ -684,15 +711,6 @@ extension OutlineTextStorage: OutlineParserDelegate {
 //                        self.addAttributes([NSAttributedString.Key.paragraphStyle: paragraphStyle], range: inclosingRange)
 //                    }
 //            }
-        }
-    }
-    
-    /// 获得用 heading 分割的段落的 range 列表
-    private func _updateHeadingParagraphLength() {
-        var endOfParagraph = self.string.count
-        self.headingTokens.reversed().forEach {
-            $0.contentLength = endOfParagraph - $0.range.upperBound - 1
-            endOfParagraph = $0.range.location
         }
     }
     

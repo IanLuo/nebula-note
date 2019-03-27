@@ -53,7 +53,7 @@ public struct DocumentHeading {
         self.text = documentString.substring(headingToken.range)
         
         self.paragraphSummery = documentString.substring(NSRange(location: headingToken.range.upperBound,
-                                                                 length: min(100, headingToken.contentLength)))
+                                                                 length: min(100, headingToken.contentRange.length)))
     }
 }
 
@@ -185,21 +185,13 @@ public class DocumentSearchManager {
         
         self._contentSearchOperationQueue.addOperation(operation)
     }
-
+    
     class ParseDelegate: OutlineParserDelegate {
         var headings: [HeadingToken] = []
         func didFoundHeadings(text: String,
                               headingDataRanges: [[String: NSRange]]) {
             
             self.headings = headingDataRanges.map { HeadingToken(data: $0) }
-        }
-        
-        func didCompleteParsing(text: String) {
-            var lastUpperBound = text.count
-            headings.reversed().forEach {
-                $0.contentLength = lastUpperBound - $0.range.upperBound
-                lastUpperBound = $0.range.location
-            }
         }
     }
     

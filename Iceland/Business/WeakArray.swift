@@ -20,6 +20,12 @@ public class WeakArray<Element: AnyObject> {
         }
     }
     
+    public func append(contentsOf: [Element]) {
+        for e in contentsOf {
+            self.append(e)
+        }
+    }
+    
     public func insert(_ element: Element?, at index: Int) {
         if let element = element {
             let pointer = Unmanaged.passUnretained(element).toOpaque()
@@ -80,5 +86,11 @@ public class WeakArray<Element: AnyObject> {
     
     public var count: Int {
         return self.elements.count
+    }
+}
+
+extension WeakArray: CustomStringConvertible {
+    public var description: String {
+        return self.elements.debugDescription
     }
 }

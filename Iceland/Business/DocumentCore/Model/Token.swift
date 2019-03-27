@@ -122,6 +122,8 @@ public class HeadingToken: Token {
         return data[OutlineParser.Key.Element.Heading.closed]?.offset(offset)
     }
     
+    public weak var outlineTextStorage: OutlineTextStorage?
+    
     /// tag 的位置，如果没有 tag，则为应该放 tag 的位置
     public var tagLocation: Int {
         if let tags = self.tags {
@@ -142,8 +144,6 @@ public class HeadingToken: Token {
         
         return range.upperBound
     }
-    
-    public var contentLength: Int = 0
     
     public var headingTextRange: NSRange {
         var headingContentRange: NSRange = self.range.offset(-self.range.location).moveLeft(by: self.level + 1)
@@ -180,11 +180,11 @@ public class HeadingToken: Token {
     }
     
     public var contentRange: NSRange {
-        return NSRange(location: self.range.upperBound, length: self.contentLength)
+        return self.paragraphRange.moveLeft(by: self.range.length)
     }
     
     public var paragraphRange: NSRange {
-        return NSRange(location: range.location, length: contentLength + range.length)
+        return self.outlineTextStorage?.parangraphsRange(at: self.range.location) ?? self.range
     }
     
     public convenience init(data: [String: NSRange]) {

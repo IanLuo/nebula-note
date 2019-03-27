@@ -45,7 +45,7 @@ public class InsertTextToHeadingCommand: DocumentContentCommand {
     public func toggle(textStorage: OutlineTextStorage) -> Bool {
         guard let heading = textStorage.heading(contains: self.location) else { return false }
         
-        let location = heading.contentRange.upperBound - 1
+        let location = heading.paragraphRange.upperBound - 1
         
         return InsertTextCommand(location: location, textToInsert: self.textToInsert).toggle(textStorage: textStorage)
     }
@@ -76,6 +76,7 @@ public class FoldingCommand: DocumentContentCommand {
     
     public func toggle(textStorage: OutlineTextStorage) -> Bool {
         if let heading = textStorage.heading(contains: location) {
+
             log.info("fold range: \(heading.contentRange)")
             
             guard heading.contentRange.length > 0 else { return false }
