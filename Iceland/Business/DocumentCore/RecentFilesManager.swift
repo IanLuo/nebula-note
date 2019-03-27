@@ -9,11 +9,6 @@
 import Foundation
 import Storage
 
-//public struct RecentFileChangedNotification {
-//    public static let openFile = NSNotification.Name(rawValue: "openFile")
-//    public static let fileInfoChanged = NSNotification.Name(rawValue: "fileInfoChanged")
-//}
-
 public class RecentDocumentInfo: DocumentInfo, Codable {
     public let lastRequestTime: Date
     public let location: Int

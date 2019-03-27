@@ -77,11 +77,23 @@ public struct File {
             }
         }
         
-        public func createFolderIfNeeded() {
+        public func createFolderIfNeeded(completion: ((Error?) -> Void)? = nil) {
             var isDIR = ObjCBool(true)
-            if !Foundation.FileManager.default.fileExists(atPath: path, isDirectory: &isDIR) {
-                do { try Foundation.FileManager.default.createDirectory(atPath: path, withIntermediateDirectories: true, attributes: nil) }
-                catch { print("Error when touching dir for path: \(path): error") }
+            if !Foundation.FileManager.default.fileExists(atPath: self.path, isDirectory: &isDIR) {
+                let fileCoordinator = NSFileCoordinator()
+                let intent = NSFileAccessIntent.writingIntent(with: URL(fileURLWithPath: path), options: NSFileCoordinator.WritingOptions.forMoving)
+                let queue = OperationQueue()
+                queue.qualityOfService = .background
+                fileCoordinator.coordinate(with: [intent], queue: queue) { error in
+                    do {
+                        try Foundation.FileManager.default.createDirectory(atPath: self.path, withIntermediateDirectories: true, attributes: nil)
+                        completion?(nil)
+                    } catch {
+                        completion?(error)
+                    }
+                }
+            } else {
+                completion?(nil)
             }
         }
         
@@ -124,10 +136,7 @@ public struct File {
         }
     }
     
-    public init(_ folder: File.Folder, fileName: String, createFolderIfNeeded: Bool = false) {
-        if createFolderIfNeeded {
-            folder.createFolderIfNeeded()
-        }
+    public init(_ folder: File.Folder, fileName: String) {
         self.folder = folder
         self.fileName = fileName
     }
@@ -158,22 +167,24 @@ public struct File {
             print("writing file at: \(filePath)")
         }
         
-        folder.createFolderIfNeeded()
-        
-        let fileCoordinator = NSFileCoordinator()
-        let intent = NSFileAccessIntent.writingIntent(with: self.url, options: NSFileCoordinator.WritingOptions.forMerging)
-        let queue = OperationQueue()
-        fileCoordinator.coordinate(with: [intent], queue: queue) { error in
-            if error != nil {
-                completion(error)
-            } else {
-                do {
-                    try value.write(to: URL(fileURLWithPath: self.filePath))
-                    completion(nil)
-                } catch {
+        folder.createFolderIfNeeded { _ in
+            
+            let fileCoordinator = NSFileCoordinator()
+            let intent = NSFileAccessIntent.writingIntent(with: self.url, options: NSFileCoordinator.WritingOptions.forMerging)
+            let queue = OperationQueue()
+            fileCoordinator.coordinate(with: [intent], queue: queue) { error in
+                if error != nil {
                     completion(error)
+                } else {
+                    do {
+                        try value.write(to: URL(fileURLWithPath: self.filePath))
+                        completion(nil)
+                    } catch {
+                        completion(error)
+                    }
                 }
             }
+            
         }
     }
     
@@ -182,15 +193,16 @@ public struct File {
             print("writing file at: \(filePath)")
         }
         
-        folder.createFolderIfNeeded()
-        
-        let fileCoordinator = NSFileCoordinator()
-        let intent = NSFileAccessIntent.writingIntent(with: self.url, options: NSFileCoordinator.WritingOptions.forMerging)
-        let queue = OperationQueue()
-        queue.qualityOfService = .background
-        fileCoordinator.coordinate(with: [intent], queue: queue) { error in
-            accessor(error)
+        folder.createFolderIfNeeded { _ in
+            let fileCoordinator = NSFileCoordinator()
+            let intent = NSFileAccessIntent.writingIntent(with: self.url, options: NSFileCoordinator.WritingOptions.forReplacing)
+            let queue = OperationQueue()
+            queue.qualityOfService = .background
+            fileCoordinator.coordinate(with: [intent], queue: queue) { error in
+                accessor(error)
+            }
         }
+        
     }
     
     public func read(completion: @escaping (Data?, Error?) -> Void) {
@@ -206,7 +218,7 @@ public struct File {
         }
         
         let fileCoordinator = NSFileCoordinator()
-        let intent = NSFileAccessIntent.readingIntent(with: self.url, options: NSFileCoordinator.ReadingOptions.Element())
+        let intent = NSFileAccessIntent.readingIntent(with: self.url, options: [])
         let queue = OperationQueue()
         queue.qualityOfService = .background
         fileCoordinator.coordinate(with: [intent], queue: queue) { error in
@@ -220,7 +232,7 @@ public struct File {
     
     public func delete(completion: @escaping (Error?) -> Void) {
         let fileCoordinator = NSFileCoordinator()
-        let intent = NSFileAccessIntent.readingIntent(with: self.url, options: NSFileCoordinator.ReadingOptions.Element())
+        let intent = NSFileAccessIntent.writingIntent(with: self.url, options: NSFileCoordinator.WritingOptions.forDeleting)
         let queue = OperationQueue()
         queue.qualityOfService = .background
         fileCoordinator.coordinate(with: [intent], queue: queue) { error in
@@ -239,7 +251,7 @@ public struct File {
     
     public func delete(accessor: @escaping (Error?) -> Void) {
         let fileCoordinator = NSFileCoordinator()
-        let intent = NSFileAccessIntent.readingIntent(with: self.url, options: NSFileCoordinator.ReadingOptions.Element())
+        let intent = NSFileAccessIntent.writingIntent(with: self.url, options: NSFileCoordinator.WritingOptions.forDeleting)
         let queue = OperationQueue()
         queue.qualityOfService = .background
         fileCoordinator.coordinate(with: [intent], queue: queue) { error in

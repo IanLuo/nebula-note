@@ -45,32 +45,33 @@ public class AttachmentTests: XCTestCase {
             XCTAssert(false)
         })
         
-        let folder = File.Folder.temp("attachment")
-        folder.createFolderIfNeeded()
-        let tempFile = File(folder, fileName: "audio.wav").url
+        let tempFile = File(File.Folder.temp("attachments"), fileName: "audio.wav")
         
-        let data = "the fake audio data".data(using: String.Encoding.utf8)
-        try data?.write(to: tempFile)
+        let ex2 = self.expectation(description: "audio")
         
-        let ex2 = expectation(description: "audio")
-        manager.insert(content: tempFile.path, kind: Attachment.Kind.audio, description: "audio", complete: { key in
-            manager.attachment(with: key, completion: { saved in
+        let data = "the fake audio data".data(using: String.Encoding.utf8)!
+        tempFile.write(value: data) { error in
+            
+            manager.insert(content: tempFile.url.path, kind: Attachment.Kind.audio, description: "audio", complete: { key in
+                manager.attachment(with: key, completion: { saved in
+                    
+                    XCTAssertEqual(saved.key, key)
+                    XCTAssertEqual(saved.description, "audio")
+                    XCTAssertEqual(saved.kind, Attachment.Kind.audio)
+                    XCTAssertEqual(try? String(contentsOf: saved.url), "the fake audio data")
+                    
+                    ex2.fulfill()
+                }, failure: { error in
+                    print(error)
+                    XCTAssert(false)
+                })
                 
-                XCTAssertEqual(saved.key, key)
-                XCTAssertEqual(saved.description, "audio")
-                XCTAssertEqual(saved.kind, Attachment.Kind.audio)
-                XCTAssertEqual(try? String(contentsOf: saved.url), "the fake audio data")
-                
-                ex2.fulfill()
             }, failure: { error in
                 print(error)
                 XCTAssert(false)
             })
-            
-        }, failure: { error in
-            print(error)
-            XCTAssert(false)
-        })
+        }
+        
         
         wait(for: [ex, ex2], timeout: 1)
     }

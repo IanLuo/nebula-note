@@ -10,14 +10,20 @@ import Foundation
 import Storage
 
 public struct DocumentManager {
-    public init(editorContext: EditorContext, eventObserver: EventObserver) {
+    public static let contentKey: String = "content.org"
+    public static let coverKey: String = "cover.jpg"
+    public static let logsKey: String = "logs.log"
+    
+    public init(editorContext: EditorContext, eventObserver: EventObserver, syncManager: SyncManager) {
         self._editorContext = editorContext
         self._eventObserver = eventObserver
-        URL.documentBaseURL.createDirectorysIfNeeded()
+        self._syncManager = syncManager
+        URL.documentBaseURL.createDirectoryIfNeeded(completion: nil)
     }
     
     private let _editorContext: EditorContext
     private let _eventObserver: EventObserver
+    private let _syncManager: SyncManager
     
     public var recentFiles: [RecentDocumentInfo] {
         return self._editorContext.recentFilesManager.recentFiles
@@ -54,49 +60,68 @@ public struct DocumentManager {
         return UIImage(contentsOfFile: url.coverURL.path)
     }
     
-    private func _createFolderIfNeeded(url: URL) -> URL {
+    private func _createFolderIfNeeded(url: URL, completion: @escaping (URL) -> Void) {
         let folderURL = url.convertoFolderURL
         var isDIR = ObjCBool(true)
-        if !Foundation.FileManager.default.fileExists(atPath: folderURL.path, isDirectory: &isDIR) {
-            do { try Foundation.FileManager.default.createDirectory(atPath: folderURL.path, withIntermediateDirectories: true, attributes: nil) }
-            catch { print("Error when touching dir for path: \(folderURL.path): error") }
+        
+        let fileCoordinator = NSFileCoordinator()
+        let intent = NSFileAccessIntent.writingIntent(with: URL(fileURLWithPath: folderURL.path), options: NSFileCoordinator.WritingOptions.forMoving)
+        let queue = OperationQueue()
+        queue.qualityOfService = .background
+        fileCoordinator.coordinate(with: [intent], queue: queue) { error in
+            if !Foundation.FileManager.default.fileExists(atPath: folderURL.path, isDirectory: &isDIR) {
+                do {
+                    try Foundation.FileManager.default.createDirectory(atPath: folderURL.path, withIntermediateDirectories: true, attributes: nil)
+                    
+                    completion(folderURL)
+                }
+                catch { print("Error when touching dir for path: \(folderURL.path): error") }
+            }
         }
-        return folderURL
+
     }
     
     /// 如果有 below，则创建成 below 的子文件，否则在根目录创建
     public func add(title: String,
                         below: URL?,
                         completion: ((URL?) -> Void)? = nil) {
-        var newURL: URL = URL.documentBaseURL.appendingPathComponent(title).appendingPathExtension(Document.fileExtension)
-        if let below = below {
-            let folderURL = self._createFolderIfNeeded(url: below)
-            newURL = folderURL.appendingPathComponent(title).appendingPathExtension(Document.fileExtension)
-        }
+        let newURL: URL = URL.documentBaseURL.appendingPathComponent(title).appendingPathExtension(Document.fileExtension)
         
-        var incrementaor: Int = 1
-        let copyOfNewURL = newURL
-        // 如果对应的文件名已经存在，则在文件名后添加数字，并以此增大
-        while FileManager.default.fileExists(atPath: newURL.path) {
-            let name = copyOfNewURL.deletingPathExtension().lastPathComponent + "\(incrementaor)"
-            newURL = copyOfNewURL.deletingPathExtension().deletingLastPathComponent().appendingPathComponent(name).appendingPathExtension(Document.fileExtension)
-            incrementaor += 1
-        }
-        
-        let document = Document.init(fileURL: newURL)
-        document.updateContent("") // 新文档的内容为空字符串
-        document.save(to: newURL, for: UIDocument.SaveOperation.forCreating) { [document] success in
-            DispatchQueue.main.async {
-                if success {
-                    self._eventObserver.emit(AddDocumentEvent(url: newURL))
-                    completion?(newURL)
-                } else {
-                    completion?(nil)
-                }
+        let addDocumentAction: (URL) -> Void = { newURL in
+            var newURL = newURL
+            var incrementaor: Int = 1
+            let copyOfNewURL = newURL
+            // 如果对应的文件名已经存在，则在文件名后添加数字，并以此增大
+            while FileManager.default.fileExists(atPath: newURL.path) {
+                let name = copyOfNewURL.deletingPathExtension().lastPathComponent + "\(incrementaor)"
+                newURL = copyOfNewURL.deletingPathExtension().deletingLastPathComponent().appendingPathComponent(name).appendingPathExtension(Document.fileExtension)
+                incrementaor += 1
             }
             
-            
-            document.close(completionHandler: nil)
+            let document = Document.init(fileURL: newURL)
+            document.updateContent("") // 新文档的内容为空字符串
+            document.save(to: newURL, for: UIDocument.SaveOperation.forCreating) { [document] success in
+                DispatchQueue.main.async {
+                    if success {
+                        self._eventObserver.emit(AddDocumentEvent(url: newURL))
+                        completion?(newURL)
+                    } else {
+                        completion?(nil)
+                    }
+                }
+                
+                
+                document.close(completionHandler: nil)
+            }
+        }
+        
+        if let below = below {
+            self._createFolderIfNeeded(url: below) { folderURL in
+                let newURL = folderURL.appendingPathComponent(title).appendingPathExtension(Document.fileExtension)
+                addDocumentAction(newURL)
+            }
+        } else {
+            addDocumentAction(newURL)
         }
     }
     
@@ -155,45 +180,55 @@ public struct DocumentManager {
                 below: URL?,
                 completion: @escaping (URL) -> Void,
                 failure: @escaping (Error) -> Void) {
-        var newURL: URL = url
-        if let below = below {
-            let folderURL = self._createFolderIfNeeded(url: below)
-            newURL = folderURL.appendingPathComponent(to).appendingPathExtension(Document.fileExtension)
-        } else {
-            newURL.deleteLastPathComponent()
-            newURL = newURL.appendingPathComponent(to).appendingPathExtension(Document.fileExtension)
-        }
-        url.rename(url: newURL) { error in
-            if let error = error {
-                DispatchQueue.main.async {
-                    failure(error)
-                }
-            } else {
-                // 修改子文件夹名字
-                let subdocumentFolder = url.convertoFolderURL
-                var isDir = ObjCBool(true)
-                if FileManager.default.fileExists(atPath: subdocumentFolder.path, isDirectory: &isDir) {
-                    subdocumentFolder.rename(url: newURL.convertoFolderURL) { error in
-                        if let error = error {
-                            DispatchQueue.main.async {
-                                failure(error)
-                            }
-                        } else {
-                            // 通知文件名更改
-                            DispatchQueue.main.async {
-                                completion(newURL)
-                                self._eventObserver.emit(RenameDocumentEvent(oldUrl: url, newUrl: newURL))
-                            }
-                        }
+        let newURL: URL = url
+        
+        let renameAction: (URL) -> Void = { newURL in
+            
+            url.rename(url: newURL) { error in
+                if let error = error {
+                    DispatchQueue.main.async {
+                        failure(error)
                     }
                 } else {
-                    // 通知文件名更改
-                    DispatchQueue.main.async {
-                        completion(newURL)
-                        self._eventObserver.emit(RenameDocumentEvent(oldUrl: url, newUrl: newURL))
+                    // 修改子文件夹名字
+                    let subdocumentFolder = url.convertoFolderURL
+                    var isDir = ObjCBool(true)
+                    if FileManager.default.fileExists(atPath: subdocumentFolder.path, isDirectory: &isDir) {
+                        subdocumentFolder.rename(url: newURL.convertoFolderURL) { error in
+                            if let error = error {
+                                DispatchQueue.main.async {
+                                    failure(error)
+                                }
+                            } else {
+                                // 通知文件名更改
+                                DispatchQueue.main.async {
+                                    completion(newURL)
+                                    self._eventObserver.emit(RenameDocumentEvent(oldUrl: url, newUrl: newURL))
+                                }
+                            }
+                        }
+                    } else {
+                        // 通知文件名更改
+                        DispatchQueue.main.async {
+                            completion(newURL)
+                            self._eventObserver.emit(RenameDocumentEvent(oldUrl: url, newUrl: newURL))
+                        }
                     }
                 }
             }
+        }
+        
+        if let below = below {
+            self._createFolderIfNeeded(url: below) { folderURL in
+                let newURL = folderURL.appendingPathComponent(to).appendingPathExtension(Document.fileExtension)
+                
+                renameAction(newURL)
+            }
+        } else {
+            var newURL = newURL.deletingLastPathComponent()
+            newURL = newURL.appendingPathComponent(to).appendingPathExtension(Document.fileExtension)
+            
+            renameAction(newURL)
         }
     }
     

@@ -8,7 +8,6 @@
 
 import Foundation
 import UIKit.UIImage
-import Storage
 import Business
 
 public protocol CaptureServiceProtocol {

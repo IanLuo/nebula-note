@@ -31,17 +31,19 @@ public class Application: Coordinator {
         
         let eventObserver = EventObserver()
         let editorContext = EditorContext(eventObserver: eventObserver)
+        let syncManager = SyncManager(eventObserver: eventObserver)
         
         super.init(stack: navigationController,
                    dependency: Dependency(documentManager: DocumentManager(editorContext: editorContext,
-                                                                           eventObserver: eventObserver),
+                                                                           eventObserver: eventObserver,
+                                                                           syncManager: syncManager),
                                           documentSearchManager: DocumentSearchManager(eventObserver: eventObserver,
                                                                                        editorContext: editorContext),
                                           editorContext: editorContext,
                                           textTrimmer: OutlineTextTrimmer(parser: OutlineParser()),
                                           eventObserver: eventObserver,
                                           settingAccessor: SettingsAccessor.shared,
-                                          syncManager: SyncManager(),
+                                          syncManager: syncManager,
                                           attachmentManager: AttachmentManager(),
                                           globalCaptureEntryWindow: _entranceWindow))
         

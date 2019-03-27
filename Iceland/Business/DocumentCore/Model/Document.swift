@@ -17,14 +17,14 @@ public class DocumentInfo {
     public let url: URL
     public let coverURL: URL
     
-    public init(name: String, cover: UIImage?, url: URL) {
+    public init(name: String, cover: UIImage?, url: URL, coverURL: URL) {
         self.name = name
-        self.coverURL = url.coverURL
+        self.coverURL = coverURL
         self.url = url
     }
     
     public init(wrapperURL: URL) {
-        guard wrapperURL.path.hasSuffix(Document.fileExtension) else { fatalError("must be a '.icelande' file") }
+        guard wrapperURL.path.hasSuffix(Document.fileExtension) else { fatalError("must be a '.ice' file") }
         
         self.name = wrapperURL.fileName
         self.coverURL = wrapperURL.coverURL
@@ -33,7 +33,7 @@ public class DocumentInfo {
 }
 
 public class Document: UIDocument {
-    public static let fileExtension = "iceland"
+    public static let fileExtension = "ice"
     public static let contentFileExtension = "org"
     public static let coverFileExtension = "jpg"
     public static let logsFileExtension = "log"

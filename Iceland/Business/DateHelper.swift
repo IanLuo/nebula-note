@@ -33,12 +33,12 @@ fileprivate class DateConstants {
 }
 
 public extension Date {
-  public static func updateDateConstant(firstWeekday: Int) {
+  static func updateDateConstant(firstWeekday: Int) {
     DateConstants._calendar.firstWeekday = firstWeekday
   }
   
   //return a string that represent the date
-  public var dateKeyString: String {
+  var dateKeyString: String {
     let cal = DateConstants.calendar
     let components = cal.dateComponents([Calendar.Component.year, Calendar.Component.month, Calendar.Component.day], from: self)
     let year = components.value(for: Calendar.Component.year) ?? 0
@@ -47,33 +47,33 @@ public extension Date {
     return "\(year)-\(month)-\(day)"
   }
     
-    public var weekDayString: String {
+    var weekDayString: String {
         let cal = DateConstants.calendar
         return cal.weekdaySymbols[cal.component(Calendar.Component.weekday, from: self) - 1]
     }
     
-    public var weekDayShortString: String {
+    var weekDayShortString: String {
         let cal = DateConstants.calendar
         return cal.shortWeekdaySymbols[cal.component(Calendar.Component.weekday, from: self) - 1]
     }
     
-    public var weekOfYearString: String {
+    var weekOfYearString: String {
         let cal = DateConstants.calendar
         return "W\(cal.component(Calendar.Component.weekOfYear, from: self))"
     }
     
-    public var monthStringLong: String {
+    var monthStringLong: String {
         let cal = DateConstants.calendar
         return cal.standaloneMonthSymbols[cal.component(Calendar.Component.month, from: self) - 1]
     }
     
-    public var monthStringShort: String {
+    var monthStringShort: String {
         let cal = DateConstants.calendar
         return cal.shortMonthSymbols[cal.component(Calendar.Component.month, from: self) - 1]
     }
 }
 
-public extension Date {
+extension Date {
   public static var TodayDate: Date {
     get {
       let cal = DateConstants.calendar

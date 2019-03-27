@@ -153,17 +153,19 @@ content in third
     
     private func createDocumentForTest(text: String, complete: @escaping (Document?) -> Void) {
         let folder = File.Folder.temp("test")
-        folder.createFolderIfNeeded()
-        let tempURL = File(folder, fileName: "\(UUID().uuidString).org").url
-        
-        let document = Document(fileURL: tempURL)
-        editorContext.request(url: document.fileURL).close()
-        document.updateContent(text)
-        document.save(to: tempURL, for: UIDocument.SaveOperation.forCreating) {
-            if $0 {
-                complete(document)
-            } else {
-                complete(nil)
+        folder.createFolderIfNeeded { _ in
+            
+            let tempURL = File(folder, fileName: "\(UUID().uuidString).org").url
+            
+            let document = Document(fileURL: tempURL)
+            self.editorContext.request(url: document.fileURL).close()
+            document.updateContent(text)
+            document.save(to: tempURL, for: UIDocument.SaveOperation.forCreating) {
+                if $0 {
+                    complete(document)
+                } else {
+                    complete(nil)
+                }
             }
         }
         

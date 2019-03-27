@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 public class AttachmentDocument: UIDocument {
-    public static let fileType = "ilattach"
+    public static let fileExtension = "ica"
     private static let _jsonFile = "info.json"
     public var fileToSave: URL?
     

@@ -29,3 +29,7 @@ public class SyncFailedEvent: Event {
         self.error = error
     }
 }
+
+public class NowUsingLocalDocumentsEvent: Event {}
+
+public class NowUsingiCloudDocumentsEvent: Event {}

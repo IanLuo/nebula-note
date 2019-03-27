@@ -20,7 +20,7 @@ public enum AttachmentError: Error {
 @objc public class AttachmentManager: NSObject {
     public override init() {
         // 确保附件文件夹存在
-        File.Folder.document("attachment").createFolderIfNeeded()
+        File.Folder.document("attachments").createFolderIfNeeded()
     }
     
     /// 当附件创建的时候，生成附件的 key
@@ -41,38 +41,37 @@ public enum AttachmentError: Error {
                        failure: @escaping (Error) -> Void) {
         
         let newKey = self.newKey()
+        let fileURL: URL = URL(fileURLWithPath: newKey + "." + AttachmentDocument.fileExtension, relativeTo: URL.attachmentURL)
+
+        let saveAttahmentAction: (URL) -> Void = { attachmentURL in
+            let attachment = Attachment(date: Date(),
+                                        fileName: attachmentURL.lastPathComponent,
+                                        key: newKey,
+                                        description: description,
+                                        kind: kind)
+            
+            let attachmentDocument = AttachmentDocument(fileURL: fileURL)
+            attachmentDocument.attachment = attachment
+            attachmentDocument.fileToSave = attachmentURL
+            attachmentDocument.save(to: fileURL, for: UIDocument.SaveOperation.forCreating) {
+                if $0 {
+                    complete(newKey)
+                } else {
+                    failure(AttachmentError.failToSaveAttachment)
+                }
+            }
+        }
         
-        let fileURL: URL = URL(fileURLWithPath: newKey + "." + AttachmentDocument.fileType, relativeTo: URL.attachmentURL)
         
-        var attachmentURL: URL!
         if let url = URL(string: content) {
-            attachmentURL = URL(fileURLWithPath: url.path)
+            saveAttahmentAction(URL(fileURLWithPath: url.path))
         } else {
-            let tempURL = File.init(File.Folder.temp("attachment"), fileName: "\(UUID().uuidString).txt", createFolderIfNeeded: true).url
-            do {
-                try content.write(to: tempURL, atomically: true, encoding: .utf8)
-                attachmentURL = tempURL
-            } catch {
-                failure(error)
+            let tempFile = File.init(File.Folder.temp("attachments"), fileName: "\(UUID().uuidString).txt")
+            tempFile.write(value: content.data(using: .utf8) ?? Data()) { _ in
+                saveAttahmentAction(tempFile.url)
             }
         }
         
-        let attachment = Attachment(date: Date(),
-                                    fileName: attachmentURL.lastPathComponent,
-                                    key: newKey,
-                                    description: description,
-                                    kind: kind)
-        
-        let attachmentDocument = AttachmentDocument(fileURL: fileURL)
-        attachmentDocument.attachment = attachment
-        attachmentDocument.fileToSave = attachmentURL
-        attachmentDocument.save(to: fileURL, for: UIDocument.SaveOperation.forCreating) {
-            if $0 {
-                complete(newKey)
-            } else {
-                failure(AttachmentError.failToSaveAttachment)
-            }
-        }
     }
     
     /// 通过附件的 key 来删除附件
@@ -123,7 +122,7 @@ public enum AttachmentError: Error {
     }
     
     public static func wrappterURL(key: String) -> URL {
-        return URL.attachmentURL.appendingPathComponent(key).appendingPathExtension(AttachmentDocument.fileType)
+        return URL.attachmentURL.appendingPathComponent(key).appendingPathExtension(AttachmentDocument.fileExtension)
     }
 }
 

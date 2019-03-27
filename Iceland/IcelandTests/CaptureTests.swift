@@ -9,15 +9,13 @@
 import Foundation
 import XCTest
 @testable import Iceland
-import Storage
+import Business
 import RxSwift
 import Storage
 
 public class CaptureTests: XCTestCase {
     public override func tearDown() {
         KeyValueStoreFactory.store(type: .plist(.custom("capture"))).clear {}
-        File.Folder.document("attachment").remove()
-        File.Folder.document("capture").remove()
     }
     
 //    func testInsertCapture() throws {

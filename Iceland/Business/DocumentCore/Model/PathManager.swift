@@ -30,11 +30,27 @@ public enum URLLocation {
 
 extension URL {
     public static var documentBaseURL: URL {
-        return URL.directory(location: URLLocation.document, relativePath: "files")
+        if SyncManager.isicloudOn {
+            return SyncManager.iCloudDocumentRoot!
+        } else {
+            return URL.directory(location: URLLocation.document, relativePath: "files")
+        }
     }
     
     public static var attachmentURL: URL {
-        return URL.directory(location: URLLocation.document, relativePath: "attachment")
+        if SyncManager.isicloudOn {
+            return SyncManager.iCloudAttachmentRoot!
+        } else {
+            return URL.directory(location: URLLocation.document, relativePath: "attachments")
+        }
+    }
+    
+    public static var keyValueStore: URL {
+        if SyncManager.isicloudOn {
+            return SyncManager.iCloudKeyValueStoreRoot!
+        } else {
+            return URL.directory(location: URLLocation.document, relativePath: "keyValueStore")
+        }
     }
     
     public static var imageCacheURL: URL {
@@ -49,16 +65,68 @@ extension URL {
         return URL.directory(location: URLLocation.cache, relativePath: "audio")
     }
     
-    @discardableResult
-    public func createDirectorysIfNeeded() -> URL {
-        var isDIR = ObjCBool(true)
-        let path = self.path
-        if !Foundation.FileManager.default.fileExists(atPath: path, isDirectory: &isDIR) {
-            do { try Foundation.FileManager.default.createDirectory(atPath: path, withIntermediateDirectories: true, attributes: nil) }
-            catch { print("Error when touching dir for path: \(path): error") }
-        }
+    public func writeBlock(accessor: @escaping (Error?) -> Void) {
+        let directory = self.deletingLastPathComponent()
         
-        return self
+        directory.createDirectoryIfNeeded { error in
+            if let error = error {
+                accessor(error)
+            } else {
+                let fileCoordinator = NSFileCoordinator()
+                let intent = NSFileAccessIntent.writingIntent(with: self, options: NSFileCoordinator.WritingOptions.forReplacing)
+                let queue = OperationQueue()
+
+                fileCoordinator.coordinate(with: [intent], queue: queue) { error in
+                    accessor(error)
+                }
+            }
+        }
+    }
+    
+    public func write(data: Data, completion: @escaping (Error?) -> Void) {
+        self.writeBlock { error  in
+            if let error = error {
+                completion(error)
+            } else {
+                do {
+                    try data.write(to: self)
+                    completion(nil)
+                } catch {
+                    completion(error)
+                }
+            }
+        }
+    }
+    
+    public func read(completion: @escaping (Data) -> Void,
+                     failure: ((Error) -> Void)? = nil) {
+        let fileCoordinator = NSFileCoordinator()
+        let intent = NSFileAccessIntent.readingIntent(with: self, options: NSFileCoordinator.ReadingOptions.withoutChanges)
+        let queue = OperationQueue()
+        
+        fileCoordinator.coordinate(with: [intent], queue: queue) { error in
+            if let error = error {
+                failure?(error)
+            } else {
+                do {
+                    let data = try Data(contentsOf: self)
+                    completion(data)
+                } catch {
+                    failure?(error)
+                }
+            }
+        }
+    }
+    
+    public func deleteIfExists(isDirectory: Bool,
+                               completion: @escaping (Error?) -> Void) {
+        var isDirectory = ObjCBool(isDirectory)
+        
+        if FileManager.default.fileExists(atPath: self.path, isDirectory: &isDirectory) {
+            self.delete(completion: completion)
+        } else {
+            completion(nil)
+        }
     }
 }
 
@@ -142,7 +210,7 @@ extension URL {
     }
     
     public var wrapperURL: URL {
-        /// 如果文件是 org, cover, logs 文件，则使用所在的 .iceland 目录
+        /// 如果文件是 org, cover, logs 文件，则使用所在的 .ice 目录
         var url = self
         if url.path.hasSuffix(Document.contentFileExtension)
             || url.path.hasSuffix(Document.coverFileExtension)
@@ -156,6 +224,12 @@ extension URL {
     public var documentRelativePath: String {
         let path = self.path
         let separator = URL.documentBaseURL.path + "/" // 在末尾加上斜线，在替换的时候，相对路径开始则不会有斜线
+        return path.components(separatedBy: separator).last!
+    }
+    
+    public var attachmentRelativePath: String {
+        let path = self.path
+        let separator = URL.attachmentURL.path + "/" // 在末尾加上斜线，在替换的时候，相对路径开始则不会有斜线
         return path.components(separatedBy: separator).last!
     }
     
@@ -236,6 +310,25 @@ extension URL {
                 try fileManager.moveItem(at: oldURL, to: newURL)
                 fileCoordinator.item(at: oldURL, didMoveTo: newURL)
                 completion?(error)
+            } catch {
+                completion?(error)
+            }
+        }
+    }
+    
+    public func createDirectoryIfNeeded(completion: ((Error?) -> Void)?) {
+        var isDir = ObjCBool(true)
+        guard !FileManager.default.fileExists(atPath: self.path, isDirectory: &isDir) else { completion?(nil); return }
+        
+        log.info("no directory exists at: \(self.path), creating one...")
+        let fileCoordinator = NSFileCoordinator()
+        let intent = NSFileAccessIntent.writingIntent(with: URL(fileURLWithPath: path), options: NSFileCoordinator.WritingOptions.forMoving)
+        let queue = OperationQueue()
+        queue.qualityOfService = .background
+        fileCoordinator.coordinate(with: [intent], queue: queue) { error in
+            do {
+                try Foundation.FileManager.default.createDirectory(atPath: self.path, withIntermediateDirectories: true, attributes: nil)
+                completion?(nil)
             } catch {
                 completion?(error)
             }
