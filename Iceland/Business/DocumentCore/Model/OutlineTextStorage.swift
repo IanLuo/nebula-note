@@ -171,10 +171,62 @@ extension OutlineTextStorage {
             .forEach { $0.offset(delta) }
     }
     
+    // 查找最外层层的 heading
+    public var topLevelHeadings: [HeadingToken] {
+        var headings: [HeadingToken] = []
+        
+        for heading in self.headingTokens {
+            if let last = headings.last {
+                if heading.level <= last.level {
+                    headings.append(heading)
+                }
+            } else {
+                headings.append(heading)
+            }
+        }
+        
+        return headings
+    }
+    
     public func heading(contains location: Int) -> HeadingToken? {
         for heading in self.headingTokens.reversed() {
             if location >= heading.range.location {
                 return heading
+            }
+        }
+        
+        return nil
+    }
+    
+    public func subheadings(of heading: HeadingToken) -> [HeadingToken] {
+        var subheadings: [HeadingToken] = []
+        var mark: Bool = false // mark is the current heading is found
+        
+        for h in self.headingTokens {
+            if heading.identifier == h.identifier
+              && !mark {
+                mark = true
+            } else if mark {
+                if h.level > heading.level {
+                    subheadings.append(h)
+                } else {
+                    break
+                }
+            }
+        }
+        
+        return subheadings
+    }
+    
+    public func nextHeading(of heading: HeadingToken) -> HeadingToken? {
+        var mark: Bool = false // mark is the current heading is found
+        
+        for h in self.headingTokens {
+            if heading.identifier == h.identifier
+                && !mark {
+                mark = true
+            } else if mark {
+                return h
             }
         }
         
@@ -458,7 +510,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
             
             if let scheduleRange = $0[OutlineParser.Key.Element.Heading.schedule],
                 let scheduleDateAndTimeRange = $0[OutlineParser.Key.Element.Heading.scheduleDateAndTime] {
-                self.addAttribute(OutlineAttribute.hidden, value: OutlineAttribute.hiddenValueDefault, range: scheduleRange.moveLeft(by: 1))
+                self.addAttribute(OutlineAttribute.hidden, value: OutlineAttribute.hiddenValueDefault, range: scheduleRange.moveLeftBound(by: 1))
                 self.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment,
                                     OutlineAttribute.showAttachment: OUTLINE_ATTRIBUTE_HEADING_SCHEDULE], range: scheduleRange.head(1))
                 self.addAttributes([OutlineAttribute.Heading.schedule: scheduleRange,
@@ -468,7 +520,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
             
             if let dueRange = $0[OutlineParser.Key.Element.Heading.due],
                 let dueDateAndTimeRange = $0[OutlineParser.Key.Element.Heading.dueDateAndTime] {
-                self.addAttribute(OutlineAttribute.hidden, value: OutlineAttribute.hiddenValueDefault, range: dueRange.moveLeft(by: 1))
+                self.addAttribute(OutlineAttribute.hidden, value: OutlineAttribute.hiddenValueDefault, range: dueRange.moveLeftBound(by: 1))
                 self.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment,
                                     OutlineAttribute.showAttachment: OutlineAttribute.Heading.due], range: dueRange.head(1))
                 self.addAttributes([OutlineAttribute.Heading.due: dueRange,

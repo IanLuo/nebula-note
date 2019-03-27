@@ -15,22 +15,22 @@ extension NSRange {
 }
 
 extension NSRange {
-    public func moveLeft(by: Int) -> NSRange {
+    public func moveLeftBound(by: Int) -> NSRange {
         return NSRange(location: self.location + by, length: self.length - by)
     }
     
-    public func moveRight(by: Int) -> NSRange {
+    public func moveRightBound(by: Int) -> NSRange {
         return NSRange(location: self.location, length: self.length + by)
     }
     
     public func withNewUpperBound(_ new: Int) -> NSRange {
         let diff = new - self.upperBound
-        return self.moveRight(by: diff)
+        return self.moveRightBound(by: diff)
     }
     
     public func withNewLowerBound(_ new: Int) -> NSRange {
         let diff = new - self.lowerBound
-        return self.moveLeft(by: diff)
+        return self.moveLeftBound(by: diff)
     }
 }
 

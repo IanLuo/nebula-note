@@ -209,6 +209,8 @@ extension DocumentEditViewController: DocumentEditViewModelDelegate {
         self.textView.selectedRange = NSRange(location: self.viewModel.onLoadingLocation,
                                               length: 0)
         self.textView.scrollRangeToVisible(self.textView.selectedRange)
+        
+        self.viewModel.performAction(EditAction.foldAll)
     }
     
     public func documentStatesChange(state: UIDocument.State) {

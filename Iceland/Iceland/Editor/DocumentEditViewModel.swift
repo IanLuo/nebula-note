@@ -38,11 +38,13 @@ public enum EditAction {
     case decreaseIndent(Int)
     case quoteBlock(NSRange)
     case codeBlock(NSRange)
+    case foldAll
+    case unfoldAll
     
     public var command: DocumentContentCommand {
         switch self {
         case .toggleFoldStatus(let location):
-            return FoldingCommand(location: location)
+            return FoldingAndUnfoldingCommand(location: location)
         case .toggleCheckboxStatus(let range):
             return CheckboxCommand(range: range)
         case let .addAttachment(location, attachmentId, kind):
@@ -83,6 +85,10 @@ public enum EditAction {
             return QuoteBlockCommand(range: range)
         case .codeBlock(let range):
             return CodeBlockCommand(range: range)
+        case .foldAll:
+            return FoldAllCommand()
+        case .unfoldAll:
+            return UnFoldAllCommand()
         }
     }
 }

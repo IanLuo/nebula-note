@@ -74,7 +74,7 @@ public class BlockBeginToken: BlockToken {
     
     public var contentRange: NSRange? {
         if let endToken = self.endToken {
-            return self.range.moveLeft(by: super.range.length).moveRight(by: -endToken.range.length)
+            return self.range.moveLeftBound(by: super.range.length).moveRightBound(by: -endToken.range.length)
         } else {
             return nil
         }
@@ -146,7 +146,7 @@ public class HeadingToken: Token {
     }
     
     public var headingTextRange: NSRange {
-        var headingContentRange: NSRange = self.range.offset(-self.range.location).moveLeft(by: self.level + 1)
+        var headingContentRange: NSRange = self.range.offset(-self.range.location).moveLeftBound(by: self.level + 1)
         
         if let schedule = self.schedule {
             let dateRange = schedule.offset(-self.range.location)
@@ -180,11 +180,16 @@ public class HeadingToken: Token {
     }
     
     public var contentRange: NSRange {
-        return self.paragraphRange.moveLeft(by: self.range.length)
+        return self.paragraphRange.moveLeftBound(by: self.range.length)
     }
     
     public var paragraphRange: NSRange {
         return self.outlineTextStorage?.parangraphsRange(at: self.range.location) ?? self.range
+    }
+    
+    public var subheadingsRange: NSRange {
+        let lastChild = self.outlineTextStorage?.subheadings(of: self).last ?? self
+        return NSRange(location: self.range.upperBound, length: lastChild.paragraphRange.upperBound - self.range.upperBound)
     }
     
     public convenience init(data: [String: NSRange]) {
