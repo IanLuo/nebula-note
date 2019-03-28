@@ -109,7 +109,10 @@ public class FoldingAndUnfoldingCommand: DocumentContentCommand {
     }
     
     fileprivate func _fold(heading: HeadingToken, textStorage: OutlineTextStorage) {
-        self._markFold(range: heading.subheadingsRange.moveRightBound(by: -1), switchRange: heading.levelRange, textStorage: textStorage)
+        self._markFold(range: heading.contentRange.moveRightBound(by: -1), switchRange: heading.levelRange, textStorage: textStorage)
+        for child in textStorage.subheadings(of: heading) {
+            self._fold(heading: child, textStorage: textStorage)
+        }
     }
     
     fileprivate func _isFolded(heading: HeadingToken, textStorage: OutlineTextStorage) -> Bool {
