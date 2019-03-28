@@ -14,11 +14,14 @@ public struct OutlineAttribute {
     public static let hiddenValueWithAttachment: NSNumber = NSNumber(value: OUTLINE_ATTRIBUTE_HIDDEN_VALUE_WITH_ATTACHMENT)
     public static let hiddenValueFolded: NSNumber = NSNumber(value: OUTLINE_ATTRIBUTE_HIDDEN_VALUE_FOLDED)
     
+    public static let tempHidden: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_TEMPORARY_HIDDEN)
+    
     public static let button: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_BUTTON)
     
     public static let separator: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_SEPARATOR)
     
-    public static let showAttachment: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_SHOW_ATTACHMENT)    
+    public static let showAttachment: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_SHOW_ATTACHMENT)
+    public static let tempShowAttachment: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_TEMPAROTY_SHOW_ATTACHMENT)
     
     public struct Attachment {
         public static let attachment: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_ATTACHMENT)

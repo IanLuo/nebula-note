@@ -114,16 +114,16 @@ extension OutlineTextStorage: ContentUpdatingProtocol {
 
         guard self.currentParseRange!.length > 0 else { return }
         
-//        if let parsingRange = self.currentParseRange {
-//            // 清空 attributes (折叠的状态除外) // FIXME: after editing, folded attributes and ranges are lost, including heading ranges
-//            var effectiveRange: NSRange = NSRange(location:0, length: 0)
-//            let value = self.attribute(OutlineAttribute.hidden, at: parsingRange.location, longestEffectiveRange: &effectiveRange, in: parsingRange)
-//            if let value = value as? NSNumber, value.intValue == OutlineAttribute.hiddenValueFolded.intValue {
-//                self.setAttributes([:], range: parsingRange)
-//                self.addAttribute(OutlineAttribute.Heading.folded, value: OutlineAttribute.hiddenValueFolded, range: effectiveRange)
-//            }
-//            self.addAttributes([NSAttributedString.Key.backgroundColor: UIColor.red.withAlphaComponent(0.5)], range: self.currentParseRange!)
-//        }
+        if let parsingRange = self.currentParseRange {
+            // 清空 attributes (折叠的状态除外)
+            var effectiveRange: NSRange = NSRange(location:0, length: 0)
+            let value = self.attribute(OutlineAttribute.tempHidden, at: parsingRange.location, longestEffectiveRange: &effectiveRange, in: parsingRange)
+            if let value = value as? NSNumber, value.intValue == OutlineAttribute.hiddenValueFolded.intValue {
+                self.setAttributes([:], range: parsingRange)
+                self.addAttribute(OutlineAttribute.Heading.folded, value: OutlineAttribute.hiddenValueFolded, range: effectiveRange)
+            }
+            self.addAttributes([NSAttributedString.Key.backgroundColor: UIColor.red.withAlphaComponent(0.5)], range: self.currentParseRange!)
+        }
 
         // 设置文字默认样式
         self.addAttributes([NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.interactive,
@@ -494,11 +494,13 @@ extension OutlineTextStorage: OutlineParserDelegate {
         headingDataRanges.forEach {
             guard let headingRange = $0[OutlineParser.Key.Node.heading] else { return }
             
+            
             let token = HeadingToken(data: $0)
             token.outlineTextStorage = self
 
             self._tempParsingTokenResult.append(token)
             
+            self.addAttribute(NSAttributedString.Key.font, value: InterfaceTheme.Font.title, range: headingRange)
             self.addAttribute(OutlineAttribute.Heading.content, value: headingRange, range: headingRange)
             
             if let levelRange = $0[OutlineParser.Key.Element.Heading.level] {
@@ -535,7 +537,6 @@ extension OutlineTextStorage: OutlineParserDelegate {
             
             if let planningRange = $0[OutlineParser.Key.Element.Heading.planning] {
                 self.addAttribute(OutlineAttribute.Heading.planning, value: planningRange, range: planningRange)
-                self.addAttribute(NSAttributedString.Key.font, value: InterfaceTheme.Font.title, range: planningRange)
                 self.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.red, range: planningRange)
             }
         }
@@ -744,7 +745,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
     private func _setParagraphIndent() {
         for heading in self.headingTokens {
             let paragraphStyle = NSMutableParagraphStyle()
-            paragraphStyle.firstLineHeadIndent = CGFloat(heading.level * 8) // FIXME: 设置 indent 的宽度
+            paragraphStyle.firstLineHeadIndent = CGFloat(heading.level * 12) // FIXME: 设置 indent 的宽度
             paragraphStyle.headIndent = paragraphStyle.firstLineHeadIndent
             
             (self.string as NSString)
@@ -752,7 +753,15 @@ extension OutlineTextStorage: OutlineParserDelegate {
                     in: heading.paragraphRange,
                     options: .byLines
                 ) { (_, range, inclosingRange, stop) in
-                    self.addAttributes([NSAttributedString.Key.paragraphStyle: paragraphStyle], range: inclosingRange)
+                    // 第一行缩进比正文少一个 level
+                    if range.location == heading.range.location {
+                        let firstLine = NSMutableParagraphStyle()
+                        firstLine.firstLineHeadIndent = CGFloat((heading.level - 1) * 12) // FIXME: 设置 indent 的宽度
+                        firstLine.headIndent = paragraphStyle.firstLineHeadIndent
+                        self.addAttributes([NSAttributedString.Key.paragraphStyle: firstLine], range: inclosingRange)
+                    } else {
+                        self.addAttributes([NSAttributedString.Key.paragraphStyle: paragraphStyle], range: inclosingRange)
+                    }
             }
         }
     }

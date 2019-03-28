@@ -118,8 +118,17 @@ static NSMutableDictionary *attachmentMap;
 
     NSTextAttachment *attachment;
     BOOL isUserAdded = NO;
-    NSString *attachmentKey = [attributes objectForKey: OUTLINE_ATTRIBUTE_SHOW_ATTACHMENT];
-    if (attachmentKey && attachmentKey != @"") {
+    NSString *attachmentAttributeKey = OUTLINE_ATTRIBUTE_SHOW_ATTACHMENT;
+    
+    // 检查是否有 temp attachment 如果没有，再检查 attachment
+    NSString *attachmentKey = [attributes objectForKey: OUTLINE_ATTRIBUTE_TEMPAROTY_SHOW_ATTACHMENT];
+    if (!attachmentKey || [attachmentKey isEqualToString: @""]) {
+        attachmentKey = [attributes objectForKey: OUTLINE_ATTRIBUTE_SHOW_ATTACHMENT];
+    } else {
+        attachmentAttributeKey = OUTLINE_ATTRIBUTE_TEMPAROTY_SHOW_ATTACHMENT;
+    }
+    
+    if (attachmentKey && ![attachmentKey isEqualToString: @""]) {
         if ([attachmentKey isEqualToString: @"user_added"]) {
             NSLog(@"found user added attachment at location: %d", (int)location);
             isUserAdded = YES;
@@ -129,7 +138,7 @@ static NSMutableDictionary *attachmentMap;
     }
 
     if (attachment || isUserAdded) {
-        [self.backingStore attribute: OUTLINE_ATTRIBUTE_SHOW_ATTACHMENT atIndex:location longestEffectiveRange:&effectiveRange inRange:NSMakeRange(0, [self.backingStore length])];
+        [self.backingStore attribute: attachmentAttributeKey atIndex:location longestEffectiveRange:&effectiveRange inRange:NSMakeRange(0, [self.backingStore length])];
         if (location == effectiveRange.location) {
             if (!isUserAdded) { // attachment already added
                 NSMutableDictionary *dict = [attributes mutableCopyWithZone:NULL];
@@ -166,7 +175,11 @@ static NSMutableDictionary *attachmentMap;
     NSGlyphProperty * properties = NULL;
     NSRange effectiveRange;
 
-    NSNumber *hiddenType = [self attribute: OUTLINE_ATTRIBUTE_HIDDEN atIndex:charIndexes[0] longestEffectiveRange:&effectiveRange inRange:NSMakeRange(0, [self.backingStore length])];
+    NSRange range = NSMakeRange(0, [self.backingStore length]);
+    NSNumber *hiddenType = [self attribute: OUTLINE_ATTRIBUTE_TEMPORARY_HIDDEN atIndex:charIndexes[0] longestEffectiveRange:&effectiveRange inRange:range];
+    if (hiddenType == nil || hiddenType.intValue == 0) {
+        hiddenType = [self attribute: OUTLINE_ATTRIBUTE_HIDDEN atIndex:charIndexes[0] longestEffectiveRange:&effectiveRange inRange:range];
+    }
     
     if (hiddenType && hiddenType.intValue != 0) {
         NSInteger propertiesSize = sizeof(NSGlyphProperty) * glyphRange.length;
@@ -208,7 +221,11 @@ static NSMutableDictionary *attachmentMap;
 }
 
 - (NSControlCharacterAction)layoutManager:(NSLayoutManager *)layoutManager shouldUseAction:(NSControlCharacterAction)action forControlCharacterAtIndex:(NSUInteger)charIndex {
-    if ([self attribute:OUTLINE_ATTRIBUTE_SHOW_ATTACHMENT atIndex:charIndex effectiveRange:nil] && ![[self attribute:OUTLINE_ATTRIBUTE_SHOW_ATTACHMENT atIndex:charIndex effectiveRange:nil] isEqual: @""]) {
+    NSString *attachmentKey = [self attribute:OUTLINE_ATTRIBUTE_TEMPAROTY_SHOW_ATTACHMENT atIndex:charIndex effectiveRange:nil];
+    if (!attachmentKey || [attachmentKey isEqualToString: @""]) {
+        attachmentKey = [self attribute:OUTLINE_ATTRIBUTE_SHOW_ATTACHMENT atIndex:charIndex effectiveRange:nil];
+    }
+    if (attachmentKey && ![attachmentKey isEqualToString: @""]) {
         return NSControlCharacterActionZeroAdvancement;
     }
     
