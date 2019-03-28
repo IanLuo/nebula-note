@@ -40,13 +40,25 @@ public struct MoveCursorCommand: TextViewCommandProtocol {
     public func toggle(textView: UITextView) {
         switch direction {
         case .up:
-            break // TODO
+            if let range = textView.selectedTextRange,
+                let s = textView.position(from: range.start, in: UITextLayoutDirection.up, offset: 1) {
+                textView.selectedTextRange = textView.textRange(from: s, to: s)
+            }
         case .down:
-            break // TODO
+            if let range = textView.selectedTextRange,
+                let s = textView.position(from: range.start, in: UITextLayoutDirection.down, offset: 1) {
+                textView.selectedTextRange = textView.textRange(from: s, to: s)
+            }
         case .left:
-            textView.selectedRange = textView.selectedRange.offset(-1)
+            if let range = textView.selectedTextRange,
+                let position = textView.position(from: range.start, offset: -1) {
+                textView.selectedTextRange = textView.textRange(from: position, to: position)
+            }
         case .right:
-            textView.selectedRange = textView.selectedRange.offset(1)
+            if let range = textView.selectedTextRange,
+                let position = textView.position(from: range.start, offset: 1) {
+                textView.selectedTextRange = textView.textRange(from: position, to: position)
+            }
         }
     }
     
