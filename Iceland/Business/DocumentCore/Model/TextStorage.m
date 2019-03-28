@@ -41,31 +41,31 @@ static NSMutableDictionary *attachmentMap;
         
         linkAttachment = [[NSTextAttachment alloc] init];;
         linkAttachment.image = [UIImage imageNamed: @"document" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil];
-        linkAttachment.bounds = CGRectMake(0, 0, 20, 20);
+        linkAttachment.bounds = CGRectMake(0, 0, 10, 10);
         
         foldedAttachment = [[NSTextAttachment alloc] init];;
         foldedAttachment.image = [UIImage imageNamed: @"add" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil];
-        foldedAttachment.bounds = CGRectMake(0, 0, 20, 20);
+        foldedAttachment.bounds = CGRectMake(0, 0, 10, 10);
         
         unfoldedAttachment = [[NSTextAttachment alloc] init];
         unfoldedAttachment.image = [UIImage imageNamed: @"minus" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil];
-        unfoldedAttachment.bounds = CGRectMake(0, 0, 18, 2);
+        unfoldedAttachment.bounds = CGRectMake(0, 0, 10, 1);
         
         scheduleAttachment = [[NSTextAttachment alloc] init];
         scheduleAttachment.image = [UIImage imageNamed: @"scheduled" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil];
-        scheduleAttachment.bounds = CGRectMake(0, 0, 20, 20);
+        scheduleAttachment.bounds = CGRectMake(0, 0, 10, 10);
         
         dueAttachment = [[NSTextAttachment alloc] init];
         dueAttachment.image = [UIImage imageNamed: @"due" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil];
-        dueAttachment.bounds = CGRectMake(0, 0, 20, 20);
+        dueAttachment.bounds = CGRectMake(0, 0, 10, 10);
         
         tagAttachment = [[NSTextAttachment alloc] init];
         tagAttachment.image = [UIImage imageNamed: @"tag" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil];
-        tagAttachment.bounds = CGRectMake(0, 0, 15, 15);
+        tagAttachment.bounds = CGRectMake(0, 0, 10, 10);
         
         unavailableAttachment = [[NSTextAttachment alloc] init];
         unavailableAttachment.image = [UIImage imageNamed: @"cross" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil];
-        unavailableAttachment.bounds = CGRectMake(0, 0, 20, 20);
+        unavailableAttachment.bounds = CGRectMake(0, 0, 10, 10);
         
         attachmentMap = [@{
                           OUTLINE_ATTRIBUTE_HEADING_FOLDED: foldingAttachment,
@@ -183,7 +183,7 @@ static NSMutableDictionary *attachmentMap;
     
     if (hiddenType && hiddenType.intValue != 0) {
         NSInteger propertiesSize = sizeof(NSGlyphProperty) * glyphRange.length;
-        NSGlyphProperty aProperty = NSGlyphPropertyNull;
+        NSGlyphProperty aProperty = NSGlyphPropertyControlCharacter;
         properties = malloc(propertiesSize);
         memset_pattern4(properties, &aProperty, propertiesSize);
         

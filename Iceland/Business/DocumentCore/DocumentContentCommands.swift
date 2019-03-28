@@ -95,21 +95,21 @@ public class FoldingAndUnfoldingCommand: DocumentContentCommand {
     }
     
     fileprivate func _unFoldHeadingAndChildren(heading: HeadingToken, textStorage: OutlineTextStorage) {
-        self._markUnfold(range: heading.contentRange, switchRange: heading.levelRange, textStorage: textStorage)
+        self._markUnfold(range: heading.contentRange.moveRightBound(by: -1), switchRange: heading.levelRange, textStorage: textStorage)
         for child in textStorage.subheadings(of: heading) {
-            self._markUnfold(range: child.contentRange, switchRange: child.levelRange, textStorage: textStorage)
+            self._markUnfold(range: child.contentRange.moveRightBound(by: -1), switchRange: child.levelRange, textStorage: textStorage)
         }
     }
     
     fileprivate func _unFoldHeadingButFoldChildren(heading: HeadingToken, textStorage: OutlineTextStorage) {
-        self._markUnfold(range: heading.subheadingsRange, switchRange: heading.levelRange, textStorage: textStorage)
+        self._markUnfold(range: heading.subheadingsRange.moveRightBound(by: -1), switchRange: heading.levelRange, textStorage: textStorage)
         for child in textStorage.subheadings(of: heading) {
-            self._markFold(range: child.contentRange, switchRange: child.levelRange, textStorage: textStorage)
+            self._markFold(range: child.contentRange.moveRightBound(by: -1), switchRange: child.levelRange, textStorage: textStorage)
         }
     }
     
     fileprivate func _fold(heading: HeadingToken, textStorage: OutlineTextStorage) {
-        self._markFold(range: heading.subheadingsRange, switchRange: heading.levelRange, textStorage: textStorage)
+        self._markFold(range: heading.subheadingsRange.moveRightBound(by: -1), switchRange: heading.levelRange, textStorage: textStorage)
     }
     
     fileprivate func _isFolded(heading: HeadingToken, textStorage: OutlineTextStorage) -> Bool {
@@ -118,7 +118,7 @@ public class FoldingAndUnfoldingCommand: DocumentContentCommand {
     
     public func toggle(textStorage: OutlineTextStorage) -> Bool {
         if let heading = textStorage.heading(contains: location) {
-
+            
             log.info("fold range: \(heading.contentRange)")
             
             guard heading.contentRange.length > 0 else { return false }

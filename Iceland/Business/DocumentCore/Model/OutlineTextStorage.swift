@@ -122,7 +122,7 @@ extension OutlineTextStorage: ContentUpdatingProtocol {
                 self.setAttributes([:], range: parsingRange)
                 self.addAttribute(OutlineAttribute.Heading.folded, value: OutlineAttribute.hiddenValueFolded, range: effectiveRange)
             }
-            self.addAttributes([NSAttributedString.Key.backgroundColor: UIColor.red.withAlphaComponent(0.5)], range: self.currentParseRange!)
+            self.addAttributes([NSAttributedString.Key.backgroundColor: UIColor.gray.withAlphaComponent(0.5)], range: self.currentParseRange!)
         }
 
         // 设置文字默认样式
@@ -247,9 +247,9 @@ extension OutlineTextStorage {
                 range.location = heading.range.location
                 let reversedIndex = reversedIndex(index)
                 if reversedIndex + 1 < self.headingTokens.count {
-                    range.length = self.headingTokens[reversedIndex + 1].range.location - heading.range.location - 1
+                    range.length = self.headingTokens[reversedIndex + 1].range.location - heading.range.location
                 } else {
-                    range.length = self.string.count - heading.range.location - 1
+                    range.length = self.string.count - heading.range.location
                 }
                 
                 break
@@ -745,7 +745,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
     private func _setParagraphIndent() {
         for heading in self.headingTokens {
             let paragraphStyle = NSMutableParagraphStyle()
-            paragraphStyle.firstLineHeadIndent = CGFloat(heading.level * 12) // FIXME: 设置 indent 的宽度
+            paragraphStyle.firstLineHeadIndent = CGFloat(heading.level * 10) // FIXME: 设置 indent 的宽度
             paragraphStyle.headIndent = paragraphStyle.firstLineHeadIndent
             
             (self.string as NSString)
@@ -756,7 +756,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
                     // 第一行缩进比正文少一个 level
                     if range.location == heading.range.location {
                         let firstLine = NSMutableParagraphStyle()
-                        firstLine.firstLineHeadIndent = CGFloat((heading.level - 1) * 12) // FIXME: 设置 indent 的宽度
+                        firstLine.firstLineHeadIndent = CGFloat((heading.level - 1) * 10) // FIXME: 设置 indent 的宽度
                         firstLine.headIndent = paragraphStyle.firstLineHeadIndent
                         self.addAttributes([NSAttributedString.Key.paragraphStyle: firstLine], range: inclosingRange)
                     } else {
