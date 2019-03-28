@@ -75,10 +75,12 @@ public class FoldingAndUnfoldingCommand: DocumentContentCommand {
     }
     
     fileprivate func _markUnfold(range: NSRange, switchRange: NSRange, textStorage: OutlineTextStorage) {
-        textStorage.removeAttribute(OutlineAttribute.hidden, range: range)
-        textStorage.removeAttribute(OutlineAttribute.showAttachment,range: range)
+        textStorage.addAttributes([OutlineAttribute.hidden: 0,
+                                   OutlineAttribute.showAttachment: ""],
+                                  range: range)
         
         textStorage.addAttribute(OutlineAttribute.showAttachment, value: OutlineAttribute.Heading.foldingUnfolded, range: switchRange)
+        textStorage.addAttribute(OutlineAttribute.hidden, value: OutlineAttribute.hiddenValueWithAttachment, range: switchRange)
     }
     
     fileprivate func _markFold(range: NSRange, switchRange: NSRange, textStorage: OutlineTextStorage) {
@@ -87,6 +89,7 @@ public class FoldingAndUnfoldingCommand: DocumentContentCommand {
                                   range: range)
         
         textStorage.addAttribute(OutlineAttribute.showAttachment, value: OutlineAttribute.Heading.foldingFolded, range: switchRange)
+        textStorage.addAttribute(OutlineAttribute.hidden, value: OutlineAttribute.hiddenValueWithAttachment, range: switchRange)
     }
     
     fileprivate func _unFoldHeadingAndChildren(heading: HeadingToken, textStorage: OutlineTextStorage) {
@@ -95,7 +98,7 @@ public class FoldingAndUnfoldingCommand: DocumentContentCommand {
     
     fileprivate func _unFoldHeadingButFoldChildren(heading: HeadingToken, textStorage: OutlineTextStorage) {
         self._markUnfold(range: heading.subheadingsRange, switchRange: heading.levelRange, textStorage: textStorage)
-        
+        textStorage.layoutManagers[0].invalidateLayout(forCharacterRange: heading.contentRange, actualCharacterRange: nil)
         for child in textStorage.subheadings(of: heading) {
             self._markFold(range: child.contentRange, switchRange: child.levelRange, textStorage: textStorage)
         }
@@ -106,7 +109,7 @@ public class FoldingAndUnfoldingCommand: DocumentContentCommand {
     }
     
     fileprivate func _isFolded(heading: HeadingToken, textStorage: OutlineTextStorage) -> Bool {
-        return textStorage.attribute(OutlineAttribute.hidden, at: heading.contentRange.location, effectiveRange: nil) != nil
+        return textStorage.attribute(OutlineAttribute.hidden, at: heading.contentRange.location, effectiveRange: nil) as? Int != 0
     }
     
     public func toggle(textStorage: OutlineTextStorage) -> Bool {
@@ -119,7 +122,15 @@ public class FoldingAndUnfoldingCommand: DocumentContentCommand {
             if _isFolded(heading: heading, textStorage: textStorage) {
                 self._unFoldHeadingButFoldChildren(heading: heading, textStorage: textStorage)
             } else {
-                self._fold(heading: heading, textStorage: textStorage)
+                if let firstChild = textStorage.subheadings(of: heading).first {
+                    if self._isFolded(heading: firstChild, textStorage: textStorage) {
+                        self._unFoldHeadingAndChildren(heading: heading, textStorage: textStorage)
+                    } else {
+                        self._fold(heading: heading, textStorage: textStorage)
+                    }
+                } else {
+                    self._fold(heading: heading, textStorage: textStorage)
+                }
             }
         }
         

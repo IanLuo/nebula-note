@@ -119,7 +119,7 @@ static NSMutableDictionary *attachmentMap;
     NSTextAttachment *attachment;
     BOOL isUserAdded = NO;
     NSString *attachmentKey = [attributes objectForKey: OUTLINE_ATTRIBUTE_SHOW_ATTACHMENT];
-    if (attachmentKey) {
+    if (attachmentKey && attachmentKey != @"") {
         if ([attachmentKey isEqualToString: @"user_added"]) {
             NSLog(@"found user added attachment at location: %d", (int)location);
             isUserAdded = YES;
@@ -208,7 +208,7 @@ static NSMutableDictionary *attachmentMap;
 }
 
 - (NSControlCharacterAction)layoutManager:(NSLayoutManager *)layoutManager shouldUseAction:(NSControlCharacterAction)action forControlCharacterAtIndex:(NSUInteger)charIndex {
-    if ([self attribute:OUTLINE_ATTRIBUTE_SHOW_ATTACHMENT atIndex:charIndex effectiveRange:nil]) {
+    if ([self attribute:OUTLINE_ATTRIBUTE_SHOW_ATTACHMENT atIndex:charIndex effectiveRange:nil] && ![[self attribute:OUTLINE_ATTRIBUTE_SHOW_ATTACHMENT atIndex:charIndex effectiveRange:nil] isEqual: @""]) {
         return NSControlCharacterActionZeroAdvancement;
     }
     

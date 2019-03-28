@@ -114,16 +114,16 @@ extension OutlineTextStorage: ContentUpdatingProtocol {
 
         guard self.currentParseRange!.length > 0 else { return }
         
-        if let parsingRange = self.currentParseRange {
-            // 清空 attributes (折叠的状态除外) // FIXME: after editing, folded attributes and ranges are lost, including heading ranges
-            var effectiveRange: NSRange = NSRange(location:0, length: 0)
-            let value = self.attribute(OutlineAttribute.hidden, at: parsingRange.location, longestEffectiveRange: &effectiveRange, in: parsingRange)
-            if let value = value as? NSNumber, value.intValue == OutlineAttribute.hiddenValueFolded.intValue {
-                self.setAttributes([:], range: parsingRange)
-                self.addAttribute(OutlineAttribute.Heading.folded, value: OutlineAttribute.hiddenValueFolded, range: effectiveRange)
-            }
-            self.addAttributes([NSAttributedString.Key.backgroundColor: UIColor.red.withAlphaComponent(0.5)], range: self.currentParseRange!)
-        }
+//        if let parsingRange = self.currentParseRange {
+//            // 清空 attributes (折叠的状态除外) // FIXME: after editing, folded attributes and ranges are lost, including heading ranges
+//            var effectiveRange: NSRange = NSRange(location:0, length: 0)
+//            let value = self.attribute(OutlineAttribute.hidden, at: parsingRange.location, longestEffectiveRange: &effectiveRange, in: parsingRange)
+//            if let value = value as? NSNumber, value.intValue == OutlineAttribute.hiddenValueFolded.intValue {
+//                self.setAttributes([:], range: parsingRange)
+//                self.addAttribute(OutlineAttribute.Heading.folded, value: OutlineAttribute.hiddenValueFolded, range: effectiveRange)
+//            }
+//            self.addAttributes([NSAttributedString.Key.backgroundColor: UIColor.red.withAlphaComponent(0.5)], range: self.currentParseRange!)
+//        }
 
         // 设置文字默认样式
         self.addAttributes([NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.interactive,
@@ -503,9 +503,6 @@ extension OutlineTextStorage: OutlineParserDelegate {
             
             if let levelRange = $0[OutlineParser.Key.Element.Heading.level] {
                 self.addAttribute(OutlineAttribute.Heading.level, value: $0, range: levelRange)
-                self.addAttribute(OutlineAttribute.hidden, value: OutlineAttribute.hiddenValueWithAttachment, range: levelRange)
-                // 默认状态为 unfolded
-                self.addAttribute(OutlineAttribute.showAttachment, value: OutlineAttribute.Heading.foldingUnfolded, range: levelRange)
             }
             
             if let scheduleRange = $0[OutlineParser.Key.Element.Heading.schedule],
@@ -746,23 +743,17 @@ extension OutlineTextStorage: OutlineParserDelegate {
     
     private func _setParagraphIndent() {
         for heading in self.headingTokens {
-//            let paragraphStyle = NSMutableParagraphStyle()
-//            paragraphStyle.firstLineHeadIndent = CGFloat(heading.level * 8) // FIXME: 设置 indent 的宽度
-//            paragraphStyle.headIndent = paragraphStyle.firstLineHeadIndent
+            let paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.firstLineHeadIndent = CGFloat(heading.level * 8) // FIXME: 设置 indent 的宽度
+            paragraphStyle.headIndent = paragraphStyle.firstLineHeadIndent
             
-//            (self.string as NSString)
-//                .enumerateSubstrings(
-//                    in: heading.paragraphRange,
-//                    options: .byLines
-//                ) { (_, range, inclosingRange, stop) in
-//                    if range.location == heading.range.location {
-//                        let headParagraphStyle = NSMutableParagraphStyle()
-//                        headParagraphStyle.headIndent = paragraphStyle.firstLineHeadIndent
-//                        self.addAttributes([NSAttributedString.Key.paragraphStyle: headParagraphStyle], range: inclosingRange)
-//                    } else {
-//                        self.addAttributes([NSAttributedString.Key.paragraphStyle: paragraphStyle], range: inclosingRange)
-//                    }
-//            }
+            (self.string as NSString)
+                .enumerateSubstrings(
+                    in: heading.paragraphRange,
+                    options: .byLines
+                ) { (_, range, inclosingRange, stop) in
+                    self.addAttributes([NSAttributedString.Key.paragraphStyle: paragraphStyle], range: inclosingRange)
+            }
         }
     }
     
