@@ -17,6 +17,7 @@ public struct OutlineAttribute {
     public static let tempHidden: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_TEMPORARY_HIDDEN)
     
     public static let button: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_BUTTON)
+    public static let buttonBorder: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_BUTTON_BORDER)
     
     public static let separator: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_SEPARATOR)
     

@@ -204,22 +204,6 @@ static NSMutableDictionary *attachmentMap;
     return 0;
 }
 
-- (NSGlyphProperty *)replaceGlyphPropertiesAtCharacterLocation:(NSUInteger)location glyphRange:(NSRange)glyphRange hasAttachment:(BOOL)hasAttachment for:(NSString*)key {
-    NSRange effectiveRange;
-    NSGlyphProperty * properties = NULL;
-    if ([self attribute: key atIndex: location longestEffectiveRange: &effectiveRange inRange: NSMakeRange(0, [self.backingStore length])]) {
-        NSInteger propertiesSize = sizeof(NSGlyphProperty) * glyphRange.length;
-        NSGlyphProperty aProperty = NSGlyphPropertyNull;
-        properties = malloc(propertiesSize);
-        memset_pattern4(properties, &aProperty, propertiesSize);
-        
-        if (location == effectiveRange.location && hasAttachment) {
-            properties[0] = NSGlyphPropertyControlCharacter;
-        }
-    }
-    return properties;
-}
-
 - (NSControlCharacterAction)layoutManager:(NSLayoutManager *)layoutManager shouldUseAction:(NSControlCharacterAction)action forControlCharacterAtIndex:(NSUInteger)charIndex {
     NSString *attachmentKey = [self attribute:OUTLINE_ATTRIBUTE_TEMPAROTY_SHOW_ATTACHMENT atIndex:charIndex effectiveRange:nil];
     if (!attachmentKey || [attachmentKey isEqualToString: @""]) {
@@ -230,6 +214,22 @@ static NSMutableDictionary *attachmentMap;
     }
     
     return action;
+}
+
+- (BOOL)layoutManager:(NSLayoutManager *)layoutManager shouldBreakLineByWordBeforeCharacterAtIndex:(NSUInteger)charIndex {
+    if ([self attribute:OUTLINE_ATTRIBUTE_BUTTON atIndex:charIndex effectiveRange:nil]) {
+        return NO;
+    } else {
+        return YES;
+    }
+}
+
+- (CGRect)layoutManager:(NSLayoutManager *)layoutManager boundingBoxForControlGlyphAtIndex:(NSUInteger)glyphIndex forTextContainer:(NSTextContainer *)textContainer proposedLineFragment:(CGRect)proposedRect glyphPosition:(CGPoint)glyphPosition characterIndex:(NSUInteger)charIndex {
+    if ([self attribute:OUTLINE_ATTRIBUTE_BUTTON_BORDER atIndex:charIndex effectiveRange:nil]) {
+        return proposedRect;
+    }
+    
+    return proposedRect;
 }
 
 @end

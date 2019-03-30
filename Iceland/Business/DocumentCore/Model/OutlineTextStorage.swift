@@ -63,7 +63,7 @@ public class OutlineTextStorage: TextStorage {
         {
             didSet {
                 if let _ = oldValue {
-                    self.removeAttribute(NSAttributedString.Key.backgroundColor, range: NSRange(location: 0, length: self.string.count))
+                    self.addAttribute(NSAttributedString.Key.backgroundColor, value: InterfaceTheme.Color.background1, range: NSRange(location: 0, length: self.string.count))
                 }
             }
         }
@@ -118,9 +118,11 @@ extension OutlineTextStorage: ContentUpdatingProtocol {
             // 清空 attributes (折叠的状态除外)
             var effectiveRange: NSRange = NSRange(location:0, length: 0)
             let value = self.attribute(OutlineAttribute.tempHidden, at: parsingRange.location, longestEffectiveRange: &effectiveRange, in: parsingRange)
+            self.setAttributes([:], range: parsingRange)
             if let value = value as? NSNumber, value.intValue == OutlineAttribute.hiddenValueFolded.intValue {
-                self.setAttributes([:], range: parsingRange)
-                self.addAttribute(OutlineAttribute.Heading.folded, value: OutlineAttribute.hiddenValueFolded, range: effectiveRange)
+                self.addAttributes([OutlineAttribute.tempHidden: OutlineAttribute.hiddenValueFolded,
+                                           OutlineAttribute.tempShowAttachment: OutlineAttribute.Heading.folded],
+                                          range: effectiveRange)
             }
             self.addAttributes([NSAttributedString.Key.backgroundColor: UIColor.gray.withAlphaComponent(0.5)], range: self.currentParseRange!)
         }
@@ -316,20 +318,21 @@ extension OutlineTextStorage: OutlineParserDelegate {
     
     public func didFoundLink(text: String, urlRanges: [[String : NSRange]]) {
         
-        urlRanges.forEach { urlRangeData in
+        urlRanges.forEach { linkRangeData in
             
             self._ignoreTextMarkRanges.append(contentsOf: urlRanges.map { $0[OutlineParser.Key.Element.link]! })
             
-            if let range = urlRangeData[OutlineParser.Key.Element.link] {
-                self._tempParsingTokenResult.append(Token(range: range, name: OutlineParser.Key.Element.link, data: urlRangeData))
+            if let range = linkRangeData[OutlineParser.Key.Element.link] {
+                self._tempParsingTokenResult.append(Token(range: range, name: OutlineParser.Key.Element.link, data: linkRangeData))
                 
                 self.addAttribute(OutlineAttribute.hidden, value: OutlineAttribute.hiddenValueDefault, range: range)
             }
-            urlRangeData.forEach {
+            
+            linkRangeData.forEach {
                 // range 为整个链接时，添加自定义属性，值为解析的链接结构
                 if $0.key == OutlineParser.Key.Element.Link.title {
-                    self.addAttributes([NSAttributedString.Key.link: 1], range: $0.value)
-                    self.removeAttribute(OutlineAttribute.hidden, range: $0.value)
+                    self.addAttributes([NSAttributedString.Key.link: 1,
+                                        OutlineAttribute.hidden: 0], range: $0.value)
                 } else if $0.key == OutlineParser.Key.Element.Link.url {
                     self.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment,
                                         OutlineAttribute.showAttachment: OutlineAttribute.Link.url],
@@ -490,10 +493,8 @@ extension OutlineTextStorage: OutlineParserDelegate {
     }
     
     public func didFoundHeadings(text: String, headingDataRanges: [[String : NSRange]]) {
-        
         headingDataRanges.forEach {
             guard let headingRange = $0[OutlineParser.Key.Node.heading] else { return }
-            
             
             let token = HeadingToken(data: $0)
             token.outlineTextStorage = self
@@ -509,35 +510,56 @@ extension OutlineTextStorage: OutlineParserDelegate {
             
             if let scheduleRange = $0[OutlineParser.Key.Element.Heading.schedule],
                 let scheduleDateAndTimeRange = $0[OutlineParser.Key.Element.Heading.scheduleDateAndTime] {
+                
                 self.addAttribute(OutlineAttribute.hidden, value: OutlineAttribute.hiddenValueDefault, range: scheduleRange.moveLeftBound(by: 1))
+                
                 self.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment,
-                                    OutlineAttribute.showAttachment: OUTLINE_ATTRIBUTE_HEADING_SCHEDULE], range: scheduleRange.head(1))
-                self.addAttributes([OutlineAttribute.Heading.schedule: scheduleRange,
-                                    OutlineAttribute.button: InterfaceTheme.Color.descriptive], range: scheduleRange)
-                self.removeAttribute(OutlineAttribute.hidden, range: scheduleDateAndTimeRange)
+                                    OutlineAttribute.showAttachment: OutlineAttribute.Heading.schedule], range: scheduleRange.head(1))
+                
+                self.addAttributes([OutlineAttribute.Heading.schedule: scheduleRange], range: scheduleRange)
+                self._addButtonAttributes(range: scheduleRange, color: InterfaceTheme.Color.descriptive)
+
+                self.addAttribute(OutlineAttribute.hidden, value: 0, range: scheduleDateAndTimeRange)
+                self.addAttribute(NSAttributedString.Key.font, value: InterfaceTheme.Font.footnote, range: scheduleDateAndTimeRange)
             }
             
             if let dueRange = $0[OutlineParser.Key.Element.Heading.due],
                 let dueDateAndTimeRange = $0[OutlineParser.Key.Element.Heading.dueDateAndTime] {
                 self.addAttribute(OutlineAttribute.hidden, value: OutlineAttribute.hiddenValueDefault, range: dueRange.moveLeftBound(by: 1))
+                
                 self.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment,
                                     OutlineAttribute.showAttachment: OutlineAttribute.Heading.due], range: dueRange.head(1))
-                self.addAttributes([OutlineAttribute.Heading.due: dueRange,
-                                    OutlineAttribute.button: InterfaceTheme.Color.descriptive], range: dueRange)
-                self.removeAttribute(OutlineAttribute.hidden, range: dueDateAndTimeRange)
+                
+                self.addAttributes([OutlineAttribute.Heading.due: dueRange], range: dueRange)
+                self._addButtonAttributes(range: dueRange, color: InterfaceTheme.Color.descriptive)
+                
+                self.addAttribute(OutlineAttribute.hidden, value: 0, range: dueDateAndTimeRange)
+                self.addAttribute(NSAttributedString.Key.font, value: InterfaceTheme.Font.footnote, range: dueDateAndTimeRange)
             }
             
             if let tagsRange = $0[OutlineParser.Key.Element.Heading.tags] {
                 self.addAttribute(OutlineAttribute.Heading.tags, value: tagsRange, range: tagsRange)
                 self.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment,
                                     OutlineAttribute.showAttachment: OutlineAttribute.Heading.tags], range: tagsRange.head(1))
-                self.addAttributes([OutlineAttribute.Heading.tags: tagsRange,
-                                    OutlineAttribute.button: InterfaceTheme.Color.descriptive], range: tagsRange)
+                
+                self.addAttributes([OutlineAttribute.Heading.tags: tagsRange], range: tagsRange)
+                
+                self._addButtonAttributes(range: tagsRange, color: InterfaceTheme.Color.descriptive)
+                
+                self.addAttribute(NSAttributedString.Key.font, value: InterfaceTheme.Font.footnote, range: tagsRange)
             }
             
             if let planningRange = $0[OutlineParser.Key.Element.Heading.planning] {
-                self.addAttribute(OutlineAttribute.Heading.planning, value: planningRange, range: planningRange)
-                self.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.red, range: planningRange)
+                self.addAttributes([OutlineAttribute.Heading.planning: planningRange,
+                                    NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.interactive], range: planningRange)
+                
+                let planningString = string.substring(planningRange)
+                if SettingsAccessor.shared.finishedPlanning.contains(planningString) {
+                    self._addButtonAttributes(range: planningRange, color: InterfaceTheme.Color.spotlight)
+                } else {
+                    self._addButtonAttributes(range: planningRange, color: InterfaceTheme.Color.warning)
+                }
+                self.addAttribute(NSAttributedString.Key.font, value: InterfaceTheme.Font.footnote, range: planningRange)
             }
         }
     }
@@ -589,6 +611,10 @@ extension OutlineTextStorage: OutlineParserDelegate {
         let cachedHeadingRemoveCount = self._savedHeadings.remove { s in removedHeadings.contains { $0.identifier == s.identifier } }
         let newHeadings = newTokens.filter { $0 is HeadingToken }.map { $0 as! HeadingToken }
         
+        for heading in newHeadings {
+            self.addHeadingFoldingStatus(textStorage: self, heading: heading)
+        }
+        
         self._updateTokenCache(self._savedHeadings, with: newHeadings)
         
         if cachedHeadingRemoveCount > 0 || newHeadings.count > 0 {
@@ -632,6 +658,23 @@ extension OutlineTextStorage: OutlineParserDelegate {
     }
     
     // MARK: - utils
+    
+    public func isHeadingFolded(heading: HeadingToken, textStorage: OutlineTextStorage) -> Bool {
+        if heading.contentRange.location < textStorage.string.count {
+            return self.attribute(OutlineAttribute.tempHidden, at: heading.contentRange.location, effectiveRange: nil) as? Int != 0
+        } else {
+            return false
+        }
+    }
+    
+    public func addHeadingFoldingStatus(textStorage: OutlineTextStorage, heading: HeadingToken) {
+        if isHeadingFolded(heading: heading, textStorage: textStorage) {
+            self.addAttribute(OutlineAttribute.showAttachment, value: OutlineAttribute.Heading.foldingFolded, range: heading.levelRange)
+        } else {
+            self.addAttribute(OutlineAttribute.showAttachment, value: OutlineAttribute.Heading.foldingUnfolded, range: heading.levelRange)
+        }
+        self.addAttribute(OutlineAttribute.hidden, value: OutlineAttribute.hiddenValueWithAttachment, range: heading.levelRange)
+    }
     
     private func _addStylesForCodeBlock() {
         guard let currentRange = self.currentParseRange else { return }
@@ -797,6 +840,14 @@ extension OutlineTextStorage: OutlineParserDelegate {
             self.currentParseRange = NSRange(location: self.currentParseRange!.location - self.currentParseRange!.location, length: -self.currentParseRange!.location)
         }
     }
+    
+    
+    private func _addButtonAttributes(range: NSRange, color: UIColor) {
+        self.addAttributes([OutlineAttribute.button: color], range: range)
+        self.addAttribute(OutlineAttribute.buttonBorder, value: 1, range: range.head(1))
+        self.addAttribute(OutlineAttribute.buttonBorder, value: 2, range: range.tail(1))
+    }
+
 }
 
 extension OutlineTextStorage: NSTextStorageDelegate {

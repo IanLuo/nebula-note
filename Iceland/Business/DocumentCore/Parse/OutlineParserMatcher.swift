@@ -181,13 +181,13 @@ extension OutlineParser {
         private static let character = "\\p{L}"
         
         public struct Node {
-            public static let heading =         "^(\\*+) (.+)((\n\(Element.Heading.schedule))|(\n\(Element.Heading.due))|(\n\(Element.Heading.timeRangePattern))|(\n\(Element.Heading.dateAndTimeRange))){0,2}"
+            public static let heading =         "^(\\*+) (.)+(([\\t ])+\(Element.Heading.schedule)|([\\t ])+\(Element.Heading.due)){0,2}"
             public static let codeBlock =       "^[\\t ]*\\#\\+BEGIN\\_SRC( [\(character)\\.]*)?\\n([^\\#\\+END\\_SRC]*)\\n\\s*\\#\\+END\\_SRC[\\t ]*\\n"
             public static let checkBox =        "[\\t ]* \\[(X| |\\-)\\]"
             public static let unorderedList =   "^[\\t ]*([\\-\\+]) .*"
             public static let orderedList =     "^[\\t ]*([a-zA-Z0-9]+[\\.\\)\\>]) .*"
             public static let seperator =       "^[\\t ]*(\\-{5,}[\\t ]*)"
-            public static let attachment =      "\\#\\+ATTACHMENT\\:(image|video|audio|sketch|location)=([A-Z0-9\\-]+)" // like: #+ATTACHMENT:LKSJDLFJSDLJFLSDF)
+            public static let attachment =      "\\#\\+ATTACHMENT\\:(image|video|audio|sketch|location)=([A-Z0-9\\-]+)" // like: #+ATTACHMENT:LKS-JDLF-JSDL-JFLSDF)
             public static let quote =           "^[\\t ]*\\#\\+BEGIN\\_QUOTE\\n([^\\#\\+END\\_QUOTE]*)\\n\\s*\\#\\+END\\_QUOTE[\\t ]*\\n"
             public static let footnote =        "" // TODO: footnote regex pattern imp
         }
