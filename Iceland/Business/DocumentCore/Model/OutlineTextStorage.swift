@@ -291,25 +291,30 @@ extension OutlineTextStorage: OutlineParserDelegate {
         
         for dict in markRanges {
             for (key, range) in dict {
+                
+                self._addMarkTokenAttributes(range: range)
+                
+                let contentRange = range.tail(range.length - 1).head(range.length - 2)
+                
                 switch key {
                 case OutlineParser.Key.Element.TextMark.bold:
                     self._tempParsingTokenResult.append(Token(range: range, name: key, data: dict))
-                    self.addAttributes(OutlineTheme.Attributes.TextMark.bold, range: range)
+                    self.addAttributes(OutlineTheme.Attributes.TextMark.bold, range: contentRange)
                 case OutlineParser.Key.Element.TextMark.italic:
                     self._tempParsingTokenResult.append(Token(range: range, name: key, data: dict))
-                    self.addAttributes(OutlineTheme.Attributes.TextMark.italic, range: range)
+                    self.addAttributes(OutlineTheme.Attributes.TextMark.italic, range: contentRange)
                 case OutlineParser.Key.Element.TextMark.strikeThough:
                     self._tempParsingTokenResult.append(Token(range: range, name: key, data: dict))
-                    self.addAttributes(OutlineTheme.Attributes.TextMark.strikeThough, range: range)
+                    self.addAttributes(OutlineTheme.Attributes.TextMark.strikeThough, range: contentRange)
                 case OutlineParser.Key.Element.TextMark.code:
                     self._tempParsingTokenResult.append(Token(range: range, name: key, data: dict))
-                    self.addAttributes(OutlineTheme.Attributes.TextMark.code, range: range)
+                    self.addAttributes(OutlineTheme.Attributes.TextMark.code, range: contentRange)
                 case OutlineParser.Key.Element.TextMark.underscore:
                     self._tempParsingTokenResult.append(Token(range: range, name: key, data: dict))
-                    self.addAttributes(OutlineTheme.Attributes.TextMark.underscore, range: range)
+                    self.addAttributes(OutlineTheme.Attributes.TextMark.underscore, range: contentRange)
                 case OutlineParser.Key.Element.TextMark.verbatim:
                     self._tempParsingTokenResult.append(Token(range: range, name: key, data: dict))
-                    self.addAttributes(OutlineTheme.Attributes.TextMark.verbatim, range: range)
+                    self.addAttributes(OutlineTheme.Attributes.TextMark.verbatim, range: contentRange)
                 default: break
                 }
             }
@@ -827,7 +832,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
             for item in self.allTokens {
                 if item.range.intersection(currentParseRange) != nil {
                     self.currentParseRange = item.range.union(currentParseRange)
-                    return
+                    break
                 }
             }
         }
@@ -846,6 +851,14 @@ extension OutlineTextStorage: OutlineParserDelegate {
         self.addAttributes([OutlineAttribute.button: color], range: range)
         self.addAttribute(OutlineAttribute.buttonBorder, value: 1, range: range.head(1))
         self.addAttribute(OutlineAttribute.buttonBorder, value: 2, range: range.tail(1))
+    }
+    
+    private func _addMarkTokenAttributes(range: NSRange) {
+        self.addAttributes([NSAttributedString.Key.font: InterfaceTheme.Font.footnote,
+                            NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.descriptive], range: range.head(1))
+        
+        self.addAttributes([NSAttributedString.Key.font: InterfaceTheme.Font.footnote,
+                            NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.descriptive], range: range.tail(1))
     }
 
 }

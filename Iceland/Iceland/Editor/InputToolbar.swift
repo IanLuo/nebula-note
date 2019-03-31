@@ -17,21 +17,44 @@ public protocol DocumentEditToolbarDelegate: class {
 
 public class InputToolbar: UIView {
     
+    public enum Mode {
+        case heading
+        case paragraph
+        case quote
+        case code
+        
+        fileprivate func _createActions() -> [ToolbarActionProtocol] {
+            switch self {
+            case.paragraph:
+                return [TextMarkActions(), Attachments(), CursorActions(), IndentActions(), UndoActions()]
+            default: return [TextMarkActions(), Attachments(), CursorActions(), IndentActions(), UndoActions()]
+            }
+        }
+    }
+    
     public weak var delegate: DocumentEditToolbarDelegate?
  
     private let _collectionView: UICollectionView
     
-    private let _actions: [ToolbarActionProtocol] = [CursorActions(), IndentActions(), Attachments(), TextMarkActions(), UndoActions()]
+    private var _actions: [ToolbarActionProtocol] = []
     
-    public init() {
+    public var mode: Mode {
+        didSet {
+            log.info("enter \(mode) mode")
+            self._actions = mode._createActions()
+            self._collectionView.reloadData()
+        }
+    }
+    
+    public init(mode: Mode) {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         layout.itemSize = CGSize(width: 44, height: 44)
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0
         layout.scrollDirection = .horizontal
-        layout.headerReferenceSize = CGSize(width: 1, height: 30)
         
+        self.mode = mode
         self._collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
 
         super.init(frame: .zero)
@@ -42,6 +65,7 @@ public class InputToolbar: UIView {
         self._collectionView.register(GroupSeparator.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: GroupSeparator.reuseIdentifier)
         
         self._setupUI()
+        
     }
     
     public required init?(coder aDecoder: NSCoder) {
@@ -54,7 +78,7 @@ public class InputToolbar: UIView {
     }
 }
 
-extension InputToolbar: UICollectionViewDelegate, UICollectionViewDataSource {
+extension InputToolbar: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if let group = self._actions[section] as? ToolbarActionGroupProtocol {
             return group.actions.count
@@ -85,6 +109,14 @@ extension InputToolbar: UICollectionViewDelegate, UICollectionViewDataSource {
         return view
     }
     
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        if section == 0 {
+            return CGSize(width: 0, height: collectionView.bounds.height)
+        } else {
+            return CGSize(width: 1, height: collectionView.bounds.height)
+        }
+    }
+    
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if let group = self._actions[indexPath.section] as? ToolbarActionGroupProtocol {
             let action = group.actions[indexPath.row]
@@ -105,7 +137,8 @@ private class GroupSeparator: UICollectionReusableView {
         super.init(frame: frame)
         
         self.addSubview(self._subView)
-        self._subView.allSidesAnchors(to: self, edgeInsets: .init(top: 15, left: 0, bottom: -15, right: 0))
+        self._subView.allSidesAnchors(to: self, edgeInsets: .init(top: 13, left: 0, bottom: -13, right: 0))
+        self.backgroundColor = InterfaceTheme.Color.background2
         self._subView.backgroundColor = InterfaceTheme.Color.descriptive
     }
     
@@ -129,7 +162,7 @@ private class ActionButtonCell: UICollectionViewCell {
         
         self.contentView.addSubview(self.iconView)
         self.iconView.centerAnchors(position: [.centerX, .centerY], to: self.contentView)
-        self.iconView.sizeAnchor(width: 15, height: 15)
+        self.iconView.sizeAnchor(width: 18, height: 18)
         
         self.contentView.backgroundColor = InterfaceTheme.Color.background2
     }

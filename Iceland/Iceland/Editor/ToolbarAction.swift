@@ -39,11 +39,11 @@ public struct Attachments: ToolbarActionGroupProtocol {
     
     public var title: String = ""
     
-    public var icon: UIImage = Asset.Assets.imageLibrary.image
+    public var icon: UIImage = Asset.Assets.attachment.image
 }
 
 public struct TextMarkActions: ToolbarActionGroupProtocol {
-    public var actions: [ToolbarActionProtocol] = [NormalAction.bold, NormalAction.italic, NormalAction.underscore, NormalAction.strikethrough, NormalAction.code, NormalAction.verbatim]
+    public var actions: [ToolbarActionProtocol] = [NormalAction.heading, NormalAction.bold, NormalAction.italic, NormalAction.underscore, NormalAction.strikethrough, NormalAction.code, NormalAction.sourcecode, NormalAction.quote, NormalAction.checkbox, NormalAction.list, NormalAction.orderedList]
     
     public var title: String = ""
     
@@ -51,7 +51,7 @@ public struct TextMarkActions: ToolbarActionGroupProtocol {
 }
 
 public struct IndentActions: ToolbarActionGroupProtocol {
-    public var actions: [ToolbarActionProtocol] = [NormalAction.increaseIndent, NormalAction.decreaseIndent]
+    public var actions: [ToolbarActionProtocol] = [NormalAction.decreaseIndent, NormalAction.increaseIndent, NormalAction.moveUp, NormalAction.moveDown]
     
     public var title: String = ""
     
@@ -67,23 +67,39 @@ public struct UndoActions: ToolbarActionGroupProtocol {
 }
 
 public enum NormalAction: ToolbarActionProtocol, DocumentActon {
+    case heading
     case increaseIndent
     case decreaseIndent
+    case moveUp
+    case moveDown
     case undo
     case redo
     case bold
     case italic
     case underscore
     case strikethrough
+    /// inline code
     case code
     case verbatim
+    case checkbox
+    case list
+    case orderedList
+    case quote
+    /// code block
+    case sourcecode
     
     public var title: String {
         switch self {
+        case .heading:
+            return ""
         case .increaseIndent:
             return L10n.Document.Edit.Action.increaseIndent
         case .decreaseIndent:
             return L10n.Document.Edit.Action.decreaseIndent
+        case .moveUp:
+            return ""
+        case .moveDown:
+            return ""
         case .undo:
             return L10n.Document.Edit.Action.undo
         case .redo:
@@ -92,39 +108,65 @@ public enum NormalAction: ToolbarActionProtocol, DocumentActon {
             return L10n.Document.Edit.Action.Mark.bold
         case .italic:
             return L10n.Document.Edit.Action.Mark.italic
+        case .code:
+            return L10n.Document.Edit.Action.Mark.code
         case .underscore:
             return L10n.Document.Edit.Action.Mark.underscore
         case .strikethrough:
             return L10n.Document.Edit.Action.Mark.strikthrough
-        case .code:
-            return L10n.Document.Edit.Action.Mark.code
         case .verbatim:
             return L10n.Document.Edit.Action.Mark.verbatim
+        case .checkbox:
+            return ""
+        case .list:
+            return ""
+        case .orderedList:
+            return ""
+        case .quote:
+            return ""
+        case .sourcecode:
+            return ""
         }
     }
     
     public var icon: UIImage {
         switch self {
+        case .heading:
+            return Asset.Assets.heading.image
         case .increaseIndent:
-            return Asset.Assets.imageLibrary.image
+            return Asset.Assets.tapAdd.image
         case .decreaseIndent:
-            return Asset.Assets.imageLibrary.image
+            return Asset.Assets.tapMinus.image
+        case .moveUp:
+            return Asset.Assets.moveUp.image
+        case .moveDown:
+            return Asset.Assets.moveDown.image
         case .undo:
-            return Asset.Assets.imageLibrary.image
+            return Asset.Assets.undo.image
         case .redo:
-            return Asset.Assets.imageLibrary.image
+            return Asset.Assets.redo.image
         case .bold:
-            return Asset.Assets.imageLibrary.image
+            return Asset.Assets.bold.image
         case .italic:
-            return Asset.Assets.imageLibrary.image
+            return Asset.Assets.italic.image
         case .underscore:
-            return Asset.Assets.imageLibrary.image
+            return Asset.Assets.underline.image
         case .strikethrough:
-            return Asset.Assets.imageLibrary.image
+            return Asset.Assets.strikethrough.image
         case .code:
-            return Asset.Assets.imageLibrary.image
+            return Asset.Assets.code.image
         case .verbatim:
-            return Asset.Assets.imageLibrary.image
+            return Asset.Assets.code.image
+        case .checkbox:
+            return Asset.Assets.checkboxChecked.image
+        case .list:
+            return Asset.Assets.list.image
+        case .orderedList:
+            return Asset.Assets.orderedList.image
+        case .quote:
+            return Asset.Assets.quote.image
+        case .sourcecode:
+            return Asset.Assets.sourcecode.image
         }
     }
     
@@ -155,11 +197,11 @@ public enum AttachmentAction: ToolbarActionProtocol, DocumentActon {
     public var icon: UIImage {
         switch self {
         case .image: return Asset.Assets.imageLibrary.image
-        case .audio: return Asset.Assets.imageLibrary.image
-        case .video: return Asset.Assets.imageLibrary.image
-        case .sketch: return Asset.Assets.imageLibrary.image
-        case .location: return Asset.Assets.imageLibrary.image
-        case .link: return Asset.Assets.imageLibrary.image
+        case .audio: return Asset.Assets.audio.image
+        case .video: return Asset.Assets.video.image
+        case .sketch: return Asset.Assets.sketch.image
+        case .location: return Asset.Assets.location.image
+        case .link: return Asset.Assets.link.image
         }
     }
     

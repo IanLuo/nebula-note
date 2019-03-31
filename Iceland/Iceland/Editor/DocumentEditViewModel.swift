@@ -14,6 +14,7 @@ public protocol DocumentEditViewModelDelegate: class {
     func updateHeadingInfo(heading: HeadingToken?)
     func documentStatesChange(state: UIDocument.State)
     func didReadyToEdit()
+    func didEnterTokens(_ tokens: [Token])
 }
 
 public enum EditAction {
@@ -139,6 +140,10 @@ public class DocumentEditViewModel {
     
     public var headings: [HeadingToken] {
         return self.editorService.headings
+    }
+    
+    public func cursorLocationChanged(_ newLocation: Int) {
+        self.delegate?.didEnterTokens(self.editorService.tokens(at: newLocation))
     }
     
     public func save(completion: @escaping () -> Void) {

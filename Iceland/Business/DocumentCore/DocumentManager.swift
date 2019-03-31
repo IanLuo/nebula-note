@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Storage
 
 public struct DocumentManager {
     public static let contentKey: String = "content.org"

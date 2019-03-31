@@ -11,7 +11,6 @@ import XCTest
 @testable import Iceland
 import Business
 import RxSwift
-import Storage
 
 public class CaptureTests: XCTestCase {
     public override func tearDown() {

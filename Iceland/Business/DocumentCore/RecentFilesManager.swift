@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Storage
 
 public class RecentDocumentInfo: DocumentInfo, Codable {
     public let lastRequestTime: Date

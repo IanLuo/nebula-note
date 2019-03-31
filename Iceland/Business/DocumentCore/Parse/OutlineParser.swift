@@ -269,9 +269,7 @@ public class OutlineParser {
                     if let matcher = matcher {
                         let r = matcher.matches(in: str, options: [], range: totalRange)
                             .map { (result: NSTextCheckingResult) -> [String: NSRange] in
-                                [key: result.range(at: 1),
-                                 Key.Element.TextMark.mark: result.range(at: 1),
-                                 Key.Element.TextMark.content: result.range(at: 2)]
+                                [key: result.range(at: 1)]
                         }
                         
                         result.append(contentsOf: r)

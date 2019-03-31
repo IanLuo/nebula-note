@@ -9,7 +9,6 @@
 import Foundation
 @testable import Iceland
 import XCTest
-import Storage
 import Business
 
 public class AttachmentTests: XCTestCase {

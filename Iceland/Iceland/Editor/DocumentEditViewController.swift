@@ -43,7 +43,7 @@ public class DocumentEditViewController: UIViewController {
     private var closeButton: UIButton!
     private var searchButton: UIButton!
     
-    private let _toolbar = InputToolbar()
+    private let _toolbar = InputToolbar(mode: .paragraph)
     
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -66,6 +66,8 @@ public class DocumentEditViewController: UIViewController {
         self._toolbar.frame = CGRect(origin: .zero, size: .init(width: self.view.bounds.width, height: 44))
         self._toolbar.delegate = self
         self.textView.inputAccessoryView = self._toolbar
+        
+        self._toolbar.mode = .paragraph
     }
     
     public override func viewDidLayoutSubviews() {
@@ -201,9 +203,33 @@ extension DocumentEditViewController: UITextViewDelegate {
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
     }
+    
+    public func textViewDidChangeSelection(_ textView: UITextView) {
+        self.viewModel.cursorLocationChanged(textView.selectedRange.location)
+    }
 }
 
 extension DocumentEditViewController: DocumentEditViewModelDelegate {
+    public func didEnterTokens(_ tokens: [Token]) {
+        for token in tokens {
+            if token is HeadingToken {
+                if self._toolbar.mode != .heading {
+                    self._toolbar.mode = .heading
+                }
+                return
+            } else {
+                if self._toolbar.mode != .paragraph {
+                    self._toolbar.mode = .paragraph
+                }
+                return
+            }
+        }
+        
+        if self._toolbar.mode != .paragraph {
+            self._toolbar.mode = .paragraph
+        }
+    }
+    
     public func didReadyToEdit() {
         self.viewModel.save {}
         self.textView.selectedRange = NSRange(location: self.viewModel.onLoadingLocation,

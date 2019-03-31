@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Storage
 
 public class DocumentInfo {
     public let name: String

@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Storage
 
 public enum AttachmentError: Error {
     case noSuchAttachment(String)
@@ -20,7 +19,7 @@ public enum AttachmentError: Error {
 @objc public class AttachmentManager: NSObject {
     public override init() {
         // 确保附件文件夹存在
-        File.Folder.document("attachments").createFolderIfNeeded()
+        URL.attachmentURL.createDirectoryIfNeeded(completion: nil)
     }
     
     /// 当附件创建的时候，生成附件的 key
@@ -66,9 +65,9 @@ public enum AttachmentError: Error {
         if let url = URL(string: content) {
             saveAttahmentAction(URL(fileURLWithPath: url.path))
         } else {
-            let tempFile = File.init(File.Folder.temp("attachments"), fileName: "\(UUID().uuidString).txt")
-            tempFile.write(value: content.data(using: .utf8) ?? Data()) { _ in
-                saveAttahmentAction(tempFile.url)
+            let tempFile = URL.file(directory: URL.directory(location: URLLocation.temporary), name: "attachments", extension: "txt")
+            tempFile.write(data: content.data(using: .utf8) ?? Data()) { _ in
+                saveAttahmentAction(tempFile)
             }
         }
         

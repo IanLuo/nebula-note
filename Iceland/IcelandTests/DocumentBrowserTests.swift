@@ -9,7 +9,6 @@
 import Foundation
 import XCTest
 @testable import Iceland
-import Storage
 import Business
 
 public class DocumentBrowserTests: XCTestCase {

@@ -235,7 +235,7 @@ extension OutlineParser {
     public struct Values {
         public struct TextMark {
             public static let bold = "*"
-            public static let italic = "\\"
+            public static let italic = "/"
             public static let underscore = "_"
             public static let strikthought = "+"
             public static let code = "~"

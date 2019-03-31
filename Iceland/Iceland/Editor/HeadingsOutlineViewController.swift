@@ -50,6 +50,10 @@ extension HeadingsOutlineViewController: SelectorViewControllerDelegate {
 }
 
 extension HeadingsOutlineViewController: DocumentEditViewModelDelegate {
+    public func didEnterTokens(_ tokens: [Token]) {
+        // ignore
+    }
+    
     private func loadData() {
         for index in 0..<self.viewModel.headings.count {
             self.addItem(attributedString: self.attributedString(level: self.viewModel.level(index: index),
@@ -68,15 +72,15 @@ extension HeadingsOutlineViewController: DocumentEditViewModelDelegate {
     }
     
     public func documentStatesChange(state: UIDocument.State) {
-        
+        // ignore
     }
     
     public func showLink(url: URL) {
-        
+        // ignore
     }
     
     public func updateHeadingInfo(heading: HeadingToken?) {
-        
+        // ignore
     }
     
     private func attributedString(level: Int, string: String) -> NSAttributedString {
