@@ -44,14 +44,14 @@ public class AttachmentTests: XCTestCase {
             XCTAssert(false)
         })
         
-        let tempFile = File(File.Folder.temp("attachments"), fileName: "audio.wav")
+        let tempFile = URL.file(directory: URL.directory(location: URLLocation.temporary), name: "audio", extension: "wav")
         
         let ex2 = self.expectation(description: "audio")
         
         let data = "the fake audio data".data(using: String.Encoding.utf8)!
-        tempFile.write(value: data) { error in
+        tempFile.write(data: data) { error in
             
-            manager.insert(content: tempFile.url.path, kind: Attachment.Kind.audio, description: "audio", complete: { key in
+            manager.insert(content: tempFile.path, kind: Attachment.Kind.audio, description: "audio", complete: { key in
                 manager.attachment(with: key, completion: { saved in
                     
                     XCTAssertEqual(saved.key, key)

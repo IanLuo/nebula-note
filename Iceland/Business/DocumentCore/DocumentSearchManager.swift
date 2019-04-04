@@ -12,8 +12,8 @@ public struct DocumentHeading {
     public let level: Int
     public let tags: [String]?
     public let planning: String?
-    public let due: DateAndTimeType?
-    public let schedule: DateAndTimeType?
+//    public let due: DateAndTimeType?
+//    public let schedule: DateAndTimeType?
     public let text: String
     public let paragraphSummery: String
     public let length: Int
@@ -38,17 +38,17 @@ public struct DocumentHeading {
             self.planning = nil
         }
         
-        if let due = headingToken.due {
-            self.due = DateAndTimeType.createFromDue(documentString.substring(due))
-        } else {
-            self.due = nil
-        }
-        
-        if let schedule = headingToken.schedule {
-            self.schedule = DateAndTimeType.createFromSchedule(documentString.substring(schedule))
-        } else {
-            self.schedule = nil
-        }
+//        if let due = headingToken.due {
+//            self.due = DateAndTimeType.createFromDue(documentString.substring(due))
+//        } else {
+//            self.due = nil
+//        }
+//        
+//        if let schedule = headingToken.schedule {
+//            self.schedule = DateAndTimeType.createFromSchedule(documentString.substring(schedule))
+//        } else {
+//            self.schedule = nil
+//        }
         
         self.text = documentString.substring(headingToken.range)
         
@@ -245,8 +245,6 @@ public class DocumentSearchManager {
         
         self._headingSearchOperationQueue.addOperation(operation)
     }
-    
-    
     
     public func headingHasPlanning(contained in: [String], text: String, heading: [String: NSRange]) -> Bool {
         if let planningRange = heading[OutlineParser.Key.Element.Heading.planning] {

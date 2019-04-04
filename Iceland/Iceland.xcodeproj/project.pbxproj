@@ -38,6 +38,7 @@
 		E40F6EAC223B7B6C00FFF53F /* Size.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4CC0C5821EEF92900058E5D /* Size.swift */; };
 		E40F6EAD223B7B7300FFF53F /* Rect.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4BC264121F56DB900B0F2B9 /* Rect.swift */; };
 		E40F6EAE223B7BA200FFF53F /* Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = E489600121DB06C800D2B19D /* Localization.swift */; };
+		E4162EF72254EA4F00D3619E /* DateAndTimeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4162EF62254EA4F00D3619E /* DateAndTimeType.swift */; };
 		E41A538621D4C577002B11E9 /* AgendaTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41A538521D4C577002B11E9 /* AgendaTableCell.swift */; };
 		E41A538D21D5F629002B11E9 /* CaptureTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41A538C21D5F629002B11E9 /* CaptureTableCell.swift */; };
 		E41B892621E31B07009C5AD7 /* DashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41B892521E31B07009C5AD7 /* DashboardViewModel.swift */; };
@@ -245,6 +246,7 @@
 		E40F6E7E223B78AE00FFF53F /* Interface.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Interface.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E40F6E80223B78AE00FFF53F /* Interface.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Interface.h; sourceTree = "<group>"; };
 		E40F6E81223B78AE00FFF53F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E4162EF62254EA4F00D3619E /* DateAndTimeType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateAndTimeType.swift; sourceTree = "<group>"; };
 		E41A538521D4C577002B11E9 /* AgendaTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgendaTableCell.swift; sourceTree = "<group>"; };
 		E41A538C21D5F629002B11E9 /* CaptureTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureTableCell.swift; sourceTree = "<group>"; };
 		E41A539021D62095002B11E9 /* EditorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorService.swift; sourceTree = "<group>"; };
@@ -950,6 +952,7 @@
 			children = (
 				E4A46A2621B0E2D500FBDA04 /* OutlineParserMatcher.swift */,
 				E44825AC219C1AAA00C17568 /* OutlineParser.swift */,
+				E4162EF62254EA4F00D3619E /* DateAndTimeType.swift */,
 			);
 			path = Parse;
 			sourceTree = "<group>";
@@ -1422,6 +1425,7 @@
 				E41CB1C121D88DD700EF0A3C /* OutlineParser.swift in Sources */,
 				E43E7875222ACF780007EE4F /* OutlineTextTrimmer.swift in Sources */,
 				E41CB1BA21D88DCE00EF0A3C /* Document.swift in Sources */,
+				E4162EF72254EA4F00D3619E /* DateAndTimeType.swift in Sources */,
 				E41CB1C521D88DD700EF0A3C /* EditorService.swift in Sources */,
 				E41CB1BE21D88DD100EF0A3C /* OutlineLayoutManager.swift in Sources */,
 				E4821DB122374C420063C0B2 /* WeakArray.swift in Sources */,

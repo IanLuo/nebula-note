@@ -32,8 +32,8 @@ public class OutlineParser {
         
         self.delegate?.didStartParsing(text: str)
         // MARK: heading， 并且找出 level, planning, schedule, due 的 range
-        if let heading = Matcher.Node.heading, includeParsee.contains(.heading) {
-            let result: [[String: NSRange]] = heading
+        if includeParsee.contains(.heading) {
+            let result: [[String: NSRange]] = Matcher.Node.heading
                 .matches(in: str, options: [], range: totalRange)
                 .map { (result: NSTextCheckingResult) -> [String: NSRange] in
                     let headingRange = result.range(at: 0)
@@ -50,26 +50,7 @@ public class OutlineParser {
                         (Matcher.Element.Heading.tags, { result in
                             guard result.range(at: 1).location != NSNotFound else { return }
                             comp[Key.Element.Heading.tags] = result.range(at: 1)
-                        }),
-                        (Matcher.Element.Heading.schedule, { result in
-                            guard result.range(at: 1).location != NSNotFound else { return }
-                            comp[Key.Element.Heading.schedule] = result.range(at: 1)
-                            comp[Key.Element.Heading.scheduleDateAndTime] = result.range(at: 2)
-                        }),
-                        (Matcher.Element.Heading.due, { result in
-                            guard result.range(at: 1).location != NSNotFound else { return }
-                            comp[Key.Element.Heading.due] = result.range(at: 1)
-                            comp[Key.Element.Heading.dueDateAndTime] = result.range(at: 2)
-                        }),
-                        (Matcher.Element.Heading.timeRange, { result in
-                            guard result.range(at: 1).location != NSNotFound else { return }
-                            comp[Key.Element.Heading.timeRange] = result.range(at: 1)
-                        }),
-                        (Matcher.Element.Heading.dateRange, { result in
-                            guard result.range(at: 1).location != NSNotFound else { return }
-                            comp[Key.Element.Heading.dateRange] = result.range(at: 1)
-                        })
-                        ]
+                        })]
                     
                     headingContentParse.forEach { regex, action in
                         if let r = regex {
@@ -89,8 +70,8 @@ public class OutlineParser {
         }
         
         // MARK: 解析 checkbox
-        if let checkbox = Matcher.Node.checkbox, includeParsee.contains(.checkbox) {
-            let result: [[String: NSRange]] = checkbox
+        if includeParsee.contains(.checkbox) {
+            let result: [[String: NSRange]] = Matcher.Node.checkbox
                 .matches(in: str, options: [], range: totalRange)
                 .map { (result: NSTextCheckingResult) -> [String: NSRange] in
                     var comp: [String: NSRange] = [:]
@@ -106,8 +87,8 @@ public class OutlineParser {
         }
         
         // MARK: 解析 code block begin
-        if let codeBlockBegin = Matcher.Node.codeBlockBegin, includeParsee.contains(.codeBlockBegin) {
-            let result: [[String: NSRange]] = codeBlockBegin
+        if includeParsee.contains(.codeBlockBegin) {
+            let result: [[String: NSRange]] = Matcher.Node.codeBlockBegin
                 .matches(in: str, options: [], range: totalRange)
                 .map { (result: NSTextCheckingResult) -> [String: NSRange] in
                     var comp: [String: NSRange] = [:]
@@ -123,8 +104,8 @@ public class OutlineParser {
         }
         
         // MARK: 解析 code block end
-        if let codeBlockEnd = Matcher.Node.codeBlockEnd, includeParsee.contains(.codeBlockEnd) {
-            let result: [[String: NSRange]] = codeBlockEnd
+        if includeParsee.contains(.codeBlockEnd) {
+            let result: [[String: NSRange]] = Matcher.Node.codeBlockEnd
                 .matches(in: str, options: [], range: totalRange)
                 .map { (result: NSTextCheckingResult) -> [String: NSRange] in
                     var comp: [String: NSRange] = [:]
@@ -139,8 +120,8 @@ public class OutlineParser {
         }
         
         // MARK: 解析 quote begin
-        if let quoteBlockBegin = Matcher.Node.quoteBlockBegin, includeParsee.contains(.quoteBlockBegin) {
-            let result: [[String: NSRange]] = quoteBlockBegin
+        if includeParsee.contains(.quoteBlockBegin) {
+            let result: [[String: NSRange]] = Matcher.Node.quoteBlockBegin
                 .matches(in: str, options: [], range: totalRange)
                 .map { (result: NSTextCheckingResult) -> [String: NSRange] in
                     var comp: [String: NSRange] = [:]
@@ -155,8 +136,8 @@ public class OutlineParser {
         }
         
         // MARK: 解析 quote block end
-        if let quoteBlockEnd = Matcher.Node.quoteBlockEnd, includeParsee.contains(.quoteBlockEnd) {
-            let result: [[String: NSRange]] = quoteBlockEnd
+        if includeParsee.contains(.quoteBlockEnd) {
+            let result: [[String: NSRange]] = Matcher.Node.quoteBlockEnd
                 .matches(in: str, options: [], range: totalRange)
                 .map { (result: NSTextCheckingResult) -> [String: NSRange] in
                     var comp: [String: NSRange] = [:]
@@ -171,8 +152,8 @@ public class OutlineParser {
         }
         
         // MARK: 解析 ordered list
-        if let orderedList = Matcher.Node.ordedList, includeParsee.contains(.orderedList) {
-            let result: [[String: NSRange]] = orderedList
+        if includeParsee.contains(.orderedList) {
+            let result: [[String: NSRange]] = Matcher.Node.ordedList
                 .matches(in: str, options: [], range: totalRange)
                 .map { (result: NSTextCheckingResult) -> [String: NSRange] in
                     var comp: [String: NSRange] = [:]
@@ -188,8 +169,8 @@ public class OutlineParser {
         }
         
         // MARK: 解析 unordered list
-        if let unorderedList = Matcher.Node.unorderedList, includeParsee.contains(.unorderedList) {
-            let result: [[String: NSRange]] = unorderedList
+        if includeParsee.contains(.unorderedList) {
+            let result: [[String: NSRange]] = Matcher.Node.unorderedList
                 .matches(in: str, options: [], range: totalRange)
                 .map { (result: NSTextCheckingResult) -> [String: NSRange] in
                     var comp: [String: NSRange] = [:]
@@ -205,8 +186,8 @@ public class OutlineParser {
         }
         
         // MARK: 解析 seperator
-        if let seperator = Matcher.Node.seperator, includeParsee.contains(.seperator) {
-            let result: [[String: NSRange]] = seperator
+        if includeParsee.contains(.seperator) {
+            let result: [[String: NSRange]] = Matcher.Node.seperator
                 .matches(in: str, options: [], range: totalRange)
                 .map { (result: NSTextCheckingResult) -> [String: NSRange] in
                     [Key.Node.seperator: result.range(at: 1)]
@@ -219,8 +200,8 @@ public class OutlineParser {
         }
         
         // MARK: 解析 attachment
-        if let attachment = Matcher.Node.attachment, includeParsee.contains(.attachment) {
-            let result: [[String: NSRange]] = attachment
+        if includeParsee.contains(.attachment) {
+            let result: [[String: NSRange]] = Matcher.Node.attachment
                 .matches(in: str, options: [], range: totalRange)
                 .map { (result: NSTextCheckingResult) -> [String: NSRange] in
                     var comp: [String: NSRange] = [:]
@@ -236,9 +217,9 @@ public class OutlineParser {
             }
         }
         
-        // MARK: 解析 url
-        if let url = Matcher.Element.link, includeParsee.contains(.link) {
-            let result: [[String: NSRange]] = url
+        // MARK: 解析 link
+        if includeParsee.contains(.link) {
+            let result: [[String: NSRange]] = Matcher.Element.link
                 .matches(in: str, options: [], range: totalRange)
                 .map { (result: NSTextCheckingResult) -> [String: NSRange] in
                     var comp: [String: NSRange] = [:]
@@ -338,143 +319,5 @@ extension OutlineParser {
                 log.verbose(">>> \(key): \(value)")
             }
         }
-    }
-}
-
-public struct DateAndTimeType {
-    
-    public enum RepeatMode {
-        case day(Int)
-        case week(Int)
-        case month(Int)
-        case year(Int)
-    }
-    
-    public let date: Date
-    public let includeTime: Bool // 是否包含时间
-    public let repeateMode: RepeatMode? // 如果 repate 不为空，这个字段有值
-    
-    public var description: String {
-        if includeTime {
-            return "\(date.monthStringShort) \(date.day) \(date.format("hh:mm"))"
-        } else {
-            return "\(date.monthStringShort) \(date.day)"
-        }
-    }
-    
-    public init(date: Date, includeTime: Bool, repeateMode: RepeatMode? = nil) {
-        self.date = date
-        self.includeTime = includeTime
-        self.repeateMode = repeateMode
-    }
-}
-
-extension DateAndTimeType {
-    public static func createFromSchedule(_ string: String) -> DateAndTimeType? {
-        return _createSingleDateFrom(string: string, matcher: OutlineParser.Matcher.Element.Heading.schedule)
-    }
-    
-    public static func createFromDue(_ string: String) -> DateAndTimeType? {
-        return _createSingleDateFrom(string: string, matcher: OutlineParser.Matcher.Element.Heading.due)
-    }
-    
-    public static func createFromDateRange(_ string: String) -> [DateAndTimeType]? {
-        return _createDurationFrom(string: string, matcher: OutlineParser.Matcher.Element.Heading.dateRange)
-    }
-    
-    // 这种情况单独处理，比较复杂
-    public static func createFromTimeRange(_ string: String) -> [DateAndTimeType]? {
-        if let matcher = OutlineParser.Matcher.Element.Heading.timeRange {
-            if let result = matcher.firstMatch(in: string, options: [], range: NSRange(location: 0, length: string.count)) {
-                let date = string.substring(result.range(at: 1))
-                let time1 = string.substring(result.range(at: 3))
-                let time2 = string.substring(result.range(at: 4))
-                
-                let dateString: (String, String) -> String = { date, time in return "\(date) \(time)" }
-                
-                let formatter = DateFormatter()
-            
-                let dateFormates: [String] = ["yyyy-MM-dd HH:mm",
-                                              "yyyy-MM-dd EEE HH:mm"]
-                
-                for format in dateFormates {
-                    formatter.dateFormat = format
-                    if let date1 = formatter.date(from: dateString(date, time1)),
-                        let date2 = formatter.date(from: dateString(date, time2)) {
-                        
-                        return [DateAndTimeType(date: date1, includeTime: true),
-                                DateAndTimeType(date: date2, includeTime: true)]
-                        
-                    }
-                }
-            }
-        }
-        
-        return nil
-    }
-    
-    private static func _createDurationFrom(string: String, matcher: NSRegularExpression?) -> [DateAndTimeType]? {
-        if let matcher = matcher {
-            if let result = matcher.firstMatch(in: string, options: [], range: NSRange(location: 0, length: string.count)) {
-                let formatter = DateFormatter()
-                let dateString = matcher.replacementString(for: result, in: string, offset: 0, template: "$0")
-                let dates = dateString.components(separatedBy: "--")
-                let date1 = dates[0].replacingOccurrences(of: "<", with: "").replacingOccurrences(of: ">", with: "")
-                let date2 = dates[1].replacingOccurrences(of: "<", with: "").replacingOccurrences(of: ">", with: "")
-                
-                let dateFormates = [("yyyy-MM-dd", false),
-                                    ("yyyy-MM-dd EEE", false),
-                                    ("yyyy-MM-dd HH:mm", true),
-                                    ("yyyy-MM-dd EEE HH:mm", true)]
-                
-                for (format, includeTime) in dateFormates {
-                    formatter.dateFormat = format
-                    
-                    if let date1 = formatter.date(from: date1),
-                        let date2 = formatter.date(from: date2) {
-                        return [DateAndTimeType(date: date1, includeTime: includeTime),
-                                DateAndTimeType(date: date2, includeTime: includeTime)]
-                    }
-                }
-            }
-        }
-        
-        return nil
-    }
-    
-    private static func _createSingleDateFrom(string: String, matcher: NSRegularExpression?) -> DateAndTimeType? {
-        if let matcher = matcher {
-            if let result = matcher.firstMatch(in: string, options: [], range: NSRange(location: 0, length: string.count)) {
-                let formatter = DateFormatter()
-                let dateString = matcher.replacementString(for: result, in: string, offset: 0, template: "$2").replacingOccurrences(of: "<", with: "").replacingOccurrences(of: ">", with: "")
-                
-                let dateFormates: [(String, Bool)] = [
-                    ("yyyy-MM-dd EEE HH:mm", true),
-                    ("yyyy-MM-dd HH:mm", true),
-                    ("yyyy-MM-dd EEE", false),
-                    ("yyyy-MM-dd", false)]
-                
-                for (format, includeTime) in dateFormates {
-                    formatter.dateFormat = format
-                    if let date = formatter.date(from: dateString) {
-                        return DateAndTimeType(date: date, includeTime: includeTime)
-                    }
-                }
-            }
-        }
-        
-        return nil
-    }
-    
-    public func toScheduleString() -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = self.includeTime ? "yyyy-MM-dd EEE HH:mm" : "yyyy-MM-dd EEE"
-        return "SCHEDULED: <\(formatter.string(from: self.date))>"
-    }
-    
-    public func toDueDateString() -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = self.includeTime ? "yyyy-MM-dd EEE HH:mm" : "yyyy-MM-dd EEE"
-        return "DEADLINE: <\(formatter.string(from: self.date))>"
     }
 }

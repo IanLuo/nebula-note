@@ -13,8 +13,9 @@ import Business
 
 public class DocumentBrowserTests: XCTestCase {
     public override func tearDown() {
-        try? FileManager.default.contentsOfDirectory(atPath: File.Folder.document("files").path).forEach {
-            try? FileManager.default.removeItem(atPath: "\(File.Folder.document("files").path)/\($0)")
+        let url = URL.directory(location: URLLocation.document, relativePath: "files")
+        try? FileManager.default.contentsOfDirectory(atPath: url.path).forEach {
+            try? FileManager.default.removeItem(atPath: "\(url.path)/\($0)")
         }
     }
     

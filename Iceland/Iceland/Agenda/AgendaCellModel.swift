@@ -26,8 +26,8 @@ public class AgendaCellModel {
         self.heading = heading
         self.headingText = heading.text.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
         self.contentSummary = heading.paragraphSummery.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
-        self.schedule = heading.schedule
-        self.due = heading.due
+//        self.schedule = heading.schedule
+//        self.due = heading.due
         self.planning = heading.planning
         self.tags = heading.tags
     }

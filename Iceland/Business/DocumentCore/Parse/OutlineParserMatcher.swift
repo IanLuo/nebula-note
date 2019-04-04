@@ -53,39 +53,50 @@ extension OutlineParser {
     
     public struct Matcher {
         public struct Node {
-            public static var heading = try? NSRegularExpression(pattern: RegexPattern.Node.heading, options: [.anchorsMatchLines])
-            public static var checkbox = try? NSRegularExpression(pattern: RegexPattern.Node.checkBox, options: [])
-            public static var ordedList = try? NSRegularExpression(pattern: RegexPattern.Node.orderedList, options: [.anchorsMatchLines])
-            public static var unorderedList = try? NSRegularExpression(pattern: RegexPattern.Node.unorderedList, options: [.anchorsMatchLines])
-            public static var seperator = try? NSRegularExpression(pattern: RegexPattern.Node.seperator, options: [.anchorsMatchLines])
-            public static var attachment = try? NSRegularExpression(pattern: RegexPattern.Node.attachment, options: [])
-            public static var footnote = try? NSRegularExpression(pattern: RegexPattern.Node.footnote, options: [.anchorsMatchLines])
-            public static var codeBlockBegin = try? NSRegularExpression(pattern: RegexPattern.Element.CodeBlock.begin, options: [.anchorsMatchLines])
-            public static var codeBlockEnd = try? NSRegularExpression(pattern: RegexPattern.Element.CodeBlock.end, options: [.anchorsMatchLines])
-            public static var quoteBlockBegin = try? NSRegularExpression(pattern: RegexPattern.Element.QuoteBlock.begin, options: [.anchorsMatchLines])
-            public static var quoteBlockEnd = try? NSRegularExpression(pattern: RegexPattern.Element.QuoteBlock.end, options: [.anchorsMatchLines])
+            public static var heading = try! NSRegularExpression(pattern: RegexPattern.Node.heading, options: [.anchorsMatchLines])
+            public static var checkbox = try! NSRegularExpression(pattern: RegexPattern.Node.checkBox, options: [])
+            public static var ordedList = try! NSRegularExpression(pattern: RegexPattern.Node.orderedList, options: [.anchorsMatchLines])
+            public static var unorderedList = try! NSRegularExpression(pattern: RegexPattern.Node.unorderedList, options: [.anchorsMatchLines])
+            public static var seperator = try! NSRegularExpression(pattern: RegexPattern.Node.seperator, options: [.anchorsMatchLines])
+            public static var attachment = try! NSRegularExpression(pattern: RegexPattern.Node.attachment, options: [])
+            public static var footnote = try! NSRegularExpression(pattern: RegexPattern.Node.footnote, options: [.anchorsMatchLines])
+            public static var codeBlockBegin = try! NSRegularExpression(pattern: RegexPattern.Element.CodeBlock.begin, options: [.anchorsMatchLines])
+            public static var codeBlockEnd = try! NSRegularExpression(pattern: RegexPattern.Element.CodeBlock.end, options: [.anchorsMatchLines])
+            public static var quoteBlockBegin = try! NSRegularExpression(pattern: RegexPattern.Element.QuoteBlock.begin, options: [.anchorsMatchLines])
+            public static var quoteBlockEnd = try! NSRegularExpression(pattern: RegexPattern.Element.QuoteBlock.end, options: [.anchorsMatchLines])
         }
         
         public struct Element {
             public struct Heading {
-                public static var planning = try? NSRegularExpression(pattern: RegexPattern.Element.Heading.planning, options: [])
-                public static var schedule = try? NSRegularExpression(pattern: RegexPattern.Element.Heading.schedule, options: [])
-                public static var due = try? NSRegularExpression(pattern: RegexPattern.Element.Heading.due, options: [])
-                public static var timeRange = try? NSRegularExpression(pattern: RegexPattern.Element.Heading.timeRangePattern, options: [])
-                public static var dateRange = try? NSRegularExpression(pattern: RegexPattern.Element.Heading.dateAndTimeRange, options: [])
-                public static var tags = try? NSRegularExpression(pattern: RegexPattern.Element.Heading.tags, options: [])
+                public static var planning = try! NSRegularExpression(pattern: RegexPattern.Element.Heading.planning, options: [])
+                public static var tags = try! NSRegularExpression(pattern: RegexPattern.Element.Heading.tags, options: [])
+            }
+            
+            public struct DateAndTime {
+                public static var schedule = try! NSRegularExpression(pattern: RegexPattern.Element.DateAndTime.schedule, options: [])
+                public static var due = try! NSRegularExpression(pattern: RegexPattern.Element.DateAndTime.due, options: [])
+                public static var timeRange = try! NSRegularExpression(pattern: RegexPattern.Element.DateAndTime.timeRangePattern, options: [])
+                public static var dateRange = try! NSRegularExpression(pattern: RegexPattern.Element.DateAndTime.dateAndTimeRange, options: [])
+                public static var dateAndTime = try! NSRegularExpression(pattern: RegexPattern.Element.DateAndTime.dateAndTimePattern, options: [])
+                public static var dateAndTimeWhole = try! NSRegularExpression(pattern: RegexPattern.Element.DateAndTime.dateAndTimePatternWhole, options: [])
+                public static var anyDateAndTime = try! NSRegularExpression(pattern: RegexPattern.Element.DateAndTime.anyDateAndTime, options: [])
+                
+                public static var `repeat` = try! NSRegularExpression(pattern: RegexPattern.Element.DateAndTime.dateAndTimeRepeatPattern, options: [])
+                public static var time = try! NSRegularExpression(pattern: RegexPattern.Element.DateAndTime.timePattern, options: [])
+                public static var weekday = try! NSRegularExpression(pattern: RegexPattern.Element.DateAndTime.weekdayPattern, options: [])
+                public static var timeRangePart = try! NSRegularExpression(pattern: RegexPattern.Element.DateAndTime.timeRangePartPattern, options: [])
             }
             
             public struct TextMark {
-                public static var bold = try? NSRegularExpression(pattern: RegexPattern.Element.TextMark.bold, options: [])
-                public static var itatic = try? NSRegularExpression(pattern: RegexPattern.Element.TextMark.italic, options: [])
-                public static var underscore = try? NSRegularExpression(pattern: RegexPattern.Element.TextMark.underscore, options: [])
-                public static var strikthrough = try? NSRegularExpression(pattern: RegexPattern.Element.TextMark.strikeThough, options: [])
-                public static var verbatim = try? NSRegularExpression(pattern: RegexPattern.Element.TextMark.verbatim, options: [])
-                public static var code = try? NSRegularExpression(pattern: RegexPattern.Element.TextMark.code, options: [])
+                public static var bold = try! NSRegularExpression(pattern: RegexPattern.Element.TextMark.bold, options: [])
+                public static var itatic = try! NSRegularExpression(pattern: RegexPattern.Element.TextMark.italic, options: [])
+                public static var underscore = try! NSRegularExpression(pattern: RegexPattern.Element.TextMark.underscore, options: [])
+                public static var strikthrough = try! NSRegularExpression(pattern: RegexPattern.Element.TextMark.strikeThough, options: [])
+                public static var verbatim = try! NSRegularExpression(pattern: RegexPattern.Element.TextMark.verbatim, options: [])
+                public static var code = try! NSRegularExpression(pattern: RegexPattern.Element.TextMark.code, options: [])
             }
             
-            public static var link = try? NSRegularExpression(pattern: RegexPattern.Element.link, options: [])
+            public static var link = try! NSRegularExpression(pattern: RegexPattern.Element.link, options: [])
         }
     }
     
@@ -181,11 +192,11 @@ extension OutlineParser {
         private static let character = "\\p{L}"
         
         public struct Node {
-            public static let heading =         "^(\\*+) (.)+(([\\t ])+\(Element.Heading.schedule)|([\\t ])+\(Element.Heading.due)){0,2}"
+            public static let heading =         "^(\\*+) (.)+\\n"
             public static let codeBlock =       "^[\\t ]*\\#\\+BEGIN\\_SRC( [\(character)\\.]*)?\\n([^\\#\\+END\\_SRC]*)\\n\\s*\\#\\+END\\_SRC[\\t ]*\\n"
             public static let checkBox =        "[\\t ]* \\[(X| |\\-)\\]"
             public static let unorderedList =   "^[\\t ]*([\\-\\+]) .*"
-            public static let orderedList =     "^[\\t ]*([a-zA-Z0-9]+[\\.\\)\\>]) .*"
+            public static let orderedList =     "^[\\t ]*(\(character)+[\\.\\)\\>]) .*"
             public static let seperator =       "^[\\t ]*(\\-{5,}[\\t ]*)"
             public static let attachment =      "\\#\\+ATTACHMENT\\:(image|video|audio|sketch|location)=([A-Z0-9\\-]+)" // like: #+ATTACHMENT:LKS-JDLF-JSDL-JFLSDF)
             public static let quote =           "^[\\t ]*\\#\\+BEGIN\\_QUOTE\\n([^\\#\\+END\\_QUOTE]*)\\n\\s*\\#\\+END\\_QUOTE[\\t ]*\\n"
@@ -204,16 +215,23 @@ extension OutlineParser {
             }
             
             public struct Heading {
-                private static let timePattern =            "[0-9]{1,2}\\:[0-9]{1,2}"
-                private static let dateRepeatPattern =      "\\+[0-9]+(d|w|m|y){1}"
-                private static let weekdayPattern =         "[A-Z]{1}[a-z]{2}"
-                public static let dateAndTimePattern =     "\\<\\d{4}\\-\\d{1,2}\\-\\d{1,2}( \(weekdayPattern))?( (\(timePattern)))?( \(dateRepeatPattern))?\\>"
-                public static let dateAndTimeRange =        "(\(dateAndTimePattern))\\-\\-(\(dateAndTimePattern))"
-                public static let timeRangePattern =       "\\<(\\d{4}\\-\\d{1,2}\\-\\d{1,2}( \(weekdayPattern))?) (\(timePattern))\\-(\(timePattern))"
-                public static let schedule =                "(SCHEDULED\\: (\(dateAndTimePattern)))"
-                public static let due =                     "(DEADLINE\\: (\(dateAndTimePattern)))"
                 public static let planning =                " (\(Values.Heading.Planning.pattern))? "
-                public static let tags =                    "(\\:([a-zA-Z0-9]+\\:)+)"
+                public static let tags =                    "(\\:(\(character)+\\:)+)"
+            }
+            
+            public struct DateAndTime {
+                internal static let timePattern =                 "[0-9]{1,2}\\:[0-9]{1,2}"
+                internal static let dateAndTimeRepeatPattern =          " \\+([0-9])+(d|w|m|y){1}"
+                internal static let weekdayPattern =             " [A-Z]{1}[a-z]{2}"
+                internal static let timeRangePartPattern =          "\(timePattern)\\-\(timePattern)"
+                
+                public static let dateAndTimePattern =          "\\<\\d{4}\\-\\d{1,2}\\-\\d{1,2}(\(weekdayPattern))?( (\(timePattern)))?(\(dateAndTimeRepeatPattern))?\\>"
+                public static let dateAndTimePatternWhole =     "^\\<(\\d{4}\\-\\d{1,2}\\-\\d{1,2})(\(weekdayPattern))?( (\(timePattern)))?(\(dateAndTimeRepeatPattern))?\\>$"
+                public static let dateAndTimeRange =            "(\(dateAndTimePattern))\\-\\-(\(dateAndTimePattern))"
+                public static let timeRangePattern =            "\\<\\d{4}\\-\\d{1,2}\\-\\d{1,2}(\(weekdayPattern))? \(timeRangePartPattern)\\>"
+                public static let schedule =                    "SCHEDULED\\: (\(dateAndTimePattern))"
+                public static let due =                         "DEADLINE\\: (\(dateAndTimePattern))"
+                public static let anyDateAndTime =              "\(schedule)|\(due)|\(dateAndTimeRange)|\(timeRangePattern)"
             }
             
             public struct TextMark {

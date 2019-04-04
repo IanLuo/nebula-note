@@ -82,22 +82,23 @@ public class AgendaViewModel {
             let soon = Date(timeInterval: 3 * 24 * 60, since: today)
             self._documentSearchManager.searchHeading(options: [.tag, .due, .schedule, .planning], filter: { [weak self] (heading: DocumentHeading) -> Bool in
                 
-                self?._headingsHasModification = false
+//                self?._headingsHasModification = false
                 
-                switch filterType {
-                case .tag(let tag):
-                    return heading.tags?.contains(tag) ?? false
-                case .overdue:
-                    return (heading.due?.date ?? Date.distantFuture) <= today
-                case .scheduled:
-                    return (heading.schedule?.date ?? Date.distantFuture) <= today
-                case .dueSoon:
-                    return (heading.due?.date ?? Date.distantFuture) <= soon
-                case .scheduledSoon:
-                    return (heading.schedule?.date ?? Date.distantFuture) <= soon
-                case .withoutDate:
-                    return heading.tags == nil
-                }
+//                switch filterType {
+//                case .tag(let tag):
+//                    return heading.tags?.contains(tag) ?? false
+//                case .overdue:
+//                    return (heading.due?.date ?? Date.distantFuture) <= today
+//                case .scheduled:
+//                    return (heading.schedule?.date ?? Date.distantFuture) <= today
+//                case .dueSoon:
+//                    return (heading.due?.date ?? Date.distantFuture) <= soon
+//                case .scheduledSoon:
+//                    return (heading.schedule?.date ?? Date.distantFuture) <= soon
+//                case .withoutDate:
+//                    return heading.tags == nil
+//                }
+                return true
             }, resultAdded: { (results: [DocumentHeading]) in
                 data.append(contentsOf: results)
             }, complete: { [weak self] in
@@ -122,28 +123,28 @@ public class AgendaViewModel {
                     return true
                 }
             }
-            if let due = heading.due, due.date >= today {
-                return true
-            }
-            if let schedule = heading.schedule, schedule.date >= today {
-                return true
-            }
+//            if let due = heading.due, due.date >= today {
+//                return true
+//            }
+//            if let schedule = heading.schedule, schedule.date >= today {
+//                return true
+//            }
             
             return false
         }, resultAdded: { (results: [DocumentHeading]) in
-            let sorted = results.sorted { left, right in
-                switch (left.due, left.schedule, right.due, right.schedule) {
-                case (let leftDue?, _, let rightDue?, _): return leftDue.date.timeIntervalSince1970 < rightDue.date.timeIntervalSince1970
-                case (_?, _, nil, _): return true
-                case (nil, _, _?, _): return false
-                case (nil, let leftSchedule?, nil, let rightSchedule?): return leftSchedule.date.timeIntervalSince1970 < rightSchedule.date.timeIntervalSince1970
-                case (_, _?, _, nil): return true
-                case (_, nil, _, _?): return false
-                default: return true
-                }
-            }
+//            let sorted = results.sorted { left, right in
+//                switch (left.due, left.schedule, right.due, right.schedule) {
+//                case (let leftDue?, _, let rightDue?, _): return leftDue.date.timeIntervalSince1970 < rightDue.date.timeIntervalSince1970
+//                case (_?, _, nil, _): return true
+//                case (nil, _, _?, _): return false
+//                case (nil, let leftSchedule?, nil, let rightSchedule?): return leftSchedule.date.timeIntervalSince1970 < rightSchedule.date.timeIntervalSince1970
+//                case (_, _?, _, nil): return true
+//                case (_, nil, _, _?): return false
+//                default: return true
+//                }
+//            }
             
-            searchResults.append(contentsOf: sorted)
+//            searchResults.append(contentsOf: sorted)
         }, complete: { [weak self] in
             self?._allData = searchResults.map { AgendaCellModel(heading: $0) }
             self?.delegate?.didCompleteLoadAllData()

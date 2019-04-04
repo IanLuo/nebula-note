@@ -13,8 +13,9 @@ import Business
 
 public class DocumentSearchTests: XCTestCase {
     public override func setUp() {
-        try? FileManager.default.contentsOfDirectory(atPath: File.Folder.document("files").path).forEach {
-            try? FileManager.default.removeItem(atPath: "\(File.Folder.document("files").path)/\($0)")
+        let url = URL.directory(location: URLLocation.document, relativePath: "files")
+        try? FileManager.default.contentsOfDirectory(atPath: url.path).forEach {
+            try? FileManager.default.removeItem(atPath: "\(url.path)/\($0)")
         }
     }
     
@@ -78,18 +79,18 @@ public class DocumentSearchTests: XCTestCase {
         let searchManager = DocumentSearchManager(eventObserver: EventObserver(), editorContext: EditorContext(eventObserver: EventObserver()))
         let today: Date = Date()
         
-        searchManager.searchHeading(options: [.schedule], filter: { (heading: DocumentHeading) -> Bool in
-            return heading.schedule!.date <= today
-        }, resultAdded: { (results: [DocumentHeading]) in
-            results.forEach {
-                print($0.text)
-                print("--------")
-            }
-        }, complete: {
-            ex.fulfill()
-        }, failed: { error in
-            print(error)
-        })
+//        searchManager.searchHeading(options: [.schedule], filter: { (heading: DocumentHeading) -> Bool in
+//            return heading.schedule!.date <= today
+//        }, resultAdded: { (results: [DocumentHeading]) in
+//            results.forEach {
+//                print($0.text)
+//                print("--------")
+//            }
+//        }, complete: {
+//            ex.fulfill()
+//        }, failed: { error in
+//            print(error)
+//        })
         
         wait(for: [ex], timeout: 10)
     }
@@ -98,19 +99,19 @@ public class DocumentSearchTests: XCTestCase {
         let ex = expectation(description: "search due")
         let searchManager = DocumentSearchManager(eventObserver: EventObserver(), editorContext: EditorContext(eventObserver: EventObserver()))
         let today: Date = Date()
-        
-        searchManager.searchHeading(options: [.due], filter: { (heading: DocumentHeading) -> Bool in
-            return heading.due!.date <= today
-        }, resultAdded: { (results: [DocumentHeading]) in
-            results.forEach {
-                print($0.text)
-                print("--------")
-            }
-        }, complete: {
-            ex.fulfill()
-        }, failed: { error in
-            print(error)
-        })
+//        
+//        searchManager.searchHeading(options: [.due], filter: { (heading: DocumentHeading) -> Bool in
+//            return heading.due!.date <= today
+//        }, resultAdded: { (results: [DocumentHeading]) in
+//            results.forEach {
+//                print($0.text)
+//                print("--------")
+//            }
+//        }, complete: {
+//            ex.fulfill()
+//        }, failed: { error in
+//            print(error)
+//        })
         
         wait(for: [ex], timeout: 10)
     }

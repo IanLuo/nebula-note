@@ -83,21 +83,21 @@ public class DashboardViewModel {
                     self.withoutTag.append(heading)
                 }
                 
-                if let schedule = heading.schedule {
-                    if schedule.date <= today {
-                        self.scheduled.append(heading)
-                    } else if schedule.date <= soon {
-                        self.scheduledSoon.append(heading)
-                    }
-                }
-                
-                if let due = heading.due {
-                    if due.date <= today {
-                        self.overdue.append(heading)
-                    } else if due.date <= soon {
-                        self.overdueSoon.append(heading)
-                    }
-                }
+//                if let schedule = heading.schedule {
+//                    if schedule.date <= today {
+//                        self.scheduled.append(heading)
+//                    } else if schedule.date <= soon {
+//                        self.scheduledSoon.append(heading)
+//                    }
+//                }
+//                
+//                if let due = heading.due {
+//                    if due.date <= today {
+//                        self.overdue.append(heading)
+//                    } else if due.date <= soon {
+//                        self.overdueSoon.append(heading)
+//                    }
+//                }
             }
         }, complete: {
             self._isHeadingsNeedsReload = false

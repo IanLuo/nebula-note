@@ -9,19 +9,19 @@
 import Foundation
 import XCTest
 @testable import Business
-import Storage
 
 public class DocumentEditTests: XCTestCase {
     public override func tearDown() {
-        try? FileManager.default.contentsOfDirectory(atPath: File.Folder.document("files").path).forEach {
-            try? FileManager.default.removeItem(atPath: "\(File.Folder.document("files").path)/\($0)")
+        let url = URL.directory(location: URLLocation.document, relativePath: "files")
+        try? FileManager.default.contentsOfDirectory(atPath: url.path).forEach {
+            try? FileManager.default.removeItem(atPath: "\(url.path)/\($0)")
         }
     }
     
     let editorContext = EditorContext(eventObserver: EventObserver())
     
     func testCreateDocument() throws {
-        let url = URL(fileURLWithPath: "testCreateDocument.org", relativeTo: File.Folder.document("files").url)
+        let url = URL(fileURLWithPath: "testCreateDocument.org", relativeTo: URL.directory(location: URLLocation.document, relativePath: "files"))
         try "1".write(to: url, atomically: true, encoding: .utf8)
         let service = editorContext.request(url: url)
         let ex = expectation(description: "")
@@ -41,7 +41,7 @@ public class DocumentEditTests: XCTestCase {
     
     func testLoadDocument() {
         let ex = expectation(description: "load")
-        let service = editorContext.request(url: URL(fileURLWithPath: "load test.org", relativeTo: File.Folder.document("files").url))
+        let service = editorContext.request(url: URL(fileURLWithPath: "load test.org", relativeTo: URL.directory(location: URLLocation.document, relativePath: "files")))
         
         service.start {_, s in
             s.replace(text: "testLoadDocument", range: NSRange(location: 0, length: 0))
@@ -58,11 +58,11 @@ public class DocumentEditTests: XCTestCase {
     
     func testRenameDocument() {
         let ex = expectation(description: "")
-        editorContext.request(url: URL(fileURLWithPath: "rename test", relativeTo: File.Folder.document("files").url))
+        editorContext.request(url: URL(fileURLWithPath: "rename test", relativeTo: URL.directory(location: URLLocation.document, relativePath: "files")))
             .start {_, s in
                 s.string = "testRenameDocument"
                 s.rename(newTitle: "changed test") { _ in
-                    self.editorContext.request(url: URL(fileURLWithPath: "changed test", relativeTo: File.Folder.document("files").url))
+                    self.editorContext.request(url: URL(fileURLWithPath: "changed test", relativeTo: URL.directory(location: URLLocation.document, relativePath: "files")))
                         .start {_, s in
                             XCTAssertEqual(s.string, "testRenameDocument")
                             ex.fulfill()
@@ -75,7 +75,7 @@ public class DocumentEditTests: XCTestCase {
     
     func testDeleteDocument() throws {
         let ex = expectation(description: "")
-        let url = URL(fileURLWithPath: "delete test.org", relativeTo: File.Folder.document("files").url)
+        let url = URL(fileURLWithPath: "delete test.org", relativeTo: URL.directory(location: URLLocation.document, relativePath: "files"))
         try "1".write(to: url, atomically: true, encoding: .utf8)
         XCTAssertEqual(FileManager.default.fileExists(atPath: url.path), true)
         editorContext.request(url: url)
@@ -152,10 +152,10 @@ content in third
     }
     
     private func createDocumentForTest(text: String, complete: @escaping (Document?) -> Void) {
-        let folder = File.Folder.temp("test")
-        folder.createFolderIfNeeded { _ in
+        let folder = URL.directory(location: URLLocation.temporary, relativePath: "test")
+        folder.createDirectoryIfNeeded { _ in
             
-            let tempURL = File(folder, fileName: "\(UUID().uuidString).org").url
+            let tempURL = URL.file(directory: folder, name: UUID().uuidString, extension: "orf")
             
             let document = Document(fileURL: tempURL)
             self.editorContext.request(url: document.fileURL).close()
