@@ -21,10 +21,10 @@ public enum EditAction {
     case toggleFoldStatus(Int)
     case toggleCheckboxStatus(NSRange)
     case addAttachment(Int, String, String)
-    case changeDue(DateAndTimeType, Int)
-    case removeDue(Int)
-    case changeSchedule(DateAndTimeType, Int)
-    case removeSchedule(Int)
+//    case changeDue(DateAndTimeType, Int)
+//    case removeDue(Int)
+//    case changeSchedule(DateAndTimeType, Int)
+//    case removeSchedule(Int)
     case addTag(String, Int)
     case removeTag(String, Int)
     case changePlanning(String, Int)
@@ -50,14 +50,14 @@ public enum EditAction {
             return CheckboxCommand(range: range)
         case let .addAttachment(location, attachmentId, kind):
             return AddAttachmentCommand(attachmentId: attachmentId, location: location, kind: kind)
-        case let .changeDue(due, location):
-            return DueCommand(location: location, kind: .addOrUpdate(due))
-        case let .removeDue(location):
-            return DueCommand(location: location, kind: .remove)
-        case let .changeSchedule(schedule, location):
-            return ScheduleCommand(location: location, kind: .addOrUpdate(schedule))
-        case  let .removeSchedule(location):
-            return ScheduleCommand(location: location, kind: .remove)
+//        case let .changeDue(due, location):
+//            return DueCommand(location: location, kind: .addOrUpdate(due))
+//        case let .removeDue(location):
+//            return DueCommand(location: location, kind: .remove)
+//        case let .changeSchedule(schedule, location):
+//            return ScheduleCommand(location: location, kind: .addOrUpdate(schedule))
+//        case  let .removeSchedule(location):
+//            return ScheduleCommand(location: location, kind: .remove)
         case let .addTag(tag, location):
             return TagCommand(location: location, kind: .add(tag))
         case let .removeTag(tag, location):
@@ -154,7 +154,7 @@ public class DocumentEditViewModel {
     
     public func headingString(index: Int) -> String {
         let heading = self.headings[index]
-        let length = [heading.tags, heading.due, heading.schedule]
+        let length = [heading.tags, heading.priority]
             .map { $0?.location ?? Int.max }
             .reduce(heading.range.upperBound, min) - heading.range.location - heading.level + 1
         

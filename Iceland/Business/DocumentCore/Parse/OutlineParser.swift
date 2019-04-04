@@ -31,7 +31,7 @@ public class OutlineParser {
         let totalRange = range ?? NSRange(location: 0, length: str.count)
         
         self.delegate?.didStartParsing(text: str)
-        // MARK: heading， 并且找出 level, planning, schedule, due 的 range
+        // MARK: heading， 并且找出 level, planning, priority 的 range
         if includeParsee.contains(.heading) {
             let result: [[String: NSRange]] = Matcher.Node.heading
                 .matches(in: str, options: [], range: totalRange)
@@ -50,6 +50,10 @@ public class OutlineParser {
                         (Matcher.Element.Heading.tags, { result in
                             guard result.range(at: 1).location != NSNotFound else { return }
                             comp[Key.Element.Heading.tags] = result.range(at: 1)
+                        }),
+                        (Matcher.Element.Heading.priority, { result in
+                            guard result.range.location != NSNotFound else { return }
+                            comp[Key.Element.Heading.priority] = result.range
                         })]
                     
                     headingContentParse.forEach { regex, action in
@@ -66,6 +70,20 @@ public class OutlineParser {
             if result.count > 0 {
                 self.logResult(result)
                 self.delegate?.didFoundHeadings(text:str, headingDataRanges: result)
+            }
+        }
+        
+        // MARK: 解析 date and time
+        if includeParsee.contains(.dateAndTime) {
+            let result: [NSRange] = Matcher.Element.DateAndTime.anyDateAndTime
+                .matches(in: str, options: [], range: totalRange)
+                .map { (result: NSTextCheckingResult) -> NSRange in
+                    return result.range
+                }
+            
+            if result.count > 0 {
+//                self.logResult(result)
+                self.delegate?.didFoundDateAndTime(text: str, ranges: result)
             }
         }
         
@@ -283,6 +301,7 @@ public protocol OutlineParserDelegate: class {
     func didFoundAttachment(text: String, attachmentRanges: [[String: NSRange]])
     func didFoundLink(text: String, urlRanges: [[String: NSRange]])
     func didFoundTextMark(text: String, markRanges: [[String: NSRange]])
+    func didFoundDateAndTime(text: String, ranges: [NSRange])
     func didStartParsing(text: String)
     func didCompleteParsing(text: String)
 }
@@ -304,6 +323,7 @@ extension OutlineParserDelegate {
     public func didFoundAttachment(text: String, attachmentRanges: [[String : NSRange]]) {}
     public func didFoundLink(text: String, urlRanges: [[String : NSRange]]) {}
     public func didFoundTextMark(text: String, markRanges: [[String : NSRange]]) {}
+    public func didFoundDateAndTime(text: String, ranges: [NSRange]) {}
     public func didStartParsing(text: String) {}
     public func didCompleteParsing(text: String) {}
 }

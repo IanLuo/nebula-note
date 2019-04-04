@@ -160,41 +160,41 @@ public class AgendaViewModel {
     public func updateSchedule(index: Int, _ schedule: DateAndTimeType?) {
         let heading = self.data[index]
         
-        if let editorService = self.coordinator?.dependency.editorContext.request(url: heading.url) {
-            editorService.open(completion: { [unowned editorService] _ in
-                if let schedule = schedule {
-                    if editorService.toggleContentAction(command: ScheduleCommand(location: heading.headingLocation, kind: .addOrUpdate(schedule)), foreceWriteToFile: true) {
-                        heading.schedule = schedule
-                        self.delegate?.didLoadData()
-                    }
-                } else {
-                    if editorService.toggleContentAction(command: ScheduleCommand(location: heading.headingLocation, kind: .remove), foreceWriteToFile: true) {
-                        heading.schedule = nil
-                        self.delegate?.didLoadData()
-                    }
-                }
-            })
-        }
+//        if let editorService = self.coordinator?.dependency.editorContext.request(url: heading.url) {
+//            editorService.open(completion: { [unowned editorService] _ in
+//                if let schedule = schedule {
+//                    if editorService.toggleContentAction(command: ScheduleCommand(location: heading.headingLocation, kind: .addOrUpdate(schedule)), foreceWriteToFile: true) {
+//                        heading.schedule = schedule
+//                        self.delegate?.didLoadData()
+//                    }
+//                } else {
+//                    if editorService.toggleContentAction(command: ScheduleCommand(location: heading.headingLocation, kind: .remove), foreceWriteToFile: true) {
+//                        heading.schedule = nil
+//                        self.delegate?.didLoadData()
+//                    }
+//                }
+//            })
+//        }
     }
     
     public func updateDue(index: Int, _ due: DateAndTimeType?) {
         let heading = self.data[index]
         
-        if let editorService = self.coordinator?.dependency.editorContext.request(url: heading.url) {
-            editorService.open(completion: { [unowned editorService] _ in
-                if let due = due {
-                    if editorService.toggleContentAction(command: DueCommand(location: heading.headingLocation, kind: .addOrUpdate(due)), foreceWriteToFile: true) {
-                        heading.due = due
-                        self.delegate?.didLoadData()
-                    }
-                } else {
-                    if editorService.toggleContentAction(command: DueCommand(location: heading.headingLocation, kind: .remove), foreceWriteToFile: true) {
-                        heading.due = nil
-                        self.delegate?.didLoadData()
-                    }
-                }
-            })
-        }
+//        if let editorService = self.coordinator?.dependency.editorContext.request(url: heading.url) {
+//            editorService.open(completion: { [unowned editorService] _ in
+//                if let due = due {
+//                    if editorService.toggleContentAction(command: DueCommand(location: heading.headingLocation, kind: .addOrUpdate(due)), foreceWriteToFile: true) {
+//                        heading.due = due
+//                        self.delegate?.didLoadData()
+//                    }
+//                } else {
+//                    if editorService.toggleContentAction(command: DueCommand(location: heading.headingLocation, kind: .remove), foreceWriteToFile: true) {
+//                        heading.due = nil
+//                        self.delegate?.didLoadData()
+//                    }
+//                }
+//            })
+//        }
     }
     
     public func updatePlanning(index: Int, _ planning: String?) {

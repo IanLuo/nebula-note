@@ -46,8 +46,9 @@ extension OutlineParser {
         public static let codeBlockEnd: ParseeTypes = ParseeTypes(rawValue: 1 << 9)
         public static let quoteBlockBegin: ParseeTypes = ParseeTypes(rawValue: 1 << 10)
         public static let quoteBlockEnd: ParseeTypes = ParseeTypes(rawValue: 1 << 11)
+        public static let dateAndTime: ParseeTypes = ParseeTypes(rawValue: 1 << 12)
         
-        public static let all: ParseeTypes = [.heading, .checkbox, orderedList, unorderedList, seperator, attachment, link, .footnote, .codeBlockBegin, .codeBlockEnd, .quoteBlockBegin, .quoteBlockEnd]
+        public static let all: ParseeTypes = [.heading, .checkbox, orderedList, unorderedList, seperator, attachment, link, .footnote, .codeBlockBegin, .codeBlockEnd, .quoteBlockBegin, .quoteBlockEnd, .dateAndTime]
         public static let onlyHeading: ParseeTypes = [.checkbox, orderedList, unorderedList, seperator, attachment, link, .footnote]
     }
     
@@ -70,6 +71,7 @@ extension OutlineParser {
             public struct Heading {
                 public static var planning = try! NSRegularExpression(pattern: RegexPattern.Element.Heading.planning, options: [])
                 public static var tags = try! NSRegularExpression(pattern: RegexPattern.Element.Heading.tags, options: [])
+                public static var priority = try! NSRegularExpression(pattern: RegexPattern.Element.Heading.priority, options: [])
             }
             
             public struct DateAndTime {
@@ -119,15 +121,14 @@ extension OutlineParser {
             public struct Heading {
                 public static let level = "level"
                 public static let planning = "planning"
-                public static let schedule = "schedule"
-                public static let scheduleDateAndTime = "scheduleDateAndTime"
                 public static let timeRange = "timeRange"
                 public static let dateRange = "dateRange"
                 public static let closed = "closed" // 暂时没有使用
-                public static let due = "due"
-                public static let dueDateAndTime = "dueDateAndTime"
                 public static let tags = "tags"
+                public static let priority = "priority"
             }
+            
+            public static let dateAndTIme = "dateAndTime"
             
             public struct Checkbox {
                 public static let status = "status"
@@ -217,6 +218,7 @@ extension OutlineParser {
             public struct Heading {
                 public static let planning =                " (\(Values.Heading.Planning.pattern))? "
                 public static let tags =                    "(\\:(\(character)+\\:)+)"
+                public static let priority =                "\\[\\#[A-Z]\\]"
             }
             
             public struct DateAndTime {
@@ -229,8 +231,8 @@ extension OutlineParser {
                 public static let dateAndTimePatternWhole =     "^\\<(\\d{4}\\-\\d{1,2}\\-\\d{1,2})(\(weekdayPattern))?( (\(timePattern)))?(\(dateAndTimeRepeatPattern))?\\>$"
                 public static let dateAndTimeRange =            "(\(dateAndTimePattern))\\-\\-(\(dateAndTimePattern))"
                 public static let timeRangePattern =            "\\<\\d{4}\\-\\d{1,2}\\-\\d{1,2}(\(weekdayPattern))? \(timeRangePartPattern)\\>"
-                public static let schedule =                    "SCHEDULED\\: (\(dateAndTimePattern))"
-                public static let due =                         "DEADLINE\\: (\(dateAndTimePattern))"
+                public static let schedule =                    "\(Values.Other.scheduled)\\: (\(dateAndTimePattern))"
+                public static let due =                         "\(Values.Other.due)\\: (\(dateAndTimePattern))"
                 public static let anyDateAndTime =              "\(schedule)|\(due)|\(dateAndTimeRange)|\(timeRangePattern)"
             }
             
@@ -265,6 +267,11 @@ extension OutlineParser {
         public struct Character {
             public static let linebreak = "\n"
             public static let tab = "\t"
+        }
+        
+        public struct Other {
+            public static let scheduled = "SCHEDULED"
+            public static let due = "DEADLINE"
         }
         
         public struct Attachment {

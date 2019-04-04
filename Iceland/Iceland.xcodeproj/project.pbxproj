@@ -121,7 +121,6 @@
 		E47A9A5221F1F7690050ABC9 /* DateHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E47A9A5121F1F7690050ABC9 /* DateHelper.swift */; };
 		E4821DB122374C420063C0B2 /* WeakArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4821DB022374C420063C0B2 /* WeakArray.swift */; };
 		E48329A0224A2ED1008B60ED /* SyncTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E483299F224A2ED1008B60ED /* SyncTests.swift */; };
-		E4895FF721D9244000D2B19D /* EditRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4895FF621D9244000D2B19D /* EditRecord.swift */; };
 		E498AAFF21BBE9B900D2A8EA /* CaptureListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E498AAFE21BBE9B800D2A8EA /* CaptureListViewController.swift */; };
 		E498AB0121BBEBB300D2A8EA /* CaptureListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E498AB0021BBEBB300D2A8EA /* CaptureListViewModel.swift */; };
 		E49F3E4421B8EDBD003F468D /* AgendaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49F3E4321B8EDBD003F468D /* AgendaViewController.swift */; };
@@ -335,7 +334,6 @@
 		E47A9A5121F1F7690050ABC9 /* DateHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateHelper.swift; sourceTree = "<group>"; };
 		E4821DB022374C420063C0B2 /* WeakArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeakArray.swift; sourceTree = "<group>"; };
 		E483299F224A2ED1008B60ED /* SyncTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncTests.swift; sourceTree = "<group>"; };
-		E4895FF621D9244000D2B19D /* EditRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditRecord.swift; sourceTree = "<group>"; };
 		E4895FFF21DB065000D2B19D /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		E489600121DB06C800D2B19D /* Localization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Localization.swift; sourceTree = "<group>"; };
 		E498AAFE21BBE9B800D2A8EA /* CaptureListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureListViewController.swift; sourceTree = "<group>"; };
@@ -644,7 +642,6 @@
 				E43B90A4222902FC0008B44C /* Events */,
 				E41B892A21E34288009C5AD7 /* Audio */,
 				E4895FF821D9245A00D2B19D /* Settings */,
-				E4895FF521D9241100D2B19D /* EditRecord */,
 				E41F86DA21900902006C4CDB /* AttachmentModel */,
 				E41CB1B821D88DA200EF0A3C /* DocumentCore */,
 				E41CB19D21D88D9300EF0A3C /* Business.h */,
@@ -903,14 +900,6 @@
 				E4B331DC22432F9400A7F44F /* ConfirmViewController.swift */,
 			);
 			path = UIViewController;
-			sourceTree = "<group>";
-		};
-		E4895FF521D9241100D2B19D /* EditRecord */ = {
-			isa = PBXGroup;
-			children = (
-				E4895FF621D9244000D2B19D /* EditRecord.swift */,
-			);
-			path = EditRecord;
 			sourceTree = "<group>";
 		};
 		E4895FF821D9245A00D2B19D /* Settings */ = {
@@ -1449,7 +1438,6 @@
 				E41CB1B921D88DCE00EF0A3C /* OutlineAttribute.swift in Sources */,
 				E4E1B146224B27040061D327 /* KeyValueStore.swift in Sources */,
 				E4F9ECE121FECE5C009A08CD /* PathManager.swift in Sources */,
-				E4895FF721D9244000D2B19D /* EditRecord.swift in Sources */,
 				E43E7877222AD0C70007EE4F /* DocumentContentCommands.swift in Sources */,
 				E41CB1C621D88DFD00EF0A3C /* Attachment.swift in Sources */,
 				E41CB1C221D88DD700EF0A3C /* SyncManager.swift in Sources */,

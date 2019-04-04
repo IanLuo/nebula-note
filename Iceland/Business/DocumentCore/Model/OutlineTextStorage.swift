@@ -513,35 +513,6 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 self.addAttribute(OutlineAttribute.Heading.level, value: $0, range: levelRange)
             }
             
-            if let scheduleRange = $0[OutlineParser.Key.Element.Heading.schedule],
-                let scheduleDateAndTimeRange = $0[OutlineParser.Key.Element.Heading.scheduleDateAndTime] {
-                
-                self.addAttribute(OutlineAttribute.hidden, value: OutlineAttribute.hiddenValueDefault, range: scheduleRange.moveLeftBound(by: 1))
-                
-                self.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment,
-                                    OutlineAttribute.showAttachment: OutlineAttribute.Heading.schedule], range: scheduleRange.head(1))
-                
-                self.addAttributes([OutlineAttribute.Heading.schedule: scheduleRange], range: scheduleRange)
-                self._addButtonAttributes(range: scheduleRange, color: InterfaceTheme.Color.descriptive)
-
-                self.addAttribute(OutlineAttribute.hidden, value: 0, range: scheduleDateAndTimeRange)
-                self.addAttribute(NSAttributedString.Key.font, value: InterfaceTheme.Font.footnote, range: scheduleDateAndTimeRange)
-            }
-            
-            if let dueRange = $0[OutlineParser.Key.Element.Heading.due],
-                let dueDateAndTimeRange = $0[OutlineParser.Key.Element.Heading.dueDateAndTime] {
-                self.addAttribute(OutlineAttribute.hidden, value: OutlineAttribute.hiddenValueDefault, range: dueRange.moveLeftBound(by: 1))
-                
-                self.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment,
-                                    OutlineAttribute.showAttachment: OutlineAttribute.Heading.due], range: dueRange.head(1))
-                
-                self.addAttributes([OutlineAttribute.Heading.due: dueRange], range: dueRange)
-                self._addButtonAttributes(range: dueRange, color: InterfaceTheme.Color.descriptive)
-                
-                self.addAttribute(OutlineAttribute.hidden, value: 0, range: dueDateAndTimeRange)
-                self.addAttribute(NSAttributedString.Key.font, value: InterfaceTheme.Font.footnote, range: dueDateAndTimeRange)
-            }
-            
             if let tagsRange = $0[OutlineParser.Key.Element.Heading.tags] {
                 self.addAttribute(OutlineAttribute.Heading.tags, value: tagsRange, range: tagsRange)
                 self.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment,
@@ -552,6 +523,16 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 self._addButtonAttributes(range: tagsRange, color: InterfaceTheme.Color.descriptive)
                 
                 self.addAttribute(NSAttributedString.Key.font, value: InterfaceTheme.Font.footnote, range: tagsRange)
+            }
+            
+            if let priorityRange = $0[OutlineParser.Key.Element.Heading.priority] {
+                self.addAttribute(OutlineAttribute.Heading.tags, value: priorityRange, range: priorityRange)
+                self.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment,
+                                    OutlineAttribute.showAttachment: OutlineAttribute.Heading.tags], range: priorityRange.head(1))
+                
+                self._addButtonAttributes(range: priorityRange, color: InterfaceTheme.Color.descriptive)
+                
+                self.addAttribute(NSAttributedString.Key.font, value: InterfaceTheme.Font.footnote, range: priorityRange)
             }
             
             if let planningRange = $0[OutlineParser.Key.Element.Heading.planning] {
@@ -566,6 +547,19 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 }
                 self.addAttribute(NSAttributedString.Key.font, value: InterfaceTheme.Font.footnote, range: planningRange)
             }
+        }
+    }
+    
+    public func didFoundDateAndTime(text: String, ranges: [NSRange]) {
+        for range in ranges {
+            self.addAttribute(OutlineAttribute.hidden, value: OutlineAttribute.hiddenValueDefault, range: range.tail(1))
+
+            self.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment,
+                                OutlineAttribute.showAttachment: OutlineAttribute.Heading.due], range: range.head(1))
+
+            self._addButtonAttributes(range: range, color: InterfaceTheme.Color.descriptive)
+
+            self.addAttribute(NSAttributedString.Key.font, value: InterfaceTheme.Font.footnote, range: range)
         }
     }
     

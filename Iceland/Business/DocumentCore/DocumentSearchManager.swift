@@ -12,8 +12,6 @@ public struct DocumentHeading {
     public let level: Int
     public let tags: [String]?
     public let planning: String?
-//    public let due: DateAndTimeType?
-//    public let schedule: DateAndTimeType?
     public let text: String
     public let paragraphSummery: String
     public let length: Int
@@ -37,18 +35,6 @@ public struct DocumentHeading {
         } else {
             self.planning = nil
         }
-        
-//        if let due = headingToken.due {
-//            self.due = DateAndTimeType.createFromDue(documentString.substring(due))
-//        } else {
-//            self.due = nil
-//        }
-//        
-//        if let schedule = headingToken.schedule {
-//            self.schedule = DateAndTimeType.createFromSchedule(documentString.substring(schedule))
-//        } else {
-//            self.schedule = nil
-//        }
         
         self.text = documentString.substring(headingToken.range)
         
@@ -218,8 +204,6 @@ public class DocumentSearchManager {
                         
                         let documentSearchResult = parseDelegate.headings.filter { heading in
                             if options.contains(DocumentHeadingSearchOptions.tag) && heading.tags != nil { return true }
-                            if options.contains(DocumentHeadingSearchOptions.due) && heading.due != nil { return true }
-                            if options.contains(DocumentHeadingSearchOptions.schedule) && heading.schedule != nil { return true }
                             if options.contains(DocumentHeadingSearchOptions.planning) && heading.planning != nil { return true }
                             return false
                         }

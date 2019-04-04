@@ -104,19 +104,14 @@ public class HeadingToken: Token {
     public var tags: NSRange? {
         return data[OutlineParser.Key.Element.Heading.tags]?.offset(offset)
     }
-    /// 当前 heading 的 schedule
-    public var schedule: NSRange? {
-        return data[OutlineParser.Key.Element.Heading.schedule]?.offset(offset)
-    }
-    /// 当前 heading 的 due
-    public var due: NSRange? {
-        return data[OutlineParser.Key.Element.Heading.due]?.offset(offset)
-    }
     /// 当前的 heading level
     public var level: Int {
         return data[OutlineParser.Key.Element.Heading.level]!.length
     }
-    
+    /// 当前的 heading level
+    public var priority: NSRange? {
+        return data[OutlineParser.Key.Element.Heading.priority]?.offset(offset)
+    }
     /// close 标记
     public var closed: NSRange? {
         return data[OutlineParser.Key.Element.Heading.closed]?.offset(offset)
@@ -130,33 +125,15 @@ public class HeadingToken: Token {
             return tags.location
         }
         
-        if let schedule = self.schedule, let due = self.due {
-            return min(schedule.location, due.location)
-        }
-        
-        if let schedule = self.schedule {
-            return schedule.location
-        }
-        
-        if let due = self.due {
-            return due.location
-        }
-        
         return range.upperBound
     }
     
     public var headingTextRange: NSRange {
         var headingContentRange: NSRange = self.range.offset(-self.range.location).moveLeftBound(by: self.level + 1)
         
-        if let schedule = self.schedule {
-            let dateRange = schedule.offset(-self.range.location)
-            let newUpperBound = min(dateRange.lowerBound, headingContentRange.upperBound)
-            headingContentRange = headingContentRange.withNewUpperBound(newUpperBound)
-        }
-        
-        if let due = self.due {
-            let dateRange = due.offset(-self.range.location)
-            let newUpperBound = min(dateRange.lowerBound, headingContentRange.upperBound)
+        if let priority = self.priority {
+            let priorityRange = priority.offset(-self.range.location)
+            let newUpperBound = min(priorityRange.lowerBound, headingContentRange.upperBound)
             headingContentRange = headingContentRange.withNewUpperBound(newUpperBound)
         }
         

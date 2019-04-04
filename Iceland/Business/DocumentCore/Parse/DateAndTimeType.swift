@@ -26,6 +26,16 @@ public class DateAndTimeType {
             default: return RepeatMode.none
             }
         }
+        
+        public var mark: String? {
+            switch self {
+            case let .day(count): return "+\(count)d"
+            case let .week(count): return "+\(count)w"
+            case let .month(count): return "+\(count)m"
+            case let .year(count): return "+\(count)y"
+            case .none: return nil
+            }
+        }
     }
     
     public let isDue: Bool
@@ -136,15 +146,67 @@ public class DateAndTimeType {
 }
 
 extension DateAndTimeType {
-    public func toScheduleString() -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = self.includeTime ? "yyyy-MM-dd EEE HH:mm" : "yyyy-MM-dd EEE"
-        return "SCHEDULED: <\(formatter.string(from: self.date))>"
+    private func _markStringWithoutDuration(date: Date) -> String {
+        var string: String = ""
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        
+        string = dateFormatter.string(from: date)
+        
+        if self.includeTime {
+            dateFormatter.dateFormat = "HH:mm"
+            string.append(" \(dateFormatter.string(from: date))")
+        }
+        
+        if let repeatMark = self.repeateMode.mark {
+            string.append(" \(repeatMark)")
+        }
+        
+        return "<\(string)>"
     }
     
-    public func toDueDateString() -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = self.includeTime ? "yyyy-MM-dd EEE HH:mm" : "yyyy-MM-dd EEE"
-        return "DEADLINE: <\(formatter.string(from: self.date))>"
+    public var markString: String {
+        if self.isSchedule {
+            return "\(OutlineParser.Values.Other.scheduled) \(self._markStringWithoutDuration(date: self.date))"
+        }
+        
+        if self.isDue {
+            return "\(OutlineParser.Values.Other.due) \(self._markStringWithoutDuration(date: self.date))"
+        }
+        
+        if self.duration > 0 {
+            let string1 = self._markStringWithoutDuration(date: self.date)
+            let string2 = self._markStringWithoutDuration(date: Date(timeInterval: self.duration, since: self.date))
+            
+            return "\(string1)--\(string2)"
+        }
+        
+        return self._markStringWithoutDuration(date: self.date)
+    }
+}
+
+extension DateAndTimeType: Equatable {
+    public static func ==(lhs: DateAndTimeType, rhs: DateAndTimeType) -> Bool {
+        return lhs.date == rhs.date
+            && lhs.repeateMode.mark == rhs.repeateMode.mark
+            && lhs.duration == rhs.duration
+            && lhs.isSchedule == rhs.isSchedule
+            && lhs.isDue == rhs.isDue
+    }
+}
+
+extension Date {
+    public static func ==(lhs: Date, rhs: Date) -> Bool {
+        let calendar = Calendar.current
+        
+        let lhsComps = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: lhs)
+        let rhsComps = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: rhs)
+        
+        return lhsComps.year == rhsComps.year
+            && lhsComps.month == rhsComps.month
+            && lhsComps.day == rhsComps.day
+            && lhsComps.hour == rhsComps.hour
+            && lhsComps.minute == rhsComps.minute
     }
 }

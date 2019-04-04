@@ -75,7 +75,7 @@ public class FoldingAndUnfoldingCommand: DocumentContentCommand {
     }
     
     fileprivate func _markUnfold(heading: HeadingToken, textStorage: OutlineTextStorage) {
-        var range = heading.contentRange.moveRightBound(by: -1)
+        var range = heading.contentRange.moveLeftBound(by: -1).moveRightBound(by: -1)
         range = range.length > 0 ? range : NSRange(location: range.location, length: 0)
         
         textStorage.addAttributes([OutlineAttribute.tempHidden: 0,
@@ -88,7 +88,7 @@ public class FoldingAndUnfoldingCommand: DocumentContentCommand {
     }
     
     fileprivate func _markFold(heading: HeadingToken, textStorage: OutlineTextStorage) {
-        var range = heading.contentRange.moveRightBound(by: -1)
+        var range = heading.contentRange.moveLeftBound(by: -1).moveRightBound(by: -1)
         range = range.length > 0 ? range : NSRange(location: range.location, length: 0)
         
         textStorage.addAttributes([OutlineAttribute.tempHidden: OutlineAttribute.hiddenValueFolded,
@@ -111,7 +111,7 @@ public class FoldingAndUnfoldingCommand: DocumentContentCommand {
         self._markUnfold(heading: heading, textStorage: textStorage)
         for child in textStorage.subheadings(of: heading) {
             if !self._isFolded(heading: child, textStorage: textStorage) {
-                self._markFold(heading: child, textStorage: textStorage)
+                self._fold(heading: child, textStorage: textStorage)
             }
         }
     }
@@ -119,7 +119,9 @@ public class FoldingAndUnfoldingCommand: DocumentContentCommand {
     fileprivate func _fold(heading: HeadingToken, textStorage: OutlineTextStorage) {
         self._markFold(heading: heading, textStorage: textStorage)
         for child in textStorage.subheadings(of: heading) {
-            self._fold(heading: child, textStorage: textStorage)
+            if !self._isFolded(heading: child, textStorage: textStorage) {
+                self._fold(heading: child, textStorage: textStorage)
+            }
         }
     }
     
@@ -231,92 +233,92 @@ public class CheckboxCommand: DocumentContentCommand {
 }
 
 // MARK: - DueCommand
-public class DueCommand: DocumentContentCommand {
-    public enum Kind {
-        case addOrUpdate(DateAndTimeType)
-        case remove
-    }
-    
-    public let kind: Kind
-    public let location: Int
-    
-    public init(location: Int, kind: Kind) {
-        self.location = location
-        self.kind = kind
-    }
-    
-    public func toggle(textStorage: OutlineTextStorage) -> Bool {
-        guard let heading = textStorage.heading(contains: self.location) else { return false }
-        
-        switch self.kind {
-        case .remove:
-            guard let due = heading.due else { return false }
-            
-            let extendedRange = NSRange(location: due.location - 1, length: due.length + 1) // 还有一个换行符
-            textStorage.replaceCharacters(in: extendedRange, with: "")
-        case .addOrUpdate(let date):
-            // 如果有 due，添加在 due 之前
-            
-            var editRange: NSRange!
-            var replacement: String = date.toDueDateString()
-            
-            if let oldDue = heading.due {
-                editRange = oldDue
-            } else {
-                editRange = heading.range.tail(0)
-                replacement.insert("\n", at: replacement.startIndex)
-            }
-            
-            textStorage.replaceCharacters(in: editRange, with: replacement)
-        }
-        
-        return true
-    }
-}
+//public class DueCommand: DocumentContentCommand {
+//    public enum Kind {
+//        case addOrUpdate(DateAndTimeType)
+//        case remove
+//    }
+//
+//    public let kind: Kind
+//    public let location: Int
+//
+//    public init(location: Int, kind: Kind) {
+//        self.location = location
+//        self.kind = kind
+//    }
+//
+//    public func toggle(textStorage: OutlineTextStorage) -> Bool {
+//        guard let heading = textStorage.heading(contains: self.location) else { return false }
+//
+//        switch self.kind {
+//        case .remove:
+//            guard let due = heading.due else { return false }
+//
+//            let extendedRange = NSRange(location: due.location - 1, length: due.length + 1) // 还有一个换行符
+//            textStorage.replaceCharacters(in: extendedRange, with: "")
+//        case .addOrUpdate(let date):
+//            // 如果有 due，添加在 due 之前
+//
+//            var editRange: NSRange!
+//            var replacement: String = date.markString
+//
+//            if let oldDue = heading.due {
+//                editRange = oldDue
+//            } else {
+//                editRange = heading.range.tail(0)
+//                replacement.insert("\n", at: replacement.startIndex)
+//            }
+//
+//            textStorage.replaceCharacters(in: editRange, with: replacement)
+//        }
+//
+//        return true
+//    }
+//}
 
 // MARK: - ScheduleCommand
-public class ScheduleCommand: DocumentContentCommand {
-    public enum Kind {
-        case addOrUpdate(DateAndTimeType)
-        case remove
-    }
-    
-    public let kind: Kind
-    public let location: Int
-    
-    public init(location: Int, kind: Kind) {
-        self.location = location
-        self.kind = kind
-    }
-    
-    public func toggle(textStorage: OutlineTextStorage) -> Bool {
-        guard let heading = textStorage.heading(contains: self.location) else { return false }
-        
-        switch self.kind {
-        case .remove:
-            guard let scheduleRange = heading.schedule else { return false }
-            
-            let extendedRange = NSRange(location: scheduleRange.location - 1, length: scheduleRange.length + 1) // 还有一个换行符
-            textStorage.replaceCharacters(in: extendedRange, with: "")
-        case .addOrUpdate(let date):
-            // 如果有 due，添加在 due 之前
-            
-            var editRange: NSRange!
-            var replacement: String = date.toScheduleString()
-            
-            if let oldSchedule = heading.schedule {
-                editRange = oldSchedule
-            } else {
-                editRange = heading.range.tail(0)
-                replacement.insert("\n", at: replacement.startIndex)
-            }
-            
-            textStorage.replaceCharacters(in: editRange, with: replacement)
-        }
-        
-        return true
-    }
-}
+//public class ScheduleCommand: DocumentContentCommand {
+//    public enum Kind {
+//        case addOrUpdate(DateAndTimeType)
+//        case remove
+//    }
+//
+//    public let kind: Kind
+//    public let location: Int
+//
+//    public init(location: Int, kind: Kind) {
+//        self.location = location
+//        self.kind = kind
+//    }
+//
+//    public func toggle(textStorage: OutlineTextStorage) -> Bool {
+//        guard let heading = textStorage.heading(contains: self.location) else { return false }
+//
+//        switch self.kind {
+//        case .remove:
+//            guard let scheduleRange = heading.schedule else { return false }
+//
+//            let extendedRange = NSRange(location: scheduleRange.location - 1, length: scheduleRange.length + 1) // 还有一个换行符
+//            textStorage.replaceCharacters(in: extendedRange, with: "")
+//        case .addOrUpdate(let date):
+//            // 如果有 due，添加在 due 之前
+//
+//            var editRange: NSRange!
+//            var replacement: String = date.markString
+//
+//            if let oldSchedule = heading.schedule {
+//                editRange = oldSchedule
+//            } else {
+//                editRange = heading.range.tail(0)
+//                replacement.insert("\n", at: replacement.startIndex)
+//            }
+//
+//            textStorage.replaceCharacters(in: editRange, with: replacement)
+//        }
+//
+//        return true
+//    }
+//}
 
 // MARK: - TagCommand
 public class TagCommand: DocumentContentCommand {
