@@ -169,8 +169,12 @@ public class DocumentEditViewModel {
     public func performAction(_ action: EditAction, undoManager: UndoManager) -> DocumentContentCommandResult {
         let result = self.editorService.toggleContentAction(command: action.command)
         
-        undoManager.registerUndo(withTarget: self.editorService) { service in
-            _ = service.toggleContentAction(command: ReplaceTextCommand(range: result.range!, textToReplace: result.content!))
+        undoManager.registerUndo(withTarget: self) { [unowned undoManager] viewModel in
+            _ = viewModel.editorService.toggleContentAction(command: ReplaceTextCommand(range: result.range!, textToReplace: result.content!))
+            
+            undoManager.registerUndo(withTarget: viewModel, handler: { viewModel in
+                viewModel.performAction(action, undoManager: undoManager)
+            })
         }
         
         return result

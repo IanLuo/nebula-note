@@ -68,8 +68,8 @@ public class AgendaTableCell: UITableViewCell {
     
     private let _actionButton: UIButton = {
         let button = UIButton()
-        button.setImage(Asset.Assets.more.image.withRenderingMode(.alwaysTemplate), for: .normal)
-        button.tintColor = InterfaceTheme.Color.interactive
+        button.setImage(Asset.Assets.moreV.image.withRenderingMode(.alwaysTemplate), for: .normal)
+        button.tintColor = InterfaceTheme.Color.descriptiveHighlighted
         return button
     }()
     
@@ -100,18 +100,18 @@ public class AgendaTableCell: UITableViewCell {
         self.infoView.addSubview(self.tagsView)
         self.infoView.addSubview(self._actionButton)
         
-        self._actionButton.sideAnchor(for: [.top, .right, .bottom], to: self.infoView, edgeInsets: .init(top: 0, left: 0, bottom: 0, right: -Layout.edgeInsets.right))
+        self._actionButton.sideAnchor(for: [.top, .right, .bottom], to: self.infoView, edgeInsets: .init(top: 0, left: 0, bottom: 0, right: 0))
         self._actionButton.sizeAnchor(width: 44)
         
-        self.documentNameLabel.sideAnchor(for: [.left, .top, .right], to: self.infoView, edgeInsets: .init(top: 10, left: Layout.edgeInsets.left, bottom: 0, right: -44 - Layout.edgeInsets.right))
+        self.documentNameLabel.sideAnchor(for: [.left, .top, .right], to: self.infoView, edgeInsets: .init(top: 20, left: 20, bottom: 0, right: -44))
         self.documentNameLabel.sizeAnchor(height: 20)
         
         self.documentNameLabel.columnAnchor(view: self.headingTextLabel, space: 10)
-        self.headingTextLabel.sideAnchor(for: [.left, .right], to: self.infoView, edgeInsets: .init(top: 0, left: Layout.edgeInsets.left, bottom: 0, right: -44 - Layout.edgeInsets.right))
+        self.headingTextLabel.sideAnchor(for: [.left, .right], to: self.infoView, edgeInsets: .init(top: 0, left: 20, bottom: 0, right: -44))
         self.headingTextLabel.sizeAnchor(height: 20)
         
         self.headingTextLabel.columnAnchor(view: self.tagsView, space: 10)
-        self.tagsView.sideAnchor(for: [.left, .right, .bottom], to: self.infoView, edgeInsets: .init(top: 0, left: Layout.edgeInsets.left, bottom: 0, right: -44 - Layout.edgeInsets.right))
+        self.tagsView.sideAnchor(for: [.left, .right, .bottom], to: self.infoView, edgeInsets: .init(top: 0, left: 20, bottom: -10, right: -44))
         self.tagsView.sizeAnchor(height: 0)
         
         self.tagsView.addSubview(self.tagsIcon)
@@ -145,11 +145,9 @@ public class AgendaTableCell: UITableViewCell {
         
         if let tags = cellModel.tags {
             self.tagsView.constraint(for: Position.height)?.constant = 20
-            self.tagsView.constraint(for: Position.bottom)?.constant = -10
             self.tagsView.isHidden = false
             self.tagsLabel.text = tags.joined(separator: " ")
         } else {
-            self.tagsView.constraint(for: Position.bottom)?.constant = 0
             self.tagsView.constraint(for: Position.height)?.constant = 0
             self.tagsView.isHidden = true
         }

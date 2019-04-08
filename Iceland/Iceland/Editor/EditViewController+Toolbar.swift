@@ -43,10 +43,6 @@ extension DocumentEditViewController: DocumentEditToolbarDelegate {
                                           direction: MoveCursorCommand.Direction.left)
                             .toggle(textView: self.textView)
                     }
-                case .moveUp:
-                    break // TOOD:
-                case .moveDown:
-                    break // TODO:
                 case .undo:
                     UndoCommand().toggle(textView: self.textView)
                 case .redo:
@@ -81,9 +77,15 @@ extension DocumentEditViewController: DocumentEditToolbarDelegate {
                         self.textView.selectedRange = self.textView.selectedRange.offset(result.delta)
                     }
                 case .list:
-                    self.viewModel.performAction(.unorderedListSwitch(self.textView.selectedRange.location), undoManager: self.textView.undoManager!)
+                    let result = self.viewModel.performAction(.unorderedListSwitch(self.textView.selectedRange.location), undoManager: self.textView.undoManager!)
+                    if result.delta != 0 {
+                        self.textView.selectedRange = self.textView.selectedRange.offset(result.delta)
+                    }
                 case .orderedList:
-                    self.viewModel.performAction(.orderedListSwitch(self.textView.selectedRange.location), undoManager: self.textView.undoManager!)
+                    let result = self.viewModel.performAction(.orderedListSwitch(self.textView.selectedRange.location), undoManager: self.textView.undoManager!)
+                    if result.delta != 0 {
+                        self.textView.selectedRange = self.textView.selectedRange.offset(result.delta)
+                    }
                 case .sourcecode:
                     self.viewModel.performAction(.codeBlock(self.textView.selectedRange.location), undoManager: self.textView.undoManager!)
                 case .quote:
@@ -98,6 +100,8 @@ extension DocumentEditViewController: DocumentEditToolbarDelegate {
             MoveCursorCommand(locaton: self.textView.selectedRange.location,
                               direction: MoveCursorCommand.Direction.right)
                 .toggle(textView: self.textView)
+        } else {
+            self.textView.selectedRange = self.textView.selectedRange.offset(1)
         }
     }
 }

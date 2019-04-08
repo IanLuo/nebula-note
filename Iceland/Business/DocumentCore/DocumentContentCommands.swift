@@ -82,10 +82,10 @@ public class ReplaceTextCommand: DocumentContentCommand {
     }
     
     public func toggle(textStorage: OutlineTextStorage) -> DocumentContentCommandResult {
-        textStorage.replaceCharacters(in: self.range, with: self.textToReplace)
         let undoRange = NSRange(location: self.range.location, length: self.textToReplace.count)
         let undoString = textStorage.string.substring(self.range)
-        return DocumentContentCommandResult(isModifiedContent: true, range: undoRange, content: undoString, delta: undoRange.length - self.range.length)
+        textStorage.replaceCharacters(in: self.range, with: self.textToReplace)
+        return DocumentContentCommandResult(isModifiedContent: true, range: undoRange, content: undoString, delta: self.textToReplace.count - self.range.length)
     }
 }
 

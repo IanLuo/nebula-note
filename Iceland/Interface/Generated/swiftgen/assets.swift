@@ -44,6 +44,7 @@ public enum Asset {
     public static let master = ImageAsset(name: "master")
     public static let minus1 = ImageAsset(name: "minus-1")
     public static let minus = ImageAsset(name: "minus")
+    public static let moreV = ImageAsset(name: "more-v")
     public static let more = ImageAsset(name: "more")
     public static let moveDown = ImageAsset(name: "move-down")
     public static let moveUp = ImageAsset(name: "move-up")

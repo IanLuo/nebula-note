@@ -51,7 +51,7 @@ public struct TextMarkActions: ToolbarActionGroupProtocol {
 }
 
 public struct IndentActions: ToolbarActionGroupProtocol {
-    public var actions: [ToolbarActionProtocol] = [NormalAction.decreaseIndent, NormalAction.increaseIndent, NormalAction.moveUp, NormalAction.moveDown]
+    public var actions: [ToolbarActionProtocol] = [NormalAction.decreaseIndent, NormalAction.increaseIndent]
     
     public var title: String = ""
     
@@ -70,8 +70,6 @@ public enum NormalAction: ToolbarActionProtocol, DocumentActon {
     case heading
     case increaseIndent
     case decreaseIndent
-    case moveUp
-    case moveDown
     case undo
     case redo
     case bold
@@ -96,10 +94,6 @@ public enum NormalAction: ToolbarActionProtocol, DocumentActon {
             return L10n.Document.Edit.Action.increaseIndent
         case .decreaseIndent:
             return L10n.Document.Edit.Action.decreaseIndent
-        case .moveUp:
-            return ""
-        case .moveDown:
-            return ""
         case .undo:
             return L10n.Document.Edit.Action.undo
         case .redo:
@@ -137,10 +131,6 @@ public enum NormalAction: ToolbarActionProtocol, DocumentActon {
             return Asset.Assets.tapAdd.image
         case .decreaseIndent:
             return Asset.Assets.tapMinus.image
-        case .moveUp:
-            return Asset.Assets.moveUp.image
-        case .moveDown:
-            return Asset.Assets.moveDown.image
         case .undo:
             return Asset.Assets.undo.image
         case .redo:
