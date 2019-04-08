@@ -65,7 +65,8 @@ extension EditorCoordinator: CaptureListCoordinatorDelegate {
         if let editViewController = self.viewController as? DocumentEditViewController {
             self._viewModel.performAction(EditAction.addAttachment(editViewController.textView.selectedRange.location,
                                                                    attachment.key,
-                                                                   attachment.kind.rawValue))
+                                                                   attachment.kind.rawValue),
+                                          undoManager: editViewController.textView.undoManager!)
         }
     }
 }

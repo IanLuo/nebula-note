@@ -166,8 +166,14 @@ public class DocumentEditViewModel {
     }
     
     @discardableResult
-    public func performAction(_ action: EditAction) -> Bool {
-        return self.editorService.toggleContentAction(command: action.command)
+    public func performAction(_ action: EditAction, undoManager: UndoManager) -> DocumentContentCommandResult {
+        let result = self.editorService.toggleContentAction(command: action.command)
+        
+        undoManager.registerUndo(withTarget: self.editorService) { service in
+            _ = service.toggleContentAction(command: ReplaceTextCommand(range: result.range!, textToReplace: result.content!))
+        }
+        
+        return result
     }
     
     public func level(index: Int) -> Int {

@@ -92,7 +92,7 @@ extension EditorController: OutlineTextStorageDelegate {
 }
 
 extension EditorController {
-    public func toggleAction(command: DocumentContentCommand) -> Bool {
+    public func toggleAction(command: DocumentContentCommand) -> DocumentContentCommandResult {
         return command.toggle(textStorage: self.textStorage)
     }
 }

@@ -39,17 +39,16 @@ public class EditorService {
         self._document.updateContent(_editorController.string)
     }
     
-    public func toggleContentAction(command: DocumentContentCommand, foreceWriteToFile: Bool = false) -> Bool {
-        if self._editorController.toggleAction(command: command) {
-            
+    public func toggleContentAction(command: DocumentContentCommand, foreceWriteToFile: Bool = false) -> DocumentContentCommandResult {
+        let result = self._editorController.toggleAction(command: command)
+        if result.isModifiedContent {
             if foreceWriteToFile {
                 self.save()
             } else {
                 self.markAsContentUpdated()
             }
-            return true
         }
-        return false
+        return result
     }
     
     public func start(complete: @escaping (Bool, EditorService) -> Void) {
