@@ -25,6 +25,7 @@ public class ReplaceHeadingCommand: DocumentContentCommand {
         guard let fromHeading = textStorage.heading(contains: self.fromLocation) else { return false }
         guard let toHeading = textStorage.heading(contains: self.fromLocation) else { return false }
         
+        // FIXME: use replace text command to perform replacement
         let temp = textStorage.string.substring(fromHeading.paragraphRange)
         textStorage.replaceCharacters(in: fromHeading.paragraphRange, with: textStorage.string.substring(toHeading.paragraphRange))
         textStorage.replaceCharacters(in: toHeading.paragraphRange, with: temp)
@@ -53,15 +54,27 @@ public class InsertTextToHeadingCommand: DocumentContentCommand {
 
 // MARK: - InsertTextCommand
 public class InsertTextCommand: DocumentContentCommand {
-    let location: Int
-    let textToInsert: String
+    let replaceTextCommand: ReplaceTextCommand
     public init(location: Int, textToInsert: String) {
-        self.location = location
-        self.textToInsert = textToInsert
+        self.replaceTextCommand = ReplaceTextCommand(range: NSRange(location: location, length: 0), textToReplace: textToInsert)
     }
     
     public func toggle(textStorage: OutlineTextStorage) -> Bool {
-        textStorage.replaceCharacters(in: NSRange(location: self.location, length: 0), with: self.textToInsert)
+        return self.replaceTextCommand.toggle(textStorage: textStorage)
+    }
+}
+
+public class ReplaceTextCommand: DocumentContentCommand {
+    let range: NSRange
+    let textToReplace: String
+    
+    public init(range: NSRange, textToReplace: String) {
+        self.range = range
+        self.textToReplace = textToReplace
+    }
+    
+    public func toggle(textStorage: OutlineTextStorage) -> Bool {
+        textStorage.replaceCharacters(in: self.range, with: self.textToReplace)
         return true
     }
 }
@@ -209,7 +222,7 @@ public class AddAttachmentCommand: DocumentContentCommand {
 }
 
 // MARK: - CheckboxCommand
-public class CheckboxCommand: DocumentContentCommand {
+public class CheckboxStatusCommand: DocumentContentCommand {
     public func toggle(textStorage: OutlineTextStorage) -> Bool {
         let status = textStorage.string.substring(range)
         
@@ -222,9 +235,7 @@ public class CheckboxCommand: DocumentContentCommand {
             nextStatus = OutlineParser.Values.Checkbox.checked
         }
         
-        textStorage.replaceCharacters(in: range, with: nextStatus)
-        
-        return true
+        return ReplaceTextCommand(range: range, textToReplace: nextStatus).toggle(textStorage: textStorage)
     }
     
     public let range: NSRange
@@ -232,93 +243,20 @@ public class CheckboxCommand: DocumentContentCommand {
     public init(range: NSRange) { self.range = range}
 }
 
-// MARK: - DueCommand
-//public class DueCommand: DocumentContentCommand {
-//    public enum Kind {
-//        case addOrUpdate(DateAndTimeType)
-//        case remove
-//    }
-//
-//    public let kind: Kind
-//    public let location: Int
-//
-//    public init(location: Int, kind: Kind) {
-//        self.location = location
-//        self.kind = kind
-//    }
-//
-//    public func toggle(textStorage: OutlineTextStorage) -> Bool {
-//        guard let heading = textStorage.heading(contains: self.location) else { return false }
-//
-//        switch self.kind {
-//        case .remove:
-//            guard let due = heading.due else { return false }
-//
-//            let extendedRange = NSRange(location: due.location - 1, length: due.length + 1) // 还有一个换行符
-//            textStorage.replaceCharacters(in: extendedRange, with: "")
-//        case .addOrUpdate(let date):
-//            // 如果有 due，添加在 due 之前
-//
-//            var editRange: NSRange!
-//            var replacement: String = date.markString
-//
-//            if let oldDue = heading.due {
-//                editRange = oldDue
-//            } else {
-//                editRange = heading.range.tail(0)
-//                replacement.insert("\n", at: replacement.startIndex)
-//            }
-//
-//            textStorage.replaceCharacters(in: editRange, with: replacement)
-//        }
-//
-//        return true
-//    }
-//}
-
-// MARK: - ScheduleCommand
-//public class ScheduleCommand: DocumentContentCommand {
-//    public enum Kind {
-//        case addOrUpdate(DateAndTimeType)
-//        case remove
-//    }
-//
-//    public let kind: Kind
-//    public let location: Int
-//
-//    public init(location: Int, kind: Kind) {
-//        self.location = location
-//        self.kind = kind
-//    }
-//
-//    public func toggle(textStorage: OutlineTextStorage) -> Bool {
-//        guard let heading = textStorage.heading(contains: self.location) else { return false }
-//
-//        switch self.kind {
-//        case .remove:
-//            guard let scheduleRange = heading.schedule else { return false }
-//
-//            let extendedRange = NSRange(location: scheduleRange.location - 1, length: scheduleRange.length + 1) // 还有一个换行符
-//            textStorage.replaceCharacters(in: extendedRange, with: "")
-//        case .addOrUpdate(let date):
-//            // 如果有 due，添加在 due 之前
-//
-//            var editRange: NSRange!
-//            var replacement: String = date.markString
-//
-//            if let oldSchedule = heading.schedule {
-//                editRange = oldSchedule
-//            } else {
-//                editRange = heading.range.tail(0)
-//                replacement.insert("\n", at: replacement.startIndex)
-//            }
-//
-//            textStorage.replaceCharacters(in: editRange, with: replacement)
-//        }
-//
-//        return true
-//    }
-//}
+// MARK: - UpdateDateAndTimeCommand
+public class UpdateDateAndTimeCommand: DocumentContentCommand {
+    let range: NSRange
+    let newDateAndTime: DateAndTimeType
+    
+    public init(range: NSRange, dateAndTime: DateAndTimeType) {
+        self.range = range
+        self.newDateAndTime = dateAndTime
+    }
+    
+    public func toggle(textStorage: OutlineTextStorage) -> Bool {
+        return ReplaceTextCommand(range: self.range, textToReplace: self.newDateAndTime.markString).toggle(textStorage: textStorage)
+    }
+}
 
 // MARK: - TagCommand
 public class TagCommand: DocumentContentCommand {
@@ -350,12 +288,12 @@ public class TagCommand: DocumentContentCommand {
                         } else {
                             newTags = newTags.replacingOccurrences(of: "::", with: ":")
                         }
-                        textStorage.replaceCharacters(in: tagsRange, with: newTags)
-                        break
+                        return ReplaceTextCommand(range: tagsRange, textToReplace: newTags).toggle(textStorage: textStorage)
                     }
                 }
             }
             
+            return false
         case .add(let tag):
             if let tagsRange = heading.tags {
                 return InsertTextCommand(location: tagsRange.upperBound, textToInsert: "\(tag):").toggle(textStorage: textStorage)
@@ -364,12 +302,10 @@ public class TagCommand: DocumentContentCommand {
             }
         }
         
-        return true
     }
 }
 
 // MARK: - PlanningCommand
-
 public class PlanningCommand: DocumentContentCommand {
     public enum Kind {
         case addOrUpdate(String)
@@ -390,7 +326,7 @@ public class PlanningCommand: DocumentContentCommand {
         switch self.kind {
         case .remove:
             if let planningRange = heading.planning {
-                textStorage.replaceCharacters(in: planningRange, with: "")
+                return ReplaceTextCommand(range: planningRange, textToReplace: "").toggle(textStorage: textStorage)
             }
         case .addOrUpdate(let planning):
             var editRange: NSRange!
@@ -405,10 +341,10 @@ public class PlanningCommand: DocumentContentCommand {
                 replacement = planning + " "
             }
             
-            textStorage.replaceCharacters(in: editRange, with: replacement)
+            return ReplaceTextCommand(range: editRange, textToReplace: replacement).toggle(textStorage: textStorage)
         }
         
-        return true
+        return false
     }
 }
 
@@ -439,8 +375,8 @@ public class AddMarkCommand: DocumentContentCommand {
     public func toggle(textStorage: OutlineTextStorage) -> Bool {
         let temp = textStorage.string.substring(self.range)
         let replacement = self.markType.mark + temp + self.markType.mark
-        textStorage.replaceCharacters(in: self.range, with: replacement)
-        return true
+
+        return ReplaceTextCommand(range: self.range, textToReplace: replacement).toggle(textStorage: textStorage)
     }
 }
 
@@ -453,8 +389,7 @@ public class AddSeparatorCommand: DocumentContentCommand {
     }
     
     public func toggle(textStorage: OutlineTextStorage) -> Bool {
-        textStorage.replaceCharacters(in: NSRange(location: self.location, length: 0), with: OutlineParser.Values.separator)
-        return true
+        return InsertTextCommand(location: self.location, textToInsert: OutlineParser.Values.separator).toggle(textStorage: textStorage)
     }
 }
 
@@ -475,9 +410,7 @@ public class IncreaseIndentCommand: DocumentContentCommand {
                                                       contentsEnd: &content,
                                                       for: NSRange(location: self.location, length: 0))
 
-        textStorage.replaceCharacters(in: NSRange(location: start, length: 0),
-                                      with: OutlineParser.Values.Character.tab)
-        return true
+        return InsertTextCommand(location: start, textToInsert: OutlineParser.Values.Character.tab).toggle(textStorage: textStorage)
     }
 }
 
@@ -502,8 +435,7 @@ public class DecreaseIndentCommand: DocumentContentCommand {
         if line.hasPrefix(OutlineParser.Values.Character.tab) {
             let range = (line as NSString).range(of: OutlineParser.Values.Character.tab).offset(start)
             if range.length > 0 {
-                textStorage.replaceCharacters(in: range, with: "")
-                return true
+                return ReplaceTextCommand(range: range, textToReplace: "").toggle(textStorage: textStorage)
             } else {
                 return false
             }
@@ -516,26 +448,113 @@ public class DecreaseIndentCommand: DocumentContentCommand {
 
 // MARK: - QuoteBlockCommand
 public class QuoteBlockCommand: DocumentContentCommand {
-    public let range: NSRange
+    public let location: Int
     
-    public init(range: NSRange) {
-        self.range = range
+    public init(location: Int) {
+        self.location = location
     }
     
     public func toggle(textStorage: OutlineTextStorage) -> Bool {
+        // TODO:
         return false
     }
 }
 
 // MARK: -
 public class CodeBlockCommand: DocumentContentCommand {
-    public let range: NSRange
+    public let location: Int
     
-    public init(range: NSRange) {
-        self.range = range
+    public init(location: Int) {
+        self.location = location
     }
     
     public func toggle(textStorage: OutlineTextStorage) -> Bool {
+        // TODO:
         return false
+    }
+}
+
+// MARK: - UnorderdListSwitchCommand
+/// 切换当前行是否 unorderd list
+public class UnorderdListSwitchCommand: DocumentContentCommand {
+    public let location: Int
+    
+    public init(location: Int) {
+        self.location = location
+    }
+    
+    public func toggle(textStorage: OutlineTextStorage) -> Bool {
+        let lineStart = (textStorage.string as NSString).lineRange(for: NSRange(location: self.location, length: 0)).location
+        
+        for case let token in (textStorage.token(at: lineStart) ?? []) where token.name == OutlineParser.Key.Node.unordedList {
+            if let prefixRange = token.data[OutlineParser.Key.Element.UnorderedList.prefix] {
+                return ReplaceTextCommand(range: prefixRange, textToReplace: "").toggle(textStorage: textStorage)
+            } else {
+                return false
+            }
+        }
+        
+        return InsertTextCommand(location: lineStart, textToInsert: OutlineParser.Values.List.unorderedList).toggle(textStorage: textStorage)
+    }
+}
+
+// MARK: - OrderedListSwitchCommand
+/// 切换当前行是否 orderd list
+public class OrderedListSwitchCommand: DocumentContentCommand {
+    public let location: Int
+    
+    public init(location: Int) {
+        self.location = location
+    }
+    
+    public func toggle(textStorage: OutlineTextStorage) -> Bool {
+        let lineStart = (textStorage.string as NSString).lineRange(for: NSRange(location: self.location, length: 0)).location
+        
+        for case let token in (textStorage.token(at: lineStart) ?? []) where token.name == OutlineParser.Key.Node.ordedList {
+            if let prefixRange = token.data[OutlineParser.Key.Element.OrderedList.prefix] {
+                return ReplaceTextCommand(range: prefixRange, textToReplace: "").toggle(textStorage: textStorage)
+            } else {
+                return false
+            }
+        }
+        
+        if lineStart > 0 {
+            // 1. find last line index
+            let lastLineStart = (textStorage.string as NSString).lineRange(for: NSRange(location: lineStart - 1, length: 0)).location
+            for case let token in (textStorage.token(at: lastLineStart) ?? []) where token.name == OutlineParser.Key.Node.ordedList {
+                // 2. insert index
+                let lastPrefix = textStorage.string.substring(token.data[OutlineParser.Key.Element.OrderedList.prefix]!)
+                return InsertTextCommand(location: lineStart,
+                                         textToInsert: OutlineParser.Values.List.orderListIncrease(prefix: lastPrefix))
+                    .toggle(textStorage: textStorage)
+            }
+            
+            // 2.2 use default index
+            return InsertTextCommand(location: lineStart, textToInsert: OutlineParser.Values.List.orderdList(index: "1"))
+                .toggle(textStorage: textStorage)
+        } else {
+            return InsertTextCommand(location: lineStart, textToInsert: OutlineParser.Values.List.orderdList(index: "1"))
+                .toggle(textStorage: textStorage)
+        }
+    }
+}
+
+// MARK: - CheckboxSwitchCommand
+/// 切换当前行是否 checkbox
+public class CheckboxSwitchCommand: DocumentContentCommand {
+    public let location: Int
+    
+    public init(location: Int) {
+        self.location = location
+    }
+    
+    public func toggle(textStorage: OutlineTextStorage) -> Bool {
+        let lineStart = (textStorage.string as NSString).lineRange(for: NSRange(location: self.location, length: 0)).location
+        
+        for case let token in (textStorage.token(at: lineStart) ?? []) where token.name == OutlineParser.Key.Node.checkbox {
+            return ReplaceTextCommand(range: token.range, textToReplace: "").toggle(textStorage: textStorage)
+        }
+        
+        return InsertTextCommand(location: lineStart, textToInsert: OutlineParser.Values.Checkbox.unchecked).toggle(textStorage: textStorage)
     }
 }

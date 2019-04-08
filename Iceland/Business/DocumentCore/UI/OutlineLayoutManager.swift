@@ -54,7 +54,7 @@ public class OutlineLayoutManager: NSLayoutManager {
                     rect.origin.y = rect.origin.y - font.descender
                     rect.size.height = font.lineHeight - font.descender
                     
-                    let path = UIBezierPath(roundedRect: rect, cornerRadius: 6)
+                    let path = UIBezierPath(roundedRect: rect, cornerRadius: 4)
                     path.fill()
                     context.restoreGState()
                 })

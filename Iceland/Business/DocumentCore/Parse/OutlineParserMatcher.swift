@@ -141,6 +141,7 @@ extension OutlineParser {
             
             public struct OrderedList {
                 public static let index = "index"
+                public static let prefix = "prefix"
             }
             
             public struct UnorderedList {
@@ -195,9 +196,9 @@ extension OutlineParser {
         public struct Node {
             public static let heading =         "^(\\*+) (.)+\\n"
             public static let codeBlock =       "^[\\t ]*\\#\\+BEGIN\\_SRC( [\(character)\\.]*)?\\n([^\\#\\+END\\_SRC]*)\\n\\s*\\#\\+END\\_SRC[\\t ]*\\n"
-            public static let checkBox =        "[\\t ]* \\[(X| |\\-)\\]"
-            public static let unorderedList =   "^[\\t ]*([\\-\\+]) .*"
-            public static let orderedList =     "^[\\t ]*(\(character)+[\\.\\)\\>]) .*"
+            public static let checkBox =        "[\\t ]*(\\[(X| |\\-)\\] )"
+            public static let unorderedList =   "^[\\t ]*([\\-\\+] ).*"
+            public static let orderedList =     "^[\\t ]*(([0-9a-zA-Z])+[\\.\\)\\>] ).*"
             public static let seperator =       "^[\\t ]*(\\-{5,}[\\t ]*)"
             public static let attachment =      "\\#\\+ATTACHMENT\\:(image|video|audio|sketch|location)=([A-Z0-9\\-]+)" // like: #+ATTACHMENT:LKS-JDLF-JSDL-JFLSDF)
             public static let quote =           "^[\\t ]*\\#\\+BEGIN\\_QUOTE\\n([^\\#\\+END\\_QUOTE]*)\\n\\s*\\#\\+END\\_QUOTE[\\t ]*\\n"
@@ -218,7 +219,7 @@ extension OutlineParser {
             public struct Heading {
                 public static let planning =                " (\(Values.Heading.Planning.pattern))? "
                 public static let tags =                    "(\\:(\(character)+\\:)+)"
-                public static let priority =                "\\[\\#[A-Z]\\]"
+                public static let priority =                "\\[\\#[A-Z]{1}\\]"
             }
             
             public struct DateAndTime {
@@ -269,6 +270,38 @@ extension OutlineParser {
             public static let tab = "\t"
         }
         
+        public struct List {
+            public static let unorderedList = "- "
+            public static func orderdList(index: String) -> String {
+                return "\(index). "
+            }
+            
+            public static func orderListIncrease(prefix: String) -> String {
+                let indexRange = Matcher.Node.ordedList.firstMatch(in: prefix, options: [], range: NSRange(location: 0, length: prefix.count))!.range(at: 2)
+                var increasedIndex = ""
+                
+                let indexString = prefix.substring(indexRange)
+                if let number = Int(indexString) {
+                    increasedIndex = "\(number + 1)"
+                } else {
+                    let increasedChar = indexString.map { (ch: Swift.Character) -> Swift.Character in
+                        switch ch {
+                        case " "..."}":                                  // only work with printable low-ASCII
+                            let scalars = String(ch).unicodeScalars      // unicode scalar(s) of the character
+                            let val = scalars[scalars.startIndex].value  // value of the unicode scalar
+                            return Swift.Character(UnicodeScalar(val + 1)!)     // return an incremented character
+                        default:
+                            return ch     // non-printable or non-ASCII
+                        }
+                    }
+                    
+                    increasedIndex = String(increasedChar)
+                }
+                
+                return (prefix as NSString).replacingCharacters(in: indexRange, with: increasedIndex)
+            }
+        }
+        
         public struct Other {
             public static let scheduled = "SCHEDULED"
             public static let due = "DEADLINE"
@@ -303,9 +336,9 @@ extension OutlineParser {
         }
         
         public struct Checkbox {
-            public static let unchecked: String = "[ ]"
-            public static let checked: String = "[X]"
-            public static let halfChecked: String = "[-]"
+            public static let unchecked: String = "[ ] "
+            public static let checked: String = "[X] "
+            public static let halfChecked: String = "[-] "
         }
         
         public struct Heading {

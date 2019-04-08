@@ -10,6 +10,7 @@ import Foundation
 
 public struct DocumentHeading {
     public let level: Int
+    public let priority: String?
     public let tags: [String]?
     public let planning: String?
     public let text: String
@@ -36,48 +37,41 @@ public struct DocumentHeading {
             self.planning = nil
         }
         
+        if let priority = headingToken.priority {
+            self.priority = documentString.substring(priority)
+        } else {
+            self.priority = nil
+        }
+        
         self.text = documentString.substring(headingToken.range)
         
-        self.paragraphSummery = documentString.substring(NSRange(location: headingToken.range.upperBound,
+        self.paragraphSummery = documentString.substring(NSRange(location: headingToken.contentRange.location,
                                                                  length: min(100, headingToken.contentRange.length)))
     }
 }
 
-public struct DocumentSearchResult {
-    public let url: URL
+public struct DocumentTextSearchResult {
+    public let documentInfo: DocumentInfo
     public let highlightRange: NSRange
     public let context: String
-    public let heading: HeadingToken?
+    public let heading: DocumentHeading?
+}
+
+public struct DocumentHeadingSearchResult {
+    public let dateAndTime: DateAndTimeType?
     public let documentInfo: DocumentInfo
-    
-    public init(url: URL, highlightRange: NSRange, context: String, heading: HeadingToken?) {
-        self.url = url
-        self.highlightRange = highlightRange
-        self.context = context
-        self.heading = heading
-        
-        self.documentInfo = DocumentInfo(wrapperURL: url)
-    }
+    public let highlightRange: NSRange
+    public let headingString: String
+    public let heading: DocumentHeading
 }
 
 public class DocumentSearchHeadingUpdateEvent: Event {
-    public let oldHeadings: [DocumentSearchResult]
-    public let newHeadings: [DocumentSearchResult]
-    public init(oldHeadings: [DocumentSearchResult], newHeadings: [DocumentSearchResult]) {
+    public let oldHeadings: [DocumentTextSearchResult]
+    public let newHeadings: [DocumentTextSearchResult]
+    public init(oldHeadings: [DocumentTextSearchResult], newHeadings: [DocumentTextSearchResult]) {
         self.oldHeadings = oldHeadings
         self.newHeadings = newHeadings
     }
-}
-
-public struct DocumentHeadingSearchOptions: OptionSet {
-    public var rawValue: Int
-    public init(rawValue: Int) { self.rawValue = rawValue }
-    
-    public static let tag: DocumentHeadingSearchOptions = DocumentHeadingSearchOptions(rawValue: 1 << 1)
-    public static let due: DocumentHeadingSearchOptions = DocumentHeadingSearchOptions(rawValue: 1 << 2)
-    public static let schedule: DocumentHeadingSearchOptions = DocumentHeadingSearchOptions(rawValue: 1 << 3)
-    public static let archived: DocumentHeadingSearchOptions = DocumentHeadingSearchOptions(rawValue: 1 << 5)
-    public static let planning: DocumentHeadingSearchOptions = DocumentHeadingSearchOptions(rawValue: 1 << 4)
 }
 
 public class DocumentSearchManager {
@@ -115,8 +109,7 @@ public class DocumentSearchManager {
     /// - parameter complete: 所有文件搜索完成后调用
     /// - parameter failed: 有错误产生的时候调用
     public func search(contain: String,
-                       resultAdded: @escaping (_ result: [DocumentSearchResult]) -> Void,
-                       complete: @escaping () -> Void,
+                       completion: @escaping ([DocumentTextSearchResult]) -> Void,
                        failed: ((Error) -> Void)?) {
 
         guard contain.count > 0 else { return }
@@ -124,18 +117,22 @@ public class DocumentSearchManager {
         self._contentSearchOperationQueue.cancelAllOperations()
         let operation = BlockOperation()
         
-        operation.completionBlock = {
-            OperationQueue.main.addOperation {
-                complete()
-            }
-        }
-        
         operation.addExecutionBlock {
             do {
+                let parseDelegate = ParseDelegate()
+                let parser = OutlineParser()
+                parser.delegate = parseDelegate
+                parser.includeParsee = [.heading]
+                
+                
+                var items: [DocumentTextSearchResult] = []
                 let matcher = try NSRegularExpression(pattern: "\(contain)", options: NSRegularExpression.Options.caseInsensitive)
                 try self.loadAllFiles().forEach { url in
+                    
+                    // 1. 先获取所有文档的 heading
                     let string = try String(contentsOf: url)
-                    var item: [DocumentSearchResult] = []
+                    parser.parse(str: string)
+                    
                     matcher.enumerateMatches(in: string,
                                              options: NSRegularExpression.MatchingOptions.reportProgress,
                                              range: NSRange(location: 0, length: string.count),
@@ -150,15 +147,22 @@ public class DocumentSearchManager {
                                                 let contextRange = NSRange(location: lowerBound, length: upperBound - lowerBound)
                                                 let highlightRange = NSRange(location: range.location - lowerBound, length: range.length)
                                                 
-                                                item.append(DocumentSearchResult(url: url.wrapperURL,
-                                                                                 highlightRange: highlightRange,
-                                                                                 context: (string as NSString).substring(with: contextRange),
-                                                                                 heading: nil))
+                                                let documentHeading = parseDelegate.heading(contains: range.location).map {
+                                                    return DocumentHeading(documentString: string,
+                                                                           headingToken: $0,
+                                                                           url: url)
+                                                }
+                                                
+                                                items.append(DocumentTextSearchResult(documentInfo: DocumentInfo(wrapperURL: url.wrapperURL),
+                                                                                      highlightRange: highlightRange,
+                                                                                      context: string.substring(contextRange),
+                                                                                      heading: documentHeading))
                     })
                     
-                    OperationQueue.main.addOperation {
-                        resultAdded(item)
-                    }
+                }
+                
+                OperationQueue.main.addOperation {
+                    completion(items)
                 }
             } catch {
                 log.error(error)
@@ -172,59 +176,53 @@ public class DocumentSearchManager {
         self._contentSearchOperationQueue.addOperation(operation)
     }
     
-    class ParseDelegate: OutlineParserDelegate {
-        var headings: [HeadingToken] = []
-        func didFoundHeadings(text: String,
-                              headingDataRanges: [[String: NSRange]]) {
-            
-            self.headings = headingDataRanges.map { HeadingToken(data: $0) }
-        }
-    }
-    
-    public func searchHeading(options: DocumentHeadingSearchOptions,
-                              filter: ((DocumentHeading) -> Bool)? = nil,
-                              resultAdded: @escaping ([DocumentHeading]) -> Void,
-                              complete: @escaping () -> Void,
-                              failed: @escaping (Error) -> Void) {
-        
+    /// 只有写在 heading 中的 datetime 才会被列入结果
+    public func searchDateAndTime(completion: @escaping ([DocumentHeadingSearchResult]) -> Void,
+                                  failure: @escaping (Error) -> Void) {
         let operation = BlockOperation()
         
         operation.addExecutionBlock {
+            
+            // 解析文件中的全部 heading
             let parseDelegate = ParseDelegate()
             let parser = OutlineParser()
             parser.delegate = parseDelegate
-            parser.includeParsee = .heading
+            parser.includeParsee = [.heading, .dateAndTime]
             
             do {
+                
+                var results: [DocumentHeadingSearchResult] = []
                 try self.loadAllFiles().forEach { url in
+                    
                     let string = try String(contentsOf: url)
                     parser.parse(str: string)
                     
-                    if parseDelegate.headings.count > 0 {
+                    var resultsInFile: [DocumentHeadingSearchResult] = []
+                    parseDelegate.dateAndTimes.forEach { dateAndTimeRange in
                         
-                        let documentSearchResult = parseDelegate.headings.filter { heading in
-                            if options.contains(DocumentHeadingSearchOptions.tag) && heading.tags != nil { return true }
-                            if options.contains(DocumentHeadingSearchOptions.planning) && heading.planning != nil { return true }
-                            return false
+                        if let headingToken = parseDelegate.heading(contains: dateAndTimeRange.location) {
+                            let result = DocumentHeadingSearchResult(dateAndTime: DateAndTimeType(string.substring(dateAndTimeRange))!,
+                                                     documentInfo: DocumentInfo(wrapperURL: url.wrapperURL),
+                                                     highlightRange: dateAndTimeRange,
+                                                     headingString: string.substring(headingToken.headingTextRange),
+                                                     heading: DocumentHeading(documentString: string,
+                                                                              headingToken: headingToken,
+                                                                              url: url))
+                            
+                            resultsInFile.append(result)
+                            
                         }
-                        .map { heading in
-                            DocumentHeading(documentString: string, headingToken: heading, url: url)
-                        }
-                        
-                        if documentSearchResult.count > 0 {
-                            if let filter = filter {
-                                resultAdded(documentSearchResult.filter(filter))
-                            } else {
-                                resultAdded(documentSearchResult)
-                            }
-                        }
-                        
-                        parseDelegate.headings = []
                     }
+                    
+                    results.append(contentsOf: resultsInFile)
                 }
                 
-                DispatchQueue.main.async { complete() }
-            } catch { DispatchQueue.main.async { failed(error) } }
+                completion(results)
+                
+            } catch {
+                failure(error)
+            }
+            
         }
         
         self._headingSearchOperationQueue.addOperation(operation)
@@ -255,19 +253,61 @@ public class DocumentSearchManager {
     }
     
     private func _handleDocumentHeadingsChange(event: DocumentHeadingChangeEvent) {
-        let newHeadings = event.newHeadings.map { (headingToken: HeadingToken) -> DocumentSearchResult in
+        let newHeadings = event.newHeadings.map { (headingToken: HeadingToken) -> DocumentTextSearchResult in
             // 这里能收到 heading change 的 document 肯定是已经 open 了的，因为发 heading change 事件是在 OutlineTextStorage 文档解析完成的时候
             let headingString = self._editorContext.request(url: event.url).string.substring(headingToken.range)
-            return DocumentSearchResult(url: event.url, highlightRange: headingToken.range.offset(-headingToken.range.location), context: headingString, heading: headingToken)
+            
+            return DocumentTextSearchResult(documentInfo: DocumentInfo(wrapperURL: event.url.wrapperURL),
+                                            highlightRange: headingToken.range.offset(-headingToken.range.location),
+                                            context: headingString, heading: DocumentHeading(documentString: self._editorContext.request(url: event.url).string,
+                                                                                             headingToken: headingToken,
+                                                                                             url: event.url))
         }
-        
-        let oldHeadings = event.oldHeadings.map { (headingToken: HeadingToken) -> DocumentSearchResult in
+
+        let oldHeadings = event.oldHeadings.map { (headingToken: HeadingToken) -> DocumentTextSearchResult in
             // 这里能收到 heading change 的 document 肯定是已经 open 了的，因为发 heading change 事件是在 OutlineTextStorage 文档解析完成的时候
             let headingString = self._editorContext.request(url: event.url).string.substring(headingToken.range)
-            return DocumentSearchResult(url: event.url, highlightRange: headingToken.range.offset(-headingToken.range.location), context: headingString, heading: headingToken)
+            
+            return DocumentTextSearchResult(documentInfo: DocumentInfo(wrapperURL: event.url.wrapperURL),
+                                            highlightRange: headingToken.range.offset(-headingToken.range.location),
+                                            context: headingString, heading: DocumentHeading(documentString: self._editorContext.request(url: event.url).string,
+                                                                                             headingToken: headingToken,
+                                                                                             url: event.url))
         }
-        
+
         let documentSearchHeadingChangeEvent = DocumentSearchHeadingUpdateEvent(oldHeadings: oldHeadings, newHeadings: newHeadings)
         self._eventObserver.emit(documentSearchHeadingChangeEvent)
+    }
+}
+
+
+class ParseDelegate: OutlineParserDelegate {
+    var headings: [HeadingToken] = []
+    var dateAndTimes: [NSRange] = []
+    
+    func didStartParsing(text: String) {
+        // clear earlier found data
+        self.headings = []
+        self.dateAndTimes = []
+    }
+    
+    func didFoundHeadings(text: String,
+                          headingDataRanges: [[String: NSRange]]) {
+        
+        self.headings = headingDataRanges.map { HeadingToken(data: $0) }
+    }
+    
+    func didFoundDateAndTime(text: String, ranges: [NSRange]) {
+        self.dateAndTimes = ranges
+    }
+    
+    public func heading(contains location: Int) -> HeadingToken? {
+        for heading in self.headings.reversed() {
+            if location >= heading.range.location {
+                return heading
+            }
+        }
+        
+        return nil
     }
 }

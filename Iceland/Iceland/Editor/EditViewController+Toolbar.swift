@@ -74,15 +74,15 @@ extension DocumentEditViewController: DocumentEditToolbarDelegate {
                     
                     self._moveSursorIfNeeded(selectedRange: self.textView.selectedRange)
                 case .checkbox:
-                    break // TODO:
+                    self.viewModel.performAction(.checkboxSwitch(self.textView.selectedRange.location))
                 case .list:
-                    break // TODO:
+                    self.viewModel.performAction(.unorderedListSwitch(self.textView.selectedRange.location))
                 case .orderedList:
-                    break // TODO:
+                    self.viewModel.performAction(.orderedListSwitch(self.textView.selectedRange.location))
                 case .sourcecode:
-                    break // TODO:
+                    self.viewModel.performAction(.codeBlock(self.textView.selectedRange.location))
                 case .quote:
-                    break // TODO:
+                    self.viewModel.performAction(.quoteBlock(self.textView.selectedRange.location))
                 }
             }
         }

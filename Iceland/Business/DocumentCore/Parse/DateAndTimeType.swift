@@ -102,15 +102,15 @@ public class DateAndTimeType {
         if let dateAndTimeInfo = extractDate(string, range) {
             self.init(date: dateAndTimeInfo.0, includeTime: dateAndTimeInfo.1, repeateMode: dateAndTimeInfo.2)
         }
-        // 2. find as due
-        else if let dueResult =  OutlineParser.Matcher.Element.DateAndTime.due.firstMatch(in: string, options: [], range: range) {
-            let dateInfo = extractDate(string, dueResult.range(at: 1))!
-            self.init(date: dateInfo.0, includeTime: dateInfo.1, repeateMode: dateInfo.2, isDue: true)
-        }
-        // 3. find as schedule
+        // 2. find as schedule
         else if let scheduleResult =  OutlineParser.Matcher.Element.DateAndTime.schedule.firstMatch(in: string, options: [], range: range) {
             let dateInfo = extractDate(string, scheduleResult.range(at: 1))!
             self.init(date: dateInfo.0, includeTime: dateInfo.1, repeateMode: dateInfo.2, isSchedule: true)
+        }
+        // 3. find as due
+        else if let dueResult =  OutlineParser.Matcher.Element.DateAndTime.due.firstMatch(in: string, options: [], range: range) {
+            let dateInfo = extractDate(string, dueResult.range(at: 1))!
+            self.init(date: dateInfo.0, includeTime: dateInfo.1, repeateMode: dateInfo.2, isDue: true)
         }
         // 4. find as time range
         else if let timeRangeResult =  OutlineParser.Matcher.Element.DateAndTime.timeRange.firstMatch(in: string, options: [], range: range) {

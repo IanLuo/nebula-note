@@ -21,10 +21,7 @@ public enum EditAction {
     case toggleFoldStatus(Int)
     case toggleCheckboxStatus(NSRange)
     case addAttachment(Int, String, String)
-//    case changeDue(DateAndTimeType, Int)
-//    case removeDue(Int)
-//    case changeSchedule(DateAndTimeType, Int)
-//    case removeSchedule(Int)
+    case updateDateAndTime(NSRange, DateAndTimeType)
     case addTag(String, Int)
     case removeTag(String, Int)
     case changePlanning(String, Int)
@@ -37,27 +34,22 @@ public enum EditAction {
     case addMark(OutlineParser.MarkType, NSRange)
     case increaseIndent(Int)
     case decreaseIndent(Int)
-    case quoteBlock(NSRange)
-    case codeBlock(NSRange)
+    case quoteBlock(Int)
+    case codeBlock(Int)
     case foldAll
     case unfoldAll
+    case unorderedListSwitch(Int)
+    case orderedListSwitch(Int)
+    case checkboxSwitch(Int)
     
     public var command: DocumentContentCommand {
         switch self {
         case .toggleFoldStatus(let location):
             return FoldingAndUnfoldingCommand(location: location)
         case .toggleCheckboxStatus(let range):
-            return CheckboxCommand(range: range)
+            return CheckboxStatusCommand(range: range)
         case let .addAttachment(location, attachmentId, kind):
             return AddAttachmentCommand(attachmentId: attachmentId, location: location, kind: kind)
-//        case let .changeDue(due, location):
-//            return DueCommand(location: location, kind: .addOrUpdate(due))
-//        case let .removeDue(location):
-//            return DueCommand(location: location, kind: .remove)
-//        case let .changeSchedule(schedule, location):
-//            return ScheduleCommand(location: location, kind: .addOrUpdate(schedule))
-//        case  let .removeSchedule(location):
-//            return ScheduleCommand(location: location, kind: .remove)
         case let .addTag(tag, location):
             return TagCommand(location: location, kind: .add(tag))
         case let .removeTag(tag, location):
@@ -82,14 +74,22 @@ public enum EditAction {
             return IncreaseIndentCommand(location: location)
         case .decreaseIndent(let location):
             return DecreaseIndentCommand(location: location)
-        case .quoteBlock(let range):
-            return QuoteBlockCommand(range: range)
-        case .codeBlock(let range):
-            return CodeBlockCommand(range: range)
+        case .quoteBlock(let location):
+            return QuoteBlockCommand(location: location)
+        case .codeBlock(let location):
+            return CodeBlockCommand(location: location)
         case .foldAll:
             return FoldAllCommand()
         case .unfoldAll:
             return UnFoldAllCommand()
+        case let .updateDateAndTime(range, dateAndTime):
+            return UpdateDateAndTimeCommand(range: range, dateAndTime: dateAndTime)
+        case let .unorderedListSwitch(location):
+            return UnorderdListSwitchCommand(location: location)
+        case let .orderedListSwitch(location):
+            return OrderedListSwitchCommand(location: location)
+        case let .checkboxSwitch(location):
+            return CheckboxSwitchCommand(location: location)
         }
     }
 }

@@ -30,7 +30,7 @@ public class FilteredItemsViewController: UIViewController {
         let tableView = UITableView()
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.register(FilteredItemTableCell.self, forCellReuseIdentifier: FilteredItemTableCell.reuseIdentifier)
+        tableView.register(AgendaTableCell.self, forCellReuseIdentifier: AgendaTableCell.reuseIdentifier)
         tableView.tableFooterView = UIView()
         tableView.contentInset = UIEdgeInsets(top: Layout.edgeInsets.top, left: 0, bottom: 0, right: 0)
         tableView.separatorInset = UIEdgeInsets(top: 0, left: Layout.edgeInsets.left, bottom: 0, right: Layout.edgeInsets.right)
@@ -56,7 +56,7 @@ extension FilteredItemsViewController: UITableViewDataSource {
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: FilteredItemTableCell.reuseIdentifier, for: indexPath) as! FilteredItemTableCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: AgendaTableCell.reuseIdentifier, for: indexPath) as! AgendaTableCell
         cell.cellModel = self.viewModel.data[indexPath.row]
         return cell
     }

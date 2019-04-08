@@ -175,8 +175,9 @@ public class OutlineParser {
                 .matches(in: str, options: [], range: totalRange)
                 .map { (result: NSTextCheckingResult) -> [String: NSRange] in
                     var comp: [String: NSRange] = [:]
-                    comp[Key.Node.ordedList] = result.range(at: 0)
-                    comp[Key.Element.OrderedList.index] = result.range(at: 1)
+                    comp[Key.Node.ordedList] = result.range
+                    comp[Key.Element.OrderedList.prefix] = result.range(at: 1)
+                    comp[Key.Element.OrderedList.index] = result.range(at: 2)
                     return comp
             }
             
@@ -287,6 +288,10 @@ public class OutlineParser {
 }
 
 // MARK: - Definitions
+
+public protocol OutlineHeadingActions {
+    func heading(contains location: Int, headings: [HeadingToken]) -> HeadingToken?
+}
 
 public protocol OutlineParserDelegate: class {
     func didFoundHeadings(text: String, headingDataRanges: [[String: NSRange]])

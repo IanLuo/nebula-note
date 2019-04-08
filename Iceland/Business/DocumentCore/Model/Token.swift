@@ -129,27 +129,14 @@ public class HeadingToken: Token {
     }
     
     public var headingTextRange: NSRange {
-        var headingContentRange: NSRange = self.range.offset(-self.range.location).moveLeftBound(by: self.level + 1)
+        let levelUpperBound = self.level
+        let planningUpperBound = self.planning?.upperBound ?? 0
+        let priorityUpperBound = self.priority?.upperBound ?? 0
         
-        if let priority = self.priority {
-            let priorityRange = priority.offset(-self.range.location)
-            let newUpperBound = min(priorityRange.lowerBound, headingContentRange.upperBound)
-            headingContentRange = headingContentRange.withNewUpperBound(newUpperBound)
-        }
+        let lowerBound = max(levelUpperBound, max(planningUpperBound, priorityUpperBound))
+        let upperBound = min(self.range.upperBound, self.tags?.location ?? self.range.upperBound)
         
-        if let planning = self.planning {
-            let planningRange = planning.offset(-self.range.location)
-            let newLowerBound = max(headingContentRange.lowerBound, planningRange.upperBound + 1)
-            headingContentRange = headingContentRange.withNewLowerBound(newLowerBound)
-        }
-        
-        if let tags = self.tags {
-            let tagsRange = tags.offset(-self.range.location)
-            let newUpperBound = min(tagsRange.lowerBound - 1, headingContentRange.upperBound)
-            headingContentRange = headingContentRange.withNewUpperBound(newUpperBound)
-        }
-        
-        return headingContentRange
+        return NSRange(location: lowerBound, length: upperBound - lowerBound)
     }
     
     public var levelRange: NSRange {

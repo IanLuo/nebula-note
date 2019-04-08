@@ -10,7 +10,6 @@ import Foundation
 import Business
 
 public protocol DocumentSearchViewModelDelegate: class {
-    func didAddResult(index: Int, count: Int)
     func didClearResults()
     func didCompleteSearching()
 }
@@ -36,11 +35,8 @@ public class DocumentSearchViewModel {
     }
     
     public func search(query: String) {
-        self.documentSearchManager.search(contain: query, resultAdded: { [weak self] searchResults in
-            let location = max(0, self?.data.count ?? 0 - 1)
-            self?.data.append(contentsOf: searchResults.map { SearchTabelCellModel(searchResult: $0) })
-            self?.delegate?.didAddResult(index: location, count: searchResults.count)
-        }, complete: { [weak self] in
+        self.documentSearchManager.search(contain:query, completion: { [weak self] results in
+            self?.data = results.map { SearchTabelCellModel(searchResult: $0) }
             self?.delegate?.didCompleteSearching()
         }) { error in
             log.error(error)

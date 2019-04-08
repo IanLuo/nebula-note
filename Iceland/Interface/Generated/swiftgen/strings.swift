@@ -14,14 +14,10 @@ public enum L10n {
 
   public enum Agenda {
     public enum Actions {
-      /// Archieve
-      public static let archive = L10n.tr("Localizable", "agenda.actions.archive")
-      /// Change status
-      public static let changeStatus = L10n.tr("Localizable", "agenda.actions.change-status")
-      /// Due
-      public static let due = L10n.tr("Localizable", "agenda.actions.due")
-      /// Schedule
-      public static let schedule = L10n.tr("Localizable", "agenda.actions.schedule")
+      /// Delay
+      public static let delay = L10n.tr("Localizable", "agenda.actions.delay")
+      /// Mark as done
+      public static let markDone = L10n.tr("Localizable", "agenda.actions.mark-done")
       /// Choose an action
       public static let title = L10n.tr("Localizable", "agenda.actions.title")
     }

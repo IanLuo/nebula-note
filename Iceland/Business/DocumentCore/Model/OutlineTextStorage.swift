@@ -80,13 +80,7 @@ public class OutlineTextStorage: TextStorage {
     public var quoteBlocks: [BlockBeginToken] {
         return self._pairedQuoteBlocks
     }
-    
-    /// 当前所在编辑位置的最外层，或者最前面的 item 类型, 某些 item 在某些编辑操作是会有特殊行为，例如:
-    /// 当前 item 为 unordered list 时，换行将会自动添加一个新的 unordered list 前缀
-    public var currentItem: Token? {
-        return self.token(after: self.currentLocation)
-    }
-    
+
     /// 所有解析获得的 token, 对应当前的文档结构解析状态
     public var allTokens: [Token] = []
     
@@ -144,10 +138,17 @@ extension OutlineTextStorage: ContentUpdatingProtocol {
 // MARK: -
 extension OutlineTextStorage {
     /// 找到对应位置之后的第一个 token
-    public func token(after: Int) -> Token? {
+    public func token(at: Int) -> [Token]? {
+        var wasHit = false
+        var tokens: [Token] = []
         for item in self.allTokens {
-            if item.range.upperBound >= after {
-                return item
+            if item.range.contains(at) {
+                tokens.append(item)
+                wasHit = true
+            } else {
+                if wasHit {
+                    return tokens
+                }
             }
         }
         
@@ -397,7 +398,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
     public func didFoundOrderedList(text: String, orderedListRnages: [[String : NSRange]]) {
         
         orderedListRnages.forEach { list in
-            if let index = list[OutlineParser.Key.Element.OrderedList.index] {
+            if let index = list[OutlineParser.Key.Element.OrderedList.prefix] {
                 self.addAttributes([NSAttributedString.Key.font: InterfaceTheme.Font.title,
                                     NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.descriptive,
                                     OutlineAttribute.OrderedList.index: index], range: index)
@@ -515,23 +516,13 @@ extension OutlineTextStorage: OutlineParserDelegate {
             
             if let tagsRange = $0[OutlineParser.Key.Element.Heading.tags] {
                 self.addAttribute(OutlineAttribute.Heading.tags, value: tagsRange, range: tagsRange)
-                self.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment,
-                                    OutlineAttribute.showAttachment: OutlineAttribute.Heading.tags], range: tagsRange.head(1))
-                
-                self.addAttributes([OutlineAttribute.Heading.tags: tagsRange], range: tagsRange)
-                
                 self._addButtonAttributes(range: tagsRange, color: InterfaceTheme.Color.descriptive)
-                
                 self.addAttribute(NSAttributedString.Key.font, value: InterfaceTheme.Font.footnote, range: tagsRange)
             }
             
             if let priorityRange = $0[OutlineParser.Key.Element.Heading.priority] {
-                self.addAttribute(OutlineAttribute.Heading.tags, value: priorityRange, range: priorityRange)
-                self.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment,
-                                    OutlineAttribute.showAttachment: OutlineAttribute.Heading.tags], range: priorityRange.head(1))
-                
+                self.addAttribute(OutlineAttribute.Heading.priority, value: priorityRange, range: priorityRange)
                 self._addButtonAttributes(range: priorityRange, color: InterfaceTheme.Color.descriptive)
-                
                 self.addAttribute(NSAttributedString.Key.font, value: InterfaceTheme.Font.footnote, range: priorityRange)
             }
             
@@ -552,13 +543,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
     
     public func didFoundDateAndTime(text: String, ranges: [NSRange]) {
         for range in ranges {
-            self.addAttribute(OutlineAttribute.hidden, value: OutlineAttribute.hiddenValueDefault, range: range.tail(1))
-
-            self.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment,
-                                OutlineAttribute.showAttachment: OutlineAttribute.Heading.due], range: range.head(1))
-
             self._addButtonAttributes(range: range, color: InterfaceTheme.Color.descriptive)
-
             self.addAttribute(NSAttributedString.Key.font, value: InterfaceTheme.Font.footnote, range: range)
         }
     }

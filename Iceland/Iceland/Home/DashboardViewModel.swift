@@ -74,36 +74,10 @@ public class DashboardViewModel {
         self.scheduledSoon = []
         self.overdue = []
         self.overdueSoon = []
-        self._documentSearchManager.searchHeading(options: [.tag, .due, .schedule, .planning],
-        resultAdded: { headings in
-            headings.forEach { heading in
-                if let tags = heading.tags {
-                    self.allTags.append(contentsOf: tags)
-                } else {
-                    self.withoutTag.append(heading)
-                }
-                
-//                if let schedule = heading.schedule {
-//                    if schedule.date <= today {
-//                        self.scheduled.append(heading)
-//                    } else if schedule.date <= soon {
-//                        self.scheduledSoon.append(heading)
-//                    }
-//                }
-//                
-//                if let due = heading.due {
-//                    if due.date <= today {
-//                        self.overdue.append(heading)
-//                    } else if due.date <= soon {
-//                        self.overdueSoon.append(heading)
-//                    }
-//                }
-            }
-        }, complete: {
-            self._isHeadingsNeedsReload = false
-            self.delegate?.didCompleteLoadFilteredData()
-        }, failed: { error in
-            print(error)
-        })
+        self._documentSearchManager.searchDateAndTime(completion: { [weak self] results in
+            
+        }) { error in
+            log.error(error)
+        }
     }
 }

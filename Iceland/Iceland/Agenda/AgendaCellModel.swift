@@ -11,24 +11,22 @@ import Business
 
 public class AgendaCellModel {
     public var headingText: String
-    public let headingLocation: Int
+    public let dateAndTimeRange: NSRange?
     public let url: URL
-    public var planning: String? = nil
-    public var schedule: DateAndTimeType? = nil
-    public var due: DateAndTimeType? = nil
-    public var tags: [String]? = nil
+    public var planning: String?
+    public var dateAndTime: DateAndTimeType?
+    public var tags: [String]?
+    public var priority: String?
     public let heading: DocumentHeading
-    public let contentSummary: String
     
-    public init(heading: DocumentHeading) {
-        self.headingLocation = heading.location
-        self.url = heading.url
-        self.heading = heading
-        self.headingText = heading.text.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
-        self.contentSummary = heading.paragraphSummery.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
-//        self.schedule = heading.schedule
-//        self.due = heading.due
-        self.planning = heading.planning
-        self.tags = heading.tags
+    public init(searchResult: DocumentHeadingSearchResult) {
+        self.priority = searchResult.heading.priority
+        self.dateAndTime = searchResult.dateAndTime
+        self.dateAndTimeRange = searchResult.highlightRange
+        self.url = searchResult.documentInfo.url
+        self.heading = searchResult.heading
+        self.headingText = searchResult.headingString.trimmingCharacters(in: CharacterSet.whitespaces)
+        self.planning = searchResult.heading.planning
+        self.tags = searchResult.heading.tags
     }
 }

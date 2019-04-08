@@ -15,10 +15,10 @@ public struct SearchTabelCellModel {
     public let hilightRange: NSRange
     public let url: URL
     
-    public init(searchResult: DocumentSearchResult) {
-        self.fileName = searchResult.url.fileName
+    public init(searchResult: DocumentTextSearchResult) {
+        self.fileName = searchResult.documentInfo.url.fileName
         self.textString = searchResult.context
         self.hilightRange = searchResult.highlightRange
-        self.url = searchResult.url
+        self.url = searchResult.documentInfo.url
     }
 }
