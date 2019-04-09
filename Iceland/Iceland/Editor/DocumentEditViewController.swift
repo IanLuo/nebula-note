@@ -188,8 +188,7 @@ extension DocumentEditViewController: OutlineTextViewDelegate {
     }
     
     public func didTapOnLevel(textView: UITextView, chracterIndex: Int, heading: [String : NSRange], point: CGPoint) {
-        self.viewModel.performAction(.toggleFoldStatus(chracterIndex),
-                                     undoManager: self.textView.undoManager!)
+        self.viewModel.foldOrUnfold(location: chracterIndex)
     }
     
     public func didTapOnCheckbox(textView: UITextView, characterIndex: Int, checkbox: [String : NSRange], point: CGPoint) {
@@ -213,6 +212,12 @@ extension DocumentEditViewController: UITextViewDelegate {
 }
 
 extension DocumentEditViewController: DocumentEditViewModelDelegate {
+    public func documentContentCommandDidPerformed(result: DocumentContentCommandResult) {
+        if let range = result.range, result.delta != 0 {
+            self.textView.selectedRange = range
+        }
+    }
+    
     public func didEnterTokens(_ tokens: [Token]) {
         for token in tokens {
             if token is HeadingToken {

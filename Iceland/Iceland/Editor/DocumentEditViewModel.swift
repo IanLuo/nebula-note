@@ -15,10 +15,10 @@ public protocol DocumentEditViewModelDelegate: class {
     func documentStatesChange(state: UIDocument.State)
     func didReadyToEdit()
     func didEnterTokens(_ tokens: [Token])
+    func documentContentCommandDidPerformed(result: DocumentContentCommandResult)
 }
 
 public enum EditAction {
-    case toggleFoldStatus(Int)
     case toggleCheckboxStatus(NSRange)
     case addAttachment(Int, String, String)
     case updateDateAndTime(NSRange, DateAndTimeType)
@@ -36,60 +36,52 @@ public enum EditAction {
     case decreaseIndent(Int)
     case quoteBlock(Int)
     case codeBlock(Int)
-    case foldAll
-    case unfoldAll
     case unorderedListSwitch(Int)
     case orderedListSwitch(Int)
     case checkboxSwitch(Int)
     
-    public var command: DocumentContentCommand {
+    public var commandComposer: DocumentContentCommandComposer {
         switch self {
-        case .toggleFoldStatus(let location):
-            return FoldingAndUnfoldingCommand(location: location)
         case .toggleCheckboxStatus(let range):
-            return CheckboxStatusCommand(range: range)
+            return CheckboxStatusCommandComposer(range: range)
         case let .addAttachment(location, attachmentId, kind):
-            return AddAttachmentCommand(attachmentId: attachmentId, location: location, kind: kind)
+            return AddAttachmentCommandComposer(attachmentId: attachmentId, location: location, kind: kind)
         case let .addTag(tag, location):
-            return TagCommand(location: location, kind: .add(tag))
+            return TagCommandComposer(location: location, kind: .add(tag))
         case let .removeTag(tag, location):
-            return TagCommand(location: location, kind: .remove(tag))
+            return TagCommandComposer(location: location, kind: .remove(tag))
         case let .changePlanning(planning, location):
-            return PlanningCommand(location: location, kind: .addOrUpdate(planning))
+            return PlanningCommandComposer(location: location, kind: .addOrUpdate(planning))
         case let .removePlanning(location):
-            return PlanningCommand(location: location, kind: .remove)
+            return PlanningCommandComposer(location: location, kind: .remove)
         case let .insertText(text, location):
-            return InsertTextToHeadingCommand(location: location, textToInsert: text)
+            return InsertTextToHeadingCommandComposer(location: location, textToInsert: text)
         case let .replaceHeading(fromLocation, toLocation):
-            return ReplaceHeadingCommand(fromLocation: fromLocation, toLocation: toLocation)
+            return ReplaceHeadingCommandComposer(fromLocation: fromLocation, toLocation: toLocation)
         case let .archive(location):
-            return ArchiveCommand(location: location)
+            return ArchiveCommandComposer(location: location)
         case let .unarchive(location):
-            return UnarchiveCommand(location: location)
+            return UnarchiveCommandComposer(location: location)
         case .insertSeparator(let location):
-            return IncreaseIndentCommand(location: location)
+            return IncreaseIndentCommandComposer(location: location)
         case .addMark(let markType, let range):
-            return AddMarkCommand(markType: markType, range: range)
+            return AddMarkCommandComposer(markType: markType, range: range)
         case .increaseIndent(let location):
-            return IncreaseIndentCommand(location: location)
+            return IncreaseIndentCommandComposer(location: location)
         case .decreaseIndent(let location):
-            return DecreaseIndentCommand(location: location)
+            return DecreaseIndentCommandComposer(location: location)
         case .quoteBlock(let location):
-            return QuoteBlockCommand(location: location)
+            return QuoteBlockCommandComposer(location: location)
         case .codeBlock(let location):
-            return CodeBlockCommand(location: location)
-        case .foldAll:
-            return FoldAllCommand()
-        case .unfoldAll:
-            return UnFoldAllCommand()
+            return CodeBlockCommandComposer(location: location)
         case let .updateDateAndTime(range, dateAndTime):
-            return UpdateDateAndTimeCommand(range: range, dateAndTime: dateAndTime)
+            return UpdateDateAndTimeCommandComposer(range: range, dateAndTime: dateAndTime)
         case let .unorderedListSwitch(location):
-            return UnorderdListSwitchCommand(location: location)
+            return UnorderdListSwitchCommandComposer(location: location)
         case let .orderedListSwitch(location):
-            return OrderedListSwitchCommand(location: location)
+            return OrderedListSwitchCommandComposer(location: location)
         case let .checkboxSwitch(location):
-            return CheckboxSwitchCommand(location: location)
+            return CheckboxSwitchCommandComposer(location: location)
         }
     }
 }
@@ -165,19 +157,31 @@ public class DocumentEditViewModel {
         return self.editorService.trim(string: self.editorService.string, range: NSRange(location: location, length: length))
     }
     
-    @discardableResult
-    public func performAction(_ action: EditAction, undoManager: UndoManager) -> DocumentContentCommandResult {
-        let result = self.editorService.toggleContentAction(command: action.command)
+    public func foldOrUnfold(location: Int) {
+        _ = self.editorService.toggleContentCommandComposer(composer: FoldCommandComposer(location: location)).perform()
+    }
+    
+    public func performAction(_ action: EditAction, undoManager: UndoManager) {
+        let command = self.editorService.toggleContentCommandComposer(composer: action.commandComposer)
         
-        undoManager.registerUndo(withTarget: self) { [unowned undoManager] viewModel in
-            _ = viewModel.editorService.toggleContentAction(command: ReplaceTextCommand(range: result.range!, textToReplace: result.content!))
-            
-            undoManager.registerUndo(withTarget: viewModel, handler: { viewModel in
-                viewModel.performAction(action, undoManager: undoManager)
-            })
+        self.performContentCommand(command, undoManager: undoManager)
+    }
+    
+    private func performContentCommand(_ command: DocumentContentCommand, undoManager: UndoManager) {
+        let result = command.perform()
+        
+        undoManager.registerUndo(withTarget: self, handler: { target in
+            let command = target.editorService.toggleContentCommandComposer(composer: ReplaceContentCommandComposer(range: result.range!, textToReplace: result.content!))
+            target.performContentCommand(command, undoManager: undoManager)
+        })
+        
+        if result.isModifiedContent {
+            self.editorService.save()
+        } else {
+            self.editorService.markAsContentUpdated()
         }
         
-        return result
+        self.delegate?.documentContentCommandDidPerformed(result: result)
     }
     
     public func level(index: Int) -> Int {

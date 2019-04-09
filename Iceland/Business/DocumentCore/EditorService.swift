@@ -39,18 +39,11 @@ public class EditorService {
         self._document.updateContent(_editorController.string)
     }
     
-    public func toggleContentAction(command: DocumentContentCommand, foreceWriteToFile: Bool = false) -> DocumentContentCommandResult {
-        let result = self._editorController.toggleAction(command: command)
-        if result.isModifiedContent {
-            if foreceWriteToFile {
-                self.save()
-            } else {
-                self.markAsContentUpdated()
-            }
-        }
-        return result
+    public func toggleContentCommandComposer(composer: DocumentContentCommandComposer) -> DocumentContentCommand {
+        return self._editorController.toggleCommandComposer(composer: composer)
     }
     
+
     public func start(complete: @escaping (Bool, EditorService) -> Void) {
         _queue.async { [unowned self] in
             if self._document.documentState == UIDocument.State.normal {

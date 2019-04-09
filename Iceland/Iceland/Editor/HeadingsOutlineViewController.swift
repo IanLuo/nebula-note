@@ -50,6 +50,10 @@ extension HeadingsOutlineViewController: SelectorViewControllerDelegate {
 }
 
 extension HeadingsOutlineViewController: DocumentEditViewModelDelegate {
+    public func documentContentCommandDidPerformed(result: DocumentContentCommandResult) {
+        // ignore
+    }
+    
     public func didEnterTokens(_ tokens: [Token]) {
         // ignore
     }
