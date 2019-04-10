@@ -31,7 +31,7 @@ public enum EditAction {
     case archive(Int)
     case unarchive(Int)
     case insertSeparator(Int)
-    case addMark(OutlineParser.MarkType, NSRange)
+    case textMark(OutlineParser.MarkType, NSRange)
     case increaseIndent(Int)
     case decreaseIndent(Int)
     case quoteBlock(Int)
@@ -39,6 +39,8 @@ public enum EditAction {
     case unorderedListSwitch(Int)
     case orderedListSwitch(Int)
     case checkboxSwitch(Int)
+    case moveLineUp(Int)
+    case moveLineDown(Int)
     
     public var commandComposer: DocumentContentCommandComposer {
         switch self {
@@ -64,8 +66,8 @@ public enum EditAction {
             return UnarchiveCommandComposer(location: location)
         case .insertSeparator(let location):
             return IncreaseIndentCommandComposer(location: location)
-        case .addMark(let markType, let range):
-            return AddMarkCommandComposer(markType: markType, range: range)
+        case .textMark(let markType, let range):
+            return TextMarkCommandComposer(markType: markType, range: range)
         case .increaseIndent(let location):
             return IncreaseIndentCommandComposer(location: location)
         case .decreaseIndent(let location):
@@ -82,6 +84,10 @@ public enum EditAction {
             return OrderedListSwitchCommandComposer(location: location)
         case let .checkboxSwitch(location):
             return CheckboxSwitchCommandComposer(location: location)
+        case .moveLineUp(let location):
+            return MoveLineUpCommandComposer(location: location)
+        case .moveLineDown(let location):
+            return MoveLineDownCommandComposer(location: location)
         }
     }
 }
@@ -161,18 +167,18 @@ public class DocumentEditViewModel {
         _ = self.editorService.toggleContentCommandComposer(composer: FoldCommandComposer(location: location)).perform()
     }
     
-    public func performAction(_ action: EditAction, undoManager: UndoManager) {
+    public func performAction(_ action: EditAction, undoManager: UndoManager, completion: ((DocumentContentCommandResult) -> Void)?) {
         let command = self.editorService.toggleContentCommandComposer(composer: action.commandComposer)
         
-        self.performContentCommand(command, undoManager: undoManager)
+        self.performContentCommand(command, undoManager: undoManager, completion: completion)
     }
     
-    private func performContentCommand(_ command: DocumentContentCommand, undoManager: UndoManager) {
+    private func performContentCommand(_ command: DocumentContentCommand, undoManager: UndoManager, completion: ((DocumentContentCommandResult) -> Void)?) {
         let result = command.perform()
         
         undoManager.registerUndo(withTarget: self, handler: { target in
             let command = target.editorService.toggleContentCommandComposer(composer: ReplaceContentCommandComposer(range: result.range!, textToReplace: result.content!))
-            target.performContentCommand(command, undoManager: undoManager)
+            target.performContentCommand(command, undoManager: undoManager, completion: completion)
         })
         
         if result.isModifiedContent {
@@ -181,7 +187,7 @@ public class DocumentEditViewModel {
             self.editorService.markAsContentUpdated()
         }
         
-        self.delegate?.documentContentCommandDidPerformed(result: result)
+        completion?(result)
     }
     
     public func level(index: Int) -> Int {

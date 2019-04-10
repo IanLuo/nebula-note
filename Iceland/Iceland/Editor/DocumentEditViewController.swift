@@ -110,7 +110,8 @@ public class DocumentEditViewController: UIViewController {
     private func _showAttachmentSelections() {
         let performAddAttachmentAction: (Int, String, String) -> Void = {
             self.viewModel.performAction(EditAction.addAttachment($0, $1, $2),
-                                         undoManager: self.textView.undoManager!)
+                                         undoManager: self.textView.undoManager!,
+                                         completion: nil)
         }
         
         let actionViewController = ActionsViewController()
@@ -193,7 +194,8 @@ extension DocumentEditViewController: OutlineTextViewDelegate {
     
     public func didTapOnCheckbox(textView: UITextView, characterIndex: Int, checkbox: [String : NSRange], point: CGPoint) {
         self.viewModel.performAction(.toggleCheckboxStatus(checkbox["status"]!),
-                                     undoManager: self.textView.undoManager!)
+                                     undoManager: self.textView.undoManager!,
+                                     completion: nil)
     }
 }
 

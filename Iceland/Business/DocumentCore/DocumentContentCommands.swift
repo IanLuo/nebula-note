@@ -28,6 +28,7 @@ public protocol DocumentContentCommandComposer {
 }
 
 public struct NoChangeCommand: DocumentContentCommand {
+    public init() {}
     public func perform() -> DocumentContentCommandResult {
         return DocumentContentCommandResult.noChange
     }
@@ -49,6 +50,13 @@ public class ReplaceTextCommand: DocumentContentCommand {
         let undoString = self.textStorage.string.substring(self.range)
         self.textStorage.replaceCharacters(in: self.range, with: self.textToReplace)
         return DocumentContentCommandResult(isModifiedContent: true, range: undoRange, content: undoString, delta: self.textToReplace.count - self.range.length)
+    }
+}
+
+// MARK: - NoChangeCommandComposer
+public class NoChangeCommandComposer: DocumentContentCommandComposer {
+    public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
+        return NoChangeCommand()
     }
 }
 
@@ -196,6 +204,67 @@ public class FoldCommandComposer: DocumentContentCommandComposer {
     public init(location: Int) { self.location = location }
     public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
         return FoldingAndUnfoldingCommand(location: self.location, textStorage: textStorage)
+    }
+}
+
+// MARK: - MoveLineUpCommandComposer
+public class MoveLineUpCommandComposer: DocumentContentCommandComposer {
+    let location: Int
+    public init(location: Int) {
+        self.location = location
+    }
+    
+    public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
+        for case let token in textStorage.token(at: self.location) ?? [] where token is HeadingToken {
+            var lastHeading: HeadingToken?
+            for heading in textStorage.headingTokens {
+                if let lastHeading = lastHeading, heading.identifier == token.identifier {
+                    return ReplaceHeadingCommandComposer(fromLocation: heading.range.location, toLocation: lastHeading.range.location).compose(textStorage: textStorage)
+                }
+                
+                lastHeading = heading
+            }
+        }
+        
+        let lineStart = (textStorage.string as NSString).lineRange(for: NSRange(location: self.location, length: 0)).location
+        if lineStart > 0 {
+            let lastLineStart = (textStorage.string as NSString).lineRange(for: NSRange(location: lineStart - 1, length: 0)).location
+            return ReplaceLineCommandComposer(fromLocation: lineStart, toLocation: lastLineStart).compose(textStorage: textStorage)
+        }
+        
+        return NoChangeCommand()
+    }
+}
+
+// MARK: - MoveLineUpCommandComposer
+public class MoveLineDownCommandComposer: DocumentContentCommandComposer {
+    let location: Int
+    public init(location: Int) {
+        self.location = location
+    }
+    
+    public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
+        for case let token in textStorage.token(at: self.location) ?? [] where token is HeadingToken {
+            var currentHeading: HeadingToken?
+            for heading in textStorage.headingTokens {
+                if heading.identifier == token.identifier {
+                    currentHeading = heading
+                    continue
+                }
+                
+                if let currentHeading = currentHeading {
+                    return ReplaceHeadingCommandComposer(fromLocation: currentHeading.range.location, toLocation: heading.range.location).compose(textStorage: textStorage)
+                }
+            }
+        }
+        
+        let lineEnd = (textStorage.string as NSString).lineRange(for: NSRange(location: self.location, length: 0)).upperBound
+        if lineEnd < textStorage.string.count {
+            let nextLineStart = (textStorage.string as NSString).lineRange(for: NSRange(location: lineEnd + 1, length: 0)).location
+            return ReplaceLineCommandComposer(fromLocation: lineEnd, toLocation: nextLineStart).compose(textStorage: textStorage)
+        }
+        
+        return NoChangeCommand()
     }
 }
 
@@ -430,8 +499,8 @@ public class UnarchiveCommandComposer: TagCommandComposer {
     }
 }
 
-// MARK: - AddMarkCommand
-public class AddMarkCommandComposer: DocumentContentCommandComposer {
+// MARK: - TextMarkCommandComposer
+public class TextMarkCommandComposer: DocumentContentCommandComposer {
     public let markType: OutlineParser.MarkType
     public let range: NSRange
     
