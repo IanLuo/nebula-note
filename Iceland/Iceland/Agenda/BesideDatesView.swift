@@ -12,7 +12,8 @@ import Business
 import Interface
 
 public protocol BesideDatesViewDelegate: class {
-    func didSelectDate(date: Date)
+    func didSelectDate(at index: Int)
+    func dates() -> [Date]
 }
 
 public class BesideDatesView: UIView {
@@ -29,18 +30,16 @@ public class BesideDatesView: UIView {
         return collectionView
     }()
     
-    public var currentDate: Date
-    
-    public func moveToToday(animated: Bool) {
-        self.collectionView.selectItem(at: IndexPath(row: 500, section: 0), animated: animated, scrollPosition: UICollectionView.ScrollPosition.centeredHorizontally)
-        
-        self.currentDate = Date()
-        self.delegate?.didSelectDate(date: Date())
+    public func moveTo(index: Int) {
+        self.collectionView.selectItem(at: IndexPath(row: index, section: 0), animated: false, scrollPosition: UICollectionView.ScrollPosition.centeredHorizontally)
+        if let frame = self.collectionView.layoutAttributesForItem(at: IndexPath(row: index, section: 0))?.frame {
+            self.collectionView.scrollRectToVisible(frame, animated: false)
+        } else {
+            self.collectionView.scrollToItem(at: IndexPath(row: index, section: 0), at: UICollectionView.ScrollPosition.centeredHorizontally, animated: false)
+        }
     }
     
     public init() {
-        self.currentDate = Date()
-        
         super.init(frame: .zero)
         
         self.addSubview(self.collectionView)
@@ -56,22 +55,18 @@ public class BesideDatesView: UIView {
 
 extension BesideDatesView: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let offset = indexPath.row - 500
-        
-        self.currentDate = Date().dayAfter(offset)
-        self.delegate?.didSelectDate(date: self.currentDate)
+        self.delegate?.didSelectDate(at: indexPath.row)
     }
 }
 
 extension BesideDatesView: UICollectionViewDataSource {
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 999
+        return self.delegate?.dates().count ?? 0
     }
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: DateCell.reuseIdentifier, for: indexPath) as! DateCell
-        let offset = indexPath.row - 500
-        cell.update(offset: offset)
+        cell.update(date: self.delegate!.dates()[indexPath.row])
         return cell
     }
     
@@ -110,6 +105,13 @@ private class DateCell: UICollectionViewCell {
         return label
     }()
     
+    private let background: UIView = {
+        let view = UIView()
+        view.layer.cornerRadius = 4
+        view.layer.masksToBounds = true
+        return view
+    }()
+    
     private var date: Date = Date()
     
     override init(frame: CGRect) {
@@ -122,13 +124,7 @@ private class DateCell: UICollectionViewCell {
         self.todayLabel.sideAnchor(for: .bottom, to: self, edgeInset: 16)
         self.todayLabel.centerAnchors(position: .centerX, to: self.contentView)
         
-//        let unit = frame.width / 5 / 11
-        
-        self.setBorder(position: [.top, .bottom, .left],
-                       style: .solid,//Border.Style.dash(unit, unit * 10),
-                       color: InterfaceTheme.Color.background3,
-                       width: 0.5,//10,
-                       insets: .none)//Border.Insect.tail(unit * 10))
+        self.backgroundView = self.background
     }
     
     override var isSelected: Bool {
@@ -137,8 +133,8 @@ private class DateCell: UICollectionViewCell {
         }
     }
     
-    public func update(offset: Int) {
-        self.date = Date().dayAfter(offset)
+    public func update(date: Date) {
+        self.date = date
         
         self.updateFor(isSelected: self.isSelected)
         
@@ -158,6 +154,7 @@ private class DateCell: UICollectionViewCell {
             attr.addAttributes([NSAttributedString.Key.foregroundColor : InterfaceTheme.Color.interactive,
                                 NSAttributedString.Key.font : InterfaceTheme.Font.title],
                                range: (string as NSString).range(of: dateString))
+            background.backgroundColor = InterfaceTheme.Color.spotlight
         } else {
             attr.addAttributes([NSAttributedString.Key.foregroundColor : InterfaceTheme.Color.descriptive,
                                 NSAttributedString.Key.font : InterfaceTheme.Font.footnote],
@@ -165,6 +162,7 @@ private class DateCell: UICollectionViewCell {
             attr.addAttributes([NSAttributedString.Key.foregroundColor : InterfaceTheme.Color.descriptive,
                                 NSAttributedString.Key.font : InterfaceTheme.Font.title],
                                range: (string as NSString).range(of: dateString))
+            background.backgroundColor = InterfaceTheme.Color.background1
         }
         
         self.titleLabel.attributedText = NSAttributedString(attributedString: attr)

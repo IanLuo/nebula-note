@@ -12,7 +12,7 @@ import Business
 import Interface
 
 public protocol AgendaTableCellDelegate: class {
-    func didTapActionButton(url: URL)
+    func didTapActionButton(cellModel: AgendaCellModel)
 }
 
 public class AgendaTableCell: UITableViewCell {
@@ -180,7 +180,7 @@ public class AgendaTableCell: UITableViewCell {
     }
     
     @objc private func _didTapActionButton() {
-        self.delegate?.didTapActionButton(url: self.cellModel!.url)
+        self.delegate?.didTapActionButton(cellModel: self.cellModel!)
     }
 }
 
