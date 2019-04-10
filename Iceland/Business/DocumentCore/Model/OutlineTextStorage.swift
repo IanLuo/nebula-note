@@ -138,7 +138,7 @@ extension OutlineTextStorage: ContentUpdatingProtocol {
 // MARK: -
 extension OutlineTextStorage {
     /// 找到对应位置之后的第一个 token
-    public func token(at: Int) -> [Token]? {
+    public func token(at: Int) -> [Token] {
         var wasHit = false
         var tokens: [Token] = []
         for item in self.allTokens {
@@ -152,7 +152,7 @@ extension OutlineTextStorage {
             }
         }
         
-        return nil
+        return tokens
     }
     
     /// 获取范围内的 item range 的索引

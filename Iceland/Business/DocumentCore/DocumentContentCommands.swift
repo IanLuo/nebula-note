@@ -219,7 +219,7 @@ public class MoveLineUpCommandComposer: DocumentContentCommandComposer {
             var lastHeading: HeadingToken?
             for heading in textStorage.headingTokens {
                 if let lastHeading = lastHeading, heading.identifier == token.identifier {
-                    return ReplaceHeadingCommandComposer(fromLocation: heading.range.location, toLocation: lastHeading.range.location).compose(textStorage: textStorage)
+                    return ReplaceHeadingCommandComposer(fromLocation: lastHeading.range.location, toLocation: heading.range.location).compose(textStorage: textStorage)
                 }
                 
                 lastHeading = heading
@@ -258,10 +258,10 @@ public class MoveLineDownCommandComposer: DocumentContentCommandComposer {
             }
         }
         
-        let lineEnd = (textStorage.string as NSString).lineRange(for: NSRange(location: self.location, length: 0)).upperBound
+        let lineEnd = (textStorage.string as NSString).lineRange(for: NSRange(location: self.location, length: 0)).upperBound - 1
         if lineEnd < textStorage.string.count {
             let nextLineStart = (textStorage.string as NSString).lineRange(for: NSRange(location: lineEnd + 1, length: 0)).location
-            return ReplaceLineCommandComposer(fromLocation: lineEnd, toLocation: nextLineStart).compose(textStorage: textStorage)
+            return ReplaceLineCommandComposer(fromLocation: nextLineStart, toLocation: lineEnd).compose(textStorage: textStorage)
         }
         
         return NoChangeCommand()
@@ -279,11 +279,11 @@ public class ReplaceHeadingCommandComposer: DocumentContentCommandComposer {
     
     public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
         guard let fromHeading = textStorage.heading(contains: self.fromLocation) else { return NoChangeCommand() }
-        guard let toHeading = textStorage.heading(contains: self.fromLocation) else { return NoChangeCommand() }
+        guard let toHeading = textStorage.heading(contains: self.toLocation) else { return NoChangeCommand() }
         
         let stringToReplace = textStorage.string.substring(toHeading.paragraphRange).appending(textStorage.string.substring(fromHeading.paragraphRange))
         
-        return ReplaceTextCommand(range: fromHeading.range.union(toHeading.range), textToReplace: stringToReplace, textStorage: textStorage)
+        return ReplaceTextCommand(range: fromHeading.paragraphRange.union(toHeading.paragraphRange), textToReplace: stringToReplace, textStorage: textStorage)
     }
 }
 
@@ -300,7 +300,7 @@ public class ReplaceLineCommandComposer: DocumentContentCommandComposer {
         let lineFrom = (textStorage.string as NSString).lineRange(for: NSRange(location: self.fromLocation, length: 0))
         let lineTo = (textStorage.string as NSString).lineRange(for: NSRange(location: self.toLocation, length: 0))
         
-        let stringToReplace = textStorage.string.substring(lineTo).appending(textStorage.string.substring(lineFrom))
+        let stringToReplace = textStorage.string.substring(lineFrom).appending(textStorage.string.substring(lineTo))
         
         return ReplaceTextCommand(range: lineFrom.union(lineTo), textToReplace: stringToReplace, textStorage: textStorage)
     }

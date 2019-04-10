@@ -73,27 +73,27 @@ extension DocumentEditViewController: DocumentEditToolbarDelegate {
                 case .bold:
                     self.viewModel.performAction(EditAction.textMark(OutlineParser.MarkType.bold, self.textView.selectedRange),
                                                  undoManager: self.textView.undoManager!,
-                                                 completion: commandCompletionActionMoveCursorMapTheLengthOfStringChange)
+                                                 completion: commandCompletionActionMoveCursorForTextMark)
                 case .italic:
                     self.viewModel.performAction(EditAction.textMark(OutlineParser.MarkType.italic, self.textView.selectedRange),
                                                  undoManager: self.textView.undoManager!,
-                                                 completion: commandCompletionActionMoveCursorMapTheLengthOfStringChange)
+                                                 completion: commandCompletionActionMoveCursorForTextMark)
                 case .underscore:
                     self.viewModel.performAction(EditAction.textMark(OutlineParser.MarkType.underscore, self.textView.selectedRange),
                                                  undoManager: self.textView.undoManager!,
-                                                 completion: commandCompletionActionMoveCursorMapTheLengthOfStringChange)
+                                                 completion: commandCompletionActionMoveCursorForTextMark)
                 case .strikethrough:
                     self.viewModel.performAction(EditAction.textMark(OutlineParser.MarkType.strikethrough, self.textView.selectedRange),
                                                  undoManager: self.textView.undoManager!,
-                                                 completion: commandCompletionActionMoveCursorMapTheLengthOfStringChange)
+                                                 completion: commandCompletionActionMoveCursorForTextMark)
                 case .code:
                     self.viewModel.performAction(EditAction.textMark(OutlineParser.MarkType.code, self.textView.selectedRange),
                                                  undoManager: self.textView.undoManager!,
-                                                 completion: commandCompletionActionMoveCursorMapTheLengthOfStringChange)
+                                                 completion: commandCompletionActionMoveCursorForTextMark)
                 case .verbatim:
                     self.viewModel.performAction(EditAction.textMark(OutlineParser.MarkType.verbatim, self.textView.selectedRange),
                                                  undoManager: self.textView.undoManager!,
-                                                 completion: commandCompletionActionMoveCursorMapTheLengthOfStringChange)
+                                                 completion: commandCompletionActionMoveCursorForTextMark)
                 case .checkbox:
                     self.viewModel.performAction(.checkboxSwitch(self.textView.selectedRange.location),
                                                  undoManager: self.textView.undoManager!,
