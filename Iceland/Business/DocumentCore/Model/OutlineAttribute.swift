@@ -47,10 +47,7 @@ public struct OutlineAttribute {
         public static let index: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_ORDERED_LIST_INDEX)
     }
     
-    public struct Checkbox {
-        public static let box: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_CHECKBOX_BOX)
-        public static let status: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_CHECKBOX_STATUS)
-    }
+    public static let checkbox: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_CHECKBOX)
     
     public struct Heading {
         public static let content: NSAttributedString.Key = NSAttributedString.Key("heading-content")

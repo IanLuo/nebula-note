@@ -361,7 +361,7 @@ public class AddAttachmentCommandComposer: DocumentContentCommandComposer {
 // MARK: - CheckboxCommand
 public class CheckboxStatusCommandComposer: DocumentContentCommandComposer {
     public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
-        let status = textStorage.string.substring(range)
+        let status = checkboxString
         
         var nextStatus: String = status
         switch status {
@@ -372,12 +372,20 @@ public class CheckboxStatusCommandComposer: DocumentContentCommandComposer {
             nextStatus = OutlineParser.Values.Checkbox.checked
         }
         
-        return ReplaceTextCommand(range: range, textToReplace: nextStatus, textStorage: textStorage)
+        for case let token in textStorage.token(at: self.location) ?? [] where token.name == OutlineParser.Key.Node.checkbox {
+            return ReplaceTextCommand(range: token.range, textToReplace: nextStatus, textStorage: textStorage)
+        }
+        
+        return NoChangeCommand()
     }
     
-    public let range: NSRange
+    public let location: Int
+    public let checkboxString: String
     
-    public init(range: NSRange) { self.range = range}
+    public init(location: Int, checkboxString: String) {
+        self.location = location
+        self.checkboxString = checkboxString
+    }
 }
 
 // MARK: - UpdateDateAndTimeCommand

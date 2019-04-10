@@ -184,16 +184,16 @@ public class DocumentEditViewController: UIViewController {
 }
 
 extension DocumentEditViewController: OutlineTextViewDelegate {
-    public func didTapOnLink(textView: UITextView, characterIndex: Int, linkStructure: [String : NSRange], point: CGPoint) {
+    public func didTapOnLink(textView: UITextView, characterIndex: Int, linkStructure: [String : String], point: CGPoint) {
 
     }
     
-    public func didTapOnLevel(textView: UITextView, chracterIndex: Int, heading: [String : NSRange], point: CGPoint) {
+    public func didTapOnLevel(textView: UITextView, chracterIndex: Int, point: CGPoint) {
         self.viewModel.foldOrUnfold(location: chracterIndex)
     }
     
-    public func didTapOnCheckbox(textView: UITextView, characterIndex: Int, checkbox: [String : NSRange], point: CGPoint) {
-        self.viewModel.performAction(.toggleCheckboxStatus(checkbox["status"]!),
+    public func didTapOnCheckbox(textView: UITextView, characterIndex: Int, checkbox: String, point: CGPoint) {
+        self.viewModel.performAction(.toggleCheckboxStatus(characterIndex, checkbox),
                                      undoManager: self.textView.undoManager!,
                                      completion: nil)
     }

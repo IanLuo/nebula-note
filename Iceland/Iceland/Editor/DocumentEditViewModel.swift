@@ -19,7 +19,7 @@ public protocol DocumentEditViewModelDelegate: class {
 }
 
 public enum EditAction {
-    case toggleCheckboxStatus(NSRange)
+    case toggleCheckboxStatus(Int, String)
     case addAttachment(Int, String, String)
     case updateDateAndTime(NSRange, DateAndTimeType)
     case addTag(String, Int)
@@ -44,8 +44,8 @@ public enum EditAction {
     
     public var commandComposer: DocumentContentCommandComposer {
         switch self {
-        case .toggleCheckboxStatus(let range):
-            return CheckboxStatusCommandComposer(range: range)
+        case .toggleCheckboxStatus(let location, let checkbox):
+            return CheckboxStatusCommandComposer(location: location, checkboxString: checkbox)
         case let .addAttachment(location, attachmentId, kind):
             return AddAttachmentCommandComposer(attachmentId: attachmentId, location: location, kind: kind)
         case let .addTag(tag, location):

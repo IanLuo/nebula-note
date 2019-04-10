@@ -11,9 +11,9 @@ import UIKit
 import Interface
 
 public protocol OutlineTextViewDelegate: class {
-    func didTapOnLevel(textView: UITextView, chracterIndex: Int, heading: [String: NSRange], point: CGPoint)
-    func didTapOnCheckbox(textView: UITextView, characterIndex: Int, checkbox: [String: NSRange], point: CGPoint)
-    func didTapOnLink(textView: UITextView, characterIndex: Int, linkStructure: [String: NSRange], point: CGPoint)
+    func didTapOnLevel(textView: UITextView, chracterIndex: Int, point: CGPoint)
+    func didTapOnCheckbox(textView: UITextView, characterIndex: Int, checkbox: String, point: CGPoint)
+    func didTapOnLink(textView: UITextView, characterIndex: Int, linkStructure: [String: String], point: CGPoint)
 }
 
 public class OutlineTextView: UITextView {
@@ -69,11 +69,11 @@ public class OutlineTextView: UITextView {
         let attributes = self.textStorage.attributes(at: characterIndex, effectiveRange: nil)
         
         var shouldPassTapToOtherGuestureRecognizers = false
-        if let heading = attributes[OutlineAttribute.Heading.level] as? [String: NSRange] {
-            self.outlineDelegate?.didTapOnLevel(textView: self, chracterIndex: characterIndex, heading: heading, point: location)
-        } else if let checkbox = attributes[OutlineAttribute.Checkbox.box] as? [String: NSRange] {
+        if let _ = attributes[OutlineAttribute.Heading.level] as? Int {
+            self.outlineDelegate?.didTapOnLevel(textView: self, chracterIndex: characterIndex, point: location)
+        } else if let checkbox = attributes[OutlineAttribute.checkbox] as? String {
             self.outlineDelegate?.didTapOnCheckbox(textView: self, characterIndex: characterIndex, checkbox: checkbox, point: location)
-        } else if let linkStructure = attributes[OutlineAttribute.Link.url] as? [String: NSRange] {
+        } else if let linkStructure = attributes[OutlineAttribute.Link.url] as? [String: String] {
             self.outlineDelegate?.didTapOnLink(textView: self, characterIndex: characterIndex, linkStructure: linkStructure, point: location)
         } else {
             shouldPassTapToOtherGuestureRecognizers = true

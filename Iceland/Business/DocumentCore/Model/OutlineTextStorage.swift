@@ -169,9 +169,11 @@ extension OutlineTextStorage {
     }
     
     public func updateTokenRangeOffset(delta: Int) {
-        self.allTokens
-            .filter { $0.range.location > self.currentLocation }
-            .forEach { $0.offset(delta) }
+        for token in self.allTokens {
+            if token.range.lowerBound > self.currentLocation {
+                token.offset(delta)
+            }
+        }
     }
     
     // 查找最外层层的 heading
@@ -335,10 +337,12 @@ extension OutlineTextStorage: OutlineParserDelegate {
             }
             
             linkRangeData.forEach {
-                // range 为整个链接时，添加自定义属性，值为解析的链接结构
                 if $0.key == OutlineParser.Key.Element.Link.title {
-                    self.addAttributes([NSAttributedString.Key.link: 1,
-                                        OutlineAttribute.hidden: 0], range: $0.value)
+                    // 添加自定义属性，值为解析的链接结构
+                    self.addAttributes([OutlineAttribute.hidden: 0,
+                                        NSAttributedString.Key.link: [$0.key: text.substring($0.value),
+                                                                      OutlineParser.Key.Element.Link.url: text.substring(linkRangeData[OutlineParser.Key.Element.Link.url]!)]],
+                                       range: $0.value)
                 } else if $0.key == OutlineParser.Key.Element.Link.url {
                     self.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment,
                                         OutlineAttribute.showAttachment: OutlineAttribute.Link.url],
@@ -385,9 +389,8 @@ extension OutlineTextStorage: OutlineParserDelegate {
             self._tempParsingTokenResult.append(Token(range: checkboxRange, name: OutlineParser.Key.Node.checkbox, data: rangeData))
             
             for (key, range) in rangeData {
-                if key == OutlineParser.Key.Element.Checkbox.status {
-                    self.addAttribute(OutlineAttribute.Checkbox.box, value: rangeData, range: range)
-                    self.addAttribute(OutlineAttribute.Checkbox.status, value: range, range: NSRange(location: range.location, length: 1))
+                if key == OutlineParser.Key.Node.checkbox {
+                    self.addAttribute(OutlineAttribute.checkbox, value: text.substring(range), range: range)
                     self.addAttributes([NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.spotlight,
                                         NSAttributedString.Key.font: InterfaceTheme.Font.title], range: range)
                 }
@@ -508,26 +511,26 @@ extension OutlineTextStorage: OutlineParserDelegate {
             self._tempParsingTokenResult.append(token)
             
             self.addAttribute(NSAttributedString.Key.font, value: InterfaceTheme.Font.title, range: headingRange)
-            self.addAttribute(OutlineAttribute.Heading.content, value: headingRange, range: headingRange)
+            self.addAttribute(OutlineAttribute.Heading.content, value: 1, range: headingRange)
             
             if let levelRange = $0[OutlineParser.Key.Element.Heading.level] {
-                self.addAttribute(OutlineAttribute.Heading.level, value: $0, range: levelRange)
+                self.addAttribute(OutlineAttribute.Heading.level, value: 1, range: levelRange)
             }
             
             if let tagsRange = $0[OutlineParser.Key.Element.Heading.tags] {
-                self.addAttribute(OutlineAttribute.Heading.tags, value: tagsRange, range: tagsRange)
+                self.addAttribute(OutlineAttribute.Heading.tags, value: 1, range: tagsRange)
                 self._addButtonAttributes(range: tagsRange, color: InterfaceTheme.Color.descriptive)
                 self.addAttribute(NSAttributedString.Key.font, value: InterfaceTheme.Font.footnote, range: tagsRange)
             }
             
             if let priorityRange = $0[OutlineParser.Key.Element.Heading.priority] {
-                self.addAttribute(OutlineAttribute.Heading.priority, value: priorityRange, range: priorityRange)
+                self.addAttribute(OutlineAttribute.Heading.priority, value: 1, range: priorityRange)
                 self._addButtonAttributes(range: priorityRange, color: InterfaceTheme.Color.descriptive)
                 self.addAttribute(NSAttributedString.Key.font, value: InterfaceTheme.Font.footnote, range: priorityRange)
             }
             
             if let planningRange = $0[OutlineParser.Key.Element.Heading.planning] {
-                self.addAttributes([OutlineAttribute.Heading.planning: planningRange,
+                self.addAttributes([OutlineAttribute.Heading.planning: 1,
                                     NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.interactive], range: planningRange)
                 
                 let planningString = string.substring(planningRange)
