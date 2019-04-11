@@ -75,15 +75,15 @@ public class OutlineParser {
         
         // MARK: 解析 date and time
         if includeParsee.contains(.dateAndTime) {
-            let result: [NSRange] = Matcher.Element.DateAndTime.anyDateAndTime
+            let result: [[String: NSRange]] = Matcher.Element.DateAndTime.anyDateAndTime
                 .matches(in: str, options: [], range: totalRange)
-                .map { (result: NSTextCheckingResult) -> NSRange in
-                    return result.range
+                .map { (result: NSTextCheckingResult) -> [String: NSRange] in
+                    return [OutlineParser.Key.Element.dateAndTIme: result.range]
                 }
             
             if result.count > 0 {
-//                self.logResult(result)
-                self.delegate?.didFoundDateAndTime(text: str, ranges: result)
+                self.logResult(result)
+                self.delegate?.didFoundDateAndTime(text: str, rangesData: result)
             }
         }
         
@@ -305,7 +305,7 @@ public protocol OutlineParserDelegate: class {
     func didFoundAttachment(text: String, attachmentRanges: [[String: NSRange]])
     func didFoundLink(text: String, urlRanges: [[String: NSRange]])
     func didFoundTextMark(text: String, markRanges: [[String: NSRange]])
-    func didFoundDateAndTime(text: String, ranges: [NSRange])
+    func didFoundDateAndTime(text: String, rangesData: [[String: NSRange]])
     func didStartParsing(text: String)
     func didCompleteParsing(text: String)
 }
@@ -327,7 +327,7 @@ extension OutlineParserDelegate {
     public func didFoundAttachment(text: String, attachmentRanges: [[String : NSRange]]) {}
     public func didFoundLink(text: String, urlRanges: [[String : NSRange]]) {}
     public func didFoundTextMark(text: String, markRanges: [[String : NSRange]]) {}
-    public func didFoundDateAndTime(text: String, ranges: [NSRange]) {}
+    public func didFoundDateAndTime(text: String, rangesData: [[String: NSRange]]) {}
     public func didStartParsing(text: String) {}
     public func didCompleteParsing(text: String) {}
 }

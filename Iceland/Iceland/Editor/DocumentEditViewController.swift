@@ -170,6 +170,21 @@ public class DocumentEditViewController: UIViewController {
 }
 
 extension DocumentEditViewController: OutlineTextViewDelegate {
+    public func didTapDateAndTime(textView: UITextView, characterIndex: Int, dateAndTimeString: String, point: CGPoint) {
+        let dateAndTime = DateAndTimeType(dateAndTimeString)!
+        self.viewModel.coordinator?.showDateSelector(title: "update the date and time", current: dateAndTime, add: { [unowned self] newDateAndTime in
+            self.viewModel.performAction(EditAction.updateDateAndTime(characterIndex, newDateAndTime), undoManager: self.textView.undoManager!, completion: { [unowned self] result in
+                if self.textView.selectedRange.location > characterIndex {
+                    self.textView.selectedRange = self.textView.selectedRange.offset(result.delta)
+                }
+            })
+        }, delete: {
+            
+        }, cancel: {
+            
+        })
+    }
+    
     public func didTapOnTags(textView: UITextView, characterIndex: Int, tags: [String], point: CGPoint) {
         self._showTagEditor(tags: tags, location: characterIndex)
     }

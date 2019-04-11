@@ -297,8 +297,8 @@ class ParseDelegate: OutlineParserDelegate {
         self.headings = headingDataRanges.map { HeadingToken(data: $0) }
     }
     
-    func didFoundDateAndTime(text: String, ranges: [NSRange]) {
-        self.dateAndTimes = ranges
+    func didFoundDateAndTime(text: String, rangesData: [[String:NSRange]]) {
+        self.dateAndTimes = rangesData.map { $0.values.first! }
     }
     
     public func heading(contains location: Int) -> HeadingToken? {

@@ -390,16 +390,20 @@ public class CheckboxStatusCommandComposer: DocumentContentCommandComposer {
 
 // MARK: - UpdateDateAndTimeCommand
 public class UpdateDateAndTimeCommandComposer: DocumentContentCommandComposer {
-    let range: NSRange
+    let location: Int
     let newDateAndTime: DateAndTimeType
     
-    public init(range: NSRange, dateAndTime: DateAndTimeType) {
-        self.range = range
+    public init(location: Int, dateAndTime: DateAndTimeType) {
+        self.location = location
         self.newDateAndTime = dateAndTime
     }
     
     public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
-        return ReplaceTextCommand(range: self.range, textToReplace: self.newDateAndTime.markString, textStorage: textStorage)
+        for case let token in textStorage.token(at: self.location) where token.name == OutlineParser.Key.Element.dateAndTIme {
+            return ReplaceTextCommand(range: token.range, textToReplace: self.newDateAndTime.markString, textStorage: textStorage)
+        }
+        
+        return NoChangeCommand()
     }
 }
 

@@ -21,7 +21,7 @@ public protocol DocumentEditViewModelDelegate: class {
 public enum EditAction {
     case toggleCheckboxStatus(Int, String)
     case addAttachment(Int, String, String)
-    case updateDateAndTime(NSRange, DateAndTimeType)
+    case updateDateAndTime(Int, DateAndTimeType)
     case addTag(String, Int)
     case removeTag(String, Int)
     case changePlanning(String, Int)
@@ -76,8 +76,8 @@ public enum EditAction {
             return QuoteBlockCommandComposer(location: location)
         case .codeBlock(let location):
             return CodeBlockCommandComposer(location: location)
-        case let .updateDateAndTime(range, dateAndTime):
-            return UpdateDateAndTimeCommandComposer(range: range, dateAndTime: dateAndTime)
+        case let .updateDateAndTime(location, dateAndTime):
+            return UpdateDateAndTimeCommandComposer(location: location, dateAndTime: dateAndTime)
         case let .unorderedListSwitch(location):
             return UnorderdListSwitchCommandComposer(location: location)
         case let .orderedListSwitch(location):

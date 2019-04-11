@@ -544,10 +544,16 @@ extension OutlineTextStorage: OutlineParserDelegate {
         }
     }
     
-    public func didFoundDateAndTime(text: String, ranges: [NSRange]) {
-        for range in ranges {
+    public func didFoundDateAndTime(text: String, rangesData: [[String: NSRange]]) {
+        
+        for data in rangesData {
+            guard let range = data[OutlineParser.Key.Element.dateAndTIme] else { return }
+            
+            self._tempParsingTokenResult.append(Token(range: range, name: OutlineParser.Key.Element.dateAndTIme, data: data))
+            
             self._addButtonAttributes(range: range, color: InterfaceTheme.Color.descriptive)
-            self.addAttribute(NSAttributedString.Key.font, value: InterfaceTheme.Font.footnote, range: range)
+            self.addAttributes([NSAttributedString.Key.font: InterfaceTheme.Font.footnote,
+                                OutlineAttribute.dateAndTime: text.substring(range)], range: range)
         }
     }
     

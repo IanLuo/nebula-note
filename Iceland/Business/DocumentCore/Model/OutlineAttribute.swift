@@ -24,6 +24,8 @@ public struct OutlineAttribute {
     public static let showAttachment: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_SHOW_ATTACHMENT)
     public static let tempShowAttachment: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_TEMPAROTY_SHOW_ATTACHMENT)
     
+    public static let dateAndTime: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_DATE_AND_TIME)
+    
     public struct Attachment {
         public static let attachment: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_ATTACHMENT)
         public static let value: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_ATTACHMENT_VALUE)
