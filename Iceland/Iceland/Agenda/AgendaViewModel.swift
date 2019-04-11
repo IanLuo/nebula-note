@@ -32,8 +32,6 @@ public class AgendaViewModel {
             dates.append(today.dayBefore(30 - i))
         }
         
-        dates.append(today)
-        
         for i in 0..<30 {
             dates.append(today.dayAfter(i))
         }
@@ -69,6 +67,16 @@ public class AgendaViewModel {
         }
     }
     
+    public var indexOfToday: Int {
+        let today = Date()
+        for (index, date) in self.dates.enumerated() {
+            if date.isSameDay(today) {
+                return index
+            }
+        }
+        return 0
+    }
+    
     public func loadData() {
         let loadTime = Date()
         guard (loadTime.timeIntervalSince1970 - self._lastLoadTime > _reloadInterval && self._headingsHasModification)
@@ -102,7 +110,11 @@ public class AgendaViewModel {
                     if let planning = cellModel.planning {
                         return SettingsAccessor.shared.unfinishedPlanning.contains(planning)
                     } else if let dateAndTime = cellModel.dateAndTime {
-                        return dateAndTime.date >= date
+                        if dateAndTime.isSchedule || dateAndTime.isDue {
+                            return dateAndTime.date <= date
+                        } else {
+                            return dateAndTime.date.isSameDay(date)
+                        }
                     } else {
                         return false
                     }

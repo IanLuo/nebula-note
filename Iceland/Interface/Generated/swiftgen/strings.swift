@@ -124,6 +124,14 @@ public enum L10n {
         /// All day
         public static let allDay = L10n.tr("Localizable", "document.edit.date.all-day")
       }
+      public enum Tag {
+        /// Add new tag
+        public static let add = L10n.tr("Localizable", "document.edit.tag.add")
+        /// New tag name
+        public static let placeHolder = L10n.tr("Localizable", "document.edit.tag.place-holder")
+        /// Don't use special characters in tag
+        public static let validation = L10n.tr("Localizable", "document.edit.tag.validation")
+      }
     }
     public enum Title {
       /// Untitled

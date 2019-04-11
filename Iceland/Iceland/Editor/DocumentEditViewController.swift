@@ -107,83 +107,73 @@ public class DocumentEditViewController: UIViewController {
         return button
     }
     
-    private func _showAttachmentSelections() {
-        let performAddAttachmentAction: (Int, String, String) -> Void = {
-            self.viewModel.performAction(EditAction.addAttachment($0, $1, $2),
-                                         undoManager: self.textView.undoManager!,
-                                         completion: nil)
-        }
+    private func _showTagEditor(tags: [String], location: Int) {
+        let actionsViewController = ActionsViewController()
         
-        let actionViewController = ActionsViewController()
-        actionViewController.addAction(icon: Asset.Assets.imageLibrary.image, title: "images".localizable) { controller in
-            controller.dismiss(animated: true, completion: {
-                self.viewModel.coordinator?.showAttachmentPicker(kind: Attachment.Kind.image, complete: { [unowned self] attachmentId in
-                    performAddAttachmentAction(self.textView.selectedRange.location, attachmentId, Attachment.Kind.image.rawValue)
-                    }, cancel: {
-                        
+        var location = location
+        
+        for tag in tags {
+            actionsViewController.addAction(icon: Asset.Assets.cross.image.withRenderingMode(.alwaysTemplate), title: tag) { actionViewController in
+                self.viewModel.performAction(EditAction.removeTag(tag, location), undoManager: self.textView.undoManager!, completion: { result in
+                    if self.textView.selectedRange.location > location {
+                        self.textView.selectedRange = self.textView.selectedRange.offset(result.delta)
+                    }
+                    
+                    actionViewController.removeAction(with: tag)
+                    location -= tag.count
                 })
+            }
+        }
+        
+        actionsViewController.setCancel {
+            $0.dismiss(animated: true, completion: nil)
+        }
+        
+        actionsViewController.addAction(icon: Asset.Assets.add.image.withRenderingMode(.alwaysTemplate), title: L10n.Document.Edit.Tag.add) { actionViewController in
+            actionViewController.dismiss(animated: true, completion: {
+                let formController = ModalFormViewController()
+                formController.addTextFied(title: L10n.Document.Edit.Tag.add, placeHoder: L10n.Document.Edit.Tag.placeHolder, defaultValue: nil)
+                formController.onValidating = { values in
+                    if let newTagName = values[L10n.Document.Edit.Tag.add] as? String {
+                        if try! NSRegularExpression(pattern: "^\(OutlineParser.RegexPattern.character)+$",
+                                             options: []).firstMatch(in: newTagName, options: [],
+                                                                     range: NSRange(location: 0, length: newTagName.count)) == nil {
+                            return [L10n.Document.Edit.Tag.add: L10n.Document.Edit.Tag.validation]
+                        }
+                    }
+                    
+                    return [:]
+                }
+                formController.onSaveValue = { values, viewController in
+                    if let newTagName = values[L10n.Document.Edit.Tag.add] as? String {
+                        location += newTagName.count
+                        viewController.dismiss(animated: true, completion: {
+                            self.viewModel.performAction(EditAction.addTag(newTagName, location), undoManager: self.textView.undoManager!, completion: { result in
+                                if self.textView.selectedRange.location > location {
+                                    self.textView.selectedRange = self.textView.selectedRange.offset(result.delta)
+                                }
+                            })
+                        })
+                    }
+                }
+                
+                formController.onCancel = {
+                    $0.dismiss(animated: true, completion: nil)
+                }
+                
+                self.present(formController, animated: true, completion: nil)
             })
         }
         
-        actionViewController.addAction(icon: Asset.Assets.add.image, title: "location".localizable) { controller in
-            controller.dismiss(animated: true, completion: {
-                self.viewModel.coordinator?.showAttachmentPicker(kind: .location, complete: { [unowned self] attachmentId in
-                    performAddAttachmentAction(self.textView.selectedRange.location, attachmentId, Attachment.Kind.location.rawValue)
-                }, cancel: {
-                        
-                })
-            })
-        }
-        
-        actionViewController.addAction(icon: Asset.Assets.add.image, title: "audio".localizable) { controller in
-            controller.dismiss(animated: true, completion: {
-                self.viewModel.coordinator?.showAttachmentPicker(kind: .audio, complete: { [unowned self] attachmentId in
-                    performAddAttachmentAction(self.textView.selectedRange.location, attachmentId, Attachment.Kind.audio.rawValue)
-                }, cancel: {
-                        
-                })
-            })
-        }
-        
-        actionViewController.addAction(icon: Asset.Assets.add.image, title: "video".localizable) { controller in
-            controller.dismiss(animated: true, completion: {
-                self.viewModel.coordinator?.showAttachmentPicker(kind: .video, complete: { [unowned self] attachmentId in
-                    performAddAttachmentAction(self.textView.selectedRange.location, attachmentId, Attachment.Kind.video.rawValue)
-                }, cancel: {
-                        
-                })
-            })
-        }
-        
-        actionViewController.addAction(icon: Asset.Assets.add.image, title: "sketch".localizable) { controller in
-            controller.dismiss(animated: true, completion: {
-                self.viewModel.coordinator?.showAttachmentPicker(kind: .sketch, complete: { [unowned self] attachmentId in
-                    performAddAttachmentAction(self.textView.selectedRange.location, attachmentId, Attachment.Kind.sketch.rawValue)
-                }, cancel: {
-                        
-                })
-            })
-        }
-        
-        actionViewController.addAction(icon: Asset.Assets.add.image, title: "link".localizable) { controller in
-            controller.dismiss(animated: true, completion: {
-                self.viewModel.coordinator?.showAttachmentPicker(kind: .link, complete: { [unowned self] attachmentId in
-                    performAddAttachmentAction(self.textView.selectedRange.location, attachmentId, Attachment.Kind.link.rawValue)
-                }, cancel: {
-                        
-                })
-            })
-        }
-        
-        actionViewController.addAction(icon: Asset.Assets.add.image, title: "captured".localizable) { controller in
-            controller.dismiss(animated: true, completion: {
-                self.viewModel.coordinator?.showCapturedList()
-            })
-        }
+        self.present(actionsViewController, animated: true, completion: nil)
     }
 }
 
 extension DocumentEditViewController: OutlineTextViewDelegate {
+    public func didTapOnTags(textView: UITextView, characterIndex: Int, tags: [String], point: CGPoint) {
+        self._showTagEditor(tags: tags, location: characterIndex)
+    }
+    
     public func didTapOnLink(textView: UITextView, characterIndex: Int, linkStructure: [String : String], point: CGPoint) {
 
     }
@@ -197,6 +187,7 @@ extension DocumentEditViewController: OutlineTextViewDelegate {
                                      undoManager: self.textView.undoManager!,
                                      completion: nil)
     }
+    
 }
 
 extension DocumentEditViewController: UITextViewDelegate {

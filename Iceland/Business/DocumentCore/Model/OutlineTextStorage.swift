@@ -518,7 +518,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
             }
             
             if let tagsRange = $0[OutlineParser.Key.Element.Heading.tags] {
-                self.addAttribute(OutlineAttribute.Heading.tags, value: 1, range: tagsRange)
+                self.addAttribute(OutlineAttribute.Heading.tags, value: text.substring(tagsRange).components(separatedBy: ":").filter { $0.count > 0 }, range: tagsRange)
                 self._addButtonAttributes(range: tagsRange, color: InterfaceTheme.Color.descriptive)
                 self.addAttribute(NSAttributedString.Key.font, value: InterfaceTheme.Font.footnote, range: tagsRange)
             }

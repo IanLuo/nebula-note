@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import Business
+import Interface
 
 public protocol EditorCoordinatorSelectHeadingDelegate: class {
     func didSelectHeading(url: URL, heading: HeadingToken, coordinator: EditorCoordinator)
@@ -57,7 +58,7 @@ public class EditorCoordinator: Coordinator {
         navigationController.isNavigationBarHidden = true
         let capturedListCoordinator = CaptureListCoordinator(stack: navigationController, dependency: self.dependency, mode: CaptureListViewModel.Mode.pick)
         capturedListCoordinator.delegate = self
-    }
+    }    
 }
 
 extension EditorCoordinator: CaptureListCoordinatorDelegate {

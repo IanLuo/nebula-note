@@ -107,7 +107,7 @@ private class DateCell: UICollectionViewCell {
     
     private let background: UIView = {
         let view = UIView()
-        view.layer.cornerRadius = 4
+        view.layer.cornerRadius = 8
         view.layer.masksToBounds = true
         return view
     }()
@@ -117,14 +117,17 @@ private class DateCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
+        self.contentView.addSubview(self.background)
         self.contentView.addSubview(self.todayLabel)
         self.contentView.addSubview(self.titleLabel)
+        
+        self.background.allSidesAnchors(to: self.contentView, edgeInset: 5)
 
         self.titleLabel.allSidesAnchors(to: self.contentView, edgeInset: 0)
-        self.todayLabel.sideAnchor(for: .bottom, to: self, edgeInset: 16)
+        
+        self.todayLabel.sideAnchor(for: .bottom, to: self, edgeInset: 5)
         self.todayLabel.centerAnchors(position: .centerX, to: self.contentView)
         
-        self.backgroundView = self.background
     }
     
     override var isSelected: Bool {
@@ -155,6 +158,7 @@ private class DateCell: UICollectionViewCell {
                                 NSAttributedString.Key.font : InterfaceTheme.Font.title],
                                range: (string as NSString).range(of: dateString))
             background.backgroundColor = InterfaceTheme.Color.spotlight
+            self.todayLabel.textColor = InterfaceTheme.Color.interactive
         } else {
             attr.addAttributes([NSAttributedString.Key.foregroundColor : InterfaceTheme.Color.descriptive,
                                 NSAttributedString.Key.font : InterfaceTheme.Font.footnote],
@@ -162,7 +166,8 @@ private class DateCell: UICollectionViewCell {
             attr.addAttributes([NSAttributedString.Key.foregroundColor : InterfaceTheme.Color.descriptive,
                                 NSAttributedString.Key.font : InterfaceTheme.Font.title],
                                range: (string as NSString).range(of: dateString))
-            background.backgroundColor = InterfaceTheme.Color.background1
+            background.backgroundColor = InterfaceTheme.Color.background2
+            self.todayLabel.textColor = InterfaceTheme.Color.descriptive
         }
         
         self.titleLabel.attributedText = NSAttributedString(attributedString: attr)

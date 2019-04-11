@@ -191,7 +191,7 @@ extension OutlineParser {
     }
     
     public struct RegexPattern {
-        private static let character = "\\p{L}"
+        public static let character = "\\w"
         
         public struct Node {
             public static let heading =         "^(\\*+) (.)+\\n"
@@ -234,7 +234,7 @@ extension OutlineParser {
                 public static let timeRangePattern =            "\\<\\d{4}\\-\\d{1,2}\\-\\d{1,2}(\(weekdayPattern))? \(timeRangePartPattern)\\>"
                 public static let schedule =                    "\(Values.Other.scheduled)\\: (\(dateAndTimePattern))"
                 public static let due =                         "\(Values.Other.due)\\: (\(dateAndTimePattern))"
-                public static let anyDateAndTime =              "\(schedule)|\(due)|\(dateAndTimeRange)|\(timeRangePattern)"
+                public static let anyDateAndTime =              "\(schedule)|\(due)|\(dateAndTimeRange)|\(timeRangePattern)|\(dateAndTimePattern)"
             }
             
             public struct TextMark {

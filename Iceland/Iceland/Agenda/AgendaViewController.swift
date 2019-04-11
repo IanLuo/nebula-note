@@ -54,6 +54,7 @@ public class AgendaViewController: UIViewController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+        
         self.setupUI()
         
         self.viewModel.loadData()
@@ -96,7 +97,8 @@ extension AgendaViewController: BesideDatesViewDelegate {
     public func didSelectDate(at index: Int) {
         self._shouldChangeBesideDateBarContentOffset = false
         UIView.animate(withDuration: 0.3, animations: {
-            self.tableView.scrollToRow(at: IndexPath(row: 0, section: index), at: UITableView.ScrollPosition.top, animated: false)
+            let frame = self.tableView.rectForHeader(inSection: index)
+            self.tableView.setContentOffset(CGPoint(x: 0, y: frame.origin.y), animated: false)
         }) {
             if $0 {
                 self._shouldChangeBesideDateBarContentOffset = true
@@ -106,10 +108,6 @@ extension AgendaViewController: BesideDatesViewDelegate {
     
     public func dates() -> [Date] {
         return self.viewModel.dates
-    }
-    
-    public func didSelectDate(date: Date) {
-        self.tableView.reloadData()
     }
 }
 
@@ -141,9 +139,12 @@ extension AgendaViewController: UITableViewDataSource {
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         guard self._shouldChangeBesideDateBarContentOffset else { return }
-        if let topIndexPath = self.tableView.indexPathsForVisibleRows?.first {
-            self.besideDatesView.moveTo(index: topIndexPath.section)
-        }
+
+        self.besideDatesView.moveTo(index: self.tableView.firstVisibleHeaderIndex)
+    }
+    
+    public func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
+        return DateSectionView.Constants.height
     }
 }
 
@@ -192,9 +193,28 @@ extension AgendaViewController: AgendaTableCellDelegate {
     }
 }
 
+extension UITableView {
+    var firstVisibleHeaderIndex: Int {
+        let visibleRect = CGRect(x: 0, y: self.contentOffset.y, width: self.bounds.width, height: self.bounds.height)
+        for i in 0..<self.numberOfSections {
+            if self.rectForHeader(inSection: i).intersects(visibleRect) {
+                return i
+            }
+        }
+        return 0
+    }
+}
+
 extension AgendaViewController: AgendaViewModelDelegate {
     public func didCompleteLoadAllData() {
         self.tableView.reloadData()
+        
+        self.besideDatesView.moveTo(index: self.viewModel.indexOfToday)
+        
+        self._shouldChangeBesideDateBarContentOffset = false
+        let frame = self.tableView.rectForHeader(inSection: self.viewModel.indexOfToday)
+        self.tableView.setContentOffset(CGPoint(x: 0, y: frame.origin.y), animated: false)
+        self._shouldChangeBesideDateBarContentOffset = true
     }
     
     public func didFailed(_ error: Error) {
@@ -210,7 +230,7 @@ private class DateSectionView: UITableViewHeaderFooterView {
     
     private let weekdayLabel: UILabel = {
         let label = UILabel()
-        label.textColor = InterfaceTheme.Color.descriptiveHighlighted
+        label.textColor = InterfaceTheme.Color.descriptive
         label.font = InterfaceTheme.Font.title
         label.textAlignment = .left
         return label
@@ -218,7 +238,7 @@ private class DateSectionView: UITableViewHeaderFooterView {
     
     let dateLabel: UILabel = {
         let label = UILabel()
-        label.textColor = InterfaceTheme.Color.descriptiveHighlighted
+        label.textColor = InterfaceTheme.Color.descriptive
         label.font = InterfaceTheme.Font.subtitle
         label.textAlignment = .left
         return label

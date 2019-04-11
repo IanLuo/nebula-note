@@ -14,6 +14,7 @@ public protocol OutlineTextViewDelegate: class {
     func didTapOnLevel(textView: UITextView, chracterIndex: Int, point: CGPoint)
     func didTapOnCheckbox(textView: UITextView, characterIndex: Int, checkbox: String, point: CGPoint)
     func didTapOnLink(textView: UITextView, characterIndex: Int, linkStructure: [String: String], point: CGPoint)
+    func didTapOnTags(textView: UITextView, characterIndex: Int, tags: [String], point: CGPoint)
 }
 
 public class OutlineTextView: UITextView {
@@ -75,6 +76,8 @@ public class OutlineTextView: UITextView {
             self.outlineDelegate?.didTapOnCheckbox(textView: self, characterIndex: characterIndex, checkbox: checkbox, point: location)
         } else if let linkStructure = attributes[OutlineAttribute.Link.url] as? [String: String] {
             self.outlineDelegate?.didTapOnLink(textView: self, characterIndex: characterIndex, linkStructure: linkStructure, point: location)
+        } else if let tags = attributes[OutlineAttribute.Heading.tags] as? [String] {
+            self.outlineDelegate?.didTapOnTags(textView: self, characterIndex: characterIndex, tags: tags, point: location)
         } else {
             shouldPassTapToOtherGuestureRecognizers = true
         }

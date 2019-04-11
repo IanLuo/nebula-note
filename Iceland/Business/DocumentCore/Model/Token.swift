@@ -125,7 +125,7 @@ public class HeadingToken: Token {
             return tags.location
         }
         
-        return range.upperBound
+        return range.upperBound - 1
     }
     
     public var headingTextRange: NSRange {
