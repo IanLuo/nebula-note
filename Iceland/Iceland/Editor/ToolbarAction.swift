@@ -43,7 +43,7 @@ public struct Attachments: ToolbarActionGroupProtocol {
 }
 
 public struct TextMarkActions: ToolbarActionGroupProtocol {
-    public var actions: [ToolbarActionProtocol] = [NormalAction.heading, NormalAction.bold, NormalAction.italic, NormalAction.underscore, NormalAction.strikethrough, NormalAction.code, NormalAction.sourcecode, NormalAction.quote, NormalAction.checkbox, NormalAction.list, NormalAction.orderedList]
+    public var actions: [ToolbarActionProtocol] = [NormalAction.heading, NormalAction.bold, NormalAction.italic, NormalAction.underscore, NormalAction.strikethrough, NormalAction.code, NormalAction.sourcecode, NormalAction.quote, NormalAction.checkbox, NormalAction.dateAndTime, NormalAction.list, NormalAction.orderedList]
     
     public var title: String = ""
     
@@ -87,6 +87,7 @@ public enum NormalAction: ToolbarActionProtocol, DocumentActon {
     case quote
     /// code block
     case sourcecode
+    case dateAndTime
     
     public var title: String {
         switch self {
@@ -125,6 +126,8 @@ public enum NormalAction: ToolbarActionProtocol, DocumentActon {
         case .quote:
             return ""
         case .sourcecode:
+            return ""
+        case .dateAndTime:
             return ""
         }
     }
@@ -167,6 +170,8 @@ public enum NormalAction: ToolbarActionProtocol, DocumentActon {
             return Asset.Assets.quote.image
         case .sourcecode:
             return Asset.Assets.sourcecode.image
+        case .dateAndTime:
+            return Asset.Assets.agenda.image
         }
     }
     

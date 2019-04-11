@@ -215,7 +215,7 @@ public class MoveLineUpCommandComposer: DocumentContentCommandComposer {
     }
     
     public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
-        for case let token in textStorage.token(at: self.location) ?? [] where token is HeadingToken {
+        for case let token in textStorage.token(at: self.location) where token is HeadingToken {
             var lastHeading: HeadingToken?
             for heading in textStorage.headingTokens {
                 if let lastHeading = lastHeading, heading.identifier == token.identifier {
@@ -244,7 +244,7 @@ public class MoveLineDownCommandComposer: DocumentContentCommandComposer {
     }
     
     public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
-        for case let token in textStorage.token(at: self.location) ?? [] where token is HeadingToken {
+        for case let token in textStorage.token(at: self.location) where token is HeadingToken {
             var currentHeading: HeadingToken?
             for heading in textStorage.headingTokens {
                 if heading.identifier == token.identifier {
@@ -372,7 +372,7 @@ public class CheckboxStatusCommandComposer: DocumentContentCommandComposer {
             nextStatus = OutlineParser.Values.Checkbox.checked
         }
         
-        for case let token in textStorage.token(at: self.location) ?? [] where token.name == OutlineParser.Key.Node.checkbox {
+        for case let token in textStorage.token(at: self.location) where token.name == OutlineParser.Key.Node.checkbox {
             return ReplaceTextCommand(range: token.range, textToReplace: nextStatus, textStorage: textStorage)
         }
         
@@ -391,19 +391,33 @@ public class CheckboxStatusCommandComposer: DocumentContentCommandComposer {
 // MARK: - UpdateDateAndTimeCommand
 public class UpdateDateAndTimeCommandComposer: DocumentContentCommandComposer {
     let location: Int
-    let newDateAndTime: DateAndTimeType
+    let newDateAndTime: DateAndTimeType?
     
-    public init(location: Int, dateAndTime: DateAndTimeType) {
+    public init(location: Int, dateAndTime: DateAndTimeType?) {
         self.location = location
         self.newDateAndTime = dateAndTime
     }
     
     public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
-        for case let token in textStorage.token(at: self.location) where token.name == OutlineParser.Key.Element.dateAndTIme {
-            return ReplaceTextCommand(range: token.range, textToReplace: self.newDateAndTime.markString, textStorage: textStorage)
-        }
+            for case let token in textStorage.token(at: self.location) where token.name == OutlineParser.Key.Element.dateAndTIme {
+                // 如果参数中有新的日期
+                if let newDateAndTime = self.newDateAndTime {
+                    // 替换
+                    return ReplaceTextCommand(range: token.range, textToReplace: newDateAndTime.markString, textStorage: textStorage)
+                } else {
+                    // 否则删除
+                    return ReplaceTextCommand(range: token.range, textToReplace: "", textStorage: textStorage)
+                }
+            }
         
-        return NoChangeCommand()
+        // 没有找到原来的 data and time
+        if let newDateAndTime = self.newDateAndTime {
+            // 创建新的
+            return ReplaceTextCommand(range: NSRange(location: self.location, length: 0), textToReplace: newDateAndTime.markString, textStorage: textStorage)
+        } else {
+            // 忽略
+            return NoChangeCommand()
+        }
     }
 }
 
@@ -635,7 +649,7 @@ public class UnorderdListSwitchCommandComposer: DocumentContentCommandComposer {
     public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
         let lineStart = (textStorage.string as NSString).lineRange(for: NSRange(location: self.location, length: 0)).location
         
-        for case let token in (textStorage.token(at: lineStart) ?? []) where token.name == OutlineParser.Key.Node.unordedList {
+        for case let token in (textStorage.token(at: lineStart)) where token.name == OutlineParser.Key.Node.unordedList {
             if let prefixRange = token.data[OutlineParser.Key.Element.UnorderedList.prefix] {
                 return ReplaceTextCommand(range: prefixRange, textToReplace: "", textStorage: textStorage)
             } else {
@@ -659,7 +673,7 @@ public class OrderedListSwitchCommandComposer: DocumentContentCommandComposer {
     public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
         let lineStart = (textStorage.string as NSString).lineRange(for: NSRange(location: self.location, length: 0)).location
         
-        for case let token in (textStorage.token(at: lineStart) ?? []) where token.name == OutlineParser.Key.Node.ordedList {
+        for case let token in (textStorage.token(at: lineStart)) where token.name == OutlineParser.Key.Node.ordedList {
             if let prefixRange = token.data[OutlineParser.Key.Element.OrderedList.prefix] {
                 return ReplaceTextCommand(range: prefixRange, textToReplace: "", textStorage: textStorage)
             } else {
@@ -670,7 +684,7 @@ public class OrderedListSwitchCommandComposer: DocumentContentCommandComposer {
         if lineStart > 0 {
             // 1. find last line index
             let lastLineStart = (textStorage.string as NSString).lineRange(for: NSRange(location: lineStart - 1, length: 0)).location
-            for case let token in (textStorage.token(at: lastLineStart) ?? []) where token.name == OutlineParser.Key.Node.ordedList {
+            for case let token in (textStorage.token(at: lastLineStart)) where token.name == OutlineParser.Key.Node.ordedList {
                 // 2. insert index
                 let lastPrefix = textStorage.string.substring(token.data[OutlineParser.Key.Element.OrderedList.prefix]!)
                 return InsertTextCommandComposer(location: lineStart,
@@ -700,7 +714,7 @@ public class CheckboxSwitchCommandComposer: DocumentContentCommandComposer {
     public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
         let lineStart = (textStorage.string as NSString).lineRange(for: NSRange(location: self.location, length: 0)).location
         
-        for case let token in (textStorage.token(at: lineStart) ?? []) where token.name == OutlineParser.Key.Node.checkbox {
+        for case let token in (textStorage.token(at: lineStart)) where token.name == OutlineParser.Key.Node.checkbox {
             return ReplaceTextCommand(range: token.range, textToReplace: "", textStorage: textStorage)
         }
         

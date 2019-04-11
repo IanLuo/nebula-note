@@ -107,6 +107,55 @@ public class DocumentEditViewController: UIViewController {
         return button
     }
     
+    public func showDateAndTimeCreator(location: Int) {
+        let actionsViewController = ActionsViewController()
+        actionsViewController.addAction(icon: nil, title: "Schedule", action: { viewController in
+            viewController.dismiss(animated: true, completion: {
+                self.viewModel.coordinator?.showDateSelector(title: "Schedule", current: nil, add: { newDateAndTime in
+                    newDateAndTime.isSchedule = true
+                    self.viewModel.performAction(EditAction.updateDateAndTime(location, newDateAndTime), undoManager: self.textView.undoManager!, completion: { result in
+                        self.textView.selectedRange = self.textView.selectedRange.offset(result.delta)
+                    })
+                }, delete: {
+                    // ignore
+                }, cancel: {
+                    //ignore
+                })
+            })
+        })
+        
+        actionsViewController.addAction(icon: nil, title: "Due", action: { viewController in
+            viewController.dismiss(animated: true, completion: {
+                self.viewModel.coordinator?.showDateSelector(title: "Due", current: nil, add: { newDateAndTime in
+                    newDateAndTime.isDue = true
+                    self.viewModel.performAction(EditAction.updateDateAndTime(location, newDateAndTime), undoManager: self.textView.undoManager!, completion: { result in
+                        self.textView.selectedRange = self.textView.selectedRange.offset(result.delta)
+                    })
+                }, delete: {
+                    // ignore
+                }, cancel: {
+                    //ignore
+                })
+            })
+        })
+        
+        actionsViewController.addAction(icon: nil, title: "Date and time", action: { viewController in
+            viewController.dismiss(animated: true, completion: {
+                self.viewModel.coordinator?.showDateSelector(title: "Date and time", current: nil, add: { newDateAndTime in
+                    self.viewModel.performAction(EditAction.updateDateAndTime(location, newDateAndTime), undoManager: self.textView.undoManager!, completion: { result in
+                        self.textView.selectedRange = self.textView.selectedRange.offset(result.delta)
+                    })
+                }, delete: {
+                    // ignore
+                }, cancel: {
+                    //ignore
+                })
+            })
+        })
+        
+        self.present(actionsViewController, animated: true, completion: nil)
+    }
+    
     private func _showTagEditor(tags: [String], location: Int) {
         let actionsViewController = ActionsViewController()
         

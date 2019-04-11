@@ -21,7 +21,7 @@ public protocol DocumentEditViewModelDelegate: class {
 public enum EditAction {
     case toggleCheckboxStatus(Int, String)
     case addAttachment(Int, String, String)
-    case updateDateAndTime(Int, DateAndTimeType)
+    case updateDateAndTime(Int, DateAndTimeType?)
     case addTag(String, Int)
     case removeTag(String, Int)
     case changePlanning(String, Int)

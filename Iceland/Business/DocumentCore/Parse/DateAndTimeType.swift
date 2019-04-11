@@ -38,11 +38,11 @@ public class DateAndTimeType {
         }
     }
     
-    public let isDue: Bool
-    public let isSchedule: Bool
+    public var isDue: Bool
+    public var isSchedule: Bool
     public let duration: TimeInterval
     public let date: Date
-    public let includeTime: Bool // 是否包含时间
+    public var includeTime: Bool // 是否包含时间
     public let repeateMode: RepeatMode // 如果 repate 不为空，这个字段有值
     
     public var description: String {
@@ -168,11 +168,11 @@ extension DateAndTimeType {
     
     public var markString: String {
         if self.isSchedule {
-            return "\(OutlineParser.Values.Other.scheduled) \(self._markStringWithoutDuration(date: self.date))"
+            return "\(OutlineParser.Values.Other.scheduled): \(self._markStringWithoutDuration(date: self.date))"
         }
         
         if self.isDue {
-            return "\(OutlineParser.Values.Other.due) \(self._markStringWithoutDuration(date: self.date))"
+            return "\(OutlineParser.Values.Other.due): \(self._markStringWithoutDuration(date: self.date))"
         }
         
         if self.duration > 0 {

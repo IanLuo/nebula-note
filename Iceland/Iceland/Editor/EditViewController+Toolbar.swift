@@ -49,7 +49,7 @@ extension DocumentEditViewController: DocumentEditToolbarDelegate {
                                                     self.textView.selectedRange = self.textView.selectedRange.offset(result.delta)
                     })
                 }, cancel: {
-                    
+                    // ignore
                 })
             }
             
@@ -125,6 +125,8 @@ extension DocumentEditViewController: DocumentEditToolbarDelegate {
                                                  undoManager: self.textView.undoManager!) { (result) in
                                                     // TODO:
                     }
+                case .dateAndTime:
+                    self.showDateAndTimeCreator(location: self.textView.selectedRange.location)
                 }
             }
         }
