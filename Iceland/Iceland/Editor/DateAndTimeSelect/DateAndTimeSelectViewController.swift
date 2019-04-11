@@ -126,6 +126,8 @@ public class DateAndTimeSelectViewController: TransitionViewController {
         
         self._cancelButton.tintColor = InterfaceTheme.Color.interactive
         self._cancelButton.setImage(Asset.Assets.cross.image.withRenderingMode(.alwaysTemplate), for: .normal)
+        
+        self._timeSelectViewController.switch.isOn = self._selectTime == nil
     }
     
     @IBAction private func _save() {
@@ -142,13 +144,13 @@ public class DateAndTimeSelectViewController: TransitionViewController {
             dateComponents.setValue(time.2, for: Calendar.Component.second)
             
             let dateAndTime = DateAndTimeType(date: dateComponents.date!,
-                                              includeTime: true)
+                                              includeTime: self._isEnabledSelectTime)
             self.delegate?.didSelect(dateAndTime: dateAndTime,
                                      viewController: self)
             self.didSelectAction?(dateAndTime)
         } else {
             let dateAndTime = DateAndTimeType(date: selectedDate,
-                                              includeTime: false)
+                                              includeTime: self._isEnabledSelectTime)
             self.delegate?.didSelect(dateAndTime: dateAndTime,
                                      viewController: self)
             self.didSelectAction?(dateAndTime)

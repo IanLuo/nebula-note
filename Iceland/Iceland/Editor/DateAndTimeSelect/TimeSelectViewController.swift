@@ -19,6 +19,7 @@ public class TimeSelectViewController: UIViewController {
     
     public weak var delegate: TimeSelectViewControllerDelegate?
 
+    @IBOutlet var `switch`: UISwitch!
     public var time: (Int, Int, Int)?
     
     @IBOutlet var _timePickerContainer: UIView!

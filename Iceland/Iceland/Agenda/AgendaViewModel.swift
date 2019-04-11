@@ -136,10 +136,14 @@ public class AgendaViewModel {
         // TODO: save to calendar
     }
     
-    public func updateDate(cellModel: AgendaCellModel, _ schedule: DateAndTimeType?) {
+    public func updateDate(cellModel: AgendaCellModel, _ newDateAndTime: DateAndTimeType?) {
         if let editorService = self.coordinator?.dependency.editorContext.request(url: cellModel.url) {
             editorService.open(completion: { [unowned editorService] _ in
-                
+                if let oldDateAndTimeRange = cellModel.dateAndTimeRange {
+                    _ = editorService.toggleContentCommandComposer(composer: UpdateDateAndTimeCommandComposer(location: oldDateAndTimeRange.location,
+                                                                                                          dateAndTime: newDateAndTime))
+                        .perform()
+                }
             })
         }
     }
