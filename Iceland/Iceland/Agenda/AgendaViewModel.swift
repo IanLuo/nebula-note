@@ -107,8 +107,8 @@ public class AgendaViewModel {
             
             self?.dates.forEach { date in
                 let mappedCellModels = allData.filter { cellModel in
-                    if let planning = cellModel.planning {
-                        return SettingsAccessor.shared.unfinishedPlanning.contains(planning)
+                    if let planning = cellModel.planning, SettingsAccessor.shared.finishedPlanning.contains(planning) {
+                        return false
                     } else if let dateAndTime = cellModel.dateAndTime {
                         if dateAndTime.isSchedule || dateAndTime.isDue {
                             return dateAndTime.date <= date

@@ -228,7 +228,11 @@ extension DocumentEditViewController: OutlineTextViewDelegate {
                 }
             })
         }, delete: {
-            
+            self.viewModel.performAction(EditAction.updateDateAndTime(characterIndex, nil), undoManager: self.textView.undoManager!, completion: { [unowned self] result in
+                if self.textView.selectedRange.location > characterIndex {
+                    self.textView.selectedRange = self.textView.selectedRange.offset(result.delta)
+                }
+            })
         }, cancel: {
             
         })
