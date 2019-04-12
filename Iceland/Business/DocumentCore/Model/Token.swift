@@ -23,7 +23,6 @@ public class Token {
     public let identifier: String
     private var _range: NSRange
     public var range: NSRange {
-//        set { _range = newValue }
         get { return offset == 0 ? _range : _range.offset(self.offset) }
     }
     public var name: String
@@ -40,6 +39,30 @@ public class Token {
         self.offset += offset
     }
 }
+
+// MARK: - TextMark
+public class TextMarkToken: Token {}
+
+// MARK: - UnorderdList
+public class UnorderdListToken: Token {}
+
+// MARK: - OrderedListToken
+public class OrderedListToken: Token {}
+
+// MARK: - CheckboxToken
+public class CheckboxToken: Token {}
+
+// MARK: - LinkToken
+public class LinkToken: Token {}
+
+// MARK: - AttachmentToken
+public class AttachmentToken: Token {}
+
+// MARK: - SeparatorToken
+public class SeparatorToken: Token {}
+
+// MARK: - DateAndTimeToken
+public class DateAndTimeToken: Token {}
 
 // MARK: - Block
 

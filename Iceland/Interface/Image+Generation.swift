@@ -49,7 +49,7 @@ extension UIImage {
         UIGraphicsBeginImageContextWithOptions(self.size, false, self.scale)
         guard let context = UIGraphicsGetCurrentContext() else { fatalError("no image context") }
         context.setFillColor(color.cgColor)
-        self.draw(at: .zero)
+        self.withRenderingMode(UIImage.RenderingMode.alwaysTemplate).draw(at: .zero)
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
         return image

@@ -185,6 +185,24 @@ public class UnFoldAllCommand: FoldingAndUnfoldingCommand {
     }
 }
 
+// MARK:
+public class HeadingLevelChangeCommandComposer: DocumentContentCommandComposer {
+    let newLevel: Int
+    let location: Int
+    public init(location: Int, newLevel: Int) {
+        self.location = location
+        self.newLevel = newLevel
+    }
+    
+    public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
+        guard let heading = textStorage.heading(contains: location) else { return NoChangeCommand() }
+        
+        let levelString = (0..<self.newLevel).reduce("", { last, _ in last.appending("*") })
+        
+        return ReplaceTextCommand(range: heading.levelRange, textToReplace: levelString, textStorage: textStorage)
+    }
+}
+
 // MARK: ReplaceContentComposer
 public class ReplaceContentCommandComposer: DocumentContentCommandComposer {
     let range: NSRange
@@ -565,6 +583,13 @@ public class IncreaseIndentCommandComposer: DocumentContentCommandComposer {
     }
     
     public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
+        for case let heading in textStorage.token(at: self.location) where heading is HeadingToken {
+            var newLevel = (heading as! HeadingToken).level + 1
+            if newLevel == 6 { newLevel = 1 }
+           
+            return HeadingLevelChangeCommandComposer(location: self.location, newLevel: newLevel).compose(textStorage: textStorage)
+        }
+        
         var start = 0
         var end = 0
         var content = 0
@@ -585,6 +610,13 @@ public class DecreaseIndentCommandComposer: DocumentContentCommandComposer {
     }
     
     public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
+        for case let heading in textStorage.token(at: self.location) where heading is HeadingToken {
+            var newLevel = (heading as! HeadingToken).level - 1
+            if newLevel == 0 { newLevel = 6 }
+            
+            return HeadingLevelChangeCommandComposer(location: self.location, newLevel: newLevel).compose(textStorage: textStorage)
+        }
+        
         var start = 0
         var end = 0
         var content = 0

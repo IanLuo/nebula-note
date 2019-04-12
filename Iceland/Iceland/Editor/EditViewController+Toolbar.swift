@@ -125,6 +125,10 @@ extension DocumentEditViewController: DocumentEditToolbarDelegate {
                     }
                 case .dateAndTime:
                     self.showDateAndTimeCreator(location: self.textView.selectedRange.location)
+                case .planning:
+                    self.showPlanningSelector(location: self.textView.selectedRange.location, current: nil)
+                case .tag:
+                    self.showTagEditor(tags: [], location: self.textView.selectedRange.location)
                 }
             }
         }

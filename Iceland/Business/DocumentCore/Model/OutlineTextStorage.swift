@@ -12,6 +12,7 @@ import Interface
 public protocol OutlineTextStorageDelegate: class {
     func didSetCurrentHeading(newHeading: HeadingToken?, oldHeading: HeadingToken?)
     func didUpdateHeadings(newHeadings:[HeadingToken], oldHeadings: [HeadingToken])
+    func didUpdateCurrentTokens(_ tokens: [Token])
 }
 
 /// 提供渲染的对象，如 attachment, checkbox 等
@@ -53,6 +54,14 @@ public class OutlineTextStorage: TextStorage {
     
     // refering to current heading, when use change selection, this value changes
     public weak var currentHeading: HeadingToken?
+    
+    public var cursorLocation: Int = 0 {
+        didSet {
+            self.currentTokens = self.token(at: cursorLocation)
+        }
+    }
+    
+    public var currentTokens: [Token] = []
     
     /// 当前的解析范围，需要进行解析的字符串范围，用于对 item，索引 等缓存数据进行重新组织
     public var currentParseRange: NSRange?
@@ -133,20 +142,24 @@ extension OutlineTextStorage: ContentUpdatingProtocol {
 extension OutlineTextStorage {
     /// 找到对应位置之后的第一个 token
     public func token(at: Int) -> [Token] {
-        var wasHit = false
-        var tokens: [Token] = []
-        for item in self.allTokens {
-            if item.range.contains(at) {
-                tokens.append(item)
-                wasHit = true
+        let isFromStart = self.string.count / 2 > at // diceide from which end to search
+        var isHitBefore = false // if hit before, then then dosen't more, stop search
+        var tokensFound: [Token] = []
+        
+        let allTokens = isFromStart ? self.allTokens : self.allTokens.reversed()
+        
+        for token in allTokens {
+            if token.range.contains(at) {
+                isHitBefore = true
+                tokensFound.append(token)
             } else {
-                if wasHit {
-                    return tokens
+                if isHitBefore {
+                    break
                 }
             }
         }
         
-        return tokens
+        return tokensFound
     }
     
     /// 获取范围内的 item range 的索引
@@ -295,22 +308,22 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 
                 switch key {
                 case OutlineParser.Key.Element.TextMark.bold:
-                    self._tempParsingTokenResult.append(Token(range: range, name: key, data: dict))
+                    self._tempParsingTokenResult.append(TextMarkToken(range: range, name: key, data: dict))
                     self.addAttributes(OutlineTheme.Attributes.TextMark.bold, range: contentRange)
                 case OutlineParser.Key.Element.TextMark.italic:
-                    self._tempParsingTokenResult.append(Token(range: range, name: key, data: dict))
+                    self._tempParsingTokenResult.append(TextMarkToken(range: range, name: key, data: dict))
                     self.addAttributes(OutlineTheme.Attributes.TextMark.italic, range: contentRange)
                 case OutlineParser.Key.Element.TextMark.strikeThough:
-                    self._tempParsingTokenResult.append(Token(range: range, name: key, data: dict))
+                    self._tempParsingTokenResult.append(TextMarkToken(range: range, name: key, data: dict))
                     self.addAttributes(OutlineTheme.Attributes.TextMark.strikeThough, range: contentRange)
                 case OutlineParser.Key.Element.TextMark.code:
-                    self._tempParsingTokenResult.append(Token(range: range, name: key, data: dict))
+                    self._tempParsingTokenResult.append(TextMarkToken(range: range, name: key, data: dict))
                     self.addAttributes(OutlineTheme.Attributes.TextMark.code, range: contentRange)
                 case OutlineParser.Key.Element.TextMark.underscore:
-                    self._tempParsingTokenResult.append(Token(range: range, name: key, data: dict))
+                    self._tempParsingTokenResult.append(TextMarkToken(range: range, name: key, data: dict))
                     self.addAttributes(OutlineTheme.Attributes.TextMark.underscore, range: contentRange)
                 case OutlineParser.Key.Element.TextMark.verbatim:
-                    self._tempParsingTokenResult.append(Token(range: range, name: key, data: dict))
+                    self._tempParsingTokenResult.append(TextMarkToken(range: range, name: key, data: dict))
                     self.addAttributes(OutlineTheme.Attributes.TextMark.verbatim, range: contentRange)
                 default: break
                 }
@@ -325,7 +338,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
             self._ignoreTextMarkRanges.append(contentsOf: urlRanges.map { $0[OutlineParser.Key.Element.link]! })
             
             if let range = linkRangeData[OutlineParser.Key.Element.link] {
-                self._tempParsingTokenResult.append(Token(range: range, name: OutlineParser.Key.Element.link, data: linkRangeData))
+                self._tempParsingTokenResult.append(LinkToken(range: range, name: OutlineParser.Key.Element.link, data: linkRangeData))
                 
                 self.addAttribute(OutlineAttribute.hidden, value: OutlineAttribute.hiddenValueDefault, range: range)
             }
@@ -353,7 +366,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
             guard let typeRange = rangeData[OutlineParser.Key.Element.Attachment.type] else { return }
             guard let valueRange = rangeData[OutlineParser.Key.Element.Attachment.value] else { return }
             
-            self._tempParsingTokenResult.append(Token(range: attachmentRange, name: OutlineParser.Key.Node.attachment, data: rangeData))
+            self._tempParsingTokenResult.append(AttachmentToken(range: attachmentRange, name: OutlineParser.Key.Node.attachment, data: rangeData))
             
             self.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment],
                                range: attachmentRange)
@@ -380,7 +393,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
             
             guard let checkboxRange = rangeData[OutlineParser.Key.Node.checkbox] else { return }
             
-            self._tempParsingTokenResult.append(Token(range: checkboxRange, name: OutlineParser.Key.Node.checkbox, data: rangeData))
+            self._tempParsingTokenResult.append(CheckboxToken(range: checkboxRange, name: OutlineParser.Key.Node.checkbox, data: rangeData))
             
             for (key, range) in rangeData {
                 if key == OutlineParser.Key.Node.checkbox {
@@ -402,7 +415,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
             }
             
             if let range = list[OutlineParser.Key.Node.ordedList] {
-                self._tempParsingTokenResult.append(Token(range: range, name: OutlineParser.Key.Node.ordedList, data: list))
+                self._tempParsingTokenResult.append(OrderedListToken(range: range, name: OutlineParser.Key.Node.ordedList, data: list))
                 
                 self.addAttribute(OutlineAttribute.OrderedList.range, value: range, range: range)
             }
@@ -414,7 +427,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
         unOrderedListRnages.forEach { list in
             guard let listRange = list[OutlineParser.Key.Node.unordedList] else { return }
             
-            self._tempParsingTokenResult.append(Token(range: listRange, name: OutlineParser.Key.Node.unordedList, data: list))
+            self._tempParsingTokenResult.append(UnorderdListToken(range: listRange, name: OutlineParser.Key.Node.unordedList, data: list))
             
             if let prefix = list[OutlineParser.Key.Element.UnorderedList.prefix] {
                 self.addAttributes([NSAttributedString.Key.font: InterfaceTheme.Font.title,
@@ -429,7 +442,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
             
             guard let separatorRange = range[OutlineParser.Key.Node.seperator] else { return }
             
-            self._tempParsingTokenResult.append(Token(range: separatorRange, name: OutlineParser.Key.Node.seperator, data: range))
+            self._tempParsingTokenResult.append(SeparatorToken(range: separatorRange, name: OutlineParser.Key.Node.seperator, data: range))
             
             if let seperatorRange = range[OutlineParser.Key.Node.seperator] {
                 self.addAttributes([OutlineAttribute.hidden: 2,
@@ -524,8 +537,9 @@ extension OutlineTextStorage: OutlineParserDelegate {
             }
             
             if let planningRange = $0[OutlineParser.Key.Element.Heading.planning] {
-                self.addAttributes([OutlineAttribute.Heading.planning: 1,
-                                    NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.interactive], range: planningRange)
+                self.addAttributes([OutlineAttribute.Heading.planning: text.substring(planningRange),
+                                    NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.interactive,
+                                    NSAttributedString.Key.font: InterfaceTheme.Font.footnote], range: planningRange)
                 
                 let planningString = string.substring(planningRange)
                 if SettingsAccessor.shared.finishedPlanning.contains(planningString) {
@@ -533,7 +547,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 } else {
                     self._addButtonAttributes(range: planningRange, color: InterfaceTheme.Color.warning)
                 }
-                self.addAttribute(NSAttributedString.Key.font, value: InterfaceTheme.Font.footnote, range: planningRange)
+
             }
         }
     }
@@ -543,7 +557,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
         for data in rangesData {
             guard let range = data[OutlineParser.Key.Element.dateAndTIme] else { return }
             
-            self._tempParsingTokenResult.append(Token(range: range, name: OutlineParser.Key.Element.dateAndTIme, data: data))
+            self._tempParsingTokenResult.append(DateAndTimeToken(range: range, name: OutlineParser.Key.Element.dateAndTIme, data: data))
             
             self._addButtonAttributes(range: range, color: InterfaceTheme.Color.descriptive)
             self.addAttributes([NSAttributedString.Key.font: InterfaceTheme.Font.footnote,
@@ -820,6 +834,10 @@ extension OutlineTextStorage: OutlineParserDelegate {
         
         if newRange.length < 0 {
             newRange = NSRange(location: newRange.location - newRange.location, length: -newRange.location)
+        }
+        
+        if newRange.location < 0 {
+            newRange = NSRange(location: 0, length: newRange.length - (-newRange.location))
         }
         
         return newRange

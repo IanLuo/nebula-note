@@ -100,24 +100,15 @@ public class EditorService {
     }
     
     public func tokens(at location: Int) -> [Token] {
-        let isFromStart = self.string.count / 2 > location // diceide from which end to search
-        var isHitBefore = false // if hit before, then then dosen't more, stop search
-        var tokensFound: [Token] = []
-        
-        let allTokens = isFromStart ? self._editorController.textStorage.allTokens : self._editorController.textStorage.allTokens.reversed()
-        
-        for token in allTokens {
-            if token.range.contains(location) {
-                isHitBefore = true
-                tokensFound.append(token)
-            } else {
-                if isHitBefore {
-                    break
-                }
-            }
-        }
-        
-        return tokensFound
+        return self._editorController.textStorage.token(at: location)
+    }
+    
+    public var currentCursorTokens: [Token] {
+        return self._editorController.textStorage.currentTokens
+    }
+    
+    public func updateCurrentCursor(_ cursorLocation: Int) {
+        self._editorController.textStorage.cursorLocation = cursorLocation
     }
     
     public func open(completion:((String?) -> Void)? = nil) {

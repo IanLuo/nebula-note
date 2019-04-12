@@ -12,7 +12,6 @@ import Interface
 import Business
 
 public protocol ToolbarActionProtocol {
-    var title: String { get }
     var icon: UIImage { get }
 }
 
@@ -20,50 +19,6 @@ public protocol DocumentActon {}
 
 public protocol TextViewAction {
     func toggle(textView: UITextView, location: Int)
-}
-
-public protocol ToolbarActionGroupProtocol: ToolbarActionProtocol {
-    var actions: [ToolbarActionProtocol] { get }
-}
-
-public struct CursorActions: ToolbarActionGroupProtocol {
-    public var actions: [ToolbarActionProtocol] = [CursorAction.moveUp, CursorAction.moveDown, CursorAction.moveLeft, CursorAction.moveRight]
-    
-    public var title: String = ""
-    
-    public var icon: UIImage = Asset.Assets.add.image
-}
-
-public struct Attachments: ToolbarActionGroupProtocol {
-    public var actions: [ToolbarActionProtocol] = [AttachmentAction.image, AttachmentAction.sketch, AttachmentAction.link, AttachmentAction.location, AttachmentAction.audio, AttachmentAction.video]
-    
-    public var title: String = ""
-    
-    public var icon: UIImage = Asset.Assets.attachment.image
-}
-
-public struct TextMarkActions: ToolbarActionGroupProtocol {
-    public var actions: [ToolbarActionProtocol] = [NormalAction.heading, NormalAction.bold, NormalAction.italic, NormalAction.underscore, NormalAction.strikethrough, NormalAction.code, NormalAction.sourcecode, NormalAction.quote, NormalAction.checkbox, NormalAction.dateAndTime, NormalAction.list, NormalAction.orderedList]
-    
-    public var title: String = ""
-    
-    public var icon: UIImage = UIImage()
-}
-
-public struct IndentActions: ToolbarActionGroupProtocol {
-    public var actions: [ToolbarActionProtocol] = [NormalAction.decreaseIndent, NormalAction.increaseIndent, NormalAction.moveUp, NormalAction.moveDown]
-    
-    public var title: String = ""
-    
-    public var icon: UIImage = UIImage()
-}
-
-public struct UndoActions: ToolbarActionGroupProtocol {
-    public var actions: [ToolbarActionProtocol] = [NormalAction.undo, NormalAction.redo]
-    
-    public var title: String = ""
-    
-    public var icon: UIImage = UIImage()
 }
 
 public enum NormalAction: ToolbarActionProtocol, DocumentActon {
@@ -88,49 +43,8 @@ public enum NormalAction: ToolbarActionProtocol, DocumentActon {
     /// code block
     case sourcecode
     case dateAndTime
-    
-    public var title: String {
-        switch self {
-        case .heading:
-            return ""
-        case .increaseIndent:
-            return L10n.Document.Edit.Action.increaseIndent
-        case .decreaseIndent:
-            return L10n.Document.Edit.Action.decreaseIndent
-        case .moveUp:
-            return ""
-        case .moveDown:
-            return ""
-        case .undo:
-            return L10n.Document.Edit.Action.undo
-        case .redo:
-            return L10n.Document.Edit.Action.redo
-        case .bold:
-            return L10n.Document.Edit.Action.Mark.bold
-        case .italic:
-            return L10n.Document.Edit.Action.Mark.italic
-        case .code:
-            return L10n.Document.Edit.Action.Mark.code
-        case .underscore:
-            return L10n.Document.Edit.Action.Mark.underscore
-        case .strikethrough:
-            return L10n.Document.Edit.Action.Mark.strikthrough
-        case .verbatim:
-            return L10n.Document.Edit.Action.Mark.verbatim
-        case .checkbox:
-            return ""
-        case .list:
-            return ""
-        case .orderedList:
-            return ""
-        case .quote:
-            return ""
-        case .sourcecode:
-            return ""
-        case .dateAndTime:
-            return ""
-        }
-    }
+    case planning
+    case tag
     
     public var icon: UIImage {
         switch self {
@@ -172,11 +86,11 @@ public enum NormalAction: ToolbarActionProtocol, DocumentActon {
             return Asset.Assets.sourcecode.image
         case .dateAndTime:
             return Asset.Assets.agenda.image
+        case .planning:
+            return Asset.Assets.agenda.image
+        case .tag:
+            return Asset.Assets.tag.image
         }
-    }
-    
-    public func toggle(viewModel: DocumentEditViewModel) {
-        // TODO
     }
 }
 
@@ -209,17 +123,6 @@ public enum AttachmentAction: ToolbarActionProtocol, DocumentActon {
         case .link: return Asset.Assets.link.image
         }
     }
-    
-    public var title: String {
-        switch self {
-        case .image: return L10n.Attachment.Kind.image
-        case .audio: return L10n.Attachment.Kind.audio
-        case .video: return L10n.Attachment.Kind.video
-        case .sketch: return L10n.Attachment.Kind.sketch
-        case .location: return L10n.Attachment.Kind.location
-        case .link: return L10n.Attachment.Kind.link
-        }
-    }
 }
 
 public enum CursorAction: ToolbarActionProtocol, TextViewAction {
@@ -234,15 +137,6 @@ public enum CursorAction: ToolbarActionProtocol, TextViewAction {
         case .moveDown: return Asset.Assets.down.image
         case .moveLeft: return Asset.Assets.left.image
         case .moveRight: return Asset.Assets.right.image
-        }
-    }
-    
-    public var title: String {
-        switch self {
-        case .moveUp: return L10n.Document.Edit.Action.arrowUp
-        case .moveDown: return L10n.Document.Edit.Action.moveDown
-        case .moveLeft: return L10n.Document.Edit.Action.arrowLeft
-        case .moveRight: return L10n.Document.Edit.Action.arrowRight
         }
     }
     

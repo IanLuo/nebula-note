@@ -243,7 +243,7 @@ extension ActionsViewController: UITableViewDataSource, UITableViewDelegate {
 fileprivate class ActionCell: UITableViewCell {
     fileprivate var item: ActionsViewController.Item? {
         didSet {
-            self.iconView.image = item?.icon?.withRenderingMode(.alwaysTemplate)
+            self.iconView.image = item?.icon
             self.titleLabel.text = item?.title
             
             guard let item = item else { return }
@@ -275,7 +275,6 @@ fileprivate class ActionCell: UITableViewCell {
     let iconView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .center
-        imageView.tintColor = InterfaceTheme.Color.descriptive
         return imageView
     }()
     

@@ -41,6 +41,7 @@ public enum EditAction {
     case checkboxSwitch(Int)
     case moveLineUp(Int)
     case moveLineDown(Int)
+    case updateHeadingLevel(Int, Int)
     
     public var commandComposer: DocumentContentCommandComposer {
         switch self {
@@ -88,6 +89,8 @@ public enum EditAction {
             return MoveLineUpCommandComposer(location: location)
         case .moveLineDown(let location):
             return MoveLineDownCommandComposer(location: location)
+        case .updateHeadingLevel(let location, let newLevel):
+            return HeadingLevelChangeCommandComposer(location: location, newLevel: newLevel)
         }
     }
 }
@@ -100,9 +103,15 @@ public class DocumentEditViewModel {
             }
         }
     }
+    
     public var onLoadingLocation: Int = 0 // 打开文档的时候默认的位置
+    
     public weak var coordinator: EditorCoordinator?
-    private let editorService: EditorService
+    
+    private let _editorService: EditorService
+    
+    public var currentTokens: [Token] = []
+    
     public var isReadyToEdit: Bool = false {
         didSet {
             if isReadyToEdit {
@@ -112,7 +121,7 @@ public class DocumentEditViewModel {
     }
     
     public init(editorService: EditorService) {
-        self.editorService = editorService
+        self._editorService = editorService
         self.addStatesObservers()
         editorService.open {
             self.isReadyToEdit = $0 != nil
@@ -124,28 +133,29 @@ public class DocumentEditViewModel {
     }
     
     public var url: URL {
-        return self.editorService.fileURL
+        return self._editorService.fileURL
     }
     
     public var container: NSTextContainer {
-        return self.editorService.container
+        return self._editorService.container
     }
     
     public var cover: UIImage? {
-        get { return self.editorService.cover }
-        set { self.editorService.cover = newValue }
+        get { return self._editorService.cover }
+        set { self._editorService.cover = newValue }
     }
     
     public var headings: [HeadingToken] {
-        return self.editorService.headings
+        return self._editorService.headings
     }
     
     public func cursorLocationChanged(_ newLocation: Int) {
-        self.delegate?.didEnterTokens(self.editorService.tokens(at: newLocation))
+        self._editorService.updateCurrentCursor(newLocation)
+        self.delegate?.didEnterTokens(self._editorService.currentCursorTokens)
     }
     
     public func save(completion: @escaping () -> Void) {
-        editorService.save { _  in
+        _editorService.save { _  in
             completion()
         }
     }
@@ -160,15 +170,15 @@ public class DocumentEditViewModel {
             .map { $0 ?? -Int.max }
             .reduce(heading.range.location, max)
         
-        return self.editorService.trim(string: self.editorService.string, range: NSRange(location: location, length: length))
+        return self._editorService.trim(string: self._editorService.string, range: NSRange(location: location, length: length))
     }
     
     public func foldOrUnfold(location: Int) {
-        _ = self.editorService.toggleContentCommandComposer(composer: FoldCommandComposer(location: location)).perform()
+        _ = self._editorService.toggleContentCommandComposer(composer: FoldCommandComposer(location: location)).perform()
     }
     
     public func performAction(_ action: EditAction, undoManager: UndoManager, completion: ((DocumentContentCommandResult) -> Void)?) {
-        let command = self.editorService.toggleContentCommandComposer(composer: action.commandComposer)
+        let command = self._editorService.toggleContentCommandComposer(composer: action.commandComposer)
         
         self.performContentCommand(command, undoManager: undoManager, completion: completion)
     }
@@ -177,14 +187,14 @@ public class DocumentEditViewModel {
         let result = command.perform()
         
         undoManager.registerUndo(withTarget: self, handler: { target in
-            let command = target.editorService.toggleContentCommandComposer(composer: ReplaceContentCommandComposer(range: result.range!, textToReplace: result.content!))
+            let command = target._editorService.toggleContentCommandComposer(composer: ReplaceContentCommandComposer(range: result.range!, textToReplace: result.content!))
             target.performContentCommand(command, undoManager: undoManager, completion: completion)
         })
         
         if result.isModifiedContent {
-            self.editorService.save()
+            self._editorService.save()
         } else {
-            self.editorService.markAsContentUpdated()
+            self._editorService.markAsContentUpdated()
         }
         
         completion?(result)
@@ -195,16 +205,16 @@ public class DocumentEditViewModel {
     }
     
     public func rename(newTitle: String, completion: ((Error?) -> Void)? = nil) {
-        self.editorService.rename(newTitle: newTitle, completion: completion)
+        self._editorService.rename(newTitle: newTitle, completion: completion)
     }
     
     public func delete(completion: ((Error?) -> Void)? = nil) {
-        self.editorService.delete(completion: completion)
+        self._editorService.delete(completion: completion)
     }
     
     public func find(target: String, found: @escaping ([NSRange]) -> Void) {
         do {
-            try self.editorService.find(target: target, found: found)
+            try self._editorService.find(target: target, found: found)
         }
         catch {
             log.error("\(error)")
@@ -212,7 +222,7 @@ public class DocumentEditViewModel {
     }
     
     public func didUpdate() {
-        self.editorService.markAsContentUpdated()
+        self._editorService.markAsContentUpdated()
     }
 }
 

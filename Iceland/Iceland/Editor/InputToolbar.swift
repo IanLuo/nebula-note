@@ -17,17 +17,31 @@ public protocol DocumentEditToolbarDelegate: class {
 
 public class InputToolbar: UIView {
     
+    private static let actionsParagraph: [[ToolbarActionProtocol]] = [
+        [NormalAction.heading, NormalAction.bold, NormalAction.italic, NormalAction.underscore, NormalAction.strikethrough, NormalAction.code, NormalAction.sourcecode, NormalAction.quote, NormalAction.checkbox, NormalAction.dateAndTime, NormalAction.list, NormalAction.orderedList], [AttachmentAction.image, AttachmentAction.sketch, AttachmentAction.link, AttachmentAction.location, AttachmentAction.audio, AttachmentAction.video],
+        [CursorAction.moveUp, CursorAction.moveDown, CursorAction.moveLeft, CursorAction.moveRight],
+        [NormalAction.decreaseIndent, NormalAction.increaseIndent, NormalAction.moveUp, NormalAction.moveDown],
+        [NormalAction.undo, NormalAction.redo]]
+    private static let actionsHeading: [[ToolbarActionProtocol]] = [
+        [NormalAction.heading, NormalAction.bold, NormalAction.italic, NormalAction.underscore, NormalAction.strikethrough, NormalAction.code],
+        [CursorAction.moveUp, CursorAction.moveDown, CursorAction.moveLeft, CursorAction.moveRight],
+        [NormalAction.decreaseIndent, NormalAction.increaseIndent, NormalAction.moveUp, NormalAction.moveDown],
+        [NormalAction.undo, NormalAction.redo]]
+    
     public enum Mode {
         case heading
         case paragraph
         case quote
         case code
         
-        fileprivate func _createActions() -> [ToolbarActionProtocol] {
+        fileprivate func _createActions() -> [[ToolbarActionProtocol]] {
             switch self {
             case.paragraph:
-                return [TextMarkActions(), Attachments(), CursorActions(), IndentActions(), UndoActions()]
-            default: return [TextMarkActions(), Attachments(), CursorActions(), IndentActions(), UndoActions()]
+                return InputToolbar.actionsParagraph
+            case .heading:
+                return InputToolbar.actionsHeading
+            default:
+                return InputToolbar.actionsParagraph
             }
         }
     }
@@ -36,13 +50,15 @@ public class InputToolbar: UIView {
  
     private let _collectionView: UICollectionView
     
-    private var _actions: [ToolbarActionProtocol] = []
+    private var _actions: [[ToolbarActionProtocol]] = []
     
     public var mode: Mode {
-        didSet {
-            log.info("enter \(mode) mode")
-            self._actions = mode._createActions()
-            self._collectionView.reloadData()
+        willSet {
+            if mode != newValue {
+                log.info("enter \(mode) mode")
+                self._actions = mode._createActions()
+                self._collectionView.reloadData()
+            }
         }
     }
     
@@ -80,11 +96,7 @@ public class InputToolbar: UIView {
 
 extension InputToolbar: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if let group = self._actions[section] as? ToolbarActionGroupProtocol {
-            return group.actions.count
-        } else {
-            return 1
-        }
+        return self._actions[section].count
     }
     
     public func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -94,11 +106,8 @@ extension InputToolbar: UICollectionViewDelegate, UICollectionViewDataSource, UI
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ActionButtonCell.reuseIdentifier, for: indexPath) as! ActionButtonCell
         
-        if let group = self._actions[indexPath.section] as? ToolbarActionGroupProtocol {
-            cell.iconView.image = group.actions[indexPath.row].icon.withRenderingMode(.alwaysTemplate)
-        } else {
-            cell.iconView.image = self._actions[indexPath.section].icon.withRenderingMode(.alwaysTemplate)
-        }
+        cell.iconView.image = self._actions[indexPath.section][indexPath.row].icon.withRenderingMode(.alwaysTemplate)
+
         return cell
     }
     
@@ -118,13 +127,7 @@ extension InputToolbar: UICollectionViewDelegate, UICollectionViewDataSource, UI
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if let group = self._actions[indexPath.section] as? ToolbarActionGroupProtocol {
-            let action = group.actions[indexPath.row]
-            self.delegate?.didTriggerAction(action)
-        } else {
-            let action = self._actions[indexPath.section]
-            self.delegate?.didTriggerAction(action)
-        }
+        self.delegate?.didTriggerAction(self._actions[indexPath.section][indexPath.row])
     }
 }
 

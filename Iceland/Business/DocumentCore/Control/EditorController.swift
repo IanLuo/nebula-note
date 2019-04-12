@@ -80,6 +80,10 @@ extension EditorController {
 }
 
 extension EditorController: OutlineTextStorageDelegate {
+    public func didUpdateCurrentTokens(_ tokens: [Token]) {
+        
+    }
+    
     public func didUpdateHeadings(newHeadings: [HeadingToken], oldHeadings: [HeadingToken]) {
         self.delegate?.headingChanged(newHeadings: newHeadings, oldHeadings: oldHeadings)
     }

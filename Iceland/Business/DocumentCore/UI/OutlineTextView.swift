@@ -16,6 +16,7 @@ public protocol OutlineTextViewDelegate: class {
     func didTapOnLink(textView: UITextView, characterIndex: Int, linkStructure: [String: String], point: CGPoint)
     func didTapOnTags(textView: UITextView, characterIndex: Int, tags: [String], point: CGPoint)
     func didTapDateAndTime(textView: UITextView, characterIndex: Int, dateAndTimeString: String, point: CGPoint)
+    func didTapOnPlanning(textView: UITextView, characterIndex: Int, planning: String, point: CGPoint)
 }
 
 public class OutlineTextView: UITextView {
@@ -82,6 +83,8 @@ public class OutlineTextView: UITextView {
             self.outlineDelegate?.didTapOnTags(textView: self, characterIndex: characterIndex, tags: tags, point: location)
         } else if let dateAndTimeString = attributes[OutlineAttribute.dateAndTime] as? String {
             self.outlineDelegate?.didTapDateAndTime(textView: self, characterIndex: characterIndex, dateAndTimeString: dateAndTimeString, point: location)
+        } else if let planning = attributes[OutlineAttribute.Heading.planning] as? String {
+            self.outlineDelegate?.didTapOnPlanning(textView: self, characterIndex: characterIndex, planning: planning, point: location)
         } else {
             shouldPassTapToOtherGuestureRecognizers = true
         }

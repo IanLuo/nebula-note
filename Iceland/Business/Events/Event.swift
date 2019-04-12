@@ -11,6 +11,9 @@ import Foundation
 public class Event: NSObject {
 }
 
+// MARK: - Editor events
+
+
 // MARK: -
 
 public class AddDocumentEvent: Event {

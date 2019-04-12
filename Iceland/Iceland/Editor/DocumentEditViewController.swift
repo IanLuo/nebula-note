@@ -156,13 +156,13 @@ public class DocumentEditViewController: UIViewController {
         self.present(actionsViewController, animated: true, completion: nil)
     }
     
-    private func _showTagEditor(tags: [String], location: Int) {
+    public func showTagEditor(tags: [String], location: Int) {
         let actionsViewController = ActionsViewController()
         
         var location = location
         
         for tag in tags {
-            actionsViewController.addAction(icon: Asset.Assets.cross.image.withRenderingMode(.alwaysTemplate), title: tag) { actionViewController in
+            actionsViewController.addAction(icon: Asset.Assets.cross.image.fill(color: InterfaceTheme.Color.warning), title: tag) { actionViewController in
                 self.viewModel.performAction(EditAction.removeTag(tag, location), undoManager: self.textView.undoManager!, completion: { result in
                     if self.textView.selectedRange.location > location {
                         self.textView.selectedRange = self.textView.selectedRange.offset(result.delta)
@@ -216,9 +216,55 @@ public class DocumentEditViewController: UIViewController {
         
         self.present(actionsViewController, animated: true, completion: nil)
     }
+    
+    public func showPlanningSelector(location: Int, current: String?) {
+        let allPlannings = self.viewModel.coordinator!.dependency.settingAccessor.allPlannings.filter { $0 != current }
+        
+        let actionsController = ActionsViewController()
+        
+        for planning in allPlannings {
+            actionsController.addAction(icon: nil, title: planning) { viewController in
+                self.viewModel.performAction(EditAction.changePlanning(planning, location),
+                                             undoManager: self.textView.undoManager!,
+                                             completion: { result in
+                                                if self.textView.selectedRange.location >= location {
+                                                    self.textView.selectedRange = self.textView.selectedRange.offset(result.delta)
+                                                }
+                })
+                
+                viewController.dismiss(animated: true, completion: nil)
+            }
+        }
+        
+        if current != nil {
+            actionsController.addAction(icon: Asset.Assets.cross.image.fill(color: InterfaceTheme.Color.warning),
+                                        title: L10n.General.Button.Title.delete,
+                                        style: .warning) { viewController in
+                                            self.viewModel.performAction(EditAction.removePlanning(location),
+                                                                         undoManager: self.textView.undoManager!,
+                                                                         completion: { result in
+                                                                            if self.textView.selectedRange.location >= location {
+                                                                                self.textView.selectedRange = self.textView.selectedRange.offset(result.delta)
+                                                                            }
+                                            })
+                                            
+                                            viewController.dismiss(animated: true, completion: nil)
+            }
+        }
+        
+        actionsController.setCancel { viewController in
+            viewController.dismiss(animated: true)
+        }
+        
+        self.present(actionsController, animated: true)
+    }
 }
 
 extension DocumentEditViewController: OutlineTextViewDelegate {
+    public func didTapOnPlanning(textView: UITextView, characterIndex: Int, planning: String, point: CGPoint) {
+        self.showPlanningSelector(location: characterIndex, current: planning)
+    }
+    
     public func didTapDateAndTime(textView: UITextView, characterIndex: Int, dateAndTimeString: String, point: CGPoint) {
         let dateAndTime = DateAndTimeType(dateAndTimeString)!
         self.viewModel.coordinator?.showDateSelector(title: "update the date and time", current: dateAndTime, add: { [unowned self] newDateAndTime in
@@ -233,13 +279,11 @@ extension DocumentEditViewController: OutlineTextViewDelegate {
                     self.textView.selectedRange = self.textView.selectedRange.offset(result.delta)
                 }
             })
-        }, cancel: {
-            
-        })
+        }, cancel: {})
     }
     
     public func didTapOnTags(textView: UITextView, characterIndex: Int, tags: [String], point: CGPoint) {
-        self._showTagEditor(tags: tags, location: characterIndex)
+        self.showTagEditor(tags: tags, location: characterIndex)
     }
     
     public func didTapOnLink(textView: UITextView, characterIndex: Int, linkStructure: [String : String], point: CGPoint) {
@@ -270,6 +314,67 @@ extension DocumentEditViewController: UITextViewDelegate {
     public func textViewDidChangeSelection(_ textView: UITextView) {
         self.viewModel.cursorLocationChanged(textView.selectedRange.location)
     }
+    
+    public func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        if text == "\n" { // 换行
+            return self._handleLineBreak(textView)
+        } else if text == "\u{8}" { // 删除
+            return self._handelBackspace(textView)
+        } else if text == "\t" { // tab
+            return self._handleTab(textView)
+        }
+        
+        return true
+    }
+    
+    private func _handleLineBreak(_ textView: UITextView) -> Bool {
+        // 如果在 heading 中，换行不在当前位置，而在 heading 之后
+        guard let currentPosition = textView.selectedTextRange?.start else { return true }
+        
+        for case let heading in self.viewModel.currentTokens where heading is HeadingToken {
+            if let endOfHeadingPosition = textView.position(from: currentPosition, offset: heading.range.upperBound - textView.selectedRange.location) {
+                textView.replace(textView.textRange(from: endOfHeadingPosition, to: endOfHeadingPosition)!, withText: "\n")
+            }
+            return false
+        }
+        
+        // 自动添加列表前缀
+        for case let heading in self.viewModel.currentTokens where heading is OrderedListToken {
+            textView.replace(textView.textRange(from: currentPosition, to: currentPosition)!, withText: "\n")
+            self.viewModel.performAction(EditAction.orderedListSwitch(textView.selectedRange.location), undoManager: textView.undoManager!) { result in
+                textView.selectedRange = NSRange(location: result.range!.upperBound, length: 0)
+            }
+            return false
+        }
+        
+        // 自动添加列表前缀
+        for case let heading in self.viewModel.currentTokens where heading is UnorderdListToken {
+            textView.replace(textView.textRange(from: currentPosition, to: currentPosition)!, withText: "\n")
+            self.viewModel.performAction(EditAction.unorderedListSwitch(textView.selectedRange.location), undoManager: textView.undoManager!) { result in
+                textView.selectedRange = NSRange(location: result.range!.upperBound, length: 0)
+            }
+            return false
+        }
+        
+        return true
+    }
+    
+    private func _handelBackspace(_ textView: UITextView) -> Bool {
+        return true
+    }
+    
+    private func _handleTab(_ textView: UITextView) -> Bool {
+        for case let heading in self.viewModel.currentTokens where heading is HeadingToken {
+            var newLevel = (heading as! HeadingToken).level + 1
+            if newLevel == 6 { newLevel = 1 }
+            self.viewModel.performAction(EditAction.updateHeadingLevel(textView.selectedRange.location, newLevel), undoManager: textView.undoManager!) { result in
+                textView.selectedRange = textView.selectedRange.offset(result.delta)
+            }
+            return false
+        }
+        
+        return true
+    }
 }
 
 extension DocumentEditViewController: DocumentEditViewModelDelegate {
@@ -282,21 +387,13 @@ extension DocumentEditViewController: DocumentEditViewModelDelegate {
     public func didEnterTokens(_ tokens: [Token]) {
         for token in tokens {
             if token is HeadingToken {
-                if self._toolbar.mode != .heading {
-                    self._toolbar.mode = .heading
-                }
-                return
+                self._toolbar.mode = .heading
             } else {
-                if self._toolbar.mode != .paragraph {
-                    self._toolbar.mode = .paragraph
-                }
-                return
+                self._toolbar.mode = .paragraph
             }
         }
         
-        if self._toolbar.mode != .paragraph {
-            self._toolbar.mode = .paragraph
-        }
+        self.viewModel.currentTokens = tokens
     }
     
     public func didReadyToEdit() {
