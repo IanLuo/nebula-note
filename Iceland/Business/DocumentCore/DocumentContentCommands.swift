@@ -609,7 +609,7 @@ public class DecreaseIndentCommandComposer: DocumentContentCommandComposer {
 }
 
 
-// MARK: - QuoteBlockCommand
+// MARK: - QuoteBlockCommandComposer
 public class QuoteBlockCommandComposer: DocumentContentCommandComposer {
     public let location: Int
     
@@ -618,8 +618,14 @@ public class QuoteBlockCommandComposer: DocumentContentCommandComposer {
     }
     
     public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
-        // TODO:
-        return NoChangeCommand()
+        var stringToReplace = OutlineParser.Values.Character.linebreak
+        stringToReplace.append(OutlineParser.Values.Block.Quote.begin)
+        stringToReplace.append(OutlineParser.Values.Character.linebreak)
+        stringToReplace.append(OutlineParser.Values.Character.linebreak)
+        stringToReplace.append(OutlineParser.Values.Block.Quote.end)
+        stringToReplace.append(OutlineParser.Values.Character.linebreak)
+        
+        return ReplaceTextCommand(range: NSRange(location: self.location, length: 0), textToReplace: stringToReplace, textStorage: textStorage)
     }
 }
 
@@ -632,8 +638,14 @@ public class CodeBlockCommandComposer: DocumentContentCommandComposer {
     }
     
     public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
-        // TODO:
-        return NoChangeCommand()
+        var stringToReplace = OutlineParser.Values.Character.linebreak
+        stringToReplace.append(OutlineParser.Values.Block.Sourcecode.begin)
+        stringToReplace.append(OutlineParser.Values.Character.linebreak)
+        stringToReplace.append(OutlineParser.Values.Character.linebreak)
+        stringToReplace.append(OutlineParser.Values.Block.Sourcecode.end)
+        stringToReplace.append(OutlineParser.Values.Character.linebreak)
+        
+        return ReplaceTextCommand(range: NSRange(location: self.location, length: 0), textToReplace: stringToReplace, textStorage: textStorage)
     }
 }
 

@@ -265,6 +265,18 @@ extension OutlineParser {
         
         public static let separator: String = "\n-----\n"
         
+        public struct Block {
+            public struct Quote {
+                public static let begin = "#+BEGIN_QUOTE"
+                public static let end = "#+END_QUOTE"
+            }
+            
+            public struct Sourcecode {
+                public static let begin = "#+BEGIN_SRC"
+                public static let end = "#+END_SRC"
+            }
+        }
+        
         public struct Character {
             public static let linebreak = "\n"
             public static let tab = "\t"

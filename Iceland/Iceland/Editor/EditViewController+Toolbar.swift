@@ -24,11 +24,9 @@ extension DocumentEditViewController: DocumentEditToolbarDelegate {
     }
     
     private func commandCompletionActionMoveCursorForBlock(result: DocumentContentCommandResult) {
-        if result.delta > 0 {
-            self.textView.selectedRange = self.textView.selectedRange.offset(1)
-        } else {
-            self.textView.selectedRange = self.textView.selectedRange.offset(-1)
-        }
+        let middle = (self.textView.text as NSString).lineRange(for: NSRange(location: result.range!.upperBound - 1, length: 0)).location - 1
+        self.textView.selectedRange = NSRange(location: middle, length: 0)
+        
     }
     
     private func commandCompletionActionMoveCursorSelectChangeRange(result: DocumentContentCommandResult) {

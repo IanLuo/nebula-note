@@ -51,9 +51,6 @@ public class OutlineTextStorage: TextStorage {
     // cache parsed quote block border line
     private var _quoteBlocks: WeakArray<BlockToken> = WeakArray()
     
-    /// 当前交互的文档位置，当前解析部分相对于文档开始的偏移量，不同于 currentParseRange 中的 location
-    public var currentLocation: Int = 0
-    
     // refering to current heading, when use change selection, this value changes
     public weak var currentHeading: HeadingToken?
     
@@ -96,15 +93,12 @@ extension OutlineTextStorage: ContentUpdatingProtocol {
 
         guard self.editedMask != .editedAttributes else { return } // 如果是修改属性，则不进行解析
         guard self.string.count > 0 else { return }
-        
-        /// 更新当前交互的位置
-        self.currentLocation = editedRange.location
 
         // 更新 item 索引缓存
-        self.updateTokenRangeOffset(delta: self.changeInLength)
+        self.updateTokenRangeOffset(delta: self.changeInLength, from: editedRange.location)
 
         // 调整需要解析的字符串范围
-        self._adjustParseRange(editedRange)
+        self.currentParseRange = self._adjustParseRange(editedRange)
 
         guard self.currentParseRange!.length > 0 else { return }
         
@@ -118,7 +112,7 @@ extension OutlineTextStorage: ContentUpdatingProtocol {
                                            OutlineAttribute.tempShowAttachment: OutlineAttribute.Heading.folded],
                                           range: effectiveRange)
             }
-            self.addAttributes([NSAttributedString.Key.backgroundColor: UIColor.gray.withAlphaComponent(0.5)], range: self.currentParseRange!)
+            self.addAttributes([NSAttributedString.Key.backgroundColor: UIColor.gray.withAlphaComponent(0.5)], range: parsingRange)
         }
 
         // 设置文字默认样式
@@ -131,7 +125,7 @@ extension OutlineTextStorage: ContentUpdatingProtocol {
                      range: self.currentParseRange!)
 
         // 更新当前状态缓存
-        self.updateCurrentInfo()
+        self.updateCurrentInfo(at: editedRange.location)
     }
 }
 
@@ -168,9 +162,9 @@ extension OutlineTextStorage {
         return items.count > 0 ? items : nil
     }
     
-    public func updateTokenRangeOffset(delta: Int) {
+    public func updateTokenRangeOffset(delta: Int, from location: Int) {
         for token in self.allTokens {
-            if token.range.lowerBound > self.currentLocation {
+            if token.range.lowerBound >= location {
                 token.offset(delta)
             }
         }
@@ -265,12 +259,12 @@ extension OutlineTextStorage {
     }
     
     /// 更新和当前位置相关的其他信息
-    public func updateCurrentInfo() {
+    public func updateCurrentInfo(at location: Int) {
         
         guard self._savedHeadings.count > 0 else { return }
         
         let oldHeading = self.currentHeading
-        self.currentHeading = self.heading(contains: self.currentLocation)
+        self.currentHeading = self.heading(contains: location)
         self.outlineDelegate?.didSetCurrentHeading(newHeading: self.currentHeading, oldHeading: oldHeading)
     }
 }
@@ -802,36 +796,33 @@ extension OutlineTextStorage: OutlineParserDelegate {
         }
     }
     
-    internal func _adjustParseRange(_ range: NSRange) {
-//        let range = range._expandFoward(string: self.string, lineCount: 1)._expandBackward(string: self.string, lineCount: 1)
-
+    internal func _adjustParseRange(_ range: NSRange) -> NSRange {
         var paragraphStart = 0
         var paragraphEnd = 0
         var contentsEnd = 0
         
-        (string as NSString).getParagraphStart(&paragraphStart, end: &paragraphEnd, contentsEnd: &contentsEnd, for: range)
+        var newRange = range
+        (string as NSString).getParagraphStart(&paragraphStart, end: &paragraphEnd, contentsEnd: &contentsEnd, for: newRange)
         
-        let range = NSRange(location: paragraphStart, length: paragraphEnd - paragraphStart)
-        
-        self.currentParseRange = range
+        newRange = NSRange(location: paragraphStart, length: paragraphEnd - paragraphStart)
         
         // 如果范围在某个 item 内，并且小于这个 item 原来的范围，则扩大至这个 item 原来的范围
-        if let currentParseRange = self.currentParseRange {
-            for item in self.allTokens {
-                if item.range.intersection(currentParseRange) != nil {
-                    self.currentParseRange = item.range.union(currentParseRange)
-                    break
-                }
+        for item in self.allTokens {
+            if item.range.intersection(newRange) != nil {
+                newRange = item.range.union(newRange)
+                break
             }
         }
         
-        if self.currentParseRange!.upperBound >= self.string.count {
-            self.currentParseRange = NSRange(location: self.currentParseRange!.location, length: self.string.count - self.currentParseRange!.location)
+        if newRange.upperBound >= self.string.count {
+            newRange = NSRange(location: newRange.location, length: self.string.count - newRange.location)
         }
         
-        if self.currentParseRange!.length < 0 {
-            self.currentParseRange = NSRange(location: self.currentParseRange!.location - self.currentParseRange!.location, length: -self.currentParseRange!.location)
+        if newRange.length < 0 {
+            newRange = NSRange(location: newRange.location - newRange.location, length: -newRange.location)
         }
+        
+        return newRange
     }
     
     

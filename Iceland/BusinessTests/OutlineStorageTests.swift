@@ -80,8 +80,7 @@ use voice to record remember task is handy
         XCTAssertEqual((textView.text as NSString).substring(with: storage.textStorage.currentHeading!.due!), "DEADLINE: <2018-12-05 Wed>")
         XCTAssertEqual((textView.text as NSString).substring(with: storage.textStorage.currentHeading!.tags!), ":movie:entertainment:")
         
-        storage.textStorage.currentLocation = 150
-        storage.textStorage.updateCurrentInfo()
+        storage.textStorage.updateCurrentInfo(at: 150)
         XCTAssertEqual(storage.textStorage.currentHeading?.level, 3)
         XCTAssertEqual((textView.text as NSString).substring(with: storage.textStorage.currentHeading!.planning!), "DONE")
         XCTAssertEqual(storage.textStorage.currentHeading?.schedule, nil)
@@ -175,11 +174,10 @@ use voice to record remember task is handy
         XCTAssertEqual("2. make a tool to do it", textView.text.substring(controller.textStorage.allTokens[11].range))
         XCTAssertEqual("2", textView.text.substring(controller.textStorage.allTokens[12].range))
         
-        controller.textStorage.currentLocation = 150
         controller.textStorage._adjustParseRange(NSRange(location: 150, length: 10))
         controller.textStorage.updateTokenRangeOffset(delta: 0)
         controller.textStorage.parser.parse(str: textView.text!, range: controller.textStorage.currentParseRange)
-        controller.textStorage.updateCurrentInfo()
+        controller.textStorage.updateCurrentInfo(at: 150)
         
         XCTAssertEqual("* TODO fastlane design :movie:entertainment:\nSCHEDULED: <2018-12-05 Wed>\nDEADLINE: <2018-12-05 Wed>", textView.text.substring(controller.textStorage.allTokens[0].range))
         XCTAssertEqual("*", textView.text.substring(controller.textStorage.allTokens[1].range))

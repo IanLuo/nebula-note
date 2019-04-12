@@ -66,8 +66,7 @@ public class OutlineTextView: UITextView {
                                                                fractionOfDistanceBetweenInsertionPoints: nil)
         
         if let outlineTextStorage = self.textStorage as? OutlineTextStorage {
-            outlineTextStorage.currentLocation = characterIndex
-            outlineTextStorage.updateCurrentInfo()
+            outlineTextStorage.updateCurrentInfo(at: characterIndex)
         }
         
         let attributes = self.textStorage.attributes(at: characterIndex, effectiveRange: nil)
