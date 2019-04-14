@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Interface
 
 public struct DocumentContentCommandResult {
     public let isModifiedContent: Bool
@@ -71,20 +72,43 @@ public class FoldingAndUnfoldingCommand: DocumentContentCommand {
     }
     
     fileprivate func _markUnfold(heading: HeadingToken, textStorage: OutlineTextStorage) {
-        var range = heading.contentRange.moveLeftBound(by: -1).moveRightBound(by: -1)
+        var range: NSRange!
+        if heading.contentRange.upperBound == textStorage.string.count {
+            range = heading.contentRange.moveLeftBound(by: -1)
+        } else {
+            range = heading.contentRange.moveLeftBound(by: -1).moveRightBound(by: -1)
+        }
+        
         range = range.length > 0 ? range : NSRange(location: range.location, length: 0)
         
-        textStorage.addAttributes([OutlineAttribute.tempHidden: 0,
-                                   OutlineAttribute.tempShowAttachment: ""],
-                                  range: range)
+        // 重新渲染折叠部分的 attribute
+        textStorage.setAttributes(nil, range: range)
+        // 设置文字默认样式
+        textStorage.addAttributes([NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.interactive,
+                            NSAttributedString.Key.font: InterfaceTheme.Font.body],
+                           range: range)
         
+        textStorage.setParagraphIndent(heading: heading)
+        textStorage.allTokens.forEach {
+            if $0.range.intersection(range) != nil {
+                $0.renderDecoration(textStorage: textStorage)
+            }
+        }
+        
+        // 折叠状态图标
         textStorage.addAttributes([OutlineAttribute.showAttachment: OutlineAttribute.Heading.foldingUnfolded,
                                    OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment],
                                   range: heading.levelRange)
     }
     
     fileprivate func _markFold(heading: HeadingToken, textStorage: OutlineTextStorage) {
-        var range = heading.contentRange.moveLeftBound(by: -1).moveRightBound(by: -1)
+        var range: NSRange!
+        if heading.contentRange.upperBound == textStorage.string.count {
+            range = heading.contentRange.moveLeftBound(by: -1)
+        } else {
+            range = heading.contentRange.moveLeftBound(by: -1).moveRightBound(by: -1)
+        }
+        
         range = range.length > 0 ? range : NSRange(location: range.location, length: 0)
         
         textStorage.addAttributes([OutlineAttribute.tempHidden: OutlineAttribute.hiddenValueFolded,
@@ -122,7 +146,7 @@ public class FoldingAndUnfoldingCommand: DocumentContentCommand {
     }
     
     fileprivate func _isFolded(heading: HeadingToken, textStorage: OutlineTextStorage) -> Bool {
-        return textStorage.attribute(OutlineAttribute.tempHidden, at: heading.contentRange.location, effectiveRange: nil) as? Int != 0
+        return (textStorage.attribute(OutlineAttribute.tempHidden, at: heading.contentRange.location, effectiveRange: nil) as? Int ?? 0) != 0
     }
     
     public func perform() -> DocumentContentCommandResult {

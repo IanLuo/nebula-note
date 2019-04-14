@@ -38,6 +38,16 @@ public class Token {
     public func offset(_ offset: Int) {
         self.offset += offset
     }
+    
+    internal var decorationAttributesAction: ((OutlineTextStorage) -> Void)?
+    
+    public func clearDecoraton(textStorage: OutlineTextStorage) {
+        textStorage.setAttributes(nil, range: self.range)
+    }
+    
+    public func renderDecoration(textStorage: OutlineTextStorage) {
+        self.decorationAttributesAction?(textStorage)
+    }
 }
 
 // MARK: - TextMark

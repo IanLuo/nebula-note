@@ -57,10 +57,11 @@ public class OutlineTextView: UITextView {
     @objc private func tapped(gesture: UITapGestureRecognizer) -> Bool {
         guard self.text.count > 0 else { return true }
         
-        let location = gesture.location(in: self).applying(CGAffineTransform(translationX: 0,
-                                                                             y: -self.textContainerInset.top))
+        let location = gesture.view!.convert(gesture.location(in: self).applying(CGAffineTransform(translationX: 0,
+                                                                                                   y: -self.textContainerInset.top)),
+                                             to: self)
         
-        guard location != lastTap.0 else { return lastTap.1 }
+        guard location.x != lastTap.0.x else { return lastTap.1 }
         
         let characterIndex = self.layoutManager.characterIndex(for: location,
                                                                in: self.textContainer,
