@@ -301,6 +301,7 @@ class ParseDelegate: OutlineParserDelegate {
         self.dateAndTimes = rangesData.map { $0.values.first! }
     }
     
+    // O(n) FIXME: 用二分查找提高效率
     public func heading(contains location: Int) -> HeadingToken? {
         for heading in self.headings.reversed() {
             if location >= heading.range.location {

@@ -39,14 +39,21 @@ public class Token {
         self.offset += offset
     }
     
-    internal var decorationAttributesAction: ((OutlineTextStorage) -> Void)?
+    public func range(for key: String) -> NSRange? {
+        if let range = self.data[key] {
+            return range.offset(self.offset)
+        }
+        return nil
+    }
+    
+    internal var decorationAttributesAction: ((OutlineTextStorage, Token) -> Void)?
     
     public func clearDecoraton(textStorage: OutlineTextStorage) {
         textStorage.setAttributes(nil, range: self.range)
     }
     
     public func renderDecoration(textStorage: OutlineTextStorage) {
-        self.decorationAttributesAction?(textStorage)
+        self.decorationAttributesAction?(textStorage, self)
     }
 }
 

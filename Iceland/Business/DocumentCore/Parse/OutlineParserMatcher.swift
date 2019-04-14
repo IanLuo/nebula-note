@@ -196,7 +196,7 @@ extension OutlineParser {
         public struct Node {
             public static let heading =         "^(\\*+) (.)+\\n"
             public static let codeBlock =       "^[\\t ]*\\#\\+BEGIN\\_SRC( [\(character)\\.]*)?\\n([^\\#\\+END\\_SRC]*)\\n\\s*\\#\\+END\\_SRC[\\t ]*\\n"
-            public static let checkBox =        "[\\t ]*(\\[(X| |\\-)\\] )"
+            public static let checkBox =        "\\[(X| |\\-)\\] "
             public static let unorderedList =   "^[\\t ]*([\\-\\+] ).*"
             public static let orderedList =     "^[\\t ]*(([0-9a-zA-Z])+[\\.\\)\\>] ).*"
             public static let seperator =       "^[\\t ]*(\\-{5,}[\\t ]*)"
