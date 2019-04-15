@@ -103,6 +103,10 @@ public class EditorService {
         return self._editorController.textStorage.token(at: location)
     }
     
+    public func heading(at location: Int) -> HeadingToken? {
+        return self._editorController.textStorage.heading(contains: location)
+    }
+    
     public var currentCursorTokens: [Token] {
         return self._editorController.textStorage.currentTokens
     }
@@ -194,17 +198,7 @@ public class EditorService {
             }
         }
     }
-    
-    // 返回 location 所在的 heading
-    internal func heading(at location: Int) -> HeadingToken? {
-        for heading in self._editorController.getParagraphs() {
-            if heading.paragraphRange.contains(location) {
-                return heading
-            }
-        }
-        return nil
-    }
-    
+        
     internal func headingList() -> [HeadingToken] {
         return self._editorController.getParagraphs()
     }

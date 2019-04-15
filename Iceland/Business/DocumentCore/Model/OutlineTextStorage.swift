@@ -138,7 +138,7 @@ extension OutlineTextStorage: ContentUpdatingProtocol {
                            range: self.currentParseRange!)
         
         self._tempParsingTokenResult.forEach {
-            if $0.range.intersection(range) != nil {
+            if $0.range.intersection(currentParseRange) != nil {
                 $0.renderDecoration(textStorage: self)
                 // 更新段落缩进样式
                 if let heading = $0 as? HeadingToken {

@@ -156,7 +156,9 @@ public class DocumentEditViewController: UIViewController {
         self.present(actionsViewController, animated: true, completion: nil)
     }
     
-    public func showTagEditor(tags: [String], location: Int) {
+    public func showTagEditor(location: Int) {
+        let tags = self.viewModel.tags(at: location)
+        
         let actionsViewController = ActionsViewController()
         
         var location = location
@@ -283,7 +285,7 @@ extension DocumentEditViewController: OutlineTextViewDelegate {
     }
     
     public func didTapOnTags(textView: UITextView, characterIndex: Int, tags: [String], point: CGPoint) {
-        self.showTagEditor(tags: tags, location: characterIndex)
+        self.showTagEditor(location: characterIndex)
     }
     
     public func didTapOnLink(textView: UITextView, characterIndex: Int, linkStructure: [String : String], point: CGPoint) {

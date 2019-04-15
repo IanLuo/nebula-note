@@ -173,6 +173,10 @@ public class DocumentEditViewModel {
         return self._editorService.trim(string: self._editorService.string, range: NSRange(location: location, length: length))
     }
     
+    public func tags(at location: Int) -> [String] {
+        return self._editorService.heading(at: location)?.tagsArray(string: self._editorService.string) ?? []
+    }
+    
     public func foldOrUnfold(location: Int) {
         _ = self._editorService.toggleContentCommandComposer(composer: FoldCommandComposer(location: location)).perform()
     }

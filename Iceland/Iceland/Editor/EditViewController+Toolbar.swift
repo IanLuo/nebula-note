@@ -46,9 +46,7 @@ extension DocumentEditViewController: DocumentEditToolbarDelegate {
                                                  completion: { [unowned self] result in
                                                     self.textView.selectedRange = self.textView.selectedRange.offset(result.delta)
                     })
-                }, cancel: {
-                    // ignore
-                })
+                }, cancel: {})
             }
             
             // other document actions
@@ -128,7 +126,7 @@ extension DocumentEditViewController: DocumentEditToolbarDelegate {
                 case .planning:
                     self.showPlanningSelector(location: self.textView.selectedRange.location, current: nil)
                 case .tag:
-                    self.showTagEditor(tags: [], location: self.textView.selectedRange.location)
+                    self.showTagEditor(location: self.textView.selectedRange.location)
                 }
             }
         }

@@ -157,6 +157,14 @@ public class HeadingToken: Token {
         return data[OutlineParser.Key.Element.Heading.closed]?.offset(offset)
     }
     
+    public func tagsArray(string: String) -> [String] {
+        if let tagRange = self.tags {
+            return string.substring(tagRange).components(separatedBy: ":").filter { $0.count > 0 }
+        } else {
+            return []
+        }
+    }
+    
     public weak var outlineTextStorage: OutlineTextStorage?
     
     /// tag 的位置，如果没有 tag，则为应该放 tag 的位置
