@@ -177,7 +177,7 @@ public class HeadingToken: Token {
     }
     
     public var headingTextRange: NSRange {
-        let levelUpperBound = self.level
+        let levelUpperBound = self.levelRange.upperBound
         let planningUpperBound = self.planning?.upperBound ?? 0
         let priorityUpperBound = self.priority?.upperBound ?? 0
         

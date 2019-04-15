@@ -94,6 +94,12 @@ public class OutlineTextView: UITextView {
         
         return shouldPassTapToOtherGuestureRecognizers
     }
+    
+    public override func caretRect(for position: UITextPosition) -> CGRect {
+        var rect = super.caretRect(for: position)
+        rect.size.height -= 10
+        return rect
+    }
 }
 
 extension OutlineTextView: UIGestureRecognizerDelegate {

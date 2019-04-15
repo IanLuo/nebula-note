@@ -146,7 +146,7 @@ public class FoldingAndUnfoldingCommand: DocumentContentCommand {
     }
     
     fileprivate func _isFolded(heading: HeadingToken, textStorage: OutlineTextStorage) -> Bool {
-        return (textStorage.attribute(OutlineAttribute.tempHidden, at: heading.contentRange.location, effectiveRange: nil) as? Int ?? 0) != 0
+        return textStorage.isHeadingFolded(heading: heading)
     }
     
     public func perform() -> DocumentContentCommandResult {

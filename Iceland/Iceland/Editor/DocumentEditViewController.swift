@@ -45,6 +45,8 @@ public class DocumentEditViewController: UIViewController {
     
     private let _toolbar = InputToolbar(mode: .paragraph)
     
+    private var _keyboardHeight: CGFloat = 0
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -68,6 +70,15 @@ public class DocumentEditViewController: UIViewController {
         self.textView.inputAccessoryView = self._toolbar
         
         self._toolbar.mode = .paragraph
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(_keyboardWillShow(_:)), name: UIApplication.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(_keyboardWillHide(_:)), name: UIApplication.keyboardWillHideNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(_keyboardDidShow(_:)), name: UIApplication.keyboardDidShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(_keyboardDidHide(_:)), name: UIApplication.keyboardDidHideNotification, object: nil)
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
     
     public override func viewDidLayoutSubviews() {
@@ -260,6 +271,26 @@ public class DocumentEditViewController: UIViewController {
         
         self.present(actionsController, animated: true)
     }
+    
+    @objc private func _keyboardWillShow(_ notification: Notification) {
+        if let userInfo = notification.userInfo {
+            self._keyboardHeight = (userInfo["UIKeyboardFrameBeginUserInfoKey"] as! CGRect).size.height
+        }
+    }
+    
+    @objc private func _keyboardWillHide(_ notification: Notification) {
+        
+    }
+    
+    @objc private func _keyboardDidShow(_ notification: Notification) {
+        if let userInfo = notification.userInfo {
+            self._keyboardHeight = (userInfo["UIKeyboardFrameEndUserInfoKey"] as! CGRect).size.height
+        }
+    }
+    
+    @objc private func _keyboardDidHide(_ notification: Notification) {
+        
+    }
 }
 
 extension DocumentEditViewController: OutlineTextViewDelegate {
@@ -403,12 +434,6 @@ extension DocumentEditViewController: UITextViewDelegate {
 }
 
 extension DocumentEditViewController: DocumentEditViewModelDelegate {
-    public func documentContentCommandDidPerformed(result: DocumentContentCommandResult) {
-        if let range = result.range, result.delta != 0 {
-            self.textView.selectedRange = range
-        }
-    }
-    
     public func didEnterTokens(_ tokens: [Token]) {
         for token in tokens {
             if token is HeadingToken {
@@ -422,10 +447,10 @@ extension DocumentEditViewController: DocumentEditViewModelDelegate {
     }
     
     public func didReadyToEdit() {
-        self.viewModel.save {}
-        self.textView.selectedRange = NSRange(location: self.viewModel.onLoadingLocation,
-                                              length: 0)
-        self.textView.scrollRangeToVisible(self.textView.selectedRange)
+        if let position = self.textView.position(from: self.textView.beginningOfDocument, offset: self.viewModel.onLoadingLocation) {
+            let r = self.textView.firstRect(for: self.textView.textRange(from: position, to: position)!)
+            self.textView.setContentOffset(CGPoint(x: 0, y: r.origin.y), animated: false)
+        }
     }
     
     public func documentStatesChange(state: UIDocument.State) {

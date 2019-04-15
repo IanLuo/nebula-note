@@ -594,7 +594,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 }
                 
                 if let tagsRange = token.range(for: OutlineParser.Key.Element.Heading.tags) {
-                    textStorage.addAttribute(OutlineAttribute.Heading.tags, value: text.substring(tagsRange).components(separatedBy: ":").filter { $0.count > 0 }, range: tagsRange)
+                    textStorage.addAttribute(OutlineAttribute.Heading.tags, value: textStorage.string.substring(tagsRange).components(separatedBy: ":").filter { $0.count > 0 }, range: tagsRange)
                     textStorage._addButtonAttributes(range: tagsRange, color: InterfaceTheme.Color.descriptive)
                     textStorage.addAttribute(NSAttributedString.Key.font, value: InterfaceTheme.Font.footnote, range: tagsRange)
                 }
@@ -606,7 +606,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 }
                 
                 if let planningRange = token.range(for: OutlineParser.Key.Element.Heading.planning) {
-                    textStorage.addAttributes([OutlineAttribute.Heading.planning: text.substring(planningRange),
+                    textStorage.addAttributes([OutlineAttribute.Heading.planning: textStorage.string.substring(planningRange),
                                         NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.interactive,
                                         NSAttributedString.Key.font: InterfaceTheme.Font.footnote], range: planningRange)
                     
@@ -618,7 +618,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
                     }
                 }
                 
-                textStorage.addHeadingFoldingStatus(textStorage: self, heading: token as! HeadingToken)
+                textStorage.addHeadingFoldingStatus(heading: token as! HeadingToken)
             }
             
         }
@@ -637,7 +637,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 
                 textStorage._addButtonAttributes(range: range, color: InterfaceTheme.Color.descriptive)
                 textStorage.addAttributes([NSAttributedString.Key.font: InterfaceTheme.Font.footnote,
-                                    OutlineAttribute.dateAndTime: text.substring(range)], range: range)
+                                    OutlineAttribute.dateAndTime: textStorage.string.substring(range)], range: range)
             }
             
         }
@@ -729,16 +729,20 @@ extension OutlineTextStorage: OutlineParserDelegate {
     
     // MARK: - utils
     
-    public func isHeadingFolded(heading: HeadingToken, textStorage: OutlineTextStorage) -> Bool {
-        if heading.contentRange.location < textStorage.string.count {
-            return self.attribute(OutlineAttribute.tempHidden, at: heading.contentRange.location, effectiveRange: nil) as? Int != 0
+    public func isHeadingFolded(heading: HeadingToken) -> Bool {
+        if heading.contentRange.location < self.string.count {
+            if let foldingAttribute = self.attribute(OutlineAttribute.showAttachment, at: heading.levelRange.location, effectiveRange: nil) as? String {
+                return foldingAttribute == OutlineAttribute.Heading.foldingFolded.rawValue
+            } else {
+                return false
+            }
         } else {
             return false
         }
     }
     
-    public func addHeadingFoldingStatus(textStorage: OutlineTextStorage, heading: HeadingToken) {
-        if isHeadingFolded(heading: heading, textStorage: textStorage) {
+    public func addHeadingFoldingStatus(heading: HeadingToken) {
+        if isHeadingFolded(heading: heading) {
             self.addAttribute(OutlineAttribute.showAttachment, value: OutlineAttribute.Heading.foldingFolded, range: heading.levelRange)
         } else {
             self.addAttribute(OutlineAttribute.showAttachment, value: OutlineAttribute.Heading.foldingUnfolded, range: heading.levelRange)

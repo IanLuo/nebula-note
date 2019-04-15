@@ -232,4 +232,8 @@ static NSMutableDictionary *attachmentMap;
     return proposedRect;
 }
 
+- (CGFloat)layoutManager:(NSLayoutManager *)layoutManager lineSpacingAfterGlyphAtIndex:(NSUInteger)glyphIndex withProposedLineFragmentRect:(CGRect)rect {
+    return 10;
+}
+
 @end

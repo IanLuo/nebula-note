@@ -15,7 +15,6 @@ public protocol DocumentEditViewModelDelegate: class {
     func documentStatesChange(state: UIDocument.State)
     func didReadyToEdit()
     func didEnterTokens(_ tokens: [Token])
-    func documentContentCommandDidPerformed(result: DocumentContentCommandResult)
 }
 
 public enum EditAction {
