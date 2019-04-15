@@ -83,7 +83,7 @@ extension EditorCoordinator: CaptureListCoordinatorDelegate {
             self._viewModel.performAction(EditAction.addAttachment(editViewController.textView.selectedRange.location,
                                                                    attachment.key,
                                                                    attachment.kind.rawValue),
-                                          undoManager: editViewController.textView.undoManager!,
+                                          textView: editViewController.textView,
                                           completion: nil)
         }
     }

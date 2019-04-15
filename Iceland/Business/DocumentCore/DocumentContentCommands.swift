@@ -39,17 +39,24 @@ public class ReplaceTextCommand: DocumentContentCommand {
     let range: NSRange
     let textToReplace: String
     let textStorage: OutlineTextStorage
+    public var manullayReplace: ((NSRange, String) -> Void)?
     
-    public init(range: NSRange, textToReplace: String, textStorage: OutlineTextStorage) {
+    public init(range: NSRange, textToReplace: String, textStorage: OutlineTextStorage, manullayReplace: ((NSRange, String) -> Void)? = nil) {
         self.textStorage = textStorage
         self.range = range
         self.textToReplace = textToReplace
+        self.manullayReplace = manullayReplace
     }
     
     public func perform() -> DocumentContentCommandResult {
         let undoRange = NSRange(location: self.range.location, length: self.textToReplace.count)
         let undoString = self.textStorage.string.substring(self.range)
-        self.textStorage.replaceCharacters(in: self.range, with: self.textToReplace)
+        
+        if let manullayReplace = self.manullayReplace {
+            manullayReplace(self.range, self.textToReplace)
+        } else {
+            self.textStorage.replaceCharacters(in: self.range, with: self.textToReplace)
+        }
         return DocumentContentCommandResult(isModifiedContent: true, range: undoRange, content: undoString, delta: self.textToReplace.count - self.range.length)
     }
 }

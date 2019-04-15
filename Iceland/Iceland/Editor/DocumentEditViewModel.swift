@@ -10,7 +10,6 @@ import Foundation
 import Business
 
 public protocol DocumentEditViewModelDelegate: class {
-    func showLink(url: URL)
     func updateHeadingInfo(heading: HeadingToken?)
     func documentStatesChange(state: UIDocument.State)
     func didReadyToEdit()
@@ -183,19 +182,25 @@ public class DocumentEditViewModel {
         _ = self._editorService.toggleContentCommandComposer(composer: FoldCommandComposer(location: location)).perform()
     }
     
-    public func performAction(_ action: EditAction, undoManager: UndoManager, completion: ((DocumentContentCommandResult) -> Void)?) {
+    public func performAction(_ action: EditAction, textView: UITextView, completion: ((DocumentContentCommandResult) -> Void)?) {
         let command = self._editorService.toggleContentCommandComposer(composer: action.commandComposer)
         
-        self.performContentCommand(command, undoManager: undoManager, completion: completion)
+        self.performContentCommand(command, textView: textView, completion: completion)
     }
     
-    private func performContentCommand(_ command: DocumentContentCommand, undoManager: UndoManager, completion: ((DocumentContentCommandResult) -> Void)?) {
-        let result = command.perform()
-        
-        undoManager.registerUndo(withTarget: self, handler: { target in
-            let command = target._editorService.toggleContentCommandComposer(composer: ReplaceContentCommandComposer(range: result.range!, textToReplace: result.content!))
-            target.performContentCommand(command, undoManager: undoManager, completion: completion)
-        })
+    private func performContentCommand(_ command: DocumentContentCommand, textView: UITextView, completion: ((DocumentContentCommandResult) -> Void)?) {
+        guard let replaceCommand = command as? ReplaceTextCommand else { return }
+        replaceCommand.manullayReplace = { range, string in
+            let start = textView.position(from: textView.beginningOfDocument, offset: range.location)!
+            let end = textView.position(from: textView.beginningOfDocument, offset: range.upperBound)!
+            textView.replace(textView.textRange(from: start, to: end)!, withText: string)
+        }
+        let result = replaceCommand.perform()
+//
+//        undoManager.registerUndo(withTarget: self, handler: { target in
+//            let command = target._editorService.toggleContentCommandComposer(composer: ReplaceContentCommandComposer(range: result.range!, textToReplace: result.content!))
+//            target.performContentCommand(command, undoManager: undoManager, completion: completion)
+//        })
         
         if result.isModifiedContent {
             self._editorService.save()

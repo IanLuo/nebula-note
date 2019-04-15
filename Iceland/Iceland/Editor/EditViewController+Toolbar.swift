@@ -45,7 +45,7 @@ extension DocumentEditViewController: DocumentEditToolbarDelegate {
                 self.viewModel.coordinator?.showAttachmentPicker(kind: attachmentAction.AttachmentKind, complete: { [unowned self] attachmentId in
                     self.viewModel.performAction(EditAction.addAttachment(currentLocation,
                                                                           attachmentId, attachmentAction.AttachmentKind.rawValue),
-                                                 undoManager: undoManager,
+                                                 textView: self.textView,
                                                  completion: { [unowned self] result in
                                                     DispatchQueue.main.async {
                                                         self.textView.selectedRange = self.textView.selectedRange.offset(result.delta)
@@ -61,11 +61,11 @@ extension DocumentEditViewController: DocumentEditToolbarDelegate {
                     break // TODO:
                 case .increaseIndent:
                     self.viewModel.performAction(EditAction.increaseIndent(self.textView.selectedRange.location),
-                                                 undoManager: self.textView.undoManager!,
+                                                 textView: self.textView,
                                                  completion: commandCompletionActionMoveCursorMapTheLengthOfStringChange)
                 case .decreaseIndent:
                     self.viewModel.performAction(EditAction.decreaseIndent(self.textView.selectedRange.location),
-                                                 undoManager: self.textView.undoManager!,
+                                                 textView: self.textView,
                                                  completion: commandCompletionActionMoveCursorMapTheLengthOfStringChange)
                 case .undo:
                     UndoCommand().toggle(textView: self.textView)
@@ -73,57 +73,57 @@ extension DocumentEditViewController: DocumentEditToolbarDelegate {
                     RedoCommand().toggle(textView: self.textView)
                 case .bold:
                     self.viewModel.performAction(EditAction.textMark(OutlineParser.MarkType.bold, self.textView.selectedRange),
-                                                 undoManager: self.textView.undoManager!,
+                                                 textView: self.textView,
                                                  completion: commandCompletionActionMoveCursorForTextMark)
                 case .italic:
                     self.viewModel.performAction(EditAction.textMark(OutlineParser.MarkType.italic, self.textView.selectedRange),
-                                                 undoManager: self.textView.undoManager!,
+                                                 textView: self.textView,
                                                  completion: commandCompletionActionMoveCursorForTextMark)
                 case .underscore:
                     self.viewModel.performAction(EditAction.textMark(OutlineParser.MarkType.underscore, self.textView.selectedRange),
-                                                 undoManager: self.textView.undoManager!,
+                                                 textView: self.textView,
                                                  completion: commandCompletionActionMoveCursorForTextMark)
                 case .strikethrough:
                     self.viewModel.performAction(EditAction.textMark(OutlineParser.MarkType.strikethrough, self.textView.selectedRange),
-                                                 undoManager: self.textView.undoManager!,
+                                                 textView: self.textView,
                                                  completion: commandCompletionActionMoveCursorForTextMark)
                 case .code:
                     self.viewModel.performAction(EditAction.textMark(OutlineParser.MarkType.code, self.textView.selectedRange),
-                                                 undoManager: self.textView.undoManager!,
+                                                 textView: self.textView,
                                                  completion: commandCompletionActionMoveCursorForTextMark)
                 case .verbatim:
                     self.viewModel.performAction(EditAction.textMark(OutlineParser.MarkType.verbatim, self.textView.selectedRange),
-                                                 undoManager: self.textView.undoManager!,
+                                                 textView: self.textView,
                                                  completion: commandCompletionActionMoveCursorForTextMark)
                 case .checkbox:
                     self.viewModel.performAction(.checkboxSwitch(self.textView.selectedRange.location),
-                                                 undoManager: self.textView.undoManager!,
+                                                 textView: self.textView,
                                                  completion: commandCompletionActionMoveCursorMapTheLengthOfStringChange)
                 case .list:
                     self.viewModel.performAction(.unorderedListSwitch(self.textView.selectedRange.location),
-                                                 undoManager: self.textView.undoManager!,
+                                                 textView: self.textView,
                                                  completion: commandCompletionActionMoveCursorMapTheLengthOfStringChange)
                 case .orderedList:
                     self.viewModel.performAction(.orderedListSwitch(self.textView.selectedRange.location),
-                                                 undoManager: self.textView.undoManager!,
+                                                 textView: self.textView,
                                                  completion: commandCompletionActionMoveCursorMapTheLengthOfStringChange)
                 case .sourcecode:
                     self.viewModel.performAction(.codeBlock(self.textView.selectedRange.location),
-                                                 undoManager: self.textView.undoManager!,
+                                                 textView: self.textView,
                                                  completion: commandCompletionActionMoveCursorForBlock)
                 case .quote:
                     self.viewModel.performAction(.quoteBlock(self.textView.selectedRange.location),
-                                                 undoManager: self.textView.undoManager!,
+                                                 textView: self.textView,
                                                  completion: commandCompletionActionMoveCursorForBlock)
                     
                 case .moveUp:
                     self.viewModel.performAction(.moveLineUp(self.textView.selectedRange.location),
-                                                 undoManager: self.textView.undoManager!) { (result) in
+                                                 textView: self.textView) { (result) in
                                                     // TODO:
                     }
                 case .moveDown:
                     self.viewModel.performAction(.moveLineDown(self.textView.selectedRange.location),
-                                                 undoManager: self.textView.undoManager!) { (result) in
+                                                 textView: self.textView) { (result) in
                                                     // TODO:
                     }
                 case .dateAndTime:

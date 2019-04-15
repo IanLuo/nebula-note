@@ -79,10 +79,6 @@ extension HeadingsOutlineViewController: DocumentEditViewModelDelegate {
         // ignore
     }
     
-    public func showLink(url: URL) {
-        // ignore
-    }
-    
     public func updateHeadingInfo(heading: HeadingToken?) {
         // ignore
     }
