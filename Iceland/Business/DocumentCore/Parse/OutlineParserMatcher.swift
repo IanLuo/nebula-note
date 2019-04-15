@@ -60,6 +60,7 @@ extension OutlineParser {
             public static var unorderedList = try! NSRegularExpression(pattern: RegexPattern.Node.unorderedList, options: [.anchorsMatchLines])
             public static var seperator = try! NSRegularExpression(pattern: RegexPattern.Node.seperator, options: [.anchorsMatchLines])
             public static var attachment = try! NSRegularExpression(pattern: RegexPattern.Node.attachment, options: [])
+            public static var textAttachment = try! NSRegularExpression(pattern: RegexPattern.Node.textAttachment, options: [])
             public static var footnote = try! NSRegularExpression(pattern: RegexPattern.Node.footnote, options: [.anchorsMatchLines])
             public static var codeBlockBegin = try! NSRegularExpression(pattern: RegexPattern.Element.CodeBlock.begin, options: [.anchorsMatchLines])
             public static var codeBlockEnd = try! NSRegularExpression(pattern: RegexPattern.Element.CodeBlock.end, options: [.anchorsMatchLines])
@@ -203,6 +204,7 @@ extension OutlineParser {
             public static let attachment =      "\\#\\+ATTACHMENT\\:(image|video|audio|sketch|location)=([A-Z0-9\\-]+)" // like: #+ATTACHMENT:LKS-JDLF-JSDL-JFLSDF)
             public static let quote =           "^[\\t ]*\\#\\+BEGIN\\_QUOTE\\n([^\\#\\+END\\_QUOTE]*)\\n\\s*\\#\\+END\\_QUOTE[\\t ]*\\n"
             public static let footnote =        "" // TODO: footnote regex pattern imp
+            public static let textAttachment =  "\\#\\+ATTACHMENT\\:(link|text)=([A-Z0-9\\-]+)"
         }
         
         public struct Element {
@@ -343,7 +345,25 @@ extension OutlineParser {
             }
             
             public static func serialize(kind: String , value: String) -> String {
-                return "#+ATTACHMENT:\(kind)=\(value)"
+                if kind == Business.Attachment.Kind.link.rawValue {
+                    let url = AttachmentManager.textAttachmentURL(with: value)
+                    do {
+                        if let linkData = try JSONSerialization.jsonObject(with: Data(contentsOf: url), options: []) as? [String: String] {
+                            let title = linkData["title"]!
+                            let url = linkData["link"]!
+                            return "[[\(url)][\(title)]]"
+                        } else {
+                            return "fail to find attachment text: \(url)"
+                        }
+                    } catch {
+                        return "fail to find attachment text: \(url), \nerror: \(error)"
+                    }
+                } else if kind == Business.Attachment.Kind.text.rawValue {
+                    let url = AttachmentManager.textAttachmentURL(with: value)
+                    return (try? String(contentsOf: url)) ?? "fail to find attachment text: \(url)"
+                } else {
+                    return "#+ATTACHMENT:\(kind)=\(value)"
+                }
             }
         }
         

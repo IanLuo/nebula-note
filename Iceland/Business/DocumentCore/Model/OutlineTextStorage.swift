@@ -416,7 +416,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
             
         }
     }
-    
+
     public func didFoundCheckbox(text: String, checkboxRanges: [[String : NSRange]]) {
         
         checkboxRanges.forEach { rangeData in

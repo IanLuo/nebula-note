@@ -34,17 +34,22 @@ extension DocumentEditViewController: DocumentEditToolbarDelegate {
     }
     
     public func didTriggerAction(_ action: ToolbarActionProtocol) {
+        let currentLocation = self.textView.selectedRange.location
+        let undoManager = self.textView.undoManager!
+        
         if let textViewAction = action as? TextViewAction {
             textViewAction.toggle(textView: self.textView, location: self.textView.selectedRange.location)
         } else if let documentAction = action as? DocumentActon {
             // attachment
             if let attachmentAction = documentAction as? AttachmentAction {
                 self.viewModel.coordinator?.showAttachmentPicker(kind: attachmentAction.AttachmentKind, complete: { [unowned self] attachmentId in
-                    self.viewModel.performAction(EditAction.addAttachment(self.textView.selectedRange.location,
+                    self.viewModel.performAction(EditAction.addAttachment(currentLocation,
                                                                           attachmentId, attachmentAction.AttachmentKind.rawValue),
-                                                 undoManager: self.textView.undoManager!,
+                                                 undoManager: undoManager,
                                                  completion: { [unowned self] result in
-                                                    self.textView.selectedRange = self.textView.selectedRange.offset(result.delta)
+                                                    DispatchQueue.main.async {
+                                                        self.textView.selectedRange = self.textView.selectedRange.offset(result.delta)
+                                                    }
                     })
                 }, cancel: {})
             }

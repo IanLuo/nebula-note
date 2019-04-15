@@ -52,11 +52,13 @@ public enum AttachmentError: Error {
             let attachmentDocument = AttachmentDocument(fileURL: fileURL)
             attachmentDocument.attachment = attachment
             attachmentDocument.fileToSave = attachmentURL
-            attachmentDocument.save(to: fileURL, for: UIDocument.SaveOperation.forCreating) {
-                if $0 {
-                    complete(newKey)
-                } else {
-                    failure(AttachmentError.failToSaveAttachment)
+            attachmentDocument.save(to: fileURL, for: UIDocument.SaveOperation.forCreating) { result in
+                DispatchQueue.main.async {
+                    if result {
+                        complete(newKey)
+                    } else {
+                        failure(AttachmentError.failToSaveAttachment)
+                    }
                 }
             }
         }
@@ -71,6 +73,10 @@ public enum AttachmentError: Error {
             }
         }
         
+    }
+    
+    public static func textAttachmentURL(with key: String) -> URL {
+        return URL(fileURLWithPath: key + "." + AttachmentDocument.fileExtension, relativeTo: URL.attachmentURL).appendingPathComponent("attachments").appendingPathExtension("txt")
     }
     
     /// 通过附件的 key 来删除附件
