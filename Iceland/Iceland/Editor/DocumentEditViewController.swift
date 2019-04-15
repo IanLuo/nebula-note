@@ -289,7 +289,30 @@ extension DocumentEditViewController: OutlineTextViewDelegate {
     }
     
     public func didTapOnLink(textView: UITextView, characterIndex: Int, linkStructure: [String : String], point: CGPoint) {
-
+        let actionsController = ActionsViewController()
+        actionsController.addAction(icon: Asset.Assets.right.image.fill(color: InterfaceTheme.Color.descriptive), title: "Open") { viewController in
+            viewController.dismiss(animated: true, completion: {
+                if let url = URL(string: linkStructure[OutlineParser.Key.Element.Link.url]!) {
+                    UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                }
+            })
+        }
+        
+        actionsController.addAction(icon: Asset.Assets.add.image, title: "Edit") { viewController in
+            viewController.dismiss(animated: true, completion: {
+                self.viewModel.coordinator?.showLinkEditor(title: linkStructure["title"]!, url: linkStructure["url"]!, completeEdit: { [weak self] linkString in
+                    self?.viewModel.performAction(EditAction.updateLink(characterIndex, linkString), undoManager: textView.undoManager!, completion: { result in
+                        textView.selectedRange = textView.selectedRange.offset(result.delta)
+                    })
+                })
+            })
+        }
+        
+        actionsController.setCancel { viewController in
+            viewController.dismiss(animated: true, completion: nil)
+        }
+        
+        self.present(actionsController, animated: true, completion: nil)
     }
     
     public func didTapOnLevel(textView: UITextView, chracterIndex: Int, point: CGPoint) {

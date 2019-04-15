@@ -12,6 +12,9 @@ import Business
 import Interface
 
 public class AttachmentLinkViewController: AttachmentViewController, AttachmentViewModelDelegate {
+    public var defaultTitle: String?
+    public var defaultURL: String?
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -23,8 +26,8 @@ public class AttachmentLinkViewController: AttachmentViewController, AttachmentV
     let formViewController = ModalFormViewController()
     private func showCreateLinkForm() {
         formViewController.delegate = self
-        formViewController.addTextFied(title: "title".localizable, placeHoder: "Please input title".localizable, defaultValue: nil)
-        formViewController.addTextFied(title: "link".localizable, placeHoder: "Please input link".localizable, defaultValue: nil, keyboardType: .URL)
+        formViewController.addTextFied(title: "title".localizable, placeHoder: "Please input title".localizable, defaultValue: self.defaultTitle)
+        formViewController.addTextFied(title: "link".localizable, placeHoder: "Please input link".localizable, defaultValue: self.defaultURL, keyboardType: .URL)
         formViewController.title = "Create link".localizable
 
         self.view.addSubview(formViewController.view)

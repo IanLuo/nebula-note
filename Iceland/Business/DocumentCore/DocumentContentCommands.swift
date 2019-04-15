@@ -209,7 +209,7 @@ public class UnFoldAllCommand: FoldingAndUnfoldingCommand {
     }
 }
 
-// MARK:
+// MARK: - HeadingLevelChangeCommandComposer
 public class HeadingLevelChangeCommandComposer: DocumentContentCommandComposer {
     let newLevel: Int
     let location: Int
@@ -227,7 +227,7 @@ public class HeadingLevelChangeCommandComposer: DocumentContentCommandComposer {
     }
 }
 
-// MARK: ReplaceContentComposer
+// MARK: - ReplaceContentComposer
 public class ReplaceContentCommandComposer: DocumentContentCommandComposer {
     let range: NSRange
     let textToReplace: String
@@ -240,7 +240,7 @@ public class ReplaceContentCommandComposer: DocumentContentCommandComposer {
     }
 }
 
-// MARK: FoldCommandComposer
+// MARK: - FoldCommandComposer
 public class FoldCommandComposer: DocumentContentCommandComposer {
     let location: Int
     public init(location: Int) { self.location = location }
@@ -272,6 +272,25 @@ public class MoveLineUpCommandComposer: DocumentContentCommandComposer {
         if lineStart > 0 {
             let lastLineStart = (textStorage.string as NSString).lineRange(for: NSRange(location: lineStart - 1, length: 0)).location
             return ReplaceLineCommandComposer(fromLocation: lineStart, toLocation: lastLineStart).compose(textStorage: textStorage)
+        }
+        
+        return NoChangeCommand()
+    }
+}
+
+// MARK: - UpdateLinkCommandCompser
+public class UpdateLinkCommandCompser: DocumentContentCommandComposer {
+    let location: Int
+    let link: String
+    
+    public init(location: Int, link: String) {
+        self.location = location
+        self.link = link
+    }
+    
+    public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
+        for case let token in textStorage.token(at: self.location) where token is LinkToken {
+            return ReplaceContentCommandComposer(range: token.range, textToReplace: self.link).compose(textStorage: textStorage)
         }
         
         return NoChangeCommand()

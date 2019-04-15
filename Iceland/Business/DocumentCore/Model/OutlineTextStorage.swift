@@ -365,8 +365,10 @@ extension OutlineTextStorage: OutlineParserDelegate {
                     
                     if key == OutlineParser.Key.Element.Link.title {
                         // 添加自定义属性，值为解析的链接结构
-                        textStorage.addAttributes([OutlineAttribute.hidden: 0,
-                                                   NSAttributedString.Key.link: [key: text.substring(token.range(for: key)!),
+                        textStorage.addAttributes([OutlineAttribute.hidden: 0, // 不隐藏
+                                                   NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.spotlight,
+                                                   NSAttributedString.Key.font: InterfaceTheme.Font.body,
+                                                   OutlineAttribute.Link.title: [key: text.substring(token.range(for: key)!),
                                                                                  OutlineParser.Key.Element.Link.url: text.substring(linkRangeData[OutlineParser.Key.Element.Link.url]!)]],
                                                   range: token.range(for: key)!)
                     } else if key == OutlineParser.Key.Element.Link.url {

@@ -54,7 +54,16 @@ public class AttachmentCoordinator: Coordinator {
         viewController.delegate = self
         
         self.viewController = viewController
-    } 
+    }
+    
+    public convenience init (stack: UINavigationController, dependency: Dependency, title: String, url: String) {
+        self.init(stack: stack, dependency: dependency, kind: Attachment.Kind.link)
+        
+        if let linkViewController = self.viewController as? AttachmentLinkViewController {
+            linkViewController.defaultTitle = title
+            linkViewController.defaultURL = url
+        }
+    }
 }
 
 extension AttachmentCoordinator: AttachmentViewControllerDelegate {

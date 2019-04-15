@@ -42,6 +42,7 @@ public enum EditAction {
     case moveLineUp(Int)
     case moveLineDown(Int)
     case updateHeadingLevel(Int, Int)
+    case updateLink(Int, String)
     
     public var commandComposer: DocumentContentCommandComposer {
         switch self {
@@ -91,6 +92,8 @@ public enum EditAction {
             return MoveLineDownCommandComposer(location: location)
         case .updateHeadingLevel(let location, let newLevel):
             return HeadingLevelChangeCommandComposer(location: location, newLevel: newLevel)
+        case .updateLink(let location, let link):
+            return UpdateLinkCommandCompser(location: location, link: link)
         }
     }
 }

@@ -58,7 +58,23 @@ public class EditorCoordinator: Coordinator {
         navigationController.isNavigationBarHidden = true
         let capturedListCoordinator = CaptureListCoordinator(stack: navigationController, dependency: self.dependency, mode: CaptureListViewModel.Mode.pick)
         capturedListCoordinator.delegate = self
-    }    
+    }
+    
+    public func showLinkEditor(title: String, url: String, completeEdit: @escaping (String) -> Void) {
+        let navigationController = UINavigationController()
+        navigationController.isNavigationBarHidden = true
+        let attachmentLinkCoordinator = AttachmentCoordinator(stack: navigationController, dependency: self.dependency, title: title, url: url)
+        attachmentLinkCoordinator.onSaveAttachment = { key in
+            AttachmentManager().attachment(with: key, completion: { attachment in
+                let linkString = OutlineParser.Values.Attachment.serialize(attachment: attachment)
+                completeEdit(linkString)
+            }, failure: { error in
+                log.error(error)
+            })
+        }
+        
+        attachmentLinkCoordinator.start(from: self)
+    }
 }
 
 extension EditorCoordinator: CaptureListCoordinatorDelegate {
