@@ -449,7 +449,7 @@ extension DocumentEditViewController: DocumentEditViewModelDelegate {
     public func didReadyToEdit() {
         if let position = self.textView.position(from: self.textView.beginningOfDocument, offset: self.viewModel.onLoadingLocation) {
             let r = self.textView.firstRect(for: self.textView.textRange(from: position, to: position)!)
-            self.textView.setContentOffset(CGPoint(x: 0, y: r.origin.y), animated: false)
+            self.textView.setContentOffset(CGPoint(x: self.textView.contentOffset.x, y: r.origin.y), animated: false)
         }
     }
     

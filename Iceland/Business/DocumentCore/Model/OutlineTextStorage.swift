@@ -145,7 +145,7 @@ extension OutlineTextStorage: ContentUpdatingProtocol {
                     self.setParagraphIndent(heading: heading)
                 } else {
                     if let heading = self.heading(contains: $0.range.location) {
-                        self.setParagraphIndent(heading: heading, for: currentParseRange)
+                        self.setParagraphIndent(heading: heading)
                     }
                 }
             }
