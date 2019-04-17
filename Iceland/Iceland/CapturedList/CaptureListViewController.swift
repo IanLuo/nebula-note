@@ -12,8 +12,14 @@ import Business
 import MapKit
 import Interface
 
+public protocol CaptureListViewControllerDelegate: class {
+    func didChooseAttachment(_ attachment: Attachment, viewController: UIViewController)
+}
+
 public class CaptureListViewController: UIViewController {
     let viewModel: CaptureListViewModel
+    
+    public weak var delegate: CaptureListViewControllerDelegate?
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView()

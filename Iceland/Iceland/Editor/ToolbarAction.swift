@@ -46,6 +46,8 @@ public enum NormalAction: ToolbarActionProtocol, DocumentActon {
     case planning
     case tag
     
+    case captured
+    
     public var icon: UIImage {
         switch self {
         case .heading:
@@ -90,6 +92,8 @@ public enum NormalAction: ToolbarActionProtocol, DocumentActon {
             return Asset.Assets.agenda.image
         case .tag:
             return Asset.Assets.tag.image
+        case .captured:
+            return Asset.Assets.capture.image
         }
     }
 }

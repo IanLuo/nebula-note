@@ -92,6 +92,8 @@ public class Coordinator {
     
     public let dependency: Dependency
     
+    public var onMovingOut: (() -> Void)?
+    
     public var isShowing: Bool {
         return self.topViewController?.view.window != nil
     }
@@ -116,6 +118,9 @@ public class Coordinator {
     }
     
     open func moveOut(top: UIViewController, animated: Bool, completion: (() -> Void)?) {
+        
+        self.onMovingOut?()
+        
         if self.stack == parent?.stack {
             self.stack.popViewController(animated: animated)
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.3) {
@@ -173,7 +178,14 @@ extension Coordinator {
         
         let documentCoordinator = EditorCoordinator(stack: navigationController, dependency: self.dependency,
                                                     usage: EditorCoordinator.Usage.editor(url, location))
+        
+        documentCoordinator.onMovingOut = {
+            self.dependency.globalCaptureEntryWindow?.show()
+        }
+        
         documentCoordinator.start(from: self)
+        
+        self.dependency.globalCaptureEntryWindow?.hide()
     }
     
     public func showAttachmentPicker(kind: Attachment.Kind, complete: @escaping (String) -> Void, cancel: @escaping () -> Void) {

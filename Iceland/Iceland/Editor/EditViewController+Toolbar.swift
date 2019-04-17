@@ -132,6 +132,8 @@ extension DocumentEditViewController: DocumentEditToolbarDelegate {
                     self.showPlanningSelector(location: self.textView.selectedRange.location, current: nil)
                 case .tag:
                     self.showTagEditor(location: self.textView.selectedRange.location)
+                case .captured:
+                    self.showCapturedItemList(location: self.textView.selectedRange.location)
                 }
             }
         }

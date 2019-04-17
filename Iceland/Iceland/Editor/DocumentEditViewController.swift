@@ -234,6 +234,19 @@ public class DocumentEditViewController: UIViewController {
         self.present(actionsViewController, animated: true, completion: nil)
     }
     
+    public func showCapturedItemList(location: Int) {
+        self.viewModel.coordinator?.showCapturedList { [weak self] attachment in
+            
+            guard let strongSelf = self else { return }
+            
+            strongSelf.viewModel.performAction(EditAction.addAttachment(strongSelf.textView.selectedRange.location,
+                                                                   attachment.key,
+                                                                   attachment.kind.rawValue),
+                                          textView: strongSelf.textView,
+                                          completion: nil)
+        }
+    }
+    
     public func showPlanningSelector(location: Int, current: String?) {
         let allPlannings = self.viewModel.coordinator!.dependency.settingAccessor.allPlannings.filter { $0 != current }
         

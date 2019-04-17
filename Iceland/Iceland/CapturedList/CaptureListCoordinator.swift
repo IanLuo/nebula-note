@@ -19,11 +19,16 @@ public class CaptureListCoordinator: Coordinator {
     
     public weak var delegate: CaptureListCoordinatorDelegate?
     
+    public var onSelectAction: ((Attachment) -> Void)?
+    public var onCancelAction: (() -> Void)?
+    
     public init(stack: UINavigationController, dependency: Dependency, mode: CaptureListViewModel.Mode) {
         self.viewModel = CaptureListViewModel(service: CaptureService(attachmentManager: dependency.attachmentManager), mode: mode)
         let viewController = CaptureListViewController(viewModel: self.viewModel)
         
         super.init(stack: stack, dependency: dependency)
+        
+        viewController.delegate = self
         self.viewController = viewController
         viewModel.coordinator = self
     }
@@ -46,5 +51,12 @@ public class CaptureListCoordinator: Coordinator {
         }
         
         documentCoord.start(from: self)
+    }
+}
+
+extension CaptureListCoordinator: CaptureListViewControllerDelegate {
+    public func didChooseAttachment(_ attachment: Attachment, viewController: UIViewController) {
+        self.delegate?.didSelectAttachment(attachment: attachment, coordinator: self)
+        self.onSelectAction?(attachment)
     }
 }

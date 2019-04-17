@@ -53,13 +53,15 @@ public class EditorCoordinator: Coordinator {
         }
     }
     
-    public func showCapturedList() {
+    public func showCapturedList(completion: @escaping (Attachment) -> Void) {
         let navigationController = UINavigationController()
         navigationController.isNavigationBarHidden = true
         let capturedListCoordinator = CaptureListCoordinator(stack: navigationController, dependency: self.dependency, mode: CaptureListViewModel.Mode.pick)
-        capturedListCoordinator.delegate = self
+        capturedListCoordinator.onSelectAction = completion
+        
+        capturedListCoordinator.start(from: self)
     }
-    
+        
     public func showLinkEditor(title: String, url: String, completeEdit: @escaping (String) -> Void) {
         let navigationController = UINavigationController()
         navigationController.isNavigationBarHidden = true
@@ -74,18 +76,6 @@ public class EditorCoordinator: Coordinator {
         }
         
         attachmentLinkCoordinator.start(from: self)
-    }
-}
-
-extension EditorCoordinator: CaptureListCoordinatorDelegate {
-    public func didSelectAttachment(attachment: Attachment, coordinator: CaptureListCoordinator) {
-        if let editViewController = self.viewController as? DocumentEditViewController {
-            self._viewModel.performAction(EditAction.addAttachment(editViewController.textView.selectedRange.location,
-                                                                   attachment.key,
-                                                                   attachment.kind.rawValue),
-                                          textView: editViewController.textView,
-                                          completion: nil)
-        }
     }
 }
 
