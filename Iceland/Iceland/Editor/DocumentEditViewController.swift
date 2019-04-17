@@ -164,6 +164,10 @@ public class DocumentEditViewController: UIViewController {
             })
         })
         
+        actionsViewController.setCancel { viewController in
+            viewController.dismiss(animated: true, completion: nil)
+        }
+        
         self.present(actionsViewController, animated: true, completion: nil)
     }
     

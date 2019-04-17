@@ -536,7 +536,7 @@ public class TagCommandComposer: DocumentContentCommandComposer {
     }
 }
 
-// MARK: - PlanningCommand
+// MARK: - PlanningCommandComposer
 public class PlanningCommandComposer: DocumentContentCommandComposer {
     public enum Kind {
         case addOrUpdate(String)
@@ -568,7 +568,7 @@ public class PlanningCommandComposer: DocumentContentCommandComposer {
                 replacement = planning
             } else {
                 // 没有 planning， 则直接放在 level 之后添加
-                editRange = NSRange(location: heading.level + 1, length: 0)
+                editRange = NSRange(location: heading.levelRange.upperBound + 1, length: 0)
                 replacement = planning + " "
             }
             
