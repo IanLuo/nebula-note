@@ -124,8 +124,9 @@ public class DocumentEditViewController: UIViewController {
             viewController.dismiss(animated: true, completion: {
                 self.viewModel.coordinator?.showDateSelector(title: "Schedule", current: nil, add: { newDateAndTime in
                     newDateAndTime.isSchedule = true
+                    let oldSelectedRange = self.textView.selectedRange
                     self.viewModel.performAction(EditAction.updateDateAndTime(location, newDateAndTime), textView: self.textView, completion: { result in
-                        self.textView.selectedRange = self.textView.selectedRange.offset(result.delta)
+                        self.textView.selectedRange = oldSelectedRange.offset(result.delta)
                     })
                 }, delete: {
                     // ignore
@@ -139,8 +140,9 @@ public class DocumentEditViewController: UIViewController {
             viewController.dismiss(animated: true, completion: {
                 self.viewModel.coordinator?.showDateSelector(title: "Due", current: nil, add: { newDateAndTime in
                     newDateAndTime.isDue = true
+                    let oldSelectedRange = self.textView.selectedRange
                     self.viewModel.performAction(EditAction.updateDateAndTime(location, newDateAndTime), textView: self.textView, completion: { result in
-                        self.textView.selectedRange = self.textView.selectedRange.offset(result.delta)
+                        self.textView.selectedRange = oldSelectedRange.offset(result.delta)
                     })
                 }, delete: {
                     // ignore
@@ -153,8 +155,10 @@ public class DocumentEditViewController: UIViewController {
         actionsViewController.addAction(icon: nil, title: "Date and time", action: { viewController in
             viewController.dismiss(animated: true, completion: {
                 self.viewModel.coordinator?.showDateSelector(title: "Date and time", current: nil, add: { newDateAndTime in
+                    
+                    let oldSelectedRange = self.textView.selectedRange
                     self.viewModel.performAction(EditAction.updateDateAndTime(location, newDateAndTime), textView: self.textView, completion: { result in
-                        self.textView.selectedRange = self.textView.selectedRange.offset(result.delta)
+                        self.textView.selectedRange = oldSelectedRange.offset(result.delta)
                     })
                 }, delete: {
                     // ignore
@@ -180,9 +184,11 @@ public class DocumentEditViewController: UIViewController {
         
         for tag in tags {
             actionsViewController.addAction(icon: Asset.Assets.cross.image.fill(color: InterfaceTheme.Color.warning), title: tag) { actionViewController in
+                
+                let oldSelectedRange = self.textView.selectedRange
                 self.viewModel.performAction(EditAction.removeTag(tag, location), textView: self.textView, completion: { result in
                     if self.textView.selectedRange.location > location {
-                        self.textView.selectedRange = self.textView.selectedRange.offset(result.delta)
+                        self.textView.selectedRange = oldSelectedRange.offset(result.delta)
                     }
                     
                     actionViewController.removeAction(with: tag)
@@ -214,9 +220,10 @@ public class DocumentEditViewController: UIViewController {
                     if let newTagName = values[L10n.Document.Edit.Tag.add] as? String {
                         location += newTagName.count
                         viewController.dismiss(animated: true, completion: {
+                            let oldSelectedRange = self.textView.selectedRange
                             self.viewModel.performAction(EditAction.addTag(newTagName, location), textView: self.textView, completion: { result in
                                 if self.textView.selectedRange.location > location {
-                                    self.textView.selectedRange = self.textView.selectedRange.offset(result.delta)
+                                    self.textView.selectedRange = oldSelectedRange.offset(result.delta)
                                 }
                             })
                         })
@@ -254,11 +261,12 @@ public class DocumentEditViewController: UIViewController {
         
         for planning in allPlannings {
             actionsController.addAction(icon: nil, title: planning) { viewController in
+                let oldSelectedRange = self.textView.selectedRange
                 self.viewModel.performAction(EditAction.changePlanning(planning, location),
                                              textView: self.textView,
                                              completion: { result in
                                                 if self.textView.selectedRange.location >= location {
-                                                    self.textView.selectedRange = self.textView.selectedRange.offset(result.delta)
+                                                    self.textView.selectedRange = oldSelectedRange.offset(result.delta)
                                                 }
                 })
                 
@@ -270,11 +278,12 @@ public class DocumentEditViewController: UIViewController {
             actionsController.addAction(icon: Asset.Assets.cross.image.fill(color: InterfaceTheme.Color.warning),
                                         title: L10n.General.Button.Title.delete,
                                         style: .warning) { viewController in
+                                            let oldSelectedRange = self.textView.selectedRange
                                             self.viewModel.performAction(EditAction.removePlanning(location),
                                                                          textView: self.textView,
                                                                          completion: { result in
                                                                             if self.textView.selectedRange.location >= location {
-                                                                                self.textView.selectedRange = self.textView.selectedRange.offset(result.delta)
+                                                                                self.textView.selectedRange = oldSelectedRange.offset(result.delta)
                                                                             }
                                             })
                                             
@@ -295,8 +304,9 @@ public class DocumentEditViewController: UIViewController {
         
         actionsController.addAction(icon: nil, title: "转为正文") { viewController in
             viewController.dismiss(animated: true, completion: {
+                let lastSelectedRange = self.textView.selectedRange
                 self.viewModel.performAction(EditAction.convertHeadingToParagraph(location), textView: self.textView, completion: { [unowned self] result in
-                    self.textView.selectedRange = self.textView.selectedRange.offset(result.delta)
+                    self.textView.selectedRange = lastSelectedRange.offset(result.delta)
                 })
             })
         }
@@ -314,8 +324,9 @@ public class DocumentEditViewController: UIViewController {
         
         actionsController.addAction(icon: nil, title: "转为标题") { viewController in
             viewController.dismiss(animated: true, completion: {
+                let lastSelectedRange = self.textView.selectedRange
                 self.viewModel.performAction(EditAction.convertToHeading(location), textView: self.textView, completion: { [unowned self] result in
-                    self.textView.selectedRange = self.textView.selectedRange.offset(result.delta)
+                    self.textView.selectedRange = lastSelectedRange.offset(result.delta)
                 })
             })
         }
@@ -356,15 +367,17 @@ extension DocumentEditViewController: OutlineTextViewDelegate {
     public func didTapDateAndTime(textView: UITextView, characterIndex: Int, dateAndTimeString: String, point: CGPoint) {
         let dateAndTime = DateAndTimeType(dateAndTimeString)!
         self.viewModel.coordinator?.showDateSelector(title: "update the date and time", current: dateAndTime, add: { [unowned self] newDateAndTime in
+            let oldSelectedRange = textView.selectedRange
             self.viewModel.performAction(EditAction.updateDateAndTime(characterIndex, newDateAndTime), textView: self.textView, completion: { [unowned self] result in
                 if self.textView.selectedRange.location > characterIndex {
-                    self.textView.selectedRange = self.textView.selectedRange.offset(result.delta)
+                    self.textView.selectedRange = oldSelectedRange.offset(result.delta)
                 }
             })
         }, delete: {
+            let oldSelectedRange = textView.selectedRange
             self.viewModel.performAction(EditAction.updateDateAndTime(characterIndex, nil), textView: self.textView, completion: { [unowned self] result in
                 if self.textView.selectedRange.location > characterIndex {
-                    self.textView.selectedRange = self.textView.selectedRange.offset(result.delta)
+                    self.textView.selectedRange = oldSelectedRange.offset(result.delta)
                 }
             })
         }, cancel: {})
@@ -387,8 +400,9 @@ extension DocumentEditViewController: OutlineTextViewDelegate {
         actionsController.addAction(icon: Asset.Assets.add.image, title: "Edit") { viewController in
             viewController.dismiss(animated: true, completion: {
                 self.viewModel.coordinator?.showLinkEditor(title: linkStructure["title"]!, url: linkStructure["url"]!, completeEdit: { [unowned self] linkString in
+                    let oldSelectedRange = textView.selectedRange
                     self.viewModel.performAction(EditAction.updateLink(characterIndex, linkString), textView: self.textView, completion: { result in
-                        textView.selectedRange = textView.selectedRange.offset(result.delta)
+                        textView.selectedRange = oldSelectedRange.offset(result.delta)
                     })
                 })
             })
@@ -443,8 +457,8 @@ extension DocumentEditViewController: UITextViewDelegate {
         guard let currentPosition = textView.selectedTextRange?.start else { return true }
         
         for case let heading in self.viewModel.currentTokens where heading is HeadingToken {
-            if let endOfHeadingPosition = textView.position(from: currentPosition, offset: heading.range.upperBound - textView.selectedRange.location) {
-                textView.replace(textView.textRange(from: endOfHeadingPosition, to: endOfHeadingPosition)!, withText: "\n")
+            self.viewModel.performAction(EditAction.addNewLineBelow(location: textView.selectedRange.location), textView: textView) { result in
+                textView.selectedRange = NSRange(location: result.range!.location, length: 0)
             }
             return false
         }
@@ -478,8 +492,9 @@ extension DocumentEditViewController: UITextViewDelegate {
         for case let heading in self.viewModel.currentTokens where heading is HeadingToken {
             var newLevel = (heading as! HeadingToken).level + 1
             if newLevel == 6 { newLevel = 1 }
+            let oldSelectedRange = textView.selectedRange
             self.viewModel.performAction(EditAction.updateHeadingLevel(textView.selectedRange.location, newLevel), textView: self.textView) { result in
-                textView.selectedRange = textView.selectedRange.offset(result.delta)
+                textView.selectedRange = oldSelectedRange.offset(result.delta)
             }
             return false
         }

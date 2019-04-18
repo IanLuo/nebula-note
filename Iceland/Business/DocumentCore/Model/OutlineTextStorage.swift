@@ -896,7 +896,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
         
         // 如果范围在某个 item 内，并且小于这个 item 原来的范围，则扩大至这个 item 原来的范围
         for item in self.allTokens {
-            if item.range.intersection(newRange) != nil {
+            if item.range.intersection(newRange) != nil && item is BlockToken {
                 newRange = item.range.union(newRange)
                 break
             }

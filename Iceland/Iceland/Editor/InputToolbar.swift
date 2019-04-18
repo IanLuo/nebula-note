@@ -71,6 +71,7 @@ public class InputToolbar: UIView {
         layout.scrollDirection = .horizontal
         
         self.mode = mode
+        self._actions = mode._createActions(mode: mode)
         self._collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
 
         super.init(frame: .zero)
@@ -81,7 +82,6 @@ public class InputToolbar: UIView {
         self._collectionView.register(GroupSeparator.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: GroupSeparator.reuseIdentifier)
         
         self._setupUI()
-        
     }
     
     public required init?(coder aDecoder: NSCoder) {

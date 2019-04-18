@@ -43,6 +43,7 @@ public enum EditAction {
     case updateLink(Int, String)
     case convertToHeading(Int)
     case convertHeadingToParagraph(Int)
+    case addNewLineBelow(location: Int)
     
     public var commandComposer: DocumentContentCommandComposer {
         switch self {
@@ -98,6 +99,8 @@ public enum EditAction {
             return ConvertLineToHeadingCommandComposer(location: location)
         case .convertHeadingToParagraph(let location):
             return ConvertHeadingLineToParagragh(location: location)
+        case .addNewLineBelow(let location):
+            return AddNewLineBelowCommandComposer(location: location)
         }
     }
 }

@@ -61,6 +61,23 @@ public class ReplaceTextCommand: DocumentContentCommand {
     }
 }
 
+// MARK: - AddNewLineBelowCommandComposer
+public class AddNewLineBelowCommandComposer: DocumentContentCommandComposer {
+    let location: Int
+    
+    public init(location: Int) {
+        self.location = location
+    }
+    
+    public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
+        let lineEnd = (textStorage.string as NSString).lineRange(for: NSRange(location: self.location, length: 0)).upperBound
+        
+        return ReplaceContentCommandComposer(range: NSRange(location: lineEnd, length: 0),
+                                             textToReplace: OutlineParser.Values.Character.linebreak)
+            .compose(textStorage: textStorage)
+    }
+}
+
 // MARK: - NoChangeCommandComposer
 public class NoChangeCommandComposer: DocumentContentCommandComposer {
     public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
