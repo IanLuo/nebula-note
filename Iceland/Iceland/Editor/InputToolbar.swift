@@ -34,8 +34,8 @@ public class InputToolbar: UIView {
         case quote
         case code
         
-        fileprivate func _createActions() -> [[ToolbarActionProtocol]] {
-            switch self {
+        fileprivate func _createActions(mode: Mode) -> [[ToolbarActionProtocol]] {
+            switch mode {
             case.paragraph:
                 return InputToolbar.actionsParagraph
             case .heading:
@@ -56,7 +56,7 @@ public class InputToolbar: UIView {
         willSet {
             if mode != newValue {
                 log.info("enter \(mode) mode")
-                self._actions = mode._createActions()
+                self._actions = mode._createActions(mode: newValue)
                 self._collectionView.reloadData()
             }
         }

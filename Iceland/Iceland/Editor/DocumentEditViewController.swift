@@ -43,7 +43,7 @@ public class DocumentEditViewController: UIViewController {
     private var closeButton: UIButton!
     private var searchButton: UIButton!
     
-    private let _toolbar = InputToolbar(mode: .paragraph)
+    public let toolbar = InputToolbar(mode: .paragraph)
     
     private var _keyboardHeight: CGFloat = 0
     
@@ -65,11 +65,11 @@ public class DocumentEditViewController: UIViewController {
         self.toolBar.addSubview(closeButton)
         self.toolBar.addSubview(searchButton)
         
-        self._toolbar.frame = CGRect(origin: .zero, size: .init(width: self.view.bounds.width, height: 44))
-        self._toolbar.delegate = self
-        self.textView.inputAccessoryView = self._toolbar
+        self.toolbar.frame = CGRect(origin: .zero, size: .init(width: self.view.bounds.width, height: 44))
+        self.toolbar.delegate = self
+        self.textView.inputAccessoryView = self.toolbar
         
-        self._toolbar.mode = .paragraph
+        self.toolbar.mode = .paragraph
         
         NotificationCenter.default.addObserver(self, selector: #selector(_keyboardWillShow(_:)), name: UIApplication.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(_keyboardWillHide(_:)), name: UIApplication.keyboardWillHideNotification, object: nil)
@@ -289,6 +289,44 @@ public class DocumentEditViewController: UIViewController {
         self.present(actionsController, animated: true)
     }
     
+    /// 在 heading 里面点击 heading 按钮
+    public func showHeadingEdit(at location: Int) {
+        let actionsController = ActionsViewController()
+        
+        actionsController.addAction(icon: nil, title: "转为正文") { viewController in
+            viewController.dismiss(animated: true, completion: {
+                self.viewModel.performAction(EditAction.convertHeadingToParagraph(location), textView: self.textView, completion: { [unowned self] result in
+                    self.textView.selectedRange = self.textView.selectedRange.offset(result.delta)
+                })
+            })
+        }
+        
+        actionsController.setCancel { viewController in
+            viewController.dismiss(animated: true, completion: nil)
+        }
+        
+        self.present(actionsController, animated: true, completion: nil)
+    }
+    
+    // 在其他非空行的位置点击 heading 按钮
+    public func showHeadingAdd(at location: Int) {
+        let actionsController = ActionsViewController()
+        
+        actionsController.addAction(icon: nil, title: "转为标题") { viewController in
+            viewController.dismiss(animated: true, completion: {
+                self.viewModel.performAction(EditAction.convertToHeading(location), textView: self.textView, completion: { [unowned self] result in
+                    self.textView.selectedRange = self.textView.selectedRange.offset(result.delta)
+                })
+            })
+        }
+        
+        actionsController.setCancel { viewController in
+            viewController.dismiss(animated: true, completion: nil)
+        }
+        
+        self.present(actionsController, animated: true, completion: nil)
+    }
+    
     @objc private func _keyboardWillShow(_ notification: Notification) {
         if let userInfo = notification.userInfo {
             self._keyboardHeight = (userInfo["UIKeyboardFrameBeginUserInfoKey"] as! CGRect).size.height
@@ -452,11 +490,15 @@ extension DocumentEditViewController: UITextViewDelegate {
 
 extension DocumentEditViewController: DocumentEditViewModelDelegate {
     public func didEnterTokens(_ tokens: [Token]) {
-        for token in tokens {
-            if token is HeadingToken {
-                self._toolbar.mode = .heading
-            } else {
-                self._toolbar.mode = .paragraph
+        if tokens.count == 0 {
+            self.toolbar.mode = .paragraph
+        } else {
+            for token in tokens {
+                if token is HeadingToken {
+                    self.toolbar.mode = .heading
+                } else {
+                    self.toolbar.mode = .paragraph
+                }
             }
         }
         

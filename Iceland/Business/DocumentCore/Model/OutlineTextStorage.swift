@@ -157,15 +157,15 @@ extension OutlineTextStorage: ContentUpdatingProtocol {
 // MARK: -
 extension OutlineTextStorage {
     /// 找到对应位置之后的第一个 token
-    public func token(at: Int) -> [Token] {
-        let isFromStart = self.string.count / 2 > at // diceide from which end to search
+    public func token(at location: Int) -> [Token] {
+        let isFromStart = self.string.count / 2 > location // diceide from which end to search
         var isHitBefore = false // if hit before, then then dosen't more, stop search
         var tokensFound: [Token] = []
         
         let allTokens = isFromStart ? self.allTokens : self.allTokens.reversed()
         
         for token in allTokens {
-            if token.range.contains(at) {
+            if token.range.contains(location) || token.range.upperBound == location {
                 isHitBefore = true
                 tokensFound.append(token)
             } else {

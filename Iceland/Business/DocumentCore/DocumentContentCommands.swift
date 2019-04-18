@@ -216,6 +216,56 @@ public class UnFoldAllCommand: FoldingAndUnfoldingCommand {
     }
 }
 
+// MARK: - HeadingConvertCommandComposer
+public class ConvertLineToHeadingCommandComposer: DocumentContentCommandComposer {
+    let location: Int
+    
+    public init(location: Int) {
+        self.location = location
+    }
+    
+    public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
+        let lineStart = (textStorage.string as NSString).lineRange(for: NSRange(location: self.location, length: 0)).location
+        
+        if let heading = textStorage.heading(contains: self.location) {
+            // 如果当前行已经是 heading，则忽略
+            guard heading.range.location != lineStart else { return NoChangeCommand() }
+            
+            if lineStart > 0 {
+                if let lastHeading = textStorage.heading(contains: lineStart - 1) {
+                    let lastHeadingLevelString = textStorage.string.substring(lastHeading.levelRange)
+                    return ReplaceTextCommand(range: NSRange(location: lineStart, length: 0), textToReplace: "\(lastHeadingLevelString)* ", textStorage: textStorage)
+                } else {
+                    return ReplaceTextCommand(range: NSRange(location: lineStart, length: 0), textToReplace: "* ", textStorage: textStorage)
+                }
+            } else {
+                return ReplaceTextCommand(range: NSRange(location: lineStart, length: 0), textToReplace: "* ", textStorage: textStorage)
+            }
+            
+        } else {
+            return ReplaceTextCommand(range: NSRange(location: lineStart, length: 0), textToReplace: "* ", textStorage: textStorage)
+        }
+    }
+}
+
+// MARK: - ConvertHeadingLineToParagragh
+public class ConvertHeadingLineToParagragh: DocumentContentCommandComposer {
+    let location: Int
+    
+    public init(location: Int) {
+        self.location = location
+    }
+    
+    public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
+        
+        guard let heading = textStorage.heading(contains: self.location) else {
+            return NoChangeCommand()
+        }
+        
+        return ReplaceTextCommand(range: heading.levelRange.moveRightBound(by: 1), textToReplace: "", textStorage: textStorage)
+    }
+}
+
 // MARK: - HeadingLevelChangeCommandComposer
 public class HeadingLevelChangeCommandComposer: DocumentContentCommandComposer {
     let newLevel: Int

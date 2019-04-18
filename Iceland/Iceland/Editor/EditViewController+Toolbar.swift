@@ -35,7 +35,6 @@ extension DocumentEditViewController: DocumentEditToolbarDelegate {
     
     public func didTriggerAction(_ action: ToolbarActionProtocol) {
         let currentLocation = self.textView.selectedRange.location
-        let undoManager = self.textView.undoManager!
         
         if let textViewAction = action as? TextViewAction {
             textViewAction.toggle(textView: self.textView, location: self.textView.selectedRange.location)
@@ -56,9 +55,24 @@ extension DocumentEditViewController: DocumentEditToolbarDelegate {
             
             // other document actions
             else if let normalAction = documentAction as? NormalAction {
+                let lineRange = (self.textView.text as NSString).lineRange(for: NSRange(location: self.textView.selectedRange.location, length: 0))
                 switch normalAction {
                 case .heading:
-                    break // TODO:
+                    if self.toolbar.mode == .heading {
+                        self.showHeadingEdit(at: lineRange.location)
+                    } else {
+                        let lineContent = self.textView.text.substring(lineRange).trimmingCharacters(in: CharacterSet.whitespaces)
+                        if lineContent.count == 0 {
+                            //  空行，直接转为标题
+                            self.viewModel.performAction(EditAction.convertToHeading(lineRange.location), textView: self.textView, completion: { [unowned self] result in
+                                self.textView.selectedRange = self.textView.selectedRange.offset(result.delta)
+                            })
+                        } else {
+                            // 含有文字，显示菜单
+                            self.showHeadingAdd(at: lineRange.location)
+                        }
+                    }
+                    
                 case .increaseIndent:
                     self.viewModel.performAction(EditAction.increaseIndent(self.textView.selectedRange.location),
                                                  textView: self.textView,
@@ -115,7 +129,6 @@ extension DocumentEditViewController: DocumentEditToolbarDelegate {
                     self.viewModel.performAction(.quoteBlock(self.textView.selectedRange.location),
                                                  textView: self.textView,
                                                  completion: commandCompletionActionMoveCursorForBlock)
-                    
                 case .moveUp:
                     self.viewModel.performAction(.moveLineUp(self.textView.selectedRange.location),
                                                  textView: self.textView) { (result) in
