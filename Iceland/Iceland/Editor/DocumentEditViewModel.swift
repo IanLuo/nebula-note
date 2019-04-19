@@ -26,7 +26,6 @@ public enum EditAction {
     case changePriority(String?, Int)
     case removePlanning(Int)
     case insertText(String, Int)
-    case replaceHeading(Int, Int)
     case archive(Int)
     case unarchive(Int)
     case insertSeparator(Int)
@@ -65,8 +64,6 @@ public enum EditAction {
             return PlanningCommandComposer(location: location, kind: .remove)
         case let .insertText(text, location):
             return InsertTextToHeadingCommandComposer(location: location, textToInsert: text)
-        case let .replaceHeading(fromLocation, toLocation):
-            return ReplaceHeadingCommandComposer(fromLocation: fromLocation, toLocation: toLocation)
         case let .archive(location):
             return ArchiveCommandComposer(location: location)
         case let .unarchive(location):

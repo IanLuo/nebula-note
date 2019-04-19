@@ -347,14 +347,7 @@ public class MoveLineUpCommandComposer: DocumentContentCommandComposer {
     
     public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
         for case let token in textStorage.token(at: self.location) where token is HeadingToken {
-            var lastHeading: HeadingToken?
-            for heading in textStorage.headingTokens {
-                if let lastHeading = lastHeading, heading.identifier == token.identifier {
-                    return ReplaceHeadingCommandComposer(fromLocation: lastHeading.range.location, toLocation: heading.range.location).compose(textStorage: textStorage)
-                }
-                
-                lastHeading = heading
-            }
+            return MoveHeadingUpCommandComposer(location: self.location).compose(textStorage: textStorage)
         }
         
         let lineRange = textStorage.lineRange(at: self.location)
@@ -390,17 +383,7 @@ public class MoveLineDownCommandComposer: DocumentContentCommandComposer {
     
     public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
         for case let token in textStorage.token(at: self.location) where token is HeadingToken {
-            var currentHeading: HeadingToken?
-            for heading in textStorage.headingTokens {
-                if heading.identifier == token.identifier {
-                    currentHeading = heading
-                    continue
-                }
-                
-                if let currentHeading = currentHeading {
-                    return ReplaceHeadingCommandComposer(fromLocation: currentHeading.range.location, toLocation: heading.range.location).compose(textStorage: textStorage)
-                }
-            }
+            return MoveHeadingDownCommandComposer(location: self.location).compose(textStorage: textStorage)
         }
         
         let lineRange = textStorage.lineRange(at: self.location)
@@ -423,22 +406,56 @@ public class MoveLineDownCommandComposer: DocumentContentCommandComposer {
     }
 }
 
-// MARK: - ReplaceHeadingCommand
-public class ReplaceHeadingCommandComposer: DocumentContentCommandComposer {
-    let fromLocation: Int
-    let toLocation: Int
-    public init(fromLocation: Int, toLocation: Int) {
-        self.fromLocation = fromLocation
-        self.toLocation = toLocation
+// MARK: - MoveHeadingUpCommandComposer
+public class MoveHeadingUpCommandComposer: DocumentContentCommandComposer {
+    let location: Int
+    public init(location: Int) {
+        self.location = location
     }
     
     public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
-        guard let fromHeading = textStorage.heading(contains: self.fromLocation) else { return NoChangeCommand() }
-        guard let toHeading = textStorage.heading(contains: self.toLocation) else { return NoChangeCommand() }
+        guard let heading = textStorage.heading(contains: self.location) else { return NoChangeCommand() }
         
-        let stringToReplace = textStorage.string.substring(toHeading.paragraphRange).appending(textStorage.string.substring(fromHeading.paragraphRange))
+        guard let lastHeading = textStorage.heading(contains: heading.range.location - 1) else { return NoChangeCommand() }
         
-        return ReplaceTextCommand(range: fromHeading.paragraphRange.union(toHeading.paragraphRange), textToReplace: stringToReplace, textStorage: textStorage)
+        // 如果当前 heading 是文档最后一个，则在移动之后要在尾部加上换行符，同理，在被移下来的 heading 尾部去掉换行符
+        if heading.paragraphRange.upperBound == textStorage.string.count {
+            let currentHeadingText = textStorage.substring(heading.paragraphRange) + OutlineParser.Values.Character.linebreak
+            let lastHeadingText = textStorage.substring(lastHeading.paragraphRange.moveRightBound(by: -1))
+            let textToReplace = currentHeadingText.appending(lastHeadingText)
+            return ReplaceContentCommandComposer(range: lastHeading.paragraphRange.union(heading.paragraphRange),
+                                                 textToReplace: textToReplace)
+                .compose(textStorage: textStorage)
+        } else {
+            let textToReplace = textStorage.substring(heading.paragraphRange).appending(textStorage.substring(lastHeading.paragraphRange))
+            return ReplaceContentCommandComposer(range: lastHeading.paragraphRange.union(heading.paragraphRange),
+                                                 textToReplace: textToReplace)
+                .compose(textStorage: textStorage)
+        }
+    }
+}
+
+public class MoveHeadingDownCommandComposer: DocumentContentCommandComposer {
+    let location: Int
+    public init(location: Int) {
+        self.location = location
+    }
+    
+    public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
+        guard let heading = textStorage.heading(contains: self.location) else { return NoChangeCommand() }
+        
+        guard let nextHeading = textStorage.heading(contains: heading.paragraphRange.upperBound + 1) else { return NoChangeCommand() }
+        
+        // 如果下一 heading 是文档的最后一个 heading，下一 heading 结尾没有换行符，因此需要在替换的时候，在当前 heading 末尾去掉换行符，并且在下一 heading 加上换行符
+        if nextHeading.paragraphRange.upperBound == textStorage.string.count {
+            let currentHeadingText = textStorage.substring(heading.paragraphRange.moveRightBound(by: -1))
+            let nextHeadingText = textStorage.substring(nextHeading.paragraphRange) + OutlineParser.Values.Character.linebreak
+            let textToReplace = nextHeadingText.appending(currentHeadingText)
+            return ReplaceContentCommandComposer(range: heading.paragraphRange.union(nextHeading.paragraphRange), textToReplace: textToReplace).compose(textStorage: textStorage)
+        } else {
+            let textToReplace = textStorage.substring(nextHeading.paragraphRange).appending(textStorage.substring(heading.paragraphRange))
+            return ReplaceContentCommandComposer(range: heading.paragraphRange.union(nextHeading.paragraphRange), textToReplace: textToReplace).compose(textStorage: textStorage)
+        }
     }
 }
 
