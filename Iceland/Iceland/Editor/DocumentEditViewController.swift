@@ -443,7 +443,7 @@ extension DocumentEditViewController: UITextViewDelegate {
     public func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         if text == "\n" { // 换行
             return self._handleLineBreak(textView)
-        } else if text == "\u{8}" { // 删除
+        } else if text == "" { // 删除
             return self._handelBackspace(textView)
         } else if text == "\t" { // tab
             return self._handleTab(textView)
@@ -484,7 +484,56 @@ extension DocumentEditViewController: UITextViewDelegate {
         return true
     }
     
+    /// 输入退格键，自动选中某些 tokne 范围
     private func _handelBackspace(_ textView: UITextView) -> Bool {
+        if textView.selectedRange.length == 0 {
+            for case let attachmentToken in self.viewModel.currentTokens where attachmentToken is AttachmentToken {
+                textView.selectedRange = attachmentToken.range
+                return false
+            }
+            
+            for case let dateAndTimeToken in self.viewModel.currentTokens where dateAndTimeToken is DateAndTimeToken {
+                textView.selectedRange = dateAndTimeToken.range
+                return false
+            }
+            
+            for case let textMark in self.viewModel.currentTokens where textMark is TextMarkToken {
+                if textMark.range.length == 2 /* 没有内容 */ {
+                    let oldSelectedRange = textView.selectedRange
+                    self.viewModel.performAction(EditAction.replaceText(textMark.range, ""), textView: textView) { result in
+                        textView.selectedRange = oldSelectedRange.offset(result.range!.location - oldSelectedRange.location)
+                    }
+                    return false
+                }
+            }
+            
+            for case let token in self.viewModel.currentTokens where token is HeadingToken {
+                let headingToken = token as! HeadingToken
+                let location = textView.selectedRange.location
+                
+                if let tagsRange = headingToken.tags {
+                    if tagsRange.contains(location) || tagsRange.upperBound == location {
+                        textView.selectedRange = tagsRange
+                        return false
+                    }
+                }
+                
+                if let planningRange = headingToken.planning {
+                    if planningRange.contains(location) || planningRange.upperBound == location {
+                        textView.selectedRange = planningRange
+                        return false
+                    }
+                }
+                
+                if let priorityRange = headingToken.priority {
+                    if priorityRange.contains(location) || priorityRange.upperBound == location {
+                        textView.selectedRange = priorityRange
+                        return false
+                    }
+                }
+            }
+        }
+        
         return true
     }
     

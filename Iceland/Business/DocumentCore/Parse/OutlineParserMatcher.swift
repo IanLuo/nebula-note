@@ -243,12 +243,12 @@ extension OutlineParser {
                 private static let ignoredCharacters: String = "\\n\\,\\'\\\""
                 private static let pre =            "[ \\(\\{\\'\\\"]?"
                 private static let post =           "[ \\-\\.\\,\\:\\!\\?\\'\\)\\}\\\"]?"
-                public static let bold =            "\(pre)(\\*([^\(ignoredCharacters)\\*]+)\\*)\(post)"
-                public static let italic =          "\(pre)(\\/([^\(ignoredCharacters)\\/]+)\\/)\(post)"
-                public static let underscore =      "\(pre)(\\_([^\(ignoredCharacters)\\_]+)\\_)\(post)"
-                public static let strikeThough =    "\(pre)(\\+([^\(ignoredCharacters)\\+]+)\\+)\(post)"
-                public static let verbatim =        "\(pre)(\\=([^\(ignoredCharacters)\\=]+)\\=)\(post)"
-                public static let code =            "\(pre)(\\~([^\(ignoredCharacters)\\~]+)\\~)\(post)"
+                public static let bold =            "\(pre)(\\*([^\(ignoredCharacters)\\*]*)\\*)\(post)"
+                public static let italic =          "\(pre)(\\/([^\(ignoredCharacters)\\/]*)\\/)\(post)"
+                public static let underscore =      "\(pre)(\\_([^\(ignoredCharacters)\\_]*)\\_)\(post)"
+                public static let strikeThough =    "\(pre)(\\+([^\(ignoredCharacters)\\+]*)\\+)\(post)"
+                public static let verbatim =        "\(pre)(\\=([^\(ignoredCharacters)\\=]*)\\=)\(post)"
+                public static let code =            "\(pre)(\\~([^\(ignoredCharacters)\\~]*)\\~)\(post)"
             }
             
             public static let link = "\\[\\[((http|https|file)\\:.*)\\]\\[(.*)\\]\\]"

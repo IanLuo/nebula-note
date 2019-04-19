@@ -44,6 +44,7 @@ public enum EditAction {
     case convertToHeading(Int)
     case convertHeadingToParagraph(Int)
     case addNewLineBelow(location: Int)
+    case replaceText(NSRange, String)
     
     public var commandComposer: DocumentContentCommandComposer {
         switch self {
@@ -101,6 +102,8 @@ public enum EditAction {
             return ConvertHeadingLineToParagragh(location: location)
         case .addNewLineBelow(let location):
             return AddNewLineBelowCommandComposer(location: location)
+        case .replaceText(let range, let textToReplace):
+            return ReplaceContentCommandComposer(range: range, textToReplace: textToReplace)
         }
     }
 }

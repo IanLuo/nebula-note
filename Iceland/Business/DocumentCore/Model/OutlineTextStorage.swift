@@ -140,14 +140,13 @@ extension OutlineTextStorage: ContentUpdatingProtocol {
         self._tempParsingTokenResult.forEach {
             if $0.range.intersection(currentParseRange) != nil {
                 $0.renderDecoration(textStorage: self)
-                // 更新段落缩进样式
-                if let heading = $0 as? HeadingToken {
-                    self.setParagraphIndent(heading: heading)
-                } else {
-                    if let heading = self.heading(contains: $0.range.location) {
-                        self.setParagraphIndent(heading: heading)
-                    }
-                }
+            }
+        }
+        
+        // 更新段落缩进样式
+        (self.string as NSString).enumerateSubstrings(in: currentParseRange, options: NSString.EnumerationOptions.byLines) { [unowned self] (string, range, enclosedRange, stop) in
+            if let heading = self.heading(contains: range.location) {
+                self.setParagraphIndent(heading: heading, for: enclosedRange)
             }
         }
         
@@ -324,6 +323,10 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 
                 textMarkToken.decorationAttributesAction = { textStorage, token in
                     let contentRange = token.range.tail(range.length - 1).head(range.length - 2)
+                    textStorage.addAttributes([NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.descriptive,
+                                               NSAttributedString.Key.font: InterfaceTheme.Font.footnote], range: token.range.head(1))
+                    textStorage.addAttributes([NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.descriptive,
+                                               NSAttributedString.Key.font: InterfaceTheme.Font.footnote], range: token.range.tail(1))
                     
                     switch key {
                     case OutlineParser.Key.Element.TextMark.bold:
