@@ -146,9 +146,11 @@ extension DocumentEditViewController: DocumentEditToolbarDelegate {
                 case .dateAndTime:
                     self.showDateAndTimeCreator(location: self.textView.selectedRange.location)
                 case .planning:
-                    self.showPlanningSelector(location: self.textView.selectedRange.location, current: nil)
+                    self.showPlanningSelector(location: self.textView.selectedRange.location, current: self.viewModel.planning(at: self.textView.selectedRange.location))
                 case .tag:
                     self.showTagEditor(location: self.textView.selectedRange.location)
+                case .priority:
+                    self.showPriorityEditor(location: self.textView.selectedRange.location, current: self.viewModel.priority(at: self.textView.selectedRange.location))
                 case .captured:
                     self.showCapturedItemList(location: self.textView.selectedRange.location)
                 }

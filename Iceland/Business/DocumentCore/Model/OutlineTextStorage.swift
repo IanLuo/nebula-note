@@ -603,7 +603,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 }
                 
                 if let priorityRange = token.range(for: OutlineParser.Key.Element.Heading.priority) {
-                    textStorage.addAttribute(OutlineAttribute.Heading.priority, value: 1, range: priorityRange)
+                    textStorage.addAttribute(OutlineAttribute.Heading.priority, value: textStorage.string.substring(priorityRange), range: priorityRange)
                     textStorage._addButtonAttributes(range: priorityRange, color: InterfaceTheme.Color.descriptive)
                     textStorage.addAttribute(NSAttributedString.Key.font, value: InterfaceTheme.Font.footnote, range: priorityRange)
                 }
@@ -840,7 +840,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
     private func _findIntersectionTokenIndex(in range: NSRange, tokens: [Token]) -> [Int] {
         var indexes: [Int] = []
         for (index, token) in tokens.enumerated() {
-            if token.range.intersection(range) != nil {
+            if token.range.intersection(range) != nil || token.range.location == range.upperBound || token.range.upperBound == range.location {
                 indexes.append(index)
             }
         }

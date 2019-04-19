@@ -25,6 +25,10 @@ public class SettingsAccessor {
         }
     }
     
+    public var priorities: [String] {
+        return OutlineParser.Values.Heading.Priority.all
+    }
+    
     public var customizedUnfinishedPlannings: [String]? {
         return ["Pending", "Waiting"] // TODO: change to real funciton
     }

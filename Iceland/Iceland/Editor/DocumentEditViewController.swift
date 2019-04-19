@@ -175,6 +175,42 @@ public class DocumentEditViewController: UIViewController {
         self.present(actionsViewController, animated: true, completion: nil)
     }
     
+    public func showPriorityEditor(location: Int, current: String?) {
+        let actionsController = ActionsViewController()
+        
+        let priorities = self.viewModel.coordinator?.dependency.settingAccessor.priorities.filter { $0 != current } ?? []
+        
+        for priority in priorities {
+            actionsController.addAction(icon: nil, title: priority) { viewController in
+                viewController.dismiss(animated: true, completion: {
+                    let oldSelectedRange = self.textView.selectedRange
+                    self.viewModel.performAction(EditAction.changePriority(priority, location), textView: self.textView, completion: { [unowned self] result in
+                        self.textView.selectedRange = oldSelectedRange.offset(result.delta)
+                    })
+                })
+            }
+        }
+        
+        if current != nil {
+            actionsController.addAction(icon: nil, title: "remove priority") { (viewController) in
+                viewController.dismiss(animated: true, completion: {
+                    self.viewModel.performAction(EditAction.changePriority(nil, location), textView: self.textView, completion: { [unowned self] result in
+                        let oldSelectedRange = self.textView.selectedRange
+                        self.viewModel.performAction(EditAction.changePriority(nil, location), textView: self.textView, completion: { [unowned self] result in
+                            self.textView.selectedRange = oldSelectedRange.offset(result.delta)
+                        })
+                    })
+                })
+            }
+        }
+        
+        actionsController.setCancel { viewController in
+            viewController.dismiss(animated: true, completion: nil)
+        }
+        
+        self.present(actionsController, animated: true, completion: nil)
+    }
+    
     public func showTagEditor(location: Int) {
         let tags = self.viewModel.tags(at: location)
         
@@ -360,6 +396,10 @@ public class DocumentEditViewController: UIViewController {
 }
 
 extension DocumentEditViewController: OutlineTextViewDelegate {
+    public func didTapOnPriority(textView: UITextView, characterIndex: Int, priority: String, point: CGPoint) {
+        self.showPriorityEditor(location: characterIndex, current: priority)
+    }
+    
     public func didTapOnPlanning(textView: UITextView, characterIndex: Int, planning: String, point: CGPoint) {
         self.showPlanningSelector(location: characterIndex, current: planning)
     }

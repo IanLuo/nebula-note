@@ -45,6 +45,7 @@ public enum NormalAction: ToolbarActionProtocol, DocumentActon {
     case dateAndTime
     case planning
     case tag
+    case priority
     
     case captured
     
@@ -92,6 +93,9 @@ public enum NormalAction: ToolbarActionProtocol, DocumentActon {
             return Asset.Assets.agenda.image
         case .tag:
             return Asset.Assets.tag.image
+        case .priority:
+            return Asset.Assets.zoom.image
+        
         case .captured:
             return Asset.Assets.capture.image
         }

@@ -96,11 +96,9 @@ public class FoldingAndUnfoldingCommand: DocumentContentCommand {
     }
     
     fileprivate func _markUnfold(heading: HeadingToken, textStorage: OutlineTextStorage) {
-        var range: NSRange!
-        if heading.contentRange.upperBound == textStorage.string.count {
-            range = heading.contentRange.moveLeftBound(by: -1)
-        } else {
-            range = heading.contentRange.moveLeftBound(by: -1).moveRightBound(by: -1)
+        var range: NSRange = heading.contentRange
+        if heading.contentRange.upperBound != textStorage.string.count {
+            range = heading.contentRange.moveRightBound(by: -1)
         }
         
         range = range.length > 0 ? range : NSRange(location: range.location, length: 0)
@@ -126,11 +124,9 @@ public class FoldingAndUnfoldingCommand: DocumentContentCommand {
     }
     
     fileprivate func _markFold(heading: HeadingToken, textStorage: OutlineTextStorage) {
-        var range: NSRange!
-        if heading.contentRange.upperBound == textStorage.string.count {
-            range = heading.contentRange.moveLeftBound(by: -1)
-        } else {
-            range = heading.contentRange.moveLeftBound(by: -1).moveRightBound(by: -1)
+        var range: NSRange = heading.contentRange
+        if heading.contentRange.upperBound != textStorage.string.count {
+            range = heading.contentRange.moveRightBound(by: -1)
         }
         
         range = range.length > 0 ? range : NSRange(location: range.location, length: 0)
@@ -600,6 +596,40 @@ public class TagCommandComposer: DocumentContentCommandComposer {
             }
         }
         
+    }
+}
+
+// MARK: - PriorityCommandComposer
+public class PriorityCommandComposer: DocumentContentCommandComposer {
+    let location: Int
+    let priority: String?
+    
+    public init(location: Int, priority: String?) {
+        self.location = location
+        self.priority = priority
+    }
+    
+    public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
+        guard let heading = textStorage.heading(contains: self.location) else { return NoChangeCommand() }
+        
+        var priorityLocation: Int = heading.levelRange.upperBound + 1
+        
+        if let planning = heading.planning {
+            priorityLocation = planning.upperBound + 1
+        }
+        
+        // 添加或者修改 priority
+        if let newPriority = self.priority {
+            if let priorityRange = heading.priority {
+                return ReplaceContentCommandComposer(range: priorityRange, textToReplace: newPriority).compose(textStorage: textStorage)
+            } else {
+                return ReplaceContentCommandComposer(range: NSRange(location: priorityLocation, length: 0), textToReplace: newPriority).compose(textStorage: textStorage)
+            }
+        } else /* 删除 priority */ {
+            guard let priorityRange = heading.priority else { return NoChangeCommand() }
+            
+            return ReplaceContentCommandComposer(range: priorityRange, textToReplace: "").compose(textStorage: textStorage)
+        }
     }
 }
 

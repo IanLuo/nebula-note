@@ -23,6 +23,7 @@ public enum EditAction {
     case addTag(String, Int)
     case removeTag(String, Int)
     case changePlanning(String, Int)
+    case changePriority(String?, Int)
     case removePlanning(Int)
     case insertText(String, Int)
     case replaceHeading(Int, Int)
@@ -58,6 +59,8 @@ public enum EditAction {
             return TagCommandComposer(location: location, kind: .remove(tag))
         case let .changePlanning(planning, location):
             return PlanningCommandComposer(location: location, kind: .addOrUpdate(planning))
+        case let .changePriority(priority, location):
+            return PriorityCommandComposer(location: location, priority: priority)
         case let .removePlanning(location):
             return PlanningCommandComposer(location: location, kind: .remove)
         case let .insertText(text, location):
@@ -188,6 +191,22 @@ public class DocumentEditViewModel {
     
     public func tags(at location: Int) -> [String] {
         return self._editorService.heading(at: location)?.tagsArray(string: self._editorService.string) ?? []
+    }
+    
+    public func priority(at location: Int) -> String? {
+        if let priorityRange = self._editorService.heading(at: location)?.priority {
+            return self._editorService.string.substring(priorityRange)
+        } else {
+            return nil
+        }
+    }
+    
+    public func planning(at location: Int) -> String? {
+        if let planningRange = self._editorService.heading(at: location)?.planning {
+            return self._editorService.string.substring(planningRange)
+        } else {
+            return nil
+        }
     }
     
     public func foldOrUnfold(location: Int) {

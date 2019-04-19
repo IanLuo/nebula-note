@@ -400,6 +400,10 @@ extension OutlineParser {
             public struct Tag {
                 public static let archive: String = "ARCHIVE"
             }
+            
+            public struct Priority {
+                public static let all: [String] = ["[#A]", "[#B]", "[#C]", "[#D]", "[#E]", "[#F]"]
+            }
         }
     }
 }
