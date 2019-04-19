@@ -39,6 +39,7 @@ public class ReplaceTextCommand: DocumentContentCommand {
     let range: NSRange
     let textToReplace: String
     let textStorage: OutlineTextStorage
+    public var resultMap: ((DocumentContentCommandResult) -> DocumentContentCommandResult)?
     public var manullayReplace: ((NSRange, String) -> Void)?
     
     public init(range: NSRange, textToReplace: String, textStorage: OutlineTextStorage, manullayReplace: ((NSRange, String) -> Void)? = nil) {
@@ -57,7 +58,14 @@ public class ReplaceTextCommand: DocumentContentCommand {
         } else {
             self.textStorage.replaceCharacters(in: self.range, with: self.textToReplace)
         }
-        return DocumentContentCommandResult(isModifiedContent: true, range: undoRange, content: undoString, delta: self.textToReplace.count - self.range.length)
+        
+        let result = DocumentContentCommandResult(isModifiedContent: true, range: undoRange, content: undoString, delta: self.textToReplace.count - self.range.length)
+        
+        if let resultMap = self.resultMap {
+            return resultMap(result)
+        } else {
+            return result
+        }
     }
 }
 
@@ -359,14 +367,26 @@ public class MoveLineUpCommandComposer: DocumentContentCommandComposer {
                 let currentLineText = textStorage.substring(lineRange) + OutlineParser.Values.Character.linebreak
                 let lastLineText = textStorage.substring(lastLine.moveRightBound(by: -1))
                 let textToReplace = currentLineText.appending(lastLineText)
-                return ReplaceContentCommandComposer(range: lastLine.union(lineRange),
+                let command = ReplaceContentCommandComposer(range: lastLine.union(lineRange),
                                                      textToReplace: textToReplace)
                     .compose(textStorage: textStorage)
+                
+                (command as? ReplaceTextCommand)?.resultMap = { _ in
+                    return DocumentContentCommandResult(isModifiedContent: true, range: nil, content: nil, delta: -lastLineText.count)
+                }
+                
+                return command
             } else {
                 let textToReplace = textStorage.substring(lineRange).appending(textStorage.substring(lastLine))
-                return ReplaceContentCommandComposer(range: lastLine.union(lineRange),
+                let command = ReplaceContentCommandComposer(range: lastLine.union(lineRange),
                                                      textToReplace: textToReplace)
                     .compose(textStorage: textStorage)
+                
+                (command as? ReplaceTextCommand)?.resultMap = { _ in
+                    return DocumentContentCommandResult(isModifiedContent: true, range: nil, content: nil, delta: -lastLine.length)
+                }
+                
+                return command
             }
         }
         
@@ -394,11 +414,19 @@ public class MoveLineDownCommandComposer: DocumentContentCommandComposer {
                 let currentLineText = textStorage.substring(lineRange.moveRightBound(by: -1))
                 let nextLineText = textStorage.substring(nextLine) + OutlineParser.Values.Character.linebreak
                 let textToReplace = nextLineText.appending(currentLineText)
-                return ReplaceContentCommandComposer(range: lineRange.union(nextLine), textToReplace: textToReplace)
+                let command = ReplaceContentCommandComposer(range: lineRange.union(nextLine), textToReplace: textToReplace)
                     .compose(textStorage: textStorage)
+                (command as? ReplaceTextCommand)?.resultMap = { _ in
+                    return DocumentContentCommandResult(isModifiedContent: true, range: nil, content: nil, delta: nextLineText.count)
+                }
+                return command
             } else {
                 let textToReplace = textStorage.substring(nextLine).appending(textStorage.substring(lineRange))
-                return ReplaceContentCommandComposer(range: lineRange.union(nextLine), textToReplace: textToReplace).compose(textStorage: textStorage)
+                let command = ReplaceContentCommandComposer(range: lineRange.union(nextLine), textToReplace: textToReplace).compose(textStorage: textStorage)
+                (command as? ReplaceTextCommand)?.resultMap = { _ in
+                    return DocumentContentCommandResult(isModifiedContent: true, range: nil, content: nil, delta: nextLine.length)
+                }
+                return command
             }
         }
         
@@ -423,14 +451,22 @@ public class MoveHeadingUpCommandComposer: DocumentContentCommandComposer {
             let currentHeadingText = textStorage.substring(heading.paragraphRange) + OutlineParser.Values.Character.linebreak
             let lastHeadingText = textStorage.substring(lastHeading.paragraphRange.moveRightBound(by: -1))
             let textToReplace = currentHeadingText.appending(lastHeadingText)
-            return ReplaceContentCommandComposer(range: lastHeading.paragraphRange.union(heading.paragraphRange),
+            let command =  ReplaceContentCommandComposer(range: lastHeading.paragraphRange.union(heading.paragraphRange),
                                                  textToReplace: textToReplace)
                 .compose(textStorage: textStorage)
+            (command as? ReplaceTextCommand)?.resultMap = { _ in
+                return DocumentContentCommandResult(isModifiedContent: true, range: nil, content: nil, delta: -lastHeadingText.count)
+            }
+            return command
         } else {
             let textToReplace = textStorage.substring(heading.paragraphRange).appending(textStorage.substring(lastHeading.paragraphRange))
-            return ReplaceContentCommandComposer(range: lastHeading.paragraphRange.union(heading.paragraphRange),
+            let command = ReplaceContentCommandComposer(range: lastHeading.paragraphRange.union(heading.paragraphRange),
                                                  textToReplace: textToReplace)
                 .compose(textStorage: textStorage)
+            (command as? ReplaceTextCommand)?.resultMap = { _ in
+                return DocumentContentCommandResult(isModifiedContent: true, range: nil, content: nil, delta: -lastHeading.paragraphRange.length)
+            }
+            return command
         }
     }
 }
@@ -451,10 +487,18 @@ public class MoveHeadingDownCommandComposer: DocumentContentCommandComposer {
             let currentHeadingText = textStorage.substring(heading.paragraphRange.moveRightBound(by: -1))
             let nextHeadingText = textStorage.substring(nextHeading.paragraphRange) + OutlineParser.Values.Character.linebreak
             let textToReplace = nextHeadingText.appending(currentHeadingText)
-            return ReplaceContentCommandComposer(range: heading.paragraphRange.union(nextHeading.paragraphRange), textToReplace: textToReplace).compose(textStorage: textStorage)
+            let command = ReplaceContentCommandComposer(range: heading.paragraphRange.union(nextHeading.paragraphRange), textToReplace: textToReplace).compose(textStorage: textStorage)
+            (command as? ReplaceTextCommand)?.resultMap = { _ in
+                return DocumentContentCommandResult(isModifiedContent: true, range: nil, content: nil, delta: nextHeadingText.count)
+            }
+            return command
         } else {
             let textToReplace = textStorage.substring(nextHeading.paragraphRange).appending(textStorage.substring(heading.paragraphRange))
-            return ReplaceContentCommandComposer(range: heading.paragraphRange.union(nextHeading.paragraphRange), textToReplace: textToReplace).compose(textStorage: textStorage)
+            let command = ReplaceContentCommandComposer(range: heading.paragraphRange.union(nextHeading.paragraphRange), textToReplace: textToReplace).compose(textStorage: textStorage)
+            (command as? ReplaceTextCommand)?.resultMap = { _ in
+                return DocumentContentCommandResult(isModifiedContent: true, range: nil, content: nil, delta: nextHeading.paragraphRange.length)
+            }
+            return command
         }
     }
 }

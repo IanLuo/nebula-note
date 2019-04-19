@@ -134,14 +134,16 @@ extension DocumentEditViewController: DocumentEditToolbarDelegate {
                                                  textView: self.textView,
                                                  completion: commandCompletionActionMoveCursorForBlock)
                 case .moveUp:
+                    let oldSelectedRange = textView.selectedRange
                     self.viewModel.performAction(.moveLineUp(self.textView.selectedRange.location),
-                                                 textView: self.textView) { (result) in
-                                                    // TODO:
+                                                 textView: self.textView) { [unowned self] result in
+                                                    self.textView.selectedRange = oldSelectedRange.offset(result.delta)
                     }
                 case .moveDown:
+                    let oldSelectedRange = textView.selectedRange
                     self.viewModel.performAction(.moveLineDown(self.textView.selectedRange.location),
-                                                 textView: self.textView) { (result) in
-                                                    // TODO:
+                                                 textView: self.textView) { [unowned self] result in
+                                                    self.textView.selectedRange = oldSelectedRange.offset(result.delta)
                     }
                 case .dateAndTime:
                     self.showDateAndTimeCreator(location: self.textView.selectedRange.location)
