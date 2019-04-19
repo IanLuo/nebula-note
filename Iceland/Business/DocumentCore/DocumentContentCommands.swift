@@ -238,7 +238,7 @@ public class ConvertLineToHeadingCommandComposer: DocumentContentCommandComposer
     }
     
     public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
-        let lineStart = (textStorage.string as NSString).lineRange(for: NSRange(location: self.location, length: 0)).location
+        let lineStart = textStorage.lineStart(at: self.location)
         
         if let heading = textStorage.heading(contains: self.location) {
             // 如果当前行已经是 heading，则忽略
@@ -319,6 +319,25 @@ public class FoldCommandComposer: DocumentContentCommandComposer {
     }
 }
 
+// MARK: - UpdateLinkCommandCompser
+public class UpdateLinkCommandCompser: DocumentContentCommandComposer {
+    let location: Int
+    let link: String
+    
+    public init(location: Int, link: String) {
+        self.location = location
+        self.link = link
+    }
+    
+    public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
+        for case let token in textStorage.token(at: self.location) where token is LinkToken {
+            return ReplaceContentCommandComposer(range: token.range, textToReplace: self.link).compose(textStorage: textStorage)
+        }
+        
+        return NoChangeCommand()
+    }
+}
+
 // MARK: - MoveLineUpCommandComposer
 public class MoveLineUpCommandComposer: DocumentContentCommandComposer {
     let location: Int
@@ -338,29 +357,24 @@ public class MoveLineUpCommandComposer: DocumentContentCommandComposer {
             }
         }
         
-        let lineStart = (textStorage.string as NSString).lineRange(for: NSRange(location: self.location, length: 0)).location
-        if lineStart > 0 {
-            let lastLineStart = (textStorage.string as NSString).lineRange(for: NSRange(location: lineStart - 1, length: 0)).location
-            return ReplaceLineCommandComposer(fromLocation: lineStart, toLocation: lastLineStart).compose(textStorage: textStorage)
-        }
-        
-        return NoChangeCommand()
-    }
-}
-
-// MARK: - UpdateLinkCommandCompser
-public class UpdateLinkCommandCompser: DocumentContentCommandComposer {
-    let location: Int
-    let link: String
-    
-    public init(location: Int, link: String) {
-        self.location = location
-        self.link = link
-    }
-    
-    public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
-        for case let token in textStorage.token(at: self.location) where token is LinkToken {
-            return ReplaceContentCommandComposer(range: token.range, textToReplace: self.link).compose(textStorage: textStorage)
+        let lineRange = textStorage.lineRange(at: self.location)
+        if lineRange.location > 0 {
+            let lastLine = textStorage.lineRange(at: lineRange.location - 1)
+            
+            // 如果当前行是文档的最后一行，当前行结尾没有换行符，因此需要在替换的时候，在当前行末尾加上换行符，并且在上一行去掉换行符
+            if lineRange.upperBound == textStorage.string.count /* last line of document */ {
+                let currentLineText = textStorage.substring(lineRange) + OutlineParser.Values.Character.linebreak
+                let lastLineText = textStorage.substring(lastLine.moveRightBound(by: -1))
+                let textToReplace = currentLineText.appending(lastLineText)
+                return ReplaceContentCommandComposer(range: lastLine.union(lineRange),
+                                                     textToReplace: textToReplace)
+                    .compose(textStorage: textStorage)
+            } else {
+                let textToReplace = textStorage.substring(lineRange).appending(textStorage.substring(lastLine))
+                return ReplaceContentCommandComposer(range: lastLine.union(lineRange),
+                                                     textToReplace: textToReplace)
+                    .compose(textStorage: textStorage)
+            }
         }
         
         return NoChangeCommand()
@@ -389,10 +403,20 @@ public class MoveLineDownCommandComposer: DocumentContentCommandComposer {
             }
         }
         
-        let lineEnd = (textStorage.string as NSString).lineRange(for: NSRange(location: self.location, length: 0)).upperBound - 1
-        if lineEnd < textStorage.string.count {
-            let nextLineStart = (textStorage.string as NSString).lineRange(for: NSRange(location: lineEnd + 1, length: 0)).location
-            return ReplaceLineCommandComposer(fromLocation: nextLineStart, toLocation: lineEnd).compose(textStorage: textStorage)
+        let lineRange = textStorage.lineRange(at: self.location)
+        if lineRange.upperBound < textStorage.string.count {
+            let nextLine = textStorage.lineRange(at: lineRange.upperBound + 1)
+            // 如果下一行是文档的最后一行，下一行结尾没有换行符，因此需要在替换的时候，在当前行末尾去掉换行符，并且在下一行加上换行符
+            if nextLine.upperBound == textStorage.string.count /* last line of document */ {
+                let currentLineText = textStorage.substring(lineRange.moveRightBound(by: -1))
+                let nextLineText = textStorage.substring(nextLine) + OutlineParser.Values.Character.linebreak
+                let textToReplace = nextLineText.appending(currentLineText)
+                return ReplaceContentCommandComposer(range: lineRange.union(nextLine), textToReplace: textToReplace)
+                    .compose(textStorage: textStorage)
+            } else {
+                let textToReplace = textStorage.substring(nextLine).appending(textStorage.substring(lineRange))
+                return ReplaceContentCommandComposer(range: lineRange.union(nextLine), textToReplace: textToReplace).compose(textStorage: textStorage)
+            }
         }
         
         return NoChangeCommand()
@@ -415,25 +439,6 @@ public class ReplaceHeadingCommandComposer: DocumentContentCommandComposer {
         let stringToReplace = textStorage.string.substring(toHeading.paragraphRange).appending(textStorage.string.substring(fromHeading.paragraphRange))
         
         return ReplaceTextCommand(range: fromHeading.paragraphRange.union(toHeading.paragraphRange), textToReplace: stringToReplace, textStorage: textStorage)
-    }
-}
-
-public class ReplaceLineCommandComposer: DocumentContentCommandComposer {
-    let fromLocation: Int
-    let toLocation: Int
-    
-    public init(fromLocation: Int, toLocation: Int) {
-        self.fromLocation = fromLocation
-        self.toLocation = toLocation
-    }
-    
-    public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
-        let lineFrom = (textStorage.string as NSString).lineRange(for: NSRange(location: self.fromLocation, length: 0))
-        let lineTo = (textStorage.string as NSString).lineRange(for: NSRange(location: self.toLocation, length: 0))
-        
-        let stringToReplace = textStorage.string.substring(lineFrom).appending(textStorage.string.substring(lineTo))
-        
-        return ReplaceTextCommand(range: lineFrom.union(lineTo), textToReplace: stringToReplace, textStorage: textStorage)
     }
 }
 

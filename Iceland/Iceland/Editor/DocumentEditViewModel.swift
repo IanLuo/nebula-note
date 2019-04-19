@@ -227,11 +227,6 @@ public class DocumentEditViewModel {
             textView.replace(textView.textRange(from: start, to: end)!, withText: string)
         }
         let result = replaceCommand.perform()
-//
-//        undoManager.registerUndo(withTarget: self, handler: { target in
-//            let command = target._editorService.toggleContentCommandComposer(composer: ReplaceContentCommandComposer(range: result.range!, textToReplace: result.content!))
-//            target.performContentCommand(command, undoManager: undoManager, completion: completion)
-//        })
         
         if result.isModifiedContent {
             self._editorService.save()

@@ -90,6 +90,22 @@ public class OutlineTextStorage: TextStorage {
     /// 所有解析获得的 token, 对应当前的文档结构解析状态
     public var allTokens: [Token] = []
     
+    public func lineRange(at location: Int) -> NSRange {
+        return (self.string as NSString).lineRange(for: NSRange(location: location, length: 0))
+    }
+    
+    public func lineStart(at location: Int) -> Int {
+        return self.lineRange(at: location).location
+    }
+    
+    public func lineEnd(at location: Int) -> Int {
+        return self.lineRange(at: location).upperBound
+    }
+    
+    public func substring(_ range: NSRange) -> String {
+        return self.string.substring(range)
+    }
+    
     // 用于解析过程中临时数据处理, only useful during parsing, 在开始解析的时候重置
     private var _tempParsingTokenResult: [Token] = []
     // 某些范围要忽略掉文字的样式，比如 link 内的文字样式, only usefule during parsing
