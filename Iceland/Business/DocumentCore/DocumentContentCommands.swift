@@ -805,7 +805,7 @@ public class IncreaseIndentCommandComposer: DocumentContentCommandComposer {
     public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
         for case let heading in textStorage.token(at: self.location) where heading is HeadingToken {
             var newLevel = (heading as! HeadingToken).level + 1
-            if newLevel >= 6 { newLevel = 1 }
+            if newLevel >= SettingsAccessor.shared.maxLevel { newLevel = 1 }
            
             return HeadingLevelChangeCommandComposer(location: self.location, newLevel: newLevel).compose(textStorage: textStorage)
         }
@@ -832,7 +832,7 @@ public class DecreaseIndentCommandComposer: DocumentContentCommandComposer {
     public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
         for case let heading in textStorage.token(at: self.location) where heading is HeadingToken {
             var newLevel = (heading as! HeadingToken).level - 1
-            if newLevel <= 0 { newLevel = 6 }
+            if newLevel <= 0 { newLevel = SettingsAccessor.shared.maxLevel }
             
             return HeadingLevelChangeCommandComposer(location: self.location, newLevel: newLevel).compose(textStorage: textStorage)
         }

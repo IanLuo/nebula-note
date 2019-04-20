@@ -25,6 +25,10 @@ public class SettingsAccessor {
         }
     }
     
+    public var maxLevel: Int {
+        return 6
+    }
+    
     public var priorities: [String] {
         return OutlineParser.Values.Heading.Priority.all
     }

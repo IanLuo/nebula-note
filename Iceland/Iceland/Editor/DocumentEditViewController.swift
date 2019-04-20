@@ -594,7 +594,7 @@ extension DocumentEditViewController: UITextViewDelegate {
     private func _handleTab(_ textView: UITextView) -> Bool {
         for case let heading in self.viewModel.currentTokens where heading is HeadingToken {
             var newLevel = (heading as! HeadingToken).level + 1
-            if newLevel == 6 { newLevel = 1 }
+            if newLevel >= SettingsAccessor.shared.maxLevel { newLevel = 1 }
             let oldSelectedRange = textView.selectedRange
             self.viewModel.performAction(EditAction.updateHeadingLevel(textView.selectedRange.location, newLevel), textView: self.textView) { result in
                 textView.selectedRange = oldSelectedRange.offset(result.delta)
