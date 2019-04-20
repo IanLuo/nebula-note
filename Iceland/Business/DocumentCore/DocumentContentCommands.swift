@@ -104,9 +104,9 @@ public class FoldingAndUnfoldingCommand: DocumentContentCommand {
     }
     
     fileprivate func _markUnfold(heading: HeadingToken, textStorage: OutlineTextStorage) {
-        var range: NSRange = heading.contentRange
-        if heading.contentRange.upperBound != textStorage.string.count {
-            range = heading.contentRange.moveRightBound(by: -1)
+        var range: NSRange = heading.subheadingsRange
+        if range.upperBound != textStorage.string.count {
+            range = range.moveRightBound(by: -1)
         }
         
         range = range.length > 0 ? range : NSRange(location: range.location, length: 0)
@@ -132,12 +132,14 @@ public class FoldingAndUnfoldingCommand: DocumentContentCommand {
     }
     
     fileprivate func _markFold(heading: HeadingToken, textStorage: OutlineTextStorage) {
-        var range: NSRange = heading.contentRange
-        if heading.contentRange.upperBound != textStorage.string.count {
-            range = heading.contentRange.moveRightBound(by: -1)
+        var range: NSRange = heading.subheadingsRange
+        if range.upperBound != textStorage.string.count {
+            range = range.moveRightBound(by: -1)
         }
         
         range = range.length > 0 ? range : NSRange(location: range.location, length: 0)
+        
+        textStorage.setParagraphIndent(heading: heading)
         
         textStorage.addAttributes([OutlineAttribute.tempHidden: OutlineAttribute.hiddenValueFolded,
                                    OutlineAttribute.tempShowAttachment: OutlineAttribute.Heading.folded],
@@ -151,7 +153,9 @@ public class FoldingAndUnfoldingCommand: DocumentContentCommand {
     fileprivate func _unFoldHeadingAndChildren(heading: HeadingToken, textStorage: OutlineTextStorage) {
         self._markUnfold(heading: heading, textStorage: textStorage)
         for child in textStorage.subheadings(of: heading) {
-            self._markUnfold(heading: child, textStorage: textStorage)
+            if self._isFolded(heading: child, textStorage: textStorage) {
+                self._markUnfold(heading: child, textStorage: textStorage)
+            }
         }
     }
     
@@ -166,11 +170,6 @@ public class FoldingAndUnfoldingCommand: DocumentContentCommand {
     
     fileprivate func _fold(heading: HeadingToken, textStorage: OutlineTextStorage) {
         self._markFold(heading: heading, textStorage: textStorage)
-        for child in textStorage.subheadings(of: heading) {
-            if !self._isFolded(heading: child, textStorage: textStorage) {
-                self._fold(heading: child, textStorage: textStorage)
-            }
-        }
     }
     
     fileprivate func _isFolded(heading: HeadingToken, textStorage: OutlineTextStorage) -> Bool {
@@ -184,22 +183,29 @@ public class FoldingAndUnfoldingCommand: DocumentContentCommand {
             
             guard heading.contentRange.length > 0 else { return DocumentContentCommandResult.noChange }
             
-            textStorage.beginEditing()
-            if _isFolded(heading: heading, textStorage: textStorage) {
-                self._markUnfold(heading: heading, textStorage: textStorage)
-            } else {
-                var isEveryChildrenUnfold: Bool = true
-                for child in textStorage.subheadings(of: heading) {
-                    if self._isFolded(heading: child, textStorage: textStorage) {
-                        isEveryChildrenUnfold = false
-                        self._unFoldHeadingButFoldChildren(heading: child, textStorage: textStorage)
+            var toggleFoldAndUnfoldAction: ((OutlineTextStorage, HeadingToken) -> Void)!
+            toggleFoldAndUnfoldAction = { textStorage, heading in
+                if self._isFolded(heading: heading, textStorage: textStorage) {
+                    self._unFoldHeadingButFoldChildren(heading: heading, textStorage: textStorage)
+                } else {
+                    var isEveryChildrenUnfold: Bool = true
+                    for child in textStorage.subheadings(of: heading) {
+                        if self._isFolded(heading: child, textStorage: textStorage)
+                            && child.level - heading.level == 1 // 只展开第一层子 heading
+                        {
+                            isEveryChildrenUnfold = false
+                            toggleFoldAndUnfoldAction(textStorage, child)
+                        }
+                    }
+                    
+                    if isEveryChildrenUnfold {
+                        self._fold(heading: heading, textStorage: textStorage)
                     }
                 }
-                
-                if isEveryChildrenUnfold {
-                    self._fold(heading: heading, textStorage: textStorage)
-                }
             }
+            
+            textStorage.beginEditing()
+            toggleFoldAndUnfoldAction(textStorage, heading)
             textStorage.endEditing()
         }
         

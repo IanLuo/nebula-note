@@ -138,11 +138,11 @@ extension OutlineTextStorage: ContentUpdatingProtocol {
 
         // -> DEBUG
         // 解析范围提示
-        self.addAttributes([NSAttributedString.Key.backgroundColor: UIColor.gray.withAlphaComponent(0.5)], range: currentParseRange)
-        // 添加 token 提示
-        self._tempParsingTokenResult.forEach { token in
-            self.addAttribute(NSAttributedString.Key.backgroundColor, value: UIColor.yellow.withAlphaComponent(0.3), range: token.range)
-        }
+//        self.addAttributes([NSAttributedString.Key.backgroundColor: UIColor.gray.withAlphaComponent(0.5)], range: currentParseRange)
+//        // 添加 token 提示
+//        self._tempParsingTokenResult.forEach { token in
+//            self.addAttribute(NSAttributedString.Key.backgroundColor, value: UIColor.yellow.withAlphaComponent(0.3), range: token.range)
+//        }
         // <- DEBUG
 
         // 更新当前状态缓存
