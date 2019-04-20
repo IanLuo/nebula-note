@@ -503,20 +503,34 @@ extension DocumentEditViewController: UITextViewDelegate {
             return false
         }
         
-        // 自动添加列表前缀
-        for case let heading in self.viewModel.currentTokens where heading is OrderedListToken {
-            textView.replace(textView.textRange(from: currentPosition, to: currentPosition)!, withText: "\n")
-            self.viewModel.performAction(EditAction.orderedListSwitch(textView.selectedRange.location), textView: self.textView) { result in
-                textView.selectedRange = NSRange(location: result.range!.upperBound, length: 0)
+        // 有序列表，自动添加列表前缀，如果真有前缀没有内容，则删除前缀
+        for case let token in self.viewModel.currentTokens where token is OrderedListToken {
+            if token.range.length == (token as! OrderedListToken).prefix.length {
+                let oldSelectedRange = textView.selectedRange
+                self.viewModel.performAction(EditAction.replaceText((token as! OrderedListToken).prefix, ""), textView: self.textView) { result in
+                    textView.selectedRange = oldSelectedRange.offset(result.delta)
+                }
+            } else {
+                textView.replace(textView.textRange(from: currentPosition, to: currentPosition)!, withText: "\n")
+                self.viewModel.performAction(EditAction.orderedListSwitch(textView.selectedRange.location), textView: self.textView) { result in
+                    textView.selectedRange = NSRange(location: result.range!.upperBound, length: 0)
+                }
             }
             return false
         }
         
-        // 自动添加列表前缀
-        for case let heading in self.viewModel.currentTokens where heading is UnorderdListToken {
-            textView.replace(textView.textRange(from: currentPosition, to: currentPosition)!, withText: "\n")
-            self.viewModel.performAction(EditAction.unorderedListSwitch(textView.selectedRange.location), textView: self.textView) { result in
-                textView.selectedRange = NSRange(location: result.range!.upperBound, length: 0)
+        // 无序列表，自动添加列表前缀，如果真有前缀没有内容，则删除前缀
+        for case let token in self.viewModel.currentTokens where token is UnorderdListToken {
+            if token.range.length == (token as! UnorderdListToken).prefix.length {
+                let oldSelectedRange = textView.selectedRange
+                self.viewModel.performAction(EditAction.replaceText((token as! UnorderdListToken).prefix, ""), textView: self.textView) { result in
+                    textView.selectedRange = oldSelectedRange.offset(result.delta)
+                }
+            } else {
+                textView.replace(textView.textRange(from: currentPosition, to: currentPosition)!, withText: "\n")
+                self.viewModel.performAction(EditAction.unorderedListSwitch(textView.selectedRange.location), textView: self.textView) { result in
+                    textView.selectedRange = NSRange(location: result.range!.upperBound, length: 0)
+                }
             }
             return false
         }

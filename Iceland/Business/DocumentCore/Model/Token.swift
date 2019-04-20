@@ -61,10 +61,14 @@ public class Token {
 public class TextMarkToken: Token {}
 
 // MARK: - UnorderdList
-public class UnorderdListToken: Token {}
+public class UnorderdListToken: Token {
+    public var prefix: NSRange { return range(for: OutlineParser.Key.Element.UnorderedList.prefix) ?? NSRange(location: self.range.location, length: 0) }
+}
 
 // MARK: - OrderedListToken
-public class OrderedListToken: Token {}
+public class OrderedListToken: Token {
+    public var prefix: NSRange { return range(for: OutlineParser.Key.Element.OrderedList.prefix) ?? NSRange(location: self.range.location, length: 0) }
+}
 
 // MARK: - CheckboxToken
 public class CheckboxToken: Token {}

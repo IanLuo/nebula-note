@@ -362,6 +362,9 @@ public class MoveLineUpCommandComposer: DocumentContentCommandComposer {
         if lineRange.location > 0 {
             let lastLine = textStorage.lineRange(at: lineRange.location - 1)
             
+            // 上一行不能是 heading
+            guard case let token = textStorage.token(at: lastLine.location).last, !(token is HeadingToken) else { return NoChangeCommand() }
+            
             // 如果当前行是文档的最后一行，当前行结尾没有换行符，因此需要在替换的时候，在当前行末尾加上换行符，并且在上一行去掉换行符
             if lineRange.upperBound == textStorage.string.count /* last line of document */ {
                 let currentLineText = textStorage.substring(lineRange) + OutlineParser.Values.Character.linebreak
@@ -409,6 +412,10 @@ public class MoveLineDownCommandComposer: DocumentContentCommandComposer {
         let lineRange = textStorage.lineRange(at: self.location)
         if lineRange.upperBound < textStorage.string.count {
             let nextLine = textStorage.lineRange(at: lineRange.upperBound + 1)
+            
+            // 下一行不能是 heading
+            guard case let token = textStorage.token(at: nextLine.location).last, !(token is HeadingToken) else { return NoChangeCommand() }
+            
             // 如果下一行是文档的最后一行，下一行结尾没有换行符，因此需要在替换的时候，在当前行末尾去掉换行符，并且在下一行加上换行符
             if nextLine.upperBound == textStorage.string.count /* last line of document */ {
                 let currentLineText = textStorage.substring(lineRange.moveRightBound(by: -1))

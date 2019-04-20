@@ -232,6 +232,8 @@ extension OutlineTextStorage {
     }
     
     public func heading(contains location: Int) -> HeadingToken? {
+        guard location <= self.string.count else { return nil }
+        
         for heading in self.headingTokens.reversed() {
             if location >= heading.range.location {
                 return heading
@@ -856,7 +858,8 @@ extension OutlineTextStorage: OutlineParserDelegate {
     private func _findIntersectionTokenIndex(in range: NSRange, tokens: [Token]) -> [Int] {
         var indexes: [Int] = []
         for (index, token) in tokens.enumerated() {
-            if token.range.intersection(range) != nil || token.range.location == range.upperBound || token.range.upperBound == range.location {
+            if token.range.intersection(range) != nil || token.range.upperBound == range.location //|| token.range.location == range.upperBound
+            {
                 indexes.append(index)
             }
         }
