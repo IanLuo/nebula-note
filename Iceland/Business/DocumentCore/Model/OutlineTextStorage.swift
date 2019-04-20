@@ -382,25 +382,21 @@ extension OutlineTextStorage: OutlineParserDelegate {
             linkToken.decorationAttributesAction = { textStorage, token in
                 textStorage.addAttribute(OutlineAttribute.hidden, value: OutlineAttribute.hiddenValueDefault, range: token.range)
                 
-                token.data.keys.forEach { key in
+                if let titleRange = token.range(for: OutlineParser.Key.Element.Link.title),
+                    let urlRange = token.range(for: OutlineParser.Key.Element.Link.url) {
+                    // 添加自定义属性，值为解析的链接结构
+                    textStorage.addAttributes([OutlineAttribute.hidden: 0, // 不隐藏
+                        NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.spotlight,
+                        NSAttributedString.Key.font: InterfaceTheme.Font.body,
+                        OutlineAttribute.Link.title: [OutlineParser.Key.Element.Link.title: text.substring(titleRange),
+                                                      OutlineParser.Key.Element.Link.url: text.substring(urlRange)]],
+                                              range: titleRange)
                     
-                    if key == OutlineParser.Key.Element.Link.title {
-                        // 添加自定义属性，值为解析的链接结构
-                        textStorage.addAttributes([OutlineAttribute.hidden: 0, // 不隐藏
-                                                   NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.spotlight,
-                                                   NSAttributedString.Key.font: InterfaceTheme.Font.body,
-                                                   OutlineAttribute.Link.title: [key: text.substring(token.range(for: key)!),
-                                                                                 OutlineParser.Key.Element.Link.url: text.substring(linkRangeData[OutlineParser.Key.Element.Link.url]!)]],
-                                                  range: token.range(for: key)!)
-                    } else if key == OutlineParser.Key.Element.Link.url {
-                        textStorage.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment,
-                                                   OutlineAttribute.showAttachment: OutlineAttribute.Link.url],
-                                                  range: token.range(for: key)!)
-                    }
+                    textStorage.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment,
+                                               OutlineAttribute.showAttachment: OutlineAttribute.Link.url],
+                                              range: urlRange)
                 }
-                
             }
-            
         }
     }
     
@@ -451,17 +447,13 @@ extension OutlineTextStorage: OutlineParserDelegate {
             self._tempParsingTokenResult.append(checkboxToken)
             
             checkboxToken.decorationAttributesAction = { textStorage, token in
-                token.data.keys.forEach { key in
-                    let range = token.range(for: key)!
-                    if key == OutlineParser.Key.Node.checkbox {
-                        textStorage.addAttribute(OutlineAttribute.checkbox, value: textStorage.string.substring(range), range: range)
-                        textStorage.addAttributes([NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.spotlight,
-                                                   NSAttributedString.Key.font: InterfaceTheme.Font.title], range: range)
-                    }
-                }
                 
+                if let checkboxRange = token.range(for: OutlineParser.Key.Node.checkbox) {
+                    textStorage.addAttribute(OutlineAttribute.checkbox, value: textStorage.string.substring(checkboxRange), range: checkboxRange)
+                    textStorage.addAttributes([NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.spotlight,
+                                               NSAttributedString.Key.font: InterfaceTheme.Font.title], range: checkboxRange)
+                }
             }
-            
         }
     }
     

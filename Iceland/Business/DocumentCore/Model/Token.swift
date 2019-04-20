@@ -26,12 +26,12 @@ public class Token {
         get { return offset == 0 ? _range : _range.offset(self.offset) }
     }
     public var name: String
-    public var data: [String: NSRange]
+    private var _rawData: [String: NSRange]
     
     public init(range: NSRange, name: String, data: [String: NSRange]) {
         self._range = range
         self.name = name
-        self.data = data
+        self._rawData = data
         self.identifier = UUID().uuidString
     }
     
@@ -40,7 +40,7 @@ public class Token {
     }
     
     public func range(for key: String) -> NSRange? {
-        if let range = self.data[key] {
+        if let range = self._rawData[key] {
             return range.offset(self.offset)
         }
         return nil
@@ -142,23 +142,23 @@ public class BlockEndToken: BlockToken {
 public class HeadingToken: Token {
     /// 当前的 heading 的 planning TODO|DONE|CANCELD 等
     public var planning: NSRange? {
-        return data[OutlineParser.Key.Element.Heading.planning]?.offset(offset)
+        return self.range(for: OutlineParser.Key.Element.Heading.planning)
     }
     /// 当前 heading 的 tag 数组
     public var tags: NSRange? {
-        return data[OutlineParser.Key.Element.Heading.tags]?.offset(offset)
+        return self.range(for: OutlineParser.Key.Element.Heading.tags)
     }
     /// 当前的 heading level
     public var level: Int {
-        return data[OutlineParser.Key.Element.Heading.level]!.length
+        return self.range(for: OutlineParser.Key.Element.Heading.level)!.length
     }
     /// 当前的 heading level
     public var priority: NSRange? {
-        return data[OutlineParser.Key.Element.Heading.priority]?.offset(offset)
+        return self.range(for: OutlineParser.Key.Element.Heading.priority)
     }
     /// close 标记
     public var closed: NSRange? {
-        return data[OutlineParser.Key.Element.Heading.closed]?.offset(offset)
+        return self.range(for: OutlineParser.Key.Element.Heading.closed)
     }
     
     public func tagsArray(string: String) -> [String] {

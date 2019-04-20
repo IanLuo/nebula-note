@@ -913,12 +913,8 @@ public class UnorderdListSwitchCommandComposer: DocumentContentCommandComposer {
     public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
         let lineStart = (textStorage.string as NSString).lineRange(for: NSRange(location: self.location, length: 0)).location
         
-        for case let token in (textStorage.token(at: lineStart)) where token.name == OutlineParser.Key.Node.unordedList {
-            if let prefixRange = token.data[OutlineParser.Key.Element.UnorderedList.prefix] {
-                return ReplaceTextCommand(range: prefixRange, textToReplace: "", textStorage: textStorage)
-            } else {
-                return NoChangeCommand()
-            }
+        for case let token in (textStorage.token(at: lineStart)) where token is UnorderdListToken {
+            return ReplaceTextCommand(range: (token as! UnorderdListToken).prefix, textToReplace: "", textStorage: textStorage)
         }
         
         return InsertTextCommandComposer(location: lineStart, textToInsert: OutlineParser.Values.List.unorderedList).compose(textStorage: textStorage)
@@ -937,12 +933,8 @@ public class OrderedListSwitchCommandComposer: DocumentContentCommandComposer {
     public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
         let lineStart = (textStorage.string as NSString).lineRange(for: NSRange(location: self.location, length: 0)).location
         
-        for case let token in (textStorage.token(at: lineStart)) where token.name == OutlineParser.Key.Node.ordedList {
-            if let prefixRange = token.data[OutlineParser.Key.Element.OrderedList.prefix] {
-                return ReplaceTextCommand(range: prefixRange, textToReplace: "", textStorage: textStorage)
-            } else {
-                return NoChangeCommand()
-            }
+        for case let token in (textStorage.token(at: lineStart)) where token is OrderedListToken {
+            return ReplaceTextCommand(range: (token as! OrderedListToken).prefix, textToReplace: "", textStorage: textStorage)
         }
         
         if lineStart > 0 {
@@ -950,7 +942,7 @@ public class OrderedListSwitchCommandComposer: DocumentContentCommandComposer {
             let lastLineStart = (textStorage.string as NSString).lineRange(for: NSRange(location: lineStart - 1, length: 0)).location
             for case let token in (textStorage.token(at: lastLineStart)) where token.name == OutlineParser.Key.Node.ordedList {
                 // 2. insert index
-                let lastPrefix = textStorage.string.substring(token.data[OutlineParser.Key.Element.OrderedList.prefix]!)
+                let lastPrefix = textStorage.string.substring(token.range(for: OutlineParser.Key.Element.OrderedList.prefix)!)
                 return InsertTextCommandComposer(location: lineStart,
                                          textToInsert: OutlineParser.Values.List.orderListIncrease(prefix: lastPrefix))
                     .compose(textStorage: textStorage)
@@ -978,7 +970,7 @@ public class CheckboxSwitchCommandComposer: DocumentContentCommandComposer {
     public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
         let lineStart = (textStorage.string as NSString).lineRange(for: NSRange(location: self.location, length: 0)).location
         
-        for case let token in (textStorage.token(at: lineStart)) where token.name == OutlineParser.Key.Node.checkbox {
+        for case let token in (textStorage.token(at: lineStart)) where token is CheckboxToken {
             return ReplaceTextCommand(range: token.range, textToReplace: "", textStorage: textStorage)
         }
         
