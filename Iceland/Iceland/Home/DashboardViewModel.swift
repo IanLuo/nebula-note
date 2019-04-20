@@ -32,11 +32,13 @@ public class DashboardViewModel {
     
     public var allTags: [String] = []
     
+    public var allPlannings: [String] = []
+    
     public var scheduled: [DocumentHeading] = []
     
     public var overdue: [DocumentHeading] = []
     
-    public var scheduledSoon: [DocumentHeading] = []
+    public var startSoon: [DocumentHeading] = []
     
     public var overdueSoon: [DocumentHeading] = []
     
@@ -61,6 +63,8 @@ public class DashboardViewModel {
     
     public func loadDataIfNeeded() {
         guard _isHeadingsNeedsReload else { return }
+        _isHeadingsNeedsReload = false
+        
         self.loadData()
     }
     
@@ -69,15 +73,71 @@ public class DashboardViewModel {
         let soon = Date(timeInterval: 3 * 24 * 60, since: today)
         
         self.allTags = []
+        self.allPlannings = []
         self.withoutTag = []
         self.scheduled = []
-        self.scheduledSoon = []
+        self.startSoon = []
         self.overdue = []
         self.overdueSoon = []
+        
+        let dispatchGroup = DispatchGroup()
+        
+        dispatchGroup.enter()
         self._documentSearchManager.searchDateAndTime(completion: { [weak self] results in
-            
+            results.forEach { result in
+                if let dateAndTime = result.dateAndTime {
+                    if dateAndTime.isDue {
+                        if dateAndTime.date >= today {
+                            self?.overdue.append(result.heading)
+                        } else if dateAndTime.date >= soon {
+                            self?.overdueSoon.append(result.heading)
+                        }
+                    } else if dateAndTime.isSchedule {
+                        if dateAndTime.date >= today {
+                            self?.scheduled.append(result.heading)
+                        } else if dateAndTime.date >= soon {
+                            self?.startSoon.append(result.heading)
+                        }
+                    } else {
+                        if dateAndTime.date >= today {
+                            self?.startSoon.append(result.heading)
+                        }
+                    }
+                }
+            }
+            dispatchGroup.leave()
         }) { error in
             log.error(error)
+            dispatchGroup.leave()
+        }
+        
+        dispatchGroup.enter()
+        self._documentSearchManager.allHeadings(completion: { [weak self] headings in
+            var allTags:[String] = []
+            var allPlannings: [String] = []
+            for heading in headings {
+                if let tags = heading.tags {
+                    allTags.append(contentsOf: tags)
+                } else {
+                    self?.withoutTag.append(heading)
+                }
+                
+                if let planning = heading.planning {
+                    allPlannings.append(planning)
+                }
+            }
+            
+            self?.allTags = Array<String>(Set(allTags))
+            self?.allPlannings = Array<String>(Set(allPlannings))
+            
+            dispatchGroup.leave()
+        }) { error in
+            log.error(error)
+            dispatchGroup.leave()
+        }
+        
+        dispatchGroup.notify(queue: DispatchQueue.main) {
+            self.delegate?.didCompleteLoadFilteredData()
         }
     }
 }

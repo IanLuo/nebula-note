@@ -40,6 +40,7 @@ public class ReplaceTextCommand: DocumentContentCommand {
     let textToReplace: String
     let textStorage: OutlineTextStorage
     public var resultMap: ((DocumentContentCommandResult) -> DocumentContentCommandResult)?
+    public var completionAction: (() -> Void)?
     public var manullayReplace: ((NSRange, String) -> Void)?
     
     public init(range: NSRange, textToReplace: String, textStorage: OutlineTextStorage, manullayReplace: ((NSRange, String) -> Void)? = nil) {
@@ -60,6 +61,8 @@ public class ReplaceTextCommand: DocumentContentCommand {
         }
         
         let result = DocumentContentCommandResult(isModifiedContent: true, range: undoRange, content: undoString, delta: self.textToReplace.count - self.range.length)
+        
+        completionAction?()
         
         if let resultMap = self.resultMap {
             return resultMap(result)

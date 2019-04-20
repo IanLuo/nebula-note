@@ -63,8 +63,8 @@ public class AgendaViewController: UIViewController {
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        self.viewModel.loadData()
         self.viewModel.isConnectingScreen = true
+        self.viewModel.loadData()
     }
     
     public override func viewDidDisappear(_ animated: Bool) {
@@ -231,7 +231,7 @@ private class DateSectionView: UITableViewHeaderFooterView {
     private let weekdayLabel: UILabel = {
         let label = UILabel()
         label.textColor = InterfaceTheme.Color.descriptive
-        label.font = InterfaceTheme.Font.title
+        label.font = InterfaceTheme.Font.body
         label.textAlignment = .left
         return label
     }()
@@ -239,7 +239,7 @@ private class DateSectionView: UITableViewHeaderFooterView {
     let dateLabel: UILabel = {
         let label = UILabel()
         label.textColor = InterfaceTheme.Color.descriptive
-        label.font = InterfaceTheme.Font.subtitle
+        label.font = InterfaceTheme.Font.body
         label.textAlignment = .left
         return label
     }()
@@ -259,6 +259,14 @@ private class DateSectionView: UITableViewHeaderFooterView {
             
             self.dateLabel.text = "\(date.day), \(date.monthStringLong),  \(date.weekOfYearString), \(date.year)"
             self.weekdayLabel.text = date.weekDayString
+            
+            if date.isToday() {
+                self.dateLabel.textColor = InterfaceTheme.Color.interactive
+                self.weekdayLabel.textColor = InterfaceTheme.Color.interactive
+            } else {
+                self.dateLabel.textColor = InterfaceTheme.Color.descriptive
+                self.weekdayLabel.textColor = InterfaceTheme.Color.descriptive
+            }
         }
     }
     

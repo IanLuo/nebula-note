@@ -192,7 +192,7 @@ public class DocumentEditViewController: UIViewController {
         }
         
         if current != nil {
-            actionsController.addAction(icon: nil, title: "remove priority") { (viewController) in
+            actionsController.addAction(icon: nil, title: "remove priority", style: .warning) { (viewController) in
                 viewController.dismiss(animated: true, completion: {
                     self.viewModel.performAction(EditAction.changePriority(nil, location), textView: self.textView, completion: { [unowned self] result in
                         let oldSelectedRange = self.textView.selectedRange
@@ -237,7 +237,7 @@ public class DocumentEditViewController: UIViewController {
             $0.dismiss(animated: true, completion: nil)
         }
         
-        actionsViewController.addAction(icon: Asset.Assets.add.image.withRenderingMode(.alwaysTemplate), title: L10n.Document.Edit.Tag.add) { actionViewController in
+        actionsViewController.addAction(icon: Asset.Assets.add.image.withRenderingMode(.alwaysTemplate), title: L10n.Document.Edit.Tag.add, style: .highlight) { actionViewController in
             actionViewController.dismiss(animated: true, completion: {
                 let formController = ModalFormViewController()
                 formController.addTextFied(title: L10n.Document.Edit.Tag.add, placeHoder: L10n.Document.Edit.Tag.placeHolder, defaultValue: nil)
@@ -412,6 +412,9 @@ extension DocumentEditViewController: OutlineTextViewDelegate {
                 if self.textView.selectedRange.location > characterIndex {
                     self.textView.selectedRange = oldSelectedRange.offset(result.delta)
                 }
+                
+                self.viewModel.coordinator?.dependency.eventObserver.emit(DateAndTimeChangedEvent(oldDateAndTime: dateAndTime,
+                                                                                                  newDateAndTime: newDateAndTime))
             })
         }, delete: {
             let oldSelectedRange = textView.selectedRange
@@ -419,6 +422,9 @@ extension DocumentEditViewController: OutlineTextViewDelegate {
                 if self.textView.selectedRange.location > characterIndex {
                     self.textView.selectedRange = oldSelectedRange.offset(result.delta)
                 }
+                
+                self.viewModel.coordinator?.dependency.eventObserver.emit(DateAndTimeChangedEvent(oldDateAndTime: dateAndTime,
+                                                                                                  newDateAndTime: nil))
             })
         }, cancel: {})
     }

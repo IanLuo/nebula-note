@@ -340,8 +340,8 @@ extension DashboardViewController: DashboardViewModelDelegate {
             self.tabs[0].sub.append(Subtab(type: DashboardViewController.SubtabType.overdue(self.viewModel.overdue.count)))
         }
 
-        if self.viewModel.scheduledSoon.count > 0 {
-            self.tabs[0].sub.append(Subtab(type: DashboardViewController.SubtabType.scheduledSoon(self.viewModel.scheduledSoon.count)))
+        if self.viewModel.startSoon.count > 0 {
+            self.tabs[0].sub.append(Subtab(type: DashboardViewController.SubtabType.scheduledSoon(self.viewModel.startSoon.count)))
         }
 
         if self.viewModel.overdueSoon.count > 0 {

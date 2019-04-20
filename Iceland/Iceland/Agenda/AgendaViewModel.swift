@@ -18,7 +18,7 @@ public class AgendaViewModel {
     public weak var delegate: AgendaViewModelDelegate?
     public weak var coordinator: AgendaCoordinator? {
         didSet {
-            self._setupHeadingChangeObserver()
+            self._setupObserver()
         }
     }
     private let _documentSearchManager: DocumentSearchManager
@@ -44,9 +44,7 @@ public class AgendaViewModel {
     public private(set) var data: [AgendaCellModel] = []
     public private(set) var dates: [Date] = []
     
-    private var _lastLoadTime: TimeInterval = 0
-    private let _reloadInterval: TimeInterval = 60
-    private var _headingsHasModification: Bool = true // 如果在这个界面打开的 document 修改了这个 heading，应该刷新
+    private var _shouldReloadData: Bool = true // 如果在这个界面打开的 document 修改了这个 heading，应该刷新
     public var isConnectingScreen: Bool = false
     
     
@@ -78,17 +76,15 @@ public class AgendaViewModel {
     }
     
     public func loadData() {
-        let loadTime = Date()
-        guard (loadTime.timeIntervalSince1970 - self._lastLoadTime > _reloadInterval && self._headingsHasModification)
-            || (isConnectingScreen && self._headingsHasModification) else { return }
+        guard isConnectingScreen && self._shouldReloadData else { return }
+        
+        self._shouldReloadData = false
         
         if self.filterType == nil {
             self.loadAgendaData()
         } else {
             self.loadFiltered()
         }
-        
-        self._lastLoadTime = loadTime.timeIntervalSince1970
     }
     
     public func loadFiltered() {
@@ -105,18 +101,28 @@ public class AgendaViewModel {
         self._documentSearchManager.searchDateAndTime(completion: { [weak self] results in
             let allData = results.map { AgendaCellModel(searchResult: $0) }
             
+            self?.dateOrderedData = []
+            
             self?.dates.forEach { date in
                 let mappedCellModels = allData.filter { cellModel in
-                    if let planning = cellModel.planning, SettingsAccessor.shared.finishedPlanning.contains(planning) {
+                    if let planning = cellModel.planning, SettingsAccessor.shared.finishedPlanning.contains(planning) // 已完成的条目不显示
+                    {
                         return false
-                    } else if let dateAndTime = cellModel.dateAndTime {
-                        if dateAndTime.isSchedule || dateAndTime.isDue {
+                    }
+                    else if let dateAndTime = cellModel.dateAndTime
+                    {
+                        if dateAndTime.isSchedule || dateAndTime.isDue
+                        {
                             return dateAndTime.date <= date
-                        } else {
+                        }
+                        else
+                        {
                             return dateAndTime.date.isSameDay(date)
                         }
-                    } else {
-                        return false
+                    }
+                    else
+                    {
+                        return true
                     }
                 }
                 
@@ -143,6 +149,9 @@ public class AgendaViewModel {
                     _ = editorService.toggleContentCommandComposer(composer: UpdateDateAndTimeCommandComposer(location: oldDateAndTimeRange.location,
                                                                                                           dateAndTime: newDateAndTime))
                         .perform()
+                    
+                    self.coordinator?.dependency.eventObserver.emit(DateAndTimeChangedEvent(oldDateAndTime: cellModel.dateAndTime,
+                                                                                            newDateAndTime: newDateAndTime))
                 }
             })
         }
@@ -153,11 +162,18 @@ public class AgendaViewModel {
                                       location: cellModel.heading.location)
     }
     
-    private func _setupHeadingChangeObserver() {
+    private func _setupObserver() {
         self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
                                                                     eventType: DocumentSearchHeadingUpdateEvent.self,
                                                                     queue: self._headingChangeObservingQueue) { [weak self] (event: DocumentSearchHeadingUpdateEvent) -> Void in
-                                                                        self?._headingsHasModification = true
+                                                                        self?._shouldReloadData = true
         }
+        
+        self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
+                                                                    eventType: DateAndTimeChangedEvent.self,
+                                                                    queue: self._headingChangeObservingQueue,
+                                                                    action: { [weak self] (event: DateAndTimeChangedEvent) -> Void in
+                                                                        self?._shouldReloadData = true
+        })
     }
 }

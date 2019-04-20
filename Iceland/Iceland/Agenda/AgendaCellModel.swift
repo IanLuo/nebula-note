@@ -22,7 +22,7 @@ public class AgendaCellModel {
     public init(searchResult: DocumentHeadingSearchResult) {
         self.priority = searchResult.heading.priority
         self.dateAndTime = searchResult.dateAndTime
-        self.dateAndTimeRange = searchResult.highlightRange
+        self.dateAndTimeRange = searchResult.dateAndTimeRange
         self.url = searchResult.documentInfo.url
         self.heading = searchResult.heading
         self.headingText = searchResult.headingString.trimmingCharacters(in: CharacterSet.whitespaces)

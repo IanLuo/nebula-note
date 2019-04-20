@@ -15,10 +15,12 @@ import Business
 public class AgendaCoordinator: Coordinator {
     public enum FilterType {
         case tag(String)
+        case unfinished
+        case finished
         case overdue
         case scheduled
         case dueSoon
-        case scheduledSoon
+        case startSoon
         case withoutDate
     }
     

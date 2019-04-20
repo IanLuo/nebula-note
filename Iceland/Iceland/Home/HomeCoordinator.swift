@@ -121,7 +121,7 @@ extension HomeCoordinator: DashboardViewControllerDelegate {
     }
     
     public func showHeadingsScheduleSoon() {
-        let agendaCoordinator = AgendaCoordinator(filterType: .scheduledSoon, stack: self.stack, dependency: self.dependency)
+        let agendaCoordinator = AgendaCoordinator(filterType: .startSoon, stack: self.stack, dependency: self.dependency)
         self.showTempCoordinator(agendaCoordinator)
     }
     
@@ -134,7 +134,7 @@ extension HomeCoordinator: DashboardViewControllerDelegate {
         let agendaCoordinator = AgendaCoordinator(filterType: .tag(tag), stack: self.stack, dependency: self.dependency)
         self.showTempCoordinator(agendaCoordinator)
     }
-    
+        
     public func didSelectTab(at index: Int, viewController: UIViewController) {
         // if last showing temp view controller, remove from children
         if let tempCoordinator = self.tempCoordinator {

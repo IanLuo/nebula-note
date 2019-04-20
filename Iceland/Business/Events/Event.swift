@@ -87,3 +87,13 @@ public class NewCaptureAddedEvent: AttachmentAddedEvent {
         super.init(attachmentId: attachmentId)
     }
 }
+
+public class DateAndTimeChangedEvent: Event {
+    let oldDateAndTime: DateAndTimeType?
+    let newDateAndTime: DateAndTimeType?
+    
+    public init(oldDateAndTime: DateAndTimeType?, newDateAndTime: DateAndTimeType?) {
+        self.oldDateAndTime = oldDateAndTime
+        self.newDateAndTime = newDateAndTime
+    }
+}
