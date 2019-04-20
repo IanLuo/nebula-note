@@ -254,13 +254,13 @@ public class DocumentEditViewController: UIViewController {
                 }
                 formController.onSaveValue = { values, viewController in
                     if let newTagName = values[L10n.Document.Edit.Tag.add] as? String {
-                        location += newTagName.count
                         viewController.dismiss(animated: true, completion: {
                             let oldSelectedRange = self.textView.selectedRange
                             self.viewModel.performAction(EditAction.addTag(newTagName, location), textView: self.textView, completion: { result in
                                 if self.textView.selectedRange.location > location {
                                     self.textView.selectedRange = oldSelectedRange.offset(result.delta)
                                 }
+                                location += newTagName.count
                             })
                         })
                     }

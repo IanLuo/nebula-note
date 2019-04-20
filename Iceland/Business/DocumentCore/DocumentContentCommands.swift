@@ -333,6 +333,22 @@ public class FoldCommandComposer: DocumentContentCommandComposer {
     }
 }
 
+// MARK: - FoldAllCommandComposer
+public class FoldAllCommandComposer: DocumentContentCommandComposer {
+    public init(){}
+    public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
+        return FoldAllCommand(textStorage: textStorage)
+    }
+}
+
+// MARK: - UnfoldAllCommandComposer
+public class UnfoldAllCommandComposer: DocumentContentCommandComposer {
+    public init(){}
+    public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
+        return UnFoldAllCommand(textStorage: textStorage)
+    }
+}
+
 // MARK: - UpdateLinkCommandCompser
 public class UpdateLinkCommandCompser: DocumentContentCommandComposer {
     let location: Int
@@ -631,7 +647,7 @@ public class UpdateDateAndTimeCommandComposer: DocumentContentCommandComposer {
     }
 }
 
-// MARK: - TagCommand
+// MARK: - TagCommandComposer
 public class TagCommandComposer: DocumentContentCommandComposer {
     public enum Kind {
         case add(String)

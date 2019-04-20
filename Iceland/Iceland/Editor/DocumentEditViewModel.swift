@@ -210,6 +210,14 @@ public class DocumentEditViewModel {
         _ = self._editorService.toggleContentCommandComposer(composer: FoldCommandComposer(location: location)).perform()
     }
     
+    public func foldAll() {
+        _ = self._editorService.toggleContentCommandComposer(composer: FoldAllCommandComposer())
+    }
+    
+    public func unfoldAll() {
+        _ = self._editorService.toggleContentCommandComposer(composer: UnfoldAllCommandComposer())
+    }
+    
     public func performAction(_ action: EditAction, textView: UITextView, completion: ((DocumentContentCommandResult) -> Void)?) {
         let command = self._editorService.toggleContentCommandComposer(composer: action.commandComposer)
         
