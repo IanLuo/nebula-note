@@ -264,7 +264,7 @@ public class ConvertLineToHeadingCommandComposer: DocumentContentCommandComposer
             if lineStart > 0 {
                 if let lastHeading = textStorage.heading(contains: lineStart - 1) {
                     let lastHeadingLevelString = textStorage.string.substring(lastHeading.levelRange)
-                    return ReplaceTextCommand(range: NSRange(location: lineStart, length: 0), textToReplace: "\(lastHeadingLevelString)* ", textStorage: textStorage)
+                    return ReplaceTextCommand(range: NSRange(location: lineStart, length: 0), textToReplace: "\(lastHeadingLevelString) ", textStorage: textStorage)
                 } else {
                     return ReplaceTextCommand(range: NSRange(location: lineStart, length: 0), textToReplace: "* ", textStorage: textStorage)
                 }

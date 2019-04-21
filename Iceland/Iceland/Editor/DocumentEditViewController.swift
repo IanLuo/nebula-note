@@ -620,6 +620,15 @@ extension DocumentEditViewController: DocumentEditViewModelDelegate {
             for token in tokens {
                 if token is HeadingToken {
                     self.toolbar.mode = .heading
+                    break
+                } else if token is BlockBeginToken {
+                    if token.name == OutlineParser.Key.Node.quoteBlockBegin {
+                        self.toolbar.mode = .quote
+                        break
+                    } else if token.name == OutlineParser.Key.Node.codeBlockBegin {
+                        self.toolbar.mode = .code
+                        break
+                    }
                 } else {
                     self.toolbar.mode = .paragraph
                 }

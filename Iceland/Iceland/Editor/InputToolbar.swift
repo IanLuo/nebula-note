@@ -27,6 +27,9 @@ public class InputToolbar: UIView {
         [CursorAction.moveUp, CursorAction.moveDown, CursorAction.moveLeft, CursorAction.moveRight],
         [NormalAction.decreaseIndent, NormalAction.increaseIndent, NormalAction.moveUp, NormalAction.moveDown],
         [NormalAction.undo, NormalAction.redo]]
+    private static let quoteBlock: [[ToolbarActionProtocol]] = [[NormalAction.bold, NormalAction.italic, NormalAction.underscore, NormalAction.strikethrough, NormalAction.code],[CursorAction.moveUp, CursorAction.moveDown, CursorAction.moveLeft, CursorAction.moveRight],[NormalAction.undo, NormalAction.redo]]
+    
+    private static let codeBlock: [[ToolbarActionProtocol]] = [[CursorAction.moveUp, CursorAction.moveDown, CursorAction.moveLeft, CursorAction.moveRight],[NormalAction.decreaseIndent, NormalAction.increaseIndent, NormalAction.moveUp, NormalAction.moveDown],[NormalAction.undo, NormalAction.redo]]
     
     public enum Mode {
         case heading
@@ -40,8 +43,10 @@ public class InputToolbar: UIView {
                 return InputToolbar.actionsParagraph
             case .heading:
                 return InputToolbar.actionsHeading
-            default:
-                return InputToolbar.actionsParagraph
+            case .quote:
+                return InputToolbar.quoteBlock
+            case .code:
+                return InputToolbar.codeBlock
             }
         }
     }

@@ -163,10 +163,6 @@ extension DocumentSearchViewController: UITableViewDataSource, UITableViewDelega
 
 extension DocumentSearchViewController: DocumentSearchViewModelDelegate {
     public func didCompleteSearching() {
-        
-    }
-    
-    public func didAddResult(index: Int, count: Int) {
         self.searchResultTableView.reloadData()
     }
     

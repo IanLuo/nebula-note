@@ -10,7 +10,6 @@ import Foundation
 import Business
 
 public protocol DocumentSearchViewModelDelegate: class {
-    func didClearResults()
     func didCompleteSearching()
 }
 
