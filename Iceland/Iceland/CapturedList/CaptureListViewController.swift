@@ -29,7 +29,7 @@ public class CaptureListViewController: UIViewController {
         tableView.backgroundColor = InterfaceTheme.Color.background1
         tableView.separatorInset = .zero
         tableView.separatorColor = InterfaceTheme.Color.background3
-        tableView.contentInset = UIEdgeInsets(top: self.view.bounds.height / 4, left: 0, bottom: 0, right: 0)
+        tableView.contentInset = Layout.edgeInsets
         tableView.tableFooterView = UIView()
         return tableView
     }()
@@ -60,7 +60,22 @@ public class CaptureListViewController: UIViewController {
         
         self.setupUI()
         
+        self._setupObservers()
+        
         self.viewModel.loadAllCapturedData()
+    }
+    
+    deinit {
+        self.viewModel.coordinator?.dependency.eventObserver.unregister(for: self, eventType: nil)
+    }
+    
+    private func _setupObservers() {
+        self.viewModel.coordinator?.dependency.eventObserver.registerForEvent(on: self,
+                                                                              eventType: NewCaptureAddedEvent.self,
+                                                                              queue: OperationQueue.main,
+                                                                              action: { [weak self] (event: NewCaptureAddedEvent) -> Void in
+            self?.tableView.reloadData()
+        })
     }
     
     private func setupUI() {
@@ -74,6 +89,8 @@ public class CaptureListViewController: UIViewController {
         self.cancelButton.columnAnchor(view: self.tableView)
         
         self.tableView.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 0)
+        
+        self.cancelButton.isHidden = !(self.viewModel.coordinator?.isModal ?? false)
     }
     
     @objc private func cancel() {

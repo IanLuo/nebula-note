@@ -11,6 +11,7 @@ import Business
 
 public protocol DocumentSearchViewModelDelegate: class {
     func didCompleteSearching()
+    func didClearResults()
 }
 
 public class DocumentSearchViewModel {

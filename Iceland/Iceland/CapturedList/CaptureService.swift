@@ -59,14 +59,21 @@ public struct CaptureService: CaptureServiceProtocol {
         let plist = KeyValueStoreFactory.store(type: .plist(.custom("capture")))
         
         var attachments: [Attachment] = []
+        
+        let group = DispatchGroup()
+        
         plist.allKeys().forEach {
+            group.enter()
             self._attachmentManager.attachment(with: $0, completion: {
                 attachments.append($0)
+                group.leave()
             }, failure: { (error) in
                 failure(error)
             })
         }
         
-        completion(attachments)
+        group.notify(queue: DispatchQueue.main) {
+            completion(attachments)
+        }
     }
 }

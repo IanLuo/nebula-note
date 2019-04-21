@@ -142,7 +142,7 @@ public class DocumentSearchManager {
                                                 guard let range = result?.range else { return }
                                                 
                                                 let lowerBound = max(0, range.location - 10)
-                                                let upperBound = min(range.upperBound + 30, string.count - 1)
+                                                let upperBound = min(range.upperBound + 30, string.count)
                                                 let contextRange = NSRange(location: lowerBound, length: upperBound - lowerBound)
                                                 let highlightRange = NSRange(location: range.location - lowerBound, length: range.length)
                                                 
