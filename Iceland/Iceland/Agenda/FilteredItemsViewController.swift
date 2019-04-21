@@ -33,8 +33,7 @@ public class FilteredItemsViewController: UIViewController {
         tableView.register(AgendaTableCell.self, forCellReuseIdentifier: AgendaTableCell.reuseIdentifier)
         tableView.tableFooterView = UIView()
         tableView.contentInset = UIEdgeInsets(top: Layout.edgeInsets.top, left: 0, bottom: 0, right: 0)
-        tableView.separatorInset = UIEdgeInsets(top: 0, left: Layout.edgeInsets.left, bottom: 0, right: Layout.edgeInsets.right)
-        tableView.separatorColor = InterfaceTheme.Color.background3
+        tableView.separatorStyle = .none
         tableView.backgroundColor = InterfaceTheme.Color.background1
         return tableView
     }()

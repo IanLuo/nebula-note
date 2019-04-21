@@ -195,7 +195,7 @@ public class DashboardViewController: UIViewController {
         var icon: UIImage? {
             switch self {
             case .tags(_): return Asset.Assets.tag.image
-            case .plannings(_): return Asset.Assets.tag.image
+            case .plannings(_): return Asset.Assets.scheduled.image
             case .scheduled: return Asset.Assets.scheduled.image
             case .overdue: return Asset.Assets.due.image
             default: return nil
@@ -226,6 +226,7 @@ public class DashboardViewController: UIViewController {
         var subtitle: String {
             switch self {
             case .tags(let tags): return "\(tags.count)"
+            case .plannings(let plannings): return "\(plannings.count)"
             case .overdue(let count): return "\(count)"
             case .overdueSoon(let count): return "\(count)"
             case .scheduled(let count): return "\(count)"
@@ -235,10 +236,11 @@ public class DashboardViewController: UIViewController {
             }
         }
         
-        //  下一级页面，现在只有 tags 有
+        //  下一级页面的数据
         var detailItems: [String] {
             switch self {
             case .tags(let tags): return tags
+            case .plannings(let plannings): return plannings
             default: return []
             }
         }
@@ -348,6 +350,10 @@ extension DashboardViewController: DashboardViewModelDelegate {
         
         if self.viewModel.scheduled.count > 0 {
             self.tabs[0].sub.append(Subtab(type: DashboardViewController.SubtabType.scheduled(self.viewModel.scheduled.count)))
+        }
+        
+        if self.viewModel.allPlannings.count > 0 {
+            self.tabs[0].sub.append(Subtab(type: DashboardViewController.SubtabType.plannings(Array(Set(self.viewModel.allPlannings)))))
         }
 
         if self.viewModel.overdue.count > 0 {

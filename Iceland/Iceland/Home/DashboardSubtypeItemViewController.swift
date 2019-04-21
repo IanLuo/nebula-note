@@ -52,31 +52,13 @@ public class DashboardSubtypeItemViewController: UIViewController {
         
         self.setupUI()
     }
-    
-    private let backButton: UIButton = {
-        let button = UIButton()
-        button.setImage(Asset.Assets.left.image.withRenderingMode(.alwaysTemplate), for: .normal)
-        button.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.background2, size: .singlePoint), for: .normal)
-        button.tintColor = InterfaceTheme.Color.interactive
-        button.layer.cornerRadius = 20
-        button.layer.masksToBounds = true
-        return button
-    }()
-    
+
     private func setupUI() {
         self.view.backgroundColor = InterfaceTheme.Color.background2
         
-        self.view.addSubview(self.backButton)
         self.view.addSubview(self.tableView)
         
-        self.backButton.sideAnchor(for: [.left, .top], to: self.view, edgeInset: 30)
-        self.backButton.sizeAnchor(width: 40, height: 40)
-        
-        self.backButton.columnAnchor(view: self.tableView, space: 20)
-
-        self.tableView.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 0)
-        
-        self.backButton.addTarget(self, action: #selector(cancel), for: .touchUpInside)
+        self.tableView.allSidesAnchors(to: self.view, edgeInset: 0)
     }
     
     @objc private func cancel() {
