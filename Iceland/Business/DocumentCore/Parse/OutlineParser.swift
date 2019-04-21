@@ -87,22 +87,6 @@ public class OutlineParser {
             }
         }
         
-        // MARK: 解析 checkbox
-        if includeParsee.contains(.checkbox) {
-            let result: [[String: NSRange]] = Matcher.Node.checkbox
-                .matches(in: str, options: [], range: totalRange)
-                .map { (result: NSTextCheckingResult) -> [String: NSRange] in
-                    var comp: [String: NSRange] = [:]
-                    comp[Key.Node.checkbox] = result.range
-                    return comp.filter { _, value in value.location != Int.max }
-            }
-            
-            if result.count > 0 {
-                self.logResult(result)
-                self.delegate?.didFoundCheckbox(text: str, checkboxRanges: result)
-            }
-        }
-        
         // MARK: 解析 code block begin
         if includeParsee.contains(.codeBlockBegin) {
             let result: [[String: NSRange]] = Matcher.Node.codeBlockBegin
@@ -200,6 +184,22 @@ public class OutlineParser {
             if result.count > 0 {
                 self.logResult(result)
                 self.delegate?.didFoundUnOrderedList(text: str, unOrderedListRnages: result)
+            }
+        }
+        
+        // MARK: 解析 checkbox
+        if includeParsee.contains(.checkbox) {
+            let result: [[String: NSRange]] = Matcher.Node.checkbox
+                .matches(in: str, options: [], range: totalRange)
+                .map { (result: NSTextCheckingResult) -> [String: NSRange] in
+                    var comp: [String: NSRange] = [:]
+                    comp[Key.Node.checkbox] = result.range(at: 1)
+                    return comp.filter { _, value in value.location != Int.max }
+            }
+            
+            if result.count > 0 {
+                self.logResult(result)
+                self.delegate?.didFoundCheckbox(text: str, checkboxRanges: result)
             }
         }
         

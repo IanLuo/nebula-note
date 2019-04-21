@@ -587,7 +587,7 @@ public class AddAttachmentCommandComposer: DocumentContentCommandComposer {
     }
 }
 
-// MARK: - CheckboxCommand
+// MARK: - CheckboxStatusCommandComposer
 public class CheckboxStatusCommandComposer: DocumentContentCommandComposer {
     public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
         let status = checkboxString

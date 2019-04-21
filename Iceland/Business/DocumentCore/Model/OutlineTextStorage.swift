@@ -126,8 +126,6 @@ extension OutlineTextStorage: ContentUpdatingProtocol {
         self.currentParseRange = self._adjustParseRange(editedRange)
         
         guard let currentParseRange = self.currentParseRange else { return }
-
-        guard currentParseRange.length > 0 else { return }
         
         // 清空解析范围内已有的 attributes
         self.setAttributes(nil, range:  currentParseRange)
@@ -451,7 +449,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 if let checkboxRange = token.range(for: OutlineParser.Key.Node.checkbox) {
                     textStorage.addAttribute(OutlineAttribute.checkbox, value: textStorage.string.substring(checkboxRange), range: checkboxRange)
                     textStorage.addAttributes([NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.spotlight,
-                                               NSAttributedString.Key.font: InterfaceTheme.Font.title], range: checkboxRange)
+                                               NSAttributedString.Key.font: InterfaceTheme.Font.title], range: checkboxRange.moveLeftBound(by: 1))
                 }
             }
         }
@@ -904,9 +902,12 @@ extension OutlineTextStorage: OutlineParserDelegate {
         var contentsEnd = 0
         
         var newRange = range
-        (string as NSString).getParagraphStart(&paragraphStart, end: &paragraphEnd, contentsEnd: &contentsEnd, for: newRange)
+//        (string as NSString).getParagraphStart(&paragraphStart, end: &paragraphEnd, contentsEnd: &contentsEnd, for: newRange)
         
-        newRange = NSRange(location: paragraphStart, length: paragraphEnd - paragraphStart)
+        let line1Start = (string as NSString).lineRange(for: NSRange(location: newRange.location, length: 0)).location
+        let line2End = (string as NSString).lineRange(for: NSRange(location: newRange.upperBound - 1, length: 0)).upperBound
+        
+        newRange = NSRange(location: line1Start, length: line2End - line1Start)
         
         // 如果范围在某个 item 内，并且小于这个 item 原来的范围，则扩大至这个 item 原来的范围
         for item in self.allTokens {

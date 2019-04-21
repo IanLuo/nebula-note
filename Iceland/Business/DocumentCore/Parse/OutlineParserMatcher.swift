@@ -55,7 +55,7 @@ extension OutlineParser {
     public struct Matcher {
         public struct Node {
             public static var heading = try! NSRegularExpression(pattern: RegexPattern.Node.heading, options: [.anchorsMatchLines])
-            public static var checkbox = try! NSRegularExpression(pattern: RegexPattern.Node.checkBox, options: [])
+            public static var checkbox = try! NSRegularExpression(pattern: RegexPattern.Node.checkBox, options: [.anchorsMatchLines])
             public static var ordedList = try! NSRegularExpression(pattern: RegexPattern.Node.orderedList, options: [.anchorsMatchLines])
             public static var unorderedList = try! NSRegularExpression(pattern: RegexPattern.Node.unorderedList, options: [.anchorsMatchLines])
             public static var seperator = try! NSRegularExpression(pattern: RegexPattern.Node.seperator, options: [.anchorsMatchLines])
@@ -197,8 +197,8 @@ extension OutlineParser {
         public struct Node {
             public static let heading =         "^(\\*+) (.)*"
             public static let codeBlock =       "^[\\t ]*\\#\\+BEGIN\\_SRC( [\(character)\\.]*)?\\n([^\\#\\+END\\_SRC]*)\\n\\s*\\#\\+END\\_SRC[\\t ]*\\n"
-            public static let checkBox =        "\\[(X| |\\-)\\] "
-            public static let unorderedList =   "^[\\t ]*([\\-\\+] ).*"
+            public static let checkBox =        "^[\\t ]*(\\- \\[(X| |\\-)\\] )"
+            public static let unorderedList =   "^[\\t ]*([\\-\\+] ).*" // 避免与 checkbox 冲突
             public static let orderedList =     "^[\\t ]*(([0-9a-zA-Z])+[\\.\\)\\>] ).*"
             public static let seperator =       "^[\\t ]*(\\-{5,}[\\t ]*)"
             public static let attachment =      "\\#\\+ATTACHMENT\\:(image|video|audio|sketch|location)=([A-Z0-9\\-]+)" // like: #+ATTACHMENT:LKS-JDLF-JSDL-JFLSDF)
@@ -368,9 +368,9 @@ extension OutlineParser {
         }
         
         public struct Checkbox {
-            public static let unchecked: String = "[ ] "
-            public static let checked: String = "[X] "
-            public static let halfChecked: String = "[-] "
+            public static let unchecked: String = "- [ ] "
+            public static let checked: String = "- [X] "
+            public static let halfChecked: String = "- [-] "
         }
         
         public struct Heading {

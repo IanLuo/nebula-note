@@ -34,11 +34,11 @@ public class SettingsAccessor {
     }
     
     public var customizedUnfinishedPlannings: [String]? {
-        return ["Pending", "Waiting"] // TODO: change to real funciton
+        return ["PENDING", "FUTURE", "MAYBE", "WIP"] // TODO: change to real funciton
     }
     
     public var customizedFinishedPlannings: [String]? {
-        return ["Rejected"] // TODO: change to real function
+        return nil
     }
     
     public var unfinishedPlanning: [String] {
