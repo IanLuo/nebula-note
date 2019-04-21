@@ -25,7 +25,7 @@ public class AgendaCellModel {
         self.dateAndTimeRange = searchResult.dateAndTimeRange
         self.url = searchResult.documentInfo.url
         self.heading = searchResult.heading
-        self.headingText = searchResult.headingString.trimmingCharacters(in: CharacterSet.whitespaces)
+        self.headingText = searchResult.heading.text.trimmingCharacters(in: CharacterSet.whitespaces)
         self.planning = searchResult.heading.planning
         self.tags = searchResult.heading.tags
     }

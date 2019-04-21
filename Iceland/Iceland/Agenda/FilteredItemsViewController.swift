@@ -75,7 +75,9 @@ extension FilteredItemsViewController: UITableViewDelegate {
 
 extension FilteredItemsViewController: AgendaViewModelDelegate {
     public func didCompleteLoadAllData() {
-        self.tableView.reloadData()
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
     }
     
     public func didLoadData() {

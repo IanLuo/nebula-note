@@ -34,15 +34,15 @@ public class DashboardViewModel {
     
     public var allPlannings: [String] = []
     
-    public var scheduled: [DocumentHeading] = []
+    public var scheduled: [DocumentHeadingSearchResult] = []
     
-    public var overdue: [DocumentHeading] = []
+    public var overdue: [DocumentHeadingSearchResult] = []
     
-    public var startSoon: [DocumentHeading] = []
+    public var startSoon: [DocumentHeadingSearchResult] = []
     
-    public var overdueSoon: [DocumentHeading] = []
+    public var overdueSoon: [DocumentHeadingSearchResult] = []
     
-    public var withoutTag: [DocumentHeading] = []
+    public var withoutTag: [DocumentHeadingSearchResult] = []
     
     private var _isHeadingsNeedsReload: Bool = true
     
@@ -59,6 +59,13 @@ public class DashboardViewModel {
                                                                     queue: self._headingChangeObservingQueue) { [weak self] (event: DocumentSearchHeadingUpdateEvent) -> Void in
             self?._isHeadingsNeedsReload = true
         }
+        
+        self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
+                                                                    eventType: DateAndTimeChangedEvent.self,
+                                                                    queue: self._headingChangeObservingQueue,
+                                                                    action: { [weak self] (event: DateAndTimeChangedEvent) -> Void in
+                                                                        self?._isHeadingsNeedsReload = true
+        })
     }
     
     public func loadDataIfNeeded() {
@@ -70,7 +77,6 @@ public class DashboardViewModel {
     
     public func loadData() {
         let today = Date()
-        let soon = Date(timeInterval: 3 * 24 * 60, since: today)
         
         self.allTags = []
         self.allPlannings = []
@@ -85,22 +91,28 @@ public class DashboardViewModel {
         dispatchGroup.enter()
         self._documentSearchManager.searchDateAndTime(completion: { [weak self] results in
             results.forEach { result in
+                if let planning = result.heading.planning,
+                    let finishedPlannings = self?.coordinator?.dependency.settingAccessor.finishedPlanning,
+                    finishedPlannings.contains(planning) {
+                    return
+                }
+                
                 if let dateAndTime = result.dateAndTime {
                     if dateAndTime.isDue {
-                        if dateAndTime.date >= today {
-                            self?.overdue.append(result.heading)
-                        } else if dateAndTime.date >= soon {
-                            self?.overdueSoon.append(result.heading)
+                        if dateAndTime.date <= today {
+                            self?.overdue.append(result)
+                        } else if dateAndTime.date.dayBefore(3) <= today {
+                            self?.overdueSoon.append(result)
                         }
                     } else if dateAndTime.isSchedule {
-                        if dateAndTime.date >= today {
-                            self?.scheduled.append(result.heading)
-                        } else if dateAndTime.date >= soon {
-                            self?.startSoon.append(result.heading)
+                        if dateAndTime.date <= today {
+                            self?.scheduled.append(result)
+                        } else if dateAndTime.date.dayBefore(3) <= today {
+                            self?.startSoon.append(result)
                         }
                     } else {
-                        if dateAndTime.date >= today {
-                            self?.startSoon.append(result.heading)
+                        if dateAndTime.date.isSameDay(today) {
+                            self?.startSoon.append(result)
                         }
                     }
                 }
@@ -112,17 +124,17 @@ public class DashboardViewModel {
         }
         
         dispatchGroup.enter()
-        self._documentSearchManager.allHeadings(completion: { [weak self] headings in
+        self._documentSearchManager.allHeadings(completion: { [weak self] results in
             var allTags:[String] = []
             var allPlannings: [String] = []
-            for heading in headings {
-                if let tags = heading.tags {
+            for result in results {
+                if let tags = result.heading.tags {
                     allTags.append(contentsOf: tags)
                 } else {
-                    self?.withoutTag.append(heading)
+                    self?.withoutTag.append(result)
                 }
                 
-                if let planning = heading.planning {
+                if let planning = result.heading.planning {
                     allPlannings.append(planning)
                 }
             }

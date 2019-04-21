@@ -22,6 +22,9 @@ public class DashboardSubtypeItemViewController: UIViewController {
     }
     
     public weak var delegate: DashboardSubtypeItemViewControllerDelegate?
+    
+    public var didSelectAction: ((String) -> Void)?
+    
     private let subtype: DashboardViewController.SubtabType
     
     private lazy var tableView: UITableView = {
@@ -83,7 +86,9 @@ public class DashboardSubtypeItemViewController: UIViewController {
 
 extension DashboardSubtypeItemViewController: UITableViewDelegate {
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.delegate?.didSelect(title: self.subtype.detailItems[indexPath.row])
+        let title = self.subtype.detailItems[indexPath.row]
+        self.delegate?.didSelect(title: title)
+        self.didSelectAction?(title)
     }
 }
 

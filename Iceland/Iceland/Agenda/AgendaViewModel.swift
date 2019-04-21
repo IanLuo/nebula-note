@@ -89,10 +89,43 @@ public class AgendaViewModel {
     
     public func loadFiltered() {
         if let filterType = self.filterType {
-            var data: [DocumentHeading] = []
-            let today = Date()
-            let soon = Date(timeInterval: 3 * 24 * 60, since: today)
-            
+            switch filterType {
+            case .tag(let tag):
+                self._documentSearchManager.searchTag(tag, completion: { [weak self] results in
+                    self?.data = results.map { AgendaCellModel(searchResult: $0) }
+                    self?.delegate?.didCompleteLoadAllData()
+                }) { error in
+                    log.error(error)
+                }
+            case .planning(let planning):
+                self._documentSearchManager.searchPlanning(planning, completion: { [weak self] results in
+                    self?.data = results.map { AgendaCellModel(searchResult: $0) }
+                    self?.delegate?.didCompleteLoadAllData()
+                }) { error in
+                    log.error(error)
+                }
+            case .dueSoon(let results):
+                self.data = results.map { AgendaCellModel(searchResult: $0) }
+                self.delegate?.didCompleteLoadAllData()
+            case .overdue(let results):
+                self.data = results.map { AgendaCellModel(searchResult: $0) }
+                self.delegate?.didCompleteLoadAllData()
+            case .scheduled(let results):
+                self.data = results.map { AgendaCellModel(searchResult: $0) }
+                self.delegate?.didCompleteLoadAllData()
+            case .startSoon(let results):
+                self.data = results.map { AgendaCellModel(searchResult: $0) }
+                self.delegate?.didCompleteLoadAllData()
+            case .unfinished(let results):
+                self.data = results.map { AgendaCellModel(searchResult: $0) }
+                self.delegate?.didCompleteLoadAllData()
+            case .finished(let results):
+                self.data = results.map { AgendaCellModel(searchResult: $0) }
+                self.delegate?.didCompleteLoadAllData()
+            case .withoutDate(let results):
+                self.data = results.map { AgendaCellModel(searchResult: $0) }
+                self.delegate?.didCompleteLoadAllData()
+            }
         }
     }
     

@@ -105,33 +105,38 @@ extension HomeCoordinator: HomeViewControllerDelegate {
 }
 
 extension HomeCoordinator: DashboardViewControllerDelegate {
-    public func showHeadingsWithoutDate() {
-        let agendaCoordinator = AgendaCoordinator(filterType: .withoutDate, stack: self.stack, dependency: self.dependency)
+    public func showHeadingsWithoutDate(headings: [DocumentHeadingSearchResult]) {
+        let agendaCoordinator = AgendaCoordinator(filterType: .withoutDate(headings), stack: self.stack, dependency: self.dependency)
         self.showTempCoordinator(agendaCoordinator)
     }
     
-    public func showHeadingsScheduled() {
-        let agendaCoordinator = AgendaCoordinator(filterType: .scheduled, stack: self.stack, dependency: self.dependency)
+    public func showHeadingsScheduled(headings: [DocumentHeadingSearchResult]) {
+        let agendaCoordinator = AgendaCoordinator(filterType: .scheduled(headings), stack: self.stack, dependency: self.dependency)
         self.showTempCoordinator(agendaCoordinator)
     }
     
-    public func showHeadingsOverdue() {
-        let agendaCoordinator = AgendaCoordinator(filterType: .overdue, stack: self.stack, dependency: self.dependency)
+    public func showHeadingsOverdue(headings: [DocumentHeadingSearchResult]) {
+        let agendaCoordinator = AgendaCoordinator(filterType: .overdue(headings), stack: self.stack, dependency: self.dependency)
         self.showTempCoordinator(agendaCoordinator)
     }
     
-    public func showHeadingsScheduleSoon() {
-        let agendaCoordinator = AgendaCoordinator(filterType: .startSoon, stack: self.stack, dependency: self.dependency)
+    public func showHeadingsScheduleSoon(headings: [DocumentHeadingSearchResult]) {
+        let agendaCoordinator = AgendaCoordinator(filterType: .startSoon(headings), stack: self.stack, dependency: self.dependency)
         self.showTempCoordinator(agendaCoordinator)
     }
     
-    public func showHeadingsOverdueSoon() {
-        let agendaCoordinator = AgendaCoordinator(filterType: .dueSoon, stack: self.stack, dependency: self.dependency)
+    public func showHeadingsOverdueSoon(headings: [DocumentHeadingSearchResult]) {
+        let agendaCoordinator = AgendaCoordinator(filterType: .dueSoon(headings), stack: self.stack, dependency: self.dependency)
         self.showTempCoordinator(agendaCoordinator)
     }
     
-    public func showHeadings(with tag: String) {
+    public func showHeadings(tag: String) {
         let agendaCoordinator = AgendaCoordinator(filterType: .tag(tag), stack: self.stack, dependency: self.dependency)
+        self.showTempCoordinator(agendaCoordinator)
+    }
+    
+    public func showHeadings(planning: String) {
+        let agendaCoordinator = AgendaCoordinator(filterType: .planning(planning), stack: self.stack, dependency: self.dependency)
         self.showTempCoordinator(agendaCoordinator)
     }
         

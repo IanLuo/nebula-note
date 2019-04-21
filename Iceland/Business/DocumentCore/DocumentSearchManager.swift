@@ -43,7 +43,7 @@ public struct DocumentHeading {
             self.priority = nil
         }
         
-        self.text = documentString.substring(headingToken.range)
+        self.text = documentString.substring(headingToken.headingTextRange)
         
         self.paragraphSummery = documentString.substring(NSRange(location: headingToken.contentRange.location,
                                                                  length: min(100, headingToken.contentRange.length)))
@@ -61,9 +61,6 @@ public struct DocumentHeadingSearchResult {
     public let dateAndTime: DateAndTimeType?
     public let documentInfo: DocumentInfo
     public let dateAndTimeRange: NSRange?
-    public let tags: [String]?
-    public let planning: String?
-    public let headingString: String
     public let heading: DocumentHeading
 }
 
@@ -206,9 +203,6 @@ public class DocumentSearchManager {
                             let result = DocumentHeadingSearchResult(dateAndTime: DateAndTimeType(string.substring(dateAndTimeRange))!,
                                                      documentInfo: DocumentInfo(wrapperURL: url.wrapperURL),
                                                      dateAndTimeRange: dateAndTimeRange,
-                                                     tags: nil,
-                                                     planning: nil,
-                                                     headingString: string.substring(headingToken.headingTextRange),
                                                      heading: DocumentHeading(documentString: string,
                                                                               headingToken: headingToken,
                                                                               url: url))
@@ -234,53 +228,50 @@ public class DocumentSearchManager {
     
     public func searchPlanning(_ planningToSearch: String, completion: @escaping ([DocumentHeadingSearchResult]) -> Void, failure: @escaping (Error) -> Void) {
         
-        self.allHeadings(completion: { headings in
-            var results: [DocumentHeadingSearchResult] = []
-            
-            headings.forEach { heading in
-                if let planning = heading.planning {
-                    let result = DocumentHeadingSearchResult(dateAndTime: nil,
-                                                             documentInfo: DocumentInfo(wrapperURL: heading.url.wrapperURL),
-                                                             dateAndTimeRange: nil,
-                                                             tags: nil,
-                                                             planning: planning,
-                                                             headingString: heading.text,
-                                                             heading: heading)
-                    
-                    results.append(result)
+        self.allHeadings(completion: { headingResults in
+            let results = headingResults.filter { heading in
+                if let planning = heading.heading.planning, planning == planningToSearch {
+                    return true
+                } else {
+                    return false
                 }
             }
+            
+            completion(results)
         }) { error in
             failure(error)
         }
     }
     
     public func searchTag(_ tagToSearch: String, completion: @escaping ([DocumentHeadingSearchResult]) -> Void, failure: @escaping (Error) -> Void) {
-        self.allHeadings(completion: { heading in
-            var results: [DocumentHeadingSearchResult] = []
-            heading.forEach({ heading in
-                if let tagsArray = heading.tags {
-                    if tagsArray.contains(tagToSearch)
-                    {
-                        let result = DocumentHeadingSearchResult(dateAndTime: nil,
-                                                                 documentInfo: DocumentInfo(wrapperURL: heading.url.wrapperURL),
-                                                                 dateAndTimeRange: nil,
-                                                                 tags: tagsArray,
-                                                                 planning: nil,
-                                                                 headingString: heading.text,
-                                                                 heading: heading)
-                        
-                        results.append(result)
-                    }
-                    
+        self.allHeadings(completion: { headingResults in
+            let result = headingResults.filter { heading in
+                if let tags = heading.heading.tags, tags.contains(tagToSearch) {
+                    return true
+                } else {
+                    return false
                 }
-            })
+            }
+            
+            completion(result)
         }) { error in
             failure(error)
         }
     }
     
-    public func allHeadings(completion: @escaping ([DocumentHeading]) -> Void, failure: @escaping (Error) -> Void) {
+    public func searchWithoutTag(completion: @escaping ([DocumentHeadingSearchResult]) -> Void, failure: @escaping (Error) -> Void) {
+        self.allHeadings(completion: { heading in
+            let results = heading.filter({ headingResult in
+                headingResult.heading.tags == nil
+            })
+            
+            completion(results)
+        }) { error in
+            failure(error)
+        }
+    }
+    
+    public func allHeadings(completion: @escaping ([DocumentHeadingSearchResult]) -> Void, failure: @escaping (Error) -> Void) {
         let operation = BlockOperation()
         
         operation.addExecutionBlock {
@@ -291,7 +282,7 @@ public class DocumentSearchManager {
             parser.delegate = parseDelegate
             parser.includeParsee = .heading
             
-            var headings: [DocumentHeading] = []
+            var headings: [DocumentHeadingSearchResult] = []
             do {
                 try self.loadAllFiles().forEach { url in
                     
@@ -299,9 +290,13 @@ public class DocumentSearchManager {
                     parser.parse(str: string)
                 
                     headings.append(contentsOf: parseDelegate.headings.map { headingToken in
-                        DocumentHeading(documentString: string,
-                                        headingToken: headingToken,
-                                        url: url)
+                        
+                        DocumentHeadingSearchResult(dateAndTime: nil,
+                                                    documentInfo: DocumentInfo(wrapperURL: url.wrapperURL),
+                                                    dateAndTimeRange: nil,
+                                                    heading: DocumentHeading(documentString: string,
+                                                                             headingToken: headingToken,
+                                                                             url: url))
                     })
                 }
                 
@@ -333,15 +328,10 @@ public class DocumentSearchManager {
     
     private func _handleDocumentHeadingsChange(event: DocumentHeadingChangeEvent) {
         let newHeadings = event.newHeadings.map { (headingToken: HeadingToken) -> DocumentHeadingSearchResult in
-            // 这里能收到 heading change 的 document 肯定是已经 open 了的，因为发 heading change 事件是在 OutlineTextStorage 文档解析完成的时候
-            let headingString = self._editorContext.request(url: event.url).string.substring(headingToken.range)
-            
+            // 这里能收到 heading change 的 document 肯定是已经 open 了的，因为发 heading change 事件是在 OutlineTextStorage 文档解析完成的时候            
             return DocumentHeadingSearchResult(dateAndTime: nil,
                                                documentInfo: DocumentInfo(wrapperURL: event.url.wrapperURL),
                                                dateAndTimeRange: nil,
-                                               tags: nil,
-                                               planning: nil,
-                                               headingString: headingString,
                                                heading: DocumentHeading(documentString: self._editorContext.request(url: event.url).string,
                                                                         headingToken: headingToken,
                                                                         url: event.url))
