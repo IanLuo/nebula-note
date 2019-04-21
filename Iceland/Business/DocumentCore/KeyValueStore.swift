@@ -65,21 +65,15 @@ fileprivate struct PlistStore: KeyValueStore {
     
     public func set(value: Any, key: String, completion: @escaping () -> Void) {
         if let store = _store, let url = self._url {
-            url.createDirectoryIfNeeded { error in
+            store.setValue(value, forKey: key)
+            url.writeBlock(accessor: { error in
                 if let error = error {
                     log.error(error)
                 } else {
-                    store.setValue(value, forKey: key)
-                    url.writeBlock(accessor: { error in
-                        if let error = error {
-                            log.error(error)
-                        } else {
-                            store.write(to: url, atomically: true)
-                            completion()
-                        }
-                    })
+                    store.write(to: url, atomically: true)
+                    completion()
                 }
-            }
+            })
         } else {
             let userDefaults = UserDefaults.standard
             userDefaults.set(value, forKey: key)

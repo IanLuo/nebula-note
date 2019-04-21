@@ -63,12 +63,14 @@ public struct DocumentManager {
         let folderURL = url.convertoFolderURL
         var isDIR = ObjCBool(true)
         
-        let fileCoordinator = NSFileCoordinator()
-        let intent = NSFileAccessIntent.writingIntent(with: URL(fileURLWithPath: folderURL.path), options: NSFileCoordinator.WritingOptions.forMoving)
-        let queue = OperationQueue()
-        queue.qualityOfService = .background
-        fileCoordinator.coordinate(with: [intent], queue: queue) { error in
-            if !Foundation.FileManager.default.fileExists(atPath: folderURL.path, isDirectory: &isDIR) {
+        if Foundation.FileManager.default.fileExists(atPath: folderURL.path, isDirectory: &isDIR) {
+            completion(folderURL)
+        } else {
+            let fileCoordinator = NSFileCoordinator()
+            let intent = NSFileAccessIntent.writingIntent(with: URL(fileURLWithPath: folderURL.path), options: NSFileCoordinator.WritingOptions.forMoving)
+            let queue = OperationQueue()
+            queue.qualityOfService = .background
+            fileCoordinator.coordinate(with: [intent], queue: queue) { error in
                 do {
                     try Foundation.FileManager.default.createDirectory(atPath: folderURL.path, withIntermediateDirectories: true, attributes: nil)
                     
