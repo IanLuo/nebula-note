@@ -118,8 +118,12 @@ public class DocumentEditViewController: UIViewController {
         actionsController.addAction(icon: Asset.Assets.master.image, title: "Outline") { viewController in
             viewController.dismiss(animated: true, completion: {
                 self.viewModel.coordinator?.showOutline(completion: { [unowned self] heading in
-                    // TODO:
+                    self._moveTo(location: heading.location)
                 })
+            })
+            
+            viewController.setCancel(action: { viewController in
+                viewController.dismiss(animated: true, completion: nil)
             })
         }
         
@@ -646,6 +650,14 @@ extension DocumentEditViewController: UITextViewDelegate {
         
         return true
     }
+    
+    private func _moveTo(location: Int) {
+        // FIXME:
+        if let position = self.textView.position(from: self.textView.beginningOfDocument, offset: location) {
+            let r = self.textView.firstRect(for: self.textView.textRange(from: position, to: position)!)
+            self.textView.setContentOffset(CGPoint(x: self.textView.contentOffset.x, y: r.origin.y), animated: false)
+        }
+    }
 }
 
 extension DocumentEditViewController: DocumentEditViewModelDelegate {
@@ -675,10 +687,7 @@ extension DocumentEditViewController: DocumentEditViewModelDelegate {
     }
     
     public func didReadyToEdit() {
-        if let position = self.textView.position(from: self.textView.beginningOfDocument, offset: self.viewModel.onLoadingLocation) {
-            let r = self.textView.firstRect(for: self.textView.textRange(from: position, to: position)!)
-            self.textView.setContentOffset(CGPoint(x: self.textView.contentOffset.x, y: r.origin.y), animated: false)
-        }
+        self._moveTo(location: self.viewModel.onLoadingLocation)
     }
     
     public func documentStatesChange(state: UIDocument.State) {

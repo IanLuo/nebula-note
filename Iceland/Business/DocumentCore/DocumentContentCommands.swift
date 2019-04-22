@@ -156,9 +156,7 @@ public class FoldingAndUnfoldingCommand: DocumentContentCommand {
     fileprivate func _unFoldHeadingAndChildren(heading: HeadingToken, textStorage: OutlineTextStorage) {
         self._markUnfold(heading: heading, textStorage: textStorage)
         for child in textStorage.subheadings(of: heading) {
-            if self._isFolded(heading: child, textStorage: textStorage) {
-                self._markUnfold(heading: child, textStorage: textStorage)
-            }
+            textStorage.setParagraphIndent(heading: child)
         }
     }
     
