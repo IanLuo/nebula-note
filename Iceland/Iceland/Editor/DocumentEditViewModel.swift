@@ -174,16 +174,12 @@ public class DocumentEditViewModel {
     }
     
     public func headingString(index: Int) -> String {
-        let heading = self.headings[index]
-        let length = [heading.tags, heading.priority]
-            .map { $0?.location ?? Int.max }
-            .reduce(heading.range.upperBound, min) - heading.range.location - heading.level + 1
-        
-        let location = [heading.range.location + heading.level, heading.planning?.upperBound]
-            .map { $0 ?? -Int.max }
-            .reduce(heading.range.location, max)
-        
-        return self._editorService.trim(string: self._editorService.string, range: NSRange(location: location, length: length))
+        let headingTextRange = self.headings[index].headingTextRange
+        return self._editorService.string.substring(headingTextRange)
+    }
+    
+    public func documentHeading(at: Int) -> DocumentHeading {
+        return DocumentHeading(documentString: self._editorService.string, headingToken: self.headings[at], url: self._editorService.fileURL)
     }
     
     public func tags(at location: Int) -> [String] {
@@ -211,11 +207,11 @@ public class DocumentEditViewModel {
     }
     
     public func foldAll() {
-        _ = self._editorService.toggleContentCommandComposer(composer: FoldAllCommandComposer())
+        _ = self._editorService.toggleContentCommandComposer(composer: FoldAllCommandComposer()).perform()
     }
     
     public func unfoldAll() {
-        _ = self._editorService.toggleContentCommandComposer(composer: UnfoldAllCommandComposer())
+        _ = self._editorService.toggleContentCommandComposer(composer: UnfoldAllCommandComposer()).perform()
     }
     
     public func performAction(_ action: EditAction, textView: UITextView, completion: ((DocumentContentCommandResult) -> Void)?) {

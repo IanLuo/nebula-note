@@ -12,7 +12,7 @@ import Business
 
 public protocol BrowserCoordinatorDelegate: class {
     func didSelectDocument(url: URL, coordinator: BrowserCoordinator)
-    func didSelectHeading(url: URL, heading: HeadingToken, coordinator: BrowserCoordinator)
+    func didSelectHeading(url: URL, heading: DocumentHeading, coordinator: BrowserCoordinator)
     func didCancel(coordinator: BrowserCoordinator)
 }
 
@@ -26,7 +26,7 @@ public class BrowserCoordinator: Coordinator {
     public weak var delegate: BrowserCoordinatorDelegate?
     
     public var didSelectDocumentAction: ((URL) -> Void)?
-    public var didSelectHeadingAction: ((URL, HeadingToken) -> Void)?
+    public var didSelectHeadingAction: ((URL, DocumentHeading) -> Void)?
     public var didCancelAction: (() -> Void)?
     
     public init(stack: UINavigationController, dependency: Dependency, usage: Usage) {
@@ -64,7 +64,7 @@ extension BrowserCoordinator: DocumentBrowserViewControllerDelegate {
 }
 
 extension BrowserCoordinator: EditorCoordinatorSelectHeadingDelegate {
-    public func didSelectHeading(url: URL, heading: HeadingToken, coordinator: EditorCoordinator) {
+    public func didSelectHeading(url: URL, heading: DocumentHeading, coordinator: EditorCoordinator) {
         coordinator.stop {
             self.delegate?.didSelectHeading(url: url, heading: heading, coordinator: self)
             self.didSelectHeadingAction?(url, heading)

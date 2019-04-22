@@ -56,7 +56,7 @@ public class CaptureListViewModel {
     }
     
     public func refile(editorService: EditorService,
-                       heading: HeadingToken) {
+                       heading: DocumentHeading) {
         
         guard let attachment = self.currentCapture else { return }
         
@@ -77,7 +77,7 @@ public class CaptureListViewModel {
             guard isOpen else { return }
             
             let content = OutlineParser.Values.Attachment.serialize(attachment: attachment)
-            service.insert(content: content, headingLocation: heading.range.location) // 添加字符串到对应的 heading 中
+            service.insert(content: content, headingLocation: heading.location) // 添加字符串到对应的 heading 中
             self.currentIndex = nil // 移除当前选中的
             self.service.delete(key: attachment.key) // 删除 capture 中的 attachment 记录
             self.data.remove(at: index)

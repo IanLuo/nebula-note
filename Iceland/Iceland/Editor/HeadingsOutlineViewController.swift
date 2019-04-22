@@ -12,7 +12,7 @@ import Interface
 import Business
 
 public protocol HeadingsOutlineViewControllerDelegate: class {
-    func didSelectHeading(url: URL, heading: HeadingToken)
+    func didSelectHeading(url: URL, heading: DocumentHeading)
     func didCancel()
 }
 
@@ -45,7 +45,7 @@ extension HeadingsOutlineViewController: SelectorViewControllerDelegate {
     }
     
     public func SelectorDidSelect(index: Int, viewController: SelectorViewController) {
-        self.outlineDelegate?.didSelectHeading(url: self.viewModel.url, heading: self.viewModel.headings[index])
+        self.outlineDelegate?.didSelectHeading(url: self.viewModel.url, heading: self.viewModel.documentHeading(at: index))
     }
 }
 

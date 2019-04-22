@@ -41,7 +41,7 @@ public class DocumentEditViewController: UIViewController {
     private let toolBar: UIView = UIView()
     
     private var closeButton: UIButton!
-    private var searchButton: UIButton!
+    private var _menuButton: UIButton!
     
     public let toolbar = InputToolbar(mode: .paragraph)
     
@@ -57,13 +57,13 @@ public class DocumentEditViewController: UIViewController {
         
         let image = self.viewModel.coordinator?.isModal == true ? Asset.Assets.down.image : Asset.Assets.left.image
         self.closeButton = self.createActionButton(icon: image.withRenderingMode(.alwaysTemplate))
-        self.searchButton = self.createActionButton(icon: Asset.Assets.zoom.image.withRenderingMode(.alwaysTemplate))
+        self._menuButton = self.createActionButton(icon: Asset.Assets.more.image.withRenderingMode(.alwaysTemplate))
         
         self.closeButton.addTarget(self, action: #selector(cancel), for: .touchUpInside)
-        self.searchButton.addTarget(self, action: #selector(search), for: .touchUpInside)
+        self._menuButton.addTarget(self, action: #selector(_showMenu), for: .touchUpInside)
         
         self.toolBar.addSubview(closeButton)
-        self.toolBar.addSubview(searchButton)
+        self.toolBar.addSubview(_menuButton)
         
         self.toolbar.frame = CGRect(origin: .zero, size: .init(width: self.view.bounds.width, height: 44))
         self.toolbar.delegate = self
@@ -88,10 +88,10 @@ public class DocumentEditViewController: UIViewController {
             .align(to: self.view, direction: AlignmentDirection.top, position: AlignmentPosition.middle, inset: 0)
 
         self.closeButton.size(width: 40, height: 40)
-            .alignToSuperview(direction: AlignmentDirection.right, position: AlignmentPosition.middle, inset: 30)
-        
-        self.searchButton.size(width: 40, height: 40)
             .alignToSuperview(direction: AlignmentDirection.left, position: AlignmentPosition.middle, inset: 30)
+        
+        self._menuButton.size(width: 40, height: 40)
+            .alignToSuperview(direction: AlignmentDirection.right, position: AlignmentPosition.middle, inset: 30)
     }
     
     @objc private func cancel() {
@@ -100,8 +100,40 @@ public class DocumentEditViewController: UIViewController {
         self.viewModel.coordinator?.stop()
     }
     
-    @objc private func search() {
-        self.viewModel.coordinator?.search()
+    @objc private func _showMenu() {
+        let actionsController = ActionsViewController()
+        
+        actionsController.addAction(icon: Asset.Assets.down.image, title: "Fold all") { viewController in
+            viewController.dismiss(animated: true, completion: {
+                self.viewModel.foldAll()
+            })
+        }
+        
+        actionsController.addAction(icon: Asset.Assets.up.image, title: "Unfold all") { viewController in
+            viewController.dismiss(animated: true, completion: {
+                self.viewModel.unfoldAll()
+            })
+        }
+        
+        actionsController.addAction(icon: Asset.Assets.master.image, title: "Outline") { viewController in
+            viewController.dismiss(animated: true, completion: {
+                self.viewModel.coordinator?.showOutline(completion: { [unowned self] heading in
+                    // TODO:
+                })
+            })
+        }
+        
+        actionsController.addAction(icon: Asset.Assets.capture.image.fill(color: InterfaceTheme.Color.interactive), title: "Capture", style: .highlight) { viewController in
+            viewController.dismiss(animated: true, completion: {
+                self.viewModel.coordinator?.showCaptureEntrance()
+            })
+        }
+        
+        actionsController.setCancel { viewController in
+            viewController.dismiss(animated: true, completion: nil)
+        }
+    
+        self.present(actionsController, animated: true, completion: nil)
     }
     
     private func attachmentPicker() {
@@ -396,6 +428,10 @@ public class DocumentEditViewController: UIViewController {
 }
 
 extension DocumentEditViewController: OutlineTextViewDelegate {
+    public func didTapOnHiddenAttachment(textView: UITextView, characterIndex: Int, point: CGPoint) {
+        self.viewModel.foldOrUnfold(location: characterIndex)
+    }
+    
     public func didTapOnPriority(textView: UITextView, characterIndex: Int, priority: String, point: CGPoint) {
         self.showPriorityEditor(location: characterIndex, current: priority)
     }

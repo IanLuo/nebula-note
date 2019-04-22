@@ -37,12 +37,16 @@ public class AgendaTableCell: UITableViewCell {
         return label
     }()
     
+    private let _dateAndTimeLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = InterfaceTheme.Color.warning
+        label.font = InterfaceTheme.Font.footnote
+        return label
+    }()
+    
     private let headingTextLabel: UILabel = {
         let label = UILabel()
-        label.textColor = InterfaceTheme.Color.interactive
-        label.font = InterfaceTheme.Font.footnote
         label.numberOfLines = 0
-        label.textAlignment = .left
         return label
     }()
     
@@ -97,21 +101,27 @@ public class AgendaTableCell: UITableViewCell {
         
         self.infoView.addSubview(self.documentNameLabel)
         self.infoView.addSubview(self.headingTextLabel)
+        self.infoView.addSubview(self._dateAndTimeLabel)
         self.infoView.addSubview(self.tagsView)
         self.infoView.addSubview(self._actionButton)
         
         self._actionButton.sideAnchor(for: [.top, .right, .bottom], to: self.infoView, edgeInsets: .init(top: 0, left: 0, bottom: 0, right: 0))
         self._actionButton.sizeAnchor(width: 44)
         
-        self.documentNameLabel.sideAnchor(for: [.left, .top, .right], to: self.infoView, edgeInsets: .init(top: 20, left: 20, bottom: 0, right: -44))
+        self._actionButton.isHidden = true // 现在不需要显示 action
+        
+        self.documentNameLabel.sideAnchor(for: [.left, .top, .right], to: self.infoView, edgeInsets: .init(top: 20, left: 20, bottom: 0, right: -20))
         self.documentNameLabel.sizeAnchor(height: 20)
         
+        self._dateAndTimeLabel.sideAnchor(for: [.right, .top, .right], to: self.infoView, edgeInsets: .init(top: 20, left: 20, bottom: 0, right: -20))
+        self._dateAndTimeLabel.sizeAnchor(height: 20)
+        
         self.documentNameLabel.columnAnchor(view: self.headingTextLabel, space: 10)
-        self.headingTextLabel.sideAnchor(for: [.left, .right], to: self.infoView, edgeInsets: .init(top: 0, left: 20, bottom: 0, right: -44))
+        self.headingTextLabel.sideAnchor(for: [.left, .right], to: self.infoView, edgeInsets: .init(top: 0, left: 20, bottom: 0, right: -20))
         self.headingTextLabel.sizeAnchor(height: 20)
         
         self.headingTextLabel.columnAnchor(view: self.tagsView, space: 10)
-        self.tagsView.sideAnchor(for: [.left, .right, .bottom], to: self.infoView, edgeInsets: .init(top: 0, left: 20, bottom: -10, right: -44))
+        self.tagsView.sideAnchor(for: [.left, .right, .bottom], to: self.infoView, edgeInsets: .init(top: 0, left: 20, bottom: -10, right: -20))
         self.tagsView.sizeAnchor(height: 0)
         
         self.tagsView.addSubview(self.tagsIcon)
@@ -152,6 +162,9 @@ public class AgendaTableCell: UITableViewCell {
             self.tagsView.isHidden = true
         }
         
+        self._dateAndTimeLabel.isHidden = cellModel.dateAndTime == nil
+        self._dateAndTimeLabel.text = cellModel.dateAndTime?.agendaLabel
+        
         self.layoutIfNeeded()
     }
     
@@ -184,3 +197,27 @@ public class AgendaTableCell: UITableViewCell {
     }
 }
 
+extension DateAndTimeType {
+    public var agendaLabel: String? {
+        let today = Date()
+        if self.isSchedule {
+            if today.isSameDay(self.date) {
+                return "due today"
+            } else if today.timeIntervalSince1970 > self.date.timeIntervalSince1970 {
+                return "started in \(today.daysFrom(self.date)) days age"
+            } else {
+                return "start in \(self.date.daysFrom(today)) days"
+            }
+        } else if self.isDue {
+            if today.isSameDay(self.date) {
+                return "due today"
+            } else if today.timeIntervalSince1970 > self.date.timeIntervalSince1970 {
+                return "+ \(today.daysFrom(self.date)) days"
+            } else {
+                return "due in \(self.date.daysFrom(today)) days"
+            }
+        } else {
+            return nil
+        }
+    }
+}

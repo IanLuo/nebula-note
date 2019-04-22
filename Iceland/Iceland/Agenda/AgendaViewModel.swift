@@ -133,7 +133,7 @@ public class AgendaViewModel {
     public func loadAgendaData() {
         self._documentSearchManager.searchDateAndTime(completion: { [weak self] results in
             let allData = results.map { AgendaCellModel(searchResult: $0) }
-            
+            let today = Date()
             self?.dateOrderedData = []
             
             self?.dates.forEach { date in
@@ -146,7 +146,7 @@ public class AgendaViewModel {
                     {
                         if dateAndTime.isSchedule || dateAndTime.isDue
                         {
-                            return dateAndTime.date <= date
+                            return dateAndTime.date <= date && date.isSameDay(today)
                         }
                         else
                         {

@@ -12,6 +12,7 @@ import Interface
 
 public protocol OutlineTextViewDelegate: class {
     func didTapOnLevel(textView: UITextView, chracterIndex: Int, point: CGPoint)
+    func didTapOnHiddenAttachment(textView: UITextView, characterIndex: Int, point: CGPoint)
     func didTapOnCheckbox(textView: UITextView, characterIndex: Int, checkbox: String, point: CGPoint)
     func didTapOnLink(textView: UITextView, characterIndex: Int, linkStructure: [String: String], point: CGPoint)
     func didTapOnTags(textView: UITextView, characterIndex: Int, tags: [String], point: CGPoint)
@@ -90,6 +91,10 @@ public class OutlineTextView: UITextView {
             self.outlineDelegate?.didTapOnPlanning(textView: self, characterIndex: characterIndex, planning: planning, point: location)
         } else if let priority = attributes[OutlineAttribute.Heading.priority] as? String {
             self.outlineDelegate?.didTapOnPriority(textView: self, characterIndex: characterIndex, priority: priority, point: location)
+        } else if let hiddenValue = attributes[OutlineAttribute.hidden] as? Int {
+            if hiddenValue == OutlineAttribute.hiddenValueWithAttachment.intValue {
+                self.outlineDelegate?.didTapOnHiddenAttachment(textView: self, characterIndex: characterIndex, point: location)
+            }
         } else {
             shouldPassTapToOtherGuestureRecognizers = true
         }

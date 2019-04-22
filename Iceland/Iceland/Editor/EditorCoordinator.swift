@@ -12,7 +12,7 @@ import Business
 import Interface
 
 public protocol EditorCoordinatorSelectHeadingDelegate: class {
-    func didSelectHeading(url: URL, heading: HeadingToken, coordinator: EditorCoordinator)
+    func didSelectHeading(url: URL, heading: DocumentHeading, coordinator: EditorCoordinator)
     func didCancel(coordinator: EditorCoordinator)
 }
 
@@ -27,6 +27,8 @@ public class EditorCoordinator: Coordinator {
     private let usage: Usage
     
     private let _viewModel: DocumentEditViewModel
+    
+    public var didSelectOutlineHeadingAction: ((DocumentHeading) -> Void)?
     
     public init(stack: UINavigationController, dependency: Dependency, usage: Usage) {
         self.usage = usage
@@ -51,6 +53,18 @@ public class EditorCoordinator: Coordinator {
             viewModel.coordinator = self
             self.viewController = viewController
         }
+    }
+    
+    public func showOutline(completion: @escaping (DocumentHeading) -> Void) {
+        let navigationController = UINavigationController()
+        navigationController.isNavigationBarHidden = true
+        let coordinator = EditorCoordinator(stack: navigationController, dependency: self.dependency, usage: EditorCoordinator.Usage.outline(self._viewModel.url))
+        coordinator.didSelectOutlineHeadingAction = { [weak coordinator] heading in
+            coordinator?.stop(animated: true, completion: {
+                completion(heading)
+            })
+        }
+        coordinator.start(from: self)
     }
     
     public func showCapturedList(completion: @escaping (Attachment) -> Void) {
@@ -113,7 +127,8 @@ extension EditorCoordinator: HeadingsOutlineViewControllerDelegate {
         self.delegate?.didCancel(coordinator: self)
     }
     
-    public func didSelectHeading(url: URL, heading: HeadingToken) {
+    public func didSelectHeading(url: URL, heading: DocumentHeading) {
         self.delegate?.didSelectHeading(url: url, heading: heading, coordinator: self)
+        self.didSelectOutlineHeadingAction?(heading)
     }
 }

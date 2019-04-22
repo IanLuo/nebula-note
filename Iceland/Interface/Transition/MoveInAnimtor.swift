@@ -13,6 +13,7 @@ public class MoveInAnimtor: NSObject, Animator {
     public enum From {
         case bottom
         case right
+        case top
     }
     
     public var from: From = .bottom
@@ -20,6 +21,11 @@ public class MoveInAnimtor: NSObject, Animator {
     
     required public init(isPresenting: Bool = true) {
         self.isPresenting = isPresenting
+    }
+    
+    public convenience init(from: From) {
+        self.init()
+        self.from = from
     }
     
     public func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
@@ -53,6 +59,11 @@ public class MoveInAnimtor: NSObject, Animator {
                                                                         width: transitionViewController.contentView.bounds.width,
                                                                         height: transitionViewController.contentView.bounds.height)
 
+                case .top:
+                    transitionViewController.contentView.frame = CGRect(x: 0,
+                                                                        y: -toRect.height,
+                                                                        width: transitionViewController.contentView.bounds.width,
+                                                                        height: transitionViewController.contentView.bounds.height)
                 }
                 
                 UIView.animate(withDuration: self.transitionDuration(using: transitionContext), delay: 0.0, options: .curveEaseInOut, animations: ({
@@ -77,6 +88,11 @@ public class MoveInAnimtor: NSObject, Animator {
                     case .right:
                         transitionViewController.contentView.frame = CGRect(x: transitionViewController.view.bounds.width,
                                                                             y: 0,
+                                                                            width: transitionViewController.contentView.bounds.width,
+                                                                            height: transitionViewController.contentView.bounds.height)
+                    case .top:
+                        transitionViewController.contentView.frame = CGRect(x: 0,
+                                                                            y: -transitionViewController.contentView.bounds.height,
                                                                             width: transitionViewController.contentView.bounds.width,
                                                                             height: transitionViewController.contentView.bounds.height)
                     }
