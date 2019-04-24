@@ -149,6 +149,10 @@ public class DocumentEditViewModel {
         return self._editorService.fileURL
     }
     
+    public var string: String {
+        return self._editorService.string
+    }
+    
     public var container: NSTextContainer {
         return self._editorService.container
     }

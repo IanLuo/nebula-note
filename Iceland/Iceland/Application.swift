@@ -23,7 +23,7 @@ public class Application: Coordinator {
                                                                     width: 60,
                                                                     height: 60))
         _entranceWindow.makeKeyAndVisible()
-        
+
         let navigationController = UINavigationController()
         navigationController.navigationBar.tintColor = InterfaceTheme.Color.interactive
         navigationController.navigationBar.setBackgroundImage(UIImage(), for: .default)

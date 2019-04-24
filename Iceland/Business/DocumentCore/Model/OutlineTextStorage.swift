@@ -848,7 +848,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
     private func _findIntersectionTokenIndex(in range: NSRange, tokens: [Token]) -> [Int] {
         var indexes: [Int] = []
         for (index, token) in tokens.enumerated() {
-            if token.range.intersection(range) != nil || token.range.upperBound == range.location //|| token.range.location == range.upperBound
+            if token.range.intersection(range) != nil || token.range.upperBound == range.location
             {
                 indexes.append(index)
             }
@@ -897,12 +897,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
     }
     
     internal func _adjustParseRange(_ range: NSRange) -> NSRange {
-        var paragraphStart = 0
-        var paragraphEnd = 0
-        var contentsEnd = 0
-        
         var newRange = range
-//        (string as NSString).getParagraphStart(&paragraphStart, end: &paragraphEnd, contentsEnd: &contentsEnd, for: newRange)
         
         let line1Start = (string as NSString).lineRange(for: NSRange(location: newRange.location, length: 0)).location
         let line2End = (string as NSString).lineRange(for: NSRange(location: newRange.upperBound - 1, length: 0)).upperBound

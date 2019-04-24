@@ -18,7 +18,7 @@ public class EditorContext {
     public let recentFilesManager: RecentFilesManager
     
     private let _eventObserver: EventObserver
-    private var _cachedServiceInstances: [URL: EditorService] = [:]
+    private static var _cachedServiceInstances: [String: EditorService] = [:]
     private let _editingQueue: DispatchQueue = DispatchQueue(label: "editor.doing.editing", qos: DispatchQoS.userInteractive, attributes: [.concurrent])
     
     public func request(url: URL) -> EditorService {
@@ -32,21 +32,40 @@ public class EditorContext {
             self?._eventObserver.emit(OpenDocumentEvent(url: url))
         }
         
-        if let editorInstance = self._cachedServiceInstances[url] {
+        return self._getCachedService(with: url)
+    }
+    
+    private func _getCachedService(with url: URL) -> EditorService {
+        if let editorInstance = _tryGetCachedService(with: url) {
             return editorInstance
         } else {
-            let newService = EditorService(url: url, queue: self._editingQueue, eventObserver: self._eventObserver)
-            self._cachedServiceInstances[url] = newService
-            return newService
+            return _createAndCacheNewService(with: url)
         }
     }
     
+    private func _tryGetCachedService(with url: URL) -> EditorService? {
+        let cacheKey = url.documentRelativePath
+        return EditorContext._cachedServiceInstances[cacheKey]
+    }
+    
+    private func _removeCachedService(with url: URL) {
+        let cacheKey = url.documentRelativePath
+        EditorContext._cachedServiceInstances[cacheKey] = nil
+    }
+    
+    private func _createAndCacheNewService(with url: URL) -> EditorService {
+        let cacheKey = url.documentRelativePath
+        let newService = EditorService(url: url, queue: self._editingQueue, eventObserver: self._eventObserver)
+        EditorContext._cachedServiceInstances[cacheKey] = newService
+        return newService
+    }
+    
     public func closeIfOpen(url: URL, complete: @escaping () -> Void) {
-        if let service = self._cachedServiceInstances[url] {
+        if let service = self._tryGetCachedService(with: url) {
             
             if service.documentState != .closed {
                 service.close { _ in
-                    self._cachedServiceInstances[url] = nil
+                    self._removeCachedService(with: url)
                     complete()
                 }
             } else {
@@ -63,14 +82,14 @@ public class EditorContext {
         let relatePath = dir.documentRelativePath
         
         queue.async {
-            for (url, service) in self._cachedServiceInstances {
+            for (key, service) in EditorContext._cachedServiceInstances {
                 dispatchGroup.enter()
-                if url.path.contains(relatePath) {
+                if key.contains(relatePath) {
                     if service.documentState != .closed {
                         DispatchQueue.main.async {
                             service.close { _ in
                                 queue.async {
-                                    self._cachedServiceInstances[url] = nil
+                                    self._removeCachedService(with: service.fileURL)
                                     dispatchGroup.leave()
                                 }
                             }

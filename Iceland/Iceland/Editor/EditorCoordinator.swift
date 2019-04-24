@@ -114,12 +114,15 @@ extension EditorCoordinator: SearchCoordinatorDelegate {
         searchCoordinator.delegate = self
         searchCoordinator.start(from: self)
     }
+    
+    public func showDocumentInfo(viewModel: DocumentEditViewModel) {
+        let documentInfoViewController = DocumentInfoViewController(viewModel: viewModel)
+        self.viewController?.present(documentInfoViewController, animated: true, completion: nil)
+    }
 }
 
 extension EditorCoordinator: DocumentEditViewControllerDelegate {
-    public func didTapLink(url: URL, title: String, point: CGPoint) {
-        
-    }
+
 }
 
 extension EditorCoordinator: HeadingsOutlineViewControllerDelegate {

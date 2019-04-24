@@ -53,7 +53,7 @@ extension CGPoint {
 }
 
 public enum AlignmentPosition {
-    case traling
+    case head
     case middle
     case tail
 }
@@ -84,12 +84,12 @@ extension UIView {
             case .bottom: inset -= view.safeAreaInsets.bottom
             }
         }
-        self.align(to: view.frame, direction: direction, position: position, inset: inset)
+        self.align(to: view.frame, direction: direction, inset: inset)
         return self
     }
     
     @discardableResult
-    public func alignToSuperview(direction: AlignmentDirection, position: AlignmentPosition, inset: CGFloat) -> UIView {
+    public func alignToSuperview(direction: AlignmentDirection, inset: CGFloat) -> UIView {
         var inset = inset
         let view = self.superview!
         if #available (iOS 11.0, *) {
@@ -100,51 +100,30 @@ extension UIView {
             case .bottom: inset -= view.safeAreaInsets.bottom
             }
         }
-        self.align(to: view.bounds, direction: direction, position: position, inset: inset)
+        self.align(to: view.bounds, direction: direction, inset: inset)
         return self
     }
     
     @discardableResult
-    public func align(to frame: CGRect, direction: AlignmentDirection, position: AlignmentPosition, inset: CGFloat) -> UIView {
+    public func align(to f: CGRect, direction: AlignmentDirection, inset: CGFloat) -> UIView {
         switch direction {
         case .left:
-            switch position {
-            case .traling:
-                self.leftTopAlign(point: frame.topLeftCorner.shift(x: inset))
-            case .middle:
-                self.leftMiddleAlign(point: frame.middleLeft.shift(x: inset))
-            case .tail:
-                self.leftBottomAlign(point: frame.bottomLeftCorner.shift(x: inset))
-            }
+            var frame = self.frame
+            frame.origin.x = f.origin.x + inset
+            self.frame = frame
         case .right:
-            switch position {
-            case .traling:
-                self.rightTopAlign(point: frame.topRightCorner.shift(x: -inset))
-            case .middle:
-                self.rightMiddleAlign(point: frame.middleRight.shift(x: -inset))
-            case .tail:
-                self.rightBottomAlign(point: frame.bottomRightCorner.shift(x: -inset))
-            }
+            var frame = self.frame
+            frame.origin.x = f.middleRight.x - inset - frame.width
+            self.frame = frame
         case .top:
-            switch position {
-            case .traling:
-                self.leftTopAlign(point: frame.topLeftCorner.shift(y: inset))
-            case .middle:
-                self.topMiddleAlign(point: frame.middleTop.shift(y: inset))
-            case .tail:
-                self.rightTopAlign(point: frame.topRightCorner.shift(y: inset))
-            }
+            var frame = self.frame
+            frame.origin.y = f.origin.y + inset
+            self.frame = frame
         case .bottom:
-            switch position {
-            case .traling:
-                self.leftBottomAlign(point: frame.bottomLeftCorner.shift(y: -inset))
-            case .middle:
-                self.bottomMiddleAlign(point: frame.middleBottom.shift(y: -inset))
-            case .tail:
-                self.rightBottomAlign(point: frame.bottomRightCorner.shift(y: -inset))
-            }
+            var frame = self.frame
+            frame.origin.y = f.bottomLeftCorner.y - inset - frame.height
+            self.frame = frame
         }
-        
 
         return self
     }
@@ -155,95 +134,6 @@ extension UIView {
         } else {
             return .zero
         }
-    }
-    
-    @discardableResult
-    private func leftTopAlign(point: CGPoint) -> UIView {
-        var frame = self.frame
-        
-        frame.origin = point
-        self.frame = frame
-        
-        return self
-    }
-    
-    @discardableResult
-    private func leftMiddleAlign(point: CGPoint) -> UIView {
-        var frame = self.frame
-        
-        frame.origin.x = point.x
-        frame.origin.y = point.y - self.frame.height / 2
-        self.frame = frame
-        
-        return self
-    }
-    
-    @discardableResult
-    private func leftBottomAlign(point: CGPoint) -> UIView {
-        var frame = self.frame
-        
-        frame.origin.x = point.x
-        frame.origin.y = point.y - self.frame.height
-        self.frame = frame
-        
-        return self
-    }
-    
-    
-    @discardableResult
-    private func rightTopAlign(point: CGPoint) -> UIView {
-        var frame = self.frame
-        
-        frame.origin.x = point.x - self.frame.width
-        frame.origin.y = point.y
-        self.frame = frame
-        
-        return self
-    }
-    
-    
-    @discardableResult
-    private func rightMiddleAlign(point: CGPoint) -> UIView {
-        var frame = self.frame
-        
-        frame.origin.x = point.x - self.frame.width
-        frame.origin.y = point.y - self.frame.height / 2
-        self.frame = frame
-        
-        return self
-    }
-    
-    @discardableResult
-    private func rightBottomAlign(point: CGPoint) -> UIView {
-        var frame = self.frame
-        
-        frame.origin.x = point.x - self.frame.width
-        frame.origin.y = point.y - self.frame.height
-        self.frame = frame
-        
-        return self
-    }
-    
-    @discardableResult
-    private func topMiddleAlign(point: CGPoint) -> UIView {
-        var frame = self.frame
-        
-        frame.origin.x = point.x - self.frame.width / 2
-        frame.origin.y = point.y
-        self.frame = frame
-        
-        return self
-    }
-    
-    @discardableResult
-    private func bottomMiddleAlign(point: CGPoint) -> UIView {
-        var frame = self.frame
-        
-        frame.origin.x = point.x - self.frame.width / 2
-        frame.origin.y = point.y - self.frame.height
-        self.frame = frame
-        
-        return self
     }
     
     @discardableResult

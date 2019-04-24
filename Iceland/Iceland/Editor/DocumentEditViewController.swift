@@ -12,7 +12,7 @@ import Business
 import Interface
 
 public protocol DocumentEditViewControllerDelegate: class {
-    func didTapLink(url: URL, title: String, point: CGPoint)
+
 }
 
 public class DocumentEditViewController: UIViewController {
@@ -38,13 +38,12 @@ public class DocumentEditViewController: UIViewController {
         fatalError()
     }
     
-    private let toolBar: UIView = UIView()
-    
-    private var closeButton: UIButton!
-    private var _menuButton: UIButton!
-    
     public let toolbar = InputToolbar(mode: .paragraph)
     
+    private let toolBar: UIView = UIView()
+    private var closeButton: UIButton!
+    private var _menuButton: UIButton!
+    private var _infoButton: UIButton!
     private var _keyboardHeight: CGFloat = 0
     
     public override func viewDidLoad() {
@@ -55,15 +54,17 @@ public class DocumentEditViewController: UIViewController {
         self.view.addSubview(self.textView)
         self.view.addSubview(self.toolBar)
         
-        let image = self.viewModel.coordinator?.isModal == true ? Asset.Assets.down.image : Asset.Assets.left.image
-        self.closeButton = self.createActionButton(icon: image.withRenderingMode(.alwaysTemplate))
+        self.closeButton = self.createActionButton(icon: Asset.Assets.cross.image.withRenderingMode(.alwaysTemplate))
         self._menuButton = self.createActionButton(icon: Asset.Assets.more.image.withRenderingMode(.alwaysTemplate))
+        self._infoButton = self.createActionButton(icon: Asset.Assets.left.image.withRenderingMode(.alwaysTemplate))
         
         self.closeButton.addTarget(self, action: #selector(cancel), for: .touchUpInside)
         self._menuButton.addTarget(self, action: #selector(_showMenu), for: .touchUpInside)
+        self._infoButton.addTarget(self, action: #selector(_showInfo), for: .touchUpInside)
         
         self.toolBar.addSubview(closeButton)
         self.toolBar.addSubview(_menuButton)
+        self.toolBar.addSubview(_infoButton)
         
         self.toolbar.frame = CGRect(origin: .zero, size: .init(width: self.view.bounds.width, height: 44))
         self.toolbar.delegate = self
@@ -88,16 +89,26 @@ public class DocumentEditViewController: UIViewController {
             .align(to: self.view, direction: AlignmentDirection.top, position: AlignmentPosition.middle, inset: 0)
 
         self.closeButton.size(width: 40, height: 40)
-            .alignToSuperview(direction: AlignmentDirection.left, position: AlignmentPosition.middle, inset: 30)
+            .alignToSuperview(direction: AlignmentDirection.left, inset: 30)
+            .alignToSuperview(direction: AlignmentDirection.top, inset: 30)
         
         self._menuButton.size(width: 40, height: 40)
-            .alignToSuperview(direction: AlignmentDirection.right, position: AlignmentPosition.middle, inset: 30)
+            .alignToSuperview(direction: AlignmentDirection.right, inset: 30)
+            .alignToSuperview(direction: AlignmentDirection.top, inset: 30)
+        
+        self._infoButton.size(width: 40, height: 40)
+            .alignToSuperview(direction: AlignmentDirection.right, inset: 80)
+            .alignToSuperview(direction: AlignmentDirection.top, inset: 30)
     }
     
     @objc private func cancel() {
         self.textView.endEditing(true)
         self.viewModel.save {}
         self.viewModel.coordinator?.stop()
+    }
+    
+    @objc private func _showInfo() {
+        self.viewModel.coordinator?.showDocumentInfo(viewModel: self.viewModel)
     }
     
     @objc private func _showMenu() {
@@ -537,7 +548,9 @@ extension DocumentEditViewController: UITextViewDelegate {
         
         return true
     }
-    
+}
+
+extension DocumentEditViewController {
     private func _handleLineBreak(_ textView: UITextView) -> Bool {
         // 如果在 heading 中，换行不在当前位置，而在 heading 之后
         guard let currentPosition = textView.selectedTextRange?.start else { return true }

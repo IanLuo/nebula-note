@@ -46,6 +46,10 @@
 	<string>find your location</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>record</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string></string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
