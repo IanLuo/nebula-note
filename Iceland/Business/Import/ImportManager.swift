@@ -8,6 +8,22 @@
 
 import Foundation
 
-public struct ImportManager {
+public protocol Importable {
+    var url: URL { get }
     
+    func createDocument(documentManager: DocumentManager)
+}
+
+public enum ImportType {
+    case org
+    case md
+    case txt
+}
+
+public struct ImportManager {
+    let documentManager: DocumentManager
+    
+    public func importFile(url: URL, type: ImportType) {
+        
+    }
 }

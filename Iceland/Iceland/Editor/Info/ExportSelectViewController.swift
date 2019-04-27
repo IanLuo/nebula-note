@@ -12,15 +12,13 @@ import Business
 import Interface
 
 public protocol ExportSelectViewControllerDelegate: class {
-
+    func didSelectExportType(_ type: ExportType, exportManager: ExportManager)
 }
 
 public class ExportSelectViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     private let _exportManager: ExportManager = ExportManager()
     
     public weak var delegate: ExportSelectViewControllerDelegate?
-    
-    private let _viewModel: DocumentEditViewModel!
     
     private lazy var _collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -33,8 +31,7 @@ public class ExportSelectViewController: UIViewController, UICollectionViewDeleg
         return collectionView
     }()
     
-    public init(viewModel: DocumentEditViewModel) {
-        self._viewModel = viewModel
+    public init() {
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -73,12 +70,7 @@ public class ExportSelectViewController: UIViewController, UICollectionViewDeleg
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        self._exportManager.export(exportable: OrgExporter(url: self._viewModel.url), completion: { [weak self] url in
-            guard let strongSelf = self else { return }
-            strongSelf._exportManager.share(from: strongSelf, url: url)
-        }) { error in
-            // TODO:
-        }
+        self.delegate?.didSelectExportType(self._exportManager.exportMethods[indexPath.row], exportManager: self._exportManager)
     }
 }
 

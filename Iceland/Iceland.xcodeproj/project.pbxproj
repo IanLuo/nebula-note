@@ -38,6 +38,7 @@
 		E40F6EAC223B7B6C00FFF53F /* Size.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4CC0C5821EEF92900058E5D /* Size.swift */; };
 		E40F6EAD223B7B7300FFF53F /* Rect.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4BC264121F56DB900B0F2B9 /* Rect.swift */; };
 		E40F6EAE223B7BA200FFF53F /* Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = E489600121DB06C800D2B19D /* Localization.swift */; };
+		E414A664227493D000748964 /* OrgImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E414A663227493D000748964 /* OrgImporter.swift */; };
 		E4162EF72254EA4F00D3619E /* DateAndTimeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4162EF62254EA4F00D3619E /* DateAndTimeType.swift */; };
 		E41A538621D4C577002B11E9 /* AgendaTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41A538521D4C577002B11E9 /* AgendaTableCell.swift */; };
 		E41A538D21D5F629002B11E9 /* CaptureTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41A538C21D5F629002B11E9 /* CaptureTableCell.swift */; };
@@ -124,7 +125,7 @@
 		E47FA8FB227025B8005AD0BA /* ExportManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E47FA8FA227025B8005AD0BA /* ExportManager.swift */; };
 		E47FA8FD227025D6005AD0BA /* ImportManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E47FA8FC227025D6005AD0BA /* ImportManager.swift */; };
 		E47FA900227026DB005AD0BA /* HTML.swift in Sources */ = {isa = PBXBuildFile; fileRef = E47FA8FF227026DB005AD0BA /* HTML.swift */; };
-		E47FA90222702717005AD0BA /* Org.swift in Sources */ = {isa = PBXBuildFile; fileRef = E47FA90122702717005AD0BA /* Org.swift */; };
+		E47FA90222702717005AD0BA /* OrgExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E47FA90122702717005AD0BA /* OrgExporter.swift */; };
 		E4821DB122374C420063C0B2 /* WeakArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4821DB022374C420063C0B2 /* WeakArray.swift */; };
 		E48329A0224A2ED1008B60ED /* SyncTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E483299F224A2ED1008B60ED /* SyncTests.swift */; };
 		E498AAFF21BBE9B900D2A8EA /* CaptureListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E498AAFE21BBE9B800D2A8EA /* CaptureListViewController.swift */; };
@@ -251,6 +252,7 @@
 		E40F6E7E223B78AE00FFF53F /* Interface.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Interface.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E40F6E80223B78AE00FFF53F /* Interface.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Interface.h; sourceTree = "<group>"; };
 		E40F6E81223B78AE00FFF53F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E414A663227493D000748964 /* OrgImporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrgImporter.swift; sourceTree = "<group>"; };
 		E4162EF62254EA4F00D3619E /* DateAndTimeType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateAndTimeType.swift; sourceTree = "<group>"; };
 		E41A538521D4C577002B11E9 /* AgendaTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgendaTableCell.swift; sourceTree = "<group>"; };
 		E41A538C21D5F629002B11E9 /* CaptureTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureTableCell.swift; sourceTree = "<group>"; };
@@ -343,7 +345,7 @@
 		E47FA8FA227025B8005AD0BA /* ExportManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportManager.swift; sourceTree = "<group>"; };
 		E47FA8FC227025D6005AD0BA /* ImportManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportManager.swift; sourceTree = "<group>"; };
 		E47FA8FF227026DB005AD0BA /* HTML.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTML.swift; sourceTree = "<group>"; };
-		E47FA90122702717005AD0BA /* Org.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Org.swift; sourceTree = "<group>"; };
+		E47FA90122702717005AD0BA /* OrgExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrgExporter.swift; sourceTree = "<group>"; };
 		E4821DB022374C420063C0B2 /* WeakArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeakArray.swift; sourceTree = "<group>"; };
 		E483299F224A2ED1008B60ED /* SyncTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncTests.swift; sourceTree = "<group>"; };
 		E4895FFF21DB065000D2B19D /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
@@ -918,7 +920,7 @@
 			children = (
 				E47FA8FA227025B8005AD0BA /* ExportManager.swift */,
 				E47FA8FF227026DB005AD0BA /* HTML.swift */,
-				E47FA90122702717005AD0BA /* Org.swift */,
+				E47FA90122702717005AD0BA /* OrgExporter.swift */,
 			);
 			path = Export;
 			sourceTree = "<group>";
@@ -927,6 +929,7 @@
 			isa = PBXGroup;
 			children = (
 				E47FA8FC227025D6005AD0BA /* ImportManager.swift */,
+				E414A663227493D000748964 /* OrgImporter.swift */,
 			);
 			path = Import;
 			sourceTree = "<group>";
@@ -1484,12 +1487,13 @@
 				E4F9ECE121FECE5C009A08CD /* PathManager.swift in Sources */,
 				E43E7877222AD0C70007EE4F /* DocumentContentCommands.swift in Sources */,
 				E41CB1C621D88DFD00EF0A3C /* Attachment.swift in Sources */,
+				E414A664227493D000748964 /* OrgImporter.swift in Sources */,
 				E41CB1C221D88DD700EF0A3C /* SyncManager.swift in Sources */,
 				E44E60F521E9F2C0005AC25F /* Location.swift in Sources */,
 				E47A9A5221F1F7690050ABC9 /* DateHelper.swift in Sources */,
 				E41CB1DB21D8953F00EF0A3C /* DocumentSearchManager.swift in Sources */,
 				E4C268EB22436C90006FC68A /* SyncEvents.swift in Sources */,
-				E47FA90222702717005AD0BA /* Org.swift in Sources */,
+				E47FA90222702717005AD0BA /* OrgExporter.swift in Sources */,
 				E41CB1C021D88DD700EF0A3C /* OutlineParserMatcher.swift in Sources */,
 				E41CB1BB21D88DCE00EF0A3C /* OutlineTextStorage.swift in Sources */,
 				E47FA8FB227025B8005AD0BA /* ExportManager.swift in Sources */,

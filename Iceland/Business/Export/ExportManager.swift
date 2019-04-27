@@ -16,10 +16,6 @@ public protocol Exportable {
     func export() -> String
 }
 
-public protocol ExportableItem {
-    func generate() -> String
-}
-
 public enum ExportType {
     case org
     case html
@@ -57,8 +53,12 @@ public struct ExportManager {
     
     public let exportMethods: [ExportType] = [.org, .html, .txt, .markdown]
     
-    public func export(exportable: Exportable, completion: @escaping (URL) -> Void,
+    public func export(url: URL,
+                       type: ExportType, 
+                       completion: @escaping (URL) -> Void,
                        failure: @escaping (Error) -> Void) {
+        
+        let exportable = type.exportable(url: url)
         let exportFileDir = URL.directory(location: URLLocation.temporary, relativePath: "export")
         exportFileDir.createDirectoryIfNeeded { error in
             
@@ -71,9 +71,13 @@ public struct ExportManager {
                 
                 do {
                     try translated.write(to: tempFileURL, atomically: true, encoding: .utf8)
-                    completion(tempFileURL)
+                    DispatchQueue.main.async {
+                        completion(tempFileURL)
+                    }
                 } catch {
-                    failure(error)
+                    DispatchQueue.main.async {
+                        failure(error)
+                    }
                 }
             }
         }

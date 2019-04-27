@@ -32,13 +32,13 @@ fileprivate class DateConstants {
   fileprivate static var _calendar: Calendar = Calendar.current
 }
 
-public extension Date {
-  static func updateDateConstant(firstWeekday: Int) {
+extension Date {
+  public static func updateDateConstant(firstWeekday: Int) {
     DateConstants._calendar.firstWeekday = firstWeekday
   }
   
   //return a string that represent the date
-  var dateKeyString: String {
+  public var dateKeyString: String {
     let cal = DateConstants.calendar
     let components = cal.dateComponents([Calendar.Component.year, Calendar.Component.month, Calendar.Component.day], from: self)
     let year = components.value(for: Calendar.Component.year) ?? 0
@@ -47,27 +47,27 @@ public extension Date {
     return "\(year)-\(month)-\(day)"
   }
     
-    var weekDayString: String {
+    public var weekDayString: String {
         let cal = DateConstants.calendar
         return cal.weekdaySymbols[cal.component(Calendar.Component.weekday, from: self) - 1]
     }
     
-    var weekDayShortString: String {
+    public var weekDayShortString: String {
         let cal = DateConstants.calendar
         return cal.shortWeekdaySymbols[cal.component(Calendar.Component.weekday, from: self) - 1]
     }
     
-    var weekOfYearString: String {
+    public var weekOfYearString: String {
         let cal = DateConstants.calendar
         return "W\(cal.component(Calendar.Component.weekOfYear, from: self))"
     }
     
-    var monthStringLong: String {
+    public var monthStringLong: String {
         let cal = DateConstants.calendar
         return cal.standaloneMonthSymbols[cal.component(Calendar.Component.month, from: self) - 1]
     }
     
-    var monthStringShort: String {
+    public var monthStringShort: String {
         let cal = DateConstants.calendar
         return cal.shortMonthSymbols[cal.component(Calendar.Component.month, from: self) - 1]
     }
@@ -137,43 +137,43 @@ extension Date {
   }
 }
 
-public extension Date {
-  func isSameDay(_ date:Date) -> Bool {
+extension Date {
+  public func isSameDay(_ date:Date) -> Bool {
     let calendar = DateConstants.calendar
     return (calendar as NSCalendar).isDate(self, equalTo: date, toUnitGranularity: NSCalendar.Unit.day)
   }
   
-  func isSameWeek(_ date:Date) -> Bool {
+  public func isSameWeek(_ date:Date) -> Bool {
     let calendar = DateConstants.calendar
     return (calendar as NSCalendar).compare(self, to: date, toUnitGranularity: [NSCalendar.Unit.weekOfYear]) == ComparisonResult.orderedSame
   }
   
-  func isSameMonth(_ date:Date) -> Bool {
+  public func isSameMonth(_ date:Date) -> Bool {
     let calendar = DateConstants.calendar
     return (calendar as NSCalendar).compare(self, to: date, toUnitGranularity: [NSCalendar.Unit.month]) == ComparisonResult.orderedSame
   }
   
-  func isSameYear(_ date:Date) -> Bool {
+  public func isSameYear(_ date:Date) -> Bool {
     let calendar = Calendar.current
     return (calendar as NSCalendar).compare(self, to: date, toUnitGranularity: [NSCalendar.Unit.year]) == ComparisonResult.orderedSame
   }
   
-  func isToday() -> Bool {
+  public func isToday() -> Bool {
     return isSameDay(Date())
   }
   
-  func isYesterday() -> Bool {
+  public func isYesterday() -> Bool {
     return isSameDay(Date.Yesterday)
   }
   
-  func daysFrom(_ date:Date) -> Int {
+  public func daysFrom(_ date:Date) -> Int {
     let timeIntervalSelf = self.timeIntervalSinceReferenceDate
     let timeIntervalCompareDay = date.timeIntervalSinceReferenceDate
     return Int(ceil((timeIntervalSelf - timeIntervalCompareDay) / Double(TimeValue.Day)))
   }
 }
 
-public extension Date {
+extension Date {
   public var firstDayOfThisWeek: Date {
     get {
       let cal = DateConstants.calendar
@@ -225,7 +225,7 @@ public extension Date {
 
 // assemble
 
-public extension Date {
+extension Date {
   public var year: Int {
     return Calendar.current.component(Calendar.Component.year, from: self)
   }
@@ -248,7 +248,7 @@ private func int(_ i: Int?) -> Int {
 }
 
 //MARK: - format
-public extension Date {
+extension Date {
   public var shortDateString: String {
     let dateFormatter = DateFormatter()
     dateFormatter.dateStyle = DateFormatter.Style.medium
@@ -258,7 +258,7 @@ public extension Date {
 
 
 //MARK: formatter
-public extension Date {
+extension Date {
   public func format(_ format: String) -> String {
     let formatter = DateFormatter()
     formatter.setLocalizedDateFormatFromTemplate(format)

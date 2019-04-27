@@ -284,7 +284,7 @@ extension DocumentBrowserViewController: DocumentBrowserCellDelegate {
                     
                     selector.onSelection = { index, viewController in
                         viewController.dismiss(animated: true, completion: {
-                            exportManager.export(exportable: exportManager.exportMethods[index].exportable(url: url), completion: { url in
+                            exportManager.export(url: url, type:.org, completion: { url in
                                 exportManager.share(from: self, url: url)
                             }, failure: { error in
                                 // TODO: show error

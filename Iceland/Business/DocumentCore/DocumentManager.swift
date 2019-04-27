@@ -85,6 +85,7 @@ public struct DocumentManager {
     /// 如果有 below，则创建成 below 的子文件，否则在根目录创建
     public func add(title: String,
                         below: URL?,
+                        content: String? = nil,
                         completion: ((URL?) -> Void)? = nil) {
         let newURL: URL = URL.documentBaseURL.appendingPathComponent(title).appendingPathExtension(Document.fileExtension)
         
@@ -100,7 +101,7 @@ public struct DocumentManager {
             }
             
             let document = Document.init(fileURL: newURL)
-            document.updateContent("") // 新文档的内容为空字符串
+            document.updateContent(content ?? "") // 新文档的内容为空字符串
             document.save(to: newURL, for: UIDocument.SaveOperation.forCreating) { [document] success in
                 DispatchQueue.main.async {
                     if success {
