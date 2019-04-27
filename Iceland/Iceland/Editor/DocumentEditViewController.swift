@@ -19,6 +19,8 @@ public class DocumentEditViewController: UIViewController {
     public let textView: OutlineTextView
     internal let viewModel: DocumentEditViewModel
     
+    private let _loadingIndicator: UIActivityIndicatorView = UIActivityIndicatorView(style: UIActivityIndicatorView.Style.whiteLarge)
+    
     public weak var delegate: DocumentEditViewControllerDelegate?
     
     public init(viewModel: DocumentEditViewModel) {
@@ -53,6 +55,13 @@ public class DocumentEditViewController: UIViewController {
         
         self.view.addSubview(self.textView)
         self.view.addSubview(self.toolBar)
+        self.view.addSubview(self._loadingIndicator)
+        
+        if !self.viewModel.isReadyToEdit {
+            self._loadingIndicator.startAnimating()
+        }
+        
+        self._loadingIndicator.centerAnchors(position: [.centerX, .centerY], to: self.view)
         
         self.closeButton = self.createActionButton(icon: Asset.Assets.cross.image.withRenderingMode(.alwaysTemplate))
         self._menuButton = self.createActionButton(icon: Asset.Assets.more.image.withRenderingMode(.alwaysTemplate))
@@ -224,6 +233,7 @@ public class DocumentEditViewController: UIViewController {
     
     public func showPriorityEditor(location: Int, current: String?) {
         let actionsController = ActionsViewController()
+        actionsController.title = current ?? "Choose your priority"
         
         let priorities = self.viewModel.coordinator?.dependency.settingAccessor.priorities.filter { $0 != current } ?? []
         
@@ -239,7 +249,7 @@ public class DocumentEditViewController: UIViewController {
         }
         
         if current != nil {
-            actionsController.addAction(icon: nil, title: "remove priority", style: .warning) { (viewController) in
+            actionsController.addAction(icon: nil, title: "Remove Priority", style: .warning) { (viewController) in
                 viewController.dismiss(animated: true, completion: {
                     self.viewModel.performAction(EditAction.changePriority(nil, location), textView: self.textView, completion: { [unowned self] result in
                         let oldSelectedRange = self.textView.selectedRange
@@ -341,6 +351,8 @@ public class DocumentEditViewController: UIViewController {
         let allPlannings = self.viewModel.coordinator!.dependency.settingAccessor.allPlannings.filter { $0 != current }
         
         let actionsController = ActionsViewController()
+        
+        actionsController.title = current ?? "Choose your planning"
         
         for planning in allPlannings {
             actionsController.addAction(icon: nil, title: planning) { viewController in
@@ -700,6 +712,7 @@ extension DocumentEditViewController: DocumentEditViewModelDelegate {
     }
     
     public func didReadyToEdit() {
+        self._loadingIndicator.stopAnimating()
         self._moveTo(location: self.viewModel.onLoadingLocation)
     }
     

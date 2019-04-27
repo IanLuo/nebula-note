@@ -9,24 +9,53 @@
 import Foundation
 import UIKit.UIDocument
 
-// MARK: - Service - 
+// MARK: - Service -
+
+public enum EditorServiceError: Error {
+    case fileIsNotReady
+}
 
 public class EditorService {
     private let _editorController: EditorController
-    fileprivate var _document: Document!
+    fileprivate var _document: Document?
     private lazy var _trimmer: OutlineTextTrimmer = OutlineTextTrimmer(parser: OutlineParser())
     private let _eventObserver: EventObserver
     private var _queue: DispatchQueue!
+    private let _url: URL
+    
+    public var isReadyToUse: Bool = false {
+        didSet {
+            if isReadyToUse && isReadyToUse != oldValue {
+                onReadyToUse?()
+            }
+        }
+    }
+    
+    public var onReadyToUse: (() -> Void)? {
+        didSet {
+            if isReadyToUse {
+                onReadyToUse?()
+            }
+        }
+    }
     
     internal init(url: URL, queue: DispatchQueue, eventObserver: EventObserver) {
+        self._url = url
         self._eventObserver = eventObserver
         self._editorController = EditorController(parser: OutlineParser(), eventObserver: eventObserver, attachmentManager: AttachmentManager())
-        self._document = Document(fileURL: url)
         self._queue = queue
         
         self._editorController.delegate = self
         
-        self._document.didUpdateDocumentContentAction = { [weak self] in
+        queue.async { [weak self] in
+            let document = Document(fileURL: url)
+            DispatchQueue.main.async {
+                self?._document = document
+                self?.isReadyToUse = true
+            }
+        }
+        
+        self._document?.didUpdateDocumentContentAction = { [weak self] in
             
         }
     }
@@ -36,7 +65,7 @@ public class EditorService {
     }
     
     public func markAsContentUpdated() {
-        self._document.updateContent(_editorController.string)
+        self._document?.updateContent(_editorController.string)
     }
     
     public func toggleContentCommandComposer(composer: DocumentContentCommandComposer) -> DocumentContentCommand {
@@ -45,13 +74,18 @@ public class EditorService {
     
 
     public func start(complete: @escaping (Bool, EditorService) -> Void) {
+        guard let document = self._document else {
+            complete(false, self)
+            return
+        }
+        
         _queue.async { [unowned self] in
-            if self._document.documentState == UIDocument.State.normal {
+            if self._document?.documentState == UIDocument.State.normal {
                 complete(true, self)
             } else {
-                self._document.open {
+                self._document?.open {
                     if $0 {
-                        self._editorController.string = self._document.string
+                        self._editorController.string = document.string
                         DispatchQueue.main.async {
                             complete(true, self)
                         }
@@ -67,14 +101,14 @@ public class EditorService {
     }
     
     public var documentState: UIDocument.State {
-        return self._document.documentState
+        return self._document?.documentState ?? .closed
     }
     
     public var cover: UIImage? {
         set {
-            self._document.updateCover(newValue)
+            self._document?.updateCover(newValue)
         }
-        get { return self._document.cover }
+        get { return self._document?.cover }
     }
     
     public func trim(string: String, range: NSRange) -> String {
@@ -96,7 +130,7 @@ public class EditorService {
     }
     
     public var fileURL: URL {
-        return _document.fileURL
+        return _document?.fileURL ?? self._url
     }
     
     public func tokens(at location: Int) -> [Token] {
@@ -116,22 +150,26 @@ public class EditorService {
     }
     
     public func open(completion:((String?) -> Void)? = nil) {
+        guard let document = self._document else {
+            completion?(nil)
+            return
+        }
+        
         self._queue.async { [weak self] in
             // 如果文档已经打开，则直接返回
-            if self?._document.documentState == .normal {
-                guard let strongSelf = self else { return }
+            if document.documentState == .normal {
                 DispatchQueue.main.async {
-                    completion?(strongSelf._document.string)
+                    completion?(document.string)
                 }
             } else {
                 // 打开文档，触发解析，然后返回
-                self?._document.open { (isOpenSuccessfully: Bool) in
+                document.open { (isOpenSuccessfully: Bool) in
                     guard let strongSelf = self else { return }
                     
                     if isOpenSuccessfully {
                         DispatchQueue.main.async {
-                            strongSelf._editorController.string = strongSelf._document.string // 触发解析
-                            completion?(strongSelf._document.string)
+                            strongSelf._editorController.string = document.string // 触发解析
+                            completion?(document.string)
                         }
                     } else {
                         DispatchQueue.main.async {
@@ -148,24 +186,36 @@ public class EditorService {
         
         _editorController.insertToParagraph(at: heading, content: content)
         
-        self._document.updateContent(_editorController.string)
+        self._document?.updateContent(_editorController.string)
     }
     
     public func close(completion:((Bool) -> Void)? = nil) {
-        _document.close {
+        guard let document = self._document else {
+            completion?(false)
+            return
+        }
+        
+        document.close {
             completion?($0)
         }
     }
     
     public func rename(newTitle: String, completion: ((Error?) -> Void)? = nil) {
-        let newURL = self._document.fileURL.deletingLastPathComponent().appendingPathComponent(newTitle).appendingPathExtension(Document.fileExtension)
-        _document.fileURL.rename(url: newURL, completion: completion)
+        guard let document = self._document else {
+            completion?(EditorServiceError.fileIsNotReady)
+            return
+        }
+        
+        let newURL = document.fileURL.deletingLastPathComponent().appendingPathComponent(newTitle).appendingPathExtension(Document.fileExtension)
+        document.fileURL.rename(url: newURL, completion: completion)
     }
     
     public func save(completion: ((Bool) -> Void)? = nil) {
+        guard let document = self._document else { return }
+        
         _queue.async {
-            self._document.updateContent(self._editorController.string)
-            self._document.save(to: self._document.fileURL, for: UIDocument.SaveOperation.forOverwriting) { success in
+            document.updateContent(self._editorController.string)
+            document.save(to: document.fileURL, for: UIDocument.SaveOperation.forOverwriting) { success in
                 
                 DispatchQueue.main.async {
                     completion?(success)
@@ -175,14 +225,23 @@ public class EditorService {
     }
     
     public func delete(completion: ((Error?) -> Void)? = nil) {
-        self._document.fileURL.delete {
+        guard let document = self._document else {
+            completion?(EditorServiceError.fileIsNotReady)
+            return
+        }
+        
+        document.fileURL.delete {
             completion?($0)
         }
     }
     
     public func find(target: String, found: @escaping ([NSRange]) -> Void) throws {
+        guard let document = self._document else {
+            return
+        }
+        
         let matcher = try NSRegularExpression(pattern: "\(target)", options: .caseInsensitive)
-        let string = self._document.string
+        let string = document.string
         var matchedRanges: [NSRange] = []
         
         DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {

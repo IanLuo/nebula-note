@@ -265,7 +265,7 @@ extension URL {
             } else {
                 let fm = FileManager.default
                 do {
-                    try fm.copyItem(at: self, to: copyURL)
+                    try fm.copyItem(at: read.url, to: write.url)
                     completion(copyURL, nil)
                 } catch {
                     completion(nil, error)
@@ -306,9 +306,9 @@ extension URL {
         fileCoordinator.coordinate(with: [moving, replacing], queue: queue) { error in
             do {
                 let fileManager = FileManager.default
-                fileCoordinator.item(at: oldURL, willMoveTo: newURL)
-                try fileManager.moveItem(at: oldURL, to: newURL)
-                fileCoordinator.item(at: oldURL, didMoveTo: newURL)
+                fileCoordinator.item(at: moving.url, willMoveTo: replacing.url)
+                try fileManager.moveItem(at: moving.url, to: replacing.url)
+                fileCoordinator.item(at: moving.url, didMoveTo: replacing.url)
                 completion?(error)
             } catch {
                 completion?(error)
@@ -318,16 +318,19 @@ extension URL {
     
     public func createDirectoryIfNeeded(completion: ((Error?) -> Void)?) {
         var isDir = ObjCBool(true)
-        guard !FileManager.default.fileExists(atPath: self.path, isDirectory: &isDir) else { completion?(nil); return }
+        guard !FileManager.default.fileExists(atPath: self.path, isDirectory: &isDir) else {
+            completion?(nil)
+            return
+        }
         
         log.info("no directory exists at: \(self.path), creating one...")
         let fileCoordinator = NSFileCoordinator()
-        let intent = NSFileAccessIntent.writingIntent(with: URL(fileURLWithPath: path), options: NSFileCoordinator.WritingOptions.forMoving)
+        let intent = NSFileAccessIntent.writingIntent(with: URL(fileURLWithPath: path), options: NSFileCoordinator.WritingOptions.forReplacing)
         let queue = OperationQueue()
         queue.qualityOfService = .background
         fileCoordinator.coordinate(with: [intent], queue: queue) { error in
             do {
-                try Foundation.FileManager.default.createDirectory(atPath: self.path, withIntermediateDirectories: true, attributes: nil)
+                try Foundation.FileManager.default.createDirectory(atPath: intent.url.path, withIntermediateDirectories: true, attributes: nil)
                 completion?(nil)
             } catch {
                 completion?(error)

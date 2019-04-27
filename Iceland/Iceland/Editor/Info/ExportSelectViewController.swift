@@ -29,6 +29,7 @@ public class ExportSelectViewController: UIViewController, UICollectionViewDeleg
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.register(ExportItemCell.self, forCellWithReuseIdentifier: ExportItemCell.reuseIdentifier)
+        collectionView.showsHorizontalScrollIndicator = false
         return collectionView
     }()
     
@@ -43,7 +44,7 @@ public class ExportSelectViewController: UIViewController, UICollectionViewDeleg
     
     public override func viewDidLoad() {        
         self.view.addSubview(self._collectionView)
-        
+        self._collectionView.backgroundColor = InterfaceTheme.Color.background2
         self._collectionView.allSidesAnchors(to: self.view, edgeInset: 0)
     }
     
@@ -67,8 +68,8 @@ public class ExportSelectViewController: UIViewController, UICollectionViewDeleg
         return 10
     }
     
-    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 0
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -94,14 +95,11 @@ private class ExportItemCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    let iconView: UIImageView = {
-        let imageView = UIImageView()
-        return imageView
-    }()
-    
     let label: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
+        label.font = InterfaceTheme.Font.title
+        label.textColor = InterfaceTheme.Color.interactive
         return label
     }()
     
@@ -110,13 +108,8 @@ private class ExportItemCell: UICollectionViewCell {
         self.layer.cornerRadius = 8
         self.layer.masksToBounds = true
         
-        self.addSubview(self.iconView)
         self.addSubview(self.label)
         
-        self.iconView.sideAnchor(for: [.left, .top, .right], to: self, edgeInset: 0)
-        
-        self.iconView.columnAnchor(view: self.label, space: 5)
-        
-        self.label.sideAnchor(for: [.left, .bottom, .right], to: self, edgeInset: 0)
+        self.label.centerAnchors(position: [.centerX, .centerY], to: self)
     }
 }

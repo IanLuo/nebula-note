@@ -48,9 +48,6 @@ public class DocumentInfoViewController: TransitionViewController {
         self.setupUI()
     }
     
-    private var _exportViewController: ExportSelectViewController?
-    private let _exportViewContainer: UIView = UIView()
-    
     private func setupUI() {
         self.view.addSubview(self.contentView)
         
@@ -63,16 +60,14 @@ public class DocumentInfoViewController: TransitionViewController {
         
         let exportViewController = ExportSelectViewController(viewModel: self._viewModel)
         exportViewController.delegate = self
-        self.contentView.addSubview(self._exportViewContainer)
-        self._exportViewContainer.sideAnchor(for: [.left, .bottom, .right], to: self.contentView, edgeInset: 0)
-        self._exportViewContainer.sizeAnchor(height: 120)
-            
-        self._exportViewContainer.addSubview(exportViewController.view)
-        exportViewController.view.allSidesAnchors(to: self._exportViewContainer, edgeInset: 0)
+
+        self.contentView.addSubview(exportViewController.view)
+        exportViewController.view.sideAnchor(for: [.left, .right], to: self.contentView, edgeInset: 0)
+        exportViewController.view.sideAnchor(for: .bottom, to: self.contentView, edgeInset: 10, considerSafeArea: true)
+        exportViewController.view.sizeAnchor(height: 120)
         
         self.addChild(exportViewController)
         exportViewController.didMove(toParent: self)
-        self._exportViewController = exportViewController
     }
     
     @objc func cancel() {
@@ -82,7 +77,14 @@ public class DocumentInfoViewController: TransitionViewController {
 
 extension DocumentInfoViewController: ExportSelectViewControllerDelegate {
     public func didExport(url: URL, viewController: UIViewController) {
+        let activityViewController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+        activityViewController.completionWithItemsHandler = { activityType, completed, returnedItem, error in
+            
+        }
         
+        activityViewController.excludedActivityTypes = nil
+        
+        self.present(activityViewController, animated: true, completion: nil)
     }
 }
 
