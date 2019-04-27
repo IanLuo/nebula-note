@@ -137,8 +137,8 @@ public class DocumentEditViewModel {
         self._editorService = editorService
         self.addStatesObservers()
         
-        editorService.onReadyToUse = { [weak editorService] in
-            editorService?.open {
+        editorService.onReadyToUse = { service in
+            service.open {
                 self.isReadyToEdit = $0 != nil
             }
         }

@@ -186,6 +186,7 @@ extension DocumentBrowserViewController: DocumentBrowserViewModelDelegate {
     }
 }
 
+// MARK: - DocumentBrowserCellDelegate
 extension DocumentBrowserViewController: DocumentBrowserCellDelegate {
     public func didUpdateCell(index: Int) {
         self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .fade)
@@ -244,6 +245,7 @@ extension DocumentBrowserViewController: DocumentBrowserCellDelegate {
                 })
             }
             
+            // 复制
             actionsViewController.addAction(icon: nil, title: L10n.Document.Actions.duplicate) { viewController in
                 viewController.dismiss(animated: true, completion: {
                     self.viewModel.duplicate(index: index)
@@ -251,6 +253,7 @@ extension DocumentBrowserViewController: DocumentBrowserCellDelegate {
                 })
             }
             
+            // 编辑封面
             actionsViewController.addAction(icon: nil, title: L10n.Document.Actions.cover) { viewController in
                 viewController.dismiss(animated: true, completion: {
                     
@@ -269,6 +272,35 @@ extension DocumentBrowserViewController: DocumentBrowserCellDelegate {
 
             }
             
+            // 导出
+            actionsViewController.addAction(icon: nil, title: "Export") { viewController in
+                viewController.dismiss(animated: true, completion: {
+                    let exportManager = ExportManager()
+                    let selector = SelectorViewController()
+                    selector.title = "Choose a file format"
+                    for item in exportManager.exportMethods {
+                        selector.addItem(title: item.title)
+                    }
+                    
+                    selector.onSelection = { index, viewController in
+                        viewController.dismiss(animated: true, completion: {
+                            exportManager.export(exportable: exportManager.exportMethods[index].exportable(url: url), completion: { url in
+                                exportManager.share(from: self, url: url)
+                            }, failure: { error in
+                                // TODO: show error
+                            })
+                        })
+                    }
+                    
+                    selector.onCancel = { viewController in
+                        viewController.dismiss(animated: true, completion: nil)
+                    }
+                    
+                    self.present(selector, animated: true, completion: nil)
+                })
+            }
+            
+            // 删除
             actionsViewController.addAction(icon: Asset.Assets.trash.image, title: L10n.Document.Actions.delete, style: .warning) { viewController in
                 let confirmViewController = ConfirmViewController()
                 

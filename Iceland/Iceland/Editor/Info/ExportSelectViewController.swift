@@ -12,7 +12,7 @@ import Business
 import Interface
 
 public protocol ExportSelectViewControllerDelegate: class {
-    func didExport(url: URL, viewController: UIViewController)
+
 }
 
 public class ExportSelectViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
@@ -55,7 +55,7 @@ public class ExportSelectViewController: UIViewController, UICollectionViewDeleg
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ExportItemCell.reuseIdentifier, for: indexPath) as! ExportItemCell
         
-        cell.label.text = self._exportManager.exportMethods[indexPath.row]
+        cell.label.text = self._exportManager.exportMethods[indexPath.row].title
         
         return cell
     }
@@ -73,9 +73,9 @@ public class ExportSelectViewController: UIViewController, UICollectionViewDeleg
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        self._exportManager.export(content: self._viewModel.string, exportable: OrgExporter(url: self._viewModel.url), completion: { [weak self] url in
+        self._exportManager.export(exportable: OrgExporter(url: self._viewModel.url), completion: { [weak self] url in
             guard let strongSelf = self else { return }
-            strongSelf.delegate?.didExport(url: url, viewController: strongSelf)
+            strongSelf._exportManager.share(from: strongSelf, url: url)
         }) { error in
             // TODO:
         }

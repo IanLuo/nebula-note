@@ -12,7 +12,7 @@ import Business
 public protocol CaptureListViewModelDelegate: class {
     func didLoadData()
     func didDeleteCapture(index: Int)
-    func didFail(error: Error)
+    func didFail(error: String)
     func didCompleteRefile(index: Int)
     func didStartRefile(at index: Int)
 }
@@ -73,21 +73,28 @@ public class CaptureListViewModel {
         
         self.delegate?.didStartRefile(at: index)
         
-        editorService.start { isOpen, service in
-            guard isOpen else { return }
+        editorService.onReadyToUse = { service in
             
-            let content = OutlineParser.Values.Attachment.serialize(attachment: attachment)
-            service.insert(content: content, headingLocation: heading.location) // 添加字符串到对应的 heading 中
-            self.currentIndex = nil // 移除当前选中的
-            self.service.delete(key: attachment.key) // 删除 capture 中的 attachment 记录
-            self.data.remove(at: index)
-            self.cellModels.remove(at: index)
-            
-            DispatchQueue.main.async {
-                self.delegate?.didCompleteRefile(index: index)
-                self.delegate?.didDeleteCapture(index: index)
+            service.start { isOpen, service in
+                guard isOpen else {
+                    self.delegate?.didFail(error: "Can not open file")
+                    return
+                }
+                
+                let content = OutlineParser.Values.Attachment.serialize(attachment: attachment)
+                service.insert(content: content, headingLocation: heading.location) // 添加字符串到对应的 heading 中
+                self.currentIndex = nil // 移除当前选中的
+                self.service.delete(key: attachment.key) // 删除 capture 中的 attachment 记录
+                self.data.remove(at: index)
+                self.cellModels.remove(at: index)
+                
+                DispatchQueue.main.async {
+                    self.delegate?.didCompleteRefile(index: index)
+                    self.delegate?.didDeleteCapture(index: index)
+                }
             }
         }
+        
     }
     
     public func loadAllCapturedData() {
@@ -100,7 +107,7 @@ public class CaptureListViewModel {
                 self?.cellModels = attachments.map { CaptureTableCellModel(attacment: $0) }
                 self?.delegate?.didLoadData()
             }, failure: { [weak self] error in
-                self?.delegate?.didFail(error: error)
+                self?.delegate?.didFail(error: "Can not open file")
             })
     }
     

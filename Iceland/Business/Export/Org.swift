@@ -12,8 +12,8 @@ public struct OrgExporter: Exportable {
     public let url: URL
     public var fileExtension: String = "org"
     
-    public func export(content: String) -> String {
-        return content
+    public func export() -> String {
+        return try! String(contentsOf: url.appendingPathComponent(Document.contentKey))
     }
     
     public init(url: URL) {

@@ -211,7 +211,7 @@ extension CaptureListViewController: CaptureListViewModelDelegate {
         self.tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .left)
     }
     
-    public func didFail(error: Error) {
+    public func didFail(error: String) {
         
     }
         

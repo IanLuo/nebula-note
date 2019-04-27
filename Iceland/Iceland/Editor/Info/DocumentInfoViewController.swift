@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import Interface
+import Business
 
 public class DocumentInfoViewController: TransitionViewController {
     public var contentView: UIView = {
@@ -76,16 +77,7 @@ public class DocumentInfoViewController: TransitionViewController {
 }
 
 extension DocumentInfoViewController: ExportSelectViewControllerDelegate {
-    public func didExport(url: URL, viewController: UIViewController) {
-        let activityViewController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
-        activityViewController.completionWithItemsHandler = { activityType, completed, returnedItem, error in
-            
-        }
-        
-        activityViewController.excludedActivityTypes = nil
-        
-        self.present(activityViewController, animated: true, completion: nil)
-    }
+
 }
 
 extension DocumentInfoViewController: UIGestureRecognizerDelegate {
