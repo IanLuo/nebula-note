@@ -52,7 +52,7 @@ public class ExportSelectViewController: UIViewController, UICollectionViewDeleg
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ExportItemCell.reuseIdentifier, for: indexPath) as! ExportItemCell
         
-        cell.label.text = self._exportManager.exportMethods[indexPath.row].title
+        cell.label.text = self._exportManager.exportMethods[indexPath.row].fileExtension
         
         return cell
     }

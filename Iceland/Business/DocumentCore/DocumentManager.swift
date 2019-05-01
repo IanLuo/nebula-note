@@ -112,7 +112,6 @@ public struct DocumentManager {
                     }
                 }
                 
-                
                 document.close(completionHandler: nil)
             }
         }

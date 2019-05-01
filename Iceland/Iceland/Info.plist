@@ -20,7 +20,26 @@
 			<key>LSTypeIsPackage</key>
 			<string>YES</string>
 		</dict>
-		<dict/>
+		<dict>
+			<key>CFBundleTypeIconFiles</key>
+			<array/>
+			<key>CFBundleTypeName</key>
+			<string>org</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>public.org</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeIconFiles</key>
+			<array/>
+			<key>CFBundleTypeName</key>
+			<string>mark down</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>public.md</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
