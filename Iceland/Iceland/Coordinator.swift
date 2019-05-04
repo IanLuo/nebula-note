@@ -19,6 +19,7 @@ public struct Dependency {
     let settingAccessor: SettingsAccessor
     let syncManager: SyncManager
     let attachmentManager: AttachmentManager
+    let urlHandlerManager: URLHandlerManager
     weak var globalCaptureEntryWindow: CaptureGlobalEntranceWindow?
 }
 

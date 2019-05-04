@@ -27,6 +27,12 @@ public class DocumentBrowserViewModel {
     
     public init(documentManager: DocumentManager) {
         self.documentManager = documentManager
+        
+        self._setupObservers()
+    }
+    
+    deinit {
+        self.coordinator?.dependency.eventObserver.unregister(for: self, eventType: nil)
     }
     
     public var shouldShowActions: Bool {
@@ -230,6 +236,12 @@ public class DocumentBrowserViewModel {
                                         self?.delegate?.didAddDocument(index: index, count: 1)
             }, failure: { error in
                 log.error(error)
+        })
+    }
+    
+    private func _setupObservers() {
+        self.coordinator?.dependency.eventObserver.registerForEvent(on: self, eventType: AddDocumentEvent.self, queue: nil, action: { [weak self] (event: AddDocumentEvent) -> Void in
+            self?.delegate?.didLoadData()
         })
     }
 }

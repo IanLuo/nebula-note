@@ -32,11 +32,12 @@ public class Application: Coordinator {
         let eventObserver = EventObserver()
         let editorContext = EditorContext(eventObserver: eventObserver)
         let syncManager = SyncManager(eventObserver: eventObserver)
+        let documentManager = DocumentManager(editorContext: editorContext,
+                                              eventObserver: eventObserver,
+                                              syncManager: syncManager)
         
         super.init(stack: navigationController,
-                   dependency: Dependency(documentManager: DocumentManager(editorContext: editorContext,
-                                                                           eventObserver: eventObserver,
-                                                                           syncManager: syncManager),
+                   dependency: Dependency(documentManager: documentManager,
                                           documentSearchManager: DocumentSearchManager(eventObserver: eventObserver,
                                                                                        editorContext: editorContext),
                                           editorContext: editorContext,
@@ -45,6 +46,7 @@ public class Application: Coordinator {
                                           settingAccessor: SettingsAccessor.shared,
                                           syncManager: syncManager,
                                           attachmentManager: AttachmentManager(),
+                                          urlHandlerManager: URLHandlerManager(documentManager: documentManager),
                                           globalCaptureEntryWindow: _entranceWindow))
         
         self.window?.rootViewController = self.stack

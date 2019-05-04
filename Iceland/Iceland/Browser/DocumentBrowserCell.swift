@@ -111,7 +111,7 @@ public class DocumentBrowserCell: UITableViewCell {
         
         self.separatorInset = UIEdgeInsets(top: 0, left: CGFloat(cellModel.levelFromRoot * 10 + 30), bottom: 0, right: 30)
         
-        self.titleLabel.text = self.cellModel?.url.fileName
+        self.titleLabel.text = self.cellModel?.url.packageName
         
         if cellModel.hasSubDocuments {
             self.arrowButton.isHidden = false

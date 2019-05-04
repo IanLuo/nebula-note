@@ -135,7 +135,7 @@ public class AgendaTableCell: UITableViewCell {
     }
     
     private func updateUI(cellModel: AgendaCellModel) {
-        self.documentNameLabel.text = cellModel.url.fileName
+        self.documentNameLabel.text = cellModel.url.packageName
         
         let aString: NSMutableAttributedString = NSMutableAttributedString()
         if let planning = cellModel.planning {

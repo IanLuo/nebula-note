@@ -43,6 +43,7 @@ public enum ExportType {
     public func exportable(url: URL) -> Exportable {
         switch self {
         case .org: return OrgExporter(url: url)
+        case .html: return HTMLExporter(url: url)
         default: return OrgExporter(url: url)
         }
     }
@@ -66,7 +67,7 @@ public struct ExportManager {
                 failure(error)
             } else {
                 let translated = exportable.export()
-                let fileName = exportable.url.fileName
+                let fileName = exportable.url.deletingPathExtension().lastPathComponent
                 let tempFileURL = URL.file(directory: exportFileDir, name: fileName, extension: exportable.fileExtension)
                 
                 do {

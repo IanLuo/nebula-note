@@ -25,7 +25,7 @@ public class DocumentInfo {
     public init(wrapperURL: URL) {
         guard wrapperURL.path.hasSuffix(Document.fileExtension) else { fatalError("must be a '.ice' file") }
         
-        self.name = wrapperURL.fileName
+        self.name = wrapperURL.packageName
         self.coverURL = wrapperURL.coverURL
         self.url = wrapperURL
     }

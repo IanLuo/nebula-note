@@ -16,7 +16,7 @@ public struct SearchTabelCellModel {
     public let url: URL
     
     public init(searchResult: DocumentTextSearchResult) {
-        self.fileName = searchResult.documentInfo.url.fileName
+        self.fileName = searchResult.documentInfo.url.packageName
         self.textString = searchResult.context
         self.hilightRange = searchResult.highlightRange
         self.url = searchResult.documentInfo.url

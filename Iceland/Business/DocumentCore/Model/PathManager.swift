@@ -205,7 +205,7 @@ extension URL {
             ((try? fm.contentsOfDirectory(atPath: subDocumentFolder)) ?? []).count > 0
     }
     
-    public var fileName: String {
+    public var packageName: String {        
         return self.wrapperURL.deletingPathExtension().lastPathComponent.replacingOccurrences(of: "/", with: "").unescaped
     }
     

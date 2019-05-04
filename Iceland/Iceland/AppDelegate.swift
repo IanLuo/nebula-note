@@ -31,13 +31,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow(frame: UIScreen.main.bounds)
         
         self.application = Application(window: window!)
-        
+                
         window?.tintColor = InterfaceTheme.Color.interactive
         window?.makeKeyAndVisible()
         
         self.application?.start(from: nil, animated: false)
                 
         return true
+    }
+    
+    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+        let sourceApp = (options[.sourceApplication] as? String) ?? ""
+        return self.application?.dependency.urlHandlerManager.handle(url: url, sourceApp: sourceApp) ?? false
     }
 
     func applicationWillResignActive(_ application: UIApplication) {

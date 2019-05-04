@@ -1,0 +1,31 @@
+//
+//  URLHandlerManager.swift
+//  Business
+//
+//  Created by ian luo on 2019/5/4.
+//  Copyright © 2019 wod. All rights reserved.
+//
+
+import Foundation
+
+public class URLHandlerManager {
+    
+    private var _handlers: [URLHandler] = []
+    
+    private let documentManager: DocumentManager
+    
+    public init(documentManager: DocumentManager) {
+        self.documentManager = documentManager
+    }
+    
+    public func handle(url: URL, sourceApp: String) -> Bool {
+        let urlSchemeHandler = URLSchemeHandler(sourceApp: sourceApp, url: url)
+        
+        if !urlSchemeHandler.execute(documentManager: self.documentManager) {
+            let xCallbackURLHandler = XCallbackURLlHandler(sourceApp: sourceApp, url: url)
+            return xCallbackURLHandler.execute(documentManager: self.documentManager)
+        } else {
+            return true
+        }
+    }
+}
