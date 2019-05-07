@@ -64,6 +64,11 @@ extension HeadingsOutlineViewController: DocumentEditViewModelDelegate {
                                                                      string: self.viewModel.headingString(index: index)))
         }
         
+        
+        self.onCancel = { viewController in
+            viewController.dismiss(animated: true, completion: nil)
+        }
+        
         self.view.hideProcessingAnimation()
         
         if self.items.count == 0 {

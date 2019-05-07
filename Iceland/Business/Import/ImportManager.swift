@@ -29,7 +29,7 @@ public enum ImportType: String {
         switch self {
         case .org: return "Org"
         case .md: return "Mark Down"
-        case .txt: return "TXT"
+        case .txt: return "txt"
         }
     }
     

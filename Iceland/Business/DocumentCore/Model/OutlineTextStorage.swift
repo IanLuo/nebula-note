@@ -46,11 +46,11 @@ public class OutlineTextStorage: TextStorage {
     public weak var outlineDelegate: OutlineTextStorageDelegate?
     
     /// 用于 cache 已经找到的 heading
-    private var _savedHeadings: WeakArray<HeadingToken> = WeakArray()
+    private var _savedHeadings: [HeadingToken] = []
     // cache parsed code block border line
-    private var _codeBlocks: WeakArray<BlockToken> = WeakArray()
+    private var _codeBlocks: [BlockToken] = []
     // cache parsed quote block border line
-    private var _quoteBlocks: WeakArray<BlockToken> = WeakArray()
+    private var _quoteBlocks: [BlockToken] = []
     
     // refering to current heading, when use change selection, this value changes
     public weak var currentHeading: HeadingToken?
@@ -76,7 +76,7 @@ public class OutlineTextStorage: TextStorage {
     
     // return the references of saved heading token
     public var headingTokens: [HeadingToken] {
-        return self._savedHeadings.allObjects
+        return self._savedHeadings
     }
     
     public var codeBlocks: [BlockBeginToken] {
@@ -116,16 +116,35 @@ public class OutlineTextStorage: TextStorage {
 extension OutlineTextStorage: ContentUpdatingProtocol {
     public func performContentUpdate(_ string: String!, range: NSRange, delta: Int, action: NSTextStorage.EditActions) {
 
-        guard self.editedMask != .editedAttributes else { return } // 如果是修改属性，则不进行解析
+        guard action != .editedAttributes else { return } // 如果是修改属性，则不进行解析
         guard self.string.count > 0 else { return }
+        
+        // 如果是删除操作，直接删除已删除的部分的 token
+        if delta < 0 {
+            let deletionRange = NSRange(location: range.upperBound, length: -delta)
+            for index in self._findIntersectionTokenIndex(in: deletionRange, tokens: self.allTokens).reversed() {
+                self.allTokens.remove(at: index)
+            }
+            for index in self._findIntersectionTokenIndex(in: deletionRange, tokens: self._savedHeadings).reversed() {
+                self._savedHeadings.remove(at: index)
+            }
+            for index in self._findIntersectionTokenIndex(in: deletionRange, tokens: self._codeBlocks).reversed() {
+                self._codeBlocks.remove(at: index)
+            }
+            for index in self._findIntersectionTokenIndex(in: deletionRange, tokens: self._quoteBlocks).reversed() {
+                self._quoteBlocks.remove(at: index)
+            }
+        }
 
         // 更新 item 索引缓存
-        self.updateTokenRangeOffset(delta: self.changeInLength, from: editedRange.location)
+        self.updateTokenRangeOffset(delta: delta, from: range.location)
 
         // 调整需要解析的字符串范围
-        self.currentParseRange = self._adjustParseRange(editedRange)
+        self.currentParseRange = self._adjustParseRange(range)
         
         guard let currentParseRange = self.currentParseRange else { return }
+        
+        guard currentParseRange.length > 0 else { return }
         
         // 清空解析范围内已有的 attributes
         self.setAttributes(nil, range:  currentParseRange)
@@ -136,11 +155,11 @@ extension OutlineTextStorage: ContentUpdatingProtocol {
 
         // -> DEBUG
         // 解析范围提示
-//        self.addAttributes([NSAttributedString.Key.backgroundColor: UIColor.gray.withAlphaComponent(0.5)], range: currentParseRange)
-//        // 添加 token 提示
-//        self._tempParsingTokenResult.forEach { token in
-//            self.addAttribute(NSAttributedString.Key.backgroundColor, value: UIColor.yellow.withAlphaComponent(0.3), range: token.range)
-//        }
+        self.addAttributes([NSAttributedString.Key.backgroundColor: UIColor.gray.withAlphaComponent(0.5)], range: currentParseRange)
+        // 添加 token 提示
+        self._tempParsingTokenResult.forEach { token in
+            self.addAttribute(NSAttributedString.Key.backgroundColor, value: UIColor.yellow.withAlphaComponent(0.3), range: token.range)
+        }
         // <- DEBUG
 
         // 更新当前状态缓存
@@ -159,7 +178,7 @@ extension OutlineTextStorage: ContentUpdatingProtocol {
         
         // 更新段落缩进样式
         (self.string as NSString).enumerateSubstrings(in: currentParseRange, options: NSString.EnumerationOptions.byLines) { [unowned self] (string, range, enclosedRange, stop) in
-            if let heading = self.heading(contains: range.location) {
+            if let heading = self.heading(contains: range.location), heading.paragraphRange.intersection(range) != nil {
                 self.setParagraphIndent(heading: heading, for: enclosedRange)
             }
         }
@@ -667,6 +686,8 @@ extension OutlineTextStorage: OutlineParserDelegate {
     
     /// 更新 items 中的数据
     private func _updateTokens(new tokens: [Token]) {
+        guard let currentParseRange = self.currentParseRange else { return }
+        
         var newTokens: [Token] = tokens
 
         // 对新的 token 进行排序
@@ -683,29 +704,53 @@ extension OutlineTextStorage: OutlineParserDelegate {
         if self.allTokens.count == 0 {
             self.allTokens.append(contentsOf: newTokens)
         } else {
-            guard let currentParseRange = self.currentParseRange else { return }
             let oldCount = self.allTokens.count
+            // 移除缓存的 token
             for index in self._findIntersectionTokenIndex(in: currentParseRange, tokens: self.allTokens).reversed() {
                 removedToken.append(self.allTokens.remove(at: index))
             }
             
             // add new found items
-            self.allTokens.insert(contentsOf: newTokens, at: self._findNextTokenIndex(after: currentParseRange, tokens: self.allTokens))
-            log.info("[item count changed] \(self.allTokens.count - oldCount)")
+            if let first = newTokens.first {
+                var fouldInMiddle = false
+                for (index, token) in self.allTokens.reversed().enumerated() {
+                    if first.range.location >= token.range.location, index < self.allTokens.count {
+                        self.allTokens.insert(contentsOf: newTokens, at: min(self.allTokens.count - 1, self.allTokens.count - index))
+                        fouldInMiddle = true
+                        break
+                    }
+                }
+                
+                // 如果没有在循环中找到，则添加到最后
+                if !fouldInMiddle {
+                    self.allTokens.append(contentsOf: newTokens)
+                }
+                log.info("[item count changed] \(self.allTokens.count - oldCount)")
+            }
         }
         
-        let removedHeadings = removedToken.filter{ $0 is HeadingToken }.map { $0 as! HeadingToken }
-        let cachedHeadingRemoveCount = self._savedHeadings.remove { s in removedHeadings.contains { $0.identifier == s.identifier } }
+        // 移除已缓存的 headingToken
+        var removedHeadintToken: [HeadingToken] = []
+        for index in self._findIntersectionTokenIndex(in: currentParseRange, tokens: self._savedHeadings).reversed() {
+            removedHeadintToken.append(self._savedHeadings.remove(at: index))
+        }
+
         let newHeadings = newTokens.filter { $0 is HeadingToken }.map { $0 as! HeadingToken }
         
-        self._updateTokenCache(self._savedHeadings, with: newHeadings)
+        // 更新 heading 缓存
+        self._updateTokenCache(&self._savedHeadings, with: newHeadings)
         
-        if cachedHeadingRemoveCount > 0 || newHeadings.count > 0 {
+        if removedHeadintToken.count > 0 || newHeadings.count > 0 {
             self.outlineDelegate?.didUpdateHeadings(newHeadings: newHeadings,
-                                                    oldHeadings: removedToken.filter { $0 is HeadingToken }.map { $0 as! HeadingToken })
+                                                    oldHeadings: removedHeadintToken)
         }
         
-        let codeBlocksRemovedCount = self._codeBlocks.compact()
+        // 移除缓存的 codeblock
+        var removedCodeBlockToken: [BlockToken] = []
+        for index in self._findIntersectionTokenIndex(in: currentParseRange, tokens: self._codeBlocks).reversed() {
+            removedCodeBlockToken.append(self._codeBlocks.remove(at: index))
+        }
+
         let newCodeBlocks = newTokens.filter {
             if let t = $0 as? BlockToken, t.blockType == .sourceCode {
                 return true
@@ -715,13 +760,19 @@ extension OutlineTextStorage: OutlineParserDelegate {
         }
         .map { $0 as! BlockToken }
         
-        self._updateTokenCache(self._codeBlocks, with: newCodeBlocks)
+        // 更新 code block 缓存
+        self._updateTokenCache(&self._codeBlocks, with: newCodeBlocks)
         
-        if newCodeBlocks.count > 0 || codeBlocksRemovedCount > 0 {
+        if newCodeBlocks.count > 0 || removedCodeBlockToken.count > 0 {
             self._figureOutBlocks(self._codeBlocks)
         }
         
-        let quoteBlocksRemovedCount = self._quoteBlocks.compact()
+        // 移除缓存的 quote block
+        var removedQuoteBlockToken: [BlockToken] = []
+        for index in self._findIntersectionTokenIndex(in: currentParseRange, tokens: self._quoteBlocks).reversed() {
+            removedQuoteBlockToken.append(self._quoteBlocks.remove(at: index))
+        }
+
         let newQuoteBlocks = newTokens.filter {
             if let t = $0 as? BlockToken, t.blockType == .quote {
                 return true
@@ -731,9 +782,10 @@ extension OutlineTextStorage: OutlineParserDelegate {
         }
         .map { $0 as! BlockToken }
         
-        self._updateTokenCache(self._quoteBlocks, with: newQuoteBlocks)
+        // 更新 quote block 缓存
+        self._updateTokenCache(&self._quoteBlocks, with: newQuoteBlocks)
         
-        if newQuoteBlocks.count > 0 || quoteBlocksRemovedCount > 0 {
+        if newQuoteBlocks.count > 0 || removedQuoteBlockToken.count > 0 {
             self._figureOutBlocks(self._quoteBlocks)
         }
     }
@@ -790,7 +842,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
     }
     
     // make internal begin-end connection to build paired block ranges
-    private func _figureOutBlocks<T: BlockToken>(_ blocks: WeakArray<T>) {
+    private func _figureOutBlocks<T: BlockToken>(_ blocks: [T]) {
         for i in 0..<blocks.count {
             // condition 1. i 为 BlockBeginToken
             if let token = blocks[i] as? BlockBeginToken,
@@ -805,7 +857,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
     
     /// find pared code blocks, only return begin token, the end token is refered by begin token(weakly)
     private var _pairedCodeBlocks: [BlockBeginToken] {
-        return self._codeBlocks.allObjects.filter {
+        return self._codeBlocks.filter {
             if let begin = $0 as? BlockBeginToken {
                 return begin.endToken != nil
             } else {
@@ -816,7 +868,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
     
     /// find pared code blocks, only return begin token, the end token is refered by begin token(weakly)
     private var _pairedQuoteBlocks: [BlockBeginToken] {
-        return self._quoteBlocks.allObjects.filter {
+        return self._quoteBlocks.filter {
             if let begin = $0 as? BlockBeginToken {
                 return begin.endToken != nil
             } else {
@@ -825,22 +877,24 @@ extension OutlineTextStorage: OutlineParserDelegate {
         }.map { $0 as! BlockBeginToken }
     }
     
-    private func _updateTokenCache<T: Token>(_ cache: WeakArray<T>, with newTokens: [T]) {
+    private func _updateTokenCache<T: Token>( _ cache: inout [T], with newTokens: [T]) {
         if cache.count == 0 {
-            cache.insert(newTokens, at: 0)
+            cache.insert(contentsOf: newTokens, at: 0)
         } else {
+            var didFoundInMiddle = false
             if let first = newTokens.first {
-                for i in 0..<cache.count {
-                    if let cachedToken = cache[i] {
-                        if first.range.upperBound < cachedToken.range.location {
-                            cache.insert(newTokens, at: i)
-                            return
-                        }
+                for (index, e) in cache.reversed().enumerated() {
+                    if first.range.upperBound >= e.range.location, index < cache.count {
+                        cache.insert(contentsOf: newTokens, at: min(cache.count - 1, cache.count - index))
+                        didFoundInMiddle = true
+                        break
                     }
                 }
                 
                 /// 如果没有找到合适的插入位置，添加到最后
-                cache.append(contentsOf: newTokens)
+                if !didFoundInMiddle  {
+                    cache.append(contentsOf: newTokens)
+                }
             }
         }
     }
@@ -900,7 +954,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
         var newRange = range
         
         let line1Start = (string as NSString).lineRange(for: NSRange(location: newRange.location, length: 0)).location
-        let line2End = (string as NSString).lineRange(for: NSRange(location: newRange.upperBound - 1, length: 0)).upperBound
+        let line2End = (string as NSString).lineRange(for: NSRange(location: max(0, newRange.upperBound - 1), length: 0)).upperBound
         
         newRange = NSRange(location: line1Start, length: line2End - line1Start)
         

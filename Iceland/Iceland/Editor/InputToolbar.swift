@@ -18,18 +18,18 @@ public protocol DocumentEditToolbarDelegate: class {
 public class InputToolbar: UIView {
     
     private static let actionsParagraph: [[ToolbarActionProtocol]] = [
-        [NormalAction.heading, NormalAction.bold, NormalAction.italic, NormalAction.underscore, NormalAction.strikethrough, NormalAction.code, NormalAction.sourcecode, NormalAction.quote, NormalAction.checkbox, NormalAction.dateAndTime, NormalAction.list, NormalAction.orderedList, NormalAction.planning, NormalAction.tag, NormalAction.priority], [NormalAction.captured, AttachmentAction.image, AttachmentAction.sketch, AttachmentAction.link, AttachmentAction.location, AttachmentAction.audio, AttachmentAction.video],
+        [NormalAction.paragraph, NormalAction.heading, NormalAction.bold, NormalAction.italic, NormalAction.underscore, NormalAction.strikethrough, NormalAction.code, NormalAction.sourcecode, NormalAction.quote, NormalAction.checkbox, NormalAction.dateAndTime, NormalAction.list, NormalAction.orderedList, NormalAction.planning, NormalAction.tag, NormalAction.priority], [NormalAction.captured, AttachmentAction.image, AttachmentAction.sketch, AttachmentAction.link, AttachmentAction.location, AttachmentAction.audio, AttachmentAction.video],
         [CursorAction.moveUp, CursorAction.moveDown, CursorAction.moveLeft, CursorAction.moveRight],
         [NormalAction.decreaseIndent, NormalAction.increaseIndent, NormalAction.moveUp, NormalAction.moveDown],
         [NormalAction.undo, NormalAction.redo]]
     private static let actionsHeading: [[ToolbarActionProtocol]] = [
-        [NormalAction.heading, NormalAction.bold, NormalAction.italic, NormalAction.underscore, NormalAction.strikethrough, NormalAction.code, NormalAction.planning, NormalAction.tag, NormalAction.priority],
+        [NormalAction.paragraph, NormalAction.heading, NormalAction.bold, NormalAction.italic, NormalAction.underscore, NormalAction.strikethrough, NormalAction.code, NormalAction.planning, NormalAction.tag, NormalAction.priority],
         [CursorAction.moveUp, CursorAction.moveDown, CursorAction.moveLeft, CursorAction.moveRight],
         [NormalAction.decreaseIndent, NormalAction.increaseIndent, NormalAction.moveUp, NormalAction.moveDown],
         [NormalAction.undo, NormalAction.redo]]
-    private static let quoteBlock: [[ToolbarActionProtocol]] = [[NormalAction.bold, NormalAction.italic, NormalAction.underscore, NormalAction.strikethrough, NormalAction.code],[CursorAction.moveUp, CursorAction.moveDown, CursorAction.moveLeft, CursorAction.moveRight],[NormalAction.undo, NormalAction.redo]]
+    private static let quoteBlock: [[ToolbarActionProtocol]] = [[NormalAction.paragraph], [NormalAction.bold, NormalAction.italic, NormalAction.underscore, NormalAction.strikethrough, NormalAction.code],[CursorAction.moveUp, CursorAction.moveDown, CursorAction.moveLeft, CursorAction.moveRight],[NormalAction.undo, NormalAction.redo]]
     
-    private static let codeBlock: [[ToolbarActionProtocol]] = [[CursorAction.moveUp, CursorAction.moveDown, CursorAction.moveLeft, CursorAction.moveRight],[NormalAction.decreaseIndent, NormalAction.increaseIndent, NormalAction.moveUp, NormalAction.moveDown],[NormalAction.undo, NormalAction.redo]]
+    private static let codeBlock: [[ToolbarActionProtocol]] = [[NormalAction.paragraph], [CursorAction.moveUp, CursorAction.moveDown, CursorAction.moveLeft, CursorAction.moveRight],[NormalAction.decreaseIndent, NormalAction.increaseIndent, NormalAction.moveUp, NormalAction.moveDown],[NormalAction.undo, NormalAction.redo]]
     
     public enum Mode {
         case heading

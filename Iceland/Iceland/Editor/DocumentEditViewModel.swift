@@ -45,6 +45,7 @@ public enum EditAction {
     case convertHeadingToParagraph(Int)
     case addNewLineBelow(location: Int)
     case replaceText(NSRange, String)
+    case removeParagraph(Int)
     
     public var commandComposer: DocumentContentCommandComposer {
         switch self {
@@ -104,6 +105,8 @@ public enum EditAction {
             return AddNewLineBelowCommandComposer(location: location)
         case .replaceText(let range, let textToReplace):
             return ReplaceContentCommandComposer(range: range, textToReplace: textToReplace)
+        case .removeParagraph(let location):
+            return RemoveParagraphCommandComposer(location: location)
         }
     }
 }
@@ -169,6 +172,16 @@ public class DocumentEditViewModel {
         return self._editorService.headings
     }
     
+    public func isParagraphFolded(at location: Int) -> Bool {
+        return self._editorService.isHeadingFolded(at: location)
+    }
+    
+    public func paragraphText(for location: Int) -> String {
+        guard let heading = self._editorService.heading(at: location) else { return "" }
+        
+        return self._editorService.string.substring(heading.paragraphRange)
+    }
+    
     public func cursorLocationChanged(_ newLocation: Int) {
         self._editorService.updateCurrentCursor(newLocation)
         self.delegate?.didEnterTokens(self._editorService.currentCursorTokens)
@@ -209,6 +222,23 @@ public class DocumentEditViewModel {
         }
     }
     
+    public func refileOtherDocument(url: URL, heading: DocumentHeading, location: Int, completion: @escaping (DocumentContentCommandResult) -> Void) {
+        self.coordinator?.dependency.editorContext.request(url: url).onReadyToUse = { [weak self] service in
+            service.start(complete: { isReady, service in
+                guard let strongSelf = self else { return }
+                let text = "\n" + strongSelf.paragraphText(for: location)
+                
+                // 1. 删除当前的段落
+                let result = strongSelf._editorService.toggleContentCommandComposer(composer: EditAction.removeParagraph(location).commandComposer).perform()
+                
+                // 2. 插入到新的位置
+                service.replace(text: text, range: NSRange(location: heading.paragraphRange.upperBound - 1, length: 0))
+                
+                completion(result)
+            })
+        }
+    }
+    
     public func foldOrUnfold(location: Int) {
         _ = self._editorService.toggleContentCommandComposer(composer: FoldCommandComposer(location: location)).perform()
     }
@@ -221,20 +251,19 @@ public class DocumentEditViewModel {
         _ = self._editorService.toggleContentCommandComposer(composer: UnfoldAllCommandComposer()).perform()
     }
     
-    public func performAction(_ action: EditAction, textView: UITextView, completion: ((DocumentContentCommandResult) -> Void)?) {
+    public func performAction(_ action: EditAction, textView: UITextView) -> DocumentContentCommandResult {
         let command = self._editorService.toggleContentCommandComposer(composer: action.commandComposer)
         
-        self.performContentCommand(command, textView: textView, completion: completion)
-    }
-    
-    private func performContentCommand(_ command: DocumentContentCommand, textView: UITextView, completion: ((DocumentContentCommandResult) -> Void)?) {
-        guard let replaceCommand = command as? ReplaceTextCommand else { return }
-        replaceCommand.manullayReplace = { range, string in
-            let start = textView.position(from: textView.beginningOfDocument, offset: range.location)!
-            let end = textView.position(from: textView.beginningOfDocument, offset: range.upperBound)!
-            textView.replace(textView.textRange(from: start, to: end)!, withText: string)
+        if let replaceCommand = command as? ReplaceTextCommand {
+            
+            replaceCommand.manullayReplace = { range, string in
+                let start = textView.position(from: textView.beginningOfDocument, offset: range.location)!
+                let end = textView.position(from: textView.beginningOfDocument, offset: range.upperBound)!
+                textView.replace(textView.textRange(from: start, to: end)!, withText: string)
+            }
         }
-        let result = replaceCommand.perform()
+        
+        let result = command.perform()
         
         if result.isModifiedContent {
             self._editorService.save()
@@ -242,7 +271,7 @@ public class DocumentEditViewModel {
             self._editorService.markAsContentUpdated()
         }
         
-        completion?(result)
+        return result
     }
     
     public func level(index: Int) -> Int {

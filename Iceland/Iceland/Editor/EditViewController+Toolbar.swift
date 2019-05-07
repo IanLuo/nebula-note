@@ -45,14 +45,12 @@ extension DocumentEditViewController: DocumentEditToolbarDelegate {
             // attachment
             if let attachmentAction = documentAction as? AttachmentAction {
                 self.viewModel.coordinator?.showAttachmentPicker(kind: attachmentAction.AttachmentKind, complete: { [unowned self] attachmentId in
-                    self.viewModel.performAction(EditAction.addAttachment(currentLocation,
+                    let result = self.viewModel.performAction(EditAction.addAttachment(currentLocation,
                                                                           attachmentId, attachmentAction.AttachmentKind.rawValue),
-                                                 textView: self.textView,
-                                                 completion: { [unowned self] result in
-                                                    DispatchQueue.main.async {
-                                                        self.textView.selectedRange = self.textView.selectedRange.offset(result.delta)
-                                                    }
-                    })
+                                                 textView: self.textView)
+                    DispatchQueue.main.async {
+                        self.textView.selectedRange = self.textView.selectedRange.offset(result.delta)
+                    }
                 }, cancel: {})
             }
             
@@ -68,9 +66,8 @@ extension DocumentEditViewController: DocumentEditToolbarDelegate {
                         if lineContent.count == 0 {
                             //  空行，直接转为标题
                             let lastSelectedRange = self.textView.selectedRange
-                            self.viewModel.performAction(EditAction.convertToHeading(lineRange.location), textView: self.textView, completion: { [unowned self] result in
-                                self.textView.selectedRange = lastSelectedRange.offset(result.delta)
-                            })
+                            let result = self.viewModel.performAction(EditAction.convertToHeading(lineRange.location), textView: self.textView)
+                            self.textView.selectedRange = lastSelectedRange.offset(result.delta)
                         } else {
                             // 含有文字，显示菜单
                             self.showHeadingAdd(at: lineRange.location)
@@ -78,73 +75,71 @@ extension DocumentEditViewController: DocumentEditToolbarDelegate {
                     }
                     
                 case .increaseIndent:
-                    self.viewModel.performAction(EditAction.increaseIndent(self.textView.selectedRange.location),
-                                                 textView: self.textView,
-                                                 completion: commandCompletionActionMoveCursorMapTheLengthOfStringChange(self.textView.selectedRange))
+                    let result = self.viewModel.performAction(EditAction.increaseIndent(self.textView.selectedRange.location),
+                                                 textView: self.textView)
+                    commandCompletionActionMoveCursorMapTheLengthOfStringChange(self.textView.selectedRange)(result)
                 case .decreaseIndent:
-                    self.viewModel.performAction(EditAction.decreaseIndent(self.textView.selectedRange.location),
-                                                 textView: self.textView,
-                                                 completion: commandCompletionActionMoveCursorMapTheLengthOfStringChange(self.textView.selectedRange))
+                    let result = self.viewModel.performAction(EditAction.decreaseIndent(self.textView.selectedRange.location),
+                                                 textView: self.textView)
+                    commandCompletionActionMoveCursorMapTheLengthOfStringChange(self.textView.selectedRange)(result)
                 case .undo:
                     UndoCommand().toggle(textView: self.textView)
                 case .redo:
                     RedoCommand().toggle(textView: self.textView)
                 case .bold:
-                    self.viewModel.performAction(EditAction.textMark(OutlineParser.MarkType.bold, self.textView.selectedRange),
-                                                 textView: self.textView,
-                                                 completion: commandCompletionActionMoveCursorForTextMark(self.textView.selectedRange))
+                    let result = self.viewModel.performAction(EditAction.textMark(OutlineParser.MarkType.bold, self.textView.selectedRange),
+                                                 textView: self.textView)
+                    commandCompletionActionMoveCursorForTextMark(self.textView.selectedRange)(result)
                 case .italic:
-                    self.viewModel.performAction(EditAction.textMark(OutlineParser.MarkType.italic, self.textView.selectedRange),
-                                                 textView: self.textView,
-                                                 completion: commandCompletionActionMoveCursorForTextMark(self.textView.selectedRange))
+                    let result = self.viewModel.performAction(EditAction.textMark(OutlineParser.MarkType.italic, self.textView.selectedRange),
+                                                 textView: self.textView)
+                    commandCompletionActionMoveCursorForTextMark(self.textView.selectedRange)(result)
                 case .underscore:
-                    self.viewModel.performAction(EditAction.textMark(OutlineParser.MarkType.underscore, self.textView.selectedRange),
-                                                 textView: self.textView,
-                                                 completion: commandCompletionActionMoveCursorForTextMark(self.textView.selectedRange))
+                    let result = self.viewModel.performAction(EditAction.textMark(OutlineParser.MarkType.underscore, self.textView.selectedRange),
+                                                 textView: self.textView)
+                    commandCompletionActionMoveCursorForTextMark(self.textView.selectedRange)(result)
                 case .strikethrough:
-                    self.viewModel.performAction(EditAction.textMark(OutlineParser.MarkType.strikethrough, self.textView.selectedRange),
-                                                 textView: self.textView,
-                                                 completion: commandCompletionActionMoveCursorForTextMark(self.textView.selectedRange))
+                    let result = self.viewModel.performAction(EditAction.textMark(OutlineParser.MarkType.strikethrough, self.textView.selectedRange),
+                                                 textView: self.textView)
+                    commandCompletionActionMoveCursorForTextMark(self.textView.selectedRange)(result)
                 case .code:
-                    self.viewModel.performAction(EditAction.textMark(OutlineParser.MarkType.code, self.textView.selectedRange),
-                                                 textView: self.textView,
-                                                 completion: commandCompletionActionMoveCursorForTextMark(self.textView.selectedRange))
+                    let result = self.viewModel.performAction(EditAction.textMark(OutlineParser.MarkType.code, self.textView.selectedRange),
+                                                 textView: self.textView)
+                    commandCompletionActionMoveCursorForTextMark(self.textView.selectedRange)(result)
                 case .verbatim:
-                    self.viewModel.performAction(EditAction.textMark(OutlineParser.MarkType.verbatim, self.textView.selectedRange),
-                                                 textView: self.textView,
-                                                 completion: commandCompletionActionMoveCursorForTextMark(self.textView.selectedRange))
+                    let result = self.viewModel.performAction(EditAction.textMark(OutlineParser.MarkType.verbatim, self.textView.selectedRange),
+                                                 textView: self.textView)
+                    commandCompletionActionMoveCursorForTextMark(self.textView.selectedRange)(result)
                 case .checkbox:
-                    self.viewModel.performAction(.checkboxSwitch(self.textView.selectedRange.location),
-                                                 textView: self.textView,
-                                                 completion: commandCompletionActionMoveCursorMapTheLengthOfStringChange(self.textView.selectedRange))
+                    let result = self.viewModel.performAction(.checkboxSwitch(self.textView.selectedRange.location),
+                                                 textView: self.textView)
+                    commandCompletionActionMoveCursorMapTheLengthOfStringChange(self.textView.selectedRange)(result)
                 case .list:
-                    self.viewModel.performAction(.unorderedListSwitch(self.textView.selectedRange.location),
-                                                 textView: self.textView,
-                                                 completion: commandCompletionActionMoveCursorMapTheLengthOfStringChange(self.textView.selectedRange))
+                    let result = self.viewModel.performAction(.unorderedListSwitch(self.textView.selectedRange.location),
+                                                 textView: self.textView)
+                    commandCompletionActionMoveCursorMapTheLengthOfStringChange(self.textView.selectedRange)(result)
                 case .orderedList:
-                    self.viewModel.performAction(.orderedListSwitch(self.textView.selectedRange.location),
-                                                 textView: self.textView,
-                                                 completion: commandCompletionActionMoveCursorMapTheLengthOfStringChange(self.textView.selectedRange))
+                    let result = self.viewModel.performAction(.orderedListSwitch(self.textView.selectedRange.location),
+                                                 textView: self.textView)
+                    commandCompletionActionMoveCursorMapTheLengthOfStringChange(self.textView.selectedRange)(result)
                 case .sourcecode:
-                    self.viewModel.performAction(.codeBlock(self.textView.selectedRange.location),
-                                                 textView: self.textView,
-                                                 completion: commandCompletionActionMoveCursorForBlock)
+                    let result = self.viewModel.performAction(.codeBlock(self.textView.selectedRange.location),
+                                                 textView: self.textView)
+                    commandCompletionActionMoveCursorForBlock(result: result)
                 case .quote:
-                    self.viewModel.performAction(.quoteBlock(self.textView.selectedRange.location),
-                                                 textView: self.textView,
-                                                 completion: commandCompletionActionMoveCursorForBlock)
+                    let result = self.viewModel.performAction(.quoteBlock(self.textView.selectedRange.location),
+                                                 textView: self.textView)
+                    commandCompletionActionMoveCursorForBlock(result: result)
                 case .moveUp:
                     let oldSelectedRange = textView.selectedRange
-                    self.viewModel.performAction(.moveLineUp(self.textView.selectedRange.location),
-                                                 textView: self.textView) { [unowned self] result in
-                                                    self.textView.selectedRange = oldSelectedRange.offset(result.delta)
-                    }
+                    let result = self.viewModel.performAction(.moveLineUp(self.textView.selectedRange.location),
+                                                 textView: self.textView)
+                    self.textView.selectedRange = oldSelectedRange.offset(result.delta)
                 case .moveDown:
                     let oldSelectedRange = textView.selectedRange
-                    self.viewModel.performAction(.moveLineDown(self.textView.selectedRange.location),
-                                                 textView: self.textView) { [unowned self] result in
-                                                    self.textView.selectedRange = oldSelectedRange.offset(result.delta)
-                    }
+                    let result = self.viewModel.performAction(.moveLineDown(self.textView.selectedRange.location),
+                                                 textView: self.textView)
+                    self.textView.selectedRange = oldSelectedRange.offset(result.delta)
                 case .dateAndTime:
                     self.showDateAndTimeCreator(location: self.textView.selectedRange.location)
                 case .planning:
@@ -155,6 +150,8 @@ extension DocumentEditViewController: DocumentEditToolbarDelegate {
                     self.showPriorityEditor(location: self.textView.selectedRange.location, current: self.viewModel.priority(at: self.textView.selectedRange.location))
                 case .captured:
                     self.showCapturedItemList(location: self.textView.selectedRange.location)
+                case .paragraph:
+                    self.showParagraphActions(at: self.textView.selectedRange.location)
                 }
             }
         }

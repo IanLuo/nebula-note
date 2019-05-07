@@ -67,6 +67,26 @@ public class EditorCoordinator: Coordinator {
         coordinator.start(from: self)
     }
     
+    public func showDocumentHeadingPicker(completion: @escaping (URL, DocumentHeading) -> Void) {
+        let navigationController = UINavigationController()
+        navigationController.isNavigationBarHidden = true
+        
+        let documentCoord = BrowserCoordinator(stack: navigationController,
+                                               dependency: super.dependency,
+                                               usage: .chooseHeading)
+        
+        documentCoord.didSelectHeadingAction = { [weak documentCoord]  url, heading in
+            documentCoord?.stop()
+            completion(url, heading)
+        }
+        
+        documentCoord.didCancelAction = { [weak documentCoord] in
+            documentCoord?.stop()
+        }
+        
+        documentCoord.start(from: self)
+    }
+    
     public func showCapturedList(completion: @escaping (Attachment) -> Void) {
         let navigationController = UINavigationController()
         navigationController.isNavigationBarHidden = true

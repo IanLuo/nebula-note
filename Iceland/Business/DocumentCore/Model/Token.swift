@@ -217,7 +217,7 @@ extension Token: CustomDebugStringConvertible {
     public var debugDescription: String {
         return """
         \(self.name)
-        from \(self.range.location) to \(self.range.upperBound)
+        \(self.range)
         """
     }
 }

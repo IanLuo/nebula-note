@@ -57,9 +57,9 @@ public class EditorService {
             }
         }
         
-        self._document?.didUpdateDocumentContentAction = { [weak self] in
-            
-        }
+//        self._document?.didUpdateDocumentContentAction = { [weak self] in
+//            
+//        }
     }
 
     public var container: NSTextContainer {
@@ -129,6 +129,12 @@ public class EditorService {
     public func replace(text: String, range: NSRange) {
         self._editorController.replace(text: text, in: range)
         self.save()
+    }
+    
+    public func isHeadingFolded(at location: Int) -> Bool {
+        guard let headingToken = self._editorController.textStorage.heading(contains: location) else { return false }
+        
+        return self._editorController.textStorage.isHeadingFolded(heading: headingToken)
     }
     
     public var fileURL: URL {

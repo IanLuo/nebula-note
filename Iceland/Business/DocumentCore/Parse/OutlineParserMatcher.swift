@@ -241,8 +241,8 @@ extension OutlineParser {
             
             public struct TextMark {
                 private static let ignoredCharacters: String = "\\n\\,\\'\\\""
-                private static let pre =            "[ \\(\\{\\'\\\"]?"
-                private static let post =           "[ \\-\\.\\,\\:\\!\\?\\'\\)\\}\\\"]?"
+                private static let pre =            "[ \\(\\{\\'\\\"]+"
+                private static let post =           "[ \\-\\.\\,\\:\\!\\?\\'\\)\\}\\\"]+"
                 public static let bold =            "\(pre)(\\*([^\(ignoredCharacters)\\*]*)\\*)\(post)"
                 public static let italic =          "\(pre)(\\/([^\(ignoredCharacters)\\/]*)\\/)\(post)"
                 public static let underscore =      "\(pre)(\\_([^\(ignoredCharacters)\\_]*)\\_)\(post)"

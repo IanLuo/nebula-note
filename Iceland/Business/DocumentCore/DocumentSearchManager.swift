@@ -18,8 +18,12 @@ public struct DocumentHeading {
     public let length: Int
     public let url: URL
     public let location: Int
+    public let range: NSRange
+    public let paragraphRange: NSRange
     
     public init(documentString: String, headingToken: HeadingToken, url: URL) {
+        self.range = headingToken.range
+        self.paragraphRange = headingToken.paragraphRange
         self.url = url
         self.level = headingToken.level
         self.length = headingToken.paragraphRange.length

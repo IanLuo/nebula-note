@@ -89,6 +89,20 @@ public class AddNewLineBelowCommandComposer: DocumentContentCommandComposer {
     }
 }
 
+// MARK: - RemoveParagraphCommandComposer
+public class RemoveParagraphCommandComposer: DocumentContentCommandComposer {
+    let location: Int
+    public init(location: Int) {
+        self.location = location
+    }
+    
+    public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
+        guard let heading = textStorage.heading(contains: self.location) else { return NoChangeCommand() }
+        
+        return ReplaceTextCommand(range: heading.paragraphRange, textToReplace: "", textStorage: textStorage)
+    }
+}
+
 // MARK: - NoChangeCommandComposer
 public class NoChangeCommandComposer: DocumentContentCommandComposer {
     public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
