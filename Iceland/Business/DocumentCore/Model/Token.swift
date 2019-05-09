@@ -216,6 +216,7 @@ public class HeadingToken: Token {
 extension Token: CustomDebugStringConvertible {
     public var debugDescription: String {
         return """
+        
         \(self.name)
         \(self.range)
         """
