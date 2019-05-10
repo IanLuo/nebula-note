@@ -28,6 +28,7 @@ public class Application: Coordinator {
         navigationController.navigationBar.tintColor = InterfaceTheme.Color.interactive
         navigationController.navigationBar.setBackgroundImage(UIImage(), for: .default)
         navigationController.navigationBar.shadowImage = UIImage()
+        navigationController.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.interactive]
         
         let eventObserver = EventObserver()
         let editorContext = EditorContext(eventObserver: eventObserver)

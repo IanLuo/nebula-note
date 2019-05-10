@@ -81,16 +81,13 @@ public class CaptureListViewController: UIViewController {
     private func setupUI() {
         self.view.backgroundColor = InterfaceTheme.Color.background1
         
-        self.view.addSubview(self.cancelButton)
         self.view.addSubview(self.tableView)
         
-        self.cancelButton.sideAnchor(for: [.right, .top], to: self.view, edgeInset: 0)
-        self.cancelButton.sizeAnchor(width: 80, height: 80)
-        self.cancelButton.columnAnchor(view: self.tableView)
+        self.tableView.allSidesAnchors(to: self.view, edgeInset: 0)
         
-        self.tableView.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 0)
-        
-        self.cancelButton.isHidden = !(self.viewModel.coordinator?.isModal ?? false)
+        if self.viewModel.coordinator?.isModal ?? false {
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: Asset.Assets.cross.image, style: .plain, target: self, action: #selector(cancel))
+        }
     }
     
     @objc private func cancel() {
@@ -114,6 +111,7 @@ extension CaptureListViewController: CaptureTableCellDelegate {
         let actionsViewController = self.createActionsViewController(index: index)
         
         self.present(actionsViewController, animated: true, completion: nil)
+        self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.hide()
     }
     
     public func didTapActionsWithLink(attachment: Attachment, link: String?) {
@@ -126,10 +124,12 @@ extension CaptureListViewController: CaptureTableCellDelegate {
                 if let url = URL(string: link ?? "") {
                     UIApplication.shared.open(url, options: [:], completionHandler: nil)
                 }
+                self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
             })
         }
         
         self.present(actionsViewController, animated: true, completion: nil)
+        self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.hide()
     }
     
     public func didTapActionsWithLocation(attachment: Attachment, location: CLLocationCoordinate2D) {
@@ -141,10 +141,12 @@ extension CaptureListViewController: CaptureTableCellDelegate {
             viewController.dismiss(animated: true, completion: {
                 let mapItem = MKMapItem(placemark: MKPlacemark(coordinate: location, addressDictionary:nil))
                 mapItem.openInMaps(launchOptions: [:])
+                self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
             })
         }
         
         self.present(actionsViewController, animated: true, completion: nil)
+        self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.hide()
     }
     
     private func createActionsViewController(index: Int) -> ActionsViewController {
@@ -155,24 +157,31 @@ extension CaptureListViewController: CaptureTableCellDelegate {
             actionsViewController.addAction(icon: nil, title: "delete".localizable) { viewController in
                 viewController.dismiss(animated: true, completion: {
                     self.viewModel.delete(index: index)
+                    self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                 })
             }
             
             actionsViewController.addAction(icon: nil, title: "refile".localizable) { viewController in
                 viewController.dismiss(animated: true, completion: {
-                    self.viewModel.chooseRefileLocation(index: index)
+                    self.viewModel.chooseRefileLocation(index: index, completion: {
+                        self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
+                    }, canceled: {
+                        self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
+                    })
                 })
             }
         case .pick:
             actionsViewController.addAction(icon: nil, title: "insert".localizable) { viewController in
                 viewController.dismiss(animated: true, completion: {
                     self.viewModel.selectAttachment(index: index)
+                    self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                 })
             }
         }
         
         actionsViewController.setCancel { viewController in
             viewController.dismiss(animated: true, completion: nil)
+            self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
         }
         
         return actionsViewController

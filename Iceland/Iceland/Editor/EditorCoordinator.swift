@@ -89,7 +89,10 @@ public class EditorCoordinator: Coordinator {
     
     public func showCapturedList(completion: @escaping (Attachment) -> Void) {
         let navigationController = UINavigationController()
-        navigationController.isNavigationBarHidden = true
+        navigationController.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        navigationController.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.interactive]
+        navigationController.navigationBar.shadowImage = UIImage()
+        
         let capturedListCoordinator = CaptureListCoordinator(stack: navigationController, dependency: self.dependency, mode: CaptureListViewModel.Mode.pick)
         capturedListCoordinator.onSelectAction = completion
         

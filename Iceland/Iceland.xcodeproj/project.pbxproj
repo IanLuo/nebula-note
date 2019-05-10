@@ -170,7 +170,7 @@
 		E4EFA4632230C42F00611FF5 /* CaptureGlobalEntrance.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EFA4622230C42F00611FF5 /* CaptureGlobalEntrance.swift */; };
 		E4F3029C21D74E8700BDE178 /* CaptureTableCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4F3029B21D74E8700BDE178 /* CaptureTableCellModel.swift */; };
 		E4F885EA226D5BE700748868 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4F885E9226D5BE700748868 /* Coordinator.swift */; };
-		E4F9ECDB21FAD826009A08CD /* OpenningFilesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4F9ECDA21FAD826009A08CD /* OpenningFilesView.swift */; };
+		E4F9ECDB21FAD826009A08CD /* RecentFilesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4F9ECDA21FAD826009A08CD /* RecentFilesView.swift */; };
 		E4F9ECDF21FBF61B009A08CD /* RecentFilesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4F9ECDE21FBF61B009A08CD /* RecentFilesManager.swift */; };
 		E4F9ECE121FECE5C009A08CD /* PathManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4F9ECE021FECE5C009A08CD /* PathManager.swift */; };
 		E4FD88E9223DE3C3005514C5 /* TimeSelectViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E4FD88E8223DE3C3005514C5 /* TimeSelectViewController.xib */; };
@@ -423,7 +423,7 @@
 		E4F3029B21D74E8700BDE178 /* CaptureTableCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureTableCellModel.swift; sourceTree = "<group>"; };
 		E4F3029D21D750ED00BDE178 /* Autolayout+Shortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Autolayout+Shortcuts.swift"; sourceTree = "<group>"; };
 		E4F885E9226D5BE700748868 /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
-		E4F9ECDA21FAD826009A08CD /* OpenningFilesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenningFilesView.swift; sourceTree = "<group>"; };
+		E4F9ECDA21FAD826009A08CD /* RecentFilesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentFilesView.swift; sourceTree = "<group>"; };
 		E4F9ECDE21FBF61B009A08CD /* RecentFilesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentFilesManager.swift; sourceTree = "<group>"; };
 		E4F9ECE021FECE5C009A08CD /* PathManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathManager.swift; sourceTree = "<group>"; };
 		E4FD88E8223DE3C3005514C5 /* TimeSelectViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TimeSelectViewController.xib; sourceTree = "<group>"; };
@@ -631,7 +631,7 @@
 				E4A46A3721B6470100FBDA04 /* DocumentBrowserViewModel.swift */,
 				E41CB15321D7E0F200EF0A3C /* DocumentBrowserCell.swift */,
 				E41CB15221D7E0F200EF0A3C /* DocumentBrowserCellModel.swift */,
-				E4F9ECDA21FAD826009A08CD /* OpenningFilesView.swift */,
+				E4F9ECDA21FAD826009A08CD /* RecentFilesView.swift */,
 			);
 			path = Browser;
 			sourceTree = "<group>";
@@ -1593,7 +1593,7 @@
 				E4EFA4632230C42F00611FF5 /* CaptureGlobalEntrance.swift in Sources */,
 				E49F3E4621B8EDC8003F468D /* AgendaViewModel.swift in Sources */,
 				E4EFA45D222F681700611FF5 /* CaptureCoordinator.swift in Sources */,
-				E4F9ECDB21FAD826009A08CD /* OpenningFilesView.swift in Sources */,
+				E4F9ECDB21FAD826009A08CD /* RecentFilesView.swift in Sources */,
 				E4144EA522854A0B00CB12FF /* DocumentEditViewController+Menu.swift in Sources */,
 				E462DB97223D251A00BF7AB4 /* DateAndTimeSelectViewController.swift in Sources */,
 				E42A87FF21CFCAC500151C90 /* AttachmentViewModel.swift in Sources */,

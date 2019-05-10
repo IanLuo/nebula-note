@@ -76,6 +76,8 @@ public class HomeViewController: UIViewController {
         self.addChild(viewController)
         self.currentDetailViewController = viewController
         self.view.insertSubview(viewController.view, at: 0)
+        
+        self.title = viewController.title
     }
     
     private var beginPoint: CGPoint = .zero

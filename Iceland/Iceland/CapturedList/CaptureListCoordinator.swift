@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import Business
+import Interface
 
 public protocol CaptureListCoordinatorDelegate: class {
     func didSelectAttachment(attachment: Attachment, coordinator: CaptureListCoordinator)
@@ -33,9 +34,11 @@ public class CaptureListCoordinator: Coordinator {
         viewModel.coordinator = self
     }
     
-    public func showDocumentHeadingSelector() {
+    public func showDocumentHeadingSelector(completion: @escaping (URL, DocumentHeading) -> Void, canceled: @escaping () -> Void) {
         let navigationController = UINavigationController()
-        navigationController.isNavigationBarHidden = true
+        navigationController.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        navigationController.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.interactive]
+        navigationController.navigationBar.shadowImage = UIImage()
         
         let documentCoord = BrowserCoordinator(stack: navigationController,
                                                dependency: super.dependency,
@@ -43,11 +46,12 @@ public class CaptureListCoordinator: Coordinator {
         
         documentCoord.didSelectHeadingAction = { [weak documentCoord]  url, heading in
             documentCoord?.stop()
-            self.viewModel.refile(editorService: self.dependency.editorContext.request(url: url), heading: heading)
+            completion(url, heading)
         }
         
         documentCoord.didCancelAction = { [weak documentCoord] in
             documentCoord?.stop()
+            canceled()
         }
         
         documentCoord.start(from: self)

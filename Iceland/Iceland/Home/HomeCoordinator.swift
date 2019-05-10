@@ -21,7 +21,7 @@ public class HomeCoordinator: Coordinator {
         let dashboardViewController = DashboardViewController(viewModel: viewModel)
         
         let navigationController = UINavigationController(rootViewController: dashboardViewController)
-        navigationController.navigationBar.tintColor = InterfaceTheme.Color.interactive
+        navigationController.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.interactive]
         navigationController.navigationBar.setBackgroundImage(UIImage(), for: .default)
         navigationController.navigationBar.shadowImage = UIImage()
         
@@ -57,7 +57,6 @@ public class HomeCoordinator: Coordinator {
         
         self.homeViewController.showChildViewController(agendaCoordinator.viewController!)
     }
-    
     
     private var tempCoordinator: Coordinator?
     
@@ -146,6 +145,7 @@ extension HomeCoordinator: DashboardViewControllerDelegate {
             self.remove(tempCoordinator)
             self.tempCoordinator = nil
         }
+        
         self.homeViewController.showChildViewController(viewController)
         self.homeViewController.showDetailView()
     }

@@ -17,7 +17,7 @@ public protocol RecentFilesViewDelegate: class {
     func recentFilesData() -> [RecentDocumentInfo]
 }
 
-public class OpenningFilesView: UIView {
+public class RecentFilesView: UIView {
     private var eventObserver: EventObserver?
     public init(eventObserver: EventObserver?) {
         self.eventObserver = eventObserver
@@ -123,7 +123,7 @@ public class OpenningFilesView: UIView {
     }
 }
 
-extension OpenningFilesView: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+extension RecentFilesView: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return data.count
     }
@@ -177,7 +177,8 @@ private class OpenningFileCell: UICollectionViewCell {
     
     private func setupUI() {
         self.contentView.backgroundColor = InterfaceTheme.Color.background2
-        
+        self.contentView.layer.cornerRadius = 8
+        self.contentView.layer.masksToBounds = true
         self.contentView.addSubview(self.coverView)
         self.contentView.addSubview(self.titleLabel)
         

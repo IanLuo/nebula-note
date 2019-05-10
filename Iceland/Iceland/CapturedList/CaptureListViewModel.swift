@@ -56,7 +56,8 @@ public class CaptureListViewModel {
     }
     
     public func refile(editorService: EditorService,
-                       heading: DocumentHeading) {
+                       heading: DocumentHeading,
+                       completion: @escaping() -> Void) {
         
         guard let attachment = self.currentCapture else { return }
         
@@ -91,6 +92,7 @@ public class CaptureListViewModel {
                 DispatchQueue.main.async {
                     self.delegate?.didCompleteRefile(index: index)
                     self.delegate?.didDeleteCapture(index: index)
+                    completion()
                 }
             }
         }
@@ -129,9 +131,15 @@ public class CaptureListViewModel {
         }
     }
     
-    public func chooseRefileLocation(index: Int) {
+    public func chooseRefileLocation(index: Int, completion: @escaping () -> Void, canceled: @escaping () -> Void) {
         self.currentIndex = index
-        self.coordinator?.showDocumentHeadingSelector()
+        self.coordinator?.showDocumentHeadingSelector(completion: { [unowned self] url, heading in
+            guard let service = self.coordinator?.dependency.editorContext.request(url: url) else {
+                return
+            }
+            
+            self.refile(editorService: service, heading: heading, completion: completion)
+            }, canceled: canceled)
     }
     
     public func selectAttachment(index: Int) {

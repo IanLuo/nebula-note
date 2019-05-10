@@ -172,3 +172,9 @@ extension UIView {
         return self
     }
 }
+
+extension UIViewController {
+    public var navigationBarBottomToStatusBarTop: CGFloat {
+        return (self.navigationController?.navigationBar.frame.height ?? 0) + UIApplication.shared.statusBarFrame.height
+    }
+}

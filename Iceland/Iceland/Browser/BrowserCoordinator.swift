@@ -61,6 +61,11 @@ extension BrowserCoordinator: DocumentBrowserViewControllerDelegate {
             self.showOutlineHeadings(url: url)
         }
     }
+    
+    public func didCancel() {
+        self.stop()
+        self.didCancelAction?()
+    }
 }
 
 extension BrowserCoordinator: EditorCoordinatorSelectHeadingDelegate {
@@ -73,5 +78,6 @@ extension BrowserCoordinator: EditorCoordinatorSelectHeadingDelegate {
     
     public func didCancel(coordinator: EditorCoordinator) {
         coordinator.stop()
+        self.didCancelAction?()
     }
 }

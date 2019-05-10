@@ -13,6 +13,7 @@ import Interface
 
 public protocol DocumentBrowserViewControllerDelegate: class {
     func didSelectDocument(url: URL)
+    func didCancel()
 }
 
 public class DocumentBrowserViewController: UIViewController {
@@ -29,8 +30,7 @@ public class DocumentBrowserViewController: UIViewController {
         tableView.backgroundColor = InterfaceTheme.Color.background1
         tableView.tableFooterView = UIView()
         tableView.separatorStyle = .none
-//        tableView.separatorColor = InterfaceTheme.Color.background3
-        tableView.contentInset = UIEdgeInsets(top: Constants.recentViewsHeight, left: 0, bottom: Layout.edgeInsets.bottom, right: 0)
+        tableView.contentInset = UIEdgeInsets(top: Constants.recentViewsHeight + Layout.edgeInsets.top, left: 0, bottom: Layout.edgeInsets.bottom + 80, right: 0)
         return tableView
     }()
     
@@ -44,17 +44,8 @@ public class DocumentBrowserViewController: UIViewController {
         return button
     }()
     
-    private let cancelButton: UIButton = {
-        let button = UIButton()
-        button.setImage(Asset.Assets.cross.image.withRenderingMode(.alwaysTemplate), for: .normal)
-        button.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.background1, size: .singlePoint),
-                                  for: .normal)
-        button.addTarget(self, action: #selector(cancel), for: .touchUpInside)
-        return button
-    }()
-    
-    private lazy var openningFilesView: OpenningFilesView = {
-        let view = OpenningFilesView(eventObserver: self.viewModel.coordinator?.dependency.eventObserver)
+    private lazy var openningFilesView: RecentFilesView = {
+        let view = RecentFilesView(eventObserver: self.viewModel.coordinator?.dependency.eventObserver)
         view.delegate = self
         return view
     }()
@@ -86,21 +77,19 @@ public class DocumentBrowserViewController: UIViewController {
         self.view.addSubview(self.tableView)
         self.view.addSubview(self.openningFilesView)
         self.view.addSubview(self.createNewDocumentButton)
-        self.view.addSubview(self.cancelButton)
         
         self.openningFilesView.sideAnchor(for: [.left, .top, .right], to: self.view, edgeInsets: .init(top: Layout.edgeInsets.top, left: 0, bottom: 0, right: 0), considerSafeArea: true)
         self.openningFilesView.sizeAnchor(height: Constants.recentViewsHeight)
 
-        self.cancelButton.sideAnchor(for: [.right, .top], to: self.view, edgeInset: 20)
-        self.cancelButton.sizeAnchor(width: 80, height: 80)
-
-        self.cancelButton.columnAnchor(view: self.tableView, space: Constants.recentViewsHeight)
-        self.tableView.sideAnchor(for: [.left, .bottom, .right], to: self.view, edgeInset: 0)
+        self.tableView.sideAnchor(for: [.left, .top, .bottom, .right], to: self.view, edgeInset: 0)
         
         self.createNewDocumentButton.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInsets: .zero, considerSafeArea: true)
         self.createNewDocumentButton.sizeAnchor(height: 60)
         self.createNewDocumentButton.isHidden = !self.viewModel.shouldShowActions
-        self.cancelButton.isHidden = self.viewModel.shouldShowActions
+        
+        if self.viewModel.coordinator?.isModal ?? false {
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: Asset.Assets.cross.image, style: .plain, target: self, action: #selector(cancel))
+        }
     }
     
     @objc private func createNewDocumentAtRoot() {
@@ -108,7 +97,7 @@ public class DocumentBrowserViewController: UIViewController {
     }
     
     @objc private func cancel() {
-        self.viewModel.coordinator?.stop()
+        self.delegate?.didCancel()
     }
 }
 
@@ -150,8 +139,8 @@ extension DocumentBrowserViewController: UITableViewDelegate {
     
     /// 当向上滚动时，同时滚动日期选择和日期显示 view，往下则不动
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if scrollView.contentOffset.y + scrollView.contentInset.top > 0 {
-            self.openningFilesView.constraint(for: Position.top)?.constant = Layout.edgeInsets.top - scrollView.contentOffset.y  - scrollView.contentInset.top
+        if scrollView.contentOffset.y > -scrollView.contentInset.top - self.navigationBarBottomToStatusBarTop {
+            self.openningFilesView.constraint(for: Position.top)?.constant = -scrollView.contentOffset.y - Constants.recentViewsHeight - self.navigationBarBottomToStatusBarTop
             self.view.layoutIfNeeded()
         } else {
             self.openningFilesView.constraint(for: Position.top)?.constant = Layout.edgeInsets.top
