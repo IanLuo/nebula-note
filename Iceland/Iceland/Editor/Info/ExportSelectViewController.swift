@@ -20,6 +20,14 @@ public class ExportSelectViewController: UIViewController, UICollectionViewDeleg
     
     public weak var delegate: ExportSelectViewControllerDelegate?
     
+    private let _titleLabel: UILabel = {
+        let label = UILabel()
+        label.font = InterfaceTheme.Font.body
+        label.textColor = InterfaceTheme.Color.descriptive
+        label.text = "Export"
+        return label
+    }()
+    
     private lazy var _collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
@@ -41,8 +49,14 @@ public class ExportSelectViewController: UIViewController, UICollectionViewDeleg
     
     public override func viewDidLoad() {        
         self.view.addSubview(self._collectionView)
+        self.view.addSubview(self._titleLabel)
+        
+        self._titleLabel.sideAnchor(for: [.left, .right, .top], to: self.view, edgeInsets: UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 0))
+        
+        self._titleLabel.columnAnchor(view: self._collectionView, space: 10)
+        
         self._collectionView.backgroundColor = InterfaceTheme.Color.background2
-        self._collectionView.allSidesAnchors(to: self.view, edgeInset: 0)
+        self._collectionView.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 0)
     }
     
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -58,7 +72,7 @@ public class ExportSelectViewController: UIViewController, UICollectionViewDeleg
     }
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 80, height: 120)
+        return CGSize(width: 60, height: 80)
     }
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
@@ -66,7 +80,7 @@ public class ExportSelectViewController: UIViewController, UICollectionViewDeleg
     }
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
+        return UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 12)
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -90,7 +104,7 @@ private class ExportItemCell: UICollectionViewCell {
     let label: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
-        label.font = InterfaceTheme.Font.title
+        label.font = InterfaceTheme.Font.footnote
         label.textColor = InterfaceTheme.Color.interactive
         return label
     }()

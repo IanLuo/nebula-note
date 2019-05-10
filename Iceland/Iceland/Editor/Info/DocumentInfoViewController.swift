@@ -61,14 +61,27 @@ public class DocumentInfoViewController: TransitionViewController {
         
         let exportViewController = ExportSelectViewController()
         exportViewController.delegate = self
+        
+        let basicInfoViewController = BasicInfoViewController()
 
         self.contentView.addSubview(exportViewController.view)
+        self.contentView.addSubview(basicInfoViewController.view)
+        
+        self._backButton.columnAnchor(view: basicInfoViewController.view, space: 30)
+        
+        basicInfoViewController.view.sideAnchor(for: [.left, .right], to: self.contentView, edgeInset: 0)
+        
+        basicInfoViewController.view.columnAnchor(view: exportViewController.view, space: 10)
+        
         exportViewController.view.sideAnchor(for: [.left, .right], to: self.contentView, edgeInset: 0)
         exportViewController.view.sideAnchor(for: .bottom, to: self.contentView, edgeInset: 10, considerSafeArea: true)
         exportViewController.view.sizeAnchor(height: 120)
         
         self.addChild(exportViewController)
         exportViewController.didMove(toParent: self)
+        
+        self.addChild(basicInfoViewController)
+        basicInfoViewController.didMove(toParent: self)
     }
     
     @objc func cancel() {

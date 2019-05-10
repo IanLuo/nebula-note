@@ -133,24 +133,7 @@ extension UIView {
         let bottom = self.bottomAnchor.constraint(equalTo: view.topAnchor, constant: -space)
         bottom.identifier = Position.bottom.identifier(for: self)
         bottom.isActive = true
-        
-        var constraint: NSLayoutConstraint!
-        if alignment.contains(.centerX) {
-            constraint = view.centerXAnchor.constraint(equalTo: self.centerXAnchor)
-        } else if alignment.contains(.left) {
-            constraint = view.leftAnchor.constraint(equalTo: self.leftAnchor)
-        } else if alignment.contains(.right) {
-            constraint = view.rightAnchor.constraint(equalTo: self.rightAnchor)
-        } else if alignment.contains(.traling) {
-            constraint = view.trailingAnchor.constraint(equalTo: self.trailingAnchor)
-        } else if alignment.contains(.leading) {
-            constraint = view.leadingAnchor.constraint(equalTo: self.leadingAnchor)
-        } else {
-            fatalError("must specify a valid alignment")
-        }
-        constraint.identifier = alignment.identifier(for: view)
-        constraint.isActive = true
-        
+                
         if let heightRatio = heightRatio {
             self.heightDependencyAnchor(view: view, heightRatio: heightRatio)
         }

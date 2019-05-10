@@ -173,6 +173,7 @@
 		E4F9ECDB21FAD826009A08CD /* RecentFilesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4F9ECDA21FAD826009A08CD /* RecentFilesView.swift */; };
 		E4F9ECDF21FBF61B009A08CD /* RecentFilesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4F9ECDE21FBF61B009A08CD /* RecentFilesManager.swift */; };
 		E4F9ECE121FECE5C009A08CD /* PathManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4F9ECE021FECE5C009A08CD /* PathManager.swift */; };
+		E4FB7CBE2285BBE500791F6F /* BasicInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4FB7CBD2285BBE500791F6F /* BasicInfoViewController.swift */; };
 		E4FD88E9223DE3C3005514C5 /* TimeSelectViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E4FD88E8223DE3C3005514C5 /* TimeSelectViewController.xib */; };
 		E4FD88EB223DE67E005514C5 /* DateAndTimeSelectViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E4FD88EA223DE67E005514C5 /* DateAndTimeSelectViewController.xib */; };
 		EE260FEBE701F7B91549B9B8 /* Pods_Iceland.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B03B21DC28F546E7D3A966E7 /* Pods_Iceland.framework */; };
@@ -426,6 +427,7 @@
 		E4F9ECDA21FAD826009A08CD /* RecentFilesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentFilesView.swift; sourceTree = "<group>"; };
 		E4F9ECDE21FBF61B009A08CD /* RecentFilesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentFilesManager.swift; sourceTree = "<group>"; };
 		E4F9ECE021FECE5C009A08CD /* PathManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathManager.swift; sourceTree = "<group>"; };
+		E4FB7CBD2285BBE500791F6F /* BasicInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicInfoViewController.swift; sourceTree = "<group>"; };
 		E4FD88E8223DE3C3005514C5 /* TimeSelectViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TimeSelectViewController.xib; sourceTree = "<group>"; };
 		E4FD88EA223DE67E005514C5 /* DateAndTimeSelectViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DateAndTimeSelectViewController.xib; sourceTree = "<group>"; };
 		E68A1109AE2343C161D810A1 /* Pods-Business.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Business.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Business/Pods-Business.debug.xcconfig"; sourceTree = "<group>"; };
@@ -922,6 +924,7 @@
 			children = (
 				E472FF99227092C1004C8495 /* DocumentInfoViewController.swift */,
 				E472FF9C2270A691004C8495 /* ExportSelectViewController.swift */,
+				E4FB7CBD2285BBE500791F6F /* BasicInfoViewController.swift */,
 			);
 			path = Info;
 			sourceTree = "<group>";
@@ -1590,6 +1593,7 @@
 				E41CB16221D8897400EF0A3C /* HomeCoordinator.swift in Sources */,
 				E472FF9A227092C1004C8495 /* DocumentInfoViewController.swift in Sources */,
 				E4144EA32285492E00CB12FF /* DocumentEditViewController+Input.swift in Sources */,
+				E4FB7CBE2285BBE500791F6F /* BasicInfoViewController.swift in Sources */,
 				E4EFA4632230C42F00611FF5 /* CaptureGlobalEntrance.swift in Sources */,
 				E49F3E4621B8EDC8003F468D /* AgendaViewModel.swift in Sources */,
 				E4EFA45D222F681700611FF5 /* CaptureCoordinator.swift in Sources */,
