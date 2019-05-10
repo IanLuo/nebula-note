@@ -38,6 +38,9 @@
 		E40F6EAC223B7B6C00FFF53F /* Size.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4CC0C5821EEF92900058E5D /* Size.swift */; };
 		E40F6EAD223B7B7300FFF53F /* Rect.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4BC264121F56DB900B0F2B9 /* Rect.swift */; };
 		E40F6EAE223B7BA200FFF53F /* Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = E489600121DB06C800D2B19D /* Localization.swift */; };
+		E4144EA32285492E00CB12FF /* DocumentEditViewController+Input.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4144EA22285492E00CB12FF /* DocumentEditViewController+Input.swift */; };
+		E4144EA522854A0B00CB12FF /* DocumentEditViewController+Menu.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4144EA422854A0B00CB12FF /* DocumentEditViewController+Menu.swift */; };
+		E4144EA722854B5800CB12FF /* DocumentEditViewController+UserInteraction.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4144EA622854B5800CB12FF /* DocumentEditViewController+UserInteraction.swift */; };
 		E414A664227493D000748964 /* OrgImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E414A663227493D000748964 /* OrgImporter.swift */; };
 		E4162EF72254EA4F00D3619E /* DateAndTimeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4162EF62254EA4F00D3619E /* DateAndTimeType.swift */; };
 		E41A538621D4C577002B11E9 /* AgendaTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41A538521D4C577002B11E9 /* AgendaTableCell.swift */; };
@@ -111,7 +114,7 @@
 		E462DB9C223D264800BF7AB4 /* TimeSelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E462DB9B223D264800BF7AB4 /* TimeSelectViewController.swift */; };
 		E465F8792240E7CC00FA6E83 /* ToolbarAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = E465F8782240E7CC00FA6E83 /* ToolbarAction.swift */; };
 		E465F8802241FF6800FA6E83 /* TextViewCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = E465F87F2241FF6800FA6E83 /* TextViewCommand.swift */; };
-		E465F8822242269000FA6E83 /* EditViewController+Toolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = E465F8812242269000FA6E83 /* EditViewController+Toolbar.swift */; };
+		E465F8822242269000FA6E83 /* DocumentEditViewController+ToolbarDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E465F8812242269000FA6E83 /* DocumentEditViewController+ToolbarDelegate.swift */; };
 		E466D186221D930A007F140B /* SeparaterAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = E466D185221D930A007F140B /* SeparaterAttachment.swift */; };
 		E466D18D221E3E65007F140B /* RenderAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = E466D18C221E3E65007F140B /* RenderAttachment.swift */; };
 		E4729BA82204160200F22885 /* DashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4729BA72204160200F22885 /* DashboardViewController.swift */; };
@@ -254,6 +257,9 @@
 		E40F6E7E223B78AE00FFF53F /* Interface.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Interface.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E40F6E80223B78AE00FFF53F /* Interface.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Interface.h; sourceTree = "<group>"; };
 		E40F6E81223B78AE00FFF53F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E4144EA22285492E00CB12FF /* DocumentEditViewController+Input.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DocumentEditViewController+Input.swift"; sourceTree = "<group>"; };
+		E4144EA422854A0B00CB12FF /* DocumentEditViewController+Menu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DocumentEditViewController+Menu.swift"; sourceTree = "<group>"; };
+		E4144EA622854B5800CB12FF /* DocumentEditViewController+UserInteraction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DocumentEditViewController+UserInteraction.swift"; sourceTree = "<group>"; };
 		E414A663227493D000748964 /* OrgImporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrgImporter.swift; sourceTree = "<group>"; };
 		E4162EF62254EA4F00D3619E /* DateAndTimeType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateAndTimeType.swift; sourceTree = "<group>"; };
 		E41A538521D4C577002B11E9 /* AgendaTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgendaTableCell.swift; sourceTree = "<group>"; };
@@ -325,7 +331,7 @@
 		E464BBB021A69C9000D34C88 /* OutlineTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineTheme.swift; sourceTree = "<group>"; };
 		E465F8782240E7CC00FA6E83 /* ToolbarAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarAction.swift; sourceTree = "<group>"; };
 		E465F87F2241FF6800FA6E83 /* TextViewCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextViewCommand.swift; sourceTree = "<group>"; };
-		E465F8812242269000FA6E83 /* EditViewController+Toolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EditViewController+Toolbar.swift"; sourceTree = "<group>"; };
+		E465F8812242269000FA6E83 /* DocumentEditViewController+ToolbarDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DocumentEditViewController+ToolbarDelegate.swift"; sourceTree = "<group>"; };
 		E466D185221D930A007F140B /* SeparaterAttachment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeparaterAttachment.swift; sourceTree = "<group>"; };
 		E466D18C221E3E65007F140B /* RenderAttachment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderAttachment.swift; sourceTree = "<group>"; };
 		E466D191221EAC14007F140B /* TransitionProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransitionProtocol.swift; sourceTree = "<group>"; };
@@ -963,14 +969,17 @@
 			isa = PBXGroup;
 			children = (
 				E4EA857621D3B0AC00DD92F9 /* EditorCoordinator.swift */,
-				E4A46A2821B28ED800FBDA04 /* DocumentEditViewModel.swift */,
-				E455868921DF643F00381FA8 /* HeadingOutlineTableViewCell.swift */,
 				E41FA5742191569C001D8C63 /* DocumentEditViewController.swift */,
-				E465F8812242269000FA6E83 /* EditViewController+Toolbar.swift */,
+				E4144EA622854B5800CB12FF /* DocumentEditViewController+UserInteraction.swift */,
+				E4144EA22285492E00CB12FF /* DocumentEditViewController+Input.swift */,
+				E465F8812242269000FA6E83 /* DocumentEditViewController+ToolbarDelegate.swift */,
+				E4144EA422854A0B00CB12FF /* DocumentEditViewController+Menu.swift */,
 				E47829FC222E683B0054513E /* InputToolbar.swift */,
 				E465F8782240E7CC00FA6E83 /* ToolbarAction.swift */,
 				E4EA856221D1F83800DD92F9 /* HeadingsOutlineViewController.swift */,
+				E455868921DF643F00381FA8 /* HeadingOutlineTableViewCell.swift */,
 				E465F87F2241FF6800FA6E83 /* TextViewCommand.swift */,
+				E4A46A2821B28ED800FBDA04 /* DocumentEditViewModel.swift */,
 				E462DB98223D257100BF7AB4 /* DateAndTimeSelect */,
 				E472FF9B2270A630004C8495 /* Info */,
 			);
@@ -1568,6 +1577,7 @@
 				E455868A21DF643F00381FA8 /* HeadingOutlineTableViewCell.swift in Sources */,
 				E41CB15921D87CD100EF0A3C /* BrowserCoordinator.swift in Sources */,
 				E41B893621E3497D009C5AD7 /* VideoAttachmentView.swift in Sources */,
+				E4144EA722854B5800CB12FF /* DocumentEditViewController+UserInteraction.swift in Sources */,
 				E465F8792240E7CC00FA6E83 /* ToolbarAction.swift in Sources */,
 				E4EA855C21D1DACE00DD92F9 /* AttachmentVideoViewController.swift in Sources */,
 				E41B892621E31B07009C5AD7 /* DashboardViewModel.swift in Sources */,
@@ -1579,10 +1589,12 @@
 				E4F885EA226D5BE700748868 /* Coordinator.swift in Sources */,
 				E41CB16221D8897400EF0A3C /* HomeCoordinator.swift in Sources */,
 				E472FF9A227092C1004C8495 /* DocumentInfoViewController.swift in Sources */,
+				E4144EA32285492E00CB12FF /* DocumentEditViewController+Input.swift in Sources */,
 				E4EFA4632230C42F00611FF5 /* CaptureGlobalEntrance.swift in Sources */,
 				E49F3E4621B8EDC8003F468D /* AgendaViewModel.swift in Sources */,
 				E4EFA45D222F681700611FF5 /* CaptureCoordinator.swift in Sources */,
 				E4F9ECDB21FAD826009A08CD /* OpenningFilesView.swift in Sources */,
+				E4144EA522854A0B00CB12FF /* DocumentEditViewController+Menu.swift in Sources */,
 				E462DB97223D251A00BF7AB4 /* DateAndTimeSelectViewController.swift in Sources */,
 				E42A87FF21CFCAC500151C90 /* AttachmentViewModel.swift in Sources */,
 				E4AB056522068C7D00F98BEB /* FilteredItemsViewController.swift in Sources */,
@@ -1597,7 +1609,7 @@
 				E41CB15421D7E0F200EF0A3C /* DocumentBrowserCellModel.swift in Sources */,
 				E41B893321E3497D009C5AD7 /* TextAttachmentView.swift in Sources */,
 				E41B893521E3497D009C5AD7 /* AudioAttachmentView.swift in Sources */,
-				E465F8822242269000FA6E83 /* EditViewController+Toolbar.swift in Sources */,
+				E465F8822242269000FA6E83 /* DocumentEditViewController+ToolbarDelegate.swift in Sources */,
 				E47829FD222E683B0054513E /* InputToolbar.swift in Sources */,
 				E41F86C5218EF4E1006C4CDB /* AgendaCoordinator.swift in Sources */,
 				E472FF9D2270A691004C8495 /* ExportSelectViewController.swift in Sources */,
