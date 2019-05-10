@@ -97,6 +97,7 @@ private class AudioPlayerView: UIView {
     private lazy var playButton: RoundButton = {
         let button = RoundButton()
         button.title = "play".localizable
+        button.setIcon(Asset.Assets.right.image.fill(color: InterfaceTheme.Color.spotlight), for: .normal)
         button.tapped { button in
             self.delegate?.didTapStart()
         }
@@ -106,8 +107,9 @@ private class AudioPlayerView: UIView {
     private lazy var pauseButton: RoundButton = {
         let button = RoundButton()
         button.title = "pause".localizable
+        button.setIcon(Asset.Assets.left.image.fill(color: InterfaceTheme.Color.spotlight), for: .normal)
         button.tapped { button in
-            self.delegate?.didTapStart()
+            self.delegate?.didTapPause()
         }
         return button
     }()
@@ -115,8 +117,9 @@ private class AudioPlayerView: UIView {
     private lazy var stopButton: RoundButton = {
         let button = RoundButton()
         button.title = "stop".localizable
+        button.setIcon(Asset.Assets.left.image.fill(color: InterfaceTheme.Color.spotlight), for: .normal)
         button.tapped { button in
-            self.delegate?.didTapStart()
+            self.delegate?.didTapStop()
         }
         return button
     }()
@@ -124,8 +127,9 @@ private class AudioPlayerView: UIView {
     private lazy var continueButton: RoundButton = {
         let button = RoundButton()
         button.title = "continue".localizable
+        button.setIcon(Asset.Assets.left.image.fill(color: InterfaceTheme.Color.spotlight), for: .normal)
         button.tapped { button in
-            self.delegate?.didTapStart()
+            self.delegate?.didTapContinue()
         }
         return button
     }()
@@ -150,7 +154,7 @@ private class AudioPlayerView: UIView {
         self.playButton.sizeAnchor(width: 60)
         
         self.pauseButton.centerAnchors(position: [.centerX, .centerY], to: self)
-        self.stopButton.sizeAnchor(width: 60)
+        self.pauseButton.sizeAnchor(width: 60)
         
         self.continueButton.centerAnchors(position: [.centerX], to: self, multiplier: 0.5)
         self.continueButton.sizeAnchor(width: 60)

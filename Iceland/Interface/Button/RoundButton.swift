@@ -36,6 +36,7 @@ public class RoundButton: UIView {
         let label = UILabel()
         label.font = InterfaceTheme.Font.subtitle
         label.textColor = InterfaceTheme.Color.descriptive
+        label.textAlignment = .center
         return label
     }()
     

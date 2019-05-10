@@ -27,9 +27,7 @@ public class CaptureListViewController: UIViewController {
         tableView.dataSource = self
         tableView.register(CaptureTableCell.self, forCellReuseIdentifier: CaptureTableCell.reuseIdentifier)
         tableView.backgroundColor = InterfaceTheme.Color.background1
-        tableView.separatorInset = .zero
-        tableView.separatorColor = InterfaceTheme.Color.background3
-        tableView.contentInset = Layout.edgeInsets
+        tableView.separatorStyle = .none
         tableView.tableFooterView = UIView()
         return tableView
     }()
@@ -63,6 +61,8 @@ public class CaptureListViewController: UIViewController {
         self._setupObservers()
         
         self.viewModel.loadAllCapturedData()
+        
+        self.view.showProcessingAnimation()
     }
     
     deinit {
@@ -222,6 +222,7 @@ extension CaptureListViewController: CaptureListViewModelDelegate {
     }
     
     public func didLoadData() {
+        self.view.hideProcessingAnimation()
         self.tableView.reloadData()
     }
 }

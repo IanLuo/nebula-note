@@ -21,7 +21,7 @@ public class AttachmentTextViewController: AttachmentViewController, AttachmentV
         self.viewModel.delegate = self
 
         self.formViewController.delegate = self
-        self.formViewController.title = "Write text"
+        self.formViewController.title = "Write text".localizable
         self.formViewController.addTextView(title: "text".localizable, defaultValue: nil)
         
         self.view.addSubview(self.formViewController.view)

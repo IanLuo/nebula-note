@@ -316,6 +316,20 @@ extension URL {
         }
     }
     
+    public func createDirectoryIfNeeded() -> Error? {
+        var isDir = ObjCBool(true)
+        guard !FileManager.default.fileExists(atPath: self.path, isDirectory: &isDir) else {
+            return nil
+        }
+        
+        do {
+            try Foundation.FileManager.default.createDirectory(atPath: self.path, withIntermediateDirectories: true, attributes: nil)
+            return nil
+        } catch {
+            return error
+        }
+    }
+    
     public func createDirectoryIfNeeded(completion: ((Error?) -> Void)?) {
         var isDir = ObjCBool(true)
         guard !FileManager.default.fileExists(atPath: self.path, isDirectory: &isDir) else {

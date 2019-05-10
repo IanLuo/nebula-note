@@ -98,17 +98,24 @@ public class CaptureListViewModel {
     }
     
     public func loadAllCapturedData() {
-        self.service
-            .loadAll(completion: { [weak self] attachments in
-                let attachments = attachments.sorted(by: { last, next -> Bool in
-                    last.date.timeIntervalSince1970 > next.date.timeIntervalSince1970
+        DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
+            self.service
+                .loadAll(completion: { [weak self] attachments in
+                    let attachments = attachments.sorted(by: { last, next -> Bool in
+                        last.date.timeIntervalSince1970 > next.date.timeIntervalSince1970
+                    })
+                    self?.data = attachments
+                    self?.cellModels = attachments.map { CaptureTableCellModel(attacment: $0) }
+                    
+                    DispatchQueue.main.async {
+                        self?.delegate?.didLoadData()
+                    }
+                    }, failure: { [weak self] error in
+                        DispatchQueue.main.async {
+                            self?.delegate?.didFail(error: "Can not open file")
+                        }
                 })
-                self?.data = attachments
-                self?.cellModels = attachments.map { CaptureTableCellModel(attacment: $0) }
-                self?.delegate?.didLoadData()
-            }, failure: { [weak self] error in
-                self?.delegate?.didFail(error: "Can not open file")
-            })
+        }
     }
     
     public func delete(index: Int) {

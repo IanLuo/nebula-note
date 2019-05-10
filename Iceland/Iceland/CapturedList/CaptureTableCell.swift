@@ -52,7 +52,9 @@ public class CaptureTableCell: UITableViewCell {
     
     private let attachmentContentView: UIView = {
         let view = UIView()
+        view.layer.cornerRadius = 8
         view.clipsToBounds = true
+        view.backgroundColor = InterfaceTheme.Color.background2
         return view
     }()
     

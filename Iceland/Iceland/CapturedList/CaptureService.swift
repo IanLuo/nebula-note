@@ -62,18 +62,20 @@ public struct CaptureService: CaptureServiceProtocol {
         
         let group = DispatchGroup()
         
-        plist.allKeys().forEach {
-            group.enter()
-            self._attachmentManager.attachment(with: $0, completion: {
-                attachments.append($0)
-                group.leave()
-            }, failure: { (error) in
-                failure(error)
-            })
-        }
-        
-        group.notify(queue: DispatchQueue.main) {
-            completion(attachments)
+        DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
+            plist.allKeys().forEach {
+                group.enter()
+                self._attachmentManager.attachment(with: $0, completion: {
+                    attachments.append($0)
+                    group.leave()
+                }, failure: { (error) in
+                    failure(error)
+                })
+            }
+            
+            group.notify(queue: DispatchQueue.main) {
+                completion(attachments)
+            }
         }
     }
 }

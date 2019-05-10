@@ -63,16 +63,21 @@ public enum AttachmentError: Error {
             }
         }
         
-        
-        if let url = URL(string: content) {
-            saveAttahmentAction(URL(fileURLWithPath: url.path))
-        } else {
+        switch kind {
+        case .link: fallthrough
+        case .text:
             let tempFile = URL.file(directory: URL.directory(location: URLLocation.temporary), name: "attachments", extension: "txt")
             tempFile.write(data: content.data(using: .utf8) ?? Data()) { _ in
                 saveAttahmentAction(tempFile)
             }
+        default:
+            if let url = URL(string: content) {
+                saveAttahmentAction(URL(fileURLWithPath: url.path))
+            } else {
+                log.error("fail to create url \(content)")
+                fatalError()
+            }
         }
-        
     }
     
     public static func textAttachmentURL(with key: String) -> URL {
