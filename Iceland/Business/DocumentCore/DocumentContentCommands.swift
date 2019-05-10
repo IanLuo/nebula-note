@@ -15,7 +15,7 @@ public struct DocumentContentCommandResult {
     public let content: String?
     public let delta: Int
     
-    fileprivate static var noChange: DocumentContentCommandResult {
+    public static var noChange: DocumentContentCommandResult {
         return DocumentContentCommandResult(isModifiedContent: false, range: nil, content: nil, delta: 0)
     }
 }

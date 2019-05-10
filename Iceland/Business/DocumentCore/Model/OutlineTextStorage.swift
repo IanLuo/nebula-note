@@ -686,7 +686,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
     private func _remove<T: Token>(in range: NSRange, from cache: inout [T]) -> [T] {
         var removedTokens: [T] = []
         for index in self._findIntersectionTokenIndex(in: range, tokens: cache).reversed() {
-            removedTokens.append(removedTokens.remove(at: index))
+            removedTokens.append(cache.remove(at: index))
         }
         return removedTokens
     }
@@ -728,12 +728,11 @@ extension OutlineTextStorage: OutlineParserDelegate {
             }
         }
         
-        let removedToken = self._remove(in: currentParseRange, from: &self.allTokens)
+        let _ = self._remove(in: currentParseRange, from: &self.allTokens)
         self._insert(tokens: newTokens, into: &self.allTokens)
         
-        let newHeadings = newTokens.filter { $0 is HeadingToken }.map { $0 as! HeadingToken }
-        
         // 更新 heading 缓存
+        let newHeadings = newTokens.filter { $0 is HeadingToken }.map { $0 as! HeadingToken }
         let removedHeadintToken = self._remove(in: currentParseRange, from: &self._savedHeadings)
         self._insert(tokens: newHeadings, into: &self._savedHeadings)
         
@@ -742,6 +741,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
                                                     oldHeadings: removedHeadintToken)
         }
         
+        // 更新 code block 缓存
         let newCodeBlocks = newTokens.filter {
             if let t = $0 as? BlockToken, t.blockType == .sourceCode {
                 return true
@@ -751,7 +751,6 @@ extension OutlineTextStorage: OutlineParserDelegate {
         }
         .map { $0 as! BlockToken }
         
-        // 更新 code block 缓存
         let removedCodeBlockToken = self._remove(in: currentParseRange, from: &self._codeBlocks)
         self._insert(tokens: newCodeBlocks, into: &self._codeBlocks)
         
@@ -759,6 +758,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
             self._figureOutBlocks(&self._codeBlocks)
         }
         
+        // 更新 quote block 缓存
         let newQuoteBlocks = newTokens.filter {
             if let t = $0 as? BlockToken, t.blockType == .quote {
                 return true
@@ -768,7 +768,6 @@ extension OutlineTextStorage: OutlineParserDelegate {
         }
         .map { $0 as! BlockToken }
         
-        // 更新 quote block 缓存
         let removedQuoteBlockToken = self._remove(in: currentParseRange, from: &self._quoteBlocks)
         self._insert(tokens: newQuoteBlocks, into: &self._quoteBlocks)
         

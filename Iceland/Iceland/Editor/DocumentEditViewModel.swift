@@ -176,12 +176,6 @@ public class DocumentEditViewModel {
         return self._editorService.isHeadingFolded(at: location)
     }
     
-    public func paragraphText(for location: Int) -> String {
-        guard let heading = self._editorService.heading(at: location) else { return "" }
-        
-        return self._editorService.string.substring(heading.paragraphRange)
-    }
-    
     public func cursorLocationChanged(_ newLocation: Int) {
         self._editorService.updateCurrentCursor(newLocation)
         self.delegate?.didEnterTokens(self._editorService.currentCursorTokens)
@@ -226,7 +220,12 @@ public class DocumentEditViewModel {
         self.coordinator?.dependency.editorContext.request(url: url).onReadyToUse = { [weak self] service in
             service.start(complete: { isReady, service in
                 guard let strongSelf = self else { return }
-                let text = "\n" + strongSelf.paragraphText(for: location)
+                
+                guard let heading = strongSelf._editorService.heading(at: location) else { return }
+                
+                let text = heading.range.location == 0
+                    ? strongSelf._editorService.string.substring(heading.paragraphRange)
+                    : strongSelf._editorService.string.substring(heading.paragraphRange.moveLeftBound(by: -1)) // 移动的时候，把上一段末尾的换行符也带走
                 
                 // 1. 删除当前的段落
                 let result = strongSelf._editorService.toggleContentCommandComposer(composer: EditAction.removeParagraph(location).commandComposer).perform()
@@ -237,6 +236,27 @@ public class DocumentEditViewModel {
                 completion(result)
             })
         }
+    }
+    
+    public func moveParagraph(contains location: Int, to toHeading: DocumentHeading, textView: UITextView) -> DocumentContentCommandResult {
+        guard let currentHeading = self._editorService.heading(at: location) else { return DocumentContentCommandResult.noChange }
+        
+        let text = currentHeading.range.upperBound == self._editorService.string.count
+            ? self._editorService.string.substring(currentHeading.paragraphRange) + "\n"
+            : self._editorService.string.substring(currentHeading.paragraphRange)
+        
+        // 1. 删除旧的段落
+        let removedResult = self.performAction(EditAction.removeParagraph(location),
+                                               textView: textView)
+        
+        // 2. 插入到新的位置
+        var newLocation = NSRange(location: toHeading.paragraphRange.upperBound, length: 0) // 如果删除的文本在插入位置之前，则插入位置要先减少删除文本的长度
+        if location <= newLocation.location {
+            newLocation = newLocation.offset(-removedResult.content!.count)
+        }
+        let result = self.performAction(EditAction.replaceText(newLocation, text),
+                                                  textView: textView)
+        return result
     }
     
     public func foldOrUnfold(location: Int) {

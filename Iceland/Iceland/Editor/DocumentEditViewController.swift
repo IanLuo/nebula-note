@@ -414,17 +414,9 @@ public class DocumentEditViewController: UIViewController {
             viewController.dismiss(animated: true, completion: {
                 self.viewModel.coordinator?.showOutline(completion: { [unowned self] heading in
                     let oldLocation = self.textView.selectedRange.location
-                    let text = self.viewModel.paragraphText(for: location)
-                    // 1. 删除旧的段落
-                    let removedResult = self.viewModel.performAction(EditAction.removeParagraph(location), textView: self.textView)
                     
-                    // 2. 插入到新的位置
-                    var newLocation = NSRange(location: heading.paragraphRange.upperBound, length: 0) // 如果删除的文本在插入位置之前，则插入位置要先减少删除文本的长度
-                    if location <= newLocation.location {
-                        newLocation = newLocation.offset(-removedResult.content!.count)
-                    }
-                    let result = self.viewModel.performAction(EditAction.replaceText(newLocation, text),
-                                                 textView: self.textView)
+                    let result = self.viewModel.moveParagraph(contains: oldLocation, to: heading, textView: self.textView)
+                    
                     let changedLength = oldLocation < heading.location ? -result.content!.count : 0 // 如果新的位置的 heading 在原来 heading 的前面，新的位置的 heading需要减掉移走的文字的长度
                     self.textView.selectedRange = NSRange(location: heading.location + heading.length + changedLength, length: 0)
                 })
