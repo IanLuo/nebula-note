@@ -139,6 +139,20 @@ extension Coordinator {
     }
     
     public func showAttachmentPicker(kind: Attachment.Kind, complete: @escaping (String) -> Void, cancel: @escaping () -> Void) {
+        
+        switch kind {
+        case .video:
+            guard UIImagePickerController.isCameraDeviceAvailable(UIImagePickerController.CameraDevice.rear) || UIImagePickerController.isCameraDeviceAvailable(UIImagePickerController.CameraDevice.front) else {
+                let alert = UIAlertController(title: "Camera is not available", message: nil, preferredStyle: UIAlertController.Style.alert)
+                alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
+                self.topCoordinator?.viewController?.present(alert, animated: true, completion: nil)
+                cancel()
+                return
+            }
+        default: break
+        }
+        
+        
         let navigationController = UINavigationController()
         navigationController.isNavigationBarHidden = true
         
