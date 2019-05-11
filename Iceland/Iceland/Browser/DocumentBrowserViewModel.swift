@@ -69,6 +69,21 @@ public class DocumentBrowserViewModel {
         }
     }
     
+    public func loadAllFiles(completion: ([DocumentBrowserCellModel]) -> Void) {
+        do {
+            let files = try self.documentManager.query(in: URL.documentBaseURL, recursively: true).map { [unowned self] (url: URL) -> DocumentBrowserCellModel in
+                let cellModel = DocumentBrowserCellModel(url: url)
+                cellModel.shouldShowActions = self.shouldShowActions
+                cellModel.shouldShowChooseHeadingIndicator = self.shouldShowHeadingIndicator
+                cellModel.cover = self.documentManager.cover(url: url)
+                return cellModel
+            }
+            completion(files)
+        } catch {
+            log.error(error)
+        }
+    }
+    
     public func unfold(url: URL) {
         if let index = self.index(of: url) {
             // 读取所有当前文件的子文件
@@ -210,6 +225,41 @@ public class DocumentBrowserViewModel {
                 self.delegate?.didRemoveDocument(index: index, count: subcount + 1)
             }
         }
+    }
+    
+    func move(url: URL,
+              to: URL) {
+        let fileName = url.packageName
+        
+        self.documentManager.rename(url: url,
+                                    to: fileName,
+                                    below: to,
+                                    completion: { [unowned self] newURL in
+                                        for (index, data) in self.data.enumerated() {
+                                            // 移除改名后的文件
+                                            if data.url.documentRelativePath == url.documentRelativePath {
+                                                self.data.remove(at: index)
+                                                break
+                                            }
+                                        }
+                                        
+                                        for (index, data) in self.data.enumerated() {
+                                           if data.url.documentRelativePath == to.documentRelativePath {
+                                                // 添加到移到的位置(如果当前显示了上级文件)
+                                                self.data.insert(DocumentBrowserCellModel(url: newURL), at: index + 1)
+                                                break
+                                            }
+                                        }
+                                        
+                                        if newURL.parentDocumentURL == nil {
+                                            self.data.insert(DocumentBrowserCellModel(url: newURL), at: 0)
+                                        }
+                                        
+                                        self.delegate?.didLoadData()
+                                    },
+                                        failure: { error in
+                                            log.error(error)
+                                    })
     }
     
     func rename(index: Int,

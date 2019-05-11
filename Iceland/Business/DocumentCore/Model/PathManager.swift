@@ -198,11 +198,12 @@ extension URL {
     }
         
     public var hasSubDocuments: Bool {
-        let subDocumentFolder = self.convertoFolderURL.path
+        let subDocumentFolderURL = self.convertoFolderURL
+        let subDocumentFolder = subDocumentFolderURL.path
         var isDir = ObjCBool(true)
         let fm = FileManager.default
         return fm.fileExists(atPath: subDocumentFolder, isDirectory: &isDir) &&
-            ((try? fm.contentsOfDirectory(atPath: subDocumentFolder)) ?? []).count > 0
+            ((try? fm.contentsOfDirectory(at: subDocumentFolderURL, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles])) ?? []).count > 0
     }
     
     public var packageName: String {        

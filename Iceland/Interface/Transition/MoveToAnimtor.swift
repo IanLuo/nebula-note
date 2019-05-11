@@ -38,6 +38,7 @@ public class MoveToAnimtor: NSObject, Animator {
                 // 如果没有设置显示位置的 UIView，使用屏幕正中心的点作为显示位置
                 let startRect = fromView != nil ? fromView!.superview!.convert(fromView!.frame, to: from.view) : CGRect(origin: transitionViewController.view.center, size: .zero)
                 let animatableView = UIImageView(frame: startRect)
+                animatableView.contentMode = .center
                 animatableView.image = toImage
                 animatableView.clipsToBounds = true
                 animatableView.alpha = 0

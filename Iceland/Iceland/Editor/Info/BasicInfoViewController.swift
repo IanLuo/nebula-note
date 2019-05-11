@@ -12,17 +12,17 @@ import Interface
 
 public class BasicInfoViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     enum InfoItem: CaseIterable {
+        case editDate
         case wordCount
         case paragraphs
-        case editDate
-        case creatDate
         case glyphs
+        case creatDate
         
         var title: String {
             switch self {
+            case .editDate: return "Edit Date"
             case .wordCount: return "Words"
             case .paragraphs: return "Paragraphs"
-            case .editDate: return "Edit Date"
             case .glyphs: return "Glyphs"
             case .creatDate: return "Create Date"
             }

@@ -19,7 +19,7 @@ open class SelectorViewController: UIViewController {
     public var onSelection:((Int, SelectorViewController) -> Void)?
     public var onCancel: ((SelectorViewController) -> Void)?
     
-    public var rowHeight: CGFloat = 80
+    public var rowHeight: CGFloat = 50
     
     public init() {
         super.init(nibName: nil, bundle: nil)
@@ -57,6 +57,8 @@ open class SelectorViewController: UIViewController {
     
     public let contentView: UIView = {
         let view = UIView()
+        view.layer.cornerRadius = 8
+        view.layer.masksToBounds = true
         return view
     }()
     
@@ -99,14 +101,14 @@ open class SelectorViewController: UIViewController {
     
     private let transitionDelegate = FadeBackgroundTransition(animator: MoveToAnimtor())
     
-    public func addItem(icon: UIImage? = nil, title: String, description: String? = nil) {
-        let item = Item(icon: icon, title: title, attributedString: nil, description: description)
+    public func addItem(icon: UIImage? = nil, title: String, description: String? = nil, enabled: Bool = true) {
+        let item = Item(icon: icon, title: title, attributedString: nil, description: description, enabled: enabled)
         self.items.append(item)
         self.insertNewItemToTableIfNeeded(newItem: item)
     }
     
-    public func addItem(icon: UIImage? = nil, attributedString: NSAttributedString, description: String? = nil) {
-        let item = Item(icon: icon, title: "", attributedString: attributedString, description: description)
+    public func addItem(icon: UIImage? = nil, attributedString: NSAttributedString, description: String? = nil, enabled: Bool = true) {
+        let item = Item(icon: icon, title: "", attributedString: attributedString, description: description, enabled: enabled)
         self.items.append(item)
         self.insertNewItemToTableIfNeeded(newItem: item)
     }
@@ -150,6 +152,7 @@ open class SelectorViewController: UIViewController {
         let title: String
         let attributedString: NSAttributedString?
         let description: String?
+        let enabled: Bool
     }
 }
 
@@ -169,6 +172,10 @@ extension SelectorViewController: UITableViewDataSource, UITableViewDelegate {
         }
         cell.setIcon(image: item.icon)
         
+        cell.contentView.subviews.forEach {
+            $0.alpha = item.enabled ? 1 : 0.5
+        }
+        
         return cell
     }
     
@@ -179,6 +186,8 @@ extension SelectorViewController: UITableViewDataSource, UITableViewDelegate {
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        guard self.items[indexPath.row].enabled else { return }
+        
         self.delegate?.SelectorDidSelect(index: indexPath.row, viewController: self)
         
         unowned let unownedSelf = self

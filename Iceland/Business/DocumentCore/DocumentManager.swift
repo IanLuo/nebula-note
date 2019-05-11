@@ -37,11 +37,29 @@ public struct DocumentManager {
     }
     
     /// 查找指定目录下的 iceland 文件包
-    public func query(in folder: URL) throws -> [URL] {
-        return try FileManager.default.contentsOfDirectory(at: folder,
-                                                           includingPropertiesForKeys: nil,
-                                                           options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
-            .filter { $0.pathExtension == Document.fileExtension }
+    public func query(in folder: URL, recursively: Bool = false) throws -> [URL] {
+        
+        if recursively {
+            var urls: [URL] = []
+            
+            for url in try self.query(in: folder) {
+                urls.append(url)
+                
+                var isDir = ObjCBool(true)
+                let subFolder = url.convertoFolderURL
+                if FileManager.default.fileExists(atPath: subFolder.path, isDirectory: &isDir) {
+                    let sub = try self.query(in: subFolder, recursively: true)
+                    urls.append(contentsOf: sub)
+                }
+            }
+
+            return urls
+        } else {
+            return try FileManager.default.contentsOfDirectory(at: folder,
+                                                               includingPropertiesForKeys: nil,
+                                                               options: .skipsHiddenFiles)
+                .filter { $0.pathExtension == Document.fileExtension }
+        }
     }
     
     public func setCover(_ image: UIImage?, url: URL) {

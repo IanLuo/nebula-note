@@ -193,6 +193,47 @@ extension DocumentBrowserViewController: DocumentBrowserCellDelegate {
                     self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                 })
             }
+            
+            // 移动文件
+            actionsViewController.addAction(icon: nil, title: "Move to") { viewController in
+                
+                self.viewModel.loadAllFiles(completion: { [unowned self] files in
+                    
+                    viewController.dismiss(animated: true, completion: {
+                        let selector = SelectorViewController()
+                        selector.title = "Choose a place"
+                        selector.fromView = self.tableView.cellForRow(at: IndexPath(row: index, section: 0))
+                        let root: String = "\\"
+                        selector.addItem(title: root)
+                        for file in files {
+                            let indent = Array(repeating: "   ", count: file.levelFromRoot - 1).reduce("") { $0 + $1 }
+                            let title = indent + file.url.wrapperURL.packageName
+                            selector.addItem(icon: nil, title: title, description: nil, enabled: file.url.documentRelativePath != url.documentRelativePath)
+                        }
+                        
+                        selector.onCancel = { viewController in
+                            viewController.dismiss(animated: true, completion: {
+                                self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
+                            })
+                        }
+                        
+                        selector.onSelection = { index, viewController in
+                            viewController.dismiss(animated: true, completion: {
+                                self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
+                                
+                                if index == 0 {
+                                    self.viewModel.move(url: url, to: URL.documentBaseURL)
+                                } else {
+                                    let under = files[index - 1]
+                                    self.viewModel.move(url: url, to: under.url)
+                                }
+                            })
+                        }
+                        
+                        self.present(selector, animated: true, completion: nil)
+                    })
+                })
+            }
 
             // 重命名
             actionsViewController.addAction(icon: nil, title: L10n.Document.Actions.rename) { viewController in
@@ -217,7 +258,6 @@ extension DocumentBrowserViewController: DocumentBrowserCellDelegate {
                     
                     // 显示给用户，是否可以使用这个文件名
                     renameFormViewController.onValidating = { formData in
-
                         if !self.viewModel.isNameAvailable(newName: formData[title] as! String, index: index) {
                             return [title: "name is taken".localizable]
                         }
