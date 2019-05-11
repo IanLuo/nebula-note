@@ -159,6 +159,32 @@ public class DocumentEditViewModel {
         return self._editorService.string
     }
     
+    public var wordCount: Int {
+        let chararacterSet = CharacterSet.whitespacesAndNewlines.union(.punctuationCharacters)
+        let components = self.string.components(separatedBy: chararacterSet)
+        return components.filter { !$0.isEmpty }.count
+    }
+    
+    public var paragraphCount: Int {
+        return self.headings.count
+    }
+    
+    public var editeDate: String {
+        let attriutes = try? FileManager.default.attributesOfItem(atPath: self._editorService.fileURL.path)
+        let date = (attriutes?[FileAttributeKey.modificationDate] as? Date) ?? Date()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy/MM/dd HH:mm"
+        return dateFormatter.string(from: date)
+    }
+    
+    public var createDate: String {
+        let attriutes = try? FileManager.default.attributesOfItem(atPath: self._editorService.fileURL.path)
+        let date = (attriutes?[FileAttributeKey.creationDate] as? Date) ?? Date()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy/MM/dd HH:mm"
+        return dateFormatter.string(from: date)
+    }
+    
     public var container: NSTextContainer {
         return self._editorService.container
     }

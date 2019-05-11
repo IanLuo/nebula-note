@@ -62,7 +62,7 @@ public class DocumentInfoViewController: TransitionViewController {
         let exportViewController = ExportSelectViewController()
         exportViewController.delegate = self
         
-        let basicInfoViewController = BasicInfoViewController()
+        let basicInfoViewController = BasicInfoViewController(viewModel: self._viewModel)
 
         self.contentView.addSubview(exportViewController.view)
         self.contentView.addSubview(basicInfoViewController.view)

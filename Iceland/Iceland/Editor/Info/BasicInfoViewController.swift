@@ -15,7 +15,6 @@ public class BasicInfoViewController: UIViewController, UITableViewDelegate, UIT
         case editDate
         case wordCount
         case paragraphs
-        case glyphs
         case creatDate
         
         var title: String {
@@ -23,18 +22,16 @@ public class BasicInfoViewController: UIViewController, UITableViewDelegate, UIT
             case .editDate: return "Edit Date"
             case .wordCount: return "Words"
             case .paragraphs: return "Paragraphs"
-            case .glyphs: return "Glyphs"
             case .creatDate: return "Create Date"
             }
         }
         
-        var value: String {
+        func value(viewModel: DocumentEditViewModel) -> String {
             switch self {
-            case .wordCount: return "Words"
-            case .paragraphs: return "Paragraphs"
-            case .editDate: return "Edit Date"
-            case .glyphs: return "Glyphs"
-            case .creatDate: return "Create Date"
+            case .wordCount: return "\(viewModel.wordCount)"
+            case .paragraphs: return "\(viewModel.paragraphCount)"
+            case .editDate: return "\(viewModel.editeDate)"
+            case .creatDate: return "\(viewModel.createDate)"
             }
         }
     }
@@ -50,15 +47,14 @@ public class BasicInfoViewController: UIViewController, UITableViewDelegate, UIT
         return tableView
     }()
     
-    public init() {
-        super.init(nibName: nil, bundle: nil)
+    private var _viewModel: DocumentEditViewModel!
+    
+    public convenience init(viewModel: DocumentEditViewModel) {
+        self.init(nibName: nil, bundle: nil)
         
+        self._viewModel = viewModel
         self.view.addSubview(self.tableView)
         self.tableView.allSidesAnchors(to: self.view, edgeInset: 0)
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
     
     public func numberOfSections(in tableView: UITableView) -> Int {
@@ -73,7 +69,7 @@ public class BasicInfoViewController: UIViewController, UITableViewDelegate, UIT
         let cell = tableView.dequeueReusableCell(withIdentifier: InfoCell.reuseIdentifier, for: indexPath) as! InfoCell
         
         cell.textLabel?.text = InfoItem.allCases[indexPath.section].title
-        cell.detailTextLabel?.text = InfoItem.allCases[indexPath.section].value
+        cell.detailTextLabel?.text = InfoItem.allCases[indexPath.section].value(viewModel: self._viewModel)
         
         return cell
     }
