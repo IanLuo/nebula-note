@@ -13,6 +13,7 @@ public class ActionsViewController: UIViewController, TransitionProtocol {
     fileprivate struct Constants {
         static let rowHeight: CGFloat = 50
         static let specialItemSeparatorHeight: CGFloat = 10
+        static let titleHeight: CGFloat = 60
     }
     
     public enum Style {
@@ -38,7 +39,7 @@ public class ActionsViewController: UIViewController, TransitionProtocol {
         if self.isInitialized {
             self.tableView.insertRows(at: [IndexPath(row: self.items.count - 1, section: 0)], with: UITableView.RowAnimation.none)
             UIView.animate(withDuration: 0.25, animations: {
-                self.tableView.constraint(for: Position.height)?.constant = CGFloat(self.items.count) * Constants.rowHeight
+                self.tableView.constraint(for: Position.height)?.constant = self.items.reduce(0.0, { $0 + $1.style.height })
                 self.view.layoutIfNeeded()
             })
         }
@@ -178,8 +179,8 @@ public class ActionsViewController: UIViewController, TransitionProtocol {
         self.actionsContainerView.setBorder(position: [.top, .bottom], color: InterfaceTheme.Color.background3, width: 0.5)
 
         self.cancelButton.sideAnchor(for: [.right, .top, .bottom], to: self.actionsContainerView, edgeInset: 0)
-        self.cancelButton.sizeAnchor(width: 80, height: 80)
-        self.titleLabel.sideAnchor(for: [.left, .top, .bottom], to: self.actionsContainerView, edgeInsets: .init(top: 0, left: 30, bottom: 0, right: 0))
+        self.cancelButton.sizeAnchor(width: Constants.titleHeight, height: Constants.titleHeight)
+        self.titleLabel.sideAnchor(for: [.left, .top, .bottom], to: self.actionsContainerView, edgeInsets: .init(top: 0, left: Layout.edgeInsets.left, bottom: 0, right: 0))
         self.titleLabel.rowAnchor(view: self.cancelButton)
         
         self.actionsContainerView.columnAnchor(view: self.accessoryViewContainer)

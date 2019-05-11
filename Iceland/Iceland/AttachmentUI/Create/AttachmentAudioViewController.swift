@@ -32,7 +32,11 @@ public class AttachmentAudioViewController: AttachmentViewController, Attachment
     }()
     
     // 用来显示界面，当前 viewController 并不显示 UI，只是协调和保存文件
-    private lazy var actionsViewController = ActionsViewController()
+    private lazy var actionsViewController: ActionsViewController = {
+        let actionsViewController = ActionsViewController()
+        actionsViewController.title = "Record voice"
+        return actionsViewController
+    }()
 
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,6 +45,8 @@ public class AttachmentAudioViewController: AttachmentViewController, Attachment
         
         self.recorderView.status = .initing
         self.recorder.getReady()
+        
+        self.addChild(self.actionsViewController)
         
         self.showRecorder()
     }
