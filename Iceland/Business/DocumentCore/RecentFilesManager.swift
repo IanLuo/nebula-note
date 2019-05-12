@@ -147,9 +147,17 @@ public class RecentFilesManager {
     public var recentFiles: [RecentDocumentInfo] {
         var documentInfos: [RecentDocumentInfo] = []
         
-        self.plist.allKeys().forEach {
-            if let recentDocumentInfo = self.recentFile(url: $0, plist: plist) {
-                documentInfos.append(recentDocumentInfo)
+        self.plist.allKeys().forEach { key in
+            if let recentDocumentInfo = self.recentFile(url: key, plist: plist) {
+                
+                // 清除不存在的文件
+                var isDir = ObjCBool(true)
+                if !FileManager.default.fileExists(atPath: recentDocumentInfo.url.path, isDirectory: &isDir) {
+                    self.plist.remove(key: key, completion: {})
+                } else {
+                    documentInfos.append(recentDocumentInfo)
+                }
+                
             }
         }
 

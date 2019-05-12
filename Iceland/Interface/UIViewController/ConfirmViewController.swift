@@ -14,7 +14,12 @@ public class ConfirmViewController: TransitionViewController {
     
     public var cancelAction: ((ConfirmViewController) -> Void)?
     
-    public var contentView: UIView = UIView()
+    public var contentView: UIView = {
+        let view = UIView()
+        view.layer.cornerRadius = 8
+        view.layer.masksToBounds = true
+        return view
+    }()
     
     public var fromView: UIView?
     

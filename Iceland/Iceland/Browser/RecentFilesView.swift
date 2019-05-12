@@ -98,23 +98,21 @@ public class RecentFilesView: UIView {
     }
     
     @objc private func onFileOpened(event: OpenDocumentEvent) {
-//        if let url = notification.userInfo?["url"] as? URL {
-            var oldIndex: Int = 0
-            
-            for (index, documentInfo) in self.data.enumerated() {
-                if documentInfo.url.documentRelativePath == event.url.documentRelativePath {
-                    oldIndex = index
-                    self.data = self.delegate?.recentFilesData() ?? []
-                    if self.data.count > 0 {
-                        self.collectionView.moveItem(at: IndexPath(row: oldIndex, section: 0), to: IndexPath(row: 0, section: 0))
-                    }
-                    return
+        var oldIndex: Int = 0
+        
+        for (index, documentInfo) in self.data.enumerated() {
+            if documentInfo.url.documentRelativePath == event.url.documentRelativePath {
+                oldIndex = index
+                self.data = self.delegate?.recentFilesData() ?? []
+                if self.data.count > 0 {
+                    self.collectionView.moveItem(at: IndexPath(row: oldIndex, section: 0), to: IndexPath(row: 0, section: 0))
                 }
+                return
             }
-            
-            self.data = self.delegate?.recentFilesData() ?? []
-            self.collectionView.reloadData()
-//        }
+        }
+        
+        self.data = self.delegate?.recentFilesData() ?? []
+        self.collectionView.reloadData()
     }
     
     private func loadData() {
