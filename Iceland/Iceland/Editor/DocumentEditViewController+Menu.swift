@@ -14,8 +14,11 @@ import Interface
 extension DocumentEditViewController {
     @objc public func cancel() {
         self.textView.endEditing(true)
-        self.viewModel.save {}
-        self.viewModel.coordinator?.stop()
+        self.viewModel.save { [unowned self] in
+            self.viewModel.close { [unowned self] _ in
+                self.viewModel.coordinator?.stop()
+            }
+        }
     }
     
     @objc public func showInfo() {

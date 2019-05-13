@@ -19,7 +19,7 @@ public class EditorContext {
     
     private let _eventObserver: EventObserver
     private static var _cachedServiceInstances: [String: EditorService] = [:]
-    private let _editingQueue: DispatchQueue = DispatchQueue(label: "editor.doing.editing", qos: DispatchQoS.userInteractive, attributes: [.concurrent])
+    public let _editingQueue: DispatchQueue = DispatchQueue(label: "editor.doing.editing", qos: DispatchQoS.userInteractive)
     
     public func request(url: URL) -> EditorService {
         var url = url.wrapperURL

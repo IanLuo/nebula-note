@@ -215,7 +215,7 @@ public class EditorService {
         }
         
         let newURL = document.fileURL.deletingLastPathComponent().appendingPathComponent(newTitle).appendingPathExtension(Document.fileExtension)
-        document.fileURL.rename(url: newURL, completion: completion)
+        document.fileURL.rename(queue: self._queue, url: newURL, completion: completion)
     }
     
     public func save(completion: ((Bool) -> Void)? = nil) {
@@ -238,7 +238,7 @@ public class EditorService {
             return
         }
         
-        document.fileURL.delete {
+        document.fileURL.delete(queue: self._queue) {
             completion?($0)
         }
     }

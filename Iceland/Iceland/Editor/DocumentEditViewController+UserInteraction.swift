@@ -12,6 +12,14 @@ import Business
 import Interface
 
 extension DocumentEditViewController: OutlineTextViewDelegate {
+    public func didTapOnAttachment(textView: UITextView, characterIndex: Int, type: String, value: String, point: CGPoint) {
+        self.viewModel.coordinator?.dependency.attachmentManager.attachment(with: value, completion: { [weak self] attachment in
+            self?._showAttachmentView(attachment: attachment)
+        }, failure: { error in
+            
+        })
+    }
+    
     public func didTapOnHiddenAttachment(textView: UITextView, characterIndex: Int, point: CGPoint) {
         self.viewModel.foldOrUnfold(location: characterIndex)
     }
@@ -85,5 +93,30 @@ extension DocumentEditViewController: OutlineTextViewDelegate {
     public func didTapOnCheckbox(textView: UITextView, characterIndex: Int, checkbox: String, point: CGPoint) {
         let _ = self.viewModel.performAction(.toggleCheckboxStatus(characterIndex, checkbox),
                                              textView: self.textView)
+    }
+    
+    private func _showAttachmentView(attachment: Attachment) {
+        let actionsView = ActionsViewController()
+
+        let view = AttachmentViewFactory.create(attachment: attachment)
+        view.sizeAnchor(width: self.view.bounds.width, height: view.size(for: self.view.bounds.width).height)
+        
+        actionsView.accessoryView = view
+        actionsView.title = attachment.kind.rawValue
+        
+        actionsView.addAction(icon: nil, title: "Close") { viewController in
+            viewController.dismiss(animated: true, completion: {
+                self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
+            })
+        }
+        
+        actionsView.setCancel { viewController in
+            viewController.dismiss(animated: true, completion: {
+                self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
+            })
+        }
+        
+        self.present(actionsView, animated: true, completion: nil)
+        self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.hide()
     }
 }

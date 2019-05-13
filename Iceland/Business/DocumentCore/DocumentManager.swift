@@ -118,19 +118,21 @@ public struct DocumentManager {
                 incrementaor += 1
             }
             
-            let document = Document.init(fileURL: newURL)
-            document.updateContent(content ?? "") // 新文档的内容为空字符串
-            document.save(to: newURL, for: UIDocument.SaveOperation.forCreating) { [document] success in
-                DispatchQueue.main.async {
-                    if success {
-                        self._eventObserver.emit(AddDocumentEvent(url: newURL))
-                        completion?(newURL)
-                    } else {
-                        completion?(nil)
+            self._editorContext._editingQueue.async {
+                let document = Document.init(fileURL: newURL)
+                document.updateContent(content ?? "") // 新文档的内容为空字符串
+                document.save(to: newURL, for: UIDocument.SaveOperation.forCreating) { [document] success in
+                    DispatchQueue.main.async {
+                        if success {
+                            self._eventObserver.emit(AddDocumentEvent(url: newURL))
+                            completion?(newURL)
+                        } else {
+                            completion?(nil)
+                        }
                     }
+                    
+                    document.close(completionHandler: nil)
                 }
-                
-                document.close(completionHandler: nil)
             }
         }
         
@@ -153,7 +155,7 @@ public struct DocumentManager {
             // 关闭文件夹下的文件
             self._editorContext.closeIfOpen(dir: subFolder) {
                 // 先删除子文件中的文件
-                subFolder.delete { error in
+                subFolder.delete(queue: self._editorContext._editingQueue) { error in
                     if let error = error {
                         DispatchQueue.main.async {
                             completion?(error)
@@ -163,7 +165,7 @@ public struct DocumentManager {
                         
                         // 然后在删除此文件
                         self._editorContext.closeIfOpen(url: url, complete: {
-                            url.delete { error in
+                            url.delete(queue: self._editorContext._editingQueue) { error in
                                 DispatchQueue.main.async {
                                     // 执行回调
                                     completion?(error)
@@ -180,7 +182,7 @@ public struct DocumentManager {
         // 如果没有子文件夹，直接删除
         } else {
             self._editorContext.closeIfOpen(url: url) {
-                url.delete { error in
+                url.delete(queue: self._editorContext._editingQueue) { error in
                     DispatchQueue.main.async {
                         // 执行回调
                         completion?(error)
@@ -203,7 +205,7 @@ public struct DocumentManager {
         
         let renameAction: (URL) -> Void = { newURL in
             
-            url.rename(url: newURL) { error in
+            url.rename(queue: self._editorContext._editingQueue, url: newURL) { error in
                 if let error = error {
                     DispatchQueue.main.async {
                         failure(error)
@@ -213,7 +215,7 @@ public struct DocumentManager {
                     let subdocumentFolder = url.convertoFolderURL
                     var isDir = ObjCBool(true)
                     if FileManager.default.fileExists(atPath: subdocumentFolder.path, isDirectory: &isDir) {
-                        subdocumentFolder.rename(url: newURL.convertoFolderURL) { error in
+                        subdocumentFolder.rename(queue: self._editorContext._editingQueue, url: newURL.convertoFolderURL) { error in
                             if let error = error {
                                 DispatchQueue.main.async {
                                     failure(error)
@@ -252,7 +254,7 @@ public struct DocumentManager {
     }
     
     public func duplicate(url: URL, complete: @escaping (URL) -> Void, failure: @escaping (Error) -> Void) {
-        url.duplicate { url, error in
+        url.duplicate(queue: self._editorContext._editingQueue) { url, error in
             DispatchQueue.main.async {
                 if error == nil {
                     complete(url!)

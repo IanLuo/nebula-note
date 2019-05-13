@@ -213,6 +213,10 @@ public class DocumentEditViewModel {
         }
     }
     
+    public func close(completion: @escaping (Bool) -> Void) {
+        self._editorService.close(completion: completion)
+    }
+    
     public func headingString(index: Int) -> String {
         let headingTextRange = self.headings[index].headingTextRange
         return self._editorService.string.substring(headingTextRange)

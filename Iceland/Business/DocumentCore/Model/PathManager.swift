@@ -65,7 +65,7 @@ extension URL {
         return URL.directory(location: URLLocation.cache, relativePath: "audio")
     }
     
-    public func writeBlock(accessor: @escaping (Error?) -> Void) {
+    public func writeBlock(queue q: DispatchQueue, accessor: @escaping (Error?) -> Void) {
         let directory = self.deletingLastPathComponent()
         
         directory.createDirectoryIfNeeded { error in
@@ -75,7 +75,7 @@ extension URL {
                 let fileCoordinator = NSFileCoordinator()
                 let intent = NSFileAccessIntent.writingIntent(with: self, options: NSFileCoordinator.WritingOptions.forReplacing)
                 let queue = OperationQueue()
-
+                queue.underlyingQueue = q
                 fileCoordinator.coordinate(with: [intent], queue: queue) { error in
                     accessor(error)
                 }
@@ -83,8 +83,8 @@ extension URL {
         }
     }
     
-    public func write(data: Data, completion: @escaping (Error?) -> Void) {
-        self.writeBlock { error  in
+    public func write(queue q: DispatchQueue, data: Data, completion: @escaping (Error?) -> Void) {
+        self.writeBlock(queue: q) { error  in
             if let error = error {
                 completion(error)
             } else {
@@ -118,12 +118,13 @@ extension URL {
         }
     }
     
-    public func deleteIfExists(isDirectory: Bool,
+    public func deleteIfExists(queue q: DispatchQueue,
+                               isDirectory: Bool,
                                completion: @escaping (Error?) -> Void) {
         var isDirectory = ObjCBool(isDirectory)
         
         if FileManager.default.fileExists(atPath: self.path, isDirectory: &isDirectory) {
-            self.delete(completion: completion)
+            self.delete(queue: q, completion: completion)
         } else {
             completion(nil)
         }
@@ -241,7 +242,7 @@ extension URL {
 
 
 extension URL {
-    public func duplicate(completion: @escaping (URL?, Error?) -> Void) {
+    public func duplicate(queue q: DispatchQueue, completion: @escaping (URL?, Error?) -> Void) {
         let fileCoordinator = NSFileCoordinator()
         let read = NSFileAccessIntent.readingIntent(with: self, options: NSFileCoordinator.ReadingOptions.Element())
         
@@ -259,7 +260,7 @@ extension URL {
                                                      options: NSFileCoordinator.WritingOptions.forReplacing)
         
         let queue = OperationQueue()
-        queue.qualityOfService = .background
+        queue.underlyingQueue = q
         fileCoordinator.coordinate(with: [write, read], queue: queue) { error in
             if error != nil {
                 completion(nil, error)
@@ -275,11 +276,11 @@ extension URL {
         }
     }
     
-    public func delete(completion: @escaping (Error?) -> Void) {
+    public func delete(queue q: DispatchQueue, completion: @escaping (Error?) -> Void) {
         let fileCoordinator = NSFileCoordinator(filePresenter: nil)
         let fileAccessIntent = NSFileAccessIntent.writingIntent(with: self, options: NSFileCoordinator.WritingOptions.forDeleting)
         let queue = OperationQueue()
-        queue.qualityOfService = .background
+        queue.underlyingQueue = q
         fileCoordinator.coordinate(with: [fileAccessIntent], queue: queue) { error in
             if let error = error {
                 completion(error)
@@ -294,7 +295,7 @@ extension URL {
         }
     }
     
-    public func rename(url: URL, completion: ((Error?) -> Void)?) {
+    public func rename(queue q: DispatchQueue, url: URL, completion: ((Error?) -> Void)?) {
         let oldURL = self
         let newURL = url
         
@@ -303,7 +304,7 @@ extension URL {
         let replacing = NSFileAccessIntent.writingIntent(with: newURL, options: NSFileCoordinator.WritingOptions.forReplacing)
         
         let queue = OperationQueue()
-        queue.qualityOfService = .background
+        queue.underlyingQueue = q
         fileCoordinator.coordinate(with: [moving, replacing], queue: queue) { error in
             do {
                 let fileManager = FileManager.default
@@ -342,7 +343,7 @@ extension URL {
         let fileCoordinator = NSFileCoordinator()
         let intent = NSFileAccessIntent.writingIntent(with: URL(fileURLWithPath: path), options: NSFileCoordinator.WritingOptions.forReplacing)
         let queue = OperationQueue()
-        queue.qualityOfService = .background
+        queue.qualityOfService = .userInteractive
         fileCoordinator.coordinate(with: [intent], queue: queue) { error in
             do {
                 try Foundation.FileManager.default.createDirectory(atPath: intent.url.path, withIntermediateDirectories: true, attributes: nil)

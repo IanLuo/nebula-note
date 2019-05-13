@@ -433,18 +433,20 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 let value = text.substring(valueRange)
                 let attachment = RenderAttachment(type: type, value: value, manager: self._attachmentManager)
                 
-                textStorage.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment],
+                textStorage.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment,
+                                           OutlineAttribute.Attachment.type: type,
+                                           OutlineAttribute.Attachment.value: value],
                                    range: attachmentRange)
                 
                 if let attachment = attachment {
-                    if !super.isAttachmentExists(withKey: value) {
+//                    if !super.isAttachmentExists(withKey: value) {
                         super.add(attachment, for: value)
-                    }
+//                    }
                     
-                    self.addAttributes([OutlineAttribute.showAttachment: value],
+                    textStorage.addAttributes([OutlineAttribute.showAttachment: value],
                                        range: attachmentRange.head(1))
                 } else {
-                    self.addAttributes([OutlineAttribute.showAttachment: OutlineAttribute.Attachment.unavailable],
+                    textStorage.addAttributes([OutlineAttribute.showAttachment: OutlineAttribute.Attachment.unavailable],
                                        range: attachmentRange.head(1))
                 }
             }

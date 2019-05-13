@@ -8,6 +8,7 @@
 
 import Foundation
 import Interface
+import UIKit
 
 public class RenderAttachment: NSTextAttachment {
     public var type: String
@@ -23,29 +24,96 @@ public class RenderAttachment: NSTextAttachment {
         self.type = type
         self.value = value
         super.init(data: nil, ofType: nil)
-        self.bounds = CGRect(origin: .zero, size: .init(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width))
+        self.bounds = CGRect(origin: .zero, size: .init(width: 200, height: 60))
         
-        self._manager.attachment(with: value, completion: { attachment in
-            self._attachment = attachment
-            self.url = attachment.url
-            self.image = UIImage(contentsOfFile: attachment.url.path)?.resize(upto: self.bounds.size)
+        self._manager.attachment(with: value, completion: { [weak self] attachment in
+            self?._attachment = attachment
+            self?.url = attachment.url
+            self?.image = AttachmentThumbnailView(bounds: self!.bounds, attachment: attachment).snapshot
         }) { error in
             
         }
-        self.createImage()
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+}
+
+private class AttachmentThumbnailView: UIView {
+    let icon: UIImageView = {
+        let imageView = UIImageView()
+        imageView.backgroundColor = InterfaceTheme.Color.background3
+        return imageView
+    }()
     
-    private func createImage() {
-        switch self.type {
-        case Attachment.Kind.sketch.rawValue: fallthrough
-        case Attachment.Kind.image.rawValue:
-            let size = self.bounds.size
-            self.bounds = CGRect(origin: .zero, size: size)
+    let title: UILabel = {
+        let label = UILabel()
+        label.textColor = InterfaceTheme.Color.interactive
+        label.textAlignment = .center
+        return label
+    }()
+    
+    var attachment: Attachment? {
+        didSet {
+            
+        }
+    }
+    
+    private func createImage(attachment: Attachment) {
+        switch attachment.kind {
+        case Attachment.Kind.sketch:
+            self.title.text = "sketch"
+            self.icon.contentMode = .scaleAspectFill
+            self.icon.image = UIImage(contentsOfFile: attachment.url.path)?.resize(upto: self.bounds.size)
+        case Attachment.Kind.image:
+            self.title.text = "image"
+            self.icon.contentMode = .scaleAspectFill
+            self.icon.image = UIImage(contentsOfFile: attachment.url.path)?.resize(upto: self.bounds.size)
+        case .audio:
+            self.title.text = "audio"
+            self.icon.contentMode = .center
+            self.icon.image = Asset.Assets.audio.image.fill(color: InterfaceTheme.Color.descriptive)
+        case .video:
+            self.title.text = "video"
+            self.icon.contentMode = .center
+            self.icon.image = Asset.Assets.video.image.fill(color: InterfaceTheme.Color.descriptive)
+        case .location:
+            self.title.text = "location"
+            self.icon.contentMode = .center
+            self.icon.image = Asset.Assets.location.image.fill(color: InterfaceTheme.Color.descriptive)
         default: break
         }
+    }
+    
+    init(bounds: CGRect, attachment: Attachment) {
+        self.attachment = attachment
+        
+        super.init(frame: bounds)
+        
+        self.backgroundColor = InterfaceTheme.Color.background1
+        
+        let contentView = UIView(frame: self.bounds)
+        contentView.layer.cornerRadius = 8
+        contentView.layer.masksToBounds = true
+        
+        contentView.backgroundColor = InterfaceTheme.Color.background2
+        
+        self.addSubview(contentView)
+        contentView.addSubview(icon)
+        contentView.addSubview(title)
+        
+        self.icon.size(width: contentView.bounds.height, height: self.bounds.height)
+        self.align(to: contentView.bounds, direction: AlignmentDirection.top, inset: 0)
+        self.align(to: contentView.bounds, direction: AlignmentDirection.left, inset: 0)
+        
+        self.title.align(to: self.icon, direction: AlignmentDirection.right, position: AlignmentPosition.head, inset: 0)
+        self.title.size(width: contentView.bounds.width - self.icon.bounds.width, height: contentView.bounds.height)
+        
+        self.createImage(attachment: attachment)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }

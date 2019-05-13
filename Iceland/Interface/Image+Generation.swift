@@ -87,9 +87,21 @@ extension UIView {
             self.layer.render(in: context)
             image = UIGraphicsGetImageFromCurrentImageContext()
         } else {
-            let context = CGContext(data: nil, width: Int(self.bounds.size.width), height: Int(self.bounds.size.height), bitsPerComponent: 8, bytesPerRow: Int(self.bounds.size.width) * 4 * 8, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedFirst.rawValue)!
+            let bitmapBytesPerRow = Int(self.bounds.size.width) * 4 * 8
+            let bitmapByteCount = bitmapBytesPerRow * Int(self.bounds.size.height)
+            let pixelData = UnsafeMutablePointer<UInt8>.allocate(capacity: bitmapByteCount)
+            
+            let context = CGContext(data: pixelData,
+                                    width: Int(self.bounds.size.width),
+                                    height: Int(self.bounds.size.height),
+                                    bitsPerComponent: 8,
+                                    bytesPerRow: bitmapBytesPerRow,
+                                    space: CGColorSpaceCreateDeviceRGB(),
+                                    bitmapInfo: CGImageAlphaInfo.premultipliedFirst.rawValue)!
             self.layer.render(in: context)
-            image = UIGraphicsGetImageFromCurrentImageContext()
+            if let cgImage = context.makeImage() {
+                image = UIImage(cgImage: cgImage)
+            }
         }
 
         UIGraphicsEndImageContext()

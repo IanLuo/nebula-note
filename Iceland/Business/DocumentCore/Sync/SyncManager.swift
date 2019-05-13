@@ -96,22 +96,27 @@ public class SyncManager {
             completion(SyncError.syncIsNotEnabled)
             return
         }
+        
+        let queue = DispatchQueue(label: "moveLocalFilesToIcloud")
 
         let group = DispatchGroup()
-        group.enter()
-        icloudDocumentRoot.deleteIfExists(isDirectory: true, completion: { _ in
-            group.leave()
-        })
         
-        group.enter()
-        icloudAttachmentRoot.deleteIfExists(isDirectory: true, completion: { _ in
-            group.leave()
-        })
-        
-        group.enter()
-        icloudKeyValueStoreRoot.deleteIfExists(isDirectory: true, completion: { _ in
-            group.leave()
-        })
+        queue.async { [unowned queue] in
+            group.enter()
+            icloudDocumentRoot.deleteIfExists(queue: queue, isDirectory: true, completion: { _ in
+                group.leave()
+            })
+            
+            group.enter()
+            icloudAttachmentRoot.deleteIfExists(queue: queue, isDirectory: true, completion: { _ in
+                group.leave()
+            })
+            
+            group.enter()
+            icloudKeyValueStoreRoot.deleteIfExists(queue: queue, isDirectory: true, completion: { _ in
+                group.leave()
+            })
+        }
         
         group.notify(queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.background)) {
             do {
@@ -135,20 +140,25 @@ public class SyncManager {
         }
         
         let group = DispatchGroup()
-        group.enter()
-        URL.documentBaseURL.deleteIfExists(isDirectory: true, completion: { _ in
-            group.leave()
-        })
         
-        group.enter()
-        URL.attachmentURL.deleteIfExists(isDirectory: true, completion: { _ in
-            group.leave()
-        })
+        let queue = DispatchQueue(label: "moveLocalFilesToIcloud")
         
-        group.enter()
-        URL.keyValueStore.deleteIfExists(isDirectory: true, completion: { _ in
-            group.leave()
-        })
+        queue.async { [unowned queue] in
+            group.enter()
+            URL.documentBaseURL.deleteIfExists(queue: queue, isDirectory: true, completion: { _ in
+                group.leave()
+            })
+            
+            group.enter()
+            URL.attachmentURL.deleteIfExists(queue: queue, isDirectory: true, completion: { _ in
+                group.leave()
+            })
+            
+            group.enter()
+            URL.keyValueStore.deleteIfExists(queue: queue, isDirectory: true, completion: { _ in
+                group.leave()
+            })
+        }
         
         group.notify(queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.background)) {
             do {

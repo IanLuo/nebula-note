@@ -67,7 +67,7 @@ public enum AttachmentError: Error {
         case .link: fallthrough
         case .text:
             let tempFile = URL.file(directory: URL.directory(location: URLLocation.temporary), name: "attachments", extension: "txt")
-            tempFile.write(data: content.data(using: .utf8) ?? Data()) { _ in
+            tempFile.write(queue: DispatchQueue.main, data: content.data(using: .utf8) ?? Data()) { _ in
                 saveAttahmentAction(tempFile)
             }
         default:
@@ -89,7 +89,7 @@ public enum AttachmentError: Error {
     public func delete(key: String, completion: @escaping () -> Void, failure: @escaping (Error) -> Void) {
         
         self.attachment(with: key, completion: { attachment in
-            attachment.wrapperURL.delete(completion: { error in
+            attachment.wrapperURL.delete(queue: DispatchQueue.main, completion: { error in
                 if let error = error {
                     failure(error)
                 } else {

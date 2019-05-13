@@ -19,6 +19,7 @@ public protocol OutlineTextViewDelegate: class {
     func didTapDateAndTime(textView: UITextView, characterIndex: Int, dateAndTimeString: String, point: CGPoint)
     func didTapOnPlanning(textView: UITextView, characterIndex: Int, planning: String, point: CGPoint)
     func didTapOnPriority(textView: UITextView, characterIndex: Int, priority: String, point: CGPoint)
+    func didTapOnAttachment(textView: UITextView, characterIndex: Int, type: String, value: String, point: CGPoint)
 }
 
 public class OutlineTextView: UITextView {
@@ -91,6 +92,9 @@ public class OutlineTextView: UITextView {
             self.outlineDelegate?.didTapOnPlanning(textView: self, characterIndex: characterIndex, planning: planning, point: location)
         } else if let priority = attributes[OutlineAttribute.Heading.priority] as? String {
             self.outlineDelegate?.didTapOnPriority(textView: self, characterIndex: characterIndex, priority: priority, point: location)
+        }  else if let type = attributes[OutlineAttribute.Attachment.type] as? String,
+            let value = attributes[OutlineAttribute.Attachment.value] as? String {
+            self.outlineDelegate?.didTapOnAttachment(textView: self, characterIndex: characterIndex, type: type, value: value, point: location)
         } else if let hiddenValue = attributes[OutlineAttribute.hidden] as? Int {
             if hiddenValue == OutlineAttribute.hiddenValueWithAttachment.intValue {
                 self.outlineDelegate?.didTapOnHiddenAttachment(textView: self, characterIndex: characterIndex, point: location)

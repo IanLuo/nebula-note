@@ -69,7 +69,7 @@ fileprivate struct PlistStore: KeyValueStore {
             url.deletingLastPathComponent().createDirectoryIfNeeded { error in
                 guard error == nil else { log.error(error!); return }
                 
-                url.writeBlock(accessor: { error in
+                url.writeBlock(queue: DispatchQueue.main, accessor: { error in
                     if let error = error {
                         log.error(error)
                     } else {
@@ -89,7 +89,7 @@ fileprivate struct PlistStore: KeyValueStore {
         if let store = _store, let url = self._url {
             store.removeObject(forKey: key)
             
-            url.writeBlock(accessor: { error in
+            url.writeBlock(queue: DispatchQueue.main, accessor: { error in
                 if let error = error {
                     log.error(error)
                 } else {
@@ -106,7 +106,7 @@ fileprivate struct PlistStore: KeyValueStore {
     
     public func clear(completion: @escaping () -> Void) {
         if let store = _store, let url = self._url {
-            url.writeBlock { error in
+            url.writeBlock(queue: DispatchQueue.main) { error in
                 if let error = error {
                     log.error(error)
                 } else {

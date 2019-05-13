@@ -1693,6 +1693,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = FDCA0585533F2DF37A968E3E /* Pods-Interface.debug.xcconfig */;
 			buildSettings = {
+				CLANG_USE_OPTIMIZATION_PROFILE = NO;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -1724,6 +1725,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = EE7066485686E586B5DADB73 /* Pods-Interface.release.xcconfig */;
 			buildSettings = {
+				CLANG_USE_OPTIMIZATION_PROFILE = NO;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -1756,6 +1758,7 @@
 			baseConfigurationReference = E68A1109AE2343C161D810A1 /* Pods-Business.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				CLANG_USE_OPTIMIZATION_PROFILE = NO;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -1797,6 +1800,7 @@
 			baseConfigurationReference = D009710A21317A905D2FBAC1 /* Pods-Business.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				CLANG_USE_OPTIMIZATION_PROFILE = NO;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
