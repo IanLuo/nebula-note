@@ -72,6 +72,16 @@ public class HomeCoordinator: Coordinator {
     public func addPersistentCoordinator(_ coordinator: Coordinator) {
         self.addChild(coordinator)
     }
+    
+    public func showSettings() {
+        let navigationController = UINavigationController()
+        navigationController.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        navigationController.navigationBar.shadowImage = UIImage()
+        navigationController.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.interactive]
+        
+        let settingsCoordinator = SettingsCoordinator(stack: navigationController, dependency: self.dependency)
+        settingsCoordinator.start(from: self)
+    }
 }
 
 extension HomeCoordinator: SearchCoordinatorDelegate {

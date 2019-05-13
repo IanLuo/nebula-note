@@ -11,14 +11,11 @@ import UIKit
 
 public class SettingsCoordinator: Coordinator {
     public override init(stack: UINavigationController, dependency: Dependency) {
-        let viewModel = SettingsViewModel()
         super.init(stack: stack, dependency: dependency)
-        let viewController = SettingsViewController(viewModel: viewModel)
+        let viewModel = SettingsViewModel(coordinator: self)
+        let viewController = UIStoryboard(name: "Settings", bundle: nil).instantiateInitialViewController() as! SettingsViewController
+        viewController.viewModel = viewModel
         viewModel.delegate = viewController
         self.viewController = viewController
-    }
-    
-    public func getCustomizedPlannings() -> [String: [String]]? {
-        return nil
     }
 }

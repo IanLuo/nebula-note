@@ -18,6 +18,8 @@ public protocol KeyValueStore {
     func clear(completion: @escaping () -> Void)
     
     func allKeys() -> [String]
+    
+    func get<T>(key: String, type: T.Type) -> T?
 }
 
 /// 明文存储，不适合保存敏感数据
@@ -40,7 +42,6 @@ public struct KeyValueStoreFactory {
 }
 
 fileprivate struct PlistStore: KeyValueStore {
-    
     private var _url: URL?
     private var _store: NSMutableDictionary?
     
@@ -55,6 +56,10 @@ fileprivate struct PlistStore: KeyValueStore {
         }
     }
     
+    public func get<T>(key: String, type: T.Type) -> T? {
+        return self.get(key: key) as? T
+    }
+
     public func get(key: String) -> Any? {
         if let store = _store {
             return store.object(forKey: key)

@@ -26,6 +26,15 @@ public class DashboardViewController: UIViewController {
     public weak var delegate: DashboardViewControllerDelegate?
     private let viewModel: DashboardViewModel
     
+    private let settingsButton: UIButton = {
+        let button = UIButton()
+        button.setImage(Asset.Assets.document.image.fill(color: InterfaceTheme.Color.interactive), for: .normal)
+        button.layer.cornerRadius = 30
+        button.layer.masksToBounds = true
+        button.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.background3, size: .singlePoint), for: .normal)
+        return button
+    }()
+    
     public init(viewModel: DashboardViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -43,7 +52,16 @@ public class DashboardViewController: UIViewController {
         self.view.backgroundColor = InterfaceTheme.Color.background2
         
         self.view.addSubview(self.tableView)
-        self.tableView.fill(view: self.view)
+        self.view.addSubview(self.settingsButton)
+        
+        self.tableView.allSidesAnchors(to: self.view, edgeInset: 0)
+        
+        self.settingsButton.sizeAnchor(width: 60, height: 60)
+        self.settingsButton.sideAnchor(for: [.left, .bottom], to: self.view, edgeInset: 30)
+        
+        self.settingsButton.triggered(event: UIControl.Event.touchUpInside, action: { [unowned self] button in
+            self.viewModel.coordinator?.showSettings()
+        })
         
         self.viewModel.loadData()
     }

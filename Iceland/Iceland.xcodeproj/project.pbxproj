@@ -106,6 +106,10 @@
 		E43B90A8222903170008B44C /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43B90A7222903160008B44C /* Event.swift */; };
 		E43E7875222ACF780007EE4F /* OutlineTextTrimmer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43E7874222ACF780007EE4F /* OutlineTextTrimmer.swift */; };
 		E43E7877222AD0C70007EE4F /* DocumentContentCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43E7876222AD0C70007EE4F /* DocumentContentCommands.swift */; };
+		E44683F6228997CA005D5B73 /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E44683F5228997CA005D5B73 /* Settings.storyboard */; };
+		E44683FA2289B554005D5B73 /* UITextFieldClosure.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44683F82289B554005D5B73 /* UITextFieldClosure.swift */; };
+		E44683FB2289B554005D5B73 /* UIControlClosure.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44683F92289B554005D5B73 /* UIControlClosure.swift */; };
+		E44683FD2289B5AD005D5B73 /* ExtensionProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44683FC2289B5AD005D5B73 /* ExtensionProperty.swift */; };
 		E44825A3219722C300C17568 /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44825A2219722C300C17568 /* Application.swift */; };
 		E44E60F521E9F2C0005AC25F /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44E60F421E9F2C0005AC25F /* Location.swift */; };
 		E455868A21DF643F00381FA8 /* HeadingOutlineTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E455868921DF643F00381FA8 /* HeadingOutlineTableViewCell.swift */; };
@@ -317,6 +321,10 @@
 		E43E7874222ACF780007EE4F /* OutlineTextTrimmer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineTextTrimmer.swift; sourceTree = "<group>"; };
 		E43E7876222AD0C70007EE4F /* DocumentContentCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentContentCommands.swift; sourceTree = "<group>"; };
 		E43EBDA522336E8B002571D8 /* strings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = strings.swift; sourceTree = "<group>"; };
+		E44683F5228997CA005D5B73 /* Settings.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Settings.storyboard; sourceTree = "<group>"; };
+		E44683F82289B554005D5B73 /* UITextFieldClosure.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UITextFieldClosure.swift; sourceTree = "<group>"; };
+		E44683F92289B554005D5B73 /* UIControlClosure.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIControlClosure.swift; sourceTree = "<group>"; };
+		E44683FC2289B5AD005D5B73 /* ExtensionProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExtensionProperty.swift; sourceTree = "<group>"; };
 		E44825A2219722C300C17568 /* Application.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Application.swift; sourceTree = "<group>"; };
 		E44825A6219810E100C17568 /* OutlineLayoutManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineLayoutManager.swift; sourceTree = "<group>"; };
 		E44825A8219810FF00C17568 /* EditorController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorController.swift; sourceTree = "<group>"; };
@@ -665,6 +673,7 @@
 		E41CB19C21D88D9300EF0A3C /* Business */ = {
 			isa = PBXGroup;
 			children = (
+				E44683F72289B554005D5B73 /* Delegate2Closure */,
 				E4B54C4E2275E8B10073AE31 /* URLSchema */,
 				E47FA8FE227026B8005AD0BA /* Import */,
 				E47FA8F92270258E005AD0BA /* Export */,
@@ -677,6 +686,7 @@
 				E41CB19E21D88D9300EF0A3C /* Info.plist */,
 				E41CB1C821D88E2200EF0A3C /* Log.swift */,
 				E47A9A5121F1F7690050ABC9 /* DateHelper.swift */,
+				E44683FC2289B5AD005D5B73 /* ExtensionProperty.swift */,
 				E44E60F421E9F2C0005AC25F /* Location.swift */,
 				E4821DB022374C420063C0B2 /* WeakArray.swift */,
 				E4729BA32202E6BA00F22885 /* Range.swift */,
@@ -766,6 +776,7 @@
 				E49F3E4721B9183F003F468D /* SettingsCoordinator.swift */,
 				E49F3E4921B9186D003F468D /* SettingsViewController.swift */,
 				E49F3E4B21B91885003F468D /* SettingsViewModel.swift */,
+				E44683F5228997CA005D5B73 /* Settings.storyboard */,
 			);
 			path = Setting;
 			sourceTree = "<group>";
@@ -867,6 +878,15 @@
 				E451B280223A1F80000BEA34 /* assets.swift */,
 			);
 			path = swiftgen;
+			sourceTree = "<group>";
+		};
+		E44683F72289B554005D5B73 /* Delegate2Closure */ = {
+			isa = PBXGroup;
+			children = (
+				E44683F82289B554005D5B73 /* UITextFieldClosure.swift */,
+				E44683F92289B554005D5B73 /* UIControlClosure.swift */,
+			);
+			path = Delegate2Closure;
 			sourceTree = "<group>";
 		};
 		E462DB98223D257100BF7AB4 /* DateAndTimeSelect */ = {
@@ -1275,6 +1295,7 @@
 				E4FD88EB223DE67E005514C5 /* DateAndTimeSelectViewController.xib in Resources */,
 				E43428042121BF5F00EC6DC3 /* LaunchScreen.storyboard in Resources */,
 				E4FD88E9223DE3C3005514C5 /* TimeSelectViewController.xib in Resources */,
+				E44683F6228997CA005D5B73 /* Settings.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1483,6 +1504,7 @@
 			files = (
 				E41CB1BC21D88DD100EF0A3C /* OutlineTextView.swift in Sources */,
 				E41CB1C121D88DD700EF0A3C /* OutlineParser.swift in Sources */,
+				E44683FA2289B554005D5B73 /* UITextFieldClosure.swift in Sources */,
 				E43E7875222ACF780007EE4F /* OutlineTextTrimmer.swift in Sources */,
 				E41CB1BA21D88DCE00EF0A3C /* Document.swift in Sources */,
 				E4162EF72254EA4F00D3619E /* DateAndTimeType.swift in Sources */,
@@ -1497,6 +1519,8 @@
 				E41CB1D621D8921B00EF0A3C /* SettingsAccessor.swift in Sources */,
 				E41CB1C721D88DFD00EF0A3C /* AttachmentManager.swift in Sources */,
 				E4F9ECDF21FBF61B009A08CD /* RecentFilesManager.swift in Sources */,
+				E44683FD2289B5AD005D5B73 /* ExtensionProperty.swift in Sources */,
+				E44683FB2289B554005D5B73 /* UIControlClosure.swift in Sources */,
 				E466D186221D930A007F140B /* SeparaterAttachment.swift in Sources */,
 				E41B892C21E34297009C5AD7 /* AudioPlayer.swift in Sources */,
 				E4D31DEE227DA633001F5272 /* URLHandlerManager.swift in Sources */,

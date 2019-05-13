@@ -8,8 +8,21 @@
 
 import Foundation
 
+public enum SettingsError: Error {
+    case  removePlanningFailed(String)
+}
+
 /// used to fetch settings values
 public class SettingsAccessor {
+    private struct Constants {
+        static let store: KeyValueStore = KeyValueStoreFactory.store(type: KeyValueStoreType.plist(PlistStoreType.custom("Settings")))
+        struct Keys {
+            static let finishedPlannings = "finishedPlannings"
+            static let unfinishedPlannings = "unfinishedPlannings"
+            static let isSyncEnabled = "isSyncEnabled"
+        }
+    }
+    
     private static let instance = SettingsAccessor()
     private init() {}
     public static var shared: SettingsAccessor { return instance }
@@ -34,11 +47,11 @@ public class SettingsAccessor {
     }
     
     public var customizedUnfinishedPlannings: [String]? {
-        return ["PENDING", "FUTURE", "MAYBE", "WIP"] // TODO: change to real funciton
+       return Constants.store.get(key: Constants.Keys.unfinishedPlannings, type: [String].self)
     }
     
     public var customizedFinishedPlannings: [String]? {
-        return nil
+        return Constants.store.get(key: Constants.Keys.finishedPlannings, type: [String].self)
     }
     
     public var unfinishedPlanning: [String] {
@@ -51,5 +64,54 @@ public class SettingsAccessor {
     
     public var allPlannings: [String] {
         return unfinishedPlanning + finishedPlanning
+    }
+    
+    /// add new planning
+    public func addPlanning(_ planning: String, isForFinished: Bool, completion: @escaping (Result<Void, Error>) -> Void) {
+        let key = isForFinished ? Constants.Keys.finishedPlannings : Constants.Keys.unfinishedPlannings
+        if var plannings = Constants.store.get(key: key, type: [String].self) {
+            plannings.append(planning)
+            Constants.store.set(value: plannings, key: key) {
+                completion(.success(()))
+            }
+        } else {
+            Constants.store.set(value: [planning], key: key) {
+                completion(.success(()))
+            }
+        }
+    }
+    
+    /// remove specified planning if there's on in the setting's configuration
+    public func removePlanning(_ planning: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        let removePlanningAction: (String) -> Bool = { key in
+            if var plannings = Constants.store.get(key: key, type: [String].self) {
+                for (index, p) in plannings.enumerated() {
+                    if p == planning {
+                        plannings.remove(at: index)
+                        Constants.store.set(value: plannings, key: key) {
+                            completion(.success(()))
+                        }
+                        return true // planning found and removed, return true, so there's no need for another remove action for another planning list
+                    }
+                }
+            } else {
+                completion(.failure(SettingsError.removePlanningFailed("no planning found")))
+            }
+            
+            return false
+        }
+        
+        if !removePlanningAction(Constants.Keys.finishedPlannings) {
+            _ = removePlanningAction(Constants.Keys.unfinishedPlannings)
+        }
+    }
+    
+    /// switch on/off sync
+    public func setIsSyncEnabled(_ enabled: Bool, completion: @escaping () -> Void) {
+        Constants.store.set(value: enabled, key: Constants.Keys.isSyncEnabled, completion: completion)
+    }
+    
+    public var isSyncEnabled: Bool {
+        return (Constants.store.get(key: Constants.Keys.isSyncEnabled) as? Bool) ?? false
     }
 }
