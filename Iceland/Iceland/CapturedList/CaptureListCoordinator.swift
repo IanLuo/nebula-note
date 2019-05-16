@@ -35,10 +35,7 @@ public class CaptureListCoordinator: Coordinator {
     }
     
     public func showDocumentHeadingSelector(completion: @escaping (URL, DocumentHeading) -> Void, canceled: @escaping () -> Void) {
-        let navigationController = UINavigationController()
-        navigationController.navigationBar.setBackgroundImage(UIImage(), for: .default)
-        navigationController.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.interactive]
-        navigationController.navigationBar.shadowImage = UIImage()
+        let navigationController = Coordinator.createDefaultNavigationControlller()
         
         let documentCoord = BrowserCoordinator(stack: navigationController,
                                                dependency: super.dependency,

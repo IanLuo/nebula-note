@@ -30,6 +30,14 @@ public class SyncFailedEvent: Event {
     }
 }
 
+public class iCloudOpeningStatusChangedevent: Event {
+    public let isiCloudEnabled: Bool
+    
+    public init(isiCloudEnabled: Bool) {
+        self.isiCloudEnabled = isiCloudEnabled
+    }
+}
+
 public class NowUsingLocalDocumentsEvent: Event {}
 
 public class NowUsingiCloudDocumentsEvent: Event {}

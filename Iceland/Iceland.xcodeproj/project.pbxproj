@@ -106,6 +106,7 @@
 		E43B90A8222903170008B44C /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43B90A7222903160008B44C /* Event.swift */; };
 		E43E7875222ACF780007EE4F /* OutlineTextTrimmer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43E7874222ACF780007EE4F /* OutlineTextTrimmer.swift */; };
 		E43E7877222AD0C70007EE4F /* DocumentContentCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43E7876222AD0C70007EE4F /* DocumentContentCommands.swift */; };
+		E43FDAD2228B028600FA899B /* Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43FDAD1228B028600FA899B /* Alert.swift */; };
 		E44683F6228997CA005D5B73 /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E44683F5228997CA005D5B73 /* Settings.storyboard */; };
 		E44683FA2289B554005D5B73 /* UITextFieldClosure.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44683F82289B554005D5B73 /* UITextFieldClosure.swift */; };
 		E44683FB2289B554005D5B73 /* UIControlClosure.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44683F92289B554005D5B73 /* UIControlClosure.swift */; };
@@ -321,6 +322,7 @@
 		E43E7874222ACF780007EE4F /* OutlineTextTrimmer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineTextTrimmer.swift; sourceTree = "<group>"; };
 		E43E7876222AD0C70007EE4F /* DocumentContentCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentContentCommands.swift; sourceTree = "<group>"; };
 		E43EBDA522336E8B002571D8 /* strings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = strings.swift; sourceTree = "<group>"; };
+		E43FDAD1228B028600FA899B /* Alert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alert.swift; sourceTree = "<group>"; };
 		E44683F5228997CA005D5B73 /* Settings.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Settings.storyboard; sourceTree = "<group>"; };
 		E44683F82289B554005D5B73 /* UITextFieldClosure.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UITextFieldClosure.swift; sourceTree = "<group>"; };
 		E44683F92289B554005D5B73 /* UIControlClosure.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIControlClosure.swift; sourceTree = "<group>"; };
@@ -976,6 +978,7 @@
 				E4C46FE221EB311900F6374F /* ModalFormViewController.swift */,
 				E4773BAB21F9A203000F8F3F /* CoverPickerViewController.swift */,
 				E4B331DC22432F9400A7F44F /* ConfirmViewController.swift */,
+				E43FDAD1228B028600FA899B /* Alert.swift */,
 			);
 			path = UIViewController;
 			sourceTree = "<group>";
@@ -1478,6 +1481,7 @@
 				E40F6E90223B78DB00FFF53F /* Border.swift in Sources */,
 				E40F6EA1223B7A7200FFF53F /* ActionsViewController.swift in Sources */,
 				E40F6E99223B7A5300FFF53F /* assets.swift in Sources */,
+				E43FDAD2228B028600FA899B /* Alert.swift in Sources */,
 				E40F6EAA223B7A7900FFF53F /* UIView+Processing.swift in Sources */,
 				E4B331DD22432F9400A7F44F /* ConfirmViewController.swift in Sources */,
 				E40F6E98223B7A5000FFF53F /* strings.swift in Sources */,

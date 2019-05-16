@@ -45,6 +45,9 @@ public class RecentFilesView: UIView {
             self?.onCoverChange(event: changeDocumentEvent)
         })
 
+        self.eventObserver?.registerForEvent(on: self, eventType: iCloudOpeningStatusChangedevent.self, queue: .main, action: { [weak self] (event: iCloudOpeningStatusChangedevent) in
+            self?.loadData()
+        })
     }
     
     public required init?(coder aDecoder: NSCoder) {
@@ -52,7 +55,7 @@ public class RecentFilesView: UIView {
     }
     
     deinit {
-        self.eventObserver?.unregister(for: self, eventType: ChangeDocumentCoverEvent.self)
+        self.eventObserver?.unregister(for: self, eventType: nil)
     }
 
     public weak var delegate: RecentFilesViewDelegate?

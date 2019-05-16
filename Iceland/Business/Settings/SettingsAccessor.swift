@@ -15,11 +15,10 @@ public enum SettingsError: Error {
 /// used to fetch settings values
 public class SettingsAccessor {
     private struct Constants {
-        static let store: KeyValueStore = KeyValueStoreFactory.store(type: KeyValueStoreType.plist(PlistStoreType.custom("Settings")))
+        static var store: KeyValueStore { return KeyValueStoreFactory.store(type: KeyValueStoreType.plist(PlistStoreType.custom("Settings"))) }
         struct Keys {
             static let finishedPlannings = "finishedPlannings"
             static let unfinishedPlannings = "unfinishedPlannings"
-            static let isSyncEnabled = "isSyncEnabled"
         }
     }
     
@@ -104,14 +103,5 @@ public class SettingsAccessor {
         if !removePlanningAction(Constants.Keys.finishedPlannings) {
             _ = removePlanningAction(Constants.Keys.unfinishedPlannings)
         }
-    }
-    
-    /// switch on/off sync
-    public func setIsSyncEnabled(_ enabled: Bool, completion: @escaping () -> Void) {
-        Constants.store.set(value: enabled, key: Constants.Keys.isSyncEnabled, completion: completion)
-    }
-    
-    public var isSyncEnabled: Bool {
-        return (Constants.store.get(key: Constants.Keys.isSyncEnabled) as? Bool) ?? false
-    }
+    }    
 }

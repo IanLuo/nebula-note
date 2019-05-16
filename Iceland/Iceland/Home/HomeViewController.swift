@@ -48,7 +48,7 @@ public class HomeViewController: UIViewController {
         tap.delegate = self
         self.view.addGestureRecognizer(tap)
         
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: Asset.Assets.master.image, style: .plain, target: self, action: #selector(showMasterView))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: Asset.Assets.master.image.fill(color: InterfaceTheme.Color.interactive), style: .plain, target: self, action: #selector(showMasterView))
     }
     
     public init(masterViewController: UIViewController) {

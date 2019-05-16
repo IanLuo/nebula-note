@@ -293,5 +293,13 @@ public class DocumentBrowserViewModel {
         self.coordinator?.dependency.eventObserver.registerForEvent(on: self, eventType: AddDocumentEvent.self, queue: nil, action: { [weak self] (event: AddDocumentEvent) -> Void in
             self?.delegate?.didLoadData()
         })
+        
+        self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
+                                                                    eventType: iCloudOpeningStatusChangedevent.self,
+                                                                    queue: OperationQueue.main,
+                                                                    action: { [weak self] (event: iCloudOpeningStatusChangedevent) in
+                                                                        
+                                                                        self?.loadData()
+        })
     }
 }

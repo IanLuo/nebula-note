@@ -56,8 +56,7 @@ public class EditorCoordinator: Coordinator {
     }
     
     public func showOutline(completion: @escaping (DocumentHeading) -> Void) {
-        let navigationController = UINavigationController()
-        navigationController.isNavigationBarHidden = true
+        let navigationController = Coordinator.createDefaultNavigationControlller()
         let coordinator = EditorCoordinator(stack: navigationController, dependency: self.dependency, usage: EditorCoordinator.Usage.outline(self._viewModel.url))
         coordinator.didSelectOutlineHeadingAction = { [weak coordinator] heading in
             coordinator?.stop(animated: true, completion: {
@@ -68,8 +67,7 @@ public class EditorCoordinator: Coordinator {
     }
     
     public func showDocumentHeadingPicker(completion: @escaping (URL, DocumentHeading) -> Void) {
-        let navigationController = UINavigationController()
-        navigationController.isNavigationBarHidden = true
+        let navigationController = Coordinator.createDefaultNavigationControlller()
         
         let documentCoord = BrowserCoordinator(stack: navigationController,
                                                dependency: super.dependency,
@@ -88,10 +86,7 @@ public class EditorCoordinator: Coordinator {
     }
     
     public func showCapturedList(completion: @escaping (Attachment) -> Void) {
-        let navigationController = UINavigationController()
-        navigationController.navigationBar.setBackgroundImage(UIImage(), for: .default)
-        navigationController.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.interactive]
-        navigationController.navigationBar.shadowImage = UIImage()
+        let navigationController = Coordinator.createDefaultNavigationControlller()
         
         let capturedListCoordinator = CaptureListCoordinator(stack: navigationController, dependency: self.dependency, mode: CaptureListViewModel.Mode.pick)
         capturedListCoordinator.onSelectAction = completion
@@ -100,8 +95,7 @@ public class EditorCoordinator: Coordinator {
     }
         
     public func showLinkEditor(title: String, url: String, completeEdit: @escaping (String) -> Void) {
-        let navigationController = UINavigationController()
-        navigationController.isNavigationBarHidden = true
+        let navigationController = Coordinator.createDefaultNavigationControlller()
         let attachmentLinkCoordinator = AttachmentCoordinator(stack: navigationController, dependency: self.dependency, title: title, url: url)
         attachmentLinkCoordinator.onSaveAttachment = { key in
             AttachmentManager().attachment(with: key, completion: { attachment in
@@ -127,15 +121,6 @@ extension EditorCoordinator: SearchCoordinatorDelegate {
     
     public func didCancelSearching() {
         // ignore
-    }
-    
-    public func search() {
-        let navigationController = UINavigationController()
-        navigationController.isNavigationBarHidden = true
-        navigationController.modalPresentationStyle = .overCurrentContext
-        let searchCoordinator = SearchCoordinator(stack: navigationController, dependency: self.dependency)
-        searchCoordinator.delegate = self
-        searchCoordinator.start(from: self)
     }
     
     public func showDocumentInfo(viewModel: DocumentEditViewModel) {

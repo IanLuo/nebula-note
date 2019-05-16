@@ -15,11 +15,8 @@ extension DocumentEditViewController {
     @objc public func cancel(_ button: UIButton) {
         button.showProcessingAnimation()
         self.textView.endEditing(true)
-        self.viewModel.save { [unowned self] in
-            self.viewModel.close { [unowned self] _ in
-                self.viewModel.coordinator?.stop()
-            }
-        }
+        self.viewModel.close { _ in }
+        self.viewModel.coordinator?.stop()
     }
     
     @objc public func showInfo() {

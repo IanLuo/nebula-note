@@ -208,5 +208,12 @@ public class AgendaViewModel {
                                                                     action: { [weak self] (event: DateAndTimeChangedEvent) -> Void in
                                                                         self?._shouldReloadData = true
         })
+        
+        self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
+                                                                    eventType: iCloudOpeningStatusChangedevent.self,
+                                                                    queue: .main,
+                                                                    action: { [weak self] (event: iCloudOpeningStatusChangedevent) in
+            self?._shouldReloadData = true
+        })
     }
 }

@@ -12,14 +12,20 @@ import Foundation
 
 public enum SyncError: Error {
     case syncIsNotEnabled
+    case iCloudIsNotAvailable
 }
 
 public class SyncManager {
-    
     public enum iCloudStatus: String {
-        case neverUsed
+        case unknown // on first launch
         case on
-        case offWithOldData
+        case off
+    }
+    
+    public enum iCloudAccountStatus {
+        case closed
+        case open
+        case changed
     }
     
     public static private(set) var iCloudRoot: URL? {
@@ -45,14 +51,52 @@ public class SyncManager {
     
     public init(eventObserver: EventObserver) {
         self._eventObserver = eventObserver
+        
+//        NotificationCenter.default.addObserver(self, selector: #selector(_iCloudAvailabilityChanged(_:)), name: NSNotification.Name.NSUbiquityIdentityDidChange, object: nil)
+    }
+    
+//    deinit {
+//        NotificationCenter.default.removeObserver(self)
+//    }
+//
+//    @objc private func _iCloudAvailabilityChanged(_ notification: Notification) {
+//
+//    }
+    
+    public func updateCurrentiCloudAccountStatus() -> iCloudAccountStatus {
+        let key = "ubiquityIdentityToken"
+        let token = FileManager.default.ubiquityIdentityToken
+        let savedTokenData = UserDefaults.standard.data(forKey: key)
+        
+        switch (token, savedTokenData) {
+        case (nil, _):
+            return .closed
+        case let (token?, nil):
+            let tokenData = NSKeyedArchiver.archivedData(withRootObject: token)
+            UserDefaults.standard.setValue(tokenData, forKey: key)
+            UserDefaults.standard.synchronize()
+            return .open
+        case let(token?, oldTokenData?):
+            let tokenData = NSKeyedArchiver.archivedData(withRootObject: token)
+            if tokenData == oldTokenData {
+                return .open
+            } else {
+                let tokenData = NSKeyedArchiver.archivedData(withRootObject: token)
+                UserDefaults.standard.setValue(tokenData, forKey: key)
+                UserDefaults.standard.synchronize()
+                return .changed
+            }
+        }
+    }
+    
+    public var iCloudAccountStatus: iCloudAccountStatus {
+        return updateCurrentiCloudAccountStatus()
     }
     
     public func geticloudContainerURL(completion: @escaping (URL?) -> Void) {
         DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
             let url = FileManager.default.url(forUbiquityContainerIdentifier: nil)
-        
-            SyncManager.iCloudRoot = url
-        
+
             DispatchQueue.main.async {
                 completion(url)
             }
@@ -60,31 +104,51 @@ public class SyncManager {
     }
     
     public func swithiCloud(on willBeOn: Bool, completion: @escaping (Error?) -> Void) {
-        if willBeOn {
-            switch self.status {
-            case .offWithOldData: fallthrough
-            case .neverUsed:
-                self.moveLocalFilesToIcloud { [weak self] in
-                    self?._eventObserver.emit(NowUsingiCloudDocumentsEvent())
-                    completion($0)
-                }
-            case .on: break
+        // 1. get the iCloud folder url
+        self.geticloudContainerURL { [weak self] url in
+            guard let strongSelf = self else { return }
+            
+            SyncManager.iCloudRoot = url
+            
+            guard strongSelf.iCloudAccountStatus != .closed else {
+                completion(SyncError.iCloudIsNotAvailable)
+                return
             }
-        } else {
-            switch self.status {
-            case .offWithOldData: break
-            case .neverUsed: break
-            case .on:
-                self.moveiCloudFilesToLocal { [ weak self] in
-                    self?._eventObserver.emit(NowUsingLocalDocumentsEvent())
-                    completion($0)
+            
+            // 2. move file from/to iCloud folder
+            if willBeOn {
+                switch strongSelf.status {
+                case .unknown: fallthrough
+                case .off:
+                    strongSelf.moveLocalFilesToIcloud { [weak strongSelf] in
+                        // 3. notify to update all url from/to iCloud folder in memory
+                        strongSelf?._eventObserver.emit(iCloudOpeningStatusChangedevent(isiCloudEnabled: true))
+                        completion($0)
+                        strongSelf?.status = .on
+                    }
+                case .on: break
+                }
+            } else {
+                SyncManager.iCloudRoot = nil
+                
+                switch strongSelf.status {
+                case .off: break
+                case .unknown: fallthrough
+                case .on:
+                    strongSelf.moveiCloudFilesToLocal { [weak strongSelf] in
+                        // 3. notify to update all url from/to iCloud folder in memory
+                        strongSelf?._eventObserver.emit(iCloudOpeningStatusChangedevent(isiCloudEnabled: false))
+                        completion($0)
+                        strongSelf?.status = .off
+                    }
                 }
             }
+
         }
     }
     
     public var status: iCloudStatus {
-        get { return iCloudStatus(rawValue: UserDefaults.standard.string(forKey: "iCloudStatus") ?? "neverUsed")! }
+        get { return iCloudStatus(rawValue: UserDefaults.standard.string(forKey: "iCloudStatus") ?? "off")! }
         set { UserDefaults.standard.set(newValue.rawValue, forKey: "iCloudStatus") }
     }
     
@@ -101,19 +165,19 @@ public class SyncManager {
 
         let group = DispatchGroup()
         
-        queue.async { [unowned queue] in
+        queue.async {
             group.enter()
-            icloudDocumentRoot.deleteIfExists(queue: queue, isDirectory: true, completion: { _ in
+            icloudDocumentRoot.deleteIfExists(queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.background), isDirectory: true, completion: { _ in
                 group.leave()
             })
             
             group.enter()
-            icloudAttachmentRoot.deleteIfExists(queue: queue, isDirectory: true, completion: { _ in
+            icloudAttachmentRoot.deleteIfExists(queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.background), isDirectory: true, completion: { _ in
                 group.leave()
             })
             
             group.enter()
-            icloudKeyValueStoreRoot.deleteIfExists(queue: queue, isDirectory: true, completion: { _ in
+            icloudKeyValueStoreRoot.deleteIfExists(queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.background), isDirectory: true, completion: { _ in
                 group.leave()
             })
         }
@@ -143,19 +207,19 @@ public class SyncManager {
         
         let queue = DispatchQueue(label: "moveLocalFilesToIcloud")
         
-        queue.async { [unowned queue] in
+        queue.async {
             group.enter()
-            URL.documentBaseURL.deleteIfExists(queue: queue, isDirectory: true, completion: { _ in
+            URL.documentBaseURL.deleteIfExists(queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.background), isDirectory: true, completion: { _ in
                 group.leave()
             })
             
             group.enter()
-            URL.attachmentURL.deleteIfExists(queue: queue, isDirectory: true, completion: { _ in
+            URL.attachmentURL.deleteIfExists(queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.background), isDirectory: true, completion: { _ in
                 group.leave()
             })
             
             group.enter()
-            URL.keyValueStore.deleteIfExists(queue: queue, isDirectory: true, completion: { _ in
+            URL.keyValueStore.deleteIfExists(queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.background), isDirectory: true, completion: { _ in
                 group.leave()
             })
         }

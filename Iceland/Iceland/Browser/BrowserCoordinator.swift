@@ -40,8 +40,7 @@ public class BrowserCoordinator: Coordinator {
     }
     
     public func showOutlineHeadings(url: URL) {
-        let navigationController = UINavigationController()
-        navigationController.isNavigationBarHidden = true
+        let navigationController = Coordinator.createDefaultNavigationControlller()
         
         let editorCoord = EditorCoordinator(stack: navigationController,
                                             dependency: self.dependency,

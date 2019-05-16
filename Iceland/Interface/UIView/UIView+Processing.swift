@@ -19,7 +19,7 @@ private class ProcessingView: UIView {
             indicator.centerAnchors(position: [.centerX, .centerY], to: self)
         }
         
-        self.backgroundColor = UIColor.black.withAlphaComponent(0.7)
+        self.backgroundColor = UIColor.black.withAlphaComponent(0.3)
         
         self.isUserInteractionEnabled = false
         

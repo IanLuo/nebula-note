@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import Interface
+import Business
 
 public protocol SettingsViewControllerDelegate: class {
     
@@ -44,18 +45,35 @@ public class SettingsViewController: UITableViewController {
     }
     
     @objc private func _cancel() {
-        self.viewModel.coordinator.stop()
+        self.viewModel.coordinator?.stop()
     }
     
     private func _setupObserver() {
-        self.isSyncEnabledSwitch.onValueChanged { [weak self] switchButton, isOn in
-            switchButton.isEnabled = false
-            switchButton.showProcessingAnimation()
-            self?.viewModel.setSyncEnabled(isOn, completion: {
-                switchButton.isEnabled = true
-                switchButton.hideProcessingAnimation()
-            })
-        }
+        self.isSyncEnabledSwitch.addTarget(self, action: #selector(_switched(_:)), for: .touchUpInside)
+    }
+    
+    @objc private func _switched(_ switchButton: UISwitch) {
+        switchButton.isEnabled = false
+        switchButton.showProcessingAnimation()
+        
+        self.viewModel.setSyncEnabled(switchButton.isOn, completion: { [weak self] result in
+            switch result {
+            case .failure(let error):
+                switchButton.isOn = !switchButton.isOn
+                
+                if case let error = error as? SyncError, error == .iCloudIsNotAvailable {
+                    self?.showAlert(title: "iCloud is not enabled",
+                                    message: "Please login your iCloud account")
+                } else {
+                    self?.showAlert(title: "Fail to configure sync", message: "\(error)")
+                }
+                
+            default: break
+            }
+            
+            switchButton.hideProcessingAnimation()
+            switchButton.isEnabled = true
+        })
     }
 }
 

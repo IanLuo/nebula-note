@@ -24,11 +24,7 @@ public class Application: Coordinator {
                                                                     height: 60))
         _entranceWindow.makeKeyAndVisible()
 
-        let navigationController = UINavigationController()
-        navigationController.navigationBar.tintColor = InterfaceTheme.Color.interactive
-        navigationController.navigationBar.setBackgroundImage(UIImage(), for: .default)
-        navigationController.navigationBar.shadowImage = UIImage()
-        navigationController.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.interactive]
+        let navigationController = Coordinator.createDefaultNavigationControlller()
         
         let eventObserver = EventObserver()
         let editorContext = EditorContext(eventObserver: eventObserver)
@@ -58,6 +54,29 @@ public class Application: Coordinator {
         }
         
         self._setupObservers()
+        
+        self._setupiCloud()
+    }
+    
+    private func _setupiCloud() {
+        let status = self.dependency.syncManager.updateCurrentiCloudAccountStatus()
+        
+        switch status {
+        case .changed:
+            if self.dependency.syncManager.status == .on {
+                self.dependency.eventObserver.emit(iCloudOpeningStatusChangedevent(isiCloudEnabled: true))
+            }
+        case .closed:
+            if self.dependency.syncManager.status == .on {
+                self.dependency.eventObserver.emit(iCloudOpeningStatusChangedevent(isiCloudEnabled: true))
+            }
+        case .open:
+            if self.dependency.syncManager.status == .off {
+                self.dependency.eventObserver.emit(iCloudOpeningStatusChangedevent(isiCloudEnabled: true))
+            } else if self.dependency.syncManager.status == .unknown {
+                
+            }
+        }
     }
     
     private func _setupObservers() {
@@ -74,5 +93,16 @@ public class Application: Coordinator {
         let homeCoord = HomeCoordinator(stack: self.stack,
                                         dependency: self.dependency)
         homeCoord.start(from: self, animated: animated)
+    }
+}
+
+extension Coordinator {
+    public static func createDefaultNavigationControlller() -> UINavigationController {
+        let navigationController = UINavigationController()
+        navigationController.navigationBar.tintColor = InterfaceTheme.Color.interactive
+        navigationController.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        navigationController.navigationBar.shadowImage = UIImage()
+        navigationController.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.interactive]
+        return navigationController
     }
 }

@@ -31,8 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow(frame: UIScreen.main.bounds)
         
         self.application = Application(window: window!)
-                
-        window?.tintColor = InterfaceTheme.Color.interactive
+        
         window?.makeKeyAndVisible()
         
         self.application?.start(from: nil, animated: false)

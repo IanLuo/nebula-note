@@ -17,28 +17,29 @@ public protocol SettingsViewModelDelegate: class {
 public class SettingsViewModel {
     public weak var delegate: SettingsViewModelDelegate?
     
-    public let coordinator: SettingsCoordinator
+    public weak var coordinator: SettingsCoordinator?
     
     public init(coordinator: SettingsCoordinator) {
         self.coordinator = coordinator
     }
     
     public var isSyncEnabled: Bool {
-        return self.coordinator.dependency.settingAccessor.isSyncEnabled
+        return self.coordinator?.dependency.syncManager.iCloudAccountStatus != .closed
+            && self.coordinator?.dependency.syncManager.status == .on
     }
 
     public func getPlanning(isForFinished: Bool) -> [String] {
         return (isForFinished
-            ? self.coordinator.dependency.settingAccessor.customizedFinishedPlannings ?? []
-            : self.coordinator.dependency.settingAccessor.customizedUnfinishedPlannings) ?? []
+            ? self.coordinator?.dependency.settingAccessor.customizedFinishedPlannings ?? []
+            : self.coordinator?.dependency.settingAccessor.customizedUnfinishedPlannings) ?? []
     }
     
     public var plannings: [String] {
-        return self.coordinator.dependency.settingAccessor.allPlannings
+        return self.coordinator?.dependency.settingAccessor.allPlannings ?? []
     }
     
     public func addPlanning(_ planning: String, isForFinished: Bool, completion: @escaping () -> Void) {
-        self.coordinator.dependency.settingAccessor.addPlanning(planning, isForFinished: isForFinished) { result in
+        self.coordinator?.dependency.settingAccessor.addPlanning(planning, isForFinished: isForFinished) { result in
             switch result {
             case .success: completion()
             case .failure: break
@@ -47,7 +48,7 @@ public class SettingsViewModel {
     }
     
     public func removePlanning(_ planning: String, completion: @escaping () -> Void) {
-        self.coordinator.dependency.settingAccessor.removePlanning(planning) { result in
+        self.coordinator?.dependency.settingAccessor.removePlanning(planning) { result in
             switch result {
             case .success: completion()
             case .failure: break
@@ -55,13 +56,14 @@ public class SettingsViewModel {
         }
     }
     
-    public func setSyncEnabled(_ enable: Bool, completion: @escaping () -> Void) {
-        DispatchQueue.global().async {
-            self.coordinator.dependency.settingAccessor.setIsSyncEnabled(enable) { [weak self] in
-                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 2, execute: {
-                    completion()
-                    self?.delegate?.didSetIsSyncEnabled(enable)
-                })
+    public func setSyncEnabled(_ enable: Bool, completion: @escaping (Result<Void, Error>) -> Void) {
+        self.coordinator?.dependency.syncManager.swithiCloud(on: enable) { [weak self] error in
+            if let error = error {
+                completion(.failure(error))
+            } else {
+                self?.coordinator?.dependency.syncManager.status = enable ? .on : .off
+                completion(.success(()))
+                self?.delegate?.didSetIsSyncEnabled(enable)
             }
         }
     }

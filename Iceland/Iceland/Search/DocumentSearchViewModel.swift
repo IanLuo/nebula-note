@@ -22,6 +22,12 @@ public class DocumentSearchViewModel {
     
     public init(documentSearchManager: DocumentSearchManager) {
         self.documentSearchManager = documentSearchManager
+        
+        self._setupObservers()
+    }
+    
+    deinit {
+        self.coordinator?.dependency.eventObserver.unregister(for: self, eventType: nil)
     }
     
     public var data: [SearchTabelCellModel] = []
@@ -29,10 +35,6 @@ public class DocumentSearchViewModel {
     public var allDocumentsTags: [String] = []
     
     public var allDocumentsPlannings: [String] = []
-    
-    public func loadAllTags() {
-        
-    }
     
     public func search(query: String) {
         self.documentSearchManager.search(contain:query, completion: { [weak self] results in
@@ -46,5 +48,11 @@ public class DocumentSearchViewModel {
     public func clearSearchResults() {
         self.data = []
         self.delegate?.didClearResults()
+    }
+    
+    private func _setupObservers() {
+        self.coordinator?.dependency.eventObserver.registerForEvent(on: self, eventType: iCloudOpeningStatusChangedevent.self, queue: .main, action: { [weak self] (event: iCloudOpeningStatusChangedevent) in
+            self?.clearSearchResults()
+        })
     }
 }

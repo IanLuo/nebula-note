@@ -20,10 +20,8 @@ public class HomeCoordinator: Coordinator {
         let viewModel = DashboardViewModel(documentSearchManager: dependency.documentSearchManager)
         let dashboardViewController = DashboardViewController(viewModel: viewModel)
         
-        let navigationController = UINavigationController(rootViewController: dashboardViewController)
-        navigationController.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.interactive]
-        navigationController.navigationBar.setBackgroundImage(UIImage(), for: .default)
-        navigationController.navigationBar.shadowImage = UIImage()
+        let navigationController = Coordinator.createDefaultNavigationControlller()
+        navigationController.pushViewController(dashboardViewController, animated: false)
         
         let homeViewController = HomeViewController(masterViewController: navigationController)
         self.homeViewController = homeViewController
@@ -74,11 +72,7 @@ public class HomeCoordinator: Coordinator {
     }
     
     public func showSettings() {
-        let navigationController = UINavigationController()
-        navigationController.navigationBar.setBackgroundImage(UIImage(), for: .default)
-        navigationController.navigationBar.shadowImage = UIImage()
-        navigationController.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.interactive]
-        
+        let navigationController = Coordinator.createDefaultNavigationControlller()
         let settingsCoordinator = SettingsCoordinator(stack: navigationController, dependency: self.dependency)
         settingsCoordinator.start(from: self)
     }

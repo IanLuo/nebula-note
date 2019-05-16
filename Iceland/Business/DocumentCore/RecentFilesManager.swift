@@ -64,8 +64,6 @@ public class RecentFilesManager {
         self.eventObserver.unregister(for: self, eventType: nil)
     }
     
-    private let plist = KeyValueStoreFactory.store(type: KeyValueStoreType.plist(PlistStoreType.custom("recent_files")))
-    
     /// 当文件名修改了之后，更改保存的最近文件的文件名
     @objc internal func onDocumentNameChange(event: RenameDocumentEvent) {
         let oldPath = event.oldUrl.path
@@ -106,7 +104,9 @@ public class RecentFilesManager {
     
     /// 删除最近文件
     public func removeRecentFile(url: URL, completion: @escaping () -> Void) {
-        self.plist.remove(key: url.documentRelativePath) {
+        let plist = KeyValueStoreFactory.store(type: KeyValueStoreType.plist(PlistStoreType.custom("recent_files")))
+        
+        plist.remove(key: url.documentRelativePath) {
             DispatchQueue.main.async {
                 completion()
             }
@@ -135,7 +135,9 @@ public class RecentFilesManager {
         do {
             let data = try jsonEncoder.encode(recentDocumentInfo)
             let jsonString = String(data: data, encoding: .utf8) ?? ""
-            self.plist.set(value: jsonString, key: url.documentRelativePath) {
+            let plist = KeyValueStoreFactory.store(type: KeyValueStoreType.plist(PlistStoreType.custom("recent_files")))
+            
+            plist.set(value: jsonString, key: url.documentRelativePath) {
                 completion()
             }
         } catch {
@@ -146,18 +148,18 @@ public class RecentFilesManager {
     /// 返回保存文件的相对路径列表
     public var recentFiles: [RecentDocumentInfo] {
         var documentInfos: [RecentDocumentInfo] = []
+        let plist = KeyValueStoreFactory.store(type: KeyValueStoreType.plist(PlistStoreType.custom("recent_files")))
         
-        self.plist.allKeys().forEach { key in
+        plist.allKeys().forEach { key in
             if let recentDocumentInfo = self.recentFile(url: key, plist: plist) {
                 
                 // 清除不存在的文件
                 var isDir = ObjCBool(true)
                 if !FileManager.default.fileExists(atPath: recentDocumentInfo.url.path, isDirectory: &isDir) {
-                    self.plist.remove(key: key, completion: {})
+                    plist.remove(key: key, completion: {})
                 } else {
                     documentInfos.append(recentDocumentInfo)
                 }
-                
             }
         }
 

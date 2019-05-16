@@ -34,6 +34,12 @@ public class DocumentEditViewController: UIViewController {
         self.textView.outlineDelegate = self
         self.textView.delegate = self
         viewModel.delegate = self
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(_documentStateChanged(_:)), name: UIDocument.stateChangedNotification, object: nil)
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
     
     public required init?(coder aDecoder: NSCoder) {
@@ -87,10 +93,6 @@ public class DocumentEditViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(_keyboardDidHide(_:)), name: UIApplication.keyboardDidHideNotification, object: nil)
     }
     
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
-    
     public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
@@ -138,6 +140,12 @@ public class DocumentEditViewController: UIViewController {
     
     @objc private func _keyboardDidHide(_ notification: Notification) {
         
+    }
+    
+    @objc private func _documentStateChanged(_ notification: NSNotification) {
+        if let state = (notification.object as? UIDocument)?.documentState {
+            print("document state is: \(state)")
+        }
     }
 }
 

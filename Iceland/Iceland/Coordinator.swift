@@ -123,8 +123,7 @@ public class Coordinator {
 
 extension Coordinator {
     public func openDocument(url: URL, location: Int) {
-        let navigationController = UINavigationController()
-        navigationController.isNavigationBarHidden = true
+        let navigationController = Coordinator.createDefaultNavigationControlller()
         
         let documentCoordinator = EditorCoordinator(stack: navigationController, dependency: self.dependency,
                                                     usage: EditorCoordinator.Usage.editor(url, location))
@@ -153,8 +152,7 @@ extension Coordinator {
         }
         
         
-        let navigationController = UINavigationController()
-        navigationController.isNavigationBarHidden = true
+        let navigationController = Coordinator.createDefaultNavigationControlller()
         
         let attachmentCoordinator = AttachmentCoordinator(stack: navigationController,
                                                           dependency: self.dependency,
@@ -170,8 +168,7 @@ extension Coordinator {
     }
     
     public func showCaptureEntrance() {
-        let navigationController = UINavigationController()
-        navigationController.isNavigationBarHidden = true
+        let navigationController = Coordinator.createDefaultNavigationControlller()
         
         let captureCoordinator = CaptureCoordinator(stack: navigationController, dependency: self.dependency)
         captureCoordinator.delegate = self
