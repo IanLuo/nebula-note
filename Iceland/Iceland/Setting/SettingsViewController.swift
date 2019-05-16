@@ -57,6 +57,10 @@ public class SettingsViewController: UITableViewController {
         switchButton.showProcessingAnimation()
         
         self.viewModel.setSyncEnabled(switchButton.isOn, completion: { [weak self] result in
+            
+            switchButton.hideProcessingAnimation()
+            switchButton.isEnabled = true
+            
             switch result {
             case .failure(let error):
                 switchButton.isOn = !switchButton.isOn
@@ -70,9 +74,6 @@ public class SettingsViewController: UITableViewController {
                 
             default: break
             }
-            
-            switchButton.hideProcessingAnimation()
-            switchButton.isEnabled = true
         })
     }
 }

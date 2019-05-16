@@ -29,27 +29,39 @@ public enum URLLocation {
 }
 
 extension URL {
+    public static var localDocumentBaseURL: URL {
+        return URL.directory(location: URLLocation.document, relativePath: "files")
+    }
+    
+    public static var localAttachmentURL: URL {
+        return URL.directory(location: URLLocation.document, relativePath: "attachments")
+    }
+    
+    public static var localKeyValueStoreURL: URL {
+        return URL.directory(location: URLLocation.document, relativePath: "keyValueStore")
+    }
+    
     public static var documentBaseURL: URL {
-        if SyncManager.isicloudOn {
+        if SyncManager.status != .off {
             return SyncManager.iCloudDocumentRoot!
         } else {
-            return URL.directory(location: URLLocation.document, relativePath: "files")
+            return URL.localDocumentBaseURL
         }
     }
     
     public static var attachmentURL: URL {
-        if SyncManager.isicloudOn {
+        if SyncManager.status != .off {
             return SyncManager.iCloudAttachmentRoot!
         } else {
-            return URL.directory(location: URLLocation.document, relativePath: "attachments")
+            return URL.localAttachmentURL
         }
     }
     
-    public static var keyValueStore: URL {
-        if SyncManager.isicloudOn {
+    public static var keyValueStoreURL: URL {
+        if SyncManager.status != .off {
             return SyncManager.iCloudKeyValueStoreRoot!
         } else {
-            return URL.directory(location: URLLocation.document, relativePath: "keyValueStore")
+            return URL.localKeyValueStoreURL
         }
     }
     

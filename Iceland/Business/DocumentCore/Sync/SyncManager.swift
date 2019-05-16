@@ -45,8 +45,6 @@ public class SyncManager {
         return self.iCloudRoot?.appendingPathComponent("keyValueStore")
     }
     
-    public static var isicloudOn: Bool = false
-        
     private let _eventObserver: EventObserver
     
     public init(eventObserver: EventObserver) {
@@ -117,29 +115,39 @@ public class SyncManager {
             
             // 2. move file from/to iCloud folder
             if willBeOn {
-                switch strongSelf.status {
+                switch SyncManager.status {
                 case .unknown: fallthrough
                 case .off:
-                    strongSelf.moveLocalFilesToIcloud { [weak strongSelf] in
+                    strongSelf.moveLocalFilesToIcloud { [weak strongSelf] error in
                         // 3. notify to update all url from/to iCloud folder in memory
-                        strongSelf?._eventObserver.emit(iCloudOpeningStatusChangedevent(isiCloudEnabled: true))
-                        completion($0)
-                        strongSelf?.status = .on
+                        if let error = error {
+                            log.error(error)
+                            completion(error)
+                        } else {
+                            completion(nil)
+                            strongSelf?._eventObserver.emit(iCloudOpeningStatusChangedevent(isiCloudEnabled: true))
+                            SyncManager.status = .on
+                        }
                     }
-                case .on: break
+                case .on:
+                    completion(nil)
                 }
             } else {
-                SyncManager.iCloudRoot = nil
-                
-                switch strongSelf.status {
-                case .off: break
+                switch SyncManager.status {
+                case .off:
+                    completion(nil)
                 case .unknown: fallthrough
                 case .on:
-                    strongSelf.moveiCloudFilesToLocal { [weak strongSelf] in
+                    strongSelf.moveiCloudFilesToLocal { [weak strongSelf] error in
                         // 3. notify to update all url from/to iCloud folder in memory
-                        strongSelf?._eventObserver.emit(iCloudOpeningStatusChangedevent(isiCloudEnabled: false))
-                        completion($0)
-                        strongSelf?.status = .off
+                        if let error = error {
+                            log.error(error)
+                            completion(error)
+                        } else {
+                            completion(nil)
+                            strongSelf?._eventObserver.emit(iCloudOpeningStatusChangedevent(isiCloudEnabled: false))
+                            SyncManager.status = .off
+                        }
                     }
                 }
             }
@@ -147,7 +155,7 @@ public class SyncManager {
         }
     }
     
-    public var status: iCloudStatus {
+    public static var status: iCloudStatus {
         get { return iCloudStatus(rawValue: UserDefaults.standard.string(forKey: "iCloudStatus") ?? "off")! }
         set { UserDefaults.standard.set(newValue.rawValue, forKey: "iCloudStatus") }
     }
@@ -182,11 +190,24 @@ public class SyncManager {
             })
         }
         
+        
+        // 删除 icloud 上面可能存在的文件
         group.notify(queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.background)) {
             do {
-                try FileManager.default.setUbiquitous(true, itemAt: URL.documentBaseURL, destinationURL: icloudDocumentRoot)
-                try FileManager.default.setUbiquitous(true, itemAt: URL.attachmentURL, destinationURL: icloudAttachmentRoot)
-                try FileManager.default.setUbiquitous(true, itemAt: URL.keyValueStore, destinationURL: icloudKeyValueStoreRoot)
+                var isDir = ObjCBool(true)
+                
+                if FileManager.default.fileExists(atPath: URL.localDocumentBaseURL.path, isDirectory: &isDir) {
+                    try FileManager.default.setUbiquitous(true, itemAt: URL.localDocumentBaseURL, destinationURL: icloudDocumentRoot)
+                }
+                
+                if FileManager.default.fileExists(atPath: URL.localDocumentBaseURL.path, isDirectory: &isDir) {
+                    try FileManager.default.setUbiquitous(true, itemAt: URL.localDocumentBaseURL, destinationURL: icloudAttachmentRoot)
+                }
+                
+                if FileManager.default.fileExists(atPath: URL.localKeyValueStoreURL.path, isDirectory: &isDir) {
+                    try FileManager.default.setUbiquitous(true, itemAt: URL.localKeyValueStoreURL, destinationURL: icloudKeyValueStoreRoot)
+                }
+
                 completion(nil)
             } catch {
                 completion(error)
@@ -207,28 +228,40 @@ public class SyncManager {
         
         let queue = DispatchQueue(label: "moveLocalFilesToIcloud")
         
+        // 删除本地可能存在的文件
         queue.async {
             group.enter()
-            URL.documentBaseURL.deleteIfExists(queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.background), isDirectory: true, completion: { _ in
+            URL.localDocumentBaseURL.deleteIfExists(queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.background), isDirectory: true, completion: { _ in
                 group.leave()
             })
             
             group.enter()
-            URL.attachmentURL.deleteIfExists(queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.background), isDirectory: true, completion: { _ in
+            URL.localAttachmentURL.deleteIfExists(queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.background), isDirectory: true, completion: { _ in
                 group.leave()
             })
             
             group.enter()
-            URL.keyValueStore.deleteIfExists(queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.background), isDirectory: true, completion: { _ in
+            URL.localKeyValueStoreURL.deleteIfExists(queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.background), isDirectory: true, completion: { _ in
                 group.leave()
             })
         }
         
         group.notify(queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.background)) {
             do {
-                try FileManager.default.setUbiquitous(false, itemAt: icloudDocumentRoot, destinationURL: URL.documentBaseURL)
-                try FileManager.default.setUbiquitous(false, itemAt: icloudAttachmentRoot, destinationURL: URL.attachmentURL)
-                try FileManager.default.setUbiquitous(false, itemAt: icloudKeyValueStoreRoot, destinationURL: URL.keyValueStore)
+                var isDir = ObjCBool(true)
+                
+                if FileManager.default.fileExists(atPath: icloudDocumentRoot.path, isDirectory: &isDir) {
+                    try FileManager.default.setUbiquitous(false, itemAt: icloudDocumentRoot, destinationURL: URL.localDocumentBaseURL)
+                }
+                
+                if FileManager.default.fileExists(atPath: icloudAttachmentRoot.path, isDirectory: &isDir) {
+                    try FileManager.default.setUbiquitous(false, itemAt: icloudAttachmentRoot, destinationURL: URL.localAttachmentURL)
+                }
+                
+                if FileManager.default.fileExists(atPath: icloudKeyValueStoreRoot.path, isDirectory: &isDir) {
+                    try FileManager.default.setUbiquitous(false, itemAt: icloudKeyValueStoreRoot, destinationURL: URL.localKeyValueStoreURL)
+                }
+                
                 completion(nil)
             } catch {
                 completion(error)

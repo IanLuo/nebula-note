@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Business
 
 public protocol SettingsViewModelDelegate: class {
     func didSetIsSyncEnabled(_ enabled: Bool)
@@ -25,7 +26,7 @@ public class SettingsViewModel {
     
     public var isSyncEnabled: Bool {
         return self.coordinator?.dependency.syncManager.iCloudAccountStatus != .closed
-            && self.coordinator?.dependency.syncManager.status == .on
+            && SyncManager.status == .on
     }
 
     public func getPlanning(isForFinished: Bool) -> [String] {
@@ -58,12 +59,14 @@ public class SettingsViewModel {
     
     public func setSyncEnabled(_ enable: Bool, completion: @escaping (Result<Void, Error>) -> Void) {
         self.coordinator?.dependency.syncManager.swithiCloud(on: enable) { [weak self] error in
-            if let error = error {
-                completion(.failure(error))
-            } else {
-                self?.coordinator?.dependency.syncManager.status = enable ? .on : .off
-                completion(.success(()))
-                self?.delegate?.didSetIsSyncEnabled(enable)
+            DispatchQueue.main.async {
+                if let error = error {
+                    completion(.failure(error))
+                } else {
+                    SyncManager.status = enable ? .on : .off
+                    completion(.success(()))
+                    self?.delegate?.didSetIsSyncEnabled(enable)
+                }
             }
         }
     }

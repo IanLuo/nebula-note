@@ -49,7 +49,7 @@ fileprivate struct PlistStore: KeyValueStore {
         switch type {
         /// 提供一个 key 作为文件名，不要文件后缀，如果文件无法被创建，将使用 standard userDefaults
         case let .custom(fileName):
-            self._url = URL.file(directory: URL.keyValueStore, name: fileName, extension: "plist")
+            self._url = URL.file(directory: URL.keyValueStoreURL, name: fileName, extension: "plist")
             
             _store = NSMutableDictionary(contentsOf: self._url!) ?? NSMutableDictionary()
         default: break

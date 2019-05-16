@@ -63,17 +63,18 @@ public class Application: Coordinator {
         
         switch status {
         case .changed:
-            if self.dependency.syncManager.status == .on {
+            if SyncManager.status == .on {
                 self.dependency.eventObserver.emit(iCloudOpeningStatusChangedevent(isiCloudEnabled: true))
             }
         case .closed:
-            if self.dependency.syncManager.status == .on {
+            if SyncManager.status == .on {
                 self.dependency.eventObserver.emit(iCloudOpeningStatusChangedevent(isiCloudEnabled: true))
+                SyncManager.status = .off
             }
         case .open:
-            if self.dependency.syncManager.status == .off {
+            if SyncManager.status == .off {
                 self.dependency.eventObserver.emit(iCloudOpeningStatusChangedevent(isiCloudEnabled: true))
-            } else if self.dependency.syncManager.status == .unknown {
+            } else if SyncManager.status == .unknown {
                 
             }
         }
