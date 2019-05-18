@@ -152,15 +152,6 @@ extension OutlineTextStorage: ContentUpdatingProtocol {
         self.parser.parse(str: self.string,
                      range: currentParseRange)
 
-        // -> DEBUG
-        // 解析范围提示
-        self.addAttributes([NSAttributedString.Key.backgroundColor: UIColor.gray.withAlphaComponent(0.5)], range: currentParseRange)
-        // 添加 token 提示
-        self._tempParsingTokenResult.forEach { token in
-            self.addAttribute(NSAttributedString.Key.backgroundColor, value: UIColor.yellow.withAlphaComponent(0.3), range: token.range)
-        }
-        // <- DEBUG
-
         // 更新当前状态缓存
         self.updateCurrentInfo(at: editedRange.location)
         
@@ -182,6 +173,18 @@ extension OutlineTextStorage: ContentUpdatingProtocol {
             }
         }
         
+        // -> DEBUG
+        // 解析范围提示
+        //        self.addAttributes([NSAttributedString.Key.backgroundColor: UIColor.gray.withAlphaComponent(0.5)], range: currentParseRange)
+        // 添加 token 提示
+        //        self._tempParsingTokenResult.forEach { token in
+        //            self.addAttribute(NSAttributedString.Key.backgroundColor, value: UIColor.yellow.withAlphaComponent(0.3), range: token.range)
+        //        }
+        // 所有 token 提示
+        self.allTokens.forEach { token in
+            self.addAttribute(NSAttributedString.Key.backgroundColor, value: UIColor.green.withAlphaComponent(0.3), range: token.range)
+        }
+        // <- DEBUG
     }
 }
 
@@ -694,19 +697,30 @@ extension OutlineTextStorage: OutlineParserDelegate {
     }
     
     private func _insert<T: Token>(tokens: [T], into: inout [T]) {
+        guard tokens.count > 0 else { return } // 如果是空数组进入，则直接返回
+        
         let oldCount = into.count
-        if let first = tokens.first {
+        if into.count > 0 {
+            let first = tokens[0] // 必然有超过一个对象在数组中
+            
+            // 待插入 tokens 处于文档最开始
             if first.range.location == 0 {
                 into.insert(contentsOf: tokens, at: 0)
+                
+            // 待插入 tokens 处于文档最末尾
             } else if let last = into.last, first.range.location >= last.range.location {
                 into.append(contentsOf: tokens)
             } else {
+                // 从尾部开始，往前查找 cache 的最前端插入 tokens 的位置
                 for (index, token) in into.reversed().enumerated() {
                     if first.range.location >= token.range.location, index < into.count {
                         into.insert(contentsOf: tokens, at: min(into.count - 1, into.count - index))
                         break
                     }
                 }
+                
+                // cache 中没有 tokens 之前的位置，添加到 cache 最前端
+                into.insert(contentsOf: tokens, at: 0)
             }
             
             log.info("[item count changed] \(into.count - oldCount)")
@@ -868,7 +882,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
     private func _findIntersectionTokenIndex(in range: NSRange, tokens: [Token]) -> [Int] {
         var indexes: [Int] = []
         for (index, token) in tokens.enumerated() {
-            if token.range.intersection(range) != nil || token.range.upperBound == range.location
+            if token.tokenRange.intersection(range) != nil || token.tokenRange.upperBound == range.location
             {
                 indexes.append(index)
             }

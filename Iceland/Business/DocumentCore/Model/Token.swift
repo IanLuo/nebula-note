@@ -25,6 +25,14 @@ public class Token {
     public var range: NSRange {
         get { return offset == 0 ? _range : _range.offset(self.offset) }
     }
+    
+    // 有时候有的 token 会包含其他 token，比如 blockBgein token，这时候的 range 是包含了 blockEndToken 的
+    // tokenRange 则只包含自身的 range
+    // 默认值为自身的 range，在子 token 中自定义
+    public var tokenRange: NSRange {
+        return self.range
+    }
+    
     public var name: String
     private var _rawData: [String: NSRange]
     
@@ -45,6 +53,7 @@ public class Token {
         }
         return nil
     }
+    
     
     internal var decorationAttributesAction: ((OutlineTextStorage, Token) -> Void)?
     
@@ -114,6 +123,10 @@ public class BlockBeginToken: BlockToken {
         } else {
             return super.range
         }
+    }
+    
+    public override var tokenRange: NSRange {
+        return super.range
     }
     
     public var contentRange: NSRange? {

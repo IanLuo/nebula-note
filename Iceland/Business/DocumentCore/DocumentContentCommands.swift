@@ -198,29 +198,29 @@ public class FoldingAndUnfoldingCommand: DocumentContentCommand {
             
             guard heading.contentRange.length > 0 else { return DocumentContentCommandResult.noChange }
             
-            var toggleFoldAndUnfoldAction: ((OutlineTextStorage, HeadingToken) -> Void)!
-            toggleFoldAndUnfoldAction = { textStorage, heading in
-                if self._isFolded(heading: heading, textStorage: textStorage) {
-                    self._unFoldHeadingButFoldChildren(heading: heading, textStorage: textStorage)
+            var toggleFoldAndUnfoldAction: ((OutlineTextStorage, HeadingToken, FoldingAndUnfoldingCommand) -> Void)!
+            toggleFoldAndUnfoldAction = { textStorage, heading, command in
+                if command._isFolded(heading: heading, textStorage: textStorage) {
+                    command._unFoldHeadingButFoldChildren(heading: heading, textStorage: textStorage)
                 } else {
                     var isEveryChildrenUnfold: Bool = true
                     for child in textStorage.subheadings(of: heading) {
-                        if self._isFolded(heading: child, textStorage: textStorage)
+                        if command._isFolded(heading: child, textStorage: textStorage)
                             && child.level - heading.level == 1 // 只展开第一层子 heading
                         {
                             isEveryChildrenUnfold = false
-                            toggleFoldAndUnfoldAction(textStorage, child)
+                            toggleFoldAndUnfoldAction(textStorage, child, command)
                         }
                     }
                     
                     if isEveryChildrenUnfold {
-                        self._fold(heading: heading, textStorage: textStorage)
+                        command._fold(heading: heading, textStorage: textStorage)
                     }
                 }
             }
             
             textStorage.beginEditing()
-            toggleFoldAndUnfoldAction(textStorage, heading)
+            toggleFoldAndUnfoldAction(textStorage, heading, self)
             textStorage.endEditing()
         }
         
