@@ -67,7 +67,7 @@ public class DashboardViewModel {
                                                                         self?._isHeadingsNeedsReload = true
         })
         
-        self.coordinator?.dependency.eventObserver.registerForEvent(on: self, eventType: iCloudOpeningStatusChangedevent.self, queue: .main, action: { [weak self] (event: iCloudOpeningStatusChangedevent) in
+        self.coordinator?.dependency.eventObserver.registerForEvent(on: self, eventType: iCloudOpeningStatusChangedEvent.self, queue: .main, action: { [weak self] (event: iCloudOpeningStatusChangedEvent) in
             self?._isHeadingsNeedsReload = true
         })
     }

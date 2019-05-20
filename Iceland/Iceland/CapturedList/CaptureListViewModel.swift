@@ -31,6 +31,10 @@ public class CaptureListViewModel {
             coordinator?.dependency.eventObserver.registerForEvent(on: self, eventType: NewCaptureAddedEvent.self, queue: .main, action: { [weak self] (event: NewCaptureAddedEvent) in
                 self?.loadAllCapturedData()
             })
+            
+            coordinator?.dependency.eventObserver.registerForEvent(on: self, eventType: NewCaptureListDownloadedEvent.self, queue: .main, action: { [weak self] (event: NewCaptureListDownloadedEvent) in
+                self?.loadAllCapturedData()
+            })
         }
     }
     

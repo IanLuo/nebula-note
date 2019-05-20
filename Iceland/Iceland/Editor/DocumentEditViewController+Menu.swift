@@ -128,7 +128,9 @@ extension DocumentEditViewController {
                 viewController.dismiss(animated: true, completion: {
                     let oldSelectedRange = self.textView.selectedRange
                     let result = self.viewModel.performAction(EditAction.changePriority(priority, location), textView: self.textView)
-                    self.textView.selectedRange = oldSelectedRange.offset(result.delta)
+                    if self.textView.selectedRange.location > location {
+                        self.textView.selectedRange = oldSelectedRange.offset(result.delta)
+                    }
                 })
             }
         }
@@ -138,7 +140,9 @@ extension DocumentEditViewController {
                 viewController.dismiss(animated: true, completion: {
                     let oldSelectedRange = self.textView.selectedRange
                     let result = self.viewModel.performAction(EditAction.changePriority(nil, location), textView: self.textView)
-                    self.textView.selectedRange = oldSelectedRange.offset(result.delta)
+                    if self.textView.selectedRange.location > location {
+                        self.textView.selectedRange = oldSelectedRange.offset(result.delta)
+                    }
                 })
             }
         }

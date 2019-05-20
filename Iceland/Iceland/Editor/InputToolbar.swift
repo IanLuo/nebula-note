@@ -18,11 +18,11 @@ public protocol DocumentEditToolbarDelegate: class {
 public class InputToolbar: UIView {
     
     private static let headingActions = [NormalAction.paragraph, NormalAction.heading, NormalAction.planning, NormalAction.tag, NormalAction.priority]
-    private static let textMark = [NormalAction.heading, NormalAction.bold, NormalAction.italic, NormalAction.underscore, NormalAction.strikethrough, NormalAction.code, NormalAction.sourcecode]
+    private static let textMark = [NormalAction.heading, NormalAction.bold, NormalAction.italic, NormalAction.underscore, NormalAction.strikethrough, NormalAction.code]
     private static let moveCursor: [ToolbarActionProtocol] = [CursorAction.moveUp, CursorAction.moveDown, CursorAction.moveLeft, CursorAction.moveRight]
     private static let moveContent: [ToolbarActionProtocol] = [NormalAction.increaseIndent, NormalAction.decreaseIndent, NormalAction.moveUp, NormalAction.moveDown]
     private static let undoAndRedo: [ToolbarActionProtocol] = [NormalAction.undo, NormalAction.redo]
-    private static let insertSpecailContent: [ToolbarActionProtocol] = [NormalAction.quote, NormalAction.checkbox, NormalAction.dateAndTime, NormalAction.list, NormalAction.orderedList]
+    private static let insertSpecailContent: [ToolbarActionProtocol] = [NormalAction.sourcecode, NormalAction.quote, NormalAction.checkbox, NormalAction.dateAndTime, NormalAction.list, NormalAction.orderedList]
     private static let attachment: [ToolbarActionProtocol] = [NormalAction.captured, AttachmentAction.image, AttachmentAction.sketch, AttachmentAction.link, AttachmentAction.location, AttachmentAction.audio, AttachmentAction.video]
     
     private static let actionsParagraph: [[ToolbarActionProtocol]] = [headingActions, textMark, undoAndRedo, moveCursor, moveContent, insertSpecailContent, attachment]

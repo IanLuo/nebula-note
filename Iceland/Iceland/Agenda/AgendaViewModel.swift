@@ -175,25 +175,25 @@ public class AgendaViewModel {
         // TODO: save to calendar
     }
     
-    public func updateDate(cellModel: AgendaCellModel, _ newDateAndTime: DateAndTimeType?) {
-        if let editorService = self.coordinator?.dependency.editorContext.request(url: cellModel.url) {
-            editorService.open(completion: { [unowned editorService] _ in
-                if let oldDateAndTimeRange = cellModel.dateAndTimeRange {
-                    _ = editorService.toggleContentCommandComposer(composer: UpdateDateAndTimeCommandComposer(location: oldDateAndTimeRange.location,
-                                                                                                          dateAndTime: newDateAndTime))
-                        .perform()
-                    
-                    self.coordinator?.dependency.eventObserver.emit(DateAndTimeChangedEvent(oldDateAndTime: cellModel.dateAndTime,
-                                                                                            newDateAndTime: newDateAndTime))
-                }
-            })
-        }
-    }
+//    public func updateDate(cellModel: AgendaCellModel, _ newDateAndTime: DateAndTimeType?) {
+//        if let editorService = self.coordinator?.dependency.editorContext.request(url: cellModel.url) {
+//            editorService.open(completion: { [unowned editorService] _ in
+//                if let oldDateAndTimeRange = cellModel.dateAndTimeRange {
+//                    _ = editorService.toggleContentCommandComposer(composer: UpdateDateAndTimeCommandComposer(location: oldDateAndTimeRange.location,
+//                                                                                                          dateAndTime: newDateAndTime))
+//                        .perform()
+//                    
+//                    self.coordinator?.dependency.eventObserver.emit(DateAndTimeChangedEvent(oldDateAndTime: cellModel.dateAndTime,
+//                                                                                            newDateAndTime: newDateAndTime))
+//                }
+//            })
+//        }
+//    }
     
-    public func openDocument(cellModel: AgendaCellModel) {
-        self.coordinator?.openDocument(url: cellModel.url,
-                                      location: cellModel.heading.location)
-    }
+//    public func openDocument(cellModel: AgendaCellModel) {
+//        self.coordinator?.openDocument(url: cellModel.url,
+//                                      location: cellModel.heading.location)
+//    }
     
     private func _setupObserver() {
         self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
@@ -210,9 +210,9 @@ public class AgendaViewModel {
         })
         
         self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
-                                                                    eventType: iCloudOpeningStatusChangedevent.self,
+                                                                    eventType: iCloudOpeningStatusChangedEvent.self,
                                                                     queue: .main,
-                                                                    action: { [weak self] (event: iCloudOpeningStatusChangedevent) in
+                                                                    action: { [weak self] (event: iCloudOpeningStatusChangedEvent) in
             self?._shouldReloadData = true
         })
     }

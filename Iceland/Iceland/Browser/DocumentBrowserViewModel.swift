@@ -295,11 +295,29 @@ public class DocumentBrowserViewModel {
         })
         
         self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
-                                                                    eventType: iCloudOpeningStatusChangedevent.self,
+                                                                    eventType: iCloudOpeningStatusChangedEvent.self,
                                                                     queue: OperationQueue.main,
-                                                                    action: { [weak self] (event: iCloudOpeningStatusChangedevent) in
+                                                                    action: { [weak self] (event: iCloudOpeningStatusChangedEvent) in
                                                                         
                                                                         self?.loadData()
+        })
+        
+        self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
+                                                                    eventType: NewDocumentPackageDownloadedEvent.self,
+                                                                    queue: OperationQueue.main,
+                                                                    action: { [weak self] (event: NewDocumentPackageDownloadedEvent) in
+                                                                        let newDocumentURL = event.url
+                                                                        let newDocumentParentURL = event.url.parentDocumentURL
+                                                                        
+                                                                        if newDocumentParentURL == nil {
+                                                                            self?.data.append(DocumentBrowserCellModel(url: newDocumentURL))
+                                                                        } else {
+                                                                            for (index, cellModel) in (self?.data ?? []).enumerated() {
+                                                                                if cellModel.url.documentRelativePath == newDocumentParentURL?.documentRelativePath {
+                                                                                    self?.data.insert(DocumentBrowserCellModel(url: newDocumentURL), at: index + 1)
+                                                                                }
+                                                                            }
+                                                                        }
         })
     }
 }

@@ -31,15 +31,7 @@ public struct DocumentManager {
     public func removeRecentFile(url: URL) {
         self._editorContext.recentFilesManager.removeRecentFile(url: url) {}
     }
-    
-    public func closeFile(url: URL, last selectionLocation: Int) {
-        self._editorContext.recentFilesManager.addRecentFile(url: url, lastLocation: selectionLocation) {}
-    }
-    
-    public func startWatchiCloudUpdate() {
         
-    }
-    
     /// 查找指定目录下的 iceland 文件包
     public func query(in folder: URL, recursively: Bool = false) throws -> [URL] {
         

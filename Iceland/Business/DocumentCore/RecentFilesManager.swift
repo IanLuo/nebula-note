@@ -43,6 +43,8 @@ public class RecentDocumentInfo: DocumentInfo, Codable {
 }
 
 public class RecentFilesManager {
+    public static let recentFilesPlistFileName: String = "recent_files"
+    
     private let eventObserver: EventObserver
     public init(eventObserver: EventObserver) {
         self.eventObserver = eventObserver
@@ -68,7 +70,7 @@ public class RecentFilesManager {
     @objc internal func onDocumentNameChange(event: RenameDocumentEvent) {
         let oldPath = event.oldUrl.path
         let oldSubfolderPath = event.oldUrl.convertoFolderURL.documentRelativePath
-        let plist = KeyValueStoreFactory.store(type: KeyValueStoreType.plist(PlistStoreType.custom("recent_files")))
+        let plist = KeyValueStoreFactory.store(type: KeyValueStoreType.plist(PlistStoreType.custom(RecentFilesManager.recentFilesPlistFileName)))
         
         self.recentFiles.forEach { documentInfo in
             if documentInfo.url.path == oldPath {
@@ -104,7 +106,7 @@ public class RecentFilesManager {
     
     /// 删除最近文件
     public func removeRecentFile(url: URL, completion: @escaping () -> Void) {
-        let plist = KeyValueStoreFactory.store(type: KeyValueStoreType.plist(PlistStoreType.custom("recent_files")))
+        let plist = KeyValueStoreFactory.store(type: KeyValueStoreType.plist(PlistStoreType.custom(RecentFilesManager.recentFilesPlistFileName)))
         
         plist.remove(key: url.documentRelativePath) {
             DispatchQueue.main.async {
@@ -135,7 +137,7 @@ public class RecentFilesManager {
         do {
             let data = try jsonEncoder.encode(recentDocumentInfo)
             let jsonString = String(data: data, encoding: .utf8) ?? ""
-            let plist = KeyValueStoreFactory.store(type: KeyValueStoreType.plist(PlistStoreType.custom("recent_files")))
+            let plist = KeyValueStoreFactory.store(type: KeyValueStoreType.plist(PlistStoreType.custom(RecentFilesManager.recentFilesPlistFileName)))
             
             plist.set(value: jsonString, key: url.documentRelativePath) {
                 completion()
@@ -148,7 +150,7 @@ public class RecentFilesManager {
     /// 返回保存文件的相对路径列表
     public var recentFiles: [RecentDocumentInfo] {
         var documentInfos: [RecentDocumentInfo] = []
-        let plist = KeyValueStoreFactory.store(type: KeyValueStoreType.plist(PlistStoreType.custom("recent_files")))
+        let plist = KeyValueStoreFactory.store(type: KeyValueStoreType.plist(PlistStoreType.custom(RecentFilesManager.recentFilesPlistFileName)))
         
         plist.allKeys().forEach { key in
             if let recentDocumentInfo = self.recentFile(url: key, plist: plist) {

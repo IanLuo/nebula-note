@@ -162,29 +162,29 @@ extension AgendaViewController: AgendaTableCellDelegate {
         
         actionsViewController.title = L10n.Agenda.Actions.title
         
-        actionsViewController.addAction(icon: nil, title: L10n.Agenda.Actions.markDone) { viewController in
-            viewController.dismiss(animated: true, completion: {
-                
-            })
-        }
+//        actionsViewController.addAction(icon: nil, title: L10n.Agenda.Actions.markDone) { viewController in
+//            viewController.dismiss(animated: true, completion: {
+//
+//            })
+//        }
         
-        actionsViewController.addAction(icon: nil, title: L10n.Agenda.Actions.delay) { viewController in
-            viewController.dismiss(animated: true, completion: {
-                self.viewModel.coordinator?.showDateSelector(title: L10n.Agenda.Actions.delay, current: cellModel.dateAndTime, add: { [unowned self] dateAndTime in
-                    self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
-                    self.viewModel.updateDate(cellModel: cellModel, dateAndTime)
-                    }, delete: { [unowned self] in
-                        self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
-                        self.viewModel.updateDate(cellModel: cellModel, nil)
-                    }, cancel: {})
-            })
-        }
+//        actionsViewController.addAction(icon: nil, title: L10n.Agenda.Actions.delay) { viewController in
+//            viewController.dismiss(animated: true, completion: {
+//                self.viewModel.coordinator?.showDateSelector(title: L10n.Agenda.Actions.delay, current: cellModel.dateAndTime, add: { [unowned self] dateAndTime in
+//                    self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
+//                    self.viewModel.updateDate(cellModel: cellModel, dateAndTime)
+//                    }, delete: { [unowned self] in
+//                        self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
+//                        self.viewModel.updateDate(cellModel: cellModel, nil)
+//                    }, cancel: {})
+//            })
+//        }
         
-        actionsViewController.setCancel { viewController in
-            viewController.dismiss(animated: true, completion: {
-                self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
-            })
-        }
+//        actionsViewController.setCancel { viewController in
+//            viewController.dismiss(animated: true, completion: {
+//                self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
+//            })
+//        }
         
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now()) {
             self.present(actionsViewController, animated: true, completion: nil)

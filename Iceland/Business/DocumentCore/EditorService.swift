@@ -126,6 +126,12 @@ public class EditorService {
         set { self.replace(text: newValue, range: NSRange(location: 0, length: _editorController.string.count)) }
     }
     
+    public func revertContent() {
+        if let string = self._document?.string {
+            self._editorController.string = string
+        }
+    }
+    
     public func replace(text: String, range: NSRange) {
         self._editorController.replace(text: text, in: range)
         self.save()
@@ -171,12 +177,12 @@ public class EditorService {
                 }
             } else {
                 // 打开文档，触发解析，然后返回
-                document.open { (isOpenSuccessfully: Bool) in
+                document.open { [unowned document] (isOpenSuccessfully: Bool) in
                     guard let strongSelf = self else { return }
                     
                     if isOpenSuccessfully {
                         DispatchQueue.main.async {
-                            strongSelf._editorController.string = document.string // 触发解析
+                             strongSelf._editorController.string = document.string // 触发解析
                             completion?(document.string)
                         }
                     } else {
@@ -203,8 +209,10 @@ public class EditorService {
             return
         }
         
-        document.close {
-            completion?($0)
+        self._queue.async {
+            document.close {
+                completion?($0)
+            }
         }
     }
     

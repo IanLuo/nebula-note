@@ -42,7 +42,7 @@ extension URL {
     }
     
     public static var documentBaseURL: URL {
-        if SyncManager.status != .off {
+        if SyncManager.status == .on {
             return SyncManager.iCloudDocumentRoot!
         } else {
             return URL.localDocumentBaseURL
@@ -50,7 +50,7 @@ extension URL {
     }
     
     public static var attachmentURL: URL {
-        if SyncManager.status != .off {
+        if SyncManager.status == .on {
             return SyncManager.iCloudAttachmentRoot!
         } else {
             return URL.localAttachmentURL
@@ -58,7 +58,7 @@ extension URL {
     }
     
     public static var keyValueStoreURL: URL {
-        if SyncManager.status != .off {
+        if SyncManager.status == .on {
             return SyncManager.iCloudKeyValueStoreRoot!
         } else {
             return URL.localKeyValueStoreURL

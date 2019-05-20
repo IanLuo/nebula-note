@@ -122,7 +122,11 @@ public class DocumentEditViewModel {
     
     public var onLoadingLocation: Int = 0 // 打开文档的时候默认的位置
     
-    public weak var coordinator: EditorCoordinator?
+    public weak var coordinator: EditorCoordinator? {
+        didSet {
+            self.addObservers()
+        }
+    }
     
     private let _editorService: EditorService
     
@@ -138,7 +142,6 @@ public class DocumentEditViewModel {
     
     public init(editorService: EditorService) {
         self._editorService = editorService
-        self.addStatesObservers()
         
         editorService.onReadyToUse = { service in
             service.open {
@@ -157,6 +160,10 @@ public class DocumentEditViewModel {
     
     public var string: String {
         return self._editorService.string
+    }
+    
+    public func revertContent() {
+        self._editorService.revertContent()
     }
     
     public var wordCount: Int {
@@ -316,8 +323,6 @@ public class DocumentEditViewModel {
         let result = command.perform()
         
         if result.isModifiedContent {
-            self._editorService.save()
-        } else {
             self._editorService.markAsContentUpdated()
         }
         
@@ -336,6 +341,16 @@ public class DocumentEditViewModel {
         self._editorService.delete(completion: completion)
     }
     
+    public func handleConflict(url: URL) throws {
+        let currentVersion = NSFileVersion.currentVersionOfItem(at: url)
+        let otherViersions = NSFileVersion.otherVersionsOfItem(at: url)
+        
+        try NSFileVersion.removeOtherVersionsOfItem(at: url)
+        
+        currentVersion?.isResolved = true
+    }
+
+    
     public func find(target: String, found: @escaping ([NSRange]) -> Void) {
         do {
             try self._editorService.find(target: target, found: found)
@@ -351,11 +366,20 @@ public class DocumentEditViewModel {
 }
 
 extension DocumentEditViewModel {
-    fileprivate func addStatesObservers() {
+    fileprivate func addObservers() {
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(handleStatesChanges),
                                                name: UIDocument.stateChangedNotification,
                                                object: nil)
+        
+        coordinator?.dependency.eventObserver.registerForEvent(on: self,
+                                                               eventType: NewDocumentPackageDownloadedEvent.self,
+                                                               queue: .main,
+                                                               action: { [weak self] (event: NewDocumentPackageDownloadedEvent) in
+            if event.url.documentRelativePath == self?.url.documentRelativePath {
+                
+            }
+        })
     }
     
     fileprivate func removeObservers() {

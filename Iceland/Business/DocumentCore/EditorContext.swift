@@ -26,12 +26,7 @@ public class EditorContext {
         
         let ext = url.path.hasSuffix(Document.fileExtension) ? "" : Document.fileExtension
         url = url.appendingPathExtension(ext)
-        
-        // 打开文件时， 添加到最近使用的文件
-        self.recentFilesManager.addRecentFile(url: url, lastLocation: 0) { [weak self] in
-            self?._eventObserver.emit(OpenDocumentEvent(url: url))
-        }
-        
+                
         return self._getCachedService(with: url)
     }
     

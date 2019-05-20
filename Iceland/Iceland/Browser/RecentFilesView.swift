@@ -45,8 +45,13 @@ public class RecentFilesView: UIView {
             self?.onCoverChange(event: changeDocumentEvent)
         })
 
-        self.eventObserver?.registerForEvent(on: self, eventType: iCloudOpeningStatusChangedevent.self, queue: .main, action: { [weak self] (event: iCloudOpeningStatusChangedevent) in
+        self.eventObserver?.registerForEvent(on: self, eventType: iCloudOpeningStatusChangedEvent.self, queue: .main, action: { [weak self] (event: iCloudOpeningStatusChangedEvent) in
             self?.loadData()
+        })
+        
+        self.eventObserver?.registerForEvent(on: self, eventType: NewRecentFilesListDownloadedEvent.self, queue: .main, action: { [weak self] (event: NewRecentFilesListDownloadedEvent) in
+            self?.loadData()
+            self?.collectionView.reloadData()
         })
     }
     

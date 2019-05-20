@@ -91,7 +91,6 @@
 		E41CB1DF21D896A300EF0A3C /* DocumentSearchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A3F21B6891700FBDA04 /* DocumentSearchTests.swift */; };
 		E41F86C3218EF4BF006C4CDB /* AttachmentCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F86C2218EF4BF006C4CDB /* AttachmentCoordinator.swift */; };
 		E41F86C5218EF4E1006C4CDB /* AgendaCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F86C4218EF4E1006C4CDB /* AgendaCoordinator.swift */; };
-		E41F86C7218EF5D8006C4CDB /* CaptureService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F86C6218EF5D8006C4CDB /* CaptureService.swift */; };
 		E41FA5752191569C001D8C63 /* DocumentEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41FA5742191569C001D8C63 /* DocumentEditViewController.swift */; };
 		E42A87FD21CFC9B300151C90 /* AttachmentTextViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E42A87FC21CFC9B300151C90 /* AttachmentTextViewController.swift */; };
 		E42A87FF21CFCAC500151C90 /* AttachmentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E42A87FE21CFCAC500151C90 /* AttachmentViewModel.swift */; };
@@ -122,6 +121,7 @@
 		E465F8822242269000FA6E83 /* DocumentEditViewController+ToolbarDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E465F8812242269000FA6E83 /* DocumentEditViewController+ToolbarDelegate.swift */; };
 		E466D186221D930A007F140B /* SeparaterAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = E466D185221D930A007F140B /* SeparaterAttachment.swift */; };
 		E466D18D221E3E65007F140B /* RenderAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = E466D18C221E3E65007F140B /* RenderAttachment.swift */; };
+		E4686E4322915A190004D950 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4686E4222915A190004D950 /* CloudKit.framework */; };
 		E4729BA82204160200F22885 /* DashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4729BA72204160200F22885 /* DashboardViewController.swift */; };
 		E4729BB02205372D00F22885 /* DashboardSubtypeItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4729BAF2205372D00F22885 /* DashboardSubtypeItemViewController.swift */; };
 		E472FF9A227092C1004C8495 /* DocumentInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E472FF99227092C1004C8495 /* DocumentInfoViewController.swift */; };
@@ -143,6 +143,8 @@
 		E49F3E4821B9183F003F468D /* SettingsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49F3E4721B9183F003F468D /* SettingsCoordinator.swift */; };
 		E49F3E4A21B9186D003F468D /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49F3E4921B9186D003F468D /* SettingsViewController.swift */; };
 		E49F3E4C21B91885003F468D /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49F3E4B21B91885003F468D /* SettingsViewModel.swift */; };
+		E4A168D222904F690040D909 /* MetadataItem+property.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A168D122904F690040D909 /* MetadataItem+property.swift */; };
+		E4A168D32291356B0040D909 /* CaptureService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F86C6218EF5D8006C4CDB /* CaptureService.swift */; };
 		E4A46A1721A9A26300FBDA04 /* AttachmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A1621A9A26300FBDA04 /* AttachmentTests.swift */; };
 		E4A46A2921B28ED800FBDA04 /* DocumentEditViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A2821B28ED800FBDA04 /* DocumentEditViewModel.swift */; };
 		E4A46A2B21B4109C00FBDA04 /* DocumentSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A2A21B4109C00FBDA04 /* DocumentSearchViewController.swift */; };
@@ -349,6 +351,7 @@
 		E466D193221EAD29007F140B /* FadeBackgroundTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FadeBackgroundTransition.swift; sourceTree = "<group>"; };
 		E466D195221ED586007F140B /* MoveToAnimtor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveToAnimtor.swift; sourceTree = "<group>"; };
 		E466D197221ED6A1007F140B /* MoveInAnimtor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MoveInAnimtor.swift; sourceTree = "<group>"; };
+		E4686E4222915A190004D950 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		E4729B9E2202B70200F22885 /* SquareButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SquareButton.swift; sourceTree = "<group>"; };
 		E4729BA12202BBE300F22885 /* Rotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rotation.swift; sourceTree = "<group>"; };
 		E4729BA32202E6BA00F22885 /* Range.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Range.swift; sourceTree = "<group>"; };
@@ -377,6 +380,7 @@
 		E49F3E4921B9186D003F468D /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		E49F3E4B21B91885003F468D /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		E49FF46321A429F9003A5B3C /* OutlineStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineStorageTests.swift; sourceTree = "<group>"; };
+		E4A168D122904F690040D909 /* MetadataItem+property.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MetadataItem+property.swift"; sourceTree = "<group>"; };
 		E4A46A1621A9A26300FBDA04 /* AttachmentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentTests.swift; sourceTree = "<group>"; };
 		E4A46A1821AA8E9F00FBDA04 /* OutlineTextStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineTextStorage.swift; sourceTree = "<group>"; };
 		E4A46A1D21AE6CF400FBDA04 /* Image+Generation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Image+Generation.swift"; sourceTree = "<group>"; };
@@ -476,6 +480,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E40F6E85223B78AE00FFF53F /* Interface.framework in Frameworks */,
+				E4686E4322915A190004D950 /* CloudKit.framework in Frameworks */,
 				EE260FEBE701F7B91549B9B8 /* Pods_Iceland.framework in Frameworks */,
 				E41CB1B021D88D9400EF0A3C /* Business.framework in Frameworks */,
 			);
@@ -502,6 +507,7 @@
 		12C79086BDCD360A64A82947 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E4686E4222915A190004D950 /* CloudKit.framework */,
 				B03B21DC28F546E7D3A966E7 /* Pods_Iceland.framework */,
 				58F6ADB9E7BCAC752C4FE4C6 /* Pods_Storage.framework */,
 				FC69118DDC07F2D89DFC636D /* Pods_IcelandTests.framework */,
@@ -765,6 +771,7 @@
 		E41F86DA21900902006C4CDB /* AttachmentModel */ = {
 			isa = PBXGroup;
 			children = (
+				E41F86C6218EF5D8006C4CDB /* CaptureService.swift */,
 				E41F86DB219009DD006C4CDB /* Attachment.swift */,
 				E41F86DD21902BA1006C4CDB /* AttachmentManager.swift */,
 				E4C932D42244B55100E3A176 /* AttachmentDocument.swift */,
@@ -1026,6 +1033,7 @@
 			children = (
 				E4A46A2F21B4150A00FBDA04 /* SyncManager.swift */,
 				E4C268EA22436C90006FC68A /* SyncEvents.swift */,
+				E4A168D122904F690040D909 /* MetadataItem+property.swift */,
 			);
 			path = Sync;
 			sourceTree = "<group>";
@@ -1056,7 +1064,6 @@
 				E41CB15C21D8844000EF0A3C /* CaptureListCoordinator.swift */,
 				E498AAFE21BBE9B800D2A8EA /* CaptureListViewController.swift */,
 				E498AB0021BBEBB300D2A8EA /* CaptureListViewModel.swift */,
-				E41F86C6218EF5D8006C4CDB /* CaptureService.swift */,
 				E41A538C21D5F629002B11E9 /* CaptureTableCell.swift */,
 				E4F3029B21D74E8700BDE178 /* CaptureTableCellModel.swift */,
 			);
@@ -1228,6 +1235,9 @@
 					E43427F52121BF5B00EC6DC3 = {
 						CreatedOnToolsVersion = 10.0;
 						SystemCapabilities = {
+							com.apple.Push = {
+								enabled = 1;
+							};
 							com.apple.iCloud = {
 								enabled = 1;
 							};
@@ -1512,6 +1522,7 @@
 				E43E7875222ACF780007EE4F /* OutlineTextTrimmer.swift in Sources */,
 				E41CB1BA21D88DCE00EF0A3C /* Document.swift in Sources */,
 				E4162EF72254EA4F00D3619E /* DateAndTimeType.swift in Sources */,
+				E4A168D222904F690040D909 /* MetadataItem+property.swift in Sources */,
 				E41CB1C521D88DD700EF0A3C /* EditorService.swift in Sources */,
 				E41CB1BE21D88DD100EF0A3C /* OutlineLayoutManager.swift in Sources */,
 				E4821DB122374C420063C0B2 /* WeakArray.swift in Sources */,
@@ -1551,6 +1562,7 @@
 				E4C268EB22436C90006FC68A /* SyncEvents.swift in Sources */,
 				E47FA90222702717005AD0BA /* OrgExporter.swift in Sources */,
 				E41CB1C021D88DD700EF0A3C /* OutlineParserMatcher.swift in Sources */,
+				E4A168D32291356B0040D909 /* CaptureService.swift in Sources */,
 				E41CB1BB21D88DCE00EF0A3C /* OutlineTextStorage.swift in Sources */,
 				E47FA8FB227025B8005AD0BA /* ExportManager.swift in Sources */,
 			);
@@ -1600,7 +1612,6 @@
 				E41CB15B21D87CDD00EF0A3C /* SearchCoordinator.swift in Sources */,
 				E41B893421E3497D009C5AD7 /* LinkAttachmentView.swift in Sources */,
 				E42A87FD21CFC9B300151C90 /* AttachmentTextViewController.swift in Sources */,
-				E41F86C7218EF5D8006C4CDB /* CaptureService.swift in Sources */,
 				E462DB9C223D264800BF7AB4 /* TimeSelectViewController.swift in Sources */,
 				E4EA857521D3AF0D00DD92F9 /* BesideDatesView.swift in Sources */,
 				E4A46A2921B28ED800FBDA04 /* DocumentEditViewModel.swift in Sources */,

@@ -57,7 +57,7 @@ public class DashboardViewController: UIViewController {
         self.tableView.allSidesAnchors(to: self.view, edgeInset: 0)
         
         self.settingsButton.sizeAnchor(width: 60, height: 60)
-        self.settingsButton.sideAnchor(for: [.left, .bottom], to: self.view, edgeInset: 30)
+        self.settingsButton.sideAnchor(for: [.left, .bottom], to: self.view, edgeInset: 30, considerSafeArea: true)
         
         self.settingsButton.triggered(event: UIControl.Event.touchUpInside, action: { [unowned self] button in
             self.viewModel.coordinator?.showSettings()

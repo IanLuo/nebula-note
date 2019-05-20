@@ -8,29 +8,7 @@
 
 import Foundation
 
-public class SyncStartEvent: Event {}
-
-public class SyncStatusChangedEvent: Event {
-    public let progress: Double
-    public init(progress: Double) {
-        self.progress = progress
-    }
-}
-
-public class SyncCompleteEvent: Event {}
-
-public class SyncFailedEvent: Event {
-    public enum SyncError: Error {
-        case failed
-    }
-    
-    public let error: SyncError
-    public init(error: SyncError) {
-        self.error = error
-    }
-}
-
-public class iCloudOpeningStatusChangedevent: Event {
+public class iCloudOpeningStatusChangedEvent: Event {
     public let isiCloudEnabled: Bool
     
     public init(isiCloudEnabled: Bool) {
@@ -38,6 +16,45 @@ public class iCloudOpeningStatusChangedevent: Event {
     }
 }
 
-public class NowUsingLocalDocumentsEvent: Event {}
+public class NewDocumentPackageDownloadedEvent: Event {
+    public let url: URL
+    public init(url: URL) {
+        self.url = url
+    }
+}
 
-public class NowUsingiCloudDocumentsEvent: Event {}
+public class NewAttachmentDownloadedEvent: Event {
+    public let url: URL
+    public init(url: URL) {
+        self.url = url
+    }
+}
+
+public class NewRecentFilesListDownloadedEvent: Event {
+    public let url: URL
+    public init(url: URL) {
+        self.url = url
+    }
+}
+
+public class NewCaptureListDownloadedEvent: Event {
+    public let url: URL
+    public init(url: URL) {
+        self.url = url
+    }
+}
+
+public class DocumentRemovedFromiCloudEvent: Event {
+    public let url: URL
+    public init(url: URL) {
+        self.url = url
+    }
+}
+
+public class NewDocumentAddedFromiCloudEvent: Event {
+    public let url: URL
+    public init(url: URL) {
+        self.url = url
+    }
+}
+

@@ -91,6 +91,7 @@ public class DocumentEditViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(_keyboardWillHide(_:)), name: UIApplication.keyboardWillHideNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(_keyboardDidShow(_:)), name: UIApplication.keyboardDidShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(_keyboardDidHide(_:)), name: UIApplication.keyboardDidHideNotification, object: nil)
+        
     }
     
     public override func viewDidLayoutSubviews() {
@@ -142,9 +143,32 @@ public class DocumentEditViewController: UIViewController {
         
     }
     
+    private var _lastState: UIDocument.State?
     @objc private func _documentStateChanged(_ notification: NSNotification) {
-        if let state = (notification.object as? UIDocument)?.documentState {
-            print("document state is: \(state)")
+        if let document = notification.object as? UIDocument {
+            if document.documentState == .closed {
+                
+            } else if document.documentState == .editingDisabled {
+                print("document state is: editingDisabled")
+            } else if document.documentState == .inConflict {
+                print("document state is: inConflict")
+                do { try self.viewModel.handleConflict(url: document.fileURL) }
+                catch {
+                    log.error("failed to handle conflict: \(error)")
+                }
+            } else if document.documentState == .normal {
+                if self._lastState == .editingDisabled { // recovered from editDisabled, that means other process has modified it, revert content
+                    self.viewModel.revertContent()
+                }
+                print("document state is: normal")
+            } else if document.documentState == .progressAvailable {
+                print("document state is: progressAvailable")
+            } else if document.documentState == .savingError {
+                print("document state is: savingError")
+            }
+            print("document state is: \(document.documentState)")
+            
+            self._lastState = document.documentState
         }
     }
 }
@@ -178,6 +202,14 @@ extension DocumentEditViewController: DocumentEditViewModelDelegate {
     public func didReadyToEdit() {
         self._loadingIndicator.stopAnimating()
         self._moveTo(location: self.viewModel.onLoadingLocation)
+        
+        // 打开文件时， 添加到最近使用的文件
+        self.viewModel.coordinator?.dependency.editorContext.recentFilesManager.addRecentFile(url: self.viewModel.url, lastLocation: 0) { [weak self] in
+            guard let strongSelf = self else { return }
+            strongSelf.viewModel.coordinator?.dependency.eventObserver.emit(OpenDocumentEvent(url: strongSelf.viewModel.url))
+        }
+        
+
     }
     
     public func documentStatesChange(state: UIDocument.State) {

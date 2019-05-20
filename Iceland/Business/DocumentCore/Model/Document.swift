@@ -48,6 +48,63 @@ public class Document: UIDocument {
     public static let coverKey: String = "cover.jpg"
     public static let logsKey: String = "logs.log"
     
+//    public func hotReload(completion: @escaping (Document) -> Void) {
+//        let coordinator = NSFileCoordinator()
+//        var error: NSError?
+//
+//        let group = DispatchGroup()
+//
+//        group.enter()
+//        coordinator.coordinate(readingItemAt: self.fileURL.appendingPathComponent(Document.contentKey),
+//                               options: NSFileCoordinator.ReadingOptions.withoutChanges, error: &error) { url in
+//                                do {
+//                                    self.string = try String(contentsOf: url)
+//                                    if let oldWrapper = self._wrapper?.fileWrappers?[Document.contentKey] {
+//                                        self._wrapper?.removeFileWrapper(oldWrapper)
+//                                    }
+//                                    group.leave()
+//                                } catch {
+//                                    log.error("failed to hot reload document contents: \(url)")
+//                                    group.leave()
+//                                }
+//        }
+//
+//        group.enter()
+//        coordinator.coordinate(readingItemAt: self.fileURL.appendingPathComponent(Document.coverKey),
+//                               options: NSFileCoordinator.ReadingOptions.withoutChanges, error: &error) { url in
+//                                do {
+//                                    self.cover = try UIImage(data: Data(contentsOf: url))
+//                                    if let oldWrapper = self._wrapper?.fileWrappers?[Document.coverKey] {
+//                                        self._wrapper?.removeFileWrapper(oldWrapper)
+//                                    }
+//                                    group.leave()
+//                                } catch {
+//                                    log.error("failed to hot reload document contents: \(url)")
+//                                    group.leave()
+//                                }
+//        }
+//
+//        group.enter()
+//        coordinator.coordinate(readingItemAt: self.fileURL.appendingPathComponent(Document.logsKey),
+//                               options: NSFileCoordinator.ReadingOptions.withoutChanges, error: &error) { url in
+//                                do {
+//                                    self.logs = try String(contentsOf: url)
+//                                    if let oldWrapper = self._wrapper?.fileWrappers?[Document.logsKey] {
+//                                        self._wrapper?.removeFileWrapper(oldWrapper)
+//                                    }
+//                                    group.leave()
+//                                } catch {
+//                                    log.error("failed to hot reload document contents: \(url)")
+//                                    group.leave()
+//                                }
+//        }
+//
+//        group.notify(queue: DispatchQueue.main) {
+//            unowned let unownedSelf = self
+//            completion(unownedSelf)
+//        }
+//    }
+    
     public func updateCover(_ new: UIImage?) {
         self.cover = new
         if let oldWrapper = self._wrapper?.fileWrappers?[Document.coverKey] {
