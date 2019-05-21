@@ -96,7 +96,7 @@ private class AudioPlayerView: UIView {
     
     private lazy var playButton: RoundButton = {
         let button = RoundButton()
-        button.title = "play".localizable
+        button.title = L10n.Audio.Player.play
         button.setIcon(Asset.Assets.right.image.fill(color: InterfaceTheme.Color.spotlight), for: .normal)
         button.tapped { button in
             self.delegate?.didTapStart()
@@ -106,7 +106,7 @@ private class AudioPlayerView: UIView {
     
     private lazy var pauseButton: RoundButton = {
         let button = RoundButton()
-        button.title = "pause".localizable
+        button.title = L10n.Audio.Player.pause
         button.setIcon(Asset.Assets.left.image.fill(color: InterfaceTheme.Color.spotlight), for: .normal)
         button.tapped { button in
             self.delegate?.didTapPause()
@@ -116,7 +116,7 @@ private class AudioPlayerView: UIView {
     
     private lazy var stopButton: RoundButton = {
         let button = RoundButton()
-        button.title = "stop".localizable
+        button.title = L10n.Audio.Player.stop
         button.setIcon(Asset.Assets.left.image.fill(color: InterfaceTheme.Color.spotlight), for: .normal)
         button.tapped { button in
             self.delegate?.didTapStop()
@@ -126,7 +126,7 @@ private class AudioPlayerView: UIView {
     
     private lazy var continueButton: RoundButton = {
         let button = RoundButton()
-        button.title = "continue".localizable
+        button.title = L10n.Audio.Player.continue
         button.setIcon(Asset.Assets.left.image.fill(color: InterfaceTheme.Color.spotlight), for: .normal)
         button.tapped { button in
             self.delegate?.didTapContinue()

@@ -19,7 +19,7 @@ public class Application: Coordinator {
         self.window = window
         
         _entranceWindow = CaptureGlobalEntranceWindow(frame: CGRect(x: UIScreen.main.bounds.width - 90,
-                                                                    y: UIScreen.main.bounds.height - window.safeArea.bottom - 60 - 80,
+                                                                    y: UIScreen.main.bounds.height - window.safeArea.bottom - 60 - 30,
                                                                     width: 60,
                                                                     height: 60))
         _entranceWindow.makeKeyAndVisible()
@@ -70,11 +70,11 @@ public class Application: Coordinator {
                 // 开始同步 iCloud 文件
                 self.dependency.syncManager.startMonitoringiCloudFileUpdateIfNeeded()
                 
-                self.stack.showAlert(title: "iCloud account changed", message: "You have login another iCloud account, your document is now access from that account's storage")
+                self.stack.showAlert(title: L10n.Sync.Alert.Account.Changed.title, message: L10n.Sync.Alert.Account.Changed.msg)
             }
         case .closed:
             if SyncManager.status == .on {
-                self.stack.showAlert(title: "iCloud account closed", message: "You have turned off iCloud on this app, your documents are stored on the iCloud stoage safely, if you want to access them, please turn iCloud on")
+                self.stack.showAlert(title: L10n.Sync.Alert.Account.Closed.title, message: L10n.Sync.Alert.Account.Closed.msg)
                 
                 // mark iCloud off
                 SyncManager.status = .off
@@ -82,7 +82,7 @@ public class Application: Coordinator {
         case .open:
             if SyncManager.status == .unknown {
                 let confirmViewController = ConfirmViewController()
-                confirmViewController.contentText = "Do you want use iCloud to store, your documents. If so, you will be able to access the contents from any device with your iCloud account, and they will be kept safe if you remove the app, or even lose your device."
+                confirmViewController.contentText = L10n.Sync.Confirm.useiCloud
                 
                 confirmViewController.confirmAction = { viewController in
                     viewController.dismiss(animated: true, completion: {
@@ -90,7 +90,7 @@ public class Application: Coordinator {
                             SyncManager.status = .on
                             // 开始同步 iCloud 文件
                             self.dependency.syncManager.startMonitoringiCloudFileUpdateIfNeeded()
-                            self.stack.showAlert(title: "Using iCloud storage", message: "Now everything is stored using iCloud, you can access them on all of your devices")
+                            self.stack.showAlert(title: L10n.Sync.Alert.Status.On.title, message: L10n.Sync.Alert.Status.On.msg)
                         })
                     })
                 }
@@ -100,7 +100,7 @@ public class Application: Coordinator {
                         
                         SyncManager.status = .off
 
-                        self.stack.showAlert(title: "Using local storage", message: "Now your are storing your document on this device only, if you want to move to iCloud, you can change is in the Settings")
+                        self.stack.showAlert(title: L10n.Sync.Alert.Status.Off.title, message: L10n.Sync.Alert.Status.Off.msg)
                     })
                 }
                 

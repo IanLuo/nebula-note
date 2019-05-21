@@ -18,6 +18,8 @@ public class AttachmentLocationViewController: AttachmentViewController, Attachm
         super.viewDidLoad()
         self.viewModel.delegate = self
         self.showLocationPicker()
+        
+        self.addChild(self.actionsViewController)
     }
     
     let actionsViewController = ActionsViewController()
@@ -27,7 +29,7 @@ public class AttachmentLocationViewController: AttachmentViewController, Attachm
 
         actionsViewController.accessoryView = mapView
         
-        actionsViewController.title = "Find your location".localizable
+        actionsViewController.title = L10n.Location.title
         
         mapView.sizeAnchor(width: self.view.bounds.width, height: self.view.bounds.width)
         
@@ -35,7 +37,7 @@ public class AttachmentLocationViewController: AttachmentViewController, Attachm
         mapView.showsScale = true
         mapView.delegate = self
         
-        actionsViewController.addAction(icon: nil, title: "current location".localizable) { viewController in
+        actionsViewController.addAction(icon: nil, title: L10n.Location.current) { viewController in
             self.showCurrentLocation(on: mapView, animated: true)
         }
         
@@ -44,12 +46,12 @@ public class AttachmentLocationViewController: AttachmentViewController, Attachm
             self.delegate?.didCancelAttachment()
         }
         
-        actionsViewController.addAction(icon: nil, title: "save".localizable, style: ActionsViewController.Style.highlight) { viewController in
+        actionsViewController.addAction(icon: nil, title: L10n.General.Button.Title.save, style: ActionsViewController.Style.highlight) { viewController in
             let jsonEncoder = JSONEncoder()
             do {
                 let data = try jsonEncoder.encode(mapView.centerCoordinate)
                 if let string = String(data: data, encoding: String.Encoding.utf8) {
-                    self.viewModel.save(content: string, kind: .location, description: "location choosen by user".localizable)
+                    self.viewModel.save(content: string, kind: .location, description: "location choosen by user")
                 } else {
                     log.error("can't encode for location: \(mapView.centerCoordinate)")
                 }
@@ -60,6 +62,7 @@ public class AttachmentLocationViewController: AttachmentViewController, Attachm
         
         self.view.addSubview(actionsViewController.view)
         self.actionsViewController.view.allSidesAnchors(to: self.view, edgeInset: 0, considerSafeArea: true)
+        self.actionsViewController.didMove(toParent: self)
         
         self.showCurrentLocation(on: mapView, animated: false)
     }

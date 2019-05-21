@@ -34,13 +34,13 @@ public class DocumentBrowserViewController: UIViewController {
         return tableView
     }()
     
-    private let createNewDocumentButton: SquareButton = {
-        let button = SquareButton()
-        button.title.text = L10n.Document.Action.new
-        button.icon.image = Asset.Assets.add.image.withRenderingMode(.alwaysTemplate)
-        button.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.background2, size: .singlePoint),
-                                  for: .normal)
-        button.addTarget(self, action: #selector(createNewDocumentAtRoot), for: .touchUpInside)
+    private lazy var createNewDocumentButton: RoundButton = {
+        let button = RoundButton()
+        button.setIcon(Asset.Assets.add.image.fill(color: InterfaceTheme.Color.interactive), for: .normal)
+        button.setBackgroundColor(InterfaceTheme.Color.background3, for: .normal)
+        button.tapped { [weak self] _ in
+            self?.createNewDocumentAtRoot()
+        }
         return button
     }()
     
@@ -57,7 +57,7 @@ public class DocumentBrowserViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
         viewModel.delegate = self
         
-        self.title = "Documents".localizable
+        self.title = L10n.Browser.title
         self.tabBarItem = UITabBarItem(title: "", image: Asset.Assets.document.image, tag: 0)
     }
     
@@ -83,8 +83,8 @@ public class DocumentBrowserViewController: UIViewController {
 
         self.tableView.sideAnchor(for: [.left, .top, .bottom, .right], to: self.view, edgeInset: 0)
         
-        self.createNewDocumentButton.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInsets: .zero, considerSafeArea: true)
-        self.createNewDocumentButton.sizeAnchor(height: 60)
+        self.createNewDocumentButton.sideAnchor(for: [.left, .bottom], to: self.view, edgeInsets: .init(top: 0, left: Layout.edgeInsets.left, bottom: -Layout.edgeInsets.bottom, right: 0), considerSafeArea: true)
+        self.createNewDocumentButton.sizeAnchor(width: 60)
         self.createNewDocumentButton.isHidden = !self.viewModel.shouldShowActions
         
         if self.viewModel.coordinator?.isModal ?? false {
@@ -93,7 +93,7 @@ public class DocumentBrowserViewController: UIViewController {
     }
     
     @objc private func createNewDocumentAtRoot() {
-        self.viewModel.createDocument(title: L10n.Document.Title.untitled, below: nil)
+        self.viewModel.createDocument(title: L10n.Browser.Title.untitled, below: nil)
     }
     
     @objc private func cancel() {
@@ -185,23 +185,23 @@ extension DocumentBrowserViewController: DocumentBrowserCellDelegate {
         if let index = self.viewModel.index(of: url) {
             let actionsViewController = ActionsViewController()
             
-            actionsViewController.title = L10n.Document.Actions.title
+            actionsViewController.title = L10n.Browser.Actions.title
             // 创建新文档，使用默认的新文档名
-            actionsViewController.addAction(icon: Asset.Assets.add.image, title: L10n.Document.Action.new) { viewController in
+            actionsViewController.addAction(icon: Asset.Assets.add.image, title: L10n.Browser.Action.new) { viewController in
                 viewController.dismiss(animated: true, completion: {
-                    self.viewModel.createDocument(title: L10n.Document.Title.untitled, below: self.viewModel.data[index].url)
+                    self.viewModel.createDocument(title: L10n.Browser.Title.untitled, below: self.viewModel.data[index].url)
                     self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                 })
             }
             
             // 移动文件
-            actionsViewController.addAction(icon: nil, title: "Move to") { viewController in
+            actionsViewController.addAction(icon: nil, title: L10n.Browser.Action.MoveTo.title) { viewController in
                 
                 self.viewModel.loadAllFiles(completion: { [unowned self] files in
                     
                     viewController.dismiss(animated: true, completion: {
                         let selector = SelectorViewController()
-                        selector.title = "Choose a place"
+                        selector.title = L10n.Browser.Action.MoveTo.msg
                         selector.fromView = self.tableView.cellForRow(at: IndexPath(row: index, section: 0))
                         let root: String = "\\"
                         selector.addItem(title: root)
@@ -236,11 +236,11 @@ extension DocumentBrowserViewController: DocumentBrowserCellDelegate {
             }
 
             // 重命名
-            actionsViewController.addAction(icon: nil, title: L10n.Document.Actions.rename) { viewController in
+            actionsViewController.addAction(icon: nil, title: L10n.Browser.Actions.rename) { viewController in
                 viewController.dismiss(animated: true, completion: {
                     
                     let renameFormViewController = ModalFormViewController()
-                    let title = "new name".localizable
+                    let title = L10n.Browser.Action.Rename.newName
                     renameFormViewController.addTextFied(title: title, placeHoder: "", defaultValue: url.packageName) // 不需要显示 placeholder, default value 有值
                     renameFormViewController.onSaveValue = { formValue, viewController in
                         if let newName = formValue[title] as? String {
@@ -259,7 +259,7 @@ extension DocumentBrowserViewController: DocumentBrowserCellDelegate {
                     // 显示给用户，是否可以使用这个文件名
                     renameFormViewController.onValidating = { formData in
                         if !self.viewModel.isNameAvailable(newName: formData[title] as! String, index: index) {
-                            return [title: "name is taken".localizable]
+                            return [title: L10n.Browser.Action.Rename.Warning.nameIsTaken]
                         }
                         
                         return [:]
@@ -275,7 +275,7 @@ extension DocumentBrowserViewController: DocumentBrowserCellDelegate {
             }
             
             // 复制
-            actionsViewController.addAction(icon: nil, title: L10n.Document.Actions.duplicate) { viewController in
+            actionsViewController.addAction(icon: nil, title: L10n.Browser.Actions.duplicate) { viewController in
                 viewController.dismiss(animated: true, completion: {
                     self.viewModel.duplicate(index: index)
                     self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
@@ -283,7 +283,7 @@ extension DocumentBrowserViewController: DocumentBrowserCellDelegate {
             }
             
             // 编辑封面
-            actionsViewController.addAction(icon: nil, title: L10n.Document.Actions.cover) { viewController in
+            actionsViewController.addAction(icon: nil, title: L10n.Browser.Actions.cover) { viewController in
                 viewController.dismiss(animated: true, completion: {
                     
                     let coverPicker = CoverPickerViewController()
@@ -302,11 +302,11 @@ extension DocumentBrowserViewController: DocumentBrowserCellDelegate {
             }
             
             // 导出
-            actionsViewController.addAction(icon: nil, title: "Export") { viewController in
+            actionsViewController.addAction(icon: nil, title: L10n.Document.Export.title) { viewController in
                 viewController.dismiss(animated: true, completion: {
                     let exportManager = ExportManager()
                     let selector = SelectorViewController()
-                    selector.title = "Choose a file format"
+                    selector.title = L10n.Document.Export.msg
                     for item in exportManager.exportMethods {
                         selector.addItem(title: item.title)
                     }
@@ -330,7 +330,7 @@ extension DocumentBrowserViewController: DocumentBrowserCellDelegate {
             }
             
             // 删除
-            actionsViewController.addAction(icon: Asset.Assets.trash.image, title: L10n.Document.Actions.delete, style: .warning) { viewController in
+            actionsViewController.addAction(icon: Asset.Assets.trash.image, title: L10n.Browser.Actions.delete, style: .warning) { viewController in
                 let confirmViewController = ConfirmViewController()
                 
                 confirmViewController.confirmAction = {

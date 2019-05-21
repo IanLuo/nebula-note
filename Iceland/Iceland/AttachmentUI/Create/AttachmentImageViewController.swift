@@ -43,15 +43,15 @@ public class AttachmentImageViewController: AttachmentViewController, Attachment
     }
     
     public func showImageSourcePicker() {
-        actionsViewController.title = "Add image".localizable
+        actionsViewController.title = L10n.ImagePicker.add
         
         if UIImagePickerController.isSourceTypeAvailable(UIImagePickerController.SourceType.camera) {
-            actionsViewController.addAction(icon: Asset.Assets.camera.image.withRenderingMode(.alwaysTemplate), title: "Camera".localizable, action: { vc in
+            actionsViewController.addAction(icon: Asset.Assets.camera.image.fill(color: InterfaceTheme.Color.descriptive), title: L10n.ImagePicker.camera, action: { vc in
                 self.showCamera()
             })
         }
         
-        actionsViewController.addAction(icon: Asset.Assets.imageLibrary.image.withRenderingMode(.alwaysTemplate), title: "Image Library".localizable, action: { vc in
+        actionsViewController.addAction(icon: Asset.Assets.imageLibrary.image.fill(color: InterfaceTheme.Color.descriptive), title: L10n.ImagePicker.library, action: { vc in
             self.showImageLibrary()
         })
         

@@ -8,7 +8,6 @@
 
 import Foundation
 import UIKit.UIImage
-import Business
 
 public protocol CaptureServiceProtocol {
     func save(key: String, completion: @escaping () -> Void)

@@ -202,19 +202,19 @@ extension DateAndTimeType {
         let today = Date()
         if self.isSchedule {
             if today.isSameDay(self.date) {
-                return "due today"
+                return L10n.Agenda.startToday
             } else if today.timeIntervalSince1970 > self.date.timeIntervalSince1970 {
-                return "started in \(today.daysFrom(self.date)) days age"
+                return L10n.Agenda.startDaysAgoWithPlaceHodler("\(today.daysFrom(self.date))")
             } else {
-                return "start in \(self.date.daysFrom(today)) days"
+                return L10n.Agenda.startInDaysWithPlaceHolder("\(self.date.daysFrom(today))")
             }
         } else if self.isDue {
             if today.isSameDay(self.date) {
-                return "due today"
+                return L10n.Agenda.dueToday
             } else if today.timeIntervalSince1970 > self.date.timeIntervalSince1970 {
-                return "+ \(today.daysFrom(self.date)) days"
+                return L10n.Agenda.overdueDaysWihtPlaceHolder("\(today.daysFrom(self.date))")
             } else {
-                return "due in \(self.date.daysFrom(today)) days"
+                return L10n.Agenda.willOverduInDaysWithPlaceHolder("\(self.date.daysFrom(today))")
             }
         } else {
             return nil

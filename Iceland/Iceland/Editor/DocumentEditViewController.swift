@@ -46,46 +46,64 @@ public class DocumentEditViewController: UIViewController {
         fatalError()
     }
     
-    public let toolbar = InputToolbar(mode: .paragraph)
+    public let inputbar = InputToolbar(mode: .paragraph)
     
-    private let toolBar: UIView = UIView()
-    private var closeButton: UIButton!
-    private var _menuButton: UIButton!
-    private var _infoButton: UIButton!
+    private let _toolBar: UIStackView = UIStackView()
+    private var _closeButton: RoundButton!
+    private var _menuButton: RoundButton!
+    private var _infoButton: RoundButton!
     private var _keyboardHeight: CGFloat = 0
     
     public override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.textView.frame = self.view.bounds
         
         self.view.addSubview(self.textView)
-        self.view.addSubview(self.toolBar)
+        self.view.addSubview(self._toolBar)
         self.view.addSubview(self._loadingIndicator)
         
         if !self.viewModel.isReadyToEdit {
             self._loadingIndicator.startAnimating()
         }
         
+        self.textView.allSidesAnchors(to: self.view, edgeInset: 0)
         self._loadingIndicator.centerAnchors(position: [.centerX, .centerY], to: self.view)
+        self._toolBar.sideAnchor(for: [.left, .top, .right], to: self.view, edgeInset: 0, considerSafeArea: true)
+        self._toolBar.sizeAnchor(height: 44)
         
-        self.closeButton = self.createActionButton(icon: Asset.Assets.cross.image.withRenderingMode(.alwaysTemplate))
-        self._menuButton = self.createActionButton(icon: Asset.Assets.more.image.withRenderingMode(.alwaysTemplate))
-        self._infoButton = self.createActionButton(icon: Asset.Assets.left.image.withRenderingMode(.alwaysTemplate))
+        self._closeButton = self.createActionButton(icon: Asset.Assets.cross.image.fill(color: InterfaceTheme.Color.interactive))
+        self._menuButton = self.createActionButton(icon: Asset.Assets.more.image.fill(color: InterfaceTheme.Color.interactive))
+        self._infoButton = self.createActionButton(icon: Asset.Assets.left.image.fill(color: InterfaceTheme.Color.interactive))
         
-        self.closeButton.addTarget(self, action: #selector(cancel), for: .touchUpInside)
-        self._menuButton.addTarget(self, action: #selector(showMenu), for: .touchUpInside)
-        self._infoButton.addTarget(self, action: #selector(showInfo), for: .touchUpInside)
+        self._closeButton.tapped { [weak self] _ in
+            guard let strongSelf = self else { return }
+            strongSelf.cancel(strongSelf._closeButton)
+        }
+        self._menuButton.tapped { [weak self] _ in self?.showMenu() }
+        self._infoButton.tapped { [weak self] _ in self?.showInfo() }
         
-        self.toolBar.addSubview(closeButton)
-        self.toolBar.addSubview(_menuButton)
-        self.toolBar.addSubview(_infoButton)
+        self._toolBar.addSubview(_closeButton)
+        self._toolBar.addSubview(_menuButton)
+        self._toolBar.addSubview(_infoButton)
         
-        self.toolbar.frame = CGRect(origin: .zero, size: .init(width: self.view.bounds.width, height: 44))
-        self.toolbar.delegate = self
-        self.textView.inputAccessoryView = self.toolbar
+        self._closeButton.sizeAnchor(width: 44)
+        self._infoButton.sizeAnchor(width: 44)
+        self._menuButton.sizeAnchor(width: 44)
         
-        self.toolbar.mode = .paragraph
+        self._closeButton.sideAnchor(for: .left, to: self._toolBar, edgeInset: Layout.edgeInsets.left)
+        self._closeButton.centerAnchors(position: .centerY, to: self._toolBar)
+        
+        self._infoButton.sideAnchor(for: .right, to: self._toolBar, edgeInset: Layout.edgeInsets.right)
+        self._infoButton.centerAnchors(position: .centerY, to: self._toolBar)
+        
+        self._menuButton.rightAnchor.constraint(equalTo: self._infoButton.leftAnchor, constant: -10).isActive = true
+        self._menuButton.centerAnchors(position: .centerY, to: self._toolBar)
+        
+        self.inputbar.frame = CGRect(origin: .zero, size: .init(width: self.view.bounds.width, height: 44))
+        self.inputbar.delegate = self
+        self.textView.inputAccessoryView = self.inputbar
+        
+        self.inputbar.mode = .paragraph
         
         NotificationCenter.default.addObserver(self, selector: #selector(_keyboardWillShow(_:)), name: UIApplication.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(_keyboardWillHide(_:)), name: UIApplication.keyboardWillHideNotification, object: nil)
@@ -94,32 +112,11 @@ public class DocumentEditViewController: UIViewController {
         
     }
     
-    public override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        
-        self.toolBar.size(width: self.view.bounds.width, height: 80)
-            .align(to: self.view, direction: AlignmentDirection.top, position: AlignmentPosition.middle, inset: 0)
-
-        self.closeButton.size(width: 40, height: 40)
-            .alignToSuperview(direction: AlignmentDirection.left, inset: 30)
-            .alignToSuperview(direction: AlignmentDirection.top, inset: 30)
-        
-        self._menuButton.size(width: 40, height: 40)
-            .alignToSuperview(direction: AlignmentDirection.right, inset: 30)
-            .alignToSuperview(direction: AlignmentDirection.top, inset: 30)
-        
-        self._infoButton.size(width: 40, height: 40)
-            .alignToSuperview(direction: AlignmentDirection.right, inset: 80)
-            .alignToSuperview(direction: AlignmentDirection.top, inset: 30)
-    }
-    
-    private func createActionButton(icon: UIImage?) -> UIButton {
-        let button = UIButton()
-        button.setImage(icon, for: .normal)
-        button.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.background2, size: .singlePoint), for: .normal)
-        button.tintColor = InterfaceTheme.Color.interactive
-        button.layer.cornerRadius = 20
-        button.layer.masksToBounds = true
+    private func createActionButton(icon: UIImage?) -> RoundButton {
+        let button = RoundButton()
+        button.setIcon(icon, for: .normal)
+        button.setBackgroundColor(InterfaceTheme.Color.background2, for: .normal)
+        button.setBorder(color: nil)
         return button
     }
     
@@ -176,22 +173,22 @@ public class DocumentEditViewController: UIViewController {
 extension DocumentEditViewController: DocumentEditViewModelDelegate {
     public func didEnterTokens(_ tokens: [Token]) {
         if tokens.count == 0 {
-            self.toolbar.mode = .paragraph
+            self.inputbar.mode = .paragraph
         } else {
             for token in tokens {
                 if token is HeadingToken {
-                    self.toolbar.mode = .heading
+                    self.inputbar.mode = .heading
                     break
                 } else if token is BlockBeginToken {
                     if token.name == OutlineParser.Key.Node.quoteBlockBegin {
-                        self.toolbar.mode = .quote
+                        self.inputbar.mode = .quote
                         break
                     } else if token.name == OutlineParser.Key.Node.codeBlockBegin {
-                        self.toolbar.mode = .code
+                        self.inputbar.mode = .code
                         break
                     }
                 } else {
-                    self.toolbar.mode = .paragraph
+                    self.inputbar.mode = .paragraph
                 }
             }
         }

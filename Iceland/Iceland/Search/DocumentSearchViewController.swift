@@ -83,7 +83,7 @@ public class DocumentSearchViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
         viewModel.delegate = self
         
-        self.title = "Search".localizable
+        self.title = L10n.Search.title
         self.tabBarItem = UITabBarItem(title: "", image: Asset.Assets.zoom.image, tag: 0)
     }
     
@@ -201,7 +201,7 @@ private class SearchInputView: UIView, UITextFieldDelegate {
     private lazy var endEditButton: UIButton = {
         let button = UIButton(frame: CGRect(origin: .zero, size: CGSize(width: 20, height: 20)))
         button.addTarget(self, action: #selector(endEdit), for: .touchUpInside)
-        button.setTitle("Cancel".localizable, for: .normal)
+        button.setTitle(L10n.General.Button.Title.cancel, for: .normal)
         button.titleLabel?.font = InterfaceTheme.Font.footnote
         return button
     }()

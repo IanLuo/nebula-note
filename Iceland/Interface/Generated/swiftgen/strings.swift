@@ -13,13 +13,43 @@ import Foundation
 public enum L10n {
 
   public enum Agenda {
-    public enum Actions {
-      /// Delay
-      public static let delay = L10n.tr("Localizable", "agenda.actions.delay")
-      /// Mark as done
-      public static let markDone = L10n.tr("Localizable", "agenda.actions.mark-done")
-      /// Choose an action
-      public static let title = L10n.tr("Localizable", "agenda.actions.title")
+    /// Due today
+    public static let dueToday = L10n.tr("Localizable", "agenda.dueToday")
+    /// Overdue %@ days
+    public static func overdueDaysWihtPlaceHolder(_ p1: String) -> String {
+      return L10n.tr("Localizable", "agenda.overdueDaysWihtPlaceHolder", p1)
+    }
+    /// Start %@ days ago
+    public static func startDaysAgoWithPlaceHodler(_ p1: String) -> String {
+      return L10n.tr("Localizable", "agenda.startDaysAgoWithPlaceHodler", p1)
+    }
+    /// Start in %@ days
+    public static func startInDaysWithPlaceHolder(_ p1: String) -> String {
+      return L10n.tr("Localizable", "agenda.startInDaysWithPlaceHolder", p1)
+    }
+    /// Start today
+    public static let startToday = L10n.tr("Localizable", "agenda.startToday")
+    /// Agenda
+    public static let title = L10n.tr("Localizable", "agenda.title")
+    /// Will overde in %@ days
+    public static func willOverduInDaysWithPlaceHolder(_ p1: String) -> String {
+      return L10n.tr("Localizable", "agenda.willOverduInDaysWithPlaceHolder", p1)
+    }
+    public enum Sub {
+      /// No tag
+      public static let noTag = L10n.tr("Localizable", "agenda.sub.noTag")
+      /// Overdue
+      public static let overdue = L10n.tr("Localizable", "agenda.sub.overdue")
+      /// Overdue soon
+      public static let overdueSoon = L10n.tr("Localizable", "agenda.sub.overdueSoon")
+      /// Plannings
+      public static let planning = L10n.tr("Localizable", "agenda.sub.planning")
+      /// Scheduled
+      public static let scheduled = L10n.tr("Localizable", "agenda.sub.scheduled")
+      /// Start soon
+      public static let startSoon = L10n.tr("Localizable", "agenda.sub.startSoon")
+      /// Tags
+      public static let tags = L10n.tr("Localizable", "agenda.sub.tags")
     }
   }
 
@@ -42,30 +72,131 @@ public enum L10n {
     }
   }
 
-  public enum Document {
+  public enum Audio {
+    public enum Player {
+      /// Continue
+      public static let `continue` = L10n.tr("Localizable", "audio.player.continue")
+      /// Pause
+      public static let pause = L10n.tr("Localizable", "audio.player.pause")
+      /// Play
+      public static let play = L10n.tr("Localizable", "audio.player.play")
+      /// Stop
+      public static let stop = L10n.tr("Localizable", "audio.player.stop")
+    }
+    public enum Recorder {
+      /// Continue recording
+      public static let `continue` = L10n.tr("Localizable", "audio.recorder.continue")
+      /// Pause record
+      public static let pause = L10n.tr("Localizable", "audio.recorder.pause")
+      /// Restart record
+      public static let restart = L10n.tr("Localizable", "audio.recorder.restart")
+      /// Start record
+      public static let start = L10n.tr("Localizable", "audio.recorder.start")
+      /// Stop
+      public static let stop = L10n.tr("Localizable", "audio.recorder.stop")
+    }
+  }
+
+  public enum Browser {
+    /// Documents
+    public static let title = L10n.tr("Localizable", "browser.title")
     public enum Action {
       /// Create New Document
-      public static let new = L10n.tr("Localizable", "document.action.new")
+      public static let new = L10n.tr("Localizable", "browser.action.new")
+      public enum MoveTo {
+        /// Choose a parent
+        public static let msg = L10n.tr("Localizable", "browser.action.moveTo.msg")
+        /// Move to
+        public static let title = L10n.tr("Localizable", "browser.action.moveTo.title")
+      }
+      public enum Rename {
+        /// New name
+        public static let newName = L10n.tr("Localizable", "browser.action.rename.newName")
+        public enum Warning {
+          /// Name is taken
+          public static let nameIsTaken = L10n.tr("Localizable", "browser.action.rename.warning.nameIsTaken")
+        }
+      }
     }
     public enum Actions {
       /// Edit Cover
-      public static let cover = L10n.tr("Localizable", "document.actions.cover")
+      public static let cover = L10n.tr("Localizable", "browser.actions.cover")
       /// Delete
-      public static let delete = L10n.tr("Localizable", "document.actions.delete")
+      public static let delete = L10n.tr("Localizable", "browser.actions.delete")
       /// Duplicate
-      public static let duplicate = L10n.tr("Localizable", "document.actions.duplicate")
+      public static let duplicate = L10n.tr("Localizable", "browser.actions.duplicate")
       /// New Sub Document
-      public static let newSub = L10n.tr("Localizable", "document.actions.new-sub")
+      public static let newSub = L10n.tr("Localizable", "browser.actions.newSub")
       /// Rename
-      public static let rename = L10n.tr("Localizable", "document.actions.rename")
+      public static let rename = L10n.tr("Localizable", "browser.actions.rename")
       /// Perform Actions
-      public static let title = L10n.tr("Localizable", "document.actions.title")
+      public static let title = L10n.tr("Localizable", "browser.actions.title")
     }
+    public enum Title {
+      /// Untitled
+      public static let untitled = L10n.tr("Localizable", "browser.title.untitled")
+    }
+  }
+
+  public enum CaptureLink {
+    /// Add link
+    public static let title = L10n.tr("Localizable", "captureLink.title")
+    public enum Title {
+      /// The tile of the link
+      public static let placeholder = L10n.tr("Localizable", "captureLink.title.placeholder")
+      /// Title
+      public static let title = L10n.tr("Localizable", "captureLink.title.title")
+    }
+    public enum Url {
+      /// The link address
+      public static let placeholder = L10n.tr("Localizable", "captureLink.url.placeholder")
+      /// URL
+      public static let title = L10n.tr("Localizable", "captureLink.url.title")
+    }
+  }
+
+  public enum CaptureList {
+    /// Captured ideas
+    public static let title = L10n.tr("Localizable", "captureList.title")
+    public enum Action {
+      /// Delete idea
+      public static let delete = L10n.tr("Localizable", "captureList.action.delete")
+      /// Insert to document
+      public static let insertToDocument = L10n.tr("Localizable", "captureList.action.insertToDocument")
+      /// Open link
+      public static let openLink = L10n.tr("Localizable", "captureList.action.openLink")
+      /// Open location
+      public static let openLocation = L10n.tr("Localizable", "captureList.action.openLocation")
+      /// Refile
+      public static let refile = L10n.tr("Localizable", "captureList.action.refile")
+    }
+  }
+
+  public enum CaptureText {
+    /// Add text
+    public static let title = L10n.tr("Localizable", "captureText.title")
+    public enum Text {
+      /// text
+      public static let title = L10n.tr("Localizable", "captureText.text.title")
+    }
+  }
+
+  public enum Document {
     public enum Browser {
       public enum Delete {
         /// Delete this file?
         public static let confirm = L10n.tr("Localizable", "document.browser.delete.confirm")
       }
+    }
+    public enum DateAndTime {
+      /// Due
+      public static let due = L10n.tr("Localizable", "document.dateAndTime.due")
+      /// Schedule
+      public static let schedule = L10n.tr("Localizable", "document.dateAndTime.schedule")
+      /// Date and time
+      public static let title = L10n.tr("Localizable", "document.dateAndTime.title")
+      /// Update date and time
+      public static let update = L10n.tr("Localizable", "document.dateAndTime.update")
     }
     public enum Edit {
       public enum Action {
@@ -133,9 +264,75 @@ public enum L10n {
         public static let validation = L10n.tr("Localizable", "document.edit.tag.validation")
       }
     }
-    public enum Title {
-      /// Untitled
-      public static let untitled = L10n.tr("Localizable", "document.title.untitled")
+    public enum Export {
+      /// HTML
+      public static let html = L10n.tr("Localizable", "document.export.html")
+      /// Mark Down
+      public static let md = L10n.tr("Localizable", "document.export.md")
+      /// Choose a file format
+      public static let msg = L10n.tr("Localizable", "document.export.msg")
+      /// Org mode
+      public static let org = L10n.tr("Localizable", "document.export.org")
+      /// Export
+      public static let title = L10n.tr("Localizable", "document.export.title")
+    }
+    public enum Heading {
+      /// Fold this paragaph
+      public static let fold = L10n.tr("Localizable", "document.heading.fold")
+      /// Move to ..
+      public static let moveTo = L10n.tr("Localizable", "document.heading.moveTo")
+      /// Move to other document ..
+      public static let moveToAnotherDocument = L10n.tr("Localizable", "document.heading.moveToAnotherDocument")
+      /// Heading
+      public static let title = L10n.tr("Localizable", "document.heading.title")
+      /// Convert to heading
+      public static let toHeading = L10n.tr("Localizable", "document.heading.toHeading")
+      /// Convert to content
+      public static let toParagraphContent = L10n.tr("Localizable", "document.heading.toParagraphContent")
+      /// Unfold this paragraph
+      public static let unfold = L10n.tr("Localizable", "document.heading.unfold")
+    }
+    public enum Info {
+      /// Create date
+      public static let createDate = L10n.tr("Localizable", "document.info.createDate")
+      /// Edit date
+      public static let editDate = L10n.tr("Localizable", "document.info.editDate")
+      /// Paragraph count
+      public static let paragraphCount = L10n.tr("Localizable", "document.info.paragraphCount")
+      /// Word count
+      public static let wordCount = L10n.tr("Localizable", "document.info.wordCount")
+    }
+    public enum Link {
+      /// Edit link
+      public static let edit = L10n.tr("Localizable", "document.link.edit")
+      /// Open link in browser
+      public static let `open` = L10n.tr("Localizable", "document.link.open")
+    }
+    public enum Menu {
+      /// Capture an idea
+      public static let capture = L10n.tr("Localizable", "document.menu.capture")
+      /// Fold all
+      public static let foldAll = L10n.tr("Localizable", "document.menu.foldAll")
+      /// Show outline
+      public static let outline = L10n.tr("Localizable", "document.menu.outline")
+      /// Menu
+      public static let title = L10n.tr("Localizable", "document.menu.title")
+      /// Unfold all
+      public static let unfoldAll = L10n.tr("Localizable", "document.menu.unfoldAll")
+    }
+    public enum Outlet {
+      /// No heading
+      public static let noHeading = L10n.tr("Localizable", "document.outlet.noHeading")
+    }
+    public enum Planning {
+      /// Planning
+      public static let title = L10n.tr("Localizable", "document.planning.title")
+    }
+    public enum Priority {
+      /// Remove priority
+      public static let remove = L10n.tr("Localizable", "document.priority.remove")
+      /// Priority
+      public static let title = L10n.tr("Localizable", "document.priority.title")
     }
   }
 
@@ -144,6 +341,8 @@ public enum L10n {
       public enum Title {
         /// Cancel
         public static let cancel = L10n.tr("Localizable", "general.button.title.cancel")
+        /// Close
+        public static let close = L10n.tr("Localizable", "general.button.title.close")
         /// Delete
         public static let delete = L10n.tr("Localizable", "general.button.title.delete")
         /// Open
@@ -151,6 +350,86 @@ public enum L10n {
         /// Save
         public static let save = L10n.tr("Localizable", "general.button.title.save")
       }
+    }
+  }
+
+  public enum ImagePicker {
+    /// Add image
+    public static let add = L10n.tr("Localizable", "imagePicker.add")
+    /// Camera
+    public static let camera = L10n.tr("Localizable", "imagePicker.camera")
+    /// Photo library
+    public static let library = L10n.tr("Localizable", "imagePicker.library")
+  }
+
+  public enum Location {
+    /// Current location
+    public static let current = L10n.tr("Localizable", "location.current")
+    /// Add a location
+    public static let title = L10n.tr("Localizable", "location.title")
+  }
+
+  public enum Search {
+    /// Search
+    public static let title = L10n.tr("Localizable", "search.title")
+  }
+
+  public enum Selector {
+    /// No item
+    public static let empty = L10n.tr("Localizable", "selector.empty")
+  }
+
+  public enum Setting {
+    /// Store in iCloud
+    public static let storeIniCloud = L10n.tr("Localizable", "setting.storeIniCloud")
+    /// Settings
+    public static let title = L10n.tr("Localizable", "setting.title")
+    public enum Alert {
+      /// Fail to configure sync
+      public static let failToStoreIniCloud = L10n.tr("Localizable", "setting.alert.failToStoreIniCloud")
+      public enum IcloudIsNotEnabled {
+        /// Please login your iCloud account
+        public static let msg = L10n.tr("Localizable", "setting.alert.icloudIsNotEnabled.msg")
+        /// iCloud is not enabled
+        public static let title = L10n.tr("Localizable", "setting.alert.icloudIsNotEnabled.title")
+      }
+    }
+  }
+
+  public enum Sync {
+    public enum Alert {
+      public enum Account {
+        public enum Changed {
+          /// You have login another iCloud account, your document is now access from that account's storage
+          public static let msg = L10n.tr("Localizable", "sync.alert.account.changed.msg")
+          /// iCloud account changed
+          public static let title = L10n.tr("Localizable", "sync.alert.account.changed.title")
+        }
+        public enum Closed {
+          /// You have turned off iCloud on this app, your documents are stored on the iCloud stoage safely, if you want to access them, please turn iCloud on
+          public static let msg = L10n.tr("Localizable", "sync.alert.account.closed.msg")
+          /// iCloud account closed
+          public static let title = L10n.tr("Localizable", "sync.alert.account.closed.title")
+        }
+      }
+      public enum Status {
+        public enum Off {
+          /// Now everything is stored using iCloud, you can access them on all of your devices
+          public static let msg = L10n.tr("Localizable", "sync.alert.status.off.msg")
+          /// Using iCloud storage
+          public static let title = L10n.tr("Localizable", "sync.alert.status.off.title")
+        }
+        public enum On {
+          /// Now everything is stored using iCloud, you can access them on all of your devices
+          public static let msg = L10n.tr("Localizable", "sync.alert.status.on.msg")
+          /// Using iCloud storage
+          public static let title = L10n.tr("Localizable", "sync.alert.status.on.title")
+        }
+      }
+    }
+    public enum Confirm {
+      /// Do you want use iCloud to store, your documents. If so, you will be able to access the contents from any device with your iCloud account, and they will be kept safe if you remove the app, or even lose your device.
+      public static let useiCloud = L10n.tr("Localizable", "sync.confirm.useiCloud")
     }
   }
 }

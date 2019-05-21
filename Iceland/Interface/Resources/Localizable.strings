@@ -10,6 +10,9 @@
 "general.button.title.open" = "Open";
 "general.button.title.cancel" = "Cancel";
 "general.button.title.delete" = "Delete";
+"general.button.title.close" = "Close";
+
+"selector.empty" = "No item";
 
 "document.browser.delete.confirm" = "Delete this file?";
 
@@ -21,20 +24,51 @@
 "attachment.kind.location" = "Location";
 "attachment.kind.text" = "Text";
 
-"document.action.new" = "Create New Document";
-"document.title.untitled" = "Untitled";
-"document.actions.title" = "Perform Actions";
-"document.actions.new-sub" = "New Sub Document";
-"document.actions.duplicate" = "Duplicate";
-"document.actions.cover" = "Edit Cover";
-"document.actions.delete" = "Delete";
-"document.actions.rename" = "Rename";
+"document.dateAndTime.title" = "Date and time";
+"document.dateAndTime.update" = "Update date and time";
+"document.dateAndTime.schedule"= "Schedule";
+"document.dateAndTime.due" = "Due";
+
+"document.priority.title" = "Priority";
+"document.priority.remove" = "Remove priority";
+
+"document.planning.title" = "Planning";
+
+"document.heading.title" = "Heading";
+"document.heading.toParagraphContent" = "Convert to content";
+"document.heading.toHeading" = "Convert to heading";
+"document.heading.unfold" = "Unfold this paragraph";
+"document.heading.fold" = "Fold this paragaph";
+"document.heading.moveTo" = "Move to ..";
+"document.heading.moveToAnotherDocument" = "Move to other document ..";
+
+// outline
+"document.outlet.noHeading" = "No heading";
+
+// export
+"document.export.title" = "Export";
+"document.export.org" = "Org mode";
+"document.export.html" = "HTML";
+"document.export.md" = "Mark Down";
+"document.export.msg" = "Choose a file format";
+
+// document info
+"document.info.editDate" = "Edit date";
+"document.info.createDate" = "Create date";
+"document.info.wordCount" = "Word count";
+"document.info.paragraphCount" = "Paragraph count";
+
+"document.link.open" = "Open link in browser";
+"document.link.edit" = "Edit link";
+
+"document.menu.title" = "Menu";
+"document.menu.foldAll" = "Fold all";
+"document.menu.unfoldAll" = "Unfold all";
+"document.menu.outline" = "Show outline";
+"document.menu.capture" = "Capture an idea";
+
 
 "document.edit.date.all-day" = "All day";
-
-"agenda.actions.title" = "Choose an action";
-"agenda.actions.mark-done" = "Mark as done";
-"agenda.actions.delay" = "Delay";
 
 "document.edit.action.attachment" = "Attachment";
 "document.edit.action.schedule" = "Schedule";
@@ -63,3 +97,95 @@
 "document.edit.tag.add" = "Add new tag";
 "document.edit.tag.place-holder" = "New tag name";
 "document.edit.tag.validation" = "Don't use special characters in tag";
+
+// sync
+"sync.confirm.useiCloud" = "Do you want use iCloud to store, your documents. If so, you will be able to access the contents from any device with your iCloud account, and they will be kept safe if you remove the app, or even lose your device.";
+"sync.alert.status.on.title" = "Using iCloud storage";
+"sync.alert.status.on.msg" = "Now everything is stored using iCloud, you can access them on all of your devices";
+"sync.alert.status.off.title" = "Using iCloud storage";
+"sync.alert.status.off.msg" = "Now everything is stored using iCloud, you can access them on all of your devices";
+"sync.alert.account.changed.title" = "iCloud account changed";
+"sync.alert.account.changed.msg" = "You have login another iCloud account, your document is now access from that account's storage";
+"sync.alert.account.closed.title" = "iCloud account closed";
+"sync.alert.account.closed.msg" = "You have turned off iCloud on this app, your documents are stored on the iCloud stoage safely, if you want to access them, please turn iCloud on";
+
+
+// setting
+"setting.title" = "Settings";
+"setting.storeIniCloud" = "Store in iCloud";
+"setting.alert.icloudIsNotEnabled.title" = "iCloud is not enabled";
+"setting.alert.icloudIsNotEnabled.msg" = "Please login your iCloud account";
+"setting.alert.failToStoreIniCloud" = "Fail to configure sync";
+
+//search
+"search.title" = "Search";
+
+// browser
+"browser.title" = "Documents";
+"browser.action.moveTo.title" = "Move to";
+"browser.action.moveTo.msg" = "Choose a parent";
+"browser.action.rename.newName" = "New name";
+"browser.action.rename.warning.nameIsTaken" = "Name is taken";
+"browser.action.new" = "Create New Document";
+"browser.title.untitled" = "Untitled";
+"browser.actions.title" = "Perform Actions";
+"browser.actions.newSub" = "New Sub Document";
+"browser.actions.duplicate" = "Duplicate";
+"browser.actions.cover" = "Edit Cover";
+"browser.actions.delete" = "Delete";
+"browser.actions.rename" = "Rename";
+
+// agenda
+"agenda.title" = "Agenda";
+"agenda.startToday" = "Start today";
+"agenda.startInDaysWithPlaceHolder" = "Start in %@ days";
+"agenda.startDaysAgoWithPlaceHodler" = "Start %@ days ago";
+"agenda.dueToday" = "Due today";
+"agenda.overdueDaysWihtPlaceHolder" = "Overdue %@ days";
+"agenda.willOverduInDaysWithPlaceHolder" = "Will overde in %@ days";
+"agenda.sub.tags" = "Tags";
+"agenda.sub.planning" = "Plannings";
+"agenda.sub.overdue" = "Overdue";
+"agenda.sub.scheduled" = "Scheduled";
+"agenda.sub.overdueSoon" = "Overdue soon";
+"agenda.sub.startSoon" = "Start soon";
+"agenda.sub.noTag" = "No tag";
+
+// capture list
+"captureList.title" = "Captured ideas";
+"captureList.action.openLocation" = "Open location";
+"captureList.action.openLink" = "Open link";
+"captureList.action.delete" = "Delete idea";
+"captureList.action.insertToDocument" = "Insert to document";
+"captureList.action.refile" = "Refile";
+
+//location
+"location.title" = "Add a location";
+"location.current" = "Current location";
+
+// image picker
+"imagePicker.add" = "Add image";
+"imagePicker.camera" = "Camera";
+"imagePicker.library" = "Photo library";
+
+// capture text
+"captureText.title" = "Add text";
+"captureText.text.title" = "text";
+
+// capture link
+"captureLink.title" = "Add link";
+"captureLink.title.title" = "Title";
+"captureLink.title.placeholder" = "The tile of the link";
+"captureLink.url.title" = "URL";
+"captureLink.url.placeholder" = "The link address";
+
+// audio
+"audio.player.play" = "Play";
+"audio.player.pause" = "Pause";
+"audio.player.stop" = "Stop";
+"audio.player.continue" = "Continue";
+"audio.recorder.start" = "Start record";
+"audio.recorder.pause" = "Pause record";
+"audio.recorder.continue" = "Continue recording";
+"audio.recorder.stop" = "Stop";
+"audio.recorder.restart" = "Restart record";

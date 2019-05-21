@@ -12,7 +12,7 @@ import Business
 import Interface
 
 extension DocumentEditViewController {
-    @objc public func cancel(_ button: UIButton) {
+    @objc public func cancel(_ button: UIView) {
         button.showProcessingAnimation()
         self.textView.endEditing(true)
         self.viewModel.close { _ in }
@@ -26,19 +26,20 @@ extension DocumentEditViewController {
     @objc public func showMenu() {
         let actionsController = ActionsViewController()
         
-        actionsController.addAction(icon: Asset.Assets.down.image, title: "Fold all") { viewController in
+        actionsController.title = L10n.Document.Menu.title
+        actionsController.addAction(icon: Asset.Assets.down.image, title: L10n.Document.Menu.foldAll) { viewController in
             viewController.dismiss(animated: true, completion: {
                 self.viewModel.foldAll()
             })
         }
         
-        actionsController.addAction(icon: Asset.Assets.up.image, title: "Unfold all") { viewController in
+        actionsController.addAction(icon: Asset.Assets.up.image, title: L10n.Document.Menu.unfoldAll) { viewController in
             viewController.dismiss(animated: true, completion: {
                 self.viewModel.unfoldAll()
             })
         }
         
-        actionsController.addAction(icon: Asset.Assets.master.image, title: "Outline") { viewController in
+        actionsController.addAction(icon: Asset.Assets.master.image, title: L10n.Document.Menu.outline) { viewController in
             viewController.dismiss(animated: true, completion: {
                 self.viewModel.coordinator?.showOutline(completion: { [unowned self] heading in
                     self._moveTo(location: heading.location)
@@ -50,7 +51,7 @@ extension DocumentEditViewController {
             })
         }
         
-        actionsController.addAction(icon: Asset.Assets.capture.image.fill(color: InterfaceTheme.Color.interactive), title: "Capture", style: .highlight) { viewController in
+        actionsController.addAction(icon: Asset.Assets.capture.image.fill(color: InterfaceTheme.Color.interactive), title: L10n.Document.Menu.capture, style: .highlight) { viewController in
             viewController.dismiss(animated: true, completion: {
                 self.viewModel.coordinator?.showCaptureEntrance()
             })
@@ -65,9 +66,9 @@ extension DocumentEditViewController {
     
     public func showDateAndTimeCreator(location: Int) {
         let actionsViewController = ActionsViewController()
-        actionsViewController.addAction(icon: nil, title: "Schedule", action: { viewController in
+        actionsViewController.addAction(icon: nil, title: L10n.Document.DateAndTime.schedule, action: { viewController in
             viewController.dismiss(animated: true, completion: {
-                self.viewModel.coordinator?.showDateSelector(title: "Schedule", current: nil, add: { newDateAndTime in
+                self.viewModel.coordinator?.showDateSelector(title: L10n.Document.DateAndTime.schedule, current: nil, add: { newDateAndTime in
                     newDateAndTime.isSchedule = true
                     let oldSelectedRange = self.textView.selectedRange
                     let result = self.viewModel.performAction(EditAction.updateDateAndTime(location, newDateAndTime), textView: self.textView)
@@ -80,9 +81,9 @@ extension DocumentEditViewController {
             })
         })
         
-        actionsViewController.addAction(icon: nil, title: "Due", action: { viewController in
+        actionsViewController.addAction(icon: nil, title: L10n.Document.DateAndTime.due, action: { viewController in
             viewController.dismiss(animated: true, completion: {
-                self.viewModel.coordinator?.showDateSelector(title: "Due", current: nil, add: { newDateAndTime in
+                self.viewModel.coordinator?.showDateSelector(title: L10n.Document.DateAndTime.due, current: nil, add: { newDateAndTime in
                     newDateAndTime.isDue = true
                     let oldSelectedRange = self.textView.selectedRange
                     let result = self.viewModel.performAction(EditAction.updateDateAndTime(location, newDateAndTime), textView: self.textView)
@@ -95,9 +96,9 @@ extension DocumentEditViewController {
             })
         })
         
-        actionsViewController.addAction(icon: nil, title: "Date and time", action: { viewController in
+        actionsViewController.addAction(icon: nil, title: L10n.Document.DateAndTime.title, action: { viewController in
             viewController.dismiss(animated: true, completion: {
-                self.viewModel.coordinator?.showDateSelector(title: "Date and time", current: nil, add: { newDateAndTime in
+                self.viewModel.coordinator?.showDateSelector(title: L10n.Document.DateAndTime.title, current: nil, add: { newDateAndTime in
                     
                     let oldSelectedRange = self.textView.selectedRange
                     let result = self.viewModel.performAction(EditAction.updateDateAndTime(location, newDateAndTime), textView: self.textView)
@@ -119,7 +120,7 @@ extension DocumentEditViewController {
     
     public func showPriorityEditor(location: Int, current: String?) {
         let actionsController = ActionsViewController()
-        actionsController.title = current ?? "Choose your priority"
+        actionsController.title = current ?? L10n.Document.Priority.title
         
         let priorities = self.viewModel.coordinator?.dependency.settingAccessor.priorities.filter { $0 != current } ?? []
         
@@ -136,7 +137,7 @@ extension DocumentEditViewController {
         }
         
         if current != nil {
-            actionsController.addAction(icon: nil, title: "Remove Priority", style: .warning) { (viewController) in
+            actionsController.addAction(icon: nil, title: L10n.Document.Priority.remove, style: .warning) { (viewController) in
                 viewController.dismiss(animated: true, completion: {
                     let oldSelectedRange = self.textView.selectedRange
                     let result = self.viewModel.performAction(EditAction.changePriority(nil, location), textView: self.textView)
@@ -235,7 +236,7 @@ extension DocumentEditViewController {
         
         let actionsController = ActionsViewController()
         
-        actionsController.title = current ?? "Choose your planning"
+        actionsController.title = current ?? L10n.Document.Planning.title
         
         for planning in allPlannings {
             actionsController.addAction(icon: nil, title: planning) { viewController in
@@ -276,7 +277,7 @@ extension DocumentEditViewController {
     public func showHeadingEdit(at location: Int) {
         let actionsController = ActionsViewController()
         
-        actionsController.addAction(icon: nil, title: "转为正文") { viewController in
+        actionsController.addAction(icon: nil, title: L10n.Document.Heading.toParagraphContent) { viewController in
             viewController.dismiss(animated: true, completion: {
                 let lastSelectedRange = self.textView.selectedRange
                 let result = self.viewModel.performAction(EditAction.convertHeadingToParagraph(location), textView: self.textView)
@@ -295,7 +296,7 @@ extension DocumentEditViewController {
         let actionsController = ActionsViewController()
         
         let isFolded = self.viewModel.isParagraphFolded(at: location)
-        let foldTitle = isFolded ? "展开段落" : "折叠段落"
+        let foldTitle = isFolded ? L10n.Document.Heading.unfold : L10n.Document.Heading.fold
         let icon = isFolded ? Asset.Assets.up.image : Asset.Assets.down.image
         actionsController.addAction(icon: icon, title: foldTitle) { viewController in
             viewController.dismiss(animated: true, completion: {
@@ -303,7 +304,7 @@ extension DocumentEditViewController {
             })
         }
         
-        actionsController.addAction(icon: nil, title: "移动到其他段落") { viewController in
+        actionsController.addAction(icon: nil, title: L10n.Document.Heading.moveTo) { viewController in
             viewController.dismiss(animated: true, completion: {
                 self.viewModel.coordinator?.showOutline(completion: { [unowned self] heading in
                     let oldLocation = self.textView.selectedRange.location
@@ -316,7 +317,7 @@ extension DocumentEditViewController {
             })
         }
         
-        actionsController.addAction(icon: nil, title: "移动到其他文档") { viewController in
+        actionsController.addAction(icon: nil, title: L10n.Document.Heading.moveToAnotherDocument) { viewController in
             viewController.dismiss(animated: true, completion: {
                 let oldLocation = self.textView.selectedRange.location
                 self.viewModel.coordinator?.showDocumentHeadingPicker(completion: { [unowned self] url, heading in
@@ -339,7 +340,7 @@ extension DocumentEditViewController {
     public func showHeadingAdd(at location: Int) {
         let actionsController = ActionsViewController()
         
-        actionsController.addAction(icon: nil, title: "转为标题") { viewController in
+        actionsController.addAction(icon: nil, title: L10n.Document.Heading.toHeading) { viewController in
             viewController.dismiss(animated: true, completion: {
                 let lastSelectedRange = self.textView.selectedRange
                 let result = self.viewModel.performAction(EditAction.convertToHeading(location), textView: self.textView)

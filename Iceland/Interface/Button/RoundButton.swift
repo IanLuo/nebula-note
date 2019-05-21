@@ -23,7 +23,7 @@ public class RoundButton: UIView {
     
     public let style: Style
     
-    private let button: UIButton = {
+    private lazy var button: UIButton = {
         let button = UIButton()
         button.layer.masksToBounds = true
         button.titleLabel?.font = InterfaceTheme.Font.subtitle
@@ -149,7 +149,7 @@ public class RoundButton: UIView {
         self.setBackgroundColor(InterfaceTheme.Color.background1, for: .normal)
         
         // default border color
-        self.setBorder(color: InterfaceTheme.Color.background3)
+        self.setBorder(color: nil)
     }
     
     private func updateUI() {

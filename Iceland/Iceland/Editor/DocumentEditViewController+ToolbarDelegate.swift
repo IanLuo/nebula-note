@@ -51,7 +51,9 @@ extension DocumentEditViewController: DocumentEditToolbarDelegate {
                     DispatchQueue.main.async {
                         self.textView.selectedRange = self.textView.selectedRange.offset(result.delta)
                     }
-                }, cancel: {})
+                }, cancel: {
+                    
+                })
             }
             
             // other document actions
@@ -59,7 +61,7 @@ extension DocumentEditViewController: DocumentEditToolbarDelegate {
                 let lineRange = (self.textView.text as NSString).lineRange(for: NSRange(location: self.textView.selectedRange.location, length: 0))
                 switch normalAction {
                 case .heading:
-                    if self.toolbar.mode == .heading {
+                    if self.inputbar.mode == .heading {
                         self.showHeadingEdit(at: lineRange.location)
                     } else {
                         let lineContent = self.textView.text.substring(lineRange).trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)

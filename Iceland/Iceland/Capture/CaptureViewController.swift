@@ -56,7 +56,7 @@ public class CaptureViewController: UIViewController, TransitionProtocol {
     
     private lazy var cancelButton: RoundButton = {
         let button = RoundButton()
-        button.setIcon(Asset.Assets.cross.image.withRenderingMode(.alwaysTemplate), for: .normal)
+        button.setIcon(Asset.Assets.cross.image.fill(color: InterfaceTheme.Color.interactive), for: .normal)
         button.setBackgroundColor(InterfaceTheme.Color.background3, for: .normal)
         button.setBorder(color: nil)
         button.tapped({ _ in
@@ -78,9 +78,8 @@ public class CaptureViewController: UIViewController, TransitionProtocol {
         
         self.tableView.allSidesAnchors(to: self.contentView, edgeInset: 0)
         
-        self.cancelButton.sideAnchor(for: .bottom, to: self.contentView, edgeInset: 0, considerSafeArea: true)
+        self.cancelButton.sideAnchor(for: [.right, .bottom], to: self.contentView, edgeInset: 30, considerSafeArea: true)
         self.cancelButton.sizeAnchor(width: 60)
-        self.cancelButton.centerAnchors(position: .centerX, to: self.contentView)
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(cancel))
         tap.delegate = self

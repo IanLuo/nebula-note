@@ -26,7 +26,7 @@ public class HeadingsOutlineViewController: SelectorViewController {
         super.init()
         self.delegate = self
         viewModel.delegate = self
-        self.emptyDataText = "There's no heading in this document yet"
+        self.emptyDataText = L10n.Document.Outlet.noHeading
     }
     
     public override func viewDidLoad() {

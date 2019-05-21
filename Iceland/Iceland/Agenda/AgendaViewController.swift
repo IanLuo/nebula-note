@@ -44,8 +44,8 @@ public class AgendaViewController: UIViewController {
 
         viewModel.delegate = self
         
-        self.title = "Agenda".localizable
-        self.tabBarItem = UITabBarItem(title: "Agenda".localizable, image: Asset.Assets.agenda.image, tag: 0)
+        self.title = L10n.Agenda.title
+        self.tabBarItem = UITabBarItem(title: L10n.Agenda.title, image: Asset.Assets.agenda.image, tag: 0)
     }
     
     public required init?(coder aDecoder: NSCoder) {
@@ -158,9 +158,9 @@ extension AgendaViewController: UITableViewDelegate {
 
 extension AgendaViewController: AgendaTableCellDelegate {
     public func didTapActionButton(cellModel: AgendaCellModel) {
-        let actionsViewController = ActionsViewController()
+//        let actionsViewController = ActionsViewController()
         
-        actionsViewController.title = L10n.Agenda.Actions.title
+//        actionsViewController.title = L10n.Agenda.Actions.title
         
 //        actionsViewController.addAction(icon: nil, title: L10n.Agenda.Actions.markDone) { viewController in
 //            viewController.dismiss(animated: true, completion: {
@@ -186,10 +186,10 @@ extension AgendaViewController: AgendaTableCellDelegate {
 //            })
 //        }
         
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now()) {
-            self.present(actionsViewController, animated: true, completion: nil)
-            self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.hide()
-        }
+//        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now()) {
+//            self.present(actionsViewController, animated: true, completion: nil)
+//            self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.hide()
+//        }
     }
 }
 

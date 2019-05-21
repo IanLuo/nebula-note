@@ -18,14 +18,10 @@ public class DocumentInfoViewController: TransitionViewController {
         return view
     }()
     
-    private lazy var _backButton: UIButton = {
-        let button = UIButton()
-        button.setImage(Asset.Assets.right.image.fill(color: InterfaceTheme.Color.interactive), for: .normal)
-        button.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.background3, size: .singlePoint), for: .normal)
-        button.tintColor = InterfaceTheme.Color.interactive
-        button.layer.cornerRadius = 20
-        button.layer.masksToBounds = true
-        button.addTarget(self, action: #selector(cancel), for: .touchUpInside)
+    private lazy var _backButton: RoundButton = {
+        let button = RoundButton()
+        button.setIcon(Asset.Assets.right.image.fill(color: InterfaceTheme.Color.interactive), for: .normal)
+        button.setBackgroundColor(InterfaceTheme.Color.background3, for: .normal)
         return button
     }()
     
@@ -46,6 +42,10 @@ public class DocumentInfoViewController: TransitionViewController {
         tap.delegate = self
         self.view.addGestureRecognizer(tap)
         
+        self._backButton.tapped { [weak self] _ in
+            self?.cancel()
+        }
+        
         self.setupUI()
     }
     
@@ -56,8 +56,8 @@ public class DocumentInfoViewController: TransitionViewController {
         self.contentView.sizeAnchor(width: 240)
         
         self.contentView.addSubview(self._backButton)
-        self._backButton.sideAnchor(for: [.right, .top], to: self.contentView, edgeInset: 30, considerSafeArea: true)
-        self._backButton.sizeAnchor(width: 40, height: 40)
+        self._backButton.sideAnchor(for: [.right, .top], to: self.contentView, edgeInsets: UIEdgeInsets(top: 0, left: 0, bottom: 0, right: -Layout.edgeInsets.right), considerSafeArea: true)
+        self._backButton.sizeAnchor(width: 44)
         
         let exportViewController = ExportSelectViewController()
         exportViewController.delegate = self

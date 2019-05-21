@@ -34,7 +34,7 @@ extension DocumentEditViewController: OutlineTextViewDelegate {
     
     public func didTapDateAndTime(textView: UITextView, characterIndex: Int, dateAndTimeString: String, point: CGPoint) {
         let dateAndTime = DateAndTimeType(dateAndTimeString)!
-        self.viewModel.coordinator?.showDateSelector(title: "update the date and time", current: dateAndTime, add: { [unowned self] newDateAndTime in
+        self.viewModel.coordinator?.showDateSelector(title: L10n.Document.DateAndTime.update, current: dateAndTime, add: { [unowned self] newDateAndTime in
             let oldSelectedRange = textView.selectedRange
             let result = self.viewModel.performAction(EditAction.updateDateAndTime(characterIndex, newDateAndTime), textView: self.textView)
             if self.textView.selectedRange.location > characterIndex {
@@ -61,7 +61,7 @@ extension DocumentEditViewController: OutlineTextViewDelegate {
     
     public func didTapOnLink(textView: UITextView, characterIndex: Int, linkStructure: [String : String], point: CGPoint) {
         let actionsController = ActionsViewController()
-        actionsController.addAction(icon: Asset.Assets.right.image.fill(color: InterfaceTheme.Color.descriptive), title: "Open") { viewController in
+        actionsController.addAction(icon: Asset.Assets.right.image.fill(color: InterfaceTheme.Color.descriptive), title: L10n.Document.Link.open) { viewController in
             viewController.dismiss(animated: true, completion: {
                 if let url = URL(string: linkStructure[OutlineParser.Key.Element.Link.url]!) {
                     UIApplication.shared.open(url, options: [:], completionHandler: nil)
@@ -69,7 +69,7 @@ extension DocumentEditViewController: OutlineTextViewDelegate {
             })
         }
         
-        actionsController.addAction(icon: Asset.Assets.add.image, title: "Edit") { viewController in
+        actionsController.addAction(icon: Asset.Assets.add.image, title: L10n.Document.Link.edit) { viewController in
             viewController.dismiss(animated: true, completion: {
                 self.viewModel.coordinator?.showLinkEditor(title: linkStructure["title"]!, url: linkStructure["url"]!, completeEdit: { [unowned self] linkString in
                     let oldSelectedRange = textView.selectedRange
@@ -104,7 +104,7 @@ extension DocumentEditViewController: OutlineTextViewDelegate {
         actionsView.accessoryView = view
         actionsView.title = attachment.kind.rawValue
         
-        actionsView.addAction(icon: nil, title: "Close") { viewController in
+        actionsView.addAction(icon: nil, title: L10n.General.Button.Title.close) { viewController in
             viewController.dismiss(animated: true, completion: {
                 self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
             })

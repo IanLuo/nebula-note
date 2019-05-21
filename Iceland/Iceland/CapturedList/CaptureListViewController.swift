@@ -45,7 +45,7 @@ public class CaptureListViewController: UIViewController {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
         viewModel.delegate = self
-        self.title = "Captures".localizable
+        self.title = L10n.CaptureList.title
         self.tabBarItem = UITabBarItem(title: "", image: Asset.Assets.capture.image, tag: 0)
     }
     
@@ -119,7 +119,7 @@ extension CaptureListViewController: CaptureTableCellDelegate {
         
         let actionsViewController = self.createActionsViewController(index: index)
         
-        actionsViewController.addAction(icon: nil, title: "open link") { viewController in
+        actionsViewController.addAction(icon: nil, title: L10n.CaptureList.Action.openLink) { viewController in
             viewController.dismiss(animated: true, completion: {
                 if let url = URL(string: link ?? "") {
                     UIApplication.shared.open(url, options: [:], completionHandler: nil)
@@ -137,7 +137,7 @@ extension CaptureListViewController: CaptureTableCellDelegate {
         
         let actionsViewController = self.createActionsViewController(index: index)
         
-        actionsViewController.addAction(icon: nil, title: "open location") { viewController in
+        actionsViewController.addAction(icon: nil, title: L10n.CaptureList.Action.openLocation) { viewController in
             viewController.dismiss(animated: true, completion: {
                 let mapItem = MKMapItem(placemark: MKPlacemark(coordinate: location, addressDictionary:nil))
                 mapItem.openInMaps(launchOptions: [:])
@@ -154,14 +154,14 @@ extension CaptureListViewController: CaptureTableCellDelegate {
         
         switch self.viewModel.mode {
         case .manage:
-            actionsViewController.addAction(icon: nil, title: "delete".localizable) { viewController in
+            actionsViewController.addAction(icon: nil, title: L10n.CaptureList.Action.delete) { viewController in
                 viewController.dismiss(animated: true, completion: {
                     self.viewModel.delete(index: index)
                     self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                 })
             }
             
-            actionsViewController.addAction(icon: nil, title: "refile".localizable) { viewController in
+            actionsViewController.addAction(icon: nil, title: L10n.CaptureList.Action.refile) { viewController in
                 viewController.dismiss(animated: true, completion: {
                     self.viewModel.chooseRefileLocation(index: index, completion: {
                         self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
@@ -171,7 +171,7 @@ extension CaptureListViewController: CaptureTableCellDelegate {
                 })
             }
         case .pick:
-            actionsViewController.addAction(icon: nil, title: "insert".localizable) { viewController in
+            actionsViewController.addAction(icon: nil, title: L10n.CaptureList.Action.insertToDocument) { viewController in
                 viewController.dismiss(animated: true, completion: {
                     self.viewModel.selectAttachment(index: index)
                     self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()

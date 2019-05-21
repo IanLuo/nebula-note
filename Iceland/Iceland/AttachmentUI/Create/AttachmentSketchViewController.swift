@@ -73,7 +73,7 @@ public class AttachmentSketchViewController: AttachmentViewController, Attachmen
     private lazy var saveButton: UIButton = {
         let button = UIButton()
         button.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.spotlight, size: CGSize.singlePoint), for: .normal)
-        button.setTitle("save".localizable, for: .normal)
+        button.setTitle(L10n.General.Button.Title.save, for: .normal)
         button.addTarget(self, action: #selector(save), for: .touchUpInside)
         return button
     }()

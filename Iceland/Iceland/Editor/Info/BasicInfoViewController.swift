@@ -19,10 +19,10 @@ public class BasicInfoViewController: UIViewController, UITableViewDelegate, UIT
         
         var title: String {
             switch self {
-            case .editDate: return "Edit Date"
-            case .wordCount: return "Words"
-            case .paragraphs: return "Paragraphs"
-            case .creatDate: return "Create Date"
+            case .editDate: return L10n.Document.Info.editDate
+            case .wordCount: return L10n.Document.Info.wordCount
+            case .paragraphs: return L10n.Document.Info.paragraphCount
+            case .creatDate: return L10n.Document.Info.createDate
             }
         }
         

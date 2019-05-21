@@ -18,7 +18,12 @@ public protocol ModalFormViewControllerDelegate: class {
 }
 
 public class ModalFormViewController: TransitionViewController {
-    public var contentView: UIView = UIView()
+    public var contentView: UIView = {
+        let view = UIView()
+        view.layer.cornerRadius = 8
+        view.layer.masksToBounds = true
+        return view
+    }()
     
     public var fromView: UIView?
     
@@ -28,21 +33,17 @@ public class ModalFormViewController: TransitionViewController {
         case textView(String, String?, UIKeyboardType)
     }
     
-    private lazy var cancelButton: UIButton = {
-        let button = UIButton()
-        button.addTarget(self, action: #selector(cancel), for: .touchUpInside)
-        button.setImage(Asset.Assets.cross.image.withRenderingMode(.alwaysTemplate), for: .normal)
-        button.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.background2, size: .singlePoint), for: .normal)
-        button.setTitleColor(InterfaceTheme.Color.interactive, for: .normal)
+    private lazy var cancelButton: RoundButton = {
+        let button = RoundButton()
+        button.setIcon(Asset.Assets.cross.image.fill(color: InterfaceTheme.Color.interactive), for: .normal)
+        button.setBackgroundColor(InterfaceTheme.Color.background1, for: .normal)
         return button
     }()
     
-    private lazy var saveButton: UIButton = {
-        let button = UIButton()
-        button.setImage(Asset.Assets.checkMark.image.withRenderingMode(.alwaysTemplate), for: .normal)
-        button.addTarget(self, action: #selector(save), for: .touchUpInside)
-        button.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.background2, size: .singlePoint), for: .normal)
-        button.setTitleColor(InterfaceTheme.Color.interactive, for: .normal)
+    private lazy var saveButton: RoundButton = {
+        let button = RoundButton()
+        button.setIcon(Asset.Assets.checkMark.image.fill(color: InterfaceTheme.Color.spotlight), for: .normal)
+        button.setBackgroundColor(InterfaceTheme.Color.background1, for: .normal)
         return button
     }()
     
@@ -116,6 +117,14 @@ public class ModalFormViewController: TransitionViewController {
         let tap = UITapGestureRecognizer(target: self, action: #selector(cancel))
         tap.delegate = self
         self.view.addGestureRecognizer(tap)
+        
+        self.saveButton.tapped { [weak self] _ in
+            self?.save()
+        }
+        
+        self.cancelButton.tapped { [weak self] _ in
+            self?.cancel()
+        }
     }
     
     public override func viewDidAppear(_ animated: Bool) {
@@ -132,7 +141,7 @@ public class ModalFormViewController: TransitionViewController {
     
     private func setupUI() {
         self.view.addSubview(self.contentView)
-        self.contentView.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 0)
+        self.contentView.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 10)
         
         self.contentView.addSubview(self.actionButtonsContainer)
         
@@ -141,14 +150,19 @@ public class ModalFormViewController: TransitionViewController {
         self.actionButtonsContainer.addSubview(self.titleLabel)
         
         self.actionButtonsContainer.sideAnchor(for: [.left, .right, .top], to: self.contentView, edgeInset: 0)
-        self.actionButtonsContainer.setBorder(position: .bottom, color: InterfaceTheme.Color.background3, width: 0.5)
+        self.actionButtonsContainer.sizeAnchor(height: 60)
         
-        self.saveButton.sideAnchor(for: [.left, .top, .bottom], to: actionButtonsContainer, edgeInset: 0)
-        self.saveButton.sizeAnchor(width: 80, height: 80)
-        self.titleLabel.sideAnchor(for: [.top, .bottom], to: actionButtonsContainer, edgeInset: 0)
+        self.saveButton.sideAnchor(for: .left, to: actionButtonsContainer, edgeInset: 10)
+        self.saveButton.sizeAnchor(width: 44)
+        
+        self.titleLabel.centerAnchors(position: .centerY, to: self.actionButtonsContainer)
+        self.saveButton.centerAnchors(position: .centerY, to: self.actionButtonsContainer)
+        self.cancelButton.centerAnchors(position: .centerY, to: self.actionButtonsContainer)
+        
         self.saveButton.rowAnchor(view: self.titleLabel)
-        self.cancelButton.sideAnchor(for: [.right, .top, .bottom], to: actionButtonsContainer, edgeInset: 0)
-        self.cancelButton.sizeAnchor(width: 80, height: 80)
+        self.cancelButton.sideAnchor(for: .right, to: actionButtonsContainer, edgeInset: 10)
+        self.cancelButton.sizeAnchor(width: 44)
+        
         self.titleLabel.rowAnchor(view: self.cancelButton)
         
         self.contentView.addSubview(self.tableView)

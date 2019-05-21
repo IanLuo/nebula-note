@@ -62,7 +62,7 @@ open class SelectorViewController: UIViewController {
         return view
     }()
     
-    public var emptyDataText: String = "It's empty".localizable
+    public var emptyDataText: String = L10n.Selector.empty
     
     public var emptyDataIcon: UIImage?
     

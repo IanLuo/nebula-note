@@ -26,12 +26,10 @@ public class DashboardViewController: UIViewController {
     public weak var delegate: DashboardViewControllerDelegate?
     private let viewModel: DashboardViewModel
     
-    private let settingsButton: UIButton = {
-        let button = UIButton()
-        button.setImage(Asset.Assets.document.image.fill(color: InterfaceTheme.Color.interactive), for: .normal)
-        button.layer.cornerRadius = 30
-        button.layer.masksToBounds = true
-        button.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.background3, size: .singlePoint), for: .normal)
+    private let settingsButton: RoundButton = {
+        let button = RoundButton()
+        button.setIcon(Asset.Assets.document.image.fill(color: InterfaceTheme.Color.interactive), for: .normal)
+        button.setBackgroundColor(InterfaceTheme.Color.background3, for: .normal)
         return button
     }()
     
@@ -56,12 +54,12 @@ public class DashboardViewController: UIViewController {
         
         self.tableView.allSidesAnchors(to: self.view, edgeInset: 0)
         
-        self.settingsButton.sizeAnchor(width: 60, height: 60)
-        self.settingsButton.sideAnchor(for: [.left, .bottom], to: self.view, edgeInset: 30, considerSafeArea: true)
+        self.settingsButton.sizeAnchor(width: 60)
+        self.settingsButton.sideAnchor(for: [.left, .bottom], to: self.view, edgeInsets: .init(top: 0, left: Layout.edgeInsets.left, bottom: -Layout.edgeInsets.bottom, right: 0), considerSafeArea: true)
         
-        self.settingsButton.triggered(event: UIControl.Event.touchUpInside, action: { [unowned self] button in
+        self.settingsButton.tapped { [unowned self] _ in
             self.viewModel.coordinator?.showSettings()
-        })
+        }
         
         self.viewModel.loadData()
     }
@@ -230,13 +228,13 @@ public class DashboardViewController: UIViewController {
         
         var title: String {
             switch self {
-            case .tags(_): return "tags".localizable
-            case .plannings: return "planning".localizable
-            case .overdue: return "overdue".localizable
-            case .scheduled: return "scheduled".localizable
-            case .overdueSoon: return "overdue soon".localizable
-            case .scheduledSoon: return "scheduled soon".localizable
-            case .withoutTag: return "without tag".localizable
+            case .tags(_): return L10n.Agenda.Sub.tags
+            case .plannings: return L10n.Agenda.Sub.planning
+            case .overdue: return L10n.Agenda.Sub.overdue
+            case .scheduled: return L10n.Agenda.Sub.scheduled
+            case .overdueSoon: return L10n.Agenda.Sub.overdueSoon
+            case .scheduledSoon: return L10n.Agenda.Sub.startSoon
+            case .withoutTag: return L10n.Agenda.Sub.noTag
             default: return ""
             }
         }

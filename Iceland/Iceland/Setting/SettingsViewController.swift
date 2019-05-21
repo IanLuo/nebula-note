@@ -29,11 +29,11 @@ public class SettingsViewController: UITableViewController {
     private func _setupUI() {
         self.view.backgroundColor = InterfaceTheme.Color.background1
         
-        self.title = "Settings"
+        self.title = L10n.Setting.title
         
         self.tableView.separatorStyle = .none
         
-        self.isSyncEnabledLabel.text = "Enable Sync"
+        self.isSyncEnabledLabel.text = L10n.Setting.storeIniCloud
         self.isSyncEnabledLabel.textColor = InterfaceTheme.Color.interactive
         self.isSyncEnabledSwitch.isOn = self.viewModel.isSyncEnabled
         self.isSyncEnabledSwitch.onTintColor = InterfaceTheme.Color.spotlight
@@ -66,10 +66,10 @@ public class SettingsViewController: UITableViewController {
                 switchButton.isOn = !switchButton.isOn
                 
                 if case let error = error as? SyncError, error == .iCloudIsNotAvailable {
-                    self?.showAlert(title: "iCloud is not enabled",
-                                    message: "Please login your iCloud account")
+                    self?.showAlert(title: L10n.Setting.Alert.IcloudIsNotEnabled.title,
+                                    message: L10n.Setting.Alert.IcloudIsNotEnabled.msg)
                 } else {
-                    self?.showAlert(title: "Fail to configure sync", message: "\(error)")
+                    self?.showAlert(title: L10n.Setting.Alert.failToStoreIniCloud, message: "\(error)")
                 }
                 
             default: break

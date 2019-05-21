@@ -24,7 +24,7 @@ public class ExportSelectViewController: UIViewController, UICollectionViewDeleg
         let label = UILabel()
         label.font = InterfaceTheme.Font.body
         label.textColor = InterfaceTheme.Color.descriptive
-        label.text = "Export"
+        label.text = L10n.Document.Export.title
         return label
     }()
     

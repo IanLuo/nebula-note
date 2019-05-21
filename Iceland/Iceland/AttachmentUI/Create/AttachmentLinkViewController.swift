@@ -26,9 +26,9 @@ public class AttachmentLinkViewController: AttachmentViewController, AttachmentV
     let formViewController = ModalFormViewController()
     private func showCreateLinkForm() {
         formViewController.delegate = self
-        formViewController.addTextFied(title: "title".localizable, placeHoder: "Please input title".localizable, defaultValue: self.defaultTitle)
-        formViewController.addTextFied(title: "link".localizable, placeHoder: "Please input link".localizable, defaultValue: self.defaultURL, keyboardType: .URL)
-        formViewController.title = "Create link".localizable
+        formViewController.addTextFied(title: L10n.CaptureLink.Title.title, placeHoder: L10n.CaptureLink.Title.placeholder, defaultValue: self.defaultTitle)
+        formViewController.addTextFied(title: L10n.CaptureLink.Url.title, placeHoder: L10n.CaptureLink.Url.placeholder, defaultValue: self.defaultURL, keyboardType: .URL)
+        formViewController.title = L10n.CaptureLink.title
 
         self.view.addSubview(formViewController.view)
         self.formViewController.view.allSidesAnchors(to: self.view, edgeInset: 0, considerSafeArea: true)

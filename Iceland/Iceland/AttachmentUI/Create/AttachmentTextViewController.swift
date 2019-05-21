@@ -21,8 +21,8 @@ public class AttachmentTextViewController: AttachmentViewController, AttachmentV
         self.viewModel.delegate = self
 
         self.formViewController.delegate = self
-        self.formViewController.title = "Write text".localizable
-        self.formViewController.addTextView(title: "text".localizable, defaultValue: nil)
+        self.formViewController.title = L10n.CaptureText.title
+        self.formViewController.addTextView(title: L10n.CaptureText.Text.title, defaultValue: nil)
         
         self.view.addSubview(self.formViewController.view)
         self.formViewController.view.allSidesAnchors(to: self.view, edgeInset: 0, considerSafeArea: true)
@@ -49,7 +49,7 @@ extension AttachmentTextViewController: ModalFormViewControllerDelegate {
     }
     
     public func modalFormDidSave(viewController: ModalFormViewController, formData: [String : Codable]) {
-        let string = formData["text"] as? String ?? ""
+        let string = formData[L10n.CaptureText.Text.title] as? String ?? ""
         self.viewModel.save(content: string, kind: .text, description: "user write text")
     }
 }

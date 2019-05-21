@@ -97,6 +97,10 @@ public class ActionsViewController: UIViewController, TransitionProtocol {
         let tap = UITapGestureRecognizer(target: self, action: #selector(cancel))
         tap.delegate = self
         self.view.addGestureRecognizer(tap)
+        
+        self.cancelButton.tapped { [weak self] _ in
+            self?.cancel()
+        }
     }
     
     private var items: [Item] = []
@@ -136,13 +140,16 @@ public class ActionsViewController: UIViewController, TransitionProtocol {
     public let contentView: UIView = {
         let view = UIView()
         view.backgroundColor = InterfaceTheme.Color.background1
+        view.layer.cornerRadius = 8
+        view.layer.masksToBounds = true
         return view
     }()
     
-    private lazy var cancelButton: UIButton = {
-        let button = UIButton()
-        button.setImage(Asset.Assets.cross.image.withRenderingMode(.alwaysTemplate), for: .normal)
-        button.addTarget(self, action: #selector(cancel), for: .touchUpInside)
+    private let cancelButton: RoundButton = {
+        let button = RoundButton()
+        button.setBorder(color: nil)
+        button.setIcon(Asset.Assets.cross.image.fill(color: InterfaceTheme.Color.interactive), for: .normal)
+        button.setBackgroundColor(InterfaceTheme.Color.background1, for: .normal)
         return button
     }()
     
@@ -176,16 +183,16 @@ public class ActionsViewController: UIViewController, TransitionProtocol {
         self.actionsContainerView.addSubview(self.cancelButton)
         self.actionsContainerView.addSubview(self.titleLabel)
         
-        self.actionsContainerView.setBorder(position: [.top, .bottom], color: InterfaceTheme.Color.background3, width: 0.5)
+//        self.actionsContainerView.setBorder(position: [.top, .bottom], color: InterfaceTheme.Color.background3, width: 0.5)
 
-        self.cancelButton.sideAnchor(for: [.right, .top, .bottom], to: self.actionsContainerView, edgeInset: 0)
-        self.cancelButton.sizeAnchor(width: Constants.titleHeight, height: Constants.titleHeight)
+        self.cancelButton.sideAnchor(for: [.right, .top, .bottom], to: self.actionsContainerView, edgeInset: 10)
+        self.cancelButton.sizeAnchor(width: 44)
         self.titleLabel.sideAnchor(for: [.left, .top, .bottom], to: self.actionsContainerView, edgeInsets: .init(top: 0, left: Layout.edgeInsets.left, bottom: 0, right: 0))
         self.titleLabel.rowAnchor(view: self.cancelButton)
         
         self.actionsContainerView.columnAnchor(view: self.accessoryViewContainer)
         
-        self.contentView.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 0)
+        self.contentView.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 10)
         
         self.accessoryViewContainer.sideAnchor(for: [.left, .right], to: self.contentView, edgeInset: 0)
         self.accessoryViewContainer.columnAnchor(view: self.tableView)
