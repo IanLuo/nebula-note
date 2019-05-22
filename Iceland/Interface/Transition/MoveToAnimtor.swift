@@ -17,7 +17,7 @@ public class MoveToAnimtor: NSObject, Animator {
     }
     
     public func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
-        return 0.2
+        return 0.3
     }
     
     public func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {

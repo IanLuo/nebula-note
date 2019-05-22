@@ -183,8 +183,6 @@ public class ActionsViewController: UIViewController, TransitionProtocol {
         self.actionsContainerView.addSubview(self.cancelButton)
         self.actionsContainerView.addSubview(self.titleLabel)
         
-//        self.actionsContainerView.setBorder(position: [.top, .bottom], color: InterfaceTheme.Color.background3, width: 0.5)
-
         self.cancelButton.sideAnchor(for: [.right, .top, .bottom], to: self.actionsContainerView, edgeInset: 10)
         self.cancelButton.sizeAnchor(width: 44)
         self.titleLabel.sideAnchor(for: [.left, .top, .bottom], to: self.actionsContainerView, edgeInsets: .init(top: 0, left: Layout.edgeInsets.left, bottom: 0, right: 0))
@@ -192,7 +190,7 @@ public class ActionsViewController: UIViewController, TransitionProtocol {
         
         self.actionsContainerView.columnAnchor(view: self.accessoryViewContainer)
         
-        self.contentView.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 10)
+        self.contentView.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 20)
         
         self.accessoryViewContainer.sideAnchor(for: [.left, .right], to: self.contentView, edgeInset: 0)
         self.accessoryViewContainer.columnAnchor(view: self.tableView)

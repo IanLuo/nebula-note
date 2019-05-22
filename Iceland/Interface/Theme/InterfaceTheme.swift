@@ -1,13 +1,19 @@
 //
-//  OutlineTheme.swift
-//  Iceland
+//  InterfaceTheme.swift
+//  Interface
 //
-//  Created by ian luo on 2018/11/22.
-//  Copyright © 2018 wod. All rights reserved.
+//  Created by ian luo on 2019/5/22.
+//  Copyright © 2019 wod. All rights reserved.
 //
 
 import Foundation
 import UIKit
+
+public struct Layout {
+    public static let edgeInsets: UIEdgeInsets = UIEdgeInsets(top: 30, left: 30, bottom: 30, right: 30)
+    public static let innerViewEdgeInsets: UIEdgeInsets = UIEdgeInsets(top: 30, left: 30, bottom: 30, right: 30)
+    public static let backButtonSize: CGSize = CGSize(width: 40, height: 40)
+}
 
 public protocol InterfaceThemeProtocol {
     var color: InterfaceThemeColorProtocol { get }
@@ -81,43 +87,5 @@ public struct InterfaceTheme {
     
     public static var Font: InterfaceThemeFontProtocol {
         return ThemeSelector.shared.currentTheme.font
-    }
-}
-
-public struct Layout {
-    public static let edgeInsets: UIEdgeInsets = UIEdgeInsets(top: 30, left: 30, bottom: 30, right: 30)
-    public static let innerViewEdgeInsets: UIEdgeInsets = UIEdgeInsets(top: 30, left: 30, bottom: 30, right: 30)
-    public static let backButtonSize: CGSize = CGSize(width: 40, height: 40)
-}
-
-
-private struct OutlineThemeConfig {
-    private static let data: [String: AnyObject] = defaultTheme
-    public static var shared: [String: AnyObject] { return OutlineThemeConfig.data }
-    
-    private static let defaultTheme: [String: AnyObject] = [
-        "FONT": UIFont.preferredFont(forTextStyle: .body),
-        "BOLD": UIFont.boldSystemFont(ofSize: 14),
-        "ITALIC": UIFont.italicSystemFont(ofSize: 14),
-        "UNDERSCORE": NSNumber(value: 1),
-        "STRIKETHOUGH": NSNumber(value: 1),
-        "VERBATIM": UIFont.preferredFont(forTextStyle: UIFont.TextStyle.title1),
-        "CODE": UIColor.gray
-    ]
-}
-
-
-@objc public class OutlineTheme: NSObject {
-    @objc public class Attributes: NSObject {
-        @objc public static let bold = [NSAttributedString.Key.font: OutlineThemeConfig.shared["FONT"]!]
-        
-        @objc public class TextMark: NSObject {
-            @objc public static let bold = [NSAttributedString.Key.font: OutlineThemeConfig.shared["BOLD"]!]
-            @objc public static let italic = [NSAttributedString.Key.font: OutlineThemeConfig.shared["ITALIC"]!]
-            @objc public static let underscore = [NSAttributedString.Key.underlineStyle: OutlineThemeConfig.shared["UNDERSCORE"]!]
-            @objc public static let strikeThough = [NSAttributedString.Key.strikethroughStyle: OutlineThemeConfig.shared["STRIKETHOUGH"]!]
-            @objc public static let verbatim = [NSAttributedString.Key.font: OutlineThemeConfig.shared["VERBATIM"]!]
-            @objc public static let code = [NSAttributedString.Key.backgroundColor: OutlineThemeConfig.shared["CODE"]!]
-        }
     }
 }

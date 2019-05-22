@@ -57,6 +57,7 @@ public class EditorCoordinator: Coordinator {
     
     public func showOutline(completion: @escaping (DocumentHeading) -> Void) {
         let navigationController = Coordinator.createDefaultNavigationControlller()
+        navigationController.isNavigationBarHidden = true
         let coordinator = EditorCoordinator(stack: navigationController, dependency: self.dependency, usage: EditorCoordinator.Usage.outline(self._viewModel.url))
         coordinator.didSelectOutlineHeadingAction = { [weak coordinator] heading in
             coordinator?.stop(animated: true, completion: {

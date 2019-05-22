@@ -91,6 +91,7 @@
 		E41F86C3218EF4BF006C4CDB /* AttachmentCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F86C2218EF4BF006C4CDB /* AttachmentCoordinator.swift */; };
 		E41F86C5218EF4E1006C4CDB /* AgendaCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F86C4218EF4E1006C4CDB /* AgendaCoordinator.swift */; };
 		E41FA5752191569C001D8C63 /* DocumentEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41FA5742191569C001D8C63 /* DocumentEditViewController.swift */; };
+		E42574C32294DEF3008993BC /* InterfaceTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = E42574C22294DEF3008993BC /* InterfaceTheme.swift */; };
 		E42A87FD21CFC9B300151C90 /* AttachmentTextViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E42A87FC21CFC9B300151C90 /* AttachmentTextViewController.swift */; };
 		E42A87FF21CFCAC500151C90 /* AttachmentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E42A87FE21CFCAC500151C90 /* AttachmentViewModel.swift */; };
 		E43427FA2121BF5B00EC6DC3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43427F92121BF5B00EC6DC3 /* AppDelegate.swift */; };
@@ -302,6 +303,7 @@
 		E41F86DD21902BA1006C4CDB /* AttachmentManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentManager.swift; sourceTree = "<group>"; };
 		E41F870321902DB3006C4CDB /* KeyValueStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyValueStore.swift; sourceTree = "<group>"; };
 		E41FA5742191569C001D8C63 /* DocumentEditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentEditViewController.swift; sourceTree = "<group>"; };
+		E42574C22294DEF3008993BC /* InterfaceTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterfaceTheme.swift; sourceTree = "<group>"; };
 		E42A87FC21CFC9B300151C90 /* AttachmentTextViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentTextViewController.swift; sourceTree = "<group>"; };
 		E42A87FE21CFCAC500151C90 /* AttachmentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentViewModel.swift; sourceTree = "<group>"; };
 		E43427F62121BF5B00EC6DC3 /* Iceland.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Iceland.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -538,6 +540,7 @@
 		E40F6E7F223B78AE00FFF53F /* Interface */ = {
 			isa = PBXGroup;
 			children = (
+				E4510C172294DE5C0031191E /* Theme */,
 				E43EBDA322336E8B002571D8 /* Generated */,
 				E465E4A3222396190014673D /* Resources */,
 				E466D190221EAB74007F140B /* Transition */,
@@ -546,7 +549,6 @@
 				E4895FF421D91D5A00D2B19D /* UIViewController */,
 				E41CB1E021D8BD8400EF0A3C /* UIView */,
 				E41CB14A21D78E5B00EF0A3C /* Border.swift */,
-				E464BBB021A69C9000D34C88 /* OutlineTheme.swift */,
 				E4A46A1D21AE6CF400FBDA04 /* Image+Generation.swift */,
 				E4CC0C5821EEF92900058E5D /* Size.swift */,
 				E4BC264121F56DB900B0F2B9 /* Rect.swift */,
@@ -893,6 +895,15 @@
 				E44683F92289B554005D5B73 /* UIControlClosure.swift */,
 			);
 			path = Delegate2Closure;
+			sourceTree = "<group>";
+		};
+		E4510C172294DE5C0031191E /* Theme */ = {
+			isa = PBXGroup;
+			children = (
+				E464BBB021A69C9000D34C88 /* OutlineTheme.swift */,
+				E42574C22294DEF3008993BC /* InterfaceTheme.swift */,
+			);
+			path = Theme;
 			sourceTree = "<group>";
 		};
 		E462DB98223D257100BF7AB4 /* DateAndTimeSelect */ = {
@@ -1501,6 +1512,7 @@
 				E40F6E9D223B7A6300FFF53F /* MoveInAnimtor.swift in Sources */,
 				E40F6E9C223B7A6000FFF53F /* MoveToAnimtor.swift in Sources */,
 				E40F6E8C223B78DB00FFF53F /* FrameLayout+Shortcuts.swift in Sources */,
+				E42574C32294DEF3008993BC /* InterfaceTheme.swift in Sources */,
 				E40F6EA4223B7A7200FFF53F /* CoverPickerViewController.swift in Sources */,
 				E40F6E9B223B7A5E00FFF53F /* FadeBackgroundTransition.swift in Sources */,
 				E40F6EA0223B7A6D00FFF53F /* SquareButton.swift in Sources */,

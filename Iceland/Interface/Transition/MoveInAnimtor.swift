@@ -77,24 +77,32 @@ public class MoveInAnimtor: NSObject, Animator {
             }
         } else {
             if let transitionViewController = from as? TransitionViewController {
+                // create an image view to show animation
+                let animatingImageView = UIImageView(frame: transitionViewController.contentView.frame)
+                animatingImageView.image = transitionViewController.contentView.snapshot
+                containner.addSubview(animatingImageView)
+                
+                // hide the real content view which will not be animated, because with autolayout, animation won't work very well
+                transitionViewController.contentView.alpha = 0.0
+                
                 UIView.animate(withDuration: self.transitionDuration(using: transitionContext), delay: 0, options: .curveEaseInOut, animations: ({
                     transitionViewController.view.backgroundColor = .clear
                     switch self.from {
                     case .bottom:
-                        transitionViewController.contentView.frame = CGRect(x: 0,
-                                                                            y: transitionViewController.view.bounds.height,
-                                                                            width: transitionViewController.contentView.bounds.width,
-                                                                            height: transitionViewController.contentView.bounds.height)
+                        animatingImageView.frame = CGRect(x: transitionViewController.contentView.frame.origin.x,
+                                                          y: transitionViewController.view.bounds.height,
+                                                          width: transitionViewController.contentView.bounds.width,
+                                                          height: transitionViewController.contentView.bounds.height)
                     case .right:
-                        transitionViewController.contentView.frame = CGRect(x: transitionViewController.view.bounds.width,
-                                                                            y: 0,
-                                                                            width: transitionViewController.contentView.bounds.width,
-                                                                            height: transitionViewController.contentView.bounds.height)
+                        animatingImageView.frame = CGRect(x: transitionViewController.view.bounds.width,
+                                                          y: transitionViewController.contentView.frame.origin.y,
+                                                          width: transitionViewController.contentView.bounds.width,
+                                                          height: transitionViewController.contentView.bounds.height)
                     case .top:
-                        transitionViewController.contentView.frame = CGRect(x: 0,
-                                                                            y: -transitionViewController.contentView.bounds.height,
-                                                                            width: transitionViewController.contentView.bounds.width,
-                                                                            height: transitionViewController.contentView.bounds.height)
+                        animatingImageView.frame = CGRect(x: transitionViewController.contentView.frame.origin.x,
+                                                          y: -transitionViewController.contentView.bounds.height,
+                                                          width: transitionViewController.contentView.bounds.width,
+                                                          height: transitionViewController.contentView.bounds.height)
                     }
                 }), completion: { completeion in
                     transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
