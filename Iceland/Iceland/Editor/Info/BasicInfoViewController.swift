@@ -81,11 +81,13 @@ private class InfoCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: UITableViewCell.CellStyle.value1, reuseIdentifier: reuseIdentifier)
         
-        self.textLabel?.textColor = InterfaceTheme.Color.interactive
-        self.textLabel?.font = InterfaceTheme.Font.footnote
-        self.detailTextLabel?.font = InterfaceTheme.Font.footnote
-        self.detailTextLabel?.textColor = InterfaceTheme.Color.descriptive
-        self.backgroundColor = InterfaceTheme.Color.background2
+        self.interface { [weak self] (me, theme) in
+            self?.textLabel?.textColor = theme.color.interactive
+            self?.textLabel?.font = theme.font.footnote
+            self?.detailTextLabel?.font = theme.font.footnote
+            self?.detailTextLabel?.textColor = theme.color.descriptive
+            self?.backgroundColor = theme.color.background2
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {

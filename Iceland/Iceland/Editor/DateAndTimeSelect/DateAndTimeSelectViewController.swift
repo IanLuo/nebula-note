@@ -105,7 +105,17 @@ public class DateAndTimeSelectViewController: TransitionViewController {
     }
     
     private func _setupUI() {
-        self._contentView.backgroundColor = InterfaceTheme.Color.background2
+        self.interface { [weak self] (me, theme) in
+            self?._contentView.backgroundColor = theme.color.background2
+            self?._titleLabel.textColor = theme.color.descriptive
+            self?._titleLabel.font = theme.font.title
+            self?._saveButton.setBackgroundImage(UIImage.create(with: theme.color.background2, size: .singlePoint), for: .normal)
+            self?._saveButton.tintColor = theme.color.spotlight
+            self?._deleteButton.setBackgroundImage(UIImage.create(with: theme.color.background2, size: .singlePoint), for: .normal)
+            self?._deleteButton.tintColor = theme.color.warning
+            self?._cancelButton.tintColor = theme.color.interactive
+            self?._cancelButton.setImage(Asset.Assets.cross.image.withRenderingMode(.alwaysTemplate), for: .normal)
+        }
         
         self._calendarContainer.addSubview(self._dateSelectViewController.view)
         self._dateSelectViewController.view.allSidesAnchors(to: self._calendarContainer, edgeInset: 0)
@@ -113,19 +123,8 @@ public class DateAndTimeSelectViewController: TransitionViewController {
         self._timeContainer.addSubview(self._timeSelectViewController.view)
         self._timeSelectViewController.view.allSidesAnchors(to: self._timeContainer, edgeInset: 0)
         
-        self._titleLabel.textColor = InterfaceTheme.Color.descriptive
-        self._titleLabel.font = InterfaceTheme.Font.title
-        
         self._saveButton.setTitle(L10n.General.Button.Title.save, for: .normal)
-        self._saveButton.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.background2, size: .singlePoint), for: .normal)
-        self._saveButton.tintColor = InterfaceTheme.Color.spotlight
-        
         self._deleteButton.setTitle(L10n.General.Button.Title.delete, for: .normal)
-        self._deleteButton.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.background2, size: .singlePoint), for: .normal)
-        self._deleteButton.tintColor = InterfaceTheme.Color.warning
-        
-        self._cancelButton.tintColor = InterfaceTheme.Color.interactive
-        self._cancelButton.setImage(Asset.Assets.cross.image.withRenderingMode(.alwaysTemplate), for: .normal)
         
         self._timeSelectViewController.switch.isOn = self._selectTime == nil
     }

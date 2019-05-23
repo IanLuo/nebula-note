@@ -145,8 +145,13 @@ private class GroupSeparator: UICollectionReusableView {
         
         self.addSubview(self._subView)
         self._subView.allSidesAnchors(to: self, edgeInsets: .init(top: 13, left: 0, bottom: -13, right: 0))
-        self.backgroundColor = InterfaceTheme.Color.background2
-        self._subView.backgroundColor = InterfaceTheme.Color.descriptive
+        
+        self.interface { (me, theme) in
+            me.backgroundColor = InterfaceTheme.Color.background2
+        }
+        self._subView.interface({ (me, theme) in
+           me.backgroundColor = InterfaceTheme.Color.descriptive
+        })
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -160,7 +165,10 @@ private class ActionButtonCell: UICollectionViewCell {
     public let iconView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
-        imageView.tintColor = InterfaceTheme.Color.interactive
+        
+        imageView.interface({ (me, theme) in
+            me.tintColor = InterfaceTheme.Color.interactive
+        })
         return imageView
     }()
     
@@ -171,7 +179,10 @@ private class ActionButtonCell: UICollectionViewCell {
         self.iconView.centerAnchors(position: [.centerX, .centerY], to: self.contentView)
         self.iconView.sizeAnchor(width: 18, height: 18)
         
-        self.contentView.backgroundColor = InterfaceTheme.Color.background2
+        self.interface { (me, theme) in
+            let me = me as! UICollectionViewCell
+            me.contentView.backgroundColor = InterfaceTheme.Color.background2
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {

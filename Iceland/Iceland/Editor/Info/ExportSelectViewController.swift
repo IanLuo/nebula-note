@@ -22,8 +22,12 @@ public class ExportSelectViewController: UIViewController, UICollectionViewDeleg
     
     private let _titleLabel: UILabel = {
         let label = UILabel()
-        label.font = InterfaceTheme.Font.body
-        label.textColor = InterfaceTheme.Color.descriptive
+        
+        label.interface({ (me, theme) in
+            let me = me as! UILabel
+            me.font = theme.font.body
+            me.textColor = theme.color.descriptive
+        })
         label.text = L10n.Document.Export.title
         return label
     }()
@@ -55,8 +59,11 @@ public class ExportSelectViewController: UIViewController, UICollectionViewDeleg
         
         self._titleLabel.columnAnchor(view: self._collectionView, space: 10)
         
-        self._collectionView.backgroundColor = InterfaceTheme.Color.background2
         self._collectionView.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 0)
+        
+        self.interface { [weak self] (me, theme) in
+            self?._collectionView.backgroundColor = theme.color.background2
+        }
     }
     
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -104,13 +111,19 @@ private class ExportItemCell: UICollectionViewCell {
     let label: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
-        label.font = InterfaceTheme.Font.footnote
-        label.textColor = InterfaceTheme.Color.interactive
+        
+        label.interface({ (me, theme) in
+            let me = me as! UILabel
+            me.font = theme.font.footnote
+            me.textColor = theme.color.interactive
+        })
         return label
     }()
     
     private func _setupUI() {
-        self.backgroundColor = InterfaceTheme.Color.background3
+        self.interface { (me, theme) in
+            me.backgroundColor = theme.color.background3
+        }
         self.layer.cornerRadius = 8
         self.layer.masksToBounds = true
         

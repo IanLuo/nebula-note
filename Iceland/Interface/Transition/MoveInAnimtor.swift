@@ -49,7 +49,7 @@ public class MoveInAnimtor: NSObject, Animator {
                 
                 switch self.from {
                 case .bottom:
-                    transitionViewController.contentView.frame = CGRect(x: 0,
+                    transitionViewController.contentView.frame = CGRect(x: transitionViewController.contentView.frame.origin.x,
                                                                         y: transitionViewController.view.bounds.height,
                                                                         width: transitionViewController.contentView.bounds.width,
                                                                         height: transitionViewController.contentView.bounds.height)
@@ -60,7 +60,7 @@ public class MoveInAnimtor: NSObject, Animator {
                                                                         height: transitionViewController.contentView.bounds.height)
 
                 case .top:
-                    transitionViewController.contentView.frame = CGRect(x: 0,
+                    transitionViewController.contentView.frame = CGRect(x: transitionViewController.contentView.frame.origin.x,
                                                                         y: -toRect.height,
                                                                         width: transitionViewController.contentView.bounds.width,
                                                                         height: transitionViewController.contentView.bounds.height)

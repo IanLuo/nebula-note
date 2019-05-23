@@ -169,6 +169,8 @@ public enum L10n {
       public static let openLocation = L10n.tr("Localizable", "captureList.action.openLocation")
       /// Refile
       public static let refile = L10n.tr("Localizable", "captureList.action.refile")
+      /// Action
+      public static let title = L10n.tr("Localizable", "captureList.action.title")
     }
   }
 

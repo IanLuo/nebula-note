@@ -64,7 +64,9 @@ public class HomeViewController: UIViewController {
         self.view.addSubview(self.masterViewController.view)
         self.masterViewController.view.frame = CGRect(x: -masterViewWidth, y: 0, width: masterViewWidth, height: self.view.bounds.height)
         
-        self.masterViewController.view.setBorder(position: Border.Position.right, color: InterfaceTheme.Color.background3, width: 0.5)
+        self.masterViewController.view.interface { (me, theme) in
+            me.setBorder(position: Border.Position.right, color: InterfaceTheme.Color.background3, width: 0.5)
+        }
     }
     
     internal func showChildViewController(_ viewController: UIViewController) {

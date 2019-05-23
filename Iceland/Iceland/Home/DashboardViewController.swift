@@ -28,8 +28,11 @@ public class DashboardViewController: UIViewController {
     
     private let settingsButton: RoundButton = {
         let button = RoundButton()
-        button.setIcon(Asset.Assets.document.image.fill(color: InterfaceTheme.Color.interactive), for: .normal)
-        button.setBackgroundColor(InterfaceTheme.Color.background3, for: .normal)
+        
+        button.interface({ (me, theme) in
+            (me as? RoundButton)?.setIcon(Asset.Assets.document.image.fill(color: theme.color.interactive), for: .normal)
+            (me as? RoundButton)?.setBackgroundColor(theme.color.background3, for: .normal)
+        })
         return button
     }()
     
@@ -47,7 +50,9 @@ public class DashboardViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.view.backgroundColor = InterfaceTheme.Color.background2
+        self.interface { me, theme in
+            me.view.backgroundColor = theme.color.background2
+        }
         
         self.view.addSubview(self.tableView)
         self.view.addSubview(self.settingsButton)

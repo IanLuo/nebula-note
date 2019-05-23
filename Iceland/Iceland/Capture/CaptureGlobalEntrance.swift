@@ -47,12 +47,16 @@ private class _CaptureGlobalEntranceViewController: UIViewController {
     
     private lazy var _button: UIButton = {
         let button = UIButton(frame: CGRect(origin: .zero, size: self.view.bounds.size))
-        button.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.spotlight,
-                                                 size: self.view.bounds.size,
-                                                 style: UIImageStyle.circle),
-                                  for: .normal)
-        button.tintColor = InterfaceTheme.Color.interactive
-        button.setImage(Asset.Assets.add.image.withRenderingMode(.alwaysTemplate), for: .normal)
+        
+        button.interface({ (me, theme) in
+            let me = me as! UIButton
+            me.setBackgroundImage(UIImage.create(with: theme.color.spotlight,
+                                                     size: self.view.bounds.size,
+                                                     style: UIImageStyle.circle),
+                                      for: .normal)
+            me.tintColor = theme.color.interactive
+            me.setImage(Asset.Assets.add.image.fill(color: theme.color.interactive), for: .normal)
+        })
         button.addTarget(self, action: #selector(_didTap), for: .touchUpInside)
         return button
     }()

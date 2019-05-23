@@ -26,19 +26,24 @@ public class TimeSelectViewController: UIViewController {
     @IBOutlet var _allDayLabel: UILabel!
     @IBOutlet var _datePicker: UIDatePicker!
     
+    
+    
     public override func viewDidLoad() {
-        self.view.backgroundColor = InterfaceTheme.Color.background2
         
-        self._allDayLabel.textColor = InterfaceTheme.Color.interactive
-        self._allDayLabel.font = InterfaceTheme.Font.body
+        self.interface { [weak self] (me, theme) in
+            self?.view.backgroundColor = InterfaceTheme.Color.background2
+            
+            self?._allDayLabel.textColor = InterfaceTheme.Color.interactive
+            self?._allDayLabel.font = InterfaceTheme.Font.body
+            self?._timePickerContainer.backgroundColor = InterfaceTheme.Color.background2
+            self?._datePicker.setValue(InterfaceTheme.Color.interactive, forKey: "textColor")
+        }
         
         self._timePickerContainer.sizeAnchor(height: 0)
-        self._timePickerContainer.backgroundColor = InterfaceTheme.Color.background2
         
         self._enableTimeView(self.time == nil)
         
         self._datePicker.datePickerMode = .time
-        self._datePicker.setValue(InterfaceTheme.Color.interactive, forKey: "textColor")
     }
     
     @IBAction func _enableTime(_ sender: UISwitch) {

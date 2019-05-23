@@ -20,7 +20,10 @@ extension DocumentEditViewController {
     }
     
     @objc public func showInfo() {
-        self.viewModel.coordinator?.showDocumentInfo(viewModel: self.viewModel)
+        self.viewModel.coordinator?.showDocumentInfo(viewModel: self.viewModel) { [weak self] in
+            self?.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
+        }
+        self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.hide()
     }
     
     @objc public func showMenu() {
@@ -30,12 +33,14 @@ extension DocumentEditViewController {
         actionsController.addAction(icon: Asset.Assets.down.image, title: L10n.Document.Menu.foldAll) { viewController in
             viewController.dismiss(animated: true, completion: {
                 self.viewModel.foldAll()
+                self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
             })
         }
         
         actionsController.addAction(icon: Asset.Assets.up.image, title: L10n.Document.Menu.unfoldAll) { viewController in
             viewController.dismiss(animated: true, completion: {
                 self.viewModel.unfoldAll()
+                self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
             })
         }
         
@@ -44,10 +49,12 @@ extension DocumentEditViewController {
                 self.viewModel.coordinator?.showOutline(completion: { [unowned self] heading in
                     self._moveTo(location: heading.location)
                 })
+                self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
             })
             
             viewController.setCancel(action: { viewController in
                 viewController.dismiss(animated: true, completion: nil)
+                self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
             })
         }
         
@@ -59,9 +66,12 @@ extension DocumentEditViewController {
         
         actionsController.setCancel { viewController in
             viewController.dismiss(animated: true, completion: nil)
+            self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
         }
         
         self.present(actionsController, animated: true, completion: nil)
+        
+        self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.hide()
     }
     
     public func showDateAndTimeCreator(location: Int) {
@@ -73,10 +83,10 @@ extension DocumentEditViewController {
                     let oldSelectedRange = self.textView.selectedRange
                     let result = self.viewModel.performAction(EditAction.updateDateAndTime(location, newDateAndTime), textView: self.textView)
                     self.textView.selectedRange = oldSelectedRange.offset(result.delta)
-                }, delete: {
-                    // ignore
-                }, cancel: {
-                    //ignore
+                }, delete: { [weak self] in
+                    self?.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
+                }, cancel: { [weak self] in
+                    self?.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                 })
             })
         })
@@ -88,10 +98,10 @@ extension DocumentEditViewController {
                     let oldSelectedRange = self.textView.selectedRange
                     let result = self.viewModel.performAction(EditAction.updateDateAndTime(location, newDateAndTime), textView: self.textView)
                     self.textView.selectedRange = oldSelectedRange.offset(result.delta)
-                }, delete: {
-                    // ignore
-                }, cancel: {
-                    //ignore
+                }, delete: { [weak self] in
+                    self?.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
+                }, cancel: { [weak self] in
+                    self?.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                 })
             })
         })
@@ -103,19 +113,21 @@ extension DocumentEditViewController {
                     let oldSelectedRange = self.textView.selectedRange
                     let result = self.viewModel.performAction(EditAction.updateDateAndTime(location, newDateAndTime), textView: self.textView)
                     self.textView.selectedRange = oldSelectedRange.offset(result.delta)
-                }, delete: {
-                    // ignore
-                }, cancel: {
-                    //ignore
+                }, delete: { [weak self] in
+                    self?.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
+                }, cancel: { [weak self] in
+                    self?.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                 })
             })
         })
         
         actionsViewController.setCancel { viewController in
             viewController.dismiss(animated: true, completion: nil)
+            self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
         }
         
         self.present(actionsViewController, animated: true, completion: nil)
+        self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.hide()
     }
     
     public func showPriorityEditor(location: Int, current: String?) {
@@ -127,6 +139,7 @@ extension DocumentEditViewController {
         for priority in priorities {
             actionsController.addAction(icon: nil, title: priority) { viewController in
                 viewController.dismiss(animated: true, completion: {
+                    self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                     let oldSelectedRange = self.textView.selectedRange
                     let result = self.viewModel.performAction(EditAction.changePriority(priority, location), textView: self.textView)
                     if self.textView.selectedRange.location > location {
@@ -139,6 +152,7 @@ extension DocumentEditViewController {
         if current != nil {
             actionsController.addAction(icon: nil, title: L10n.Document.Priority.remove, style: .warning) { (viewController) in
                 viewController.dismiss(animated: true, completion: {
+                    self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                     let oldSelectedRange = self.textView.selectedRange
                     let result = self.viewModel.performAction(EditAction.changePriority(nil, location), textView: self.textView)
                     if self.textView.selectedRange.location > location {
@@ -150,9 +164,11 @@ extension DocumentEditViewController {
         
         actionsController.setCancel { viewController in
             viewController.dismiss(animated: true, completion: nil)
+            self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
         }
         
         self.present(actionsController, animated: true, completion: nil)
+        self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.hide()
     }
     
     public func showTagEditor(location: Int) {
@@ -178,9 +194,10 @@ extension DocumentEditViewController {
         
         actionsViewController.setCancel {
             $0.dismiss(animated: true, completion: nil)
+            self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
         }
         
-        actionsViewController.addAction(icon: Asset.Assets.add.image.withRenderingMode(.alwaysTemplate), title: L10n.Document.Edit.Tag.add, style: .highlight) { actionViewController in
+        actionsViewController.addAction(icon: Asset.Assets.add.image.fill(color: InterfaceTheme.Color.interactive), title: L10n.Document.Edit.Tag.add, style: .highlight) { actionViewController in
             actionViewController.dismiss(animated: true, completion: {
                 let formController = ModalFormViewController()
                 formController.addTextFied(title: L10n.Document.Edit.Tag.add, placeHoder: L10n.Document.Edit.Tag.placeHolder, defaultValue: nil)
@@ -196,6 +213,7 @@ extension DocumentEditViewController {
                     return [:]
                 }
                 formController.onSaveValue = { values, viewController in
+                    self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                     if let newTagName = values[L10n.Document.Edit.Tag.add] as? String {
                         viewController.dismiss(animated: true, completion: {
                             let oldSelectedRange = self.textView.selectedRange
@@ -210,6 +228,7 @@ extension DocumentEditViewController {
                 
                 formController.onCancel = {
                     $0.dismiss(animated: true, completion: nil)
+                    self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                 }
                 
                 self.present(formController, animated: true, completion: nil)
@@ -217,6 +236,7 @@ extension DocumentEditViewController {
         }
         
         self.present(actionsViewController, animated: true, completion: nil)
+        self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.hide()
     }
     
     public func showCapturedItemList(location: Int) {
@@ -248,6 +268,7 @@ extension DocumentEditViewController {
                 }
                 
                 viewController.dismiss(animated: true, completion: nil)
+                self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
             }
         }
         
@@ -263,14 +284,17 @@ extension DocumentEditViewController {
                                             }
                                             
                                             viewController.dismiss(animated: true, completion: nil)
+                                            self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
             }
         }
         
         actionsController.setCancel { viewController in
             viewController.dismiss(animated: true)
+            self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
         }
         
         self.present(actionsController, animated: true)
+        self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.hide()
     }
     
     /// 在 heading 里面点击 heading 按钮
@@ -279,6 +303,7 @@ extension DocumentEditViewController {
         
         actionsController.addAction(icon: nil, title: L10n.Document.Heading.toParagraphContent) { viewController in
             viewController.dismiss(animated: true, completion: {
+                self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                 let lastSelectedRange = self.textView.selectedRange
                 let result = self.viewModel.performAction(EditAction.convertHeadingToParagraph(location), textView: self.textView)
                 self.textView.selectedRange = lastSelectedRange.offset(result.delta)
@@ -287,9 +312,11 @@ extension DocumentEditViewController {
         
         actionsController.setCancel { viewController in
             viewController.dismiss(animated: true, completion: nil)
+            self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
         }
         
         self.present(actionsController, animated: true, completion: nil)
+        self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.hide()
     }
     
     public func showParagraphActions(at location: Int) {
@@ -300,12 +327,14 @@ extension DocumentEditViewController {
         let icon = isFolded ? Asset.Assets.up.image : Asset.Assets.down.image
         actionsController.addAction(icon: icon, title: foldTitle) { viewController in
             viewController.dismiss(animated: true, completion: {
+                self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                 self.viewModel.foldOrUnfold(location: location)
             })
         }
         
         actionsController.addAction(icon: nil, title: L10n.Document.Heading.moveTo) { viewController in
             viewController.dismiss(animated: true, completion: {
+                self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                 self.viewModel.coordinator?.showOutline(completion: { [unowned self] heading in
                     let oldLocation = self.textView.selectedRange.location
                     
@@ -321,6 +350,7 @@ extension DocumentEditViewController {
             viewController.dismiss(animated: true, completion: {
                 let oldLocation = self.textView.selectedRange.location
                 self.viewModel.coordinator?.showDocumentHeadingPicker(completion: { [unowned self] url, heading in
+                    self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                     self.viewModel.refileOtherDocument(url: url, heading: heading, location: location, completion: { [unowned self] result in
                         let changedLength = oldLocation < heading.location ? -result.content!.count : 0 // 如果新的位置的 heading 在原来 heading 的前面，新的位置的 heading需要减掉移走的文字的长度
                         self.textView.selectedRange = NSRange(location: heading.location + heading.length + changedLength, length: 0)
@@ -331,9 +361,11 @@ extension DocumentEditViewController {
         
         actionsController.setCancel { viewController in
             viewController.dismiss(animated: true, completion: nil)
+            self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
         }
         
         self.present(actionsController, animated: true, completion: nil)
+        self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.hide()
     }
     
     // 在其他非空行的位置点击 heading 按钮
@@ -342,6 +374,7 @@ extension DocumentEditViewController {
         
         actionsController.addAction(icon: nil, title: L10n.Document.Heading.toHeading) { viewController in
             viewController.dismiss(animated: true, completion: {
+                self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                 let lastSelectedRange = self.textView.selectedRange
                 let result = self.viewModel.performAction(EditAction.convertToHeading(location), textView: self.textView)
                 self.textView.selectedRange = lastSelectedRange.offset(result.delta)
@@ -350,8 +383,10 @@ extension DocumentEditViewController {
         
         actionsController.setCancel { viewController in
             viewController.dismiss(animated: true, completion: nil)
+            self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
         }
         
         self.present(actionsController, animated: true, completion: nil)
+        self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
     }
 }

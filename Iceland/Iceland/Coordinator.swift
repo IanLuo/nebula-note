@@ -129,13 +129,7 @@ extension Coordinator {
         let documentCoordinator = EditorCoordinator(stack: navigationController, dependency: self.dependency,
                                                     usage: EditorCoordinator.Usage.editor(url, location))
         
-        documentCoordinator.onMovingOut = {
-            self.dependency.globalCaptureEntryWindow?.show()
-        }
-        
         documentCoordinator.start(from: self)
-        
-        self.dependency.globalCaptureEntryWindow?.hide()
     }
     
     public func showAttachmentPicker(kind: Attachment.Kind, complete: @escaping (String) -> Void, cancel: @escaping () -> Void) {

@@ -65,6 +65,9 @@ public struct DefaultInterfaceFont: InterfaceThemeFontProtocol {
 
 public class ThemeSelector {
     private static let _instance: ThemeSelector = ThemeSelector(theme: DefaultInterfaceTheme())
+    
+    private let _registerMap: NSMapTable<AnyObject, AnyObject> = NSMapTable.weakToWeakObjects()
+    
     fileprivate var currentTheme: InterfaceThemeProtocol
     
     private init(theme: InterfaceThemeProtocol) {
@@ -77,6 +80,16 @@ public class ThemeSelector {
     
     public func changeTheme(_ theme: InterfaceThemeProtocol) {
         ThemeSelector.shared.currentTheme = theme
+        
+        for key in self._registerMap.keyEnumerator().allObjects {
+            (self._registerMap.object(forKey: key as AnyObject) as? (InterfaceThemeProtocol) -> Void)?(theme)
+        }
+    }
+    
+    public func register(observer key: AnyObject, changeAction: @escaping (InterfaceThemeProtocol) -> Void) {
+        self._registerMap.setObject(changeAction as AnyObject, forKey: key)
+        
+        changeAction(self.currentTheme)
     }
 }
 
@@ -87,5 +100,23 @@ public struct InterfaceTheme {
     
     public static var Font: InterfaceThemeFontProtocol {
         return ThemeSelector.shared.currentTheme.font
+    }
+}
+
+extension UIViewController {
+    public func interface(_ action: @escaping (UIViewController, InterfaceThemeProtocol) -> Void) {
+        ThemeSelector.shared.register(observer: self) { theme in
+            unowned let uself = self
+            action(uself, theme)
+        }
+    }
+}
+
+extension UIView {
+    public func interface(_ action: @escaping (UIView, InterfaceThemeProtocol) -> Void) {
+        ThemeSelector.shared.register(observer: self) { theme in
+            unowned let uself = self
+            action(uself, theme)
+        }
     }
 }

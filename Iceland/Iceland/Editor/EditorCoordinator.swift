@@ -90,7 +90,10 @@ public class EditorCoordinator: Coordinator {
         let navigationController = Coordinator.createDefaultNavigationControlller()
         
         let capturedListCoordinator = CaptureListCoordinator(stack: navigationController, dependency: self.dependency, mode: CaptureListViewModel.Mode.pick)
-        capturedListCoordinator.onSelectAction = completion
+        capturedListCoordinator.onSelectAction = { [unowned capturedListCoordinator] attachment in
+            capturedListCoordinator.stop()
+            completion(attachment)
+        }
         
         capturedListCoordinator.start(from: self)
     }
@@ -124,8 +127,9 @@ extension EditorCoordinator: SearchCoordinatorDelegate {
         // ignore
     }
     
-    public func showDocumentInfo(viewModel: DocumentEditViewModel) {
+    public func showDocumentInfo(viewModel: DocumentEditViewModel, completion: @escaping () -> Void) {
         let documentInfoViewController = DocumentInfoViewController(viewModel: viewModel)
+        documentInfoViewController.didCloseAction = completion
         self.viewController?.present(documentInfoViewController, animated: true, completion: nil)
     }
 }

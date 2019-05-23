@@ -14,14 +14,23 @@ import Business
 public class DocumentInfoViewController: TransitionViewController {
     public var contentView: UIView = {
         let view = UIView()
-        view.backgroundColor = InterfaceTheme.Color.background2
+        
+        view.interface({ (me, theme) in
+            me.backgroundColor = InterfaceTheme.Color.background2
+        })
         return view
     }()
     
+    public var didCloseAction: (() -> Void)?
+    
     private lazy var _backButton: RoundButton = {
         let button = RoundButton()
-        button.setIcon(Asset.Assets.right.image.fill(color: InterfaceTheme.Color.interactive), for: .normal)
-        button.setBackgroundColor(InterfaceTheme.Color.background3, for: .normal)
+        
+        button.interface({ (me, theme) in
+            let me = me as! RoundButton
+            me.setIcon(Asset.Assets.right.image.fill(color: InterfaceTheme.Color.interactive), for: .normal)
+            me.setBackgroundColor(InterfaceTheme.Color.background3, for: .normal)
+        })
         return button
     }()
     
@@ -86,6 +95,7 @@ public class DocumentInfoViewController: TransitionViewController {
     
     @objc func cancel() {
         self.dismiss(animated: true, completion: nil)
+        self.didCloseAction?()
     }
 }
 

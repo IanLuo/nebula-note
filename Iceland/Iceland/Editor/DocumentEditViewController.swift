@@ -114,9 +114,12 @@ public class DocumentEditViewController: UIViewController {
     
     private func createActionButton(icon: UIImage?) -> RoundButton {
         let button = RoundButton()
+        
         button.setIcon(icon, for: .normal)
-        button.setBackgroundColor(InterfaceTheme.Color.background2, for: .normal)
-        button.setBorder(color: nil)
+        button.interface { (me, theme) in
+            let me = me as! RoundButton
+            me.setBackgroundColor(theme.color.background2, for: .normal)
+        }
         return button
     }
     

@@ -21,7 +21,12 @@ public class DateSelectViewController: UIViewController {
     
     private let _calendarView: CalendarView = {
         let view = CalendarView()
-        view.backgroundColor = InterfaceTheme.Color.background2
+        
+        view.calendar = Calendar.current
+        
+        view.interface({ (me, theme) in
+            me.backgroundColor = InterfaceTheme.Color.background2
+        })
         return view
     }()
     

@@ -47,6 +47,33 @@
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="66" id="F6F-cL-Fvo">
+                                        <rect key="frame" x="0.0" y="101" width="414" height="66"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="F6F-cL-Fvo" id="VNr-u3-jaP">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="65.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Vjv-d3-kPe">
+                                                    <rect key="frame" x="20" y="22.5" width="42" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aZM-i5-ScX">
+                                                    <rect key="frame" x="345" y="17.5" width="51" height="31"/>
+                                                </switch>
+                                            </subviews>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <constraints>
+                                                <constraint firstItem="Vjv-d3-kPe" firstAttribute="leading" secondItem="VNr-u3-jaP" secondAttribute="leadingMargin" id="ETD-qo-fWh"/>
+                                                <constraint firstItem="aZM-i5-ScX" firstAttribute="trailing" secondItem="VNr-u3-jaP" secondAttribute="trailingMargin" id="INl-Nr-IGN"/>
+                                                <constraint firstItem="aZM-i5-ScX" firstAttribute="centerY" secondItem="VNr-u3-jaP" secondAttribute="centerY" id="WK0-Cp-sMo"/>
+                                                <constraint firstItem="Vjv-d3-kPe" firstAttribute="centerY" secondItem="VNr-u3-jaP" secondAttribute="centerY" id="uUh-tk-sl5"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </tableViewCell>
                                 </cells>
                             </tableViewSection>
                         </sections>
@@ -57,8 +84,10 @@
                     </tableView>
                     <navigationItem key="navigationItem" title="Root View Controller" id="L8t-J5-i8u"/>
                     <connections>
+                        <outlet property="isDarkThemeEnabledSwitch" destination="aZM-i5-ScX" id="Y31-8D-4LV"/>
                         <outlet property="isSyncEnabledLabel" destination="vnz-sc-s7C" id="pXr-EJ-FXP"/>
                         <outlet property="isSyncEnabledSwitch" destination="9nL-VW-Zhq" id="gMC-Sw-gff"/>
+                        <outlet property="useDarkThemeLabel" destination="Vjv-d3-kPe" id="Kyp-2s-iqi"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="KSb-ob-k3i" userLabel="First Responder" sceneMemberID="firstResponder"/>

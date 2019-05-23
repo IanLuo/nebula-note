@@ -158,6 +158,7 @@
 "captureList.action.delete" = "Delete idea";
 "captureList.action.insertToDocument" = "Insert to document";
 "captureList.action.refile" = "Refile";
+"captureList.action.title" = "Action";
 
 //location
 "location.title" = "Add a location";

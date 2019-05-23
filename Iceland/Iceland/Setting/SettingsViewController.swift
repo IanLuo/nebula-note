@@ -21,6 +21,8 @@ public class SettingsViewController: UITableViewController {
     @IBOutlet var isSyncEnabledLabel: UILabel!
     @IBOutlet var isSyncEnabledSwitch: UISwitch!
     
+    @IBOutlet var useDarkThemeLabel: UILabel!
+    @IBOutlet var isDarkThemeEnabledSwitch: UISwitch!
     public override func viewDidLoad() {
         self._setupUI()
         self._setupObserver()

@@ -48,13 +48,14 @@ public class HeadingOutlineTableViewCell: UITableViewCell {
     }
     
     private func setupUI() {
-        self.contentView.backgroundColor = InterfaceTheme.Color.background2
-        self.label.font = InterfaceTheme.Font.subtitle
-        self.label.textColor = InterfaceTheme.Color.interactive
+        self.interface { (me, theme) in
+            let me = me as! HeadingOutlineTableViewCell
+            me.contentView.backgroundColor = InterfaceTheme.Color.background2
+            me.label.font = InterfaceTheme.Font.subtitle
+            me.label.textColor = InterfaceTheme.Color.interactive
+        }
         
         self.contentView.addSubview(self.label)
-        
-        self.label.translatesAutoresizingMaskIntoConstraints = false
         
         self.label.allSidesAnchors(to: self.contentView, edgeInsets: .zero)
         

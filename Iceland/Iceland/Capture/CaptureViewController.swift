@@ -47,17 +47,25 @@ public class CaptureViewController: UIViewController, TransitionProtocol {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.separatorStyle = .none
-        tableView.backgroundColor = InterfaceTheme.Color.background2
         tableView.register(CaptureCell.self, forCellReuseIdentifier: CaptureCell.reuseIdentifier)
         tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: Layout.edgeInsets.bottom + 60, right: 0)
-        tableView.setBorder(position: .left, color: InterfaceTheme.Color.background3, width: 0.5)
+        
+        tableView.interface({ (me, theme) in
+            let me = me as! UITableView
+            me.backgroundColor = theme.color.background2
+            me.setBorder(position: .left, color: theme.color.background3, width: 0.5)
+        })
         return tableView
     }()
     
     private lazy var cancelButton: RoundButton = {
         let button = RoundButton()
-        button.setIcon(Asset.Assets.cross.image.fill(color: InterfaceTheme.Color.interactive), for: .normal)
-        button.setBackgroundColor(InterfaceTheme.Color.background3, for: .normal)
+        
+        button.interface({ (me, theme) in
+            let me = me as! RoundButton
+            me.setIcon(Asset.Assets.cross.image.fill(color: theme.color.interactive), for: .normal)
+            me.setBackgroundColor(theme.color.background3, for: .normal)
+        })
         button.setBorder(color: nil)
         button.tapped({ _ in
             self.cancel()
@@ -137,14 +145,20 @@ private class CaptureCell: UITableViewCell {
     internal let iconView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
-        imageView.tintColor = InterfaceTheme.Color.descriptive
+        
+        imageView.interface({ (me, theme) in
+            me.tintColor = InterfaceTheme.Color.descriptive
+        })
         return imageView
     }()
     
     internal let titleLabel: UILabel = {
         let label = UILabel()
-        label.font = InterfaceTheme.Font.title
-        label.textColor = InterfaceTheme.Color.interactive
+        label.interface({ (me, theme) in
+            let me = me as! UILabel
+            me.font = theme.font.title
+            me.textColor = theme.color.interactive
+        })
         return label
     }()
     
@@ -159,7 +173,9 @@ private class CaptureCell: UITableViewCell {
     }
     
     private func setupUI() {
-        self.backgroundColor = InterfaceTheme.Color.background2
+        self.interface { (me, theme) in
+            me.backgroundColor = InterfaceTheme.Color.background2
+        }
         
         self.contentView.addSubview(self.iconView)
         self.contentView.addSubview(self.titleLabel)
@@ -175,18 +191,22 @@ private class CaptureCell: UITableViewCell {
     }
     
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
-        if highlighted {
-            self.backgroundColor = InterfaceTheme.Color.background3
-        } else {
-            self.backgroundColor = InterfaceTheme.Color.background2
+        self.interface { (me, theme) in
+            if highlighted {
+                me.backgroundColor = InterfaceTheme.Color.background3
+            } else {
+                me.backgroundColor = InterfaceTheme.Color.background2
+            }
         }
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
-        if selected {
-            self.backgroundColor = InterfaceTheme.Color.background3
-        } else {
-            self.backgroundColor = InterfaceTheme.Color.background2
+        self.interface { (me, theme) in
+            if selected {
+                me.backgroundColor = InterfaceTheme.Color.background3
+            } else {
+                me.backgroundColor = InterfaceTheme.Color.background2
+            }
         }
     }
 }

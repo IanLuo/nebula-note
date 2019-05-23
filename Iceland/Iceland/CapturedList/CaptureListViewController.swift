@@ -151,16 +151,10 @@ extension CaptureListViewController: CaptureTableCellDelegate {
     
     private func createActionsViewController(index: Int) -> ActionsViewController {
         let actionsViewController = ActionsViewController()
+        actionsViewController.title = L10n.CaptureList.title
         
         switch self.viewModel.mode {
         case .manage:
-            actionsViewController.addAction(icon: nil, title: L10n.CaptureList.Action.delete) { viewController in
-                viewController.dismiss(animated: true, completion: {
-                    self.viewModel.delete(index: index)
-                    self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
-                })
-            }
-            
             actionsViewController.addAction(icon: nil, title: L10n.CaptureList.Action.refile) { viewController in
                 viewController.dismiss(animated: true, completion: {
                     self.viewModel.chooseRefileLocation(index: index, completion: {
@@ -168,6 +162,13 @@ extension CaptureListViewController: CaptureTableCellDelegate {
                     }, canceled: {
                         self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                     })
+                })
+            }
+            
+            actionsViewController.addAction(icon: nil, title: L10n.CaptureList.Action.delete, style: .warning) { viewController in
+                viewController.dismiss(animated: true, completion: {
+                    self.viewModel.delete(index: index)
+                    self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                 })
             }
         case .pick:
