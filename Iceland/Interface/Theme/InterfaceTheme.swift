@@ -125,18 +125,16 @@ public struct InterfaceTheme {
 
 extension UIViewController {
     public func interface(_ action: @escaping (UIViewController, InterfaceThemeProtocol) -> Void) {
-        InterfaceThemeSelector.shared.register(observer: self) { theme in
-            unowned let uself = self
-            action(uself, theme)
+        InterfaceThemeSelector.shared.register(observer: self) { [unowned self] theme in
+            action(self, theme)
         }
     }
 }
 
 extension UIView {
     public func interface(_ action: @escaping (UIView, InterfaceThemeProtocol) -> Void) {
-        InterfaceThemeSelector.shared.register(observer: self) { theme in
-            unowned let uself = self
-            action(uself, theme)
+        InterfaceThemeSelector.shared.register(observer: self) { [unowned self] theme in
+            action(self, theme)
         }
     }
 }

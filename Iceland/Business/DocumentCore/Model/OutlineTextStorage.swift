@@ -607,6 +607,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
             token.outlineTextStorage = self
 
             self._tempParsingTokenResult.append(token)
+            self._ignoreTextMarkRanges.append(token.levelRange)
             
             token.decorationAttributesAction = { textStorage, token in
                 guard let headingRange = token.range(for: OutlineParser.Key.Node.heading) else { return }
@@ -680,7 +681,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
     public func didCompleteParsing(text: String) {
         self._updateTokens(new: self._tempParsingTokenResult)
         
-        print(self.debugDescription)
+        log.verbose(self.debugDescription)
     }
     
     private func _remove<T: Token>(in range: NSRange, from cache: inout [T]) -> [T] {
@@ -707,15 +708,19 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 into.append(contentsOf: tokens)
             } else {
                 // 从尾部开始，往前查找 cache 的最前端插入 tokens 的位置
+                var isInsertIntoMiddel: Bool = false
                 for (index, token) in into.reversed().enumerated() {
                     if first.range.location >= token.range.location, index < into.count {
                         into.insert(contentsOf: tokens, at: min(into.count - 1, into.count - index))
+                        isInsertIntoMiddel = true
                         break
                     }
                 }
                 
-                // cache 中没有 tokens 之前的位置，添加到 cache 最前端
-                into.insert(contentsOf: tokens, at: 0)
+                if isInsertIntoMiddel == false {
+                    // cache 中没有 tokens 之前的位置，添加到 cache 最前端
+                    into.insert(contentsOf: tokens, at: 0)
+                }
             }
             
             log.info("[item count changed] \(into.count - oldCount)")

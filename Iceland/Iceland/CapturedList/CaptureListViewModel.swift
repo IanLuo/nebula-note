@@ -148,6 +148,7 @@ public class CaptureListViewModel {
     
     public func selectAttachment(index: Int) {
         if let coordinator = self.coordinator {
+            self.coordinator?.onSelectAction?(self.data[index])
             self.coordinator?.delegate?.didSelectAttachment(attachment: self.data[index], coordinator: coordinator)
         }
     }

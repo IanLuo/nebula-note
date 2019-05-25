@@ -60,7 +60,11 @@ extension AttachmentLinkViewController: ModalFormViewControllerDelegate {
     public func modalFormDidSave(viewController: ModalFormViewController, formData: [String: Codable]) {
         let jsonEncoder = JSONEncoder()
         do {
-            let data = try jsonEncoder.encode(formData)
+            let linkData: [String: Codable] = [
+                OutlineParser.Values.Attachment.Link.keyTitle: formData[L10n.CaptureLink.Title.title]!,
+                OutlineParser.Values.Attachment.Link.keyURL: formData[L10n.CaptureLink.Url.title]!
+            ]
+            let data = try jsonEncoder.encode(linkData)
             let string = String(data: data, encoding: .utf8) ?? ""
             self.viewModel.save(content: string, kind: .link, description: "link by user input")
             viewController.dismiss(animated: true) {

@@ -65,6 +65,7 @@ public enum AttachmentError: Error {
         
         switch kind {
         case .link: fallthrough
+        case .location: fallthrough
         case .text:
             let tempFile = URL.file(directory: URL.directory(location: URLLocation.temporary), name: "attachments", extension: "txt")
             tempFile.write(queue: DispatchQueue.main, data: content.data(using: .utf8) ?? Data()) { _ in

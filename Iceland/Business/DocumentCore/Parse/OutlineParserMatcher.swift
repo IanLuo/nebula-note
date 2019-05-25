@@ -201,7 +201,7 @@ extension OutlineParser {
             public static let checkBox =        "^[\\t ]*(\\- \\[(X| |\\-)\\] )"
             public static let unorderedList =   "^[\\t ]*([\\-\\+] )[^\\[\\n]+" //用于匹配有内容的 unordered list 避免与 checkbox 冲突
             public static let unorderedListHead = "^[\\t ]*([\\-\\+]\\ )$" // 用于匹配没有内容的 unordered list
-            public static let orderedList =     "^[\\t ]*(([0-9a-zA-Z])+[\\.\\)\\>] ).*"
+            public static let orderedList =     "^[\\t ]*(([0-9a-zA-Z]){1,3}[\\.\\)\\>] ).*"
             public static let seperator =       "^[\\t ]*(\\-{5,}[\\t ]*)"
             public static let attachment =      "\\#\\+ATTACHMENT\\:(image|video|audio|sketch|location)=([A-Z0-9\\-]+)" // like: #+ATTACHMENT:LKS-JDLF-JSDL-JFLSDF)
             public static let quote =           "^[\\t ]*\\#\\+BEGIN\\_QUOTE\\n([^\\#\\+END\\_QUOTE]*)\\n\\s*\\#\\+END\\_QUOTE[\\t ]*\\n"
@@ -243,8 +243,8 @@ extension OutlineParser {
             
             public struct TextMark {
                 private static let ignoredCharacters: String = "\\n\\,\\'\\\""
-                private static let pre =            "[ \\(\\{\\'\\\"]"
-                private static let post =           "[ \\-\\.\\,\\:\\!\\?\\'\\)\\}\\\"\\\n]"
+                private static let pre =            ""//"[ \\(\\{\\'\\\"]"
+                private static let post =           ""//[ \\-\\.\\,\\:\\!\\?\\'\\)\\}\\\"\\\n]"
                 public static let bold =            "\(pre)(\\*([^\(ignoredCharacters)\\*]*)\\*)\(post)"
                 public static let italic =          "\(pre)(\\/([^\(ignoredCharacters)\\/]*)\\/)\(post)"
                 public static let underscore =      "\(pre)(\\_([^\(ignoredCharacters)\\_]*)\\_)\(post)"
@@ -324,6 +324,11 @@ extension OutlineParser {
         }
         
         public struct Attachment {
+            public struct Link {
+                public static let keyTitle: String = "title"
+                public static let keyURL: String = "link"
+            }
+            
             public static func serialize(attachment: Business.Attachment) -> String {
                 switch attachment.kind {
                 case .text:
@@ -332,8 +337,8 @@ extension OutlineParser {
                 case .link:
                     do {
                         if let json = try JSONSerialization.jsonObject(with: Data(contentsOf: attachment.url), options: []) as? NSDictionary {
-                            let title = json["title"] ?? ""
-                            let url = json["link"] ?? ""
+                            let title = json[Link.keyTitle] ?? ""
+                            let url = json[Link.keyURL] ?? ""
                             return "[[\(url)][\(title)]]"
                         } else {
                             return "#<wrong form of link>"
@@ -351,8 +356,8 @@ extension OutlineParser {
                     let url = AttachmentManager.textAttachmentURL(with: value)
                     do {
                         if let linkData = try JSONSerialization.jsonObject(with: Data(contentsOf: url), options: []) as? [String: String] {
-                            let title = linkData["title"]!
-                            let url = linkData["link"]!
+                            let title = linkData[Link.keyTitle]!
+                            let url = linkData[Link.keyURL]!
                             return "[[\(url)][\(title)]]"
                         } else {
                             return "fail to find attachment text: \(url)"

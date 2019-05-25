@@ -57,7 +57,6 @@ public class DocumentEditViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         
-        
         self.view.addSubview(self.textView)
         self.view.addSubview(self._toolBar)
         self.view.addSubview(self._loadingIndicator)
@@ -116,10 +115,7 @@ public class DocumentEditViewController: UIViewController {
         let button = RoundButton()
         
         button.setIcon(icon, for: .normal)
-        button.interface { (me, theme) in
-            let me = me as! RoundButton
-            me.setBackgroundColor(theme.color.background2, for: .normal)
-        }
+        button.setBackgroundColor(InterfaceTheme.Color.background2, for: .normal)
         return button
     }
     

@@ -144,11 +144,13 @@ extension Coordinator {
         let navigationController = UINavigationController()
         
         navigationController.interface { (me, theme) in
+            let navigationController = me as! UINavigationController
             navigationController.navigationBar.tintColor = theme.color.interactive
-            navigationController.navigationBar.setBackgroundImage(UIImage(), for: .default)
-            navigationController.navigationBar.shadowImage = UIImage()
             navigationController.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: theme.color.interactive]
         }
+        
+        navigationController.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        navigationController.navigationBar.shadowImage = UIImage()
         return navigationController
     }
 }

@@ -182,6 +182,7 @@ extension CaptureListViewController: CaptureTableCellDelegate {
         
         actionsViewController.setCancel { viewController in
             viewController.dismiss(animated: true, completion: nil)
+            self.viewModel.coordinator?.onCancelAction?()
             self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
         }
         
