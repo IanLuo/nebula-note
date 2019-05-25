@@ -20,8 +20,36 @@
                         <sections>
                             <tableViewSection id="y9a-tf-VKS">
                                 <cells>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="66" id="Wmc-9k-DFD">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" rowHeight="66" id="Tz6-ZQ-q35" userLabel="landing tab">
                                         <rect key="frame" x="0.0" y="35" width="414" height="66"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Tz6-ZQ-q35" id="HYw-5m-1OC">
+                                            <rect key="frame" x="0.0" y="0.0" width="376" height="65.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TBm-Y5-r12">
+                                                    <rect key="frame" x="20" y="22.5" width="42" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dnp-Uh-dnX">
+                                                    <rect key="frame" x="330" y="18" width="46" height="30"/>
+                                                    <state key="normal" title="Button"/>
+                                                </button>
+                                            </subviews>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <constraints>
+                                                <constraint firstItem="dnp-Uh-dnX" firstAttribute="centerY" secondItem="HYw-5m-1OC" secondAttribute="centerY" id="03D-Y4-E41"/>
+                                                <constraint firstAttribute="trailing" secondItem="dnp-Uh-dnX" secondAttribute="trailing" id="3dy-2Z-jvG"/>
+                                                <constraint firstItem="TBm-Y5-r12" firstAttribute="centerY" secondItem="HYw-5m-1OC" secondAttribute="centerY" id="oO4-j0-puE"/>
+                                                <constraint firstItem="TBm-Y5-r12" firstAttribute="leading" secondItem="HYw-5m-1OC" secondAttribute="leadingMargin" id="via-6h-f75"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="66" id="Wmc-9k-DFD" userLabel="icloud">
+                                        <rect key="frame" x="0.0" y="101" width="414" height="66"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Wmc-9k-DFD" id="hoe-RY-6gh">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="65.5"/>
@@ -47,8 +75,8 @@
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="66" id="F6F-cL-Fvo">
-                                        <rect key="frame" x="0.0" y="101" width="414" height="66"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="66" id="F6F-cL-Fvo" userLabel="theme">
+                                        <rect key="frame" x="0.0" y="167" width="414" height="66"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="F6F-cL-Fvo" id="VNr-u3-jaP">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="65.5"/>
@@ -84,9 +112,12 @@
                     </tableView>
                     <navigationItem key="navigationItem" title="Root View Controller" id="L8t-J5-i8u"/>
                     <connections>
+                        <outlet property="chooseLandingTabButton" destination="dnp-Uh-dnX" id="PRC-gg-q7c"/>
                         <outlet property="isDarkThemeEnabledSwitch" destination="aZM-i5-ScX" id="Y31-8D-4LV"/>
                         <outlet property="isSyncEnabledLabel" destination="vnz-sc-s7C" id="pXr-EJ-FXP"/>
                         <outlet property="isSyncEnabledSwitch" destination="9nL-VW-Zhq" id="gMC-Sw-gff"/>
+                        <outlet property="landingTabRow" destination="Tz6-ZQ-q35" id="dZN-6E-Pou"/>
+                        <outlet property="landingTabTitleLabel" destination="TBm-Y5-r12" id="3kP-8J-UHL"/>
                         <outlet property="useDarkThemeLabel" destination="Vjv-d3-kPe" id="Kyp-2s-iqi"/>
                     </connections>
                 </tableViewController>

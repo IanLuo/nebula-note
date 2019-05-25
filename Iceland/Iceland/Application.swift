@@ -71,15 +71,7 @@ public class Application: Coordinator {
                                         dependency: self.dependency)
         homeCoord.start(from: self, animated: animated)
         
-        if SyncManager.status == .on {
-            self.dependency.syncManager.geticloudContainerURL { (_) in
-                InterfaceThemeSelector.shared.changeTheme(
-                    SettingsAccessor.shared.isDarkInterfaceOn
-                        ? DarkInterfaceTheme()
-                        : LightInterfaceTheme()
-                )
-            }
-        } else {
+        self.dependency.documentManager.getFileLocationComplete { _ in
             InterfaceThemeSelector.shared.changeTheme(
                 SettingsAccessor.shared.isDarkInterfaceOn
                     ? DarkInterfaceTheme()

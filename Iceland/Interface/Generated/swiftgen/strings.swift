@@ -400,6 +400,10 @@ public enum L10n {
       /// Dark interface
       public static let title = L10n.tr("Localizable", "setting.isUseDarkInterface.title")
     }
+    public enum LandingTab {
+      /// Choose landing tab
+      public static let title = L10n.tr("Localizable", "setting.landingTab.title")
+    }
   }
 
   public enum Sync {

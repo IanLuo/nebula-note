@@ -24,6 +24,10 @@ public class SettingsViewController: UITableViewController {
     @IBOutlet var useDarkThemeLabel: UILabel!
     @IBOutlet var isDarkThemeEnabledSwitch: UISwitch!
     
+    @IBOutlet var landingTabTitleLabel: UILabel!
+    @IBOutlet var chooseLandingTabButton: UIButton!
+    @IBOutlet var landingTabRow: UITableViewCell!
+    
     public override init(style: UITableView.Style) {
         super.init(style: style)
         
@@ -38,14 +42,16 @@ public class SettingsViewController: UITableViewController {
     public override func viewDidLoad() {
         self._setupUI()
         self._setupObserver()
+        
+        self.isSyncEnabledLabel.text = L10n.Setting.storeIniCloud
+        self.isSyncEnabledSwitch.isOn = self.viewModel.isSyncEnabled
+        self.chooseLandingTabButton.setTitle(self._landingTabNames[self.viewModel.currentLandigTabIndex], for: .normal)
     }
     
     private func _setupUI() {
         self.title = L10n.Setting.title
         
         self.tableView.separatorStyle = .none
-        self.isSyncEnabledLabel.text = L10n.Setting.storeIniCloud
-        self.isSyncEnabledSwitch.isOn = self.viewModel.isSyncEnabled
         
         self.useDarkThemeLabel.text = L10n.Setting.IsUseDarkInterface.title
         self.isDarkThemeEnabledSwitch.isOn = self.viewModel.isDarkInterfaceOn
@@ -62,6 +68,10 @@ public class SettingsViewController: UITableViewController {
             
             self?.useDarkThemeLabel.textColor = theme.color.interactive
             self?.isDarkThemeEnabledSwitch.onTintColor = theme.color.spotlight
+            
+            self?.landingTabTitleLabel.textColor = theme.color.interactive
+            self?.chooseLandingTabButton.setTitleColor(theme.color.spotlight, for: .normal)
+            self?.landingTabRow.tintColor = theme.color.descriptive
         }
     }
     
@@ -72,6 +82,7 @@ public class SettingsViewController: UITableViewController {
     private func _setupObserver() {
         self.isSyncEnabledSwitch.addTarget(self, action: #selector(_iCloudSwitchTapped), for: .touchUpInside)
         self.isDarkThemeEnabledSwitch.addTarget(self, action: #selector(_isDarkInterfaceSwitchButtonTapped), for: .touchUpInside)
+        self.chooseLandingTabButton.addTarget(self, action: #selector(_showLandingTabNamesSelector), for: .touchUpInside)
     }
     
     @objc private func _iCloudSwitchTapped(_ switchButton: UISwitch) {
@@ -103,12 +114,25 @@ public class SettingsViewController: UITableViewController {
         self.viewModel.setDarkInterfaceOn(switchButton.isOn)
     }
     
-    private func _showLandingTabNamesSelector() {
+    @objc private func _showLandingTabNamesSelector() {
         let selector = SelectorViewController()
         let tabs = self._landingTabNames
 
         for tabName in tabs {
             selector.addItem(title: tabName)
+        }
+        
+        selector.fromView = self.landingTabRow
+        selector.title = L10n.Setting.LandingTab.title
+        
+        selector.onCancel = { viewController in
+            viewController.dismiss(animated: true, completion: nil)
+        }
+        
+        selector.onSelection = { index, viewController in
+            viewController.dismiss(animated: true, completion: nil)
+            self.viewModel.setLandingTabIndex(index)
+            self.chooseLandingTabButton.setTitle(self._landingTabNames[index], for: .normal)
         }
         
         selector.currentTitle = tabs[self.viewModel.currentLandigTabIndex]

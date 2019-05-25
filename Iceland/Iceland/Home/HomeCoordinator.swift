@@ -48,12 +48,20 @@ public class HomeCoordinator: Coordinator {
         browserCoordinator.delegate = self
         self.addPersistentCoordinator(browserCoordinator)
         
-        dashboardViewController.addTab(tabs: [DashboardViewController.TabType.agenda(agendaCoordinator.viewController!, 0),
-                                              DashboardViewController.TabType.captureList(captureCoordinator.viewController!, 1),
-                                              DashboardViewController.TabType.search(searchCoordinator.viewController!, 2),
-                                              DashboardViewController.TabType.documents(browserCoordinator.viewController!, 3)])
+        let tabs = [agendaCoordinator.viewController!,
+                    captureCoordinator.viewController!,
+                    searchCoordinator.viewController!,
+                    browserCoordinator.viewController!]
         
-        self.homeViewController.showChildViewController(agendaCoordinator.viewController!)
+        dashboardViewController.addTab(tabs: [DashboardViewController.TabType.agenda(tabs[0], 0),
+                                              DashboardViewController.TabType.captureList(tabs[1], 1),
+                                              DashboardViewController.TabType.search(tabs[2], 2),
+                                              DashboardViewController.TabType.documents(tabs[3], 3)])
+        
+        dependency.documentManager.getFileLocationComplete { [weak self] _ in
+            guard let s = self else { return }
+            s.homeViewController.showChildViewController(tabs[s.dependency.settingAccessor.landingTabIndex])
+        }
     }
     
     private var tempCoordinator: Coordinator?

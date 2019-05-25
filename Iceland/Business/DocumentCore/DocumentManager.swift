@@ -28,6 +28,16 @@ public struct DocumentManager {
         return self._editorContext.recentFilesManager.recentFiles
     }
     
+    public func getFileLocationComplete(_ completion: @escaping (URL?) -> Void) {
+        if SyncManager.status == .on {
+            self._syncManager.geticloudContainerURL {
+                completion($0)
+            }
+        } else {
+            completion(URL.localDocumentBaseURL)
+        }
+    }
+    
     public func removeRecentFile(url: URL) {
         self._editorContext.recentFilesManager.removeRecentFile(url: url) {}
     }
