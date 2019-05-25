@@ -46,7 +46,11 @@ public class DocumentSearchViewController: UIViewController {
         let tableView = UITableView()
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.separatorColor = InterfaceTheme.Color.background3
+        
+        tableView.interface({ (me, theme) in
+            let tableView = me as! UITableView
+            tableView.separatorColor = theme.color.background3
+        })
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 30, bottom: 0, right: 30)
         tableView.register(SearchTableCell.self, forCellReuseIdentifier: SearchTableCell.reuseIdentifier)
         tableView.backgroundColor = .clear
@@ -58,7 +62,11 @@ public class DocumentSearchViewController: UIViewController {
         let tableView = UITableView()
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.separatorColor = InterfaceTheme.Color.background3
+        tableView.interface({ (me, theme) in
+            let tableView = me as! UITableView
+            tableView.separatorColor = theme.color.background3
+        })
+
         tableView.backgroundColor = .clear
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 30, bottom: 0, right: 30)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "UITableViewCell")
@@ -102,7 +110,9 @@ public class DocumentSearchViewController: UIViewController {
     }
     
     private func setupUI() {
-        self.view.backgroundColor = InterfaceTheme.Color.background1.withAlphaComponent(0.1)
+        self.interface { (me, theme) in
+            me.view.backgroundColor = theme.color.background1
+        }
         
         self.view.addSubview(self.searchInputView)
         self.view.addSubview(self.preservedSearchItemsTableView)
@@ -159,6 +169,10 @@ extension DocumentSearchViewController: UITableViewDataSource, UITableViewDelega
             tableView.deselectRow(at: indexPath, animated: true)
         }
     }
+    
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        self.searchInputView.textField.resignFirstResponder()
+    }
 }
 
 extension DocumentSearchViewController: DocumentSearchViewModelDelegate {
@@ -194,31 +208,46 @@ private class SearchInputView: UIView, UITextFieldDelegate {
     private lazy var startEditButton: UIButton = {
         let icon = UIButton(frame: CGRect(origin: .zero, size: CGSize(width: 20, height: 20)))
         icon.addTarget(self, action: #selector(beginEdit), for: .touchUpInside)
-        icon.setImage(Asset.Assets.zoom.image.withRenderingMode(.alwaysTemplate), for: .normal)
+        
+        icon.interface({ (me, theme) in
+            let icon = me as! UIButton
+            icon.setImage(Asset.Assets.zoom.image.withRenderingMode(.alwaysTemplate), for: .normal)
+        })
         return icon
     }()
     
     private lazy var endEditButton: UIButton = {
         let button = UIButton(frame: CGRect(origin: .zero, size: CGSize(width: 20, height: 20)))
+        
+        button.interface({ (me, theme) in
+            let button = me as! UIButton
+            button.titleLabel?.font = theme.font.footnote
+        })
         button.addTarget(self, action: #selector(endEdit), for: .touchUpInside)
         button.setTitle(L10n.General.Button.Title.cancel, for: .normal)
-        button.titleLabel?.font = InterfaceTheme.Font.footnote
         return button
     }()
     
     fileprivate lazy var textField: UITextField = {
         let textField = UITextField()
         textField.delegate = self
-        textField.textColor = InterfaceTheme.Color.interactive
-        textField.font = InterfaceTheme.Font.body
+        
+        textField.interface({ (me, theme) in
+            let textField = me as! UITextField
+            textField.textColor = theme.color.interactive
+            textField.font = theme.font.body
+            textField.tintColor = theme.color.interactive
+        })
         textField.autocorrectionType = .no
         textField.autocapitalizationType = .none
-        textField.tintColor = InterfaceTheme.Color.interactive
         
         let clearButton = UIButton(frame: CGRect(origin: .zero, size: CGSize(width: 20, height: 20)))
-        clearButton.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.descriptive, size: .singlePoint), for: .normal)
-        clearButton.setImage(Asset.Assets.cross.image.withRenderingMode(.alwaysTemplate), for: .normal)
-        clearButton.tintColor = InterfaceTheme.Color.interactive
+        
+        clearButton.interface({ (me, theme) in
+            let clearButton = me as! UIButton
+            clearButton.setBackgroundImage(UIImage.create(with: theme.color.descriptive, size: .singlePoint), for: .normal)
+            clearButton.setImage(Asset.Assets.cross.image.fill(color: theme.color.interactive), for: .normal)
+        })
         clearButton.addTarget(self, action: #selector(clear), for: .touchUpInside)
         clearButton.layer.cornerRadius = 10
         clearButton.layer.masksToBounds = true
@@ -248,13 +277,16 @@ private class SearchInputView: UIView, UITextFieldDelegate {
     }
     
     private func setupUI() {
-        self.backgroundColor = InterfaceTheme.Color.background1
+        self.interface { (me, theme) in
+            me.backgroundColor = theme.color.background1
+            me.tintColor = theme.color.interactive
+            me.setBorder(position: .bottom, color: theme.color.background3, width: 0.5)
+        }
         
         self.addSubview(self.startEditButton)
         self.addSubview(self.endEditButton)
         self.addSubview(self.textField)
         
-        self.tintColor = InterfaceTheme.Color.interactive
         
         self.startEditButton.sideAnchor(for: .left, to: self, edgeInset: 0)
         self.startEditButton.sizeAnchor(width: 60, height: 60)
@@ -266,7 +298,6 @@ private class SearchInputView: UIView, UITextFieldDelegate {
         self.endEditButton.sideAnchor(for: .right, to: self, edgeInset: 30)
         self.endEditButton.centerAnchors(position: .centerY, to: self)
         
-        self.setBorder(position: .bottom, color: InterfaceTheme.Color.background3, width: 0.5)
     }
     
     func textFieldDidBeginEditing(_ textField: UITextField) {

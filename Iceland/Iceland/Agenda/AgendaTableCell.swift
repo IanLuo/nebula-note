@@ -23,7 +23,10 @@ public class AgendaTableCell: UITableViewCell {
     
     private let infoView: UIView = {
         let view = UIView()
-        view.backgroundColor = InterfaceTheme.Color.background2
+        
+        view.interface({ (me, theme) in
+            me.backgroundColor = theme.color.background2
+        })
         view.layer.cornerRadius = 8
         view.layer.masksToBounds = true
         return view
@@ -31,7 +34,11 @@ public class AgendaTableCell: UITableViewCell {
     
     private let documentNameLabel: UILabel = {
         let label = UILabel()
-        label.textColor = InterfaceTheme.Color.descriptiveHighlighted
+        
+        label.interface({ (me, theme) in
+            let me = me as! UILabel
+            me.textColor = theme.color.descriptiveHighlighted
+        })
         label.font = InterfaceTheme.Font.footnote
         label.textAlignment = .left
         return label
@@ -39,8 +46,12 @@ public class AgendaTableCell: UITableViewCell {
     
     private let _dateAndTimeLabel: UILabel = {
         let label = UILabel()
-        label.textColor = InterfaceTheme.Color.warning
-        label.font = InterfaceTheme.Font.footnote
+        
+        label.interface({ (me, theme) in
+            let me = me as! UILabel
+            me.textColor = theme.color.warning
+            me.font = theme.font.footnote
+        })
         return label
     }()
     
@@ -57,23 +68,33 @@ public class AgendaTableCell: UITableViewCell {
     
     private let tagsIcon: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = Asset.Assets.tag.image.withRenderingMode(UIImage.RenderingMode.alwaysTemplate)
-        imageView.tintColor = InterfaceTheme.Color.descriptiveHighlighted
+        
+        imageView.interface({ (me, theme) in
+            let me = me as! UIImageView
+            me.image = Asset.Assets.tag.image.fill(color: theme.color.descriptiveHighlighted)
+        })
+
         return imageView
     }()
     
     private let tagsLabel: UILabel = {
         let label = UILabel()
-        label.textColor = InterfaceTheme.Color.descriptiveHighlighted
+        label.interface({ (me, theme) in
+            let me = me as! UILabel
+            me.textColor = theme.color.descriptiveHighlighted
+            me.font = theme.font.footnote
+        })
         label.textAlignment = .left
-        label.font = InterfaceTheme.Font.footnote
         return label
     }()
     
     private let _actionButton: UIButton = {
         let button = UIButton()
-        button.setImage(Asset.Assets.moreV.image.withRenderingMode(.alwaysTemplate), for: .normal)
-        button.tintColor = InterfaceTheme.Color.descriptiveHighlighted
+        
+        button.interface({ (me, theme) in
+            let me = me as! UIButton
+            button.setImage(Asset.Assets.moreV.image.fill(color: theme.color.descriptiveHighlighted), for: .normal)
+        })
         return button
     }()
     
@@ -92,7 +113,14 @@ public class AgendaTableCell: UITableViewCell {
     }
     
     private func setupUI() {
-        self.backgroundColor = InterfaceTheme.Color.background1
+        
+        self.interface { (me, theme) in
+            let me = me as! AgendaTableCell
+            me.backgroundColor = theme.color.background1
+            if let cellModel = me.cellModel {
+                me.updateUI(cellModel: cellModel) // update the theme
+            }
+        }
         
         self.contentView.addSubview(self.infoView)
         self.infoView.sideAnchor(for: [.left, .top, .bottom, .right],

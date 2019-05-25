@@ -126,7 +126,7 @@ private struct DefaultOutlineTheme: OutlineThemeConfigProtocol {
     
     var unorderdedListStyle: TextStyle = TextStyle(font: InterfaceTheme.Font.body, color: InterfaceTheme.Color.descriptive)
     
-    var checkboxStyle: TextStyle = TextStyle(font: InterfaceTheme.Font.body, color: InterfaceTheme.Color.spotlight)
+    var checkboxStyle: TextStyle = TextStyle(font: InterfaceTheme.Font.title, color: InterfaceTheme.Color.interactive)
     
     var linkStyle: TextStyle = TextStyle(font: InterfaceTheme.Font.body, color: InterfaceTheme.Color.spotlight)
     
@@ -138,10 +138,10 @@ private struct DefaultOutlineTheme: OutlineThemeConfigProtocol {
     
     var quoteBlockStyle: QuoteBlockStyle = QuoteBlockStyle(textStyle: TextStyle(font: InterfaceTheme.Font.body, color: InterfaceTheme.Color.interactive))
     
-    var textMarkStyle: TextMarkStyle = TextMarkStyle(bold: TextStyle(font: InterfaceTheme.Font.body, color: InterfaceTheme.Color.interactive),
+    var textMarkStyle: TextMarkStyle = TextMarkStyle(bold: TextStyle(font: InterfaceTheme.Font.title, color: InterfaceTheme.Color.interactive),
                                                      italic: TextStyle(font: InterfaceTheme.Font.body, color: InterfaceTheme.Color.interactive),
-                                                     underscore: TextStyle(font: InterfaceTheme.Font.body, color: InterfaceTheme.Color.interactive),
-                                                     strikethrought: TextStyle(font: InterfaceTheme.Font.body, color: InterfaceTheme.Color.interactive),
+                                                     underscore: TextStyle(font: InterfaceTheme.Font.body, color: InterfaceTheme.Color.interactive, otherAttributes: [NSAttributedString.Key.underlineStyle: 1]),
+                                                     strikethrought: TextStyle(font: InterfaceTheme.Font.body, color: InterfaceTheme.Color.interactive, otherAttributes: [NSAttributedString.Key.strikethroughStyle: 1]),
                                                      verbatim: TextStyle(font: InterfaceTheme.Font.body, color: InterfaceTheme.Color.interactive),
                                                      code: TextStyle(font: InterfaceTheme.Font.body, color: InterfaceTheme.Color.interactive))
     
@@ -150,17 +150,17 @@ private struct DefaultOutlineTheme: OutlineThemeConfigProtocol {
                                                                                                        color: InterfaceTheme.Color.interactive)),
                                                               soon: ButtonStyle(buttonColor: UIColor.yellow,
                                                                                 textStyle: TextStyle(font: InterfaceTheme.Font.body,
-                                                                                                     color: InterfaceTheme.Color.interactive)),
+                                                                                                     color: InterfaceTheme.Color.descriptive)),
                                                               overtime: ButtonStyle(buttonColor: UIColor.red,
                                                                                     textStyle: TextStyle(font: InterfaceTheme.Font.body,
-                                                                                                         color: InterfaceTheme.Color.interactive)))
+                                                                                                         color: InterfaceTheme.Color.descriptive)))
     
     var planningStyle: PlanningStyle = PlanningStyle(finished: ButtonStyle(buttonColor: UIColor.green,
                                                                            textStyle: TextStyle(font: InterfaceTheme.Font.body,
                                                                                                 color: InterfaceTheme.Color.interactive)),
                                                      unfinished: ButtonStyle(buttonColor: UIColor.yellow,
                                                                              textStyle: TextStyle(font: InterfaceTheme.Font.body,
-                                                                                                  color: InterfaceTheme.Color.interactive)))
+                                                                                                  color: InterfaceTheme.Color.descriptive)))
     var tagStyle: ButtonStyle = ButtonStyle(buttonColor: InterfaceTheme.Color.descriptive,
                                             textStyle: TextStyle(font: InterfaceTheme.Font.footnote, color: InterfaceTheme.Color.interactive))
     
@@ -232,10 +232,23 @@ public struct TextMarkStyle {
 public struct TextStyle {
     public let font: UIFont
     public let color: UIColor
+    public let otherAttributes: [NSAttributedString.Key: Any]?
+    
+    public init(font: UIFont, color: UIColor, otherAttributes: [NSAttributedString.Key: Any]? = nil) {
+        self.font = font
+        self.color = color
+        self.otherAttributes = otherAttributes
+    }
     
     public var attributes: [NSAttributedString.Key: Any] {
-        return [NSAttributedString.Key.foregroundColor: self.color,
-                NSAttributedString.Key.font: self.font]
+        if var otherAttributes = self.otherAttributes {
+            otherAttributes[NSAttributedString.Key.foregroundColor] = self.color
+            otherAttributes[NSAttributedString.Key.font] = self.font
+            return otherAttributes
+        } else {
+            return [NSAttributedString.Key.foregroundColor: self.color,
+                    NSAttributedString.Key.font: self.font]
+        }
     }
 }
 

@@ -56,6 +56,40 @@ public class Application: Coordinator {
         self._setupObservers()
     }
     
+    private func _setupObservers() {
+        self.dependency.eventObserver.registerForEvent(on: self, eventType: ImportFileEvent.self, queue: nil) { [weak self] (event: ImportFileEvent) -> Void in
+            self?.topCoordinator?.openDocument(url: event.url, location: 0)
+        }
+    }
+    
+    deinit {
+        self.dependency.eventObserver.unregister(for: self, eventType: nil)
+    }
+    
+    public override func start(from: Coordinator?, animated: Bool) {
+        let homeCoord = HomeCoordinator(stack: self.stack,
+                                        dependency: self.dependency)
+        homeCoord.start(from: self, animated: animated)
+        
+        if SyncManager.status == .on {
+            self.dependency.syncManager.geticloudContainerURL { (_) in
+                InterfaceThemeSelector.shared.changeTheme(
+                    SettingsAccessor.shared.isDarkInterfaceOn
+                        ? DarkInterfaceTheme()
+                        : LightInterfaceTheme()
+                )
+            }
+        } else {
+            InterfaceThemeSelector.shared.changeTheme(
+                SettingsAccessor.shared.isDarkInterfaceOn
+                    ? DarkInterfaceTheme()
+                    : LightInterfaceTheme()
+            )
+        }
+        
+        self._setupiCloud()
+    }
+    
     private func _setupiCloud() {
         if SyncManager.status == .off {
             // 用户已关闭 iCloud，忽略
@@ -111,33 +145,18 @@ public class Application: Coordinator {
             }
         }
     }
-    
-    private func _setupObservers() {
-        self.dependency.eventObserver.registerForEvent(on: self, eventType: ImportFileEvent.self, queue: nil) { [weak self] (event: ImportFileEvent) -> Void in
-            self?.topCoordinator?.openDocument(url: event.url, location: 0)
-        }
-    }
-    
-    deinit {
-        self.dependency.eventObserver.unregister(for: self, eventType: nil)
-    }
-    
-    public override func start(from: Coordinator?, animated: Bool) {
-        let homeCoord = HomeCoordinator(stack: self.stack,
-                                        dependency: self.dependency)
-        homeCoord.start(from: self, animated: animated)
-        
-        self._setupiCloud()
-    }
 }
 
 extension Coordinator {
     public static func createDefaultNavigationControlller() -> UINavigationController {
         let navigationController = UINavigationController()
-        navigationController.navigationBar.tintColor = InterfaceTheme.Color.interactive
-        navigationController.navigationBar.setBackgroundImage(UIImage(), for: .default)
-        navigationController.navigationBar.shadowImage = UIImage()
-        navigationController.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.interactive]
+        
+        navigationController.interface { (me, theme) in
+            navigationController.navigationBar.tintColor = theme.color.interactive
+            navigationController.navigationBar.setBackgroundImage(UIImage(), for: .default)
+            navigationController.navigationBar.shadowImage = UIImage()
+            navigationController.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: theme.color.interactive]
+        }
         return navigationController
     }
 }

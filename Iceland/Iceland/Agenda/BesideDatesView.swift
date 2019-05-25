@@ -25,7 +25,10 @@ public class BesideDatesView: UIView {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.delegate = self
         collectionView.dataSource = self
-        collectionView.backgroundColor = InterfaceTheme.Color.background1
+        
+        collectionView.interface({ (me, theme) in
+            me.backgroundColor = theme.color.background1
+        })
         collectionView.register(DateCell.self, forCellWithReuseIdentifier: DateCell.reuseIdentifier)
         return collectionView
     }()
@@ -100,8 +103,12 @@ private class DateCell: UICollectionViewCell {
         let label = UILabel()
         label.text = "•"
         label.textAlignment = .center
-        label.textColor = InterfaceTheme.Color.descriptive
-        label.font = InterfaceTheme.Font.title
+        
+        label.interface({ (me, theme) in
+            let me = me as! UILabel
+            me.textColor = theme.color.descriptive
+            me.font = theme.font.title
+        })
         return label
     }()
     
@@ -128,6 +135,11 @@ private class DateCell: UICollectionViewCell {
         self.todayLabel.sideAnchor(for: .bottom, to: self, edgeInset: 5)
         self.todayLabel.centerAnchors(position: .centerX, to: self.contentView)
         
+        self.interface { [weak self] (me, theme) in
+            guard let s = self else { return }
+            let isSelected = s.isSelected
+            s.isSelected = isSelected // triger update interface when change interface theme
+        }
     }
     
     override var isSelected: Bool {

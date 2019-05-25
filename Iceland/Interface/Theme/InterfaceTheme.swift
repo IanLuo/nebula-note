@@ -39,12 +39,30 @@ public protocol InterfaceThemeFontProtocol {
     var footnote: UIFont { get }
 }
 
-public struct DefaultInterfaceTheme: InterfaceThemeProtocol {
-    public var color: InterfaceThemeColorProtocol = DefaultInterfaceColor()
+public struct DarkInterfaceTheme: InterfaceThemeProtocol {
+    public init(){}
+    public var color: InterfaceThemeColorProtocol = DarkInterfaceColor()
     public var font: InterfaceThemeFontProtocol = DefaultInterfaceFont()
 }
 
-public struct DefaultInterfaceColor: InterfaceThemeColorProtocol {
+public struct LightInterfaceTheme: InterfaceThemeProtocol {
+    public init(){}
+    public var color: InterfaceThemeColorProtocol = LightInterfaceColor()
+    public var font: InterfaceThemeFontProtocol = DefaultInterfaceFont()
+}
+
+public struct LightInterfaceColor: InterfaceThemeColorProtocol {
+    public let interactive: UIColor = UIColor(red:0.20, green:0.09, blue:0.13, alpha:1.00)
+    public let descriptive: UIColor = UIColor(red:0.75, green:0.75, blue:0.75, alpha:1.00)
+    public let descriptiveHighlighted: UIColor = UIColor(red:0.70, green:0.70, blue:0.70, alpha:1.00)
+    public let background1: UIColor = UIColor(red:0.82, green:0.81, blue:0.89, alpha:1.00)
+    public let background2: UIColor = UIColor(red:0.87, green:0.87, blue:0.87, alpha:1.00)
+    public let background3: UIColor = UIColor(red:0.40, green:0.42, blue:0.43, alpha:1.00)
+    public let spotlight: UIColor = UIColor(red:0.15, green:0.71, blue:0.22, alpha:1.00)
+    public let warning: UIColor = UIColor(red:0.76, green:0.36, blue:0.09, alpha:1.00)
+}
+
+public struct DarkInterfaceColor: InterfaceThemeColorProtocol {
     public let interactive: UIColor = UIColor(red:1.00, green:1.00, blue:1.00, alpha:1.00)
     public let descriptive: UIColor = UIColor(red:0.27, green:0.27, blue:0.27, alpha:1.00)
     public let descriptiveHighlighted: UIColor = UIColor(red:0.41, green:0.41, blue:0.41, alpha:1.00)
@@ -63,10 +81,12 @@ public struct DefaultInterfaceFont: InterfaceThemeFontProtocol {
     public let footnote: UIFont = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.footnote)
 }
 
-public class ThemeSelector {
-    private static let _instance: ThemeSelector = ThemeSelector(theme: DefaultInterfaceTheme())
+public class InterfaceThemeSelector {
+    private static let _instance: InterfaceThemeSelector =  {
+        return InterfaceThemeSelector(theme: LightInterfaceTheme())
+    }()
     
-    private let _registerMap: NSMapTable<AnyObject, AnyObject> = NSMapTable.weakToWeakObjects()
+    private let _registerMap: NSMapTable<AnyObject, AnyObject> = NSMapTable.weakToStrongObjects()
     
     fileprivate var currentTheme: InterfaceThemeProtocol
     
@@ -74,12 +94,12 @@ public class ThemeSelector {
         self.currentTheme = theme
     }
     
-    public static var shared: ThemeSelector {
+    public static var shared: InterfaceThemeSelector {
         return _instance
     }
     
     public func changeTheme(_ theme: InterfaceThemeProtocol) {
-        ThemeSelector.shared.currentTheme = theme
+        InterfaceThemeSelector.shared.currentTheme = theme
         
         for key in self._registerMap.keyEnumerator().allObjects {
             (self._registerMap.object(forKey: key as AnyObject) as? (InterfaceThemeProtocol) -> Void)?(theme)
@@ -95,17 +115,17 @@ public class ThemeSelector {
 
 public struct InterfaceTheme {
     public static var Color: InterfaceThemeColorProtocol {
-        return ThemeSelector.shared.currentTheme.color
+        return InterfaceThemeSelector.shared.currentTheme.color
     }
     
     public static var Font: InterfaceThemeFontProtocol {
-        return ThemeSelector.shared.currentTheme.font
+        return InterfaceThemeSelector.shared.currentTheme.font
     }
 }
 
 extension UIViewController {
     public func interface(_ action: @escaping (UIViewController, InterfaceThemeProtocol) -> Void) {
-        ThemeSelector.shared.register(observer: self) { theme in
+        InterfaceThemeSelector.shared.register(observer: self) { theme in
             unowned let uself = self
             action(uself, theme)
         }
@@ -114,7 +134,7 @@ extension UIViewController {
 
 extension UIView {
     public func interface(_ action: @escaping (UIView, InterfaceThemeProtocol) -> Void) {
-        ThemeSelector.shared.register(observer: self) { theme in
+        InterfaceThemeSelector.shared.register(observer: self) { theme in
             unowned let uself = self
             action(uself, theme)
         }

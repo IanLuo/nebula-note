@@ -27,7 +27,10 @@ public class DocumentBrowserViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(DocumentBrowserCell.self, forCellReuseIdentifier: DocumentBrowserCell.reuseIdentifier)
-        tableView.backgroundColor = InterfaceTheme.Color.background1
+        
+        tableView.interface({ (me, theme) in
+            me.backgroundColor = theme.color.background1
+        })
         tableView.tableFooterView = UIView()
         tableView.separatorStyle = .none
         tableView.contentInset = UIEdgeInsets(top: Constants.recentViewsHeight + Layout.edgeInsets.top, left: 0, bottom: Layout.edgeInsets.bottom + 80, right: 0)
@@ -72,7 +75,9 @@ public class DocumentBrowserViewController: UIViewController {
     }
     
     private func setupUI() {
-        self.view.backgroundColor = InterfaceTheme.Color.background1
+        self.interface { (me, theme) in
+            me.view.backgroundColor = InterfaceTheme.Color.background1
+        }
         
         self.view.addSubview(self.tableView)
         self.view.addSubview(self.openningFilesView)

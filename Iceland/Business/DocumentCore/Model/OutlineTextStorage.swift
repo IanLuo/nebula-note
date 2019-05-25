@@ -735,7 +735,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
             if lhs.range.location != rhs.range.location {
                 return lhs.range.location < rhs.range.location
             } else {
-                return lhs.range.length >= rhs.range.length
+                return lhs.range.length <= rhs.range.length
             }
         }
         

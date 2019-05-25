@@ -31,16 +31,21 @@ public class CaptureTableCell: UITableViewCell {
     
     private var titleLabel: UILabel = {
         let label = UILabel()
-        label.font = InterfaceTheme.Font.title
-        label.textColor = InterfaceTheme.Color.descriptive
+        label.interface({ (me, theme) in
+            let label = me as! UILabel
+            label.font = theme.font.title
+            label.textColor = theme.color.descriptive
+        })
         return label
     }()
     
     private lazy var actionsButton: UIButton = {
         let button = UIButton()
-        button.titleLabel?.font = InterfaceTheme.Font.body
-        button.setTitleColor(InterfaceTheme.Color.interactive, for: .normal)
-        button.setImage(Asset.Assets.more.image.withRenderingMode(.alwaysTemplate), for: .normal)
+        button.interface({ (me, theme) in
+            button.titleLabel?.font = theme.font.body
+            button.setTitleColor(theme.color.interactive, for: .normal)
+            button.setImage(Asset.Assets.more.image.fill(color: theme.color.interactive), for: .normal)
+        })
         button.addTarget(self, action: #selector(didTapActionButton), for: .touchUpInside)
         return button
     }()
@@ -54,7 +59,10 @@ public class CaptureTableCell: UITableViewCell {
         let view = UIView()
         view.layer.cornerRadius = 8
         view.clipsToBounds = true
-        view.backgroundColor = InterfaceTheme.Color.background2
+        
+        view.interface({ (me, theme) in
+            me.backgroundColor = InterfaceTheme.Color.background2
+        })
         return view
     }()
     
@@ -70,7 +78,10 @@ public class CaptureTableCell: UITableViewCell {
     }
     
     private func setupUI() {
-        self.backgroundColor = InterfaceTheme.Color.background1
+        
+        self.interface { (me, theme) in
+            me.backgroundColor = InterfaceTheme.Color.background1
+        }
         
         self.contentView.addSubview(self.attachmentContentView)
         self.contentView.addSubview(self.actionsContainerView)

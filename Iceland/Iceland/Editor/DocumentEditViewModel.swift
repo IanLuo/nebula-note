@@ -343,7 +343,7 @@ public class DocumentEditViewModel {
     
     public func handleConflict(url: URL) throws {
         let currentVersion = NSFileVersion.currentVersionOfItem(at: url)
-        let otherViersions = NSFileVersion.otherVersionsOfItem(at: url)
+        //        let otherViersions = NSFileVersion.otherVersionsOfItem(at: url) FIXME: let user choose
         
         try NSFileVersion.removeOtherVersionsOfItem(at: url)
         

@@ -35,14 +35,14 @@ public class ModalFormViewController: TransitionViewController {
     
     private lazy var cancelButton: RoundButton = {
         let button = RoundButton()
-        button.setIcon(Asset.Assets.cross.image.fill(color: InterfaceTheme.Color.interactive), for: .normal)
+        button.setIcon(Asset.Assets.cross.image.resize(upto: CGSize(width: 10, height: 10)).fill(color: InterfaceTheme.Color.interactive), for: .normal)
         button.setBackgroundColor(InterfaceTheme.Color.background1, for: .normal)
         return button
     }()
     
     private lazy var saveButton: RoundButton = {
         let button = RoundButton()
-        button.setIcon(Asset.Assets.checkMark.image.fill(color: InterfaceTheme.Color.spotlight), for: .normal)
+        button.setIcon(Asset.Assets.checkMark.image.resize(upto: CGSize(width: 15, height: 15)).fill(color: InterfaceTheme.Color.spotlight), for: .normal)
         button.setBackgroundColor(InterfaceTheme.Color.background1, for: .normal)
         return button
     }()
@@ -127,12 +127,16 @@ public class ModalFormViewController: TransitionViewController {
         }
     }
     
-    public override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
+    public func makeFirstTextFieldFirstResponder() {
         if tableView.numberOfRows(inSection: 0) > 0 {
             tableView.cellForRow(at: IndexPath(row: 0, section: 0))?.becomeFirstResponder()
         }
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        makeFirstTextFieldFirstResponder()
     }
     
     deinit {
@@ -141,7 +145,7 @@ public class ModalFormViewController: TransitionViewController {
     
     private func setupUI() {
         self.view.addSubview(self.contentView)
-        self.contentView.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 10)
+        self.contentView.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 10, considerSafeArea: true)
         
         self.contentView.addSubview(self.actionButtonsContainer)
         
@@ -153,7 +157,7 @@ public class ModalFormViewController: TransitionViewController {
         self.actionButtonsContainer.sizeAnchor(height: 60)
         
         self.saveButton.sideAnchor(for: .left, to: actionButtonsContainer, edgeInset: 10)
-        self.saveButton.sizeAnchor(width: 44)
+        self.saveButton.sizeAnchor(width: 30)
         
         self.titleLabel.centerAnchors(position: .centerY, to: self.actionButtonsContainer)
         self.saveButton.centerAnchors(position: .centerY, to: self.actionButtonsContainer)
@@ -161,7 +165,7 @@ public class ModalFormViewController: TransitionViewController {
         
         self.saveButton.rowAnchor(view: self.titleLabel)
         self.cancelButton.sideAnchor(for: .right, to: actionButtonsContainer, edgeInset: 10)
-        self.cancelButton.sizeAnchor(width: 44)
+        self.cancelButton.sizeAnchor(width: 30)
         
         self.titleLabel.rowAnchor(view: self.cancelButton)
         

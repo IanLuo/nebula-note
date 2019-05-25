@@ -31,7 +31,10 @@ public class AttachmentLinkViewController: AttachmentViewController, AttachmentV
         formViewController.title = L10n.CaptureLink.title
 
         self.view.addSubview(formViewController.view)
+        self.formViewController.didMove(toParent: self)
         self.formViewController.view.allSidesAnchors(to: self.view, edgeInset: 0, considerSafeArea: true)
+        
+        self.formViewController.makeFirstTextFieldFirstResponder()
     }
     
     public func didSaveAttachment(key: String) {

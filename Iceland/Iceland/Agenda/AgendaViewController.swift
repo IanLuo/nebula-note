@@ -73,7 +73,9 @@ public class AgendaViewController: UIViewController {
     }
     
     private func setupUI() {
-        self.view.backgroundColor = InterfaceTheme.Color.background1
+        self.interface { (me, theme) in
+            me.view.backgroundColor = theme.color.background1
+        }
         
         self.view.addSubview(self.tableView)
         self.view.addSubview(self.besideDatesView)
@@ -230,16 +232,24 @@ private class DateSectionView: UITableViewHeaderFooterView {
     
     private let weekdayLabel: UILabel = {
         let label = UILabel()
-        label.textColor = InterfaceTheme.Color.descriptive
-        label.font = InterfaceTheme.Font.body
+        
+        label.interface({ (me, theme) in
+            let label = me as! UILabel
+            label.textColor = theme.color.descriptive
+            label.font = theme.font.body
+        })
         label.textAlignment = .left
         return label
     }()
     
     let dateLabel: UILabel = {
         let label = UILabel()
-        label.textColor = InterfaceTheme.Color.descriptive
-        label.font = InterfaceTheme.Font.body
+        
+        label.interface({ (me, theme) in
+            let label = me as! UILabel
+            label.textColor = theme.color.descriptive
+            label.font = theme.font.body
+        })
         label.textAlignment = .left
         return label
     }()
@@ -286,6 +296,8 @@ private class DateSectionView: UITableViewHeaderFooterView {
         
         self.weekdayLabel.lastBaselineAnchor.constraint(equalTo: self.dateLabel.lastBaselineAnchor).isActive = true
         
-        self.contentView.backgroundColor = InterfaceTheme.Color.background1
+        self.interface { [weak self] (me, theme) in
+            self?.contentView.backgroundColor = theme.color.background1
+        }
     }
 }

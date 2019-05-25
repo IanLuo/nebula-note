@@ -66,8 +66,8 @@ public class AttachmentImageViewController: AttachmentViewController, Attachment
     }
     
     public func didSaveAttachment(key: String) {
-        self.delegate?.didSaveAttachment(key: key)
         self.viewModel.coordinator?.stop()
+        self.delegate?.didSaveAttachment(key: key)
     }
     
     public func didFailToSave(error: Error, content: String, kind: Attachment.Kind, descritpion: String) {

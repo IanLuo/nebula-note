@@ -396,6 +396,10 @@ public enum L10n {
         public static let title = L10n.tr("Localizable", "setting.alert.icloudIsNotEnabled.title")
       }
     }
+    public enum IsUseDarkInterface {
+      /// Dark interface
+      public static let title = L10n.tr("Localizable", "setting.isUseDarkInterface.title")
+    }
   }
 
   public enum Sync {

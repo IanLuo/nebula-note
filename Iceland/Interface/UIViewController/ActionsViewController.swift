@@ -148,7 +148,7 @@ public class ActionsViewController: UIViewController, TransitionProtocol {
     private let cancelButton: RoundButton = {
         let button = RoundButton()
         button.setBorder(color: nil)
-        button.setIcon(Asset.Assets.cross.image.fill(color: InterfaceTheme.Color.interactive), for: .normal)
+        button.setIcon(Asset.Assets.cross.image.resize(upto: CGSize(width: 10, height: 10)).fill(color: InterfaceTheme.Color.interactive), for: .normal)
         button.setBackgroundColor(InterfaceTheme.Color.background1, for: .normal)
         return button
     }()
@@ -184,19 +184,19 @@ public class ActionsViewController: UIViewController, TransitionProtocol {
         self.actionsContainerView.addSubview(self.titleLabel)
         
         self.cancelButton.sideAnchor(for: [.right, .top, .bottom], to: self.actionsContainerView, edgeInset: 10)
-        self.cancelButton.sizeAnchor(width: 44)
+        self.cancelButton.sizeAnchor(width: 30)
         self.titleLabel.sideAnchor(for: [.left, .top, .bottom], to: self.actionsContainerView, edgeInsets: .init(top: 0, left: Layout.edgeInsets.left, bottom: 0, right: 0))
         self.titleLabel.rowAnchor(view: self.cancelButton)
         
         self.actionsContainerView.columnAnchor(view: self.accessoryViewContainer)
         
-        self.contentView.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 20)
+        self.contentView.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 10, considerSafeArea: true)
         
         self.accessoryViewContainer.sideAnchor(for: [.left, .right], to: self.contentView, edgeInset: 0)
         self.accessoryViewContainer.columnAnchor(view: self.tableView)
         
         self.tableView.sizeAnchor(height: self.items.reduce(0.0, { $0 + $1.style.height }))
-        self.tableView.sideAnchor(for: [.left, .right, .bottom], to: self.contentView, edgeInset: 0, considerSafeArea: true)
+        self.tableView.sideAnchor(for: [.left, .right, .bottom], to: self.contentView, edgeInset: 0)
         
         self.isInitialized = true
     }

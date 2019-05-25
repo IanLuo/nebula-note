@@ -72,7 +72,12 @@ public class RecentFilesView: UIView {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.delegate = self
         collectionView.dataSource = self
-        collectionView.backgroundColor = InterfaceTheme.Color.background1
+        
+        collectionView.interface({ (me, theme) in
+            let collectionView = me as! UICollectionView
+            collectionView.backgroundColor = InterfaceTheme.Color.background1
+        })
+        
         collectionView.register(OpenningFileCell.self, forCellWithReuseIdentifier: OpenningFileCell.reuseIdentifier)
         collectionView.contentInset = UIEdgeInsets(top: 0, left: 30, bottom: 0, right: 30)
         return collectionView
@@ -164,8 +169,11 @@ private class OpenningFileCell: UICollectionViewCell {
     
     let titleLabel: UILabel = {
         let label = UILabel()
-        label.textColor = InterfaceTheme.Color.interactive
-        label.font = InterfaceTheme.Font.footnote
+        label.interface({ (me, theme) in
+            let label = me as! UILabel
+            label.textColor = theme.color.interactive
+            label.font = theme.font.footnote
+        })
         label.numberOfLines = 0
         label.textAlignment = .center
         return label
@@ -182,7 +190,9 @@ private class OpenningFileCell: UICollectionViewCell {
     }
     
     private func setupUI() {
-        self.contentView.backgroundColor = InterfaceTheme.Color.background2
+        self.interface { [weak self] (me, theme) in
+            self?.contentView.backgroundColor = InterfaceTheme.Color.background2
+        }
         self.contentView.layer.cornerRadius = 8
         self.contentView.layer.masksToBounds = true
         self.contentView.addSubview(self.coverView)

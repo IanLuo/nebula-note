@@ -73,7 +73,11 @@ public class DashboardViewController: UIViewController {
         let tableView = UITableView()
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.backgroundColor = InterfaceTheme.Color.background2
+        
+        tableView.interface({ (me, theme) in
+            let tableView = me as! UITableView
+            tableView.backgroundColor = theme.color.background2
+        })
         tableView.separatorStyle = .none
         tableView.register(TabView.self, forHeaderFooterViewReuseIdentifier: TabView.reuseIdentifier)
         tableView.register(SubtabCell.self, forCellReuseIdentifier: SubtabCell.reuseIdentifier)
@@ -426,27 +430,39 @@ private class TabView: UITableViewHeaderFooterView {
     
     let titleButton: UIButton = {
         let button = UIButton()
-        button.titleLabel?.font = InterfaceTheme.Font.title
-        button.setTitleColor(InterfaceTheme.Color.interactive, for: .normal)
+        
+        button.interface({ (me, theme) in
+            let button = me as! UIButton
+            button.titleLabel?.font = theme.font.title
+            button.setTitleColor(theme.color.interactive, for: .normal)
+            button.setBackgroundImage(UIImage.create(with: theme.color.background3, size: .singlePoint), for: .selected)
+            button.setBackgroundImage(UIImage.create(with: theme.color.background2, size: .singlePoint), for: .normal)
+        })
         button.contentHorizontalAlignment = .left
         button.addTarget(self, action: #selector(actionTapped), for: .touchUpInside)
-        button.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.background3, size: .singlePoint), for: .selected)
-        button.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.background2, size: .singlePoint), for: .normal)
         return button
     }()
     
     let iconView: UIImageView = {
         let imageView = UIImageView()
-        imageView.tintColor = InterfaceTheme.Color.descriptive
+        
+        imageView.interface({ (me, theme) in
+            let imageView = me as! UIImageView
+            imageView.tintColor = theme.color.descriptive
+        })
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
     
     let showSubtabsButton: UIButton = {
         let button = UIButton()
-        button.tintColor = InterfaceTheme.Color.descriptiveHighlighted
+        
+        button.interface({ (me, theme) in
+            let button = me as! UIButton
+            button.tintColor = theme.color.descriptiveHighlighted
+            button.setImage(Asset.Assets.down.image.resize(upto: CGSize(width: 10, height: 10)).fill(color: theme.color.descriptiveHighlighted), for: .normal)
+        })
         button.addTarget(self, action: #selector(subtabActionTapped), for: .touchUpInside)
-        button.setImage(Asset.Assets.down.image.resize(upto: CGSize(width: 10, height: 10)).withRenderingMode(.alwaysTemplate), for: .normal)
         button.imageView?.contentMode = .scaleAspectFit
         return button
     }()
@@ -516,35 +532,55 @@ private class SubtabCell: UITableViewCell {
     static let reuseIdentifier: String = "SubtabCell"
     let titleLabel: UILabel = {
         let label = UILabel()
-        label.font = InterfaceTheme.Font.body
-        label.textColor = InterfaceTheme.Color.interactive
+        
+        label.interface({ (me, theme) in
+            let label = me as! UILabel
+            label.font = theme.font.body
+            label.textColor = theme.color.interactive
+        })
         return label
     }()
     
     let subtitleLabel: UILabel = {
         let label = UILabel()
-        label.font = InterfaceTheme.Font.footnote
-        label.textColor = InterfaceTheme.Color.descriptive
+        
+        label.interface({ (me, theme) in
+            let label = me as! UILabel
+            label.font = theme.font.footnote
+            label.textColor = theme.color.descriptive
+        })
         return label
     }()
     
     let detailIconView: UIImageView = {
         let imageView = UIImageView()
-        imageView.tintColor = InterfaceTheme.Color.descriptive
+        
+        imageView.interface({ (me, theme) in
+            let imageView = me as! UIImageView
+            imageView.tintColor = InterfaceTheme.Color.descriptive
+        })
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
     
     let iconView: UIImageView = {
         let imageView = UIImageView()
-        imageView.tintColor = InterfaceTheme.Color.descriptive
+        
+        imageView.interface({ (me, theme) in
+            let imageView = me as! UIImageView
+            imageView.tintColor = InterfaceTheme.Color.descriptive
+        })
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.backgroundColor = InterfaceTheme.Color.background2
+        
+        self.interface { (me, theme) in
+            me.backgroundColor = theme.color.background2
+        }
+        
         self.contentView.addSubview(self.titleLabel)
         self.contentView.addSubview(self.iconView)
         self.contentView.addSubview(self.subtitleLabel)

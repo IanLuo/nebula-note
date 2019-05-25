@@ -19,6 +19,8 @@ public class SettingsAccessor {
         struct Keys {
             static let finishedPlannings = "finishedPlannings"
             static let unfinishedPlannings = "unfinishedPlannings"
+            static let landingTabIndex = "landingTabIndex"
+            static let isDarkInterfaceOn = "isDarkInterfaceOn"
         }
     }
     
@@ -43,6 +45,22 @@ public class SettingsAccessor {
     
     public var priorities: [String] {
         return OutlineParser.Values.Heading.Priority.all
+    }
+    
+    public func setIsDarkInterfaceOn(_ isOn: Bool, completion: @escaping () -> Void) {
+        Constants.store.set(value: isOn, key: Constants.Keys.isDarkInterfaceOn, completion: completion)
+    }
+    
+    public var isDarkInterfaceOn: Bool {
+        return Constants.store.get(key: Constants.Keys.isDarkInterfaceOn, type: Bool.self) ?? false
+    }
+    
+    public func setLandingTabIndex(_ index: Int, completion: @escaping () -> Void) {
+        Constants.store.set(value: index, key: Constants.Keys.landingTabIndex, completion: completion)
+    }
+    
+    public var landingTabIndex: Int {
+        return Constants.store.get(key: Constants.Keys.landingTabIndex, type: Int.self) ?? 0
     }
     
     public var customizedUnfinishedPlannings: [String]? {

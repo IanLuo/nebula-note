@@ -13,6 +13,8 @@ public protocol SettingsViewModelDelegate: class {
     func didSetIsSyncEnabled(_ enabled: Bool)
     func didUpdateFinishedPlanning()
     func didUpdateUnfinishedPlanning()
+    func didSetLandingTabIndex(index: Int)
+    func didSetInterfaceTheme(isOn: Bool)
 }
 
 public class SettingsViewModel {
@@ -28,6 +30,16 @@ public class SettingsViewModel {
         return self.coordinator?.dependency.syncManager.iCloudAccountStatus != .closed
             && SyncManager.status == .on
     }
+    
+    public var isDarkInterfaceOn: Bool {
+        return self.coordinator?.dependency.settingAccessor.isDarkInterfaceOn ?? false
+    }
+    
+    public func setDarkInterfaceOn(_ isOn: Bool) {
+        self.coordinator?.dependency.settingAccessor.setIsDarkInterfaceOn(isOn, completion: { [weak self] in
+            self?.delegate?.didSetInterfaceTheme(isOn: isOn)
+        })
+    }
 
     public func getPlanning(isForFinished: Bool) -> [String] {
         return (isForFinished
@@ -37,6 +49,16 @@ public class SettingsViewModel {
     
     public var plannings: [String] {
         return self.coordinator?.dependency.settingAccessor.allPlannings ?? []
+    }
+    
+    public func setLandingTabIndex(_ index: Int) {
+        self.coordinator?.dependency.settingAccessor.setLandingTabIndex(index) { [weak self] in
+            self?.delegate?.didSetLandingTabIndex(index: index)
+        }
+    }
+    
+    public var currentLandigTabIndex: Int {
+        return self.coordinator?.dependency.settingAccessor.landingTabIndex ?? 0
     }
     
     public func addPlanning(_ planning: String, isForFinished: Bool, completion: @escaping () -> Void) {

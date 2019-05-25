@@ -82,7 +82,7 @@ extension UIImage {
 extension UIView {
     public var snapshot: UIImage? {
         var image: UIImage?
-        UIGraphicsBeginImageContextWithOptions(self.bounds.size, true, 0)
+        UIGraphicsBeginImageContextWithOptions(self.bounds.size, false, 0)
         if let context = UIGraphicsGetCurrentContext() {
             self.layer.render(in: context)
             image = UIGraphicsGetImageFromCurrentImageContext()

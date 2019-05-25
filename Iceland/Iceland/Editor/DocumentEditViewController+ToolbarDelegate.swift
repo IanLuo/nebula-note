@@ -44,15 +44,17 @@ extension DocumentEditViewController: DocumentEditToolbarDelegate {
         } else if let documentAction = action as? DocumentActon {
             // attachment
             if let attachmentAction = documentAction as? AttachmentAction {
+                self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.hide()
                 self.viewModel.coordinator?.showAttachmentPicker(kind: attachmentAction.AttachmentKind, complete: { [unowned self] attachmentId in
                     let result = self.viewModel.performAction(EditAction.addAttachment(currentLocation,
                                                                           attachmentId, attachmentAction.AttachmentKind.rawValue),
                                                  textView: self.textView)
                     DispatchQueue.main.async {
                         self.textView.selectedRange = self.textView.selectedRange.offset(result.delta)
+                        self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                     }
-                }, cancel: {
-                    
+                }, cancel: { [weak self] in
+                    self?.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                 })
             }
             

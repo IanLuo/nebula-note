@@ -112,24 +112,18 @@ private class ItemCell: UITableViewCell {
     }
     
     override public func setHighlighted(_ highlighted: Bool, animated: Bool) {
-        self.interface { (me, theme) in
-            let me = me as! UITableViewCell
-            if highlighted {
-                me.backgroundColor = theme.color.background3
-            } else {
-                me.backgroundColor = theme.color.background2
-            }
+        if highlighted {
+            self.backgroundColor = InterfaceTheme.Color.background3
+        } else {
+            self.backgroundColor = InterfaceTheme.Color.background2
         }
     }
     
     override public func setSelected(_ selected: Bool, animated: Bool) {
-        self.interface { (me, theme) in
-            let me = me as! UITableViewCell
-            if selected {
-                me.backgroundColor = theme.color.background3
-            } else {
-                me.backgroundColor = theme.color.background2
-            }
+        if selected {
+            self.backgroundColor = InterfaceTheme.Color.background3
+        } else {
+            self.backgroundColor = InterfaceTheme.Color.background2
         }
     }
 }

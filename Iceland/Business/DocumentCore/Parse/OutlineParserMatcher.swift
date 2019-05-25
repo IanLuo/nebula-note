@@ -198,7 +198,7 @@ extension OutlineParser {
             public static let heading =         "^(\\*+) (.)*"
             public static let codeBlock =       "^[\\t ]*\\#\\+BEGIN\\_SRC( [\(character)\\.]*)?\\n([^\\#\\+END\\_SRC]*)\\n\\s*\\#\\+END\\_SRC[\\t ]*\\n"
             public static let checkBox =        "^[\\t ]*(\\- \\[(X| |\\-)\\] )"
-            public static let unorderedList =   "^[\\t ]*([\\-\\+] ).*" // 避免与 checkbox 冲突
+            public static let unorderedList =   "^[\\t ]*([\\-\\+] )[^\\[\\n]*" // 避免与 checkbox 冲突
             public static let orderedList =     "^[\\t ]*(([0-9a-zA-Z])+[\\.\\)\\>] ).*"
             public static let seperator =       "^[\\t ]*(\\-{5,}[\\t ]*)"
             public static let attachment =      "\\#\\+ATTACHMENT\\:(image|video|audio|sketch|location)=([A-Z0-9\\-]+)" // like: #+ATTACHMENT:LKS-JDLF-JSDL-JFLSDF)

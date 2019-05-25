@@ -191,22 +191,18 @@ private class CaptureCell: UITableViewCell {
     }
     
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
-        self.interface { (me, theme) in
-            if highlighted {
-                me.backgroundColor = InterfaceTheme.Color.background3
-            } else {
-                me.backgroundColor = InterfaceTheme.Color.background2
-            }
+        if highlighted {
+            self.backgroundColor = InterfaceTheme.Color.background3
+        } else {
+            self.backgroundColor = InterfaceTheme.Color.background2
         }
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
-        self.interface { (me, theme) in
-            if selected {
-                me.backgroundColor = InterfaceTheme.Color.background3
-            } else {
-                me.backgroundColor = InterfaceTheme.Color.background2
-            }
+        if selected {
+            self.backgroundColor = InterfaceTheme.Color.background3
+        } else {
+            self.backgroundColor = InterfaceTheme.Color.background2
         }
     }
 }

@@ -21,23 +21,31 @@ public class DocumentBrowserCell: UITableViewCell {
     public static let reuseIdentifier: String = "DocumentBrowserCell"
     private let arrowButton: UIButton = {
         let button = UIButton()
-        button.setImage(Asset.Assets.down.image.resize(upto: CGSize(width: 10, height: 10)).withRenderingMode(.alwaysTemplate), for: .normal)
+        button.interface({ (me, theme) in
+            let button = me as! UIButton
+            button.setImage(Asset.Assets.down.image.resize(upto: CGSize(width: 10, height: 10)).withRenderingMode(.alwaysTemplate), for: .normal)
+            button.tintColor = InterfaceTheme.Color.descriptiveHighlighted
+        })
         button.isHidden = true
-        button.tintColor = InterfaceTheme.Color.descriptiveHighlighted
         return button
     }()
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.font = InterfaceTheme.Font.subtitle
-        label.textColor = InterfaceTheme.Color.interactive
+        label.interface({ (me, theme) in
+            let label = me as! UILabel
+            label.font = theme.font.subtitle
+            label.textColor = theme.color.interactive
+        })
         label.textAlignment = .left
         label.numberOfLines = 0
         return label
     }()
     private let actionButton: UIButton = {
         let button = UIButton()
-        button.setImage(Asset.Assets.more.image.withRenderingMode(.alwaysTemplate), for: .normal)
-        button.tintColor = InterfaceTheme.Color.interactive
+        button.interface({ (me, theme) in
+            let button = me as! UIButton
+            button.setImage(Asset.Assets.more.image.fill(color: theme.color.interactive), for: .normal)
+        })
         return button
     }()
     
@@ -103,7 +111,9 @@ public class DocumentBrowserCell: UITableViewCell {
         self.actionButton.sideAnchor(for: [.top, .bottom, .right], to: self.contentView, edgeInsets: .init(top: 0, left: 0, bottom: 0, right: -30))
         self.actionButton.ratioAnchor(1)
         
-        self.backgroundColor = InterfaceTheme.Color.background1
+        self.interface { (me, theme) in
+            me.backgroundColor = theme.color.background1
+        }
     }
     
     private func updateUI(cellModel: DocumentBrowserCellModel) {
