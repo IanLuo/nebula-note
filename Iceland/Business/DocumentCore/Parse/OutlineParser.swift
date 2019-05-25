@@ -187,6 +187,23 @@ public class OutlineParser {
             }
         }
         
+        // MARK: 解析 unordered list head
+        if includeParsee.contains(.unorderedList) {
+            let result: [[String: NSRange]] = Matcher.Node.unorderedListHead
+                .matches(in: str, options: [], range: totalRange)
+                .map { (result: NSTextCheckingResult) -> [String: NSRange] in
+                    var comp: [String: NSRange] = [:]
+                    comp[Key.Node.unordedList] = result.range(at: 0)
+                    comp[Key.Element.UnorderedList.prefix] = result.range(at: 1)
+                    return comp
+            }
+            
+            if result.count > 0 {
+                self.logResult(result)
+                self.delegate?.didFoundUnOrderedList(text: str, unOrderedListRnages: result)
+            }
+        }
+        
         // MARK: 解析 checkbox
         if includeParsee.contains(.checkbox) {
             let result: [[String: NSRange]] = Matcher.Node.checkbox

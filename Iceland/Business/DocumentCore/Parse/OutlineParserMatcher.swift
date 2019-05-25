@@ -58,6 +58,7 @@ extension OutlineParser {
             public static var checkbox = try! NSRegularExpression(pattern: RegexPattern.Node.checkBox, options: [.anchorsMatchLines])
             public static var ordedList = try! NSRegularExpression(pattern: RegexPattern.Node.orderedList, options: [.anchorsMatchLines])
             public static var unorderedList = try! NSRegularExpression(pattern: RegexPattern.Node.unorderedList, options: [.anchorsMatchLines])
+            public static var unorderedListHead = try! NSRegularExpression(pattern: RegexPattern.Node.unorderedListHead, options: [.anchorsMatchLines])
             public static var seperator = try! NSRegularExpression(pattern: RegexPattern.Node.seperator, options: [.anchorsMatchLines])
             public static var attachment = try! NSRegularExpression(pattern: RegexPattern.Node.attachment, options: [])
             public static var textAttachment = try! NSRegularExpression(pattern: RegexPattern.Node.textAttachment, options: [])
@@ -198,7 +199,8 @@ extension OutlineParser {
             public static let heading =         "^(\\*+) (.)*"
             public static let codeBlock =       "^[\\t ]*\\#\\+BEGIN\\_SRC( [\(character)\\.]*)?\\n([^\\#\\+END\\_SRC]*)\\n\\s*\\#\\+END\\_SRC[\\t ]*\\n"
             public static let checkBox =        "^[\\t ]*(\\- \\[(X| |\\-)\\] )"
-            public static let unorderedList =   "^[\\t ]*([\\-\\+] )[^\\[\\n]*" // 避免与 checkbox 冲突
+            public static let unorderedList =   "^[\\t ]*([\\-\\+] )[^\\[\\n]+" //用于匹配有内容的 unordered list 避免与 checkbox 冲突
+            public static let unorderedListHead = "^[\\t ]*([\\-\\+]\\ )$" // 用于匹配没有内容的 unordered list
             public static let orderedList =     "^[\\t ]*(([0-9a-zA-Z])+[\\.\\)\\>] ).*"
             public static let seperator =       "^[\\t ]*(\\-{5,}[\\t ]*)"
             public static let attachment =      "\\#\\+ATTACHMENT\\:(image|video|audio|sketch|location)=([A-Z0-9\\-]+)" // like: #+ATTACHMENT:LKS-JDLF-JSDL-JFLSDF)
@@ -241,8 +243,8 @@ extension OutlineParser {
             
             public struct TextMark {
                 private static let ignoredCharacters: String = "\\n\\,\\'\\\""
-                private static let pre =            "[ \\(\\{\\'\\\"]+"
-                private static let post =           "[ \\-\\.\\,\\:\\!\\?\\'\\)\\}\\\"]+"
+                private static let pre =            "[ \\(\\{\\'\\\"]"
+                private static let post =           "[ \\-\\.\\,\\:\\!\\?\\'\\)\\}\\\"\\\n]"
                 public static let bold =            "\(pre)(\\*([^\(ignoredCharacters)\\*]*)\\*)\(post)"
                 public static let italic =          "\(pre)(\\/([^\(ignoredCharacters)\\/]*)\\/)\(post)"
                 public static let underscore =      "\(pre)(\\_([^\(ignoredCharacters)\\_]*)\\_)\(post)"

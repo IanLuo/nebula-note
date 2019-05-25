@@ -133,7 +133,7 @@ extension OutlineTextStorage: ContentUpdatingProtocol {
             _ = self._remove(in: deletionRange, from: &self._quoteBlocks)
         }
 
-        // 更新 item 索引缓存
+        // 更新 item 偏移
         self.updateTokenRangeOffset(delta: delta, from: range.location)
 
         // 调整需要解析的字符串范围
@@ -172,7 +172,7 @@ extension OutlineTextStorage: ContentUpdatingProtocol {
         
         // -> DEBUG
         // 解析范围提示
-        //        self.addAttributes([NSAttributedString.Key.backgroundColor: UIColor.gray.withAlphaComponent(0.5)], range: currentParseRange)
+                self.addAttributes([NSAttributedString.Key.backgroundColor: UIColor.gray.withAlphaComponent(0.5)], range: currentParseRange)
         // 添加 token 提示
         //        self._tempParsingTokenResult.forEach { token in
         //            self.addAttribute(NSAttributedString.Key.backgroundColor, value: UIColor.yellow.withAlphaComponent(0.3), range: token.range)
@@ -927,7 +927,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
         var newRange = range
         
         let line1Start = (string as NSString).lineRange(for: NSRange(location: newRange.location, length: 0)).location
-        let line2End = (string as NSString).lineRange(for: NSRange(location: max(0, newRange.upperBound - 1), length: 0)).upperBound
+        let line2End = (string as NSString).lineRange(for: NSRange(location: max(newRange.location, newRange.upperBound - 1), length: 0)).upperBound
         
         newRange = NSRange(location: line1Start, length: line2End - line1Start)
         
