@@ -664,11 +664,13 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 
                 let dataAndTimeString = textStorage.substring(range)
                 let dateAndTime = DateAndTimeType(dataAndTimeString)
-                let datesFromToday = dateAndTime?.date.daysFrom(Date()) ?? 4 // 默认为 > 4 天，则显示为 normal
+                let datesFromToday = dateAndTime?.date.daysFrom(Date()) ?? 4 // 默认为 4 天, normal 颜色
                 let dateAndTimeStyle = OutlineTheme.dateAndTimeStyle(datesFromToday: datesFromToday)
                 textStorage._addButtonAttributes(range: range, color: dateAndTimeStyle.buttonColor)
                 textStorage.addAttributes([OutlineAttribute.dateAndTime: dataAndTimeString], range: range)
                 textStorage.addAttributes(dateAndTimeStyle.textStyle.attributes, range: range)
+                textStorage.addAttributes(OutlineTheme.markStyle.attributes, range: range.head(1))
+                textStorage.addAttributes(OutlineTheme.markStyle.attributes, range: range.tail(1))
             }
         }
     }

@@ -12,7 +12,7 @@ import UIKit
 public class ActionsViewController: UIViewController, TransitionProtocol {
     fileprivate struct Constants {
         static let rowHeight: CGFloat = 50
-        static let specialItemSeparatorHeight: CGFloat = 10
+        static let specialItemSeparatorHeight: CGFloat = 5
         static let titleHeight: CGFloat = 60
     }
     

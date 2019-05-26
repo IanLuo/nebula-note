@@ -146,14 +146,14 @@ private struct DefaultOutlineTheme: OutlineThemeConfigProtocol {
                                                      code: TextStyle(font: InterfaceTheme.Font.body, color: InterfaceTheme.Color.interactive))
     
     var dateAndTimeStyle: DateAndTimeStyle = DateAndTimeStyle(normal: ButtonStyle(buttonColor: InterfaceTheme.Color.interactive,
-                                                                                  textStyle: TextStyle(font: InterfaceTheme.Font.footnote,
+                                                                                  textStyle: TextStyle(font: InterfaceTheme.Font.body,
                                                                                                        color: InterfaceTheme.Color.interactive)),
                                                               soon: ButtonStyle(buttonColor: UIColor.yellow,
-                                                                                textStyle: TextStyle(font: InterfaceTheme.Font.footnote,
-                                                                                                     color: InterfaceTheme.Color.descriptive)),
+                                                                                textStyle: TextStyle(font: InterfaceTheme.Font.body,
+                                                                                                     color: InterfaceTheme.Color.descriptiveHighlighted)),
                                                               overtime: ButtonStyle(buttonColor: UIColor.red,
-                                                                                    textStyle: TextStyle(font: InterfaceTheme.Font.footnote,
-                                                                                                         color: InterfaceTheme.Color.descriptive)))
+                                                                                    textStyle: TextStyle(font: InterfaceTheme.Font.body,
+                                                                                                         color: InterfaceTheme.Color.interactive)))
     
     var planningStyle: PlanningStyle = PlanningStyle(finished: ButtonStyle(buttonColor: UIColor.green,
                                                                            textStyle: TextStyle(font: InterfaceTheme.Font.footnote,

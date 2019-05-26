@@ -19,7 +19,11 @@ public class DocumentEditViewController: UIViewController {
     public let textView: OutlineTextView
     internal let viewModel: DocumentEditViewModel
     
-    private let _loadingIndicator: UIActivityIndicatorView = UIActivityIndicatorView(style: UIActivityIndicatorView.Style.whiteLarge)
+    private let _loadingIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView()
+        indicator.color = InterfaceTheme.Color.interactive
+        return indicator
+    }()
     
     public weak var delegate: DocumentEditViewControllerDelegate?
     

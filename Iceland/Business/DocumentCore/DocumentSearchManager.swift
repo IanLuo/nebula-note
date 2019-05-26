@@ -61,11 +61,33 @@ public struct DocumentTextSearchResult {
     public let heading: DocumentHeading?
 }
 
-public struct DocumentHeadingSearchResult {
+public class DocumentHeadingSearchResult {
+    public init(dateAndTime: DateAndTimeType?, documentInfo: DocumentInfo, dateAndTimeRange: NSRange?, heading: DocumentHeading, parent: DocumentHeadingSearchResult? = nil) {
+        self.dateAndTime = dateAndTime
+        self.documentInfo = documentInfo
+        self.dateAndTimeRange = dateAndTimeRange
+        self.heading = heading
+        self.parent = parent
+    }
+    
     public let dateAndTime: DateAndTimeType?
     public let documentInfo: DocumentInfo
     public let dateAndTimeRange: NSRange?
     public let heading: DocumentHeading
+    public weak var parent: DocumentHeadingSearchResult?
+    public var children: [DocumentHeadingSearchResult] = []
+    
+    public func getWholdTree() -> [DocumentHeadingSearchResult] {
+        var allResults: [DocumentHeadingSearchResult] = []
+        
+        for r in self.children {
+            allResults.append(contentsOf: r.getWholdTree())
+        }
+        
+        allResults.append(self)
+        
+        return allResults
+    }
 }
 
 public class DocumentSearchHeadingUpdateEvent: Event {
@@ -249,7 +271,7 @@ public class DocumentSearchManager {
     
     public func searchTag(_ tagToSearch: String, completion: @escaping ([DocumentHeadingSearchResult]) -> Void, failure: @escaping (Error) -> Void) {
         self.allHeadings(completion: { headingResults in
-            let result = headingResults.filter { heading in
+            let results = headingResults.filter { heading in
                 if let tags = heading.heading.tags, tags.contains(tagToSearch) {
                     return true
                 } else {
@@ -257,7 +279,7 @@ public class DocumentSearchManager {
                 }
             }
             
-            completion(result)
+            completion(results)
         }) { error in
             failure(error)
         }
@@ -288,19 +310,40 @@ public class DocumentSearchManager {
             
             var headings: [DocumentHeadingSearchResult] = []
             do {
+                
+                func figureOutParentChildRelation(headingStack: inout [DocumentHeadingSearchResult], new result: DocumentHeadingSearchResult) {
+                    if let last = headingStack.last {
+                        if last.heading.level < result.heading.level {
+                            result.parent = last
+                            last.children.append(result)
+                        } else {
+                            headingStack.removeLast() // has run out of children
+                            figureOutParentChildRelation(headingStack: &headingStack, new: result)
+                        }
+                    }
+                }
+                
                 try self.loadAllFiles().forEach { url in
                     
                     let string = try String(contentsOf: url)
                     parser.parse(str: string)
                 
+                    var headingStack: [DocumentHeadingSearchResult] = []
                     headings.append(contentsOf: parseDelegate.headings.map { headingToken in
                         
-                        DocumentHeadingSearchResult(dateAndTime: nil,
+                        let result = DocumentHeadingSearchResult(dateAndTime: nil,
                                                     documentInfo: DocumentInfo(wrapperURL: url.wrapperURL),
                                                     dateAndTimeRange: nil,
                                                     heading: DocumentHeading(documentString: string,
                                                                              headingToken: headingToken,
                                                                              url: url))
+                        
+                        // make the result parent/child relationship
+                        figureOutParentChildRelation(headingStack: &headingStack, new: result)
+                        
+                        headingStack.append(result)
+                        
+                        return result
                     })
                 }
                 

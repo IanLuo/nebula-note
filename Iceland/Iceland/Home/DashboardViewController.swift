@@ -15,11 +15,11 @@ public protocol DashboardViewControllerDelegate: class {
     func didSelectTab(at index: Int, viewController: UIViewController)
     func showHeadings(tag: String)
     func showHeadings(planning: String)
-    func showHeadingsScheduled(headings: [DocumentHeadingSearchResult])
-    func showHeadingsOverdue(headings: [DocumentHeadingSearchResult])
-    func showHeadingsScheduleSoon(headings: [DocumentHeadingSearchResult])
-    func showHeadingsOverdueSoon(headings: [DocumentHeadingSearchResult])
-    func showHeadingsWithoutDate(headings: [DocumentHeadingSearchResult])
+    func showHeadingsScheduled(headings: [DocumentHeadingSearchResult], from subTabType: DashboardViewController.SubtabType)
+    func showHeadingsOverdue(headings: [DocumentHeadingSearchResult], from subTabType: DashboardViewController.SubtabType)
+    func showHeadingsScheduleSoon(headings: [DocumentHeadingSearchResult], from subTabType: DashboardViewController.SubtabType)
+    func showHeadingsOverdueSoon(headings: [DocumentHeadingSearchResult], from subTabType: DashboardViewController.SubtabType)
+    func showHeadingsWithoutDate(headings: [DocumentHeadingSearchResult], from subTabType: DashboardViewController.SubtabType)
 }
 
 public class DashboardViewController: UIViewController {
@@ -148,15 +148,15 @@ public class DashboardViewController: UIViewController {
             }
             self.navigationController?.pushViewController(tagsViewController, animated: true)
         case .overdue:
-            self.viewModel.coordinator?.showHeadingsOverdue(headings: self.viewModel.overdue)
+            self.viewModel.coordinator?.showHeadingsOverdue(headings: self.viewModel.overdue, from: self.tabs[tab].sub[subtab].type)
         case .overdueSoon:
-            self.viewModel.coordinator?.showHeadingsOverdueSoon(headings: self.viewModel.overdueSoon)
+            self.viewModel.coordinator?.showHeadingsOverdueSoon(headings: self.viewModel.overdueSoon, from: self.tabs[tab].sub[subtab].type)
         case .scheduled:
-            self.viewModel.coordinator?.showHeadingsScheduled(headings: self.viewModel.scheduled)
+            self.viewModel.coordinator?.showHeadingsScheduled(headings: self.viewModel.scheduled, from: self.tabs[tab].sub[subtab].type)
         case .scheduledSoon:
-            self.viewModel.coordinator?.showHeadingsScheduleSoon(headings: self.viewModel.startSoon)
+            self.viewModel.coordinator?.showHeadingsScheduleSoon(headings: self.viewModel.startSoon, from: self.tabs[tab].sub[subtab].type)
         case .withoutTag:
-            self.viewModel.coordinator?.showHeadingsWithoutDate(headings: self.viewModel.withoutTag)
+            self.viewModel.coordinator?.showHeadingsWithoutDate(headings: self.viewModel.withoutTag, from: self.tabs[tab].sub[subtab].type)
         default: break
         }
     }

@@ -264,6 +264,8 @@ public enum L10n {
         public static let add = L10n.tr("Localizable", "document.edit.tag.add")
         /// New tag name
         public static let placeHolder = L10n.tr("Localizable", "document.edit.tag.place-holder")
+        /// Edit tag
+        public static let title = L10n.tr("Localizable", "document.edit.tag.title")
         /// Don't use special characters in tag
         public static let validation = L10n.tr("Localizable", "document.edit.tag.validation")
       }

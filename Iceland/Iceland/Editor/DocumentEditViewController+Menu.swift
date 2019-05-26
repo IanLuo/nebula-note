@@ -175,7 +175,7 @@ extension DocumentEditViewController {
         let tags = self.viewModel.tags(at: location)
         
         let actionsViewController = ActionsViewController()
-        
+        actionsViewController.title = L10n.Document.Edit.Tag.title
         var location = location
         
         for tag in tags {

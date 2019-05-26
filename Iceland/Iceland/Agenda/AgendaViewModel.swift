@@ -92,7 +92,17 @@ public class AgendaViewModel {
             switch filterType {
             case .tag(let tag):
                 self._documentSearchManager.searchTag(tag, completion: { [weak self] results in
-                    self?.data = results.map { AgendaCellModel(searchResult: $0) }
+                    var __data: [AgendaCellModel] = []
+                    
+                    for result in results {
+                        let children = result.getWholdTree().map {
+                            AgendaCellModel(searchResult: $0)
+                        }
+                        
+                        __data.append(contentsOf: children)
+                    }
+                    
+                    self?.data = __data
                     self?.delegate?.didCompleteLoadAllData()
                 }) { error in
                     log.error(error)

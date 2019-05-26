@@ -119,7 +119,7 @@ extension CaptureViewController: UITableViewDelegate, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: CaptureCell.reuseIdentifier, for: indexPath) as! CaptureCell
         
         let attachmentKind = Attachment.Kind.allCases[indexPath.row]
-        cell.iconView.image = attachmentKind.icon.withRenderingMode(.alwaysTemplate)
+        cell.iconView.image = attachmentKind.icon
         cell.titleLabel.text = attachmentKind.rawValue
         return cell
     }
@@ -128,13 +128,13 @@ extension CaptureViewController: UITableViewDelegate, UITableViewDataSource {
 extension Attachment.Kind {
     var icon: UIImage {
         switch self {
-        case .audio: return Asset.Assets.add.image
-        case .video: return Asset.Assets.add.image
-        case .link: return Asset.Assets.add.image
-        case .location: return Asset.Assets.add.image
-        case .sketch: return Asset.Assets.add.image
-        case .text: return Asset.Assets.add.image
-        case .image: return Asset.Assets.imageLibrary.image
+        case .audio: return Asset.Assets.audio.image.fill(color: InterfaceTheme.Color.descriptive)
+        case .video: return Asset.Assets.video.image.fill(color: InterfaceTheme.Color.descriptive)
+        case .link: return Asset.Assets.link.image.fill(color: InterfaceTheme.Color.descriptive)
+        case .location: return Asset.Assets.location.image.fill(color: InterfaceTheme.Color.descriptive)
+        case .sketch: return Asset.Assets.sketch.image.fill(color: InterfaceTheme.Color.descriptive)
+        case .text: return Asset.Assets.text.image.fill(color: InterfaceTheme.Color.descriptive)
+        case .image: return Asset.Assets.imageLibrary.image.fill(color: InterfaceTheme.Color.descriptive)
         }
     }
 }
@@ -146,9 +146,6 @@ private class CaptureCell: UITableViewCell {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         
-        imageView.interface({ (me, theme) in
-            me.tintColor = InterfaceTheme.Color.descriptive
-        })
         return imageView
     }()
     
