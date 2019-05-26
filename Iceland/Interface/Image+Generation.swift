@@ -44,7 +44,7 @@ extension UIImage {
         return image!
     }
     
-    public func fill(color: UIColor) -> UIImage {
+    @objc public func fill(color: UIColor) -> UIImage {
         var image: UIImage!
         UIGraphicsBeginImageContextWithOptions(self.size, false, self.scale)
         guard let context = UIGraphicsGetCurrentContext() else { fatalError("no image context") }
@@ -55,7 +55,7 @@ extension UIImage {
         return image
     }
     
-    public func resize(upto: CGSize) -> UIImage {
+    @objc public func resize(upto: CGSize) -> UIImage {
         let newSize = self.size.aspectFitSizeScale(for: upto)
         
         var image: UIImage!
@@ -70,7 +70,7 @@ extension UIImage {
         return image
     }
     
-    public func translation(offset: CGPoint) -> UIImage {
+    @objc public func translation(offset: CGPoint) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(CGSize(width: size.width + offset.x, height: size.height + offset.y), false, 0)
         draw(at: offset)
         let image = UIGraphicsGetImageFromCurrentImageContext()
@@ -80,7 +80,7 @@ extension UIImage {
 }
 
 extension UIView {
-    public var snapshot: UIImage? {
+    @objc public var snapshot: UIImage? {
         var image: UIImage?
         UIGraphicsBeginImageContextWithOptions(self.bounds.size, false, 0)
         if let context = UIGraphicsGetCurrentContext() {

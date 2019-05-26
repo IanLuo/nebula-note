@@ -192,10 +192,12 @@ public class ModalFormViewController: TransitionViewController {
     
     public func addTextFied(title: String, placeHoder: String, defaultValue: String?, keyboardType: UIKeyboardType = .default) {
         self.items.append(InputType.textField(title, placeHoder, defaultValue, keyboardType))
+        self.formData[title] = defaultValue
     }
     
     public func addTextView(title: String, defaultValue: String?, keyboardType: UIKeyboardType = .default) {
         self.items.append(InputType.textView(title, defaultValue, keyboardType))
+        self.formData[title] = defaultValue
     }
     
     @objc private func keyBoardWillShow(notification: Notification) {

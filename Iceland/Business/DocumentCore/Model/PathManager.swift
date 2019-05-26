@@ -254,11 +254,11 @@ extension URL {
 
 
 extension URL {
-    public func duplicate(queue q: DispatchQueue, completion: @escaping (URL?, Error?) -> Void) {
+    public func duplicate(queue q: DispatchQueue, copyExt: String, completion: @escaping (URL?, Error?) -> Void) {
         let fileCoordinator = NSFileCoordinator()
         let read = NSFileAccessIntent.readingIntent(with: self, options: NSFileCoordinator.ReadingOptions.Element())
         
-        var copyURL = self.concatingToFileName(" copy")
+        var copyURL = self.concatingToFileName(" \(copyExt)")
         // 如果对应的文件名已经存在，则在文件名后添加数字，并以此增大
         var incrementaor: Int = 1
         let copyOfNewURL = copyURL

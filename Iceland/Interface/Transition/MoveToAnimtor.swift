@@ -17,7 +17,7 @@ public class MoveToAnimtor: NSObject, Animator {
     }
     
     public func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
-        return 0.3
+        return 0.25
     }
     
     public func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
@@ -47,7 +47,7 @@ public class MoveToAnimtor: NSObject, Animator {
                 transitionViewController.contentView.alpha = 0
                 transitionViewController.view.backgroundColor = UIColor.black.withAlphaComponent(0)
                 
-                UIView.animate(withDuration: self.transitionDuration(using: transitionContext), delay: 0.0, options: .curveEaseOut, animations: ({
+                UIView.animate(withDuration: self.transitionDuration(using: transitionContext), delay: 0.0, options: .curveEaseInOut, animations: ({
                     animatableView.frame = destRect
                     animatableView.alpha = 1
                     transitionViewController.view.backgroundColor = UIColor.black.withAlphaComponent(0.5)
@@ -75,7 +75,7 @@ public class MoveToAnimtor: NSObject, Animator {
                 
                 containner.addSubview(animatableView)
                 
-                UIView.animate(withDuration: self.transitionDuration(using: transitionContext), delay: 0, options: .curveEaseIn, animations: ({
+                UIView.animate(withDuration: self.transitionDuration(using: transitionContext), delay: 0, options: .curveEaseInOut, animations: ({
                     animatableView.frame = destRect
                     animatableView.alpha = 0
                     transitionViewController.view.backgroundColor = UIColor.black.withAlphaComponent(0)

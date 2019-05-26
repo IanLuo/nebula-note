@@ -44,6 +44,7 @@ public class SettingsViewController: UITableViewController {
         self._setupObserver()
         
         self.isSyncEnabledLabel.text = L10n.Setting.storeIniCloud
+        self.landingTabTitleLabel.text = L10n.Setting.LandingTab.title
         self.isSyncEnabledSwitch.isOn = self.viewModel.isSyncEnabled
         self.chooseLandingTabButton.setTitle(self._landingTabNames[self.viewModel.currentLandigTabIndex], for: .normal)
     }
@@ -62,6 +63,7 @@ public class SettingsViewController: UITableViewController {
                                                                  action: #selector(self._cancel))
         
         self.interface { [weak self] (me, theme) in
+            me.setNeedsStatusBarAppearanceUpdate()
             self?.view.backgroundColor = theme.color.background1
             self?.isSyncEnabledLabel.textColor = theme.color.interactive
             self?.isSyncEnabledSwitch.onTintColor = theme.color.spotlight
@@ -73,6 +75,10 @@ public class SettingsViewController: UITableViewController {
             self?.chooseLandingTabButton.setTitleColor(theme.color.spotlight, for: .normal)
             self?.landingTabRow.tintColor = theme.color.descriptive
         }
+    }
+    
+    public override var preferredStatusBarStyle: UIStatusBarStyle {
+        return InterfaceTheme.statusBarStyle
     }
     
     @objc private func _cancel() {

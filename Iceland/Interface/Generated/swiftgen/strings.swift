@@ -133,6 +133,8 @@ public enum L10n {
       public static let title = L10n.tr("Localizable", "browser.actions.title")
     }
     public enum Title {
+      /// Copy
+      public static let copyExt = L10n.tr("Localizable", "browser.title.copyExt")
       /// Untitled
       public static let untitled = L10n.tr("Localizable", "browser.title.untitled")
     }

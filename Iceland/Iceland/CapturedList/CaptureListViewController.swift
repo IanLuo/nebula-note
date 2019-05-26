@@ -46,7 +46,7 @@ public class CaptureListViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
         viewModel.delegate = self
         self.title = L10n.CaptureList.title
-        self.tabBarItem = UITabBarItem(title: "", image: Asset.Assets.capture.image, tag: 0)
+        self.tabBarItem = UITabBarItem(title: "", image: Asset.Assets.inspiration.image, tag: 0)
     }
     
     public required init?(coder aDecoder: NSCoder) {

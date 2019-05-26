@@ -18,6 +18,7 @@ public struct Layout {
 public protocol InterfaceThemeProtocol {
     var color: InterfaceThemeColorProtocol { get }
     var font: InterfaceThemeFontProtocol { get }
+    var statusBarStyle: UIStatusBarStyle { get }
 }
 
 public protocol InterfaceThemeColorProtocol {
@@ -43,12 +44,18 @@ public struct DarkInterfaceTheme: InterfaceThemeProtocol {
     public init(){}
     public var color: InterfaceThemeColorProtocol = DarkInterfaceColor()
     public var font: InterfaceThemeFontProtocol = DefaultInterfaceFont()
+    public var statusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
 }
 
 public struct LightInterfaceTheme: InterfaceThemeProtocol {
     public init(){}
     public var color: InterfaceThemeColorProtocol = LightInterfaceColor()
     public var font: InterfaceThemeFontProtocol = DefaultInterfaceFont()
+    public var statusBarStyle: UIStatusBarStyle {
+        return .default
+    }
 }
 
 public struct LightInterfaceColor: InterfaceThemeColorProtocol {
@@ -120,6 +127,10 @@ public struct InterfaceTheme {
     
     public static var Font: InterfaceThemeFontProtocol {
         return InterfaceThemeSelector.shared.currentTheme.font
+    }
+    
+    public static var statusBarStyle: UIStatusBarStyle {
+        return InterfaceThemeSelector.shared.currentTheme.statusBarStyle
     }
 }
 

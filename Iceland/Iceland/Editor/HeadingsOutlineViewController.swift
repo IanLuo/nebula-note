@@ -89,7 +89,7 @@ extension HeadingsOutlineViewController: DocumentEditViewModelDelegate {
     }
     
     private func attributedString(level: Int, string: String) -> NSAttributedString {
-        let prefix = "∙" * (level - 1) * 3
+        let prefix = "∙" * (level - 1) * 1
         let infix = prefix.count > 0 ? " " : ""
         let labelString = prefix + infix + string
         let attributedString = NSMutableAttributedString(string: labelString)

@@ -39,8 +39,13 @@ public class DocumentBrowserViewController: UIViewController {
     
     private lazy var createNewDocumentButton: RoundButton = {
         let button = RoundButton()
-        button.setIcon(Asset.Assets.add.image.fill(color: InterfaceTheme.Color.interactive), for: .normal)
-        button.setBackgroundColor(InterfaceTheme.Color.background3, for: .normal)
+        
+        button.interface({ (me, theme) in
+            let button = me as! RoundButton
+            button.setIcon(Asset.Assets.newDocument.image.fill(color: theme.color.interactive), for: .normal)
+            button.setBackgroundColor(theme.color.background2, for: .normal)
+        })
+        
         button.tapped { [weak self] _ in
             self?.createNewDocumentAtRoot()
         }
@@ -282,7 +287,7 @@ extension DocumentBrowserViewController: DocumentBrowserCellDelegate {
             // 复制
             actionsViewController.addAction(icon: nil, title: L10n.Browser.Actions.duplicate) { viewController in
                 viewController.dismiss(animated: true, completion: {
-                    self.viewModel.duplicate(index: index)
+                    self.viewModel.duplicate(index: index, copyExt: L10n.Browser.Title.copyExt)
                     self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                 })
             }

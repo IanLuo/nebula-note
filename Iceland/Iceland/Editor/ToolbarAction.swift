@@ -41,6 +41,7 @@ public enum NormalAction: ToolbarActionProtocol, DocumentActon {
     case list
     case orderedList
     case quote
+    case seperator
     /// code block
     case sourcecode
     case dateAndTime
@@ -91,16 +92,17 @@ public enum NormalAction: ToolbarActionProtocol, DocumentActon {
         case .sourcecode:
             return Asset.Assets.sourcecode.image
         case .dateAndTime:
-            return Asset.Assets.agenda.image
+            return Asset.Assets.calendar.image
         case .planning:
-            return Asset.Assets.agenda.image
+            return Asset.Assets.planning.image
         case .tag:
             return Asset.Assets.tag.image
         case .priority:
-            return Asset.Assets.zoom.image
-        
+            return Asset.Assets.priority.image
         case .captured:
-            return Asset.Assets.capture.image
+            return Asset.Assets.inspiration.image
+        case .seperator:
+            return Asset.Assets.seperator.image
         }
     }
 }

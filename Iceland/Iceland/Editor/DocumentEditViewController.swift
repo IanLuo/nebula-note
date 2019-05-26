@@ -57,6 +57,10 @@ public class DocumentEditViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.interface { (me, theme) in
+            me.setNeedsStatusBarAppearanceUpdate()
+        }
+        
         self.view.addSubview(self.textView)
         self.view.addSubview(self._toolBar)
         self.view.addSubview(self._loadingIndicator)
@@ -108,7 +112,10 @@ public class DocumentEditViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(_keyboardWillHide(_:)), name: UIApplication.keyboardWillHideNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(_keyboardDidShow(_:)), name: UIApplication.keyboardDidShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(_keyboardDidHide(_:)), name: UIApplication.keyboardDidHideNotification, object: nil)
-        
+    }
+    
+    public override var preferredStatusBarStyle: UIStatusBarStyle {
+        return InterfaceTheme.statusBarStyle
     }
     
     private func createActionButton(icon: UIImage?) -> RoundButton {
@@ -121,11 +128,19 @@ public class DocumentEditViewController: UIViewController {
     
     @objc private func _keyboardWillShow(_ notification: Notification) {
         if let userInfo = notification.userInfo {
-            self._keyboardHeight = (userInfo["UIKeyboardFrameBeginUserInfoKey"] as! CGRect).size.height
+            let height = (userInfo["UIKeyboardFrameBeginUserInfoKey"] as! CGRect).size.height
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.2) {
+                self.textView.setContentOffset(CGPoint(x: self.textView.contentOffset.x, y: self.textView.contentOffset.y + height), animated: true)
+            }
         }
+        
     }
     
     @objc private func _keyboardWillHide(_ notification: Notification) {
+        if let userInfo = notification.userInfo {
+            let height = (userInfo["UIKeyboardFrameEndUserInfoKey"] as! CGRect).size.height
+            self.textView.setContentOffset(CGPoint(x: self.textView.contentOffset.x, y: self.textView.contentOffset.y - height), animated: true)
+        }
         
     }
     

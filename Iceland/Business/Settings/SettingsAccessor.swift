@@ -7,13 +7,14 @@
 //
 
 import Foundation
+import Interface
 
 public enum SettingsError: Error {
     case  removePlanningFailed(String)
 }
 
 /// used to fetch settings values
-public class SettingsAccessor {
+@objc public class SettingsAccessor: NSObject {
     private struct Constants {
         static var store: KeyValueStore { return KeyValueStoreFactory.store(type: KeyValueStoreType.plist(PlistStoreType.custom("Settings"))) }
         struct Keys {
@@ -25,8 +26,8 @@ public class SettingsAccessor {
     }
     
     private static let instance = SettingsAccessor()
-    private init() {}
-    public static var shared: SettingsAccessor { return instance }
+    private override init() {}
+    @objc public static var shared: SettingsAccessor { return instance }
     
     public var customizedPlannings: [String]? {
         switch (self.customizedFinishedPlannings, self.customizedUnfinishedPlannings) {
@@ -37,6 +38,10 @@ public class SettingsAccessor {
         case let (nil, rhs):
             return rhs
         }
+    }
+    
+    @objc public var lineHeight: CGFloat {
+        return InterfaceTheme.Font.body.xHeight
     }
     
     public var maxLevel: Int {

@@ -37,11 +37,11 @@ static NSMutableDictionary *attachmentMap;
     if ([self class] == [TextStorage class]) {
         foldingAttachment = [[NSTextAttachment alloc] init];
         foldingAttachment.image = [UIImage imageNamed:@"more" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil];
-        foldingAttachment.bounds = CGRectMake(0, 0, 14, 4);
+        foldingAttachment.bounds = CGRectMake(0, [[SettingsAccessor shared] lineHeight] / 2 - 2, 14, 4);
         
         linkAttachment = [[NSTextAttachment alloc] init];;
-        linkAttachment.image = [UIImage imageNamed: @"document" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil];
-        linkAttachment.bounds = CGRectMake(0, 0, 10, 10);
+        linkAttachment.image = [UIImage imageNamed: @"link" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil];
+        linkAttachment.bounds = CGRectMake(0, 0, 15, 15);
         
         foldedAttachment = [[NSTextAttachment alloc] init];;
         foldedAttachment.image = [UIImage imageNamed: @"add" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil];
@@ -49,7 +49,7 @@ static NSMutableDictionary *attachmentMap;
         
         unfoldedAttachment = [[NSTextAttachment alloc] init];
         unfoldedAttachment.image = [UIImage imageNamed: @"minus" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil];
-        unfoldedAttachment.bounds = CGRectMake(0, 0, 10, 1);
+        unfoldedAttachment.bounds = CGRectMake(0, [[SettingsAccessor shared] lineHeight] / 2, 10, 1);
         
         scheduleAttachment = [[NSTextAttachment alloc] init];
         scheduleAttachment.image = [UIImage imageNamed: @"scheduled" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil];

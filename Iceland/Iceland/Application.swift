@@ -157,3 +157,9 @@ extension Coordinator {
         return navigationController
     }
 }
+
+extension UINavigationController {
+    open override var preferredStatusBarStyle: UIStatusBarStyle {
+        return InterfaceTheme.statusBarStyle
+    }
+}

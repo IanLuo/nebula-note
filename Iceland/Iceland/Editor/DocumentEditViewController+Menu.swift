@@ -58,7 +58,7 @@ extension DocumentEditViewController {
             })
         }
         
-        actionsController.addAction(icon: Asset.Assets.capture.image.fill(color: InterfaceTheme.Color.interactive), title: L10n.Document.Menu.capture, style: .highlight) { viewController in
+        actionsController.addAction(icon: Asset.Assets.inspiration.image.fill(color: InterfaceTheme.Color.interactive), title: L10n.Document.Menu.capture, style: .highlight) { viewController in
             viewController.dismiss(animated: true, completion: {
                 self.viewModel.coordinator?.showCaptureEntrance()
             })

@@ -24,6 +24,7 @@
 "attachment.kind.location" = "Location";
 "attachment.kind.text" = "Text";
 
+// edit document
 "document.dateAndTime.title" = "Date and time";
 "document.dateAndTime.update" = "Update date and time";
 "document.dateAndTime.schedule"= "Schedule";
@@ -130,6 +131,7 @@
 "browser.action.rename.warning.nameIsTaken" = "Name is taken";
 "browser.action.new" = "Create New Document";
 "browser.title.untitled" = "Untitled";
+"browser.title.copyExt" = "Copy";
 "browser.actions.title" = "Perform Actions";
 "browser.actions.newSub" = "New Sub Document";
 "browser.actions.duplicate" = "Duplicate";

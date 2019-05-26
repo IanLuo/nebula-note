@@ -259,8 +259,8 @@ public struct DocumentManager {
         }
     }
     
-    public func duplicate(url: URL, complete: @escaping (URL) -> Void, failure: @escaping (Error) -> Void) {
-        url.duplicate(queue: self._editorContext._editingQueue) { url, error in
+    public func duplicate(url: URL, copyExt: String, complete: @escaping (URL) -> Void, failure: @escaping (Error) -> Void) {
+        url.duplicate(queue: self._editorContext._editingQueue, copyExt: copyExt) { url, error in
             DispatchQueue.main.async {
                 if error == nil {
                     complete(url!)

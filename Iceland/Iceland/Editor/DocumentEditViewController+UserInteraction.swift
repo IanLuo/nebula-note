@@ -61,6 +61,9 @@ extension DocumentEditViewController: OutlineTextViewDelegate {
     
     public func didTapOnLink(textView: UITextView, characterIndex: Int, linkStructure: [String : String], point: CGPoint) {
         let actionsController = ActionsViewController()
+        
+        actionsController.title = linkStructure["url"]
+        
         actionsController.addAction(icon: Asset.Assets.right.image.fill(color: InterfaceTheme.Color.descriptive), title: L10n.Document.Link.open) { viewController in
             viewController.dismiss(animated: true, completion: {
                 if let url = URL(string: linkStructure[OutlineParser.Key.Element.Link.url]!) {

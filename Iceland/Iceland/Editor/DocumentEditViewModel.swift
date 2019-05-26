@@ -70,7 +70,7 @@ public enum EditAction {
         case let .unarchive(location):
             return UnarchiveCommandComposer(location: location)
         case .insertSeparator(let location):
-            return IncreaseIndentCommandComposer(location: location)
+            return AddSeparatorCommandComposer(location: location)
         case .textMark(let markType, let range):
             return TextMarkCommandComposer(markType: markType, range: range)
         case .increaseIndent(let location):

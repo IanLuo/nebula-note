@@ -279,8 +279,9 @@ public class DocumentBrowserViewModel {
         })
     }
     
-    public func duplicate(index: Int) {
+    public func duplicate(index: Int, copyExt: String) {
         self.documentManager.duplicate(url: self.data[index].url,
+                                       copyExt: copyExt,
                                        complete: { [weak self] url in
                                         self?.data.insert(DocumentBrowserCellModel(url: url), at: index)
                                         self?.delegate?.didAddDocument(index: index, count: 1)

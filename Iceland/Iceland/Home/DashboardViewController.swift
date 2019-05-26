@@ -30,7 +30,7 @@ public class DashboardViewController: UIViewController {
         let button = RoundButton()
         
         button.interface({ (me, theme) in
-            (me as? RoundButton)?.setIcon(Asset.Assets.document.image.fill(color: theme.color.interactive), for: .normal)
+            (me as? RoundButton)?.setIcon(Asset.Assets.settings.image.fill(color: theme.color.interactive), for: .normal)
             (me as? RoundButton)?.setBackgroundColor(theme.color.background3, for: .normal)
         })
         return button
@@ -51,6 +51,7 @@ public class DashboardViewController: UIViewController {
         super.viewDidLoad()
         
         self.interface { me, theme in
+            me.setNeedsStatusBarAppearanceUpdate()
             me.view.backgroundColor = theme.color.background2
         }
         
@@ -67,6 +68,10 @@ public class DashboardViewController: UIViewController {
         }
         
         self.viewModel.loadData()
+    }
+    
+    public override var preferredStatusBarStyle: UIStatusBarStyle {
+        return InterfaceTheme.statusBarStyle
     }
     
     private lazy var tableView: UITableView = {

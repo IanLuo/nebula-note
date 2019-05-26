@@ -46,11 +46,12 @@ extension DocumentEditViewController: DocumentEditToolbarDelegate {
             if let attachmentAction = documentAction as? AttachmentAction {
                 self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.hide()
                 self.viewModel.coordinator?.showAttachmentPicker(kind: attachmentAction.AttachmentKind, complete: { [unowned self] attachmentId in
+                    let oldSelection = self.textView.selectedRange
                     let result = self.viewModel.performAction(EditAction.addAttachment(currentLocation,
                                                                           attachmentId, attachmentAction.AttachmentKind.rawValue),
                                                  textView: self.textView)
                     DispatchQueue.main.async {
-                        self.textView.selectedRange = self.textView.selectedRange.offset(result.delta)
+                        self.textView.selectedRange = oldSelection.offset(result.delta)
                         self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                     }
                 }, cancel: { [weak self] in
@@ -79,13 +80,15 @@ extension DocumentEditViewController: DocumentEditToolbarDelegate {
                     }
                     
                 case .increaseIndent:
+                    let outSelection = self.textView.selectedRange
                     let result = self.viewModel.performAction(EditAction.increaseIndent(self.textView.selectedRange.location),
                                                  textView: self.textView)
-                    commandCompletionActionMoveCursorMapTheLengthOfStringChange(self.textView.selectedRange)(result)
+                    commandCompletionActionMoveCursorMapTheLengthOfStringChange(outSelection)(result)
                 case .decreaseIndent:
+                    let outSelection = self.textView.selectedRange
                     let result = self.viewModel.performAction(EditAction.decreaseIndent(self.textView.selectedRange.location),
                                                  textView: self.textView)
-                    commandCompletionActionMoveCursorMapTheLengthOfStringChange(self.textView.selectedRange)(result)
+                    commandCompletionActionMoveCursorMapTheLengthOfStringChange(outSelection)(result)
                 case .undo:
                     UndoCommand().toggle(textView: self.textView)
                 case .redo:
@@ -165,6 +168,10 @@ extension DocumentEditViewController: DocumentEditToolbarDelegate {
                     self.showCapturedItemList(location: self.textView.selectedRange.location)
                 case .paragraph:
                     self.showParagraphActions(at: self.textView.selectedRange.location)
+                case .seperator:
+                    let oldSelectedRange = self.textView.selectedRange
+                    let result = self.viewModel.performAction(EditAction.insertSeparator(self.textView.selectedRange.location), textView: self.textView)
+                    self.textView.selectedRange = oldSelectedRange.offset(result.delta)
                 }
             }
         }

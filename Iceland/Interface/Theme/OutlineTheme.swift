@@ -122,11 +122,11 @@ public protocol OutlineThemeConfigProtocol {
 private struct DefaultOutlineTheme: OutlineThemeConfigProtocol {
     var headingStyle: TextStyle = TextStyle(font: InterfaceTheme.Font.title, color: InterfaceTheme.Color.interactive)
     
-    var orderdedListStyle: TextStyle = TextStyle(font: InterfaceTheme.Font.body, color: InterfaceTheme.Color.descriptive)
+    var orderdedListStyle: TextStyle = TextStyle(font: InterfaceTheme.Font.title, color: InterfaceTheme.Color.descriptive)
     
-    var unorderdedListStyle: TextStyle = TextStyle(font: InterfaceTheme.Font.body, color: InterfaceTheme.Color.descriptive)
+    var unorderdedListStyle: TextStyle = TextStyle(font: InterfaceTheme.Font.title, color: InterfaceTheme.Color.descriptive)
     
-    var checkboxStyle: TextStyle = TextStyle(font: InterfaceTheme.Font.title, color: InterfaceTheme.Color.interactive)
+    var checkboxStyle: TextStyle = TextStyle(font: InterfaceTheme.Font.title, color: InterfaceTheme.Color.spotlight)
     
     var linkStyle: TextStyle = TextStyle(font: InterfaceTheme.Font.body, color: InterfaceTheme.Color.spotlight)
     
@@ -146,20 +146,20 @@ private struct DefaultOutlineTheme: OutlineThemeConfigProtocol {
                                                      code: TextStyle(font: InterfaceTheme.Font.body, color: InterfaceTheme.Color.interactive))
     
     var dateAndTimeStyle: DateAndTimeStyle = DateAndTimeStyle(normal: ButtonStyle(buttonColor: InterfaceTheme.Color.interactive,
-                                                                                  textStyle: TextStyle(font: InterfaceTheme.Font.body,
+                                                                                  textStyle: TextStyle(font: InterfaceTheme.Font.footnote,
                                                                                                        color: InterfaceTheme.Color.interactive)),
                                                               soon: ButtonStyle(buttonColor: UIColor.yellow,
-                                                                                textStyle: TextStyle(font: InterfaceTheme.Font.body,
+                                                                                textStyle: TextStyle(font: InterfaceTheme.Font.footnote,
                                                                                                      color: InterfaceTheme.Color.descriptive)),
                                                               overtime: ButtonStyle(buttonColor: UIColor.red,
-                                                                                    textStyle: TextStyle(font: InterfaceTheme.Font.body,
+                                                                                    textStyle: TextStyle(font: InterfaceTheme.Font.footnote,
                                                                                                          color: InterfaceTheme.Color.descriptive)))
     
     var planningStyle: PlanningStyle = PlanningStyle(finished: ButtonStyle(buttonColor: UIColor.green,
-                                                                           textStyle: TextStyle(font: InterfaceTheme.Font.body,
+                                                                           textStyle: TextStyle(font: InterfaceTheme.Font.footnote,
                                                                                                 color: InterfaceTheme.Color.interactive)),
                                                      unfinished: ButtonStyle(buttonColor: UIColor.yellow,
-                                                                             textStyle: TextStyle(font: InterfaceTheme.Font.body,
+                                                                             textStyle: TextStyle(font: InterfaceTheme.Font.footnote,
                                                                                                   color: InterfaceTheme.Color.descriptive)))
     var tagStyle: ButtonStyle = ButtonStyle(buttonColor: InterfaceTheme.Color.descriptive,
                                             textStyle: TextStyle(font: InterfaceTheme.Font.footnote, color: InterfaceTheme.Color.interactive))
