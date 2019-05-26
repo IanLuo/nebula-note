@@ -3,12 +3,12 @@ platform :ios, '9.0'
 use_frameworks!
 
 target 'Iceland' do
-    pod 'RxSwift'
-    pod 'RxCocoa'
+#    pod 'RxSwift'
+#    pod 'RxCocoa'
     pod 'SwiftyBeaver'
-    pod 'Result'
+#    pod 'Result'
     pod 'Haptico' # https://github.com/iSapozhnik/Haptico
-    pod 'Drawsana' # https://github.com/Asana/Drawsan   a
+    pod 'Drawsana' # https://github.com/Asana/Drawsan
     pod 'SwiftGen', '~> 6.0'
     pod 'KDCalendar', '~> 1.6.5'
 end
@@ -20,13 +20,9 @@ end
 
 target 'Business' do
     pod 'SwiftyBeaver'
-    pod 'Result'
+#    pod 'Result'
 end
 
 target 'Interface' do
     pod 'SwiftyBeaver'
-end
-
-target 'Storage' do
-   pod 'KeychainAccess'
 end

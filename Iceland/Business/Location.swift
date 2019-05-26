@@ -8,7 +8,7 @@
 
 import Foundation
 import CoreLocation
-import Result
+//import Result
 
 public enum LocationError: Error {
     case timeout

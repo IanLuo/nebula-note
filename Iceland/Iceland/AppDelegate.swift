@@ -35,7 +35,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.makeKeyAndVisible()
         
         self.application?.start(from: nil, animated: false)
-                
+                        
         return true
     }
     

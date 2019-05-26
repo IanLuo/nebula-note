@@ -70,7 +70,7 @@ public class DocumentEditViewController: UIViewController {
         self._toolBar.sideAnchor(for: [.left, .top, .right], to: self.view, edgeInset: 0, considerSafeArea: true)
         self._toolBar.sizeAnchor(height: 44)
         
-        self._closeButton = self.createActionButton(icon: Asset.Assets.cross.image.fill(color: InterfaceTheme.Color.interactive))
+        self._closeButton = self.createActionButton(icon: Asset.Assets.down.image.fill(color: InterfaceTheme.Color.interactive))
         self._menuButton = self.createActionButton(icon: Asset.Assets.more.image.fill(color: InterfaceTheme.Color.interactive))
         self._infoButton = self.createActionButton(icon: Asset.Assets.left.image.fill(color: InterfaceTheme.Color.interactive))
         

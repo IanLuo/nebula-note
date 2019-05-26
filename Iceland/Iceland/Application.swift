@@ -147,8 +147,11 @@ extension Coordinator {
             let navigationController = me as! UINavigationController
             navigationController.navigationBar.tintColor = theme.color.interactive
             navigationController.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: theme.color.interactive]
+            navigationController.navigationBar.backIndicatorImage = Asset.Assets.left.image.fill(color: theme.color.descriptive)
+            navigationController.navigationBar.backIndicatorTransitionMaskImage = Asset.Assets.left.image
         }
         
+        UIBarButtonItem.appearance().setBackButtonTitlePositionAdjustment(UIOffset(horizontal: -500, vertical: 0), for: UIBarMetrics.default)
         navigationController.navigationBar.setBackgroundImage(UIImage(), for: .default)
         navigationController.navigationBar.shadowImage = UIImage()
         return navigationController
