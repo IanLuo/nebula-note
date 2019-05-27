@@ -84,7 +84,7 @@ public class DocumentHeadingSearchResult {
             allResults.append(contentsOf: r.getWholdTree())
         }
         
-        allResults.append(self)
+        allResults.insert(self, at: 0)
         
         return allResults
     }

@@ -68,16 +68,17 @@ public class RecentFilesManager {
     
     /// 当文件名修改了之后，更改保存的最近文件的文件名
     @objc internal func onDocumentNameChange(event: RenameDocumentEvent) {
-        let oldPath = event.oldUrl.path
+        let oldPath = event.oldUrl.documentRelativePath
         let oldSubfolderPath = event.oldUrl.convertoFolderURL.documentRelativePath
         let plist = KeyValueStoreFactory.store(type: KeyValueStoreType.plist(PlistStoreType.custom(RecentFilesManager.recentFilesPlistFileName)))
         
         self.recentFiles.forEach { documentInfo in
-            if documentInfo.url.path == oldPath {
+            if documentInfo.url.documentRelativePath == oldPath {
                 let openDate = self.recentFile(url: event.oldUrl.documentRelativePath, plist: plist)?.lastRequestTime ?? Date()
                 self.removeRecentFile(url: event.oldUrl) {
                     self.addRecentFile(url: event.newUrl, lastLocation: 0, date: openDate) { [weak self] in
                         self?.eventObserver.emit(RecentDocumentRenamedEvent(renameDocumentEvent: event))
+                        self?.clearFilesDoesNotExists({})
                     }
                 }
             } else if documentInfo.url.deletingLastPathComponent().path.contains(oldSubfolderPath) { // 子文件
@@ -90,6 +91,7 @@ public class RecentFilesManager {
                     let newSubURL = URL(fileURLWithPath: newPath)
                     self.addRecentFile(url: newSubURL, lastLocation: 0, date: openDate) { [weak self] in
                         self?.eventObserver.emit(RecentDocumentRenamedEvent(renameDocumentEvent: event))
+                        self?.clearFilesDoesNotExists({})
                     }
                 }
             }
@@ -111,6 +113,7 @@ public class RecentFilesManager {
         plist.remove(key: url.documentRelativePath) {
             DispatchQueue.main.async {
                 completion()
+                self.clearFilesDoesNotExists({})
             }
         }
     }
@@ -147,6 +150,20 @@ public class RecentFilesManager {
         }
     }
     
+    public func clearFilesDoesNotExists(_ completion: @escaping () -> Void) {
+        let plist = KeyValueStoreFactory.store(type: KeyValueStoreType.plist(PlistStoreType.custom(RecentFilesManager.recentFilesPlistFileName)))
+        plist.allKeys().forEach { key in
+            if let recentDocumentInfo = self.recentFile(url: key, plist: plist) {
+                
+                // 清除不存在的文件
+                var isDir = ObjCBool(true)
+                if !FileManager.default.fileExists(atPath: recentDocumentInfo.url.path, isDirectory: &isDir) {
+                    plist.remove(key: key, completion: completion)
+                }
+            }
+        }
+    }
+    
     /// 返回保存文件的相对路径列表
     public var recentFiles: [RecentDocumentInfo] {
         var documentInfos: [RecentDocumentInfo] = []
@@ -154,14 +171,7 @@ public class RecentFilesManager {
         
         plist.allKeys().forEach { key in
             if let recentDocumentInfo = self.recentFile(url: key, plist: plist) {
-                
-                // 清除不存在的文件
-                var isDir = ObjCBool(true)
-                if !FileManager.default.fileExists(atPath: recentDocumentInfo.url.path, isDirectory: &isDir) {
-                    plist.remove(key: key, completion: {})
-                } else {
-                    documentInfos.append(recentDocumentInfo)
-                }
+                documentInfos.append(recentDocumentInfo)
             }
         }
 
