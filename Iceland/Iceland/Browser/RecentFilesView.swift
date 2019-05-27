@@ -74,6 +74,7 @@ public class RecentFilesView: UIView {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.delegate = self
         collectionView.dataSource = self
+        collectionView.showsHorizontalScrollIndicator = false
         
         collectionView.interface({ (me, theme) in
             let collectionView = me as! UICollectionView

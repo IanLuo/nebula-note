@@ -42,8 +42,6 @@ public class DashboardViewModel {
     
     public var overdueSoon: [DocumentHeadingSearchResult] = []
     
-    public var withoutTag: [DocumentHeadingSearchResult] = []
-    
     private var _isHeadingsNeedsReload: Bool = true
     
     private let _headingChangeObservingQueue: OperationQueue = {
@@ -84,7 +82,6 @@ public class DashboardViewModel {
         
         self.allTags = []
         self.allPlannings = []
-        self.withoutTag = []
         self.scheduled = []
         self.startSoon = []
         self.overdue = []
@@ -134,8 +131,6 @@ public class DashboardViewModel {
             for result in results {
                 if let tags = result.heading.tags {
                     allTags.append(contentsOf: tags)
-                } else {
-                    self?.withoutTag.append(result)
                 }
                 
                 if let planning = result.heading.planning {

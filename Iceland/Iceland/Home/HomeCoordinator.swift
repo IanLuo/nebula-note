@@ -116,12 +116,6 @@ extension HomeCoordinator: HomeViewControllerDelegate {
 }
 
 extension HomeCoordinator: DashboardViewControllerDelegate {
-    public func showHeadingsWithoutDate(headings: [DocumentHeadingSearchResult], from subTabType: DashboardViewController.SubtabType) {
-        let agendaCoordinator = AgendaCoordinator(filterType: .withoutDate(headings), stack: self.stack, dependency: self.dependency)
-        agendaCoordinator.viewController?.title = subTabType.title
-        self.showTempCoordinator(agendaCoordinator)
-    }
-    
     public func showHeadingsScheduled(headings: [DocumentHeadingSearchResult], from subTabType: DashboardViewController.SubtabType) {
         let agendaCoordinator = AgendaCoordinator(filterType: .scheduled(headings), stack: self.stack, dependency: self.dependency)
         agendaCoordinator.viewController?.title = subTabType.title

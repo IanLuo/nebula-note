@@ -132,9 +132,6 @@ public class AgendaViewModel {
             case .finished(let results):
                 self.data = results.map { AgendaCellModel(searchResult: $0) }
                 self.delegate?.didCompleteLoadAllData()
-            case .withoutDate(let results):
-                self.data = results.map { AgendaCellModel(searchResult: $0) }
-                self.delegate?.didCompleteLoadAllData()
             }
         }
     }

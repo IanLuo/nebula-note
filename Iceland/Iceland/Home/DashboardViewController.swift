@@ -19,7 +19,6 @@ public protocol DashboardViewControllerDelegate: class {
     func showHeadingsOverdue(headings: [DocumentHeadingSearchResult], from subTabType: DashboardViewController.SubtabType)
     func showHeadingsScheduleSoon(headings: [DocumentHeadingSearchResult], from subTabType: DashboardViewController.SubtabType)
     func showHeadingsOverdueSoon(headings: [DocumentHeadingSearchResult], from subTabType: DashboardViewController.SubtabType)
-    func showHeadingsWithoutDate(headings: [DocumentHeadingSearchResult], from subTabType: DashboardViewController.SubtabType)
 }
 
 public class DashboardViewController: UIViewController {
@@ -137,12 +136,14 @@ public class DashboardViewController: UIViewController {
         switch type {
         case .tags:
             let tagsViewController = DashboardSubtypeItemViewController(subtype: self.tabs[tab].sub[subtab].type)
+            tagsViewController.title = type.title
             tagsViewController.didSelectAction = { title in
                 self.delegate?.showHeadings(tag: title)
             }
             self.navigationController?.pushViewController(tagsViewController, animated: true)
         case .plannings:
             let tagsViewController = DashboardSubtypeItemViewController(subtype: self.tabs[tab].sub[subtab].type)
+            tagsViewController.title = type.title
             tagsViewController.didSelectAction = { title in
                 self.delegate?.showHeadings(planning: title)
             }
@@ -155,8 +156,6 @@ public class DashboardViewController: UIViewController {
             self.viewModel.coordinator?.showHeadingsScheduled(headings: self.viewModel.scheduled, from: self.tabs[tab].sub[subtab].type)
         case .scheduledSoon:
             self.viewModel.coordinator?.showHeadingsScheduleSoon(headings: self.viewModel.startSoon, from: self.tabs[tab].sub[subtab].type)
-        case .withoutTag:
-            self.viewModel.coordinator?.showHeadingsWithoutDate(headings: self.viewModel.withoutTag, from: self.tabs[tab].sub[subtab].type)
         default: break
         }
     }
@@ -225,7 +224,7 @@ public class DashboardViewController: UIViewController {
         var icon: UIImage? {
             switch self {
             case .tags(_): return Asset.Assets.tag.image
-            case .plannings(_): return Asset.Assets.scheduled.image
+            case .plannings(_): return Asset.Assets.planning.image
             case .scheduled: return Asset.Assets.scheduled.image
             case .overdue: return Asset.Assets.due.image
             default: return nil
@@ -396,10 +395,6 @@ extension DashboardViewController: DashboardViewModelDelegate {
 
         if self.viewModel.overdueSoon.count > 0 {
             self.tabs[0].sub.append(Subtab(type: DashboardViewController.SubtabType.overdueSoon(self.viewModel.overdueSoon.count)))
-        }
-
-        if self.viewModel.withoutTag.count > 0 {
-            self.tabs[0].sub.append(Subtab(type: DashboardViewController.SubtabType.withoutTag(self.viewModel.withoutTag.count)))
         }
 
         if self.viewModel.allTags.count > 0 {

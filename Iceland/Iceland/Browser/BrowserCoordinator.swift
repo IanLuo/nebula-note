@@ -41,6 +41,7 @@ public class BrowserCoordinator: Coordinator {
     
     public func showOutlineHeadings(url: URL) {
         let navigationController = Coordinator.createDefaultNavigationControlller()
+        navigationController.isNavigationBarHidden = true
         
         let editorCoord = EditorCoordinator(stack: navigationController,
                                             dependency: self.dependency,
@@ -77,6 +78,5 @@ extension BrowserCoordinator: EditorCoordinatorSelectHeadingDelegate {
     
     public func didCancel(coordinator: EditorCoordinator) {
         coordinator.stop()
-        self.didCancelAction?()
     }
 }
