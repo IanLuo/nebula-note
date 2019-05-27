@@ -423,6 +423,7 @@ private class InputTextFieldCell: UITableViewCell, UITextFieldDelegate, Validata
         textField.textColor = InterfaceTheme.Color.interactive
         textField.autocapitalizationType = .none
         textField.autocorrectionType = .no
+        textField.clearButtonMode = .whileEditing
         return textField
     }()
     
@@ -460,7 +461,7 @@ private class InputTextFieldCell: UITableViewCell, UITextFieldDelegate, Validata
         self.titleLabel.sideAnchor(for: [.left, .top, .right], to: self.contentView, edgeInsets: .init(top: 10, left: 30, bottom: 0, right: 30))
         self.titleLabel.sizeAnchor(height: 30)
         self.titleLabel.columnAnchor(view: self.textField)
-        self.textField.sideAnchor(for: [.left, .right, .bottom], to: self.contentView, edgeInsets: .init(top: 10, left: 30, bottom: 0, right: 30))
+        self.textField.sideAnchor(for: [.left, .right, .bottom], to: self.contentView, edgeInsets: .init(top: 10, left: 30, bottom: 0, right: -30))
         self.textField.sizeAnchor(height: 60)
     }
     

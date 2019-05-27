@@ -14,13 +14,16 @@ import Interface
 public protocol RecentFilesViewDelegate: class {
     func didSelectDocument(url: URL)
     func dataChanged(count: Int)
-    func recentFilesData() -> [RecentDocumentInfo]
 }
 
 public class RecentFilesView: UIView {
     private var eventObserver: EventObserver?
-    public init(eventObserver: EventObserver?) {
+    private var viewModel: DocumentBrowserViewModel!
+    
+    public init(eventObserver: EventObserver?, viewModel: DocumentBrowserViewModel) {
+        self.viewModel = viewModel
         self.eventObserver = eventObserver
+        
         super.init(frame: .zero)
         
         self.setupUI()
@@ -51,7 +54,6 @@ public class RecentFilesView: UIView {
         
         self.eventObserver?.registerForEvent(on: self, eventType: NewRecentFilesListDownloadedEvent.self, queue: .main, action: { [weak self] (event: NewRecentFilesListDownloadedEvent) in
             self?.loadData()
-            self?.collectionView.reloadData()
         })
     }
     
@@ -107,30 +109,14 @@ public class RecentFilesView: UIView {
     
     @objc private func onFileInfoChanged(event: Event) {
         self.loadData()
-        self.collectionView.reloadData()
-    }
-    
-    @objc private func onFileOpened(event: OpenDocumentEvent) {
-        var oldIndex: Int = 0
-        
-        for (index, documentInfo) in self.data.enumerated() {
-            if documentInfo.url.documentRelativePath == event.url.documentRelativePath {
-                oldIndex = index
-                self.data = self.delegate?.recentFilesData() ?? []
-                if self.data.count > 0 {
-                    self.collectionView.moveItem(at: IndexPath(row: oldIndex, section: 0), to: IndexPath(row: 0, section: 0))
-                }
-                return
-            }
-        }
-        
-        self.data = self.delegate?.recentFilesData() ?? []
-        self.collectionView.reloadData()
     }
     
     private func loadData() {
-        self.data = self.delegate?.recentFilesData() ?? []
-        self.delegate?.dataChanged(count: self.data.count)
+        self.viewModel.coordinator?.dependency.editorContext.recentFilesManager.clearFilesDoesNotExists { [unowned self] in
+            self.data = self.viewModel.coordinator?.dependency.editorContext.recentFilesManager.recentFiles ?? []
+            self.collectionView.reloadData()
+            self.delegate?.dataChanged(count: self.data.count)
+        }
     }
 }
 

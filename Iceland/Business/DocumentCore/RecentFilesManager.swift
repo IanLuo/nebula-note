@@ -151,15 +151,26 @@ public class RecentFilesManager {
     }
     
     public func clearFilesDoesNotExists(_ completion: @escaping () -> Void) {
-        let plist = KeyValueStoreFactory.store(type: KeyValueStoreType.plist(PlistStoreType.custom(RecentFilesManager.recentFilesPlistFileName)))
-        plist.allKeys().forEach { key in
-            if let recentDocumentInfo = self.recentFile(url: key, plist: plist) {
-                
-                // 清除不存在的文件
-                var isDir = ObjCBool(true)
-                if !FileManager.default.fileExists(atPath: recentDocumentInfo.url.path, isDirectory: &isDir) {
-                    plist.remove(key: key, completion: completion)
+        let group = DispatchGroup()
+        
+        DispatchQueue.global().async {
+            let plist = KeyValueStoreFactory.store(type: KeyValueStoreType.plist(PlistStoreType.custom(RecentFilesManager.recentFilesPlistFileName)))
+            plist.allKeys().forEach { key in
+                if let recentDocumentInfo = self.recentFile(url: key, plist: plist) {
+                    
+                    // 清除不存在的文件
+                    var isDir = ObjCBool(true)
+                    if !FileManager.default.fileExists(atPath: recentDocumentInfo.url.path, isDirectory: &isDir) {
+                        group.enter()
+                        plist.remove(key: key, completion: {
+                            group.leave()
+                        })
+                    }
                 }
+            }
+            
+            group.notify(queue: DispatchQueue.main) {
+                completion()
             }
         }
     }

@@ -97,9 +97,6 @@ public class DocumentBrowserViewModel {
             
             // 更新新插入的数据
             self.delegate?.didAddDocument(index: index + 1, count: subDocuments.count)
-            
-            // 更新当前 cell 状态
-//            self.delegate?.didUpdateCell(index: index)
         }
     }
     
@@ -143,9 +140,6 @@ public class DocumentBrowserViewModel {
 
             // 通知界面移除删除掉的数据
             self.delegate?.didRemoveDocument(index: index + 1, count: count)
-            
-            // 更新当前 cell
-//            self.delegate?.didUpdateCell(index: index)
         }
     }
     
@@ -244,7 +238,8 @@ public class DocumentBrowserViewModel {
                                         }
                                         
                                         for (index, data) in self.data.enumerated() {
-                                           if data.url.documentRelativePath == to.documentRelativePath {
+                                            if data.url.documentRelativePath == to.documentRelativePath
+                                                && data.isFolded == false {
                                                 // 添加到移到的位置(如果当前显示了上级文件)
                                                 self.data.insert(DocumentBrowserCellModel(url: newURL), at: index + 1)
                                                 break

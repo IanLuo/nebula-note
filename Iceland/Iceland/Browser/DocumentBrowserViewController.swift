@@ -53,7 +53,7 @@ public class DocumentBrowserViewController: UIViewController {
     }()
     
     private lazy var openningFilesView: RecentFilesView = {
-        let view = RecentFilesView(eventObserver: self.viewModel.coordinator?.dependency.eventObserver)
+        let view = RecentFilesView(eventObserver: self.viewModel.coordinator?.dependency.eventObserver, viewModel: viewModel)
         view.delegate = self
         return view
     }()
@@ -112,10 +112,6 @@ public class DocumentBrowserViewController: UIViewController {
 }
 
 extension DocumentBrowserViewController: RecentFilesViewDelegate {
-    public func recentFilesData() -> [RecentDocumentInfo] {
-        return self.viewModel.coordinator?.dependency.editorContext.recentFilesManager.recentFiles ?? []
-    }
-    
     public func didSelectDocument(url: URL) {
         self.delegate?.didSelectDocument(url: url)
     }
@@ -218,7 +214,11 @@ extension DocumentBrowserViewController: DocumentBrowserCellDelegate {
                         for file in files {
                             let indent = Array(repeating: "   ", count: file.levelFromRoot - 1).reduce("") { $0 + $1 }
                             let title = indent + file.url.wrapperURL.packageName
-                            selector.addItem(icon: nil, title: title, description: nil, enabled: file.url.documentRelativePath != url.documentRelativePath)
+                            selector.addItem(icon: nil,
+                                             title: title,
+                                             description: nil,
+                                             enabled: file.url.documentRelativePath != url.documentRelativePath
+                                                && file.url.documentRelativePath != url.parentDocumentURL?.documentRelativePath)
                         }
                         
                         selector.onCancel = { viewController in
