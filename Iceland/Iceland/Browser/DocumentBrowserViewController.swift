@@ -210,7 +210,7 @@ extension DocumentBrowserViewController: DocumentBrowserCellDelegate {
                         selector.title = L10n.Browser.Action.MoveTo.msg
                         selector.fromView = self.tableView.cellForRow(at: IndexPath(row: index, section: 0))
                         let root: String = "\\"
-                        selector.addItem(title: root)
+                        selector.addItem(title: root, enabled: url.parentDocumentURL != nil)
                         for file in files {
                             let indent = Array(repeating: "   ", count: file.levelFromRoot - 1).reduce("") { $0 + $1 }
                             let title = indent + file.url.wrapperURL.packageName
@@ -323,6 +323,7 @@ extension DocumentBrowserViewController: DocumentBrowserCellDelegate {
                     
                     selector.onSelection = { index, viewController in
                         viewController.dismiss(animated: true, completion: {
+                            self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                             exportManager.export(url: url, type:.org, completion: { url in
                                 exportManager.share(from: self, url: url)
                             }, failure: { error in
@@ -333,6 +334,7 @@ extension DocumentBrowserViewController: DocumentBrowserCellDelegate {
                     
                     selector.onCancel = { viewController in
                         viewController.dismiss(animated: true, completion: nil)
+                        self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                     }
                     
                     self.present(selector, animated: true, completion: nil)

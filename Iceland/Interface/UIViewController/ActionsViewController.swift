@@ -263,13 +263,13 @@ fileprivate class ActionCell: UITableViewCell {
                 self.titleLabel.textColor = InterfaceTheme.Color.interactive
             case .highlight:
                 self.titleLabel.textColor = InterfaceTheme.Color.spotlight
-                self.contentView.setBorder(position: .top, color: InterfaceTheme.Color.background1, width: ActionsViewController.Constants.specialItemSeparatorHeight)
+                self.contentView.setBorder(position: .top, color: InterfaceTheme.Color.background3, width: ActionsViewController.Constants.specialItemSeparatorHeight)
                 self.titleLabel.constraint(for: .top)?.constant = ActionsViewController.Constants.specialItemSeparatorHeight / 2
                 self.titleLabel.constraint(for: .bottom)?.constant = -ActionsViewController.Constants.specialItemSeparatorHeight / 2
                 self.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
             case .warning:
                 self.titleLabel.textColor = InterfaceTheme.Color.warning
-                self.contentView.setBorder(position: .top, color: InterfaceTheme.Color.background1, width: ActionsViewController.Constants.specialItemSeparatorHeight)
+                self.contentView.setBorder(position: .top, color: InterfaceTheme.Color.background3, width: ActionsViewController.Constants.specialItemSeparatorHeight)
                 self.titleLabel.constraint(for: .top)?.constant = ActionsViewController.Constants.specialItemSeparatorHeight / 2
                 self.titleLabel.constraint(for: .bottom)?.constant = -ActionsViewController.Constants.specialItemSeparatorHeight / 2
                 self.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)

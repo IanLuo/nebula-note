@@ -59,25 +59,25 @@ public struct LightInterfaceTheme: InterfaceThemeProtocol {
 }
 
 public struct LightInterfaceColor: InterfaceThemeColorProtocol {
-    public let interactive: UIColor = UIColor(red:0.40, green:0.40, blue:0.40, alpha:1.00)
-    public let descriptive: UIColor = UIColor(red:0.68, green:0.68, blue:0.68, alpha:1.00)
-    public let descriptiveHighlighted: UIColor = UIColor(red:0.69, green:0.69, blue:0.69, alpha:1.00)
-    public let background1: UIColor = UIColor(red:0.87, green:0.87, blue:0.87, alpha:1.00)
-    public let background2: UIColor = UIColor(red:0.89, green:0.89, blue:0.89, alpha:1.00)
-    public let background3: UIColor = UIColor(red:0.76, green:0.76, blue:0.76, alpha:1.00)
-    public let spotlight: UIColor = UIColor(red:0.15, green:0.71, blue:0.22, alpha:1.00)
-    public let warning: UIColor = UIColor(red:0.76, green:0.36, blue:0.09, alpha:1.00)
+    public let interactive: UIColor = UIColor(red:0.15, green:0.15, blue:0.15, alpha:1.00)
+    public let descriptive: UIColor = UIColor(red:0.61, green:0.61, blue:0.61, alpha:1.00)
+    public let descriptiveHighlighted: UIColor = UIColor(red:0.71, green:0.71, blue:0.71, alpha:1.00)
+    public let background1: UIColor = UIColor(red:1.00, green:1.00, blue:1.00, alpha:1.00)
+    public let background2: UIColor = UIColor(red:0.96, green:0.96, blue:0.96, alpha:1.00)
+    public let background3: UIColor = UIColor(red:0.94, green:0.94, blue:0.94, alpha:1.00)
+    public let spotlight: UIColor = UIColor(red:0.08, green:0.49, blue:0.98, alpha:1.00)
+    public let warning: UIColor = UIColor(red:0.98, green:0.39, blue:0.41, alpha:1.00)
 }
 
 public struct DarkInterfaceColor: InterfaceThemeColorProtocol {
-    public let interactive: UIColor = UIColor(red:1.00, green:1.00, blue:1.00, alpha:1.00)
+    public let interactive: UIColor = UIColor(red:0.97, green:0.97, blue:0.97, alpha:1.00)
     public let descriptive: UIColor = UIColor(red:0.27, green:0.27, blue:0.27, alpha:1.00)
     public let descriptiveHighlighted: UIColor = UIColor(red:0.41, green:0.41, blue:0.41, alpha:1.00)
-    public let background1: UIColor = UIColor(red:0.09, green:0.10, blue:0.11, alpha:1.00)
-    public let background2: UIColor = UIColor(red:0.13, green:0.13, blue:0.15, alpha:1.00)
-    public let background3: UIColor = UIColor(red:0.19, green:0.20, blue:0.26, alpha:1.00)
-    public let spotlight: UIColor = UIColor(red:0.20, green:0.34, blue:0.97, alpha:1.00)
-    public let warning: UIColor = UIColor(red:1.00, green:0.24, blue:0.51, alpha:1.00)
+    public let background1: UIColor = UIColor(red:0.13, green:0.12, blue:0.13, alpha:1.00)
+    public let background2: UIColor = UIColor(red:0.18, green:0.17, blue:0.18, alpha:1.00)
+    public let background3: UIColor = UIColor(red:0.29, green:0.29, blue:0.29, alpha:1.00)
+    public let spotlight: UIColor = UIColor(red:0.08, green:0.49, blue:0.98, alpha:1.00)
+    public let warning: UIColor = UIColor(red:0.98, green:0.39, blue:0.41, alpha:1.00)
 }
 
 public struct DefaultInterfaceFont: InterfaceThemeFontProtocol {
