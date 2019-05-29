@@ -80,6 +80,7 @@ public class InputToolbar: UIView {
 
         super.init(frame: .zero)
         
+        self._collectionView.backgroundColor = InterfaceTheme.Color.background2
         self._collectionView.delegate = self
         self._collectionView.dataSource = self
         self._collectionView.register(ActionButtonCell.self, forCellWithReuseIdentifier: ActionButtonCell.reuseIdentifier)
@@ -146,12 +147,10 @@ private class GroupSeparator: UICollectionReusableView {
         self.addSubview(self._subView)
         self._subView.allSidesAnchors(to: self, edgeInsets: .init(top: 13, left: 0, bottom: -13, right: 0))
         
-        self.interface { (me, theme) in
-            me.backgroundColor = InterfaceTheme.Color.background2
+        self.interface { [weak self] (me, theme) in
+            self?._subView.backgroundColor = InterfaceTheme.Color.background3
+            me.backgroundColor = .clear
         }
-        self._subView.interface({ (me, theme) in
-           me.backgroundColor = InterfaceTheme.Color.descriptive
-        })
     }
     
     required init?(coder aDecoder: NSCoder) {

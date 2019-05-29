@@ -144,10 +144,14 @@
 "agenda.title" = "Agenda";
 "agenda.startToday" = "Start today";
 "agenda.startInDaysWithPlaceHolder" = "Start in %@ days";
-"agenda.startDaysAgoWithPlaceHodler" = "Start %@ days ago";
+"agenda.startTomorrowWithPlaceHolder" = "Start tomorrow";
+"agenda.startDaysAgoWithPlaceHodler" = "Started %@ days ago";
+"agenda.startYesterdayWithPlaceHodlerYesterday" = "Started yesterday";
 "agenda.dueToday" = "Due today";
 "agenda.overdueDaysWihtPlaceHolder" = "Overdue %@ days";
-"agenda.willOverduInDaysWithPlaceHolder" = "Will overde in %@ days";
+"agenda.overdueYesterdayWihtPlaceHolder" = "Overdue yesterday";
+"agenda.willOverduInDaysWithPlaceHolder" = "Will due in %@ days";
+"agenda.willOverduTomorrowWithPlaceHolder" = "Will due tomorrow";
 "agenda.sub.tags" = "Tags";
 "agenda.sub.planning" = "Plannings";
 "agenda.sub.overdue" = "Overdue";

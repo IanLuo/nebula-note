@@ -54,8 +54,7 @@ private class _CaptureGlobalEntranceViewController: UIViewController {
                                                      size: self.view.bounds.size,
                                                      style: UIImageStyle.circle),
                                       for: .normal)
-            me.tintColor = theme.color.interactive
-            me.setImage(Asset.Assets.inspiration.image.fill(color: theme.color.interactive), for: .normal)
+            me.setImage(Asset.Assets.inspiration.image.fill(color: .white), for: .normal)
         })
         button.addTarget(self, action: #selector(_didTap), for: .touchUpInside)
         return button

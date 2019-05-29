@@ -258,6 +258,20 @@ public class UnFoldAllCommand: FoldingAndUnfoldingCommand {
     }
 }
 
+// MARK: - UnfoldToLocationCommand
+// 还有 bug FIXME: 折叠部分包含了大片空白
+public class UnfoldToLocationCommand: FoldingAndUnfoldingCommand {
+    public override func perform() -> DocumentContentCommandResult {
+        for heading in self.textStorage.headingTokens {
+            if heading.subheadingsRange.contains(self.location) || heading.range.location == self.location {
+                super._unFoldHeadingButFoldChildren(heading: heading, textStorage: self.textStorage)
+            }
+        }
+        
+        return DocumentContentCommandResult.noChange
+    }
+}
+
 // MARK: - HeadingConvertCommandComposer
 public class ConvertLineToHeadingCommandComposer: DocumentContentCommandComposer {
     let location: Int
@@ -340,7 +354,7 @@ public class ReplaceContentCommandComposer: DocumentContentCommandComposer {
 }
 
 // MARK: - FoldCommandComposer
-public class FoldCommandComposer: DocumentContentCommandComposer {
+public class FoldAndUnfoldCommandComposer: DocumentContentCommandComposer {
     let location: Int
     public init(location: Int) { self.location = location }
     public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
@@ -361,6 +375,15 @@ public class UnfoldAllCommandComposer: DocumentContentCommandComposer {
     public init(){}
     public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
         return UnFoldAllCommand(textStorage: textStorage)
+    }
+}
+
+// MARK: - UnfoldToLocationCommandComposer
+public class UnfoldToLocationCommandCompose: DocumentContentCommandComposer {
+    let location: Int
+    public init(location: Int) { self.location = location }
+    public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
+        return UnfoldToLocationCommand(location: self.location, textStorage: textStorage)
     }
 }
 

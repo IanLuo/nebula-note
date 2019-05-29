@@ -232,17 +232,37 @@ extension DateAndTimeType {
             if today.isSameDay(self.date) {
                 return L10n.Agenda.startToday
             } else if today.timeIntervalSince1970 > self.date.timeIntervalSince1970 {
-                return L10n.Agenda.startDaysAgoWithPlaceHodler("\(today.daysFrom(self.date))")
+                let daysBeforeDate = today.daysFrom(self.date)
+                if daysBeforeDate == 1 {
+                    return L10n.Agenda.startYesterdayWithPlaceHodlerYesterday
+                } else {
+                    return L10n.Agenda.startDaysAgoWithPlaceHodler("\(today.daysFrom(self.date))")
+                }
             } else {
-                return L10n.Agenda.startInDaysWithPlaceHolder("\(self.date.daysFrom(today))")
+                let daysFromToday = self.date.daysFrom(today)
+                if daysFromToday == 1 {
+                    return L10n.Agenda.startTomorrowWithPlaceHolder
+                } else {
+                    return L10n.Agenda.startInDaysWithPlaceHolder("\(daysFromToday)")
+                }
             }
         } else if self.isDue {
             if today.isSameDay(self.date) {
                 return L10n.Agenda.dueToday
             } else if today.timeIntervalSince1970 > self.date.timeIntervalSince1970 {
-                return L10n.Agenda.overdueDaysWihtPlaceHolder("\(today.daysFrom(self.date))")
+                let dateFromToday = today.daysFrom(self.date)
+                if dateFromToday == 1 {
+                    return L10n.Agenda.overdueYesterdayWihtPlaceHolder
+                } else {
+                    return L10n.Agenda.overdueDaysWihtPlaceHolder("\(dateFromToday)")
+                }
             } else {
-                return L10n.Agenda.willOverduInDaysWithPlaceHolder("\(self.date.daysFrom(today))")
+                let daysAfterToday = self.date.daysFrom(today)
+                if daysAfterToday == 1 {
+                    return L10n.Agenda.willOverduTomorrowWithPlaceHolder
+                } else {
+                    return L10n.Agenda.willOverduInDaysWithPlaceHolder("\(daysAfterToday)")
+                }
             }
         } else {
             return nil

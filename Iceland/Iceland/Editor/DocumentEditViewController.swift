@@ -31,7 +31,7 @@ public class DocumentEditViewController: UIViewController {
         self.viewModel = viewModel
         self.textView = OutlineTextView(frame: .zero,
                                         textContainer: viewModel.container)
-        self.textView.contentInset = UIEdgeInsets(top: 160, left: 30, bottom: 80, right: 30)
+        self.textView.contentInset = UIEdgeInsets(top: 160, left: 30, bottom: 500, right: 30)
 
         super.init(nibName: nil, bundle: nil)
         
@@ -132,10 +132,7 @@ public class DocumentEditViewController: UIViewController {
     
     @objc private func _keyboardWillShow(_ notification: Notification) {
         if let userInfo = notification.userInfo {
-            let height = (userInfo["UIKeyboardFrameBeginUserInfoKey"] as! CGRect).size.height
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.2) {
-                self.textView.setContentOffset(CGPoint(x: self.textView.contentOffset.x, y: self.textView.contentOffset.y + height), animated: true)
-            }
+            
         }
         
     }
@@ -143,14 +140,23 @@ public class DocumentEditViewController: UIViewController {
     @objc private func _keyboardWillHide(_ notification: Notification) {
         if let userInfo = notification.userInfo {
             let height = (userInfo["UIKeyboardFrameEndUserInfoKey"] as! CGRect).size.height
-            self.textView.setContentOffset(CGPoint(x: self.textView.contentOffset.x, y: self.textView.contentOffset.y - height), animated: true)
+            
         }
         
     }
     
     @objc private func _keyboardDidShow(_ notification: Notification) {
         if let userInfo = notification.userInfo {
-            self._keyboardHeight = (userInfo["UIKeyboardFrameEndUserInfoKey"] as! CGRect).size.height
+            
+            let keyboardHeight = (userInfo["UIKeyboardFrameEndUserInfoKey"] as! CGRect).height
+            if let textRange = self.textView.selectedTextRange {
+                let targetRect = self.textView.caretRect(for: textRange.start)
+                let keyboarTopAsContentOffset = self.textView.contentOffset.y + self.textView.bounds.height - keyboardHeight - 100
+                if targetRect.origin.y >= keyboarTopAsContentOffset {
+                    self.textView.contentOffset = CGPoint(x: self.textView.contentOffset.x, y: keyboarTopAsContentOffset)
+                }
+            }
+            
         }
     }
     
@@ -216,6 +222,8 @@ extension DocumentEditViewController: DocumentEditViewModelDelegate {
     
     public func didReadyToEdit() {
         self._loadingIndicator.stopAnimating()
+        
+        // 移动到指定的位置（如果需要）
         self._moveTo(location: self.viewModel.onLoadingLocation)
         
         // 打开文件时， 添加到最近使用的文件
@@ -223,8 +231,14 @@ extension DocumentEditViewController: DocumentEditViewModelDelegate {
             guard let strongSelf = self else { return }
             strongSelf.viewModel.coordinator?.dependency.eventObserver.emit(OpenDocumentEvent(url: strongSelf.viewModel.url))
         }
-        
-
+    }
+    
+    internal func _moveTo(location: Int) {
+        if location > 0 {
+            self.textView.scrollRangeToVisible(self.textView.selectedRange)
+            self.textView.selectedRange = (self.textView.text as NSString).lineRange(for: NSRange(location: location, length: 0)).tail(0).offset(-1)
+            self.textView.becomeFirstResponder()
+        }
     }
     
     public func documentStatesChange(state: UIDocument.State) {

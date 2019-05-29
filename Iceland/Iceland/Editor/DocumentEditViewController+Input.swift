@@ -141,14 +141,6 @@ extension DocumentEditViewController {
         }
         
         return true
-    }
-    
-    internal func _moveTo(location: Int) {
-        // FIXME:
-        if let position = self.textView.position(from: self.textView.beginningOfDocument, offset: location) {
-            let r = self.textView.firstRect(for: self.textView.textRange(from: position, to: position)!)
-            self.textView.setContentOffset(CGPoint(x: self.textView.contentOffset.x, y: r.origin.y), animated: false)
-        }
-    }
+    }    
 }
 

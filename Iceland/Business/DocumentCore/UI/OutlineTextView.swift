@@ -67,9 +67,12 @@ public class OutlineTextView: UITextView {
         
         guard location.x != lastTap.0.x else { return lastTap.1 }
         
+        var fraction: CGFloat = 0
         let characterIndex = self.layoutManager.characterIndex(for: location,
                                                                in: self.textContainer,
-                                                               fractionOfDistanceBetweenInsertionPoints: nil)
+                                                               fractionOfDistanceBetweenInsertionPoints: &fraction)
+        
+        guard fraction > 0 else { return true }
         
         if let outlineTextStorage = self.textStorage as? OutlineTextStorage {
             outlineTextStorage.updateCurrentInfo(at: characterIndex)

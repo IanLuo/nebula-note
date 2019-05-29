@@ -147,13 +147,13 @@ private struct DefaultOutlineTheme: OutlineThemeConfigProtocol {
     
     var dateAndTimeStyle: DateAndTimeStyle = DateAndTimeStyle(normal: ButtonStyle(buttonColor: InterfaceTheme.Color.interactive,
                                                                                   textStyle: TextStyle(font: InterfaceTheme.Font.body,
-                                                                                                       color: InterfaceTheme.Color.interactive)),
+                                                                                                       color: InterfaceTheme.Color.spotlight)),
                                                               soon: ButtonStyle(buttonColor: UIColor.yellow,
                                                                                 textStyle: TextStyle(font: InterfaceTheme.Font.body,
-                                                                                                     color: InterfaceTheme.Color.descriptiveHighlighted)),
+                                                                                                     color: UIColor.magenta)),
                                                               overtime: ButtonStyle(buttonColor: UIColor.red,
                                                                                     textStyle: TextStyle(font: InterfaceTheme.Font.body,
-                                                                                                         color: InterfaceTheme.Color.interactive)))
+                                                                                                         color: UIColor.red)))
     
     var planningStyle: PlanningStyle = PlanningStyle(finished: ButtonStyle(buttonColor: UIColor.green,
                                                                            textStyle: TextStyle(font: InterfaceTheme.Font.footnote,

@@ -19,7 +19,9 @@ public enum L10n {
     public static func overdueDaysWihtPlaceHolder(_ p1: String) -> String {
       return L10n.tr("Localizable", "agenda.overdueDaysWihtPlaceHolder", p1)
     }
-    /// Start %@ days ago
+    /// Overdue yesterday
+    public static let overdueYesterdayWihtPlaceHolder = L10n.tr("Localizable", "agenda.overdueYesterdayWihtPlaceHolder")
+    /// Started %@ days ago
     public static func startDaysAgoWithPlaceHodler(_ p1: String) -> String {
       return L10n.tr("Localizable", "agenda.startDaysAgoWithPlaceHodler", p1)
     }
@@ -29,12 +31,18 @@ public enum L10n {
     }
     /// Start today
     public static let startToday = L10n.tr("Localizable", "agenda.startToday")
+    /// Start tomorrow
+    public static let startTomorrowWithPlaceHolder = L10n.tr("Localizable", "agenda.startTomorrowWithPlaceHolder")
+    /// Started yesterday
+    public static let startYesterdayWithPlaceHodlerYesterday = L10n.tr("Localizable", "agenda.startYesterdayWithPlaceHodlerYesterday")
     /// Agenda
     public static let title = L10n.tr("Localizable", "agenda.title")
-    /// Will overde in %@ days
+    /// Will due in %@ days
     public static func willOverduInDaysWithPlaceHolder(_ p1: String) -> String {
       return L10n.tr("Localizable", "agenda.willOverduInDaysWithPlaceHolder", p1)
     }
+    /// Will due tomorrow
+    public static let willOverduTomorrowWithPlaceHolder = L10n.tr("Localizable", "agenda.willOverduTomorrowWithPlaceHolder")
     public enum Sub {
       /// No tag
       public static let noTag = L10n.tr("Localizable", "agenda.sub.noTag")

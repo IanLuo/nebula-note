@@ -23,17 +23,13 @@ public protocol OutlineTextStorageDataSource: class {
 public class OutlineTextStorage: TextStorage {
     public var parser: OutlineParser!
     
-    private let _eventObserver: EventObserver
-    private let _attachmentManager: AttachmentManager
+    private var _eventObserver: EventObserver!
+    private var _attachmentManager: AttachmentManager!
     
-    public init(eventObserver: EventObserver, attachmentManager: AttachmentManager) {
+    public convenience init(eventObserver: EventObserver, attachmentManager: AttachmentManager) {
+        self.init()
         self._attachmentManager = attachmentManager
         self._eventObserver = eventObserver
-        super.init()
-    }
-    
-    public required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
     
     public override var string: String {
@@ -666,11 +662,9 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 let dateAndTime = DateAndTimeType(dataAndTimeString)
                 let datesFromToday = dateAndTime?.date.daysFrom(Date()) ?? 4 // 默认为 4 天, normal 颜色
                 let dateAndTimeStyle = OutlineTheme.dateAndTimeStyle(datesFromToday: datesFromToday)
-                textStorage._addButtonAttributes(range: range, color: dateAndTimeStyle.buttonColor)
+//                textStorage._addButtonAttributes(range: range, color: dateAndTimeStyle.buttonColor)
                 textStorage.addAttributes([OutlineAttribute.dateAndTime: dataAndTimeString], range: range)
                 textStorage.addAttributes(dateAndTimeStyle.textStyle.attributes, range: range)
-                textStorage.addAttributes(OutlineTheme.markStyle.attributes, range: range.head(1))
-                textStorage.addAttributes(OutlineTheme.markStyle.attributes, range: range.tail(1))
             }
         }
     }

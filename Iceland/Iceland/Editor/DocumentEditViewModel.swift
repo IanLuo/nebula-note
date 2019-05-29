@@ -297,7 +297,13 @@ public class DocumentEditViewModel {
     }
     
     public func foldOrUnfold(location: Int) {
-        _ = self._editorService.toggleContentCommandComposer(composer: FoldCommandComposer(location: location)).perform()
+        _ = self._editorService.toggleContentCommandComposer(composer: FoldAndUnfoldCommandComposer(location: location)).perform()
+    }
+    
+    public func unfoldExceptTo(location: Int) {
+        self.foldAll()
+        
+        _ = self._editorService.toggleContentCommandComposer(composer: UnfoldToLocationCommandCompose(location: location)).perform()
     }
     
     public func foldAll() {
