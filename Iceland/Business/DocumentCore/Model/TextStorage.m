@@ -37,19 +37,19 @@ static NSMutableDictionary *attachmentMap;
     if ([self class] == [TextStorage class]) {
         foldingAttachment = [[NSTextAttachment alloc] init];
         foldingAttachment.image = [UIImage imageNamed:@"more" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil];
-        foldingAttachment.bounds = CGRectMake(0, [[SettingsAccessor shared] lineHeight] / 2 - 2, 14, 4);
+        foldingAttachment.bounds = CGRectMake(0, ([[SettingsAccessor shared] lineHeight] - 4) / 2, 14, 4);
         
         linkAttachment = [[NSTextAttachment alloc] init];
         linkAttachment.image = [UIImage imageNamed: @"link" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil];
         linkAttachment.bounds = CGRectMake(0, 0, 15, 15);
         
         foldedAttachment = [[NSTextAttachment alloc] init];
-        foldedAttachment.image = [UIImage imageNamed: @"add" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil];
-        foldedAttachment.bounds = CGRectMake(0, 0, 20, 20);
+        foldedAttachment.image = [UIImage imageNamed: @"folded" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil];
+        foldedAttachment.bounds = CGRectMake(0, ([[SettingsAccessor shared] lineHeight] - 20) / 2, 20, 20);
         
         unfoldedAttachment = [[NSTextAttachment alloc] init];
-        unfoldedAttachment.image = [UIImage imageNamed: @"minus" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil];
-        unfoldedAttachment.bounds = CGRectMake(0, [[SettingsAccessor shared] lineHeight] / 2, 20, 1);
+        unfoldedAttachment.image = [UIImage imageNamed: @"unfolded" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil];
+        unfoldedAttachment.bounds = CGRectMake(0, ([[SettingsAccessor shared] lineHeight] - 20) / 2, 20, 20);
         
         scheduleAttachment = [[NSTextAttachment alloc] init];
         scheduleAttachment.image = [UIImage imageNamed: @"scheduled" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil];

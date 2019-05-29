@@ -41,7 +41,10 @@ extension DocumentEditViewController {
         // 如果在 heading 中，换行不在当前位置，而在 heading 之后
         guard let currentPosition = textView.selectedTextRange?.start else { return true }
         
+        // 如果当前位置在 heading 内部(除开最前端)，回车直接添加到行位
         for case let heading in self.viewModel.currentTokens where heading is HeadingToken {
+            guard self.textView.selectedRange.location != heading.range.location else { return true }
+            
             let result = self.viewModel.performAction(EditAction.addNewLineBelow(location: textView.selectedRange.location), textView: textView)
             textView.selectedRange = NSRange(location: result.range!.location, length: 0)
             return false

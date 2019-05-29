@@ -902,7 +902,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
     /// 如果第二个参数 range 为空，则为整个 heading 的 paragraph 添加缩进
     public func setParagraphIndent(heading: HeadingToken, for range: NSRange? = nil) {
         let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.firstLineHeadIndent = CGFloat(heading.level * 10) // FIXME: 设置 indent 的宽度
+        paragraphStyle.firstLineHeadIndent = CGFloat(heading.level * 20) // FIXME: 设置 indent 的宽度
         paragraphStyle.headIndent = paragraphStyle.firstLineHeadIndent
         
         let applyingRange = range ?? heading.paragraphRange
@@ -915,7 +915,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 // 第一行缩进比正文少一个 level
                 if range.location == heading.range.location {
                     let firstLine = NSMutableParagraphStyle()
-                    firstLine.firstLineHeadIndent = CGFloat((heading.level - 1) * 10) // FIXME: 设置 indent 的宽度
+                    firstLine.firstLineHeadIndent = CGFloat((heading.level - 1) * 20) // FIXME: 设置 indent 的宽度
                     firstLine.headIndent = paragraphStyle.firstLineHeadIndent
                     self.addAttributes([NSAttributedString.Key.paragraphStyle: firstLine], range: inclosingRange)
                 } else {
