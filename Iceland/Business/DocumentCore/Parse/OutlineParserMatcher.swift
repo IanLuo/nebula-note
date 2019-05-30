@@ -53,6 +53,11 @@ extension OutlineParser {
     }
     
     public struct Matcher {
+        public static func reloadPlanning() {
+            RegexPattern.reloadConstants()
+            Element.Heading.planning = try! NSRegularExpression(pattern: RegexPattern.Element.Heading.planning, options: [])
+        }
+        
         public struct Node {
             public static var heading = try! NSRegularExpression(pattern: RegexPattern.Node.heading, options: [.anchorsMatchLines])
             public static var checkbox = try! NSRegularExpression(pattern: RegexPattern.Node.checkBox, options: [.anchorsMatchLines])
@@ -193,6 +198,11 @@ extension OutlineParser {
     }
     
     public struct RegexPattern {
+        public static func reloadConstants() {
+            OutlineParser.Values.reloadConstants()
+            Element.Heading.planning = " (\(Values.Heading.Planning.pattern))? "
+        }
+        
         public static let character = "\\w"
         
         public struct Node {
@@ -221,7 +231,7 @@ extension OutlineParser {
             }
             
             public struct Heading {
-                public static let planning =                " (\(Values.Heading.Planning.pattern))? "
+                public static var planning =                " (\(Values.Heading.Planning.pattern))? "
                 public static let tags =                    "(\\:(\(character)+\\:)+)"
                 public static let priority =                "\\[\\#[A-Z]{1}\\]"
             }
@@ -258,6 +268,11 @@ extension OutlineParser {
     }
     
     public struct Values {
+        public static func reloadConstants() {
+            Heading.Planning.all = Heading.Planning.generateAllPlannings()
+            Heading.Planning.pattern = Heading.Planning.generatePattern()
+        }
+        
         public struct TextMark {
             public static let bold = "*"
             public static let italic = "/"
@@ -386,22 +401,25 @@ extension OutlineParser {
                 public static let todo: String = "TODO"
                 public static let done: String = "DONE"
                 public static let canceled: String = "CANCELED"
-                public static var all: [String] = {
+                public static var all: [String] = generateAllPlannings()
+                public static var pattern: String = generatePattern()
+                
+                public static func generateAllPlannings() -> [String] {
                     var plannings = [todo, done, canceled]
                     if let customized = SettingsAccessor.shared.customizedPlannings {
                         plannings.append(contentsOf: customized)
                     }
                     return plannings
-                }()
+                }
                 
-                public static var pattern: String = {
+                public static func generatePattern() -> String {
                     var plannings = "\(todo)|\(done)|\(canceled)"
                     if let customized = SettingsAccessor.shared.customizedPlannings {
                         plannings.append("|")
                         plannings.append(customized.joined(separator: "|"))
                     }
                     return plannings
-                }()
+                }
             }
             
             public struct Tag {

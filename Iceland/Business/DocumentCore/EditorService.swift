@@ -41,10 +41,10 @@ public class EditorService {
         }
     }
     
-    internal init(url: URL, queue: DispatchQueue, eventObserver: EventObserver) {
+    internal init(url: URL, queue: DispatchQueue, eventObserver: EventObserver, parser: OutlineParser) {
         self._url = url
         self._eventObserver = eventObserver
-        self._editorController = EditorController(parser: OutlineParser(), eventObserver: eventObserver, attachmentManager: AttachmentManager())
+        self._editorController = EditorController(parser: parser, eventObserver: eventObserver, attachmentManager: AttachmentManager())
         self._queue = queue
         
         self._editorController.delegate = self

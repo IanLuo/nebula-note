@@ -114,12 +114,24 @@
 
 // setting
 "setting.title" = "Settings";
+
+"setting.general.title" = "General";
+
+"setting.store.title" = "Store";
 "setting.storeIniCloud" = "Store in iCloud";
 "setting.alert.icloudIsNotEnabled.title" = "iCloud is not enabled";
 "setting.alert.icloudIsNotEnabled.msg" = "Please login your iCloud account";
 "setting.alert.failToStoreIniCloud" = "Fail to configure sync";
+
 "setting.isUseDarkInterface.title" = "Dark interface";
 "setting.landingTab.title" = "Choose landing tab";
+
+"setting.planning.title" = "Customized planning";
+"setting.planning.unfinish.add" = "New Finish planning";
+"setting.planning.finish.add" = "New Unfinish planning";
+"setting.planning.add.error.nameTaken" = "Planning name is taken, Use a different one";
+"setting.planning.unfinish.title" = "Unfinish";
+"setting.planning.finish.title" = "Finish";
 
 //search
 "search.title" = "Search";

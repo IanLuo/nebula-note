@@ -13,13 +13,19 @@ public class EditorContext {
     public init(eventObserver: EventObserver) {
          self.recentFilesManager = RecentFilesManager(eventObserver: eventObserver)
         self._eventObserver = eventObserver
+        self._parser = OutlineParser()
     }
     
     public let recentFilesManager: RecentFilesManager
     
+    private var _parser: OutlineParser
     private let _eventObserver: EventObserver
     private static var _cachedServiceInstances: [String: EditorService] = [:]
     public let _editingQueue: DispatchQueue = DispatchQueue(label: "editor.doing.editing", qos: DispatchQoS.userInteractive)
+    
+    public func reloadParser() {
+        OutlineParser.Matcher.reloadPlanning()
+    }
     
     public func request(url: URL) -> EditorService {
         var url = url.wrapperURL
@@ -50,7 +56,7 @@ public class EditorContext {
     
     private func _createAndCacheNewService(with url: URL) -> EditorService {
         let cacheKey = url.documentRelativePath
-        let newService = EditorService(url: url, queue: self._editingQueue, eventObserver: self._eventObserver)
+        let newService = EditorService(url: url, queue: self._editingQueue, eventObserver: self._eventObserver, parser: self._parser)
         EditorContext._cachedServiceInstances[cacheKey] = newService
         return newService
     }

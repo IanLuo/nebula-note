@@ -43,12 +43,16 @@ public class SettingsViewModel {
 
     public func getPlanning(isForFinished: Bool) -> [String] {
         return (isForFinished
-            ? self.coordinator?.dependency.settingAccessor.customizedFinishedPlannings ?? []
-            : self.coordinator?.dependency.settingAccessor.customizedUnfinishedPlannings) ?? []
+            ? self.coordinator?.dependency.settingAccessor.finishedPlanning ?? []
+            : self.coordinator?.dependency.settingAccessor.unfinishedPlanning) ?? []
     }
     
     public var plannings: [String] {
         return self.coordinator?.dependency.settingAccessor.allPlannings ?? []
+    }
+    
+    public var defaultPlannings: [String] {
+        return self.coordinator?.dependency.settingAccessor.defaultPlannings ?? []
     }
     
     public func setLandingTabIndex(_ index: Int) {

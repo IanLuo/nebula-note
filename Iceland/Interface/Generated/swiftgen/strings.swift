@@ -408,6 +408,10 @@ public enum L10n {
         public static let title = L10n.tr("Localizable", "setting.alert.icloudIsNotEnabled.title")
       }
     }
+    public enum General {
+      /// General
+      public static let title = L10n.tr("Localizable", "setting.general.title")
+    }
     public enum IsUseDarkInterface {
       /// Dark interface
       public static let title = L10n.tr("Localizable", "setting.isUseDarkInterface.title")
@@ -415,6 +419,32 @@ public enum L10n {
     public enum LandingTab {
       /// Choose landing tab
       public static let title = L10n.tr("Localizable", "setting.landingTab.title")
+    }
+    public enum Planning {
+      /// Customized planning
+      public static let title = L10n.tr("Localizable", "setting.planning.title")
+      public enum Add {
+        public enum Error {
+          /// Planning name is taken, Use a different one
+          public static let nameTaken = L10n.tr("Localizable", "setting.planning.add.error.nameTaken")
+        }
+      }
+      public enum Finish {
+        /// New Unfinish planning
+        public static let add = L10n.tr("Localizable", "setting.planning.finish.add")
+        /// Finish
+        public static let title = L10n.tr("Localizable", "setting.planning.finish.title")
+      }
+      public enum Unfinish {
+        /// New Finish planning
+        public static let add = L10n.tr("Localizable", "setting.planning.unfinish.add")
+        /// Unfinish
+        public static let title = L10n.tr("Localizable", "setting.planning.unfinish.title")
+      }
+    }
+    public enum Store {
+      /// Store
+      public static let title = L10n.tr("Localizable", "setting.store.title")
     }
   }
 

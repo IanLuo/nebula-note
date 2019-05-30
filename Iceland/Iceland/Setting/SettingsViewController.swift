@@ -28,6 +28,11 @@ public class SettingsViewController: UITableViewController {
     @IBOutlet var chooseLandingTabButton: UIButton!
     @IBOutlet var landingTabRow: UITableViewCell!
     
+    @IBOutlet var planningFinishLabel: UILabel!
+    @IBOutlet var planningFinishButton: UIButton!
+    @IBOutlet var planningUnfinishLabel: UILabel!
+    @IBOutlet var planningUnfinishButton: UIButton!
+    
     public override init(style: UITableView.Style) {
         super.init(style: style)
         
@@ -47,6 +52,11 @@ public class SettingsViewController: UITableViewController {
         self.landingTabTitleLabel.text = L10n.Setting.LandingTab.title
         self.isSyncEnabledSwitch.isOn = self.viewModel.isSyncEnabled
         self.chooseLandingTabButton.setTitle(self._landingTabNames[self.viewModel.currentLandigTabIndex], for: .normal)
+        
+        self.planningFinishLabel.text = L10n.Setting.Planning.Finish.title
+        self.planningFinishButton.setTitle(self.viewModel.getPlanning(isForFinished: true).joined(separator: ","), for: .normal)
+        self.planningUnfinishLabel.text = L10n.Setting.Planning.Unfinish.title
+        self.planningUnfinishButton.setTitle(self.viewModel.getPlanning(isForFinished: false).joined(separator: ","), for: .normal)
     }
     
     private func _setupUI() {
@@ -74,11 +84,25 @@ public class SettingsViewController: UITableViewController {
             self?.landingTabTitleLabel.textColor = theme.color.interactive
             self?.chooseLandingTabButton.setTitleColor(theme.color.spotlight, for: .normal)
             self?.landingTabRow.tintColor = theme.color.descriptive
+            
+            self?.planningFinishLabel.textColor = theme.color.interactive
+            self?.planningFinishButton.setTitleColor(theme.color.spotlight, for: .normal)
+            self?.planningUnfinishLabel.textColor = theme.color.interactive
+            self?.planningUnfinishButton.setTitleColor(theme.color.spotlight, for: .normal)
         }
     }
     
     public override var preferredStatusBarStyle: UIStatusBarStyle {
         return InterfaceTheme.statusBarStyle
+    }
+    
+    public override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        switch section {
+        case 0: return L10n.Setting.General.title
+        case 1: return L10n.Setting.Planning.title
+        case 2: return L10n.Setting.Store.title
+        default: return nil
+        }
     }
     
     @objc private func _cancel() {
@@ -89,6 +113,8 @@ public class SettingsViewController: UITableViewController {
         self.isSyncEnabledSwitch.addTarget(self, action: #selector(_iCloudSwitchTapped), for: .touchUpInside)
         self.isDarkThemeEnabledSwitch.addTarget(self, action: #selector(_isDarkInterfaceSwitchButtonTapped), for: .touchUpInside)
         self.chooseLandingTabButton.addTarget(self, action: #selector(_showLandingTabNamesSelector), for: .touchUpInside)
+        self.planningFinishButton.addTarget(self, action: #selector(_planningManageFinish), for: .touchUpInside)
+        self.planningUnfinishButton.addTarget(self, action: #selector(_planningManageUnfinish), for: .touchUpInside)
     }
     
     @objc private func _iCloudSwitchTapped(_ switchButton: UISwitch) {
@@ -146,6 +172,94 @@ public class SettingsViewController: UITableViewController {
         self.present(selector, animated: true, completion: nil)
     }
     
+    @objc func _planningManageFinish() {
+        self._planningManage(isFinish: true)
+    }
+    
+    @objc func _planningManageUnfinish() {
+        self._planningManage(isFinish: false)
+    }
+    
+    private func _planningManage(isFinish: Bool) {
+        let plannings = self.viewModel.getPlanning(isForFinished: isFinish)
+        
+        let actionsViewController = ActionsViewController()
+        
+        actionsViewController.title = isFinish
+        ? self.planningFinishLabel.text
+        : self.planningUnfinishLabel.text
+        
+        for planning in plannings {
+            let canDelete = !self.viewModel.defaultPlannings.contains(planning)
+            let icon =  canDelete ? Asset.Assets.cross.image.fill(color: InterfaceTheme.Color.warning) : nil
+            actionsViewController.addAction(icon: icon, title: planning) { viewController in
+                if canDelete {
+                    self.viewModel.removePlanning(planning, completion: {
+                        viewController.removeAction(with: planning)
+                        
+                        let buttonToUpdate = isFinish ?
+                            self.planningFinishButton : self.planningUnfinishButton
+                        
+                        buttonToUpdate?.setTitle(self.viewModel.getPlanning(isForFinished: isFinish).joined(separator: ","), for: .normal)
+                    })
+                }
+            }
+        }
+        
+        actionsViewController.setCancel { viewController in
+            viewController.dismiss(animated: true, completion: nil)
+            self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
+        }
+        
+        let addTitle = isFinish ? L10n.Setting.Planning.Finish.add :  L10n.Setting.Planning.Unfinish.add
+        actionsViewController.addAction(icon: Asset.Assets.add.image.fill(color: InterfaceTheme.Color.spotlight), title: addTitle, style: .highlight) { viewController in
+            viewController.dismiss(animated: true, completion: {
+                let formViewController = ModalFormViewController()
+                
+                formViewController.addTextFied(title: addTitle, placeHoder: "", defaultValue: nil)
+                formViewController.onValidating = {
+                    if let data = $0[addTitle] as? String {
+                        if plannings.contains(data) {
+                            return [addTitle: L10n.Setting.Planning.Add.Error.nameTaken]
+                        }
+                    }
+                    
+                    return [:]
+                }
+                
+                
+                formViewController.title = addTitle
+                
+                formViewController.onCancel = { viewController in
+                    viewController.dismiss(animated: true, completion: nil)
+                    self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
+                }
+                
+                formViewController.onSaveValue = { data, viewController in
+                    self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
+                    
+                    if let newPlanning = data[addTitle] as? String {
+                        self.viewModel.addPlanning(newPlanning, isForFinished: isFinish, completion: {
+                            viewController.dismiss(animated: true, completion: { [weak self] in
+                                guard let strongSelf = self else { return }
+                                let buttonToUpdate = isFinish ?
+                                strongSelf.planningFinishButton : strongSelf.planningUnfinishButton
+                                
+                                buttonToUpdate?.setTitle(strongSelf.viewModel.getPlanning(isForFinished: isFinish).joined(separator: ","), for: .normal)
+                                
+                                strongSelf.viewModel.coordinator?.dependency.editorContext.reloadParser() // 因为解析器的常亮以改变，需要重载解析器
+                            })
+                        })
+                    }
+                }
+                
+                self.present(formViewController, animated: true, completion: nil)
+            })
+        }
+        
+        self.present(actionsViewController, animated: true, completion: nil)
+        self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.hide()
+    }
     
     private var _landingTabNames: [String] {
         return [

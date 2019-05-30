@@ -175,6 +175,7 @@
 		E4EFA45F222F684B00611FF5 /* CaptureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EFA45E222F684B00611FF5 /* CaptureViewController.swift */; };
 		E4EFA4632230C42F00611FF5 /* CaptureGlobalEntrance.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EFA4622230C42F00611FF5 /* CaptureGlobalEntrance.swift */; };
 		E4F3029C21D74E8700BDE178 /* CaptureTableCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4F3029B21D74E8700BDE178 /* CaptureTableCellModel.swift */; };
+		E4F42989229F9C4F004700E0 /* ListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4F42988229F9C4F004700E0 /* ListViewController.swift */; };
 		E4F885EA226D5BE700748868 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4F885E9226D5BE700748868 /* Coordinator.swift */; };
 		E4F9ECDB21FAD826009A08CD /* RecentFilesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4F9ECDA21FAD826009A08CD /* RecentFilesView.swift */; };
 		E4F9ECDF21FBF61B009A08CD /* RecentFilesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4F9ECDE21FBF61B009A08CD /* RecentFilesManager.swift */; };
@@ -435,6 +436,7 @@
 		E4F3029921D744CD00BDE178 /* LocationAttachmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationAttachmentView.swift; sourceTree = "<group>"; };
 		E4F3029B21D74E8700BDE178 /* CaptureTableCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureTableCellModel.swift; sourceTree = "<group>"; };
 		E4F3029D21D750ED00BDE178 /* Autolayout+Shortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Autolayout+Shortcuts.swift"; sourceTree = "<group>"; };
+		E4F42988229F9C4F004700E0 /* ListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListViewController.swift; sourceTree = "<group>"; };
 		E4F885E9226D5BE700748868 /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
 		E4F9ECDA21FAD826009A08CD /* RecentFilesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentFilesView.swift; sourceTree = "<group>"; };
 		E4F9ECDE21FBF61B009A08CD /* RecentFilesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentFilesManager.swift; sourceTree = "<group>"; };
@@ -781,6 +783,7 @@
 			children = (
 				E49F3E4721B9183F003F468D /* SettingsCoordinator.swift */,
 				E49F3E4921B9186D003F468D /* SettingsViewController.swift */,
+				E4F42988229F9C4F004700E0 /* ListViewController.swift */,
 				E49F3E4B21B91885003F468D /* SettingsViewModel.swift */,
 				E44683F5228997CA005D5B73 /* Settings.storyboard */,
 			);
@@ -1597,6 +1600,7 @@
 				E4EA856021D1DB1400DD92F9 /* AttachmentSketchViewController.swift in Sources */,
 				E4EA855621D1DA3D00DD92F9 /* AttachmentImageViewController.swift in Sources */,
 				E43427FA2121BF5B00EC6DC3 /* AppDelegate.swift in Sources */,
+				E4F42989229F9C4F004700E0 /* ListViewController.swift in Sources */,
 				E4EFA45F222F684B00611FF5 /* CaptureViewController.swift in Sources */,
 				E41FA5752191569C001D8C63 /* DocumentEditViewController.swift in Sources */,
 				E4773BAA21F7507E000F8F3F /* SearchTabelCellModel.swift in Sources */,

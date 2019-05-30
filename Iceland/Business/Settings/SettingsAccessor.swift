@@ -88,6 +88,11 @@ public enum SettingsError: Error {
         return unfinishedPlanning + finishedPlanning
     }
     
+    public var defaultPlannings: [String] {
+        return [OutlineParser.Values.Heading.Planning.todo, OutlineParser.Values.Heading.Planning.canceled,
+                OutlineParser.Values.Heading.Planning.done]
+    }
+    
     /// add new planning
     public func addPlanning(_ planning: String, isForFinished: Bool, completion: @escaping (Result<Void, Error>) -> Void) {
         let key = isForFinished ? Constants.Keys.finishedPlannings : Constants.Keys.unfinishedPlannings
