@@ -220,7 +220,7 @@ extension OutlineTextStorage {
     
     public func updateTokenRangeOffset(delta: Int, from location: Int) {
         for token in self.allTokens {
-            if token.range.lowerBound >= location {
+            if token.tokenRange.lowerBound >= location {
                 token.offset(delta)
             }
         }
@@ -847,6 +847,8 @@ extension OutlineTextStorage: OutlineParserDelegate {
                  // condition 3. i + 1 为 BlockEndToken
                 let endToken = blocks[i + 1] as? BlockEndToken {
                 token.endToken = endToken
+                
+                endToken.beginToken = token
             }
         }
     }

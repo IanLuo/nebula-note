@@ -40,7 +40,6 @@ public class OutlineTextView: UITextView {
         self.tapGestureRecognizer.delegate = self
         self.addGestureRecognizer(self.tapGestureRecognizer)
         self.alwaysBounceVertical = true
-        self.textContainerInset = UIEdgeInsets(top: 80, left: 0, bottom: 500, right: 0)
         self.autocapitalizationType = .none
         self.autocorrectionType = .no
         self.keyboardDismissMode = .interactive
@@ -81,28 +80,39 @@ public class OutlineTextView: UITextView {
         let attributes = self.textStorage.attributes(at: characterIndex, effectiveRange: nil)
         
         var shouldPassTapToOtherGuestureRecognizers = false
-        if let _ = attributes[OutlineAttribute.Heading.level] as? Int {
+        if let hiddenValue = attributes[OutlineAttribute.tempHidden] as? Int, hiddenValue == OutlineAttribute.hiddenValueFolded.intValue {
+            // do nothing
+        } else if let _ = attributes[OutlineAttribute.Heading.level] as? Int {
             self.outlineDelegate?.didTapOnLevel(textView: self, chracterIndex: characterIndex, point: location)
         } else if let checkbox = attributes[OutlineAttribute.checkbox] as? String {
+            self.resignFirstResponder()
             self.outlineDelegate?.didTapOnCheckbox(textView: self, characterIndex: characterIndex, checkbox: checkbox, point: location)
         } else if let linkStructure = attributes[OutlineAttribute.Link.title] as? [String: String] {
+            self.resignFirstResponder()
             self.outlineDelegate?.didTapOnLink(textView: self, characterIndex: characterIndex, linkStructure: linkStructure, point: location)
         } else if let tags = attributes[OutlineAttribute.Heading.tags] as? [String] {
+            self.resignFirstResponder()
             self.outlineDelegate?.didTapOnTags(textView: self, characterIndex: characterIndex, tags: tags, point: location)
         } else if let dateAndTimeString = attributes[OutlineAttribute.dateAndTime] as? String {
+            self.resignFirstResponder()
             self.outlineDelegate?.didTapDateAndTime(textView: self, characterIndex: characterIndex, dateAndTimeString: dateAndTimeString, point: location)
         } else if let planning = attributes[OutlineAttribute.Heading.planning] as? String {
+            self.resignFirstResponder()
             self.outlineDelegate?.didTapOnPlanning(textView: self, characterIndex: characterIndex, planning: planning, point: location)
         } else if let priority = attributes[OutlineAttribute.Heading.priority] as? String {
+            self.resignFirstResponder()
             self.outlineDelegate?.didTapOnPriority(textView: self, characterIndex: characterIndex, priority: priority, point: location)
         }  else if let type = attributes[OutlineAttribute.Attachment.type] as? String,
             let value = attributes[OutlineAttribute.Attachment.value] as? String {
+            self.resignFirstResponder()
             self.outlineDelegate?.didTapOnAttachment(textView: self, characterIndex: characterIndex, type: type, value: value, point: location)
-        } else if let hiddenValue = attributes[OutlineAttribute.hidden] as? Int {
-            if hiddenValue == OutlineAttribute.hiddenValueWithAttachment.intValue {
-                self.outlineDelegate?.didTapOnHiddenAttachment(textView: self, characterIndex: characterIndex, point: location)
-            }
-        } else {
+        }
+//        else if let hiddenValue = attributes[OutlineAttribute.hidden] as? Int {
+//            if hiddenValue == OutlineAttribute.hiddenValueWithAttachment.intValue {
+//                self.outlineDelegate?.didTapOnHiddenAttachment(textView: self, characterIndex: characterIndex, point: location)
+//            }
+//        }
+        else {
             shouldPassTapToOtherGuestureRecognizers = true
         }
         

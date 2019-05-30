@@ -131,7 +131,7 @@ public class BlockBeginToken: BlockToken {
     
     public var contentRange: NSRange? {
         if let endToken = self.endToken {
-            return self.range.moveLeftBound(by: super.range.length).moveRightBound(by: -endToken.range.length)
+            return self.range.moveLeftBound(by: super.range.length).moveRightBound(by: -endToken.tokenRange.length)
         } else {
             return nil
         }
@@ -139,7 +139,7 @@ public class BlockBeginToken: BlockToken {
 }
 
 public class BlockEndToken: BlockToken {
-//    public weak var beginToken: BlockBeginToken?
+    public weak var beginToken: BlockBeginToken?
     public init(data: [String: NSRange], blockType: BlockType) {
         switch blockType {
         case .quote:
@@ -147,6 +147,19 @@ public class BlockEndToken: BlockToken {
         case .sourceCode:
             super.init(range: data[OutlineParser.Key.Node.codeBlockEnd]!, name: OutlineParser.Key.Node.codeBlockEnd, data: data, blockType: blockType)
         }
+    }
+    
+    // the range from first of begin token to last of end token
+    public override var range: NSRange {
+        if let beginToken = self.beginToken {
+            return NSRange(location: beginToken.tokenRange.location, length: super.range.upperBound - beginToken.tokenRange.location)
+        } else {
+            return super.range
+        }
+    }
+    
+    public override var tokenRange: NSRange {
+        return super.range
     }
 }
 

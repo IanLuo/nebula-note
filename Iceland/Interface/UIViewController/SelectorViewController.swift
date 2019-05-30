@@ -132,7 +132,7 @@ open class SelectorViewController: UIViewController {
         self.contentView.sizeAnchor(height: self.view.bounds.height / 2)
         self.contentView.centerAnchors(position: .centerY, to: self.view)
         
-        self.titleLabel.sizeAnchor(height: 80)
+        self.titleLabel.sizeAnchor(height: 60)
         self.titleLabel.sideAnchor(for: [.left, .right, .top], to: self.contentView, edgeInset: 0)
         self.titleLabel.setBorder(position: .bottom, color: InterfaceTheme.Color.background2, width: 0.5)
         

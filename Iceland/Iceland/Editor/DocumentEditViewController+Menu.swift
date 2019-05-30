@@ -47,6 +47,7 @@ extension DocumentEditViewController {
         actionsController.addAction(icon: Asset.Assets.master.image, title: L10n.Document.Menu.outline) { viewController in
             viewController.dismiss(animated: true, completion: {
                 self.viewModel.coordinator?.showOutline(completion: { [unowned self] heading in
+                    self.allowScrollContentWhenKeyboardDisapearTemporaily()
                     self._moveTo(location: heading.location)
                 })
                 self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
@@ -68,6 +69,8 @@ extension DocumentEditViewController {
             viewController.dismiss(animated: true, completion: nil)
             self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
         }
+        
+        self.textView.resignFirstResponder() // 隐藏键盘
         
         self.present(actionsController, animated: true, completion: nil)
         

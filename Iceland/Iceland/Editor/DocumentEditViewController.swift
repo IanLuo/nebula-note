@@ -19,6 +19,8 @@ public class DocumentEditViewController: UIViewController {
     public let textView: OutlineTextView
     internal let viewModel: DocumentEditViewModel
     
+    private var _shouldScrollWhenKeyboardDisapear: Bool = false
+    
     private let _loadingIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView()
         indicator.color = InterfaceTheme.Color.interactive
@@ -31,7 +33,7 @@ public class DocumentEditViewController: UIViewController {
         self.viewModel = viewModel
         self.textView = OutlineTextView(frame: .zero,
                                         textContainer: viewModel.container)
-        self.textView.contentInset = UIEdgeInsets(top: 160, left: 30, bottom: 500, right: 30)
+        self.textView.contentInset = UIEdgeInsets(top: 160, left: 10, bottom: 0, right: 10)
 
         super.init(nibName: nil, bundle: nil)
         
@@ -147,13 +149,20 @@ public class DocumentEditViewController: UIViewController {
     
     @objc private func _keyboardDidShow(_ notification: Notification) {
         if let userInfo = notification.userInfo {
-            
             let keyboardHeight = (userInfo["UIKeyboardFrameEndUserInfoKey"] as! CGRect).height
+
+            self.textView.contentInset = UIEdgeInsets(top: self.textView.contentInset.top,
+                                                      left: self.textView.contentInset.left,
+                                                      bottom: keyboardHeight + 100,
+                                                      right: self.textView.contentInset.right)
+            
             if let textRange = self.textView.selectedTextRange {
                 let targetRect = self.textView.caretRect(for: textRange.start)
                 let keyboarTopAsContentOffset = self.textView.contentOffset.y + self.textView.bounds.height - keyboardHeight - 100
                 if targetRect.origin.y >= keyboarTopAsContentOffset {
-                    self.textView.contentOffset = CGPoint(x: self.textView.contentOffset.x, y: keyboarTopAsContentOffset)
+                    UIView.animate(withDuration: 0.25) {
+                        self.textView.contentOffset = CGPoint(x: self.textView.contentOffset.x, y: keyboarTopAsContentOffset)
+                    }
                 }
             }
             
@@ -161,7 +170,12 @@ public class DocumentEditViewController: UIViewController {
     }
     
     @objc private func _keyboardDidHide(_ notification: Notification) {
-        
+        UIView.animate(withDuration: 0.25, delay: 0.2, options: [], animations: {
+            self.textView.contentInset = UIEdgeInsets(top: self.textView.contentInset.top,
+                                                      left: self.textView.contentInset.left,
+                                                      bottom: 0,
+                                                      right: self.textView.contentInset.right)
+        }, completion: nil)
     }
     
     private var _lastState: UIDocument.State?
@@ -190,6 +204,14 @@ public class DocumentEditViewController: UIViewController {
             print("document state is: \(document.documentState)")
             
             self._lastState = document.documentState
+        }
+    }
+    
+    public func allowScrollContentWhenKeyboardDisapearTemporaily() {
+        self._shouldScrollWhenKeyboardDisapear = true
+        
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 3) {
+            self._shouldScrollWhenKeyboardDisapear = false
         }
     }
 }
@@ -224,6 +246,7 @@ extension DocumentEditViewController: DocumentEditViewModelDelegate {
         self._loadingIndicator.stopAnimating()
         
         // 移动到指定的位置（如果需要）
+        self.allowScrollContentWhenKeyboardDisapearTemporaily()
         self._moveTo(location: self.viewModel.onLoadingLocation)
         
         // 打开文件时， 添加到最近使用的文件

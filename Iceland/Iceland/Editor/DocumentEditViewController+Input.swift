@@ -103,6 +103,13 @@ extension DocumentEditViewController {
                 }
             }
             
+            for case let blockMark in self.viewModel.currentTokens where blockMark is BlockToken {
+                if blockMark.tokenRange.contains(self.textView.selectedRange.location) || blockMark.tokenRange.upperBound == self.textView.selectedRange.location {
+                    textView.selectedRange = blockMark.range
+                    return false
+                }
+            }
+            
             for case let token in self.viewModel.currentTokens where token is HeadingToken {
                 let headingToken = token as! HeadingToken
                 let location = textView.selectedRange.location

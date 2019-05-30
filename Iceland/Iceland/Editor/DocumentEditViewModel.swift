@@ -348,12 +348,23 @@ public class DocumentEditViewModel {
     }
     
     public func handleConflict(url: URL) throws {
-        let currentVersion = NSFileVersion.currentVersionOfItem(at: url)
-        //        let otherViersions = NSFileVersion.otherVersionsOfItem(at: url) FIXME: let user choose
         
-        try NSFileVersion.removeOtherVersionsOfItem(at: url)
+        guard let conflictVersions = NSFileVersion.unresolvedConflictVersionsOfItem(at: url) else { return }
         
-        currentVersion?.isResolved = true
+        let sortedConflictVersions = conflictVersions.sorted { (version1, version2) -> Bool in
+            guard let date1 = version1.modificationDate,
+                let date2 = version2.modificationDate else { return true }
+            return date1.timeIntervalSince1970 > date2.timeIntervalSince1970
+        }
+        
+        if let newestVersion = sortedConflictVersions.first {
+            try newestVersion.replaceItem(at: url, options: [])
+            try NSFileVersion.removeOtherVersionsOfItem(at: url)
+        }
+        
+        for version in sortedConflictVersions {
+            version.isResolved = true
+        }
     }
 
     

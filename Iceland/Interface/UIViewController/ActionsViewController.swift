@@ -149,7 +149,7 @@ public class ActionsViewController: UIViewController, TransitionProtocol {
         let button = RoundButton()
         button.setBorder(color: nil)
         button.setIcon(Asset.Assets.cross.image.resize(upto: CGSize(width: 10, height: 10)).fill(color: InterfaceTheme.Color.interactive), for: .normal)
-        button.setBackgroundColor(InterfaceTheme.Color.background2, for: .normal)
+        button.setBackgroundColor(InterfaceTheme.Color.background3, for: .normal)
         return button
     }()
     
