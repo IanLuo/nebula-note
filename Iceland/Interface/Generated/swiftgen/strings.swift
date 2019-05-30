@@ -307,6 +307,8 @@ public enum L10n {
       public static let unfold = L10n.tr("Localizable", "document.heading.unfold")
     }
     public enum Info {
+      /// Character count
+      public static let characterCount = L10n.tr("Localizable", "document.info.characterCount")
       /// Create date
       public static let createDate = L10n.tr("Localizable", "document.info.createDate")
       /// Edit date

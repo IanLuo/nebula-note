@@ -460,7 +460,7 @@ private class TabView: UITableViewHeaderFooterView {
         button.interface({ (me, theme) in
             let button = me as! UIButton
             button.tintColor = theme.color.descriptiveHighlighted
-            button.setImage(Asset.Assets.down.image.resize(upto: CGSize(width: 10, height: 10)).fill(color: theme.color.descriptiveHighlighted), for: .normal)
+            button.setImage(Asset.Assets.down.image.resize(upto: CGSize(width: 15, height: 15)).fill(color: theme.color.descriptiveHighlighted), for: .normal)
         })
         button.addTarget(self, action: #selector(subtabActionTapped), for: .touchUpInside)
         button.imageView?.contentMode = .scaleAspectFit
@@ -511,7 +511,7 @@ private class TabView: UITableViewHeaderFooterView {
         
         self.iconView.sideAnchor(for: .left, to: self.contentView, edgeInsets: .init(top: 0, left: Layout.edgeInsets.left, bottom: 0, right: 0))
         self.iconView.centerAnchors(position: .centerY, to: self.contentView)
-        self.iconView.sizeAnchor(width: 15, height: 15)
+        self.iconView.sizeAnchor(width: 20, height: 20)
         
         self.titleButton.allSidesAnchors(to: self.contentView, edgeInset: 0)
         self.titleButton.contentEdgeInsets = UIEdgeInsets(top: 20, left: 70, bottom: 20, right: 0)

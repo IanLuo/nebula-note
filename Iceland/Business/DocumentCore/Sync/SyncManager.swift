@@ -324,6 +324,7 @@ public class SyncManager: NSObject {
                                        options: [.skipsHiddenFiles, .skipsPackageDescendants], errorHandler: nil)
         
         while let url = enumerator?.nextObject() as? URL {
+            let url = url.resolvingSymlinksInPath()
             let resouece = try url.resourceValues(forKeys: Set(keys))
             if resouece.isDirectory! && url.pathExtension == Document.fileExtension {
                 enumerator?.skipDescendants()

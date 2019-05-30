@@ -14,10 +14,7 @@ import Business
 public class DocumentInfoViewController: TransitionViewController {
     public var contentView: UIView = {
         let view = UIView()
-        
-        view.interface({ (me, theme) in
-            me.backgroundColor = InterfaceTheme.Color.background2
-        })
+        view.backgroundColor = InterfaceTheme.Color.background1
         return view
     }()
     
@@ -25,12 +22,8 @@ public class DocumentInfoViewController: TransitionViewController {
     
     private lazy var _backButton: RoundButton = {
         let button = RoundButton()
-        
-        button.interface({ (me, theme) in
-            let me = me as! RoundButton
-            me.setIcon(Asset.Assets.right.image.fill(color: InterfaceTheme.Color.interactive), for: .normal)
-            me.setBackgroundColor(InterfaceTheme.Color.background3, for: .normal)
-        })
+        button.setIcon(Asset.Assets.right.image.fill(color: InterfaceTheme.Color.interactive), for: .normal)
+        button.setBackgroundColor(InterfaceTheme.Color.background2, for: .normal)
         return button
     }()
     

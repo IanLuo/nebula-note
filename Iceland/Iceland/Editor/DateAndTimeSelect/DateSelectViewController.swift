@@ -41,7 +41,7 @@ public class DateSelectViewController: UIViewController {
         self._calendarView.dataSource = self
         
         CalendarView.Style.cellShape                = .round
-        CalendarView.Style.cellColorDefault         = InterfaceTheme.Color.background1
+        CalendarView.Style.cellColorDefault         = InterfaceTheme.Color.background2
         CalendarView.Style.cellSelectedBorderColor  = InterfaceTheme.Color.spotlight
         CalendarView.Style.cellSelectedColor        = InterfaceTheme.Color.spotlight
         CalendarView.Style.headerTextColor          = InterfaceTheme.Color.descriptive

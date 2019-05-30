@@ -58,6 +58,7 @@
 "document.info.createDate" = "Create date";
 "document.info.wordCount" = "Word count";
 "document.info.paragraphCount" = "Paragraph count";
+"document.info.characterCount" = "Character count";
 
 "document.link.open" = "Open link in browser";
 "document.link.edit" = "Edit link";

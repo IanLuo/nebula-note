@@ -167,18 +167,16 @@ public class AgendaTableCell: UITableViewCell {
         
         let aString: NSMutableAttributedString = NSMutableAttributedString()
         if let planning = cellModel.planning {
-            let color = SettingsAccessor.shared.unfinishedPlanning.contains(planning) ? InterfaceTheme.Color.warning : InterfaceTheme.Color.spotlight
-            aString.append(NSAttributedString(string: planning + " ", attributes: [NSAttributedString.Key.foregroundColor : color,
-                                                                                      NSAttributedString.Key.font: InterfaceTheme.Font.footnote]))
+            let style = OutlineTheme.planningStyle(isFinished: SettingsAccessor.shared.finishedPlanning.contains(planning))
+            aString.append(NSAttributedString(string: planning + " ", attributes: style.textStyle.attributes))
         }
         
         if let priority = cellModel.priority {
-            aString.append(NSAttributedString(string: priority + " ", attributes: [NSAttributedString.Key.foregroundColor : InterfaceTheme.Color.descriptiveHighlighted,
-                                                                                      NSAttributedString.Key.font: InterfaceTheme.Font.footnote]))
+            let style = OutlineTheme.priorityStyle(priority)
+            aString.append(NSAttributedString(string: priority + " ", attributes: style.textStyle.attributes))
         }
         
-        aString.append(NSAttributedString(string: cellModel.headingText, attributes: [NSAttributedString.Key.foregroundColor : InterfaceTheme.Color.interactive,
-                                                                                               NSAttributedString.Key.font: InterfaceTheme.Font.body]))
+        aString.append(NSAttributedString(string: cellModel.headingText, attributes: OutlineTheme.headingStyle(level: cellModel.level).attributes))
         self.headingTextLabel.attributedText = aString
         
         if let tags = cellModel.tags {

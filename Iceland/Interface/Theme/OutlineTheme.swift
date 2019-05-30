@@ -93,8 +93,10 @@ public class OutlineThemeSelector {
         return OutlineThemeSelector.shared.currentTheme.quoteBlockStyle
     }
     
-    public static var headingStyle: TextStyle {
-        return OutlineThemeSelector.shared.currentTheme.headingStyle
+    public static func headingStyle(level: Int) -> TextStyle {
+        let defaultStyle = OutlineThemeSelector.shared.currentTheme.headingStyle
+        let textStyle = TextStyle(font: defaultStyle.font, color: defaultStyle.color.withAlphaComponent(CGFloat(10 - level) / CGFloat(10)))
+        return textStyle
     }
     
     public static var tagStyle: ButtonStyle {
@@ -120,7 +122,7 @@ public protocol OutlineThemeConfigProtocol {
 }
 
 private struct DefaultOutlineTheme: OutlineThemeConfigProtocol {
-    var headingStyle: TextStyle = TextStyle(font: InterfaceTheme.Font.title, color: InterfaceTheme.Color.interactive)
+    var headingStyle: TextStyle = TextStyle(font: InterfaceTheme.Font.title, color: InterfaceTheme.Color.level)
     
     var orderdedListStyle: TextStyle = TextStyle(font: InterfaceTheme.Font.title, color: InterfaceTheme.Color.descriptive)
     
@@ -145,43 +147,44 @@ private struct DefaultOutlineTheme: OutlineThemeConfigProtocol {
                                                      verbatim: TextStyle(font: InterfaceTheme.Font.body, color: InterfaceTheme.Color.interactive),
                                                      code: TextStyle(font: InterfaceTheme.Font.body, color: InterfaceTheme.Color.interactive))
     
-    var dateAndTimeStyle: DateAndTimeStyle = DateAndTimeStyle(normal: ButtonStyle(buttonColor: InterfaceTheme.Color.interactive,
+    /// 目前没有使用 button color, 因为 button 显示有问题
+    var dateAndTimeStyle: DateAndTimeStyle = DateAndTimeStyle(normal: ButtonStyle(buttonColor: InterfaceTheme.Color.background3,
                                                                                   textStyle: TextStyle(font: InterfaceTheme.Font.body,
-                                                                                                       color: InterfaceTheme.Color.spotlight)),
-                                                              soon: ButtonStyle(buttonColor: UIColor.yellow,
+                                                                                                       color: InterfaceTheme.Color.finished)),
+                                                              soon: ButtonStyle(buttonColor: InterfaceTheme.Color.background3,
                                                                                 textStyle: TextStyle(font: InterfaceTheme.Font.body,
-                                                                                                     color: UIColor.magenta)),
-                                                              overtime: ButtonStyle(buttonColor: UIColor.red,
+                                                                                                     color: InterfaceTheme.Color.unfinished)),
+                                                              overtime: ButtonStyle(buttonColor: InterfaceTheme.Color.background3,
                                                                                     textStyle: TextStyle(font: InterfaceTheme.Font.body,
-                                                                                                         color: UIColor.red)))
+                                                                                                         color: InterfaceTheme.Color.warning)))
     
-    var planningStyle: PlanningStyle = PlanningStyle(finished: ButtonStyle(buttonColor: UIColor.green,
+    var planningStyle: PlanningStyle = PlanningStyle(finished: ButtonStyle(buttonColor: InterfaceTheme.Color.background3,
                                                                            textStyle: TextStyle(font: InterfaceTheme.Font.footnote,
-                                                                                                color: InterfaceTheme.Color.interactive)),
-                                                     unfinished: ButtonStyle(buttonColor: UIColor.yellow,
+                                                                                                color: InterfaceTheme.Color.finished)),
+                                                     unfinished: ButtonStyle(buttonColor: InterfaceTheme.Color.background3,
                                                                              textStyle: TextStyle(font: InterfaceTheme.Font.footnote,
-                                                                                                  color: InterfaceTheme.Color.descriptive)))
-    var tagStyle: ButtonStyle = ButtonStyle(buttonColor: InterfaceTheme.Color.descriptive,
+                                                                                                  color: InterfaceTheme.Color.unfinished)))
+    var tagStyle: ButtonStyle = ButtonStyle(buttonColor: InterfaceTheme.Color.background3,
                                             textStyle: TextStyle(font: InterfaceTheme.Font.footnote, color: InterfaceTheme.Color.interactive))
     
-    var priorityStyle: PriorityStyle = PriorityStyle(a: ButtonStyle(buttonColor: UIColor.darkGray,
+    var priorityStyle: PriorityStyle = PriorityStyle(a: ButtonStyle(buttonColor: InterfaceTheme.Color.background3,
                                                                     textStyle: TextStyle(font: InterfaceTheme.Font.footnote,
-                                                                                         color: InterfaceTheme.Color.interactive)),
-                                                     b: ButtonStyle(buttonColor: UIColor.lightGray,
+                                                                                         color: InterfaceTheme.Color.warning.withAlphaComponent(1))),
+                                                     b: ButtonStyle(buttonColor: InterfaceTheme.Color.background3,
                                                                     textStyle: TextStyle(font: InterfaceTheme.Font.footnote,
-                                                                                         color: InterfaceTheme.Color.interactive)),
-                                                     c: ButtonStyle(buttonColor: UIColor.yellow,
+                                                                                         color: InterfaceTheme.Color.warning.withAlphaComponent(0.9))),
+                                                     c: ButtonStyle(buttonColor: InterfaceTheme.Color.background3,
                                                                     textStyle: TextStyle(font: InterfaceTheme.Font.footnote,
-                                                                                         color: InterfaceTheme.Color.interactive)),
-                                                     d: ButtonStyle(buttonColor: UIColor.blue,
+                                                                                         color: InterfaceTheme.Color.warning.withAlphaComponent(0.8))),
+                                                     d: ButtonStyle(buttonColor: InterfaceTheme.Color.background3,
                                                                     textStyle: TextStyle(font: InterfaceTheme.Font.footnote,
-                                                                                         color: InterfaceTheme.Color.interactive)),
-                                                     e: ButtonStyle(buttonColor: UIColor.purple,
+                                                                                         color: InterfaceTheme.Color.warning.withAlphaComponent(0.7))),
+                                                     e: ButtonStyle(buttonColor: InterfaceTheme.Color.background3,
                                                                     textStyle: TextStyle(font: InterfaceTheme.Font.footnote,
-                                                                                         color: InterfaceTheme.Color.interactive)),
-                                                     f: ButtonStyle(buttonColor: UIColor.red,
+                                                                                         color: InterfaceTheme.Color.warning.withAlphaComponent(0.6))),
+                                                     f: ButtonStyle(buttonColor: InterfaceTheme.Color.background3,
                                                                     textStyle: TextStyle(font: InterfaceTheme.Font.footnote,
-                                                                                         color: InterfaceTheme.Color.interactive)))
+                                                                                         color: InterfaceTheme.Color.warning.withAlphaComponent(0.5))))
 }
 
 public struct CodeBlockStyle {

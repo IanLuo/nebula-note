@@ -163,7 +163,7 @@ extension DocumentSearchViewController: UITableViewDataSource, UITableViewDelega
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let searchResult = self.viewModel.data[indexPath.row]
-        self.delegate?.didSelectDocument(url: searchResult.url, location: searchResult.hilightRange.location)
+        self.delegate?.didSelectDocument(url: searchResult.url, location: searchResult.location)
         
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
             tableView.deselectRow(at: indexPath, animated: true)

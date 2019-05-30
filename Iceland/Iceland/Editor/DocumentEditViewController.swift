@@ -136,7 +136,6 @@ public class DocumentEditViewController: UIViewController {
         if let userInfo = notification.userInfo {
             
         }
-        
     }
     
     @objc private func _keyboardWillHide(_ notification: Notification) {
@@ -144,7 +143,6 @@ public class DocumentEditViewController: UIViewController {
             let height = (userInfo["UIKeyboardFrameEndUserInfoKey"] as! CGRect).size.height
             
         }
-        
     }
     
     @objc private func _keyboardDidShow(_ notification: Notification) {
@@ -193,7 +191,7 @@ public class DocumentEditViewController: UIViewController {
                 }
             } else if document.documentState == .normal {
                 if self._lastState == .editingDisabled { // recovered from editDisabled, that means other process has modified it, revert content
-                    self.viewModel.revertContent()
+                    // TODO: handle new document conent arrived
                 }
                 print("document state is: normal")
             } else if document.documentState == .progressAvailable {

@@ -36,14 +36,14 @@ public class ModalFormViewController: TransitionViewController {
     private lazy var cancelButton: RoundButton = {
         let button = RoundButton()
         button.setIcon(Asset.Assets.cross.image.resize(upto: CGSize(width: 10, height: 10)).fill(color: InterfaceTheme.Color.interactive), for: .normal)
-        button.setBackgroundColor(InterfaceTheme.Color.background1, for: .normal)
+        button.setBackgroundColor(InterfaceTheme.Color.background2, for: .normal)
         return button
     }()
     
     private lazy var saveButton: RoundButton = {
         let button = RoundButton()
         button.setIcon(Asset.Assets.checkMark.image.resize(upto: CGSize(width: 15, height: 15)).fill(color: InterfaceTheme.Color.spotlight), for: .normal)
-        button.setBackgroundColor(InterfaceTheme.Color.background1, for: .normal)
+        button.setBackgroundColor(InterfaceTheme.Color.background2, for: .normal)
         return button
     }()
     
@@ -79,7 +79,7 @@ public class ModalFormViewController: TransitionViewController {
         tableView.allowsSelection = false
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 30, bottom: 0, right: 30)
         tableView.separatorColor = InterfaceTheme.Color.background3
-        tableView.backgroundColor = InterfaceTheme.Color.background2
+        tableView.backgroundColor = InterfaceTheme.Color.background1
         tableView.register(InputTextFieldCell.self, forCellReuseIdentifier: InputTextFieldCell.reuseIdentifier)
         tableView.register(InputTextViewCell.self, forCellReuseIdentifier: InputTextViewCell.reuseIdentifier)
         return tableView
@@ -87,7 +87,7 @@ public class ModalFormViewController: TransitionViewController {
     
     private let actionButtonsContainer:UIView = {
         let view = UIView()
-        view.backgroundColor = InterfaceTheme.Color.background2
+        view.backgroundColor = InterfaceTheme.Color.background1
         return view
     }()
     
@@ -341,7 +341,7 @@ private class InputTextViewCell: UITableViewCell, UITextViewDelegate, Validatabl
         let textView = UITextView()
         textView.font = InterfaceTheme.Font.body
         textView.textColor = InterfaceTheme.Color.interactive
-        textView.backgroundColor = InterfaceTheme.Color.background2
+        textView.backgroundColor = InterfaceTheme.Color.background1
         textView.delegate = self
         return textView
     }()
@@ -357,7 +357,7 @@ private class InputTextViewCell: UITableViewCell, UITextViewDelegate, Validatabl
     }
     
     private func setupUI() {
-        self.backgroundColor = InterfaceTheme.Color.background2
+        self.backgroundColor = InterfaceTheme.Color.background1
         
         self.contentView.addSubview(self.titleLabel)
         self.contentView.addSubview(self.textView)
@@ -453,7 +453,7 @@ private class InputTextFieldCell: UITableViewCell, UITextFieldDelegate, Validata
     }
     
     private func setupUI() {
-        self.backgroundColor = InterfaceTheme.Color.background2
+        self.backgroundColor = InterfaceTheme.Color.background1
         
         self.contentView.addSubview(self.titleLabel)
         self.contentView.addSubview(self.textField)
@@ -471,7 +471,7 @@ private class InputTextFieldCell: UITableViewCell, UITextFieldDelegate, Validata
             self.textField.backgroundColor = InterfaceTheme.Color.warning
         } else {
             self.titleLabel.text = self.validateKey
-            self.textField.backgroundColor = InterfaceTheme.Color.background2
+            self.textField.backgroundColor = InterfaceTheme.Color.background1
         }
     }
     

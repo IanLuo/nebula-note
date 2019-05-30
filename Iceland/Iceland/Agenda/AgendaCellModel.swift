@@ -18,8 +18,10 @@ public class AgendaCellModel {
     public var tags: [String]?
     public var priority: String?
     public let heading: DocumentHeading
+    public let level: Int
     
     public init(searchResult: DocumentHeadingSearchResult) {
+        self.level = searchResult.heading.level
         self.priority = searchResult.heading.priority
         self.dateAndTime = searchResult.dateAndTime
         self.dateAndTimeRange = searchResult.dateAndTimeRange

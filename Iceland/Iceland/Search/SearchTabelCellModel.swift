@@ -14,11 +14,13 @@ public struct SearchTabelCellModel {
     public let textString: String
     public let hilightRange: NSRange
     public let url: URL
+    public let location: Int
     
     public init(searchResult: DocumentTextSearchResult) {
         self.fileName = searchResult.documentInfo.url.packageName
         self.textString = searchResult.context
         self.hilightRange = searchResult.highlightRange
         self.url = searchResult.documentInfo.url
+        self.location = searchResult.location
     }
 }

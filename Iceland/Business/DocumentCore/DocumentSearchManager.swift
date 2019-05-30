@@ -59,6 +59,7 @@ public struct DocumentTextSearchResult {
     public let highlightRange: NSRange
     public let context: String
     public let heading: DocumentHeading?
+    public let location: Int
 }
 
 public class DocumentHeadingSearchResult {
@@ -181,7 +182,8 @@ public class DocumentSearchManager {
                                                 items.append(DocumentTextSearchResult(documentInfo: DocumentInfo(wrapperURL: url.wrapperURL),
                                                                                       highlightRange: highlightRange,
                                                                                       context: string.substring(contextRange),
-                                                                                      heading: documentHeading))
+                                                                                      heading: documentHeading,
+                                                                                      location: range.location))
                     })
                     
                 }

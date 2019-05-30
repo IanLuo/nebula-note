@@ -172,6 +172,10 @@ public class DocumentEditViewModel {
         return components.filter { !$0.isEmpty }.count
     }
     
+    public var characterCount: Int {
+        return self.string.count
+    }
+    
     public var paragraphCount: Int {
         return self.headings.count
     }

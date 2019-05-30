@@ -68,7 +68,7 @@ public class MoveInAnimtor: NSObject, Animator {
                 
                 UIView.animate(withDuration: self.transitionDuration(using: transitionContext), delay: 0.0, options: .curveEaseInOut, animations: ({
                     transitionViewController.contentView.frame = toRect
-                    transitionViewController.view.backgroundColor = UIColor.black.withAlphaComponent(0.5)
+                    transitionViewController.view.backgroundColor = InterfaceTheme.Color.interactive.withAlphaComponent(0.3)
                 }), completion: { completeion in
                     transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
                 })

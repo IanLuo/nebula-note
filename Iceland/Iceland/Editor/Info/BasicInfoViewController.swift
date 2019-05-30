@@ -14,6 +14,7 @@ public class BasicInfoViewController: UIViewController, UITableViewDelegate, UIT
     enum InfoItem: CaseIterable {
         case editDate
         case wordCount
+        case characterCount
         case paragraphs
         case creatDate
         
@@ -23,6 +24,7 @@ public class BasicInfoViewController: UIViewController, UITableViewDelegate, UIT
             case .wordCount: return L10n.Document.Info.wordCount
             case .paragraphs: return L10n.Document.Info.paragraphCount
             case .creatDate: return L10n.Document.Info.createDate
+            case .characterCount: return L10n.Document.Info.characterCount
             }
         }
         
@@ -32,6 +34,7 @@ public class BasicInfoViewController: UIViewController, UITableViewDelegate, UIT
             case .paragraphs: return "\(viewModel.paragraphCount)"
             case .editDate: return "\(viewModel.editeDate)"
             case .creatDate: return "\(viewModel.createDate)"
+            case .characterCount: return "\(viewModel.characterCount)"
             }
         }
     }
@@ -42,7 +45,7 @@ public class BasicInfoViewController: UIViewController, UITableViewDelegate, UIT
         tableView.dataSource = self
         tableView.register(InfoCell.self, forCellReuseIdentifier: InfoCell.reuseIdentifier)
         tableView.separatorStyle = .none
-        tableView.backgroundColor = InterfaceTheme.Color.background2
+        tableView.backgroundColor = InterfaceTheme.Color.background1
         tableView.allowsSelection = false
         return tableView
     }()
@@ -86,7 +89,7 @@ private class InfoCell: UITableViewCell {
             self?.textLabel?.font = theme.font.footnote
             self?.detailTextLabel?.font = theme.font.footnote
             self?.detailTextLabel?.textColor = theme.color.descriptive
-            self?.backgroundColor = theme.color.background2
+            self?.backgroundColor = theme.color.background1
         }
     }
     

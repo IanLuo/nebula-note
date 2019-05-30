@@ -82,7 +82,7 @@ extension DashboardSubtypeItemViewController: UITableViewDataSource {
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ItemCell.reuseIdentifier, for: indexPath)
         let title = self.subtype.detailItems[indexPath.row]
-        cell.imageView?.image = self.subtype.icon
+        cell.imageView?.image = self.subtype.icon?.fill(color: InterfaceTheme.Color.descriptive)
         cell.textLabel?.text = title
         return cell
     }

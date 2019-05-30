@@ -30,6 +30,10 @@ public protocol InterfaceThemeColorProtocol {
     var background3: UIColor { get }
     var spotlight: UIColor { get }
     var warning: UIColor { get }
+    
+    var finished: UIColor { get }
+    var unfinished: UIColor { get }
+    var level: UIColor { get }
 }
 
 public protocol InterfaceThemeFontProtocol {
@@ -59,6 +63,10 @@ public struct LightInterfaceTheme: InterfaceThemeProtocol {
 }
 
 public struct LightInterfaceColor: InterfaceThemeColorProtocol {
+    public var level: UIColor = UIColor(red:0.08, green:0.49, blue:0.98, alpha:1.00)
+    public var finished: UIColor = UIColor(red:0.45, green:0.67, blue:0.33, alpha:1.00)
+    public var unfinished: UIColor = UIColor(red:1.00, green:0.68, blue:0.20, alpha:1.00)
+    
     public let interactive: UIColor = UIColor(red:0.15, green:0.15, blue:0.15, alpha:1.00)
     public let descriptive: UIColor = UIColor(red:0.61, green:0.61, blue:0.61, alpha:1.00)
     public let descriptiveHighlighted: UIColor = UIColor(red:0.71, green:0.71, blue:0.71, alpha:1.00)
@@ -70,12 +78,16 @@ public struct LightInterfaceColor: InterfaceThemeColorProtocol {
 }
 
 public struct DarkInterfaceColor: InterfaceThemeColorProtocol {
+    public var level: UIColor = UIColor(red:0.08, green:0.49, blue:0.98, alpha:1.00)
+    public var finished: UIColor = UIColor(red:0.45, green:0.67, blue:0.33, alpha:1.00)
+    public var unfinished: UIColor = UIColor(red:1.00, green:0.68, blue:0.20, alpha:1.00)
+    
     public let interactive: UIColor = UIColor(red:0.97, green:0.97, blue:0.97, alpha:1.00)
     public let descriptive: UIColor = UIColor(red:0.27, green:0.27, blue:0.27, alpha:1.00)
     public let descriptiveHighlighted: UIColor = UIColor(red:0.41, green:0.41, blue:0.41, alpha:1.00)
-    public let background1: UIColor = UIColor(red:0.18, green:0.17, blue:0.18, alpha:1.00)
+    public let background1: UIColor = UIColor(red:0.11, green:0.11, blue:0.11, alpha:1.00)
     public let background2: UIColor = UIColor(red:0.13, green:0.12, blue:0.13, alpha:1.00)
-    public let background3: UIColor = UIColor(red:0.11, green:0.11, blue:0.11, alpha:1.00)
+    public let background3: UIColor = UIColor(red:0.18, green:0.17, blue:0.18, alpha:1.00)
     public let spotlight: UIColor = UIColor(red:0.08, green:0.49, blue:0.98, alpha:1.00)
     public let warning: UIColor = UIColor(red:0.98, green:0.39, blue:0.41, alpha:1.00)
 }

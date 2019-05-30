@@ -61,9 +61,7 @@ public class ExportSelectViewController: UIViewController, UICollectionViewDeleg
         
         self._collectionView.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 0)
         
-        self.interface { [weak self] (me, theme) in
-            self?._collectionView.backgroundColor = theme.color.background2
-        }
+        self._collectionView.backgroundColor = InterfaceTheme.Color.background1
     }
     
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -122,7 +120,7 @@ private class ExportItemCell: UICollectionViewCell {
     
     private func _setupUI() {
         self.interface { (me, theme) in
-            me.backgroundColor = theme.color.background3
+            me.backgroundColor = theme.color.background2
         }
         self.layer.cornerRadius = 8
         self.layer.masksToBounds = true

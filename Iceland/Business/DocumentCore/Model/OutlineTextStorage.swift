@@ -607,8 +607,8 @@ extension OutlineTextStorage: OutlineParserDelegate {
             
             token.decorationAttributesAction = { textStorage, token in
                 guard let headingRange = token.range(for: OutlineParser.Key.Node.heading) else { return }
+                textStorage.addAttributes(OutlineTheme.headingStyle(level: token.range(for: OutlineParser.Key.Element.Heading.level)?.length ?? 1).attributes, range: headingRange)
                 
-                textStorage.addAttributes(OutlineTheme.headingStyle.attributes, range: headingRange)
                 textStorage.addAttribute(OutlineAttribute.Heading.content, value: 1, range: headingRange)
                 
                 if let levelRange = token.range(for: OutlineParser.Key.Element.Heading.level) {
