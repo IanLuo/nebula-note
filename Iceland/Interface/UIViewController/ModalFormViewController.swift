@@ -77,8 +77,7 @@ public class ModalFormViewController: TransitionViewController {
         tableView.dataSource = self
         tableView.alwaysBounceVertical = false
         tableView.allowsSelection = false
-        tableView.separatorInset = UIEdgeInsets(top: 0, left: 30, bottom: 0, right: 30)
-        tableView.separatorColor = InterfaceTheme.Color.background3
+        tableView.separatorStyle = .none
         tableView.backgroundColor = InterfaceTheme.Color.background1
         tableView.register(InputTextFieldCell.self, forCellReuseIdentifier: InputTextFieldCell.reuseIdentifier)
         tableView.register(InputTextViewCell.self, forCellReuseIdentifier: InputTextViewCell.reuseIdentifier)
@@ -341,7 +340,9 @@ private class InputTextViewCell: UITableViewCell, UITextViewDelegate, Validatabl
         let textView = UITextView()
         textView.font = InterfaceTheme.Font.body
         textView.textColor = InterfaceTheme.Color.interactive
-        textView.backgroundColor = InterfaceTheme.Color.background1
+        textView.backgroundColor = InterfaceTheme.Color.background2
+        textView.layer.cornerRadius = 8
+        textView.layer.masksToBounds = true
         textView.delegate = self
         return textView
     }()
@@ -362,9 +363,9 @@ private class InputTextViewCell: UITableViewCell, UITextViewDelegate, Validatabl
         self.contentView.addSubview(self.titleLabel)
         self.contentView.addSubview(self.textView)
         
-        self.titleLabel.sideAnchor(for: [.left, .top, .right], to: self.contentView, edgeInsets: .init(top: 10, left: 30, bottom: 0, right: 30))
-        self.titleLabel.columnAnchor(view: self.textView)
-        self.textView.sideAnchor(for: [.left, .right, .bottom], to: self.contentView, edgeInsets: .init(top: 10, left: 30, bottom: 0, right: 30))
+        self.titleLabel.sideAnchor(for: [.left, .top, .right], to: self.contentView, edgeInsets: .init(top: 10, left: 12, bottom: 0, right: -12))
+        self.titleLabel.columnAnchor(view: self.textView, space: 5)
+        self.textView.sideAnchor(for: [.left, .right, .bottom], to: self.contentView, edgeInsets: .init(top: 10, left: 12, bottom: 0, right: -12))
         
         self.titleLabel.sizeAnchor(height: 30)
         self.textView.sizeAnchor(height: 100)
@@ -424,6 +425,10 @@ private class InputTextFieldCell: UITableViewCell, UITextFieldDelegate, Validata
         textField.autocapitalizationType = .none
         textField.autocorrectionType = .no
         textField.clearButtonMode = .whileEditing
+        textField.backgroundColor = InterfaceTheme.Color.background2
+        textField.layer.cornerRadius = 8
+        textField.layer.masksToBounds = true
+        
         return textField
     }()
     
@@ -458,11 +463,11 @@ private class InputTextFieldCell: UITableViewCell, UITextFieldDelegate, Validata
         self.contentView.addSubview(self.titleLabel)
         self.contentView.addSubview(self.textField)
         
-        self.titleLabel.sideAnchor(for: [.left, .top, .right], to: self.contentView, edgeInsets: .init(top: 10, left: 30, bottom: 0, right: 30))
-        self.titleLabel.sizeAnchor(height: 30)
-        self.titleLabel.columnAnchor(view: self.textField)
-        self.textField.sideAnchor(for: [.left, .right, .bottom], to: self.contentView, edgeInsets: .init(top: 10, left: 30, bottom: 0, right: -30))
-        self.textField.sizeAnchor(height: 60)
+        self.titleLabel.sideAnchor(for: [.left, .top, .right], to: self.contentView, edgeInsets: .init(top: 10, left: 12, bottom: 0, right: -12))
+        self.titleLabel.sizeAnchor(height: 20)
+        self.titleLabel.columnAnchor(view: self.textField, space: 5)
+        self.textField.sideAnchor(for: [.left, .right, .bottom], to: self.contentView, edgeInsets: .init(top: 10, left: 12, bottom: 0, right: -12))
+        self.textField.sizeAnchor(height: 44)
     }
     
     func showValidationResult(_ problem: String?) {

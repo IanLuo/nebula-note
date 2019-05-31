@@ -64,7 +64,7 @@ public struct LightInterfaceTheme: InterfaceThemeProtocol {
 }
 
 public struct LightInterfaceColor: InterfaceThemeColorProtocol {
-    public var spotlitTitle: UIColor =  UIColor(red:1.00, green:1.00, blue:1.00, alpha:1.00)
+    public var spotlitTitle: UIColor = UIColor(red:1.00, green:1.00, blue:1.00, alpha:1.00)
     public var level: UIColor = UIColor(red:0.08, green:0.49, blue:0.98, alpha:1.00)
     public var finished: UIColor = UIColor(red:0.45, green:0.67, blue:0.33, alpha:1.00)
     public var unfinished: UIColor = UIColor(red:1.00, green:0.68, blue:0.20, alpha:1.00)
@@ -80,7 +80,7 @@ public struct LightInterfaceColor: InterfaceThemeColorProtocol {
 }
 
 public struct DarkInterfaceColor: InterfaceThemeColorProtocol {
-    public var spotlitTitle: UIColor =  UIColor(red:0.11, green:0.11, blue:0.11, alpha:1.00)
+    public var spotlitTitle: UIColor = UIColor(red:1.00, green:1.00, blue:1.00, alpha:1.00)
     public var level: UIColor = UIColor(red:0.08, green:0.49, blue:0.98, alpha:1.00)
     public var finished: UIColor = UIColor(red:0.45, green:0.67, blue:0.33, alpha:1.00)
     public var unfinished: UIColor = UIColor(red:1.00, green:0.68, blue:0.20, alpha:1.00)
@@ -89,8 +89,8 @@ public struct DarkInterfaceColor: InterfaceThemeColorProtocol {
     public let descriptive: UIColor = UIColor(red:0.27, green:0.27, blue:0.27, alpha:1.00)
     public let descriptiveHighlighted: UIColor = UIColor(red:0.41, green:0.41, blue:0.41, alpha:1.00)
     public let background1: UIColor = UIColor(red:0.11, green:0.11, blue:0.11, alpha:1.00)
-    public let background2: UIColor = UIColor(red:0.13, green:0.12, blue:0.13, alpha:1.00)
-    public let background3: UIColor = UIColor(red:0.18, green:0.17, blue:0.18, alpha:1.00)
+    public let background2: UIColor = UIColor(red:0.15, green:0.15, blue:0.15, alpha:1.00)
+    public let background3: UIColor = UIColor(red:0.20, green:0.20, blue:0.20, alpha:1.00)
     public let spotlight: UIColor = UIColor(red:0.08, green:0.49, blue:0.98, alpha:1.00)
     public let warning: UIColor = UIColor(red:0.98, green:0.39, blue:0.41, alpha:1.00)
 }
