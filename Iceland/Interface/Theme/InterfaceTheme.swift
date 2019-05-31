@@ -34,6 +34,7 @@ public protocol InterfaceThemeColorProtocol {
     var finished: UIColor { get }
     var unfinished: UIColor { get }
     var level: UIColor { get }
+    var spotlitTitle: UIColor { get }
 }
 
 public protocol InterfaceThemeFontProtocol {
@@ -63,6 +64,7 @@ public struct LightInterfaceTheme: InterfaceThemeProtocol {
 }
 
 public struct LightInterfaceColor: InterfaceThemeColorProtocol {
+    public var spotlitTitle: UIColor =  UIColor(red:1.00, green:1.00, blue:1.00, alpha:1.00)
     public var level: UIColor = UIColor(red:0.08, green:0.49, blue:0.98, alpha:1.00)
     public var finished: UIColor = UIColor(red:0.45, green:0.67, blue:0.33, alpha:1.00)
     public var unfinished: UIColor = UIColor(red:1.00, green:0.68, blue:0.20, alpha:1.00)
@@ -78,6 +80,7 @@ public struct LightInterfaceColor: InterfaceThemeColorProtocol {
 }
 
 public struct DarkInterfaceColor: InterfaceThemeColorProtocol {
+    public var spotlitTitle: UIColor =  UIColor(red:0.11, green:0.11, blue:0.11, alpha:1.00)
     public var level: UIColor = UIColor(red:0.08, green:0.49, blue:0.98, alpha:1.00)
     public var finished: UIColor = UIColor(red:0.45, green:0.67, blue:0.33, alpha:1.00)
     public var unfinished: UIColor = UIColor(red:1.00, green:0.68, blue:0.20, alpha:1.00)

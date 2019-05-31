@@ -163,14 +163,14 @@ private class DateCell: UICollectionViewCell {
         let attr = NSMutableAttributedString(string: string)
         
         if isSelected {
-            attr.addAttributes([NSAttributedString.Key.foregroundColor : InterfaceTheme.Color.interactive,
+            attr.addAttributes([NSAttributedString.Key.foregroundColor : InterfaceTheme.Color.spotlitTitle,
                                 NSAttributedString.Key.font : InterfaceTheme.Font.footnote],
                                range: (string as NSString).range(of: weekString))
-            attr.addAttributes([NSAttributedString.Key.foregroundColor : InterfaceTheme.Color.interactive,
+            attr.addAttributes([NSAttributedString.Key.foregroundColor : InterfaceTheme.Color.spotlitTitle,
                                 NSAttributedString.Key.font : InterfaceTheme.Font.title],
                                range: (string as NSString).range(of: dateString))
             background.backgroundColor = InterfaceTheme.Color.spotlight
-            self.todayLabel.textColor = InterfaceTheme.Color.interactive
+            self.todayLabel.textColor = InterfaceTheme.Color.spotlitTitle
         } else {
             attr.addAttributes([NSAttributedString.Key.foregroundColor : InterfaceTheme.Color.descriptive,
                                 NSAttributedString.Key.font : InterfaceTheme.Font.footnote],
