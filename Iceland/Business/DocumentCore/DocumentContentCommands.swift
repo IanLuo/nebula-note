@@ -52,7 +52,7 @@ public class ReplaceTextCommand: DocumentContentCommand {
     
     public func perform() -> DocumentContentCommandResult {
         let undoRange = NSRange(location: self.range.location, length: self.textToReplace.count)
-        let undoString = self.textStorage.string.substring(self.range)
+        let undoString = self.textStorage.string.nsstring.substring(with: self.range)
         
         if let manullayReplace = self.manullayReplace {
             manullayReplace(self.range, self.textToReplace)
@@ -122,7 +122,7 @@ public class FoldingAndUnfoldingCommand: DocumentContentCommand {
     
     fileprivate func _markUnfold(heading: HeadingToken, textStorage: OutlineTextStorage) {
         var range: NSRange = heading.subheadingsRange
-        if range.upperBound != textStorage.string.count {
+        if range.upperBound != textStorage.string.nsstring.length {
             range = range.moveRightBound(by: -1)
         }
         
@@ -150,7 +150,7 @@ public class FoldingAndUnfoldingCommand: DocumentContentCommand {
     
     fileprivate func _markFold(heading: HeadingToken, textStorage: OutlineTextStorage) {
         var range: NSRange = heading.subheadingsRange
-        if range.upperBound != textStorage.string.count {
+        if range.upperBound != textStorage.string.nsstring.length {
             range = range.moveRightBound(by: -1)
         }
         
@@ -289,7 +289,7 @@ public class ConvertLineToHeadingCommandComposer: DocumentContentCommandComposer
             
             if lineStart > 0 {
                 if let lastHeading = textStorage.heading(contains: lineStart - 1) {
-                    let lastHeadingLevelString = textStorage.string.substring(lastHeading.levelRange)
+                    let lastHeadingLevelString = textStorage.string.nsstring.substring(with: lastHeading.levelRange)
                     return ReplaceTextCommand(range: NSRange(location: lineStart, length: 0), textToReplace: "\(lastHeadingLevelString) ", textStorage: textStorage)
                 } else {
                     return ReplaceTextCommand(range: NSRange(location: lineStart, length: 0), textToReplace: "* ", textStorage: textStorage)
@@ -426,7 +426,7 @@ public class MoveLineUpCommandComposer: DocumentContentCommandComposer {
             guard case let token = textStorage.token(at: lastLine.location).last, !(token is HeadingToken) else { return NoChangeCommand() }
             
             // 如果当前行是文档的最后一行，当前行结尾没有换行符，因此需要在替换的时候，在当前行末尾加上换行符，并且在上一行去掉换行符
-            if lineRange.upperBound == textStorage.string.count /* last line of document */ {
+            if lineRange.upperBound == textStorage.string.nsstring.length /* last line of document */ {
                 let currentLineText = textStorage.substring(lineRange) + OutlineParser.Values.Character.linebreak
                 let lastLineText = textStorage.substring(lastLine.moveRightBound(by: -1))
                 let textToReplace = currentLineText.appending(lastLineText)
@@ -470,14 +470,14 @@ public class MoveLineDownCommandComposer: DocumentContentCommandComposer {
         }
         
         let lineRange = textStorage.lineRange(at: self.location)
-        if lineRange.upperBound < textStorage.string.count {
+        if lineRange.upperBound < textStorage.string.nsstring.length {
             let nextLine = textStorage.lineRange(at: lineRange.upperBound + 1)
             
             // 下一行不能是 heading
             guard case let token = textStorage.token(at: nextLine.location).last, !(token is HeadingToken) else { return NoChangeCommand() }
             
             // 如果下一行是文档的最后一行，下一行结尾没有换行符，因此需要在替换的时候，在当前行末尾去掉换行符，并且在下一行加上换行符
-            if nextLine.upperBound == textStorage.string.count /* last line of document */ {
+            if nextLine.upperBound == textStorage.string.nsstring.length /* last line of document */ {
                 let currentLineText = textStorage.substring(lineRange.moveRightBound(by: -1))
                 let nextLineText = textStorage.substring(nextLine) + OutlineParser.Values.Character.linebreak
                 let textToReplace = nextLineText.appending(currentLineText)
@@ -514,7 +514,7 @@ public class MoveHeadingUpCommandComposer: DocumentContentCommandComposer {
         guard let lastHeading = textStorage.heading(contains: heading.range.location - 1) else { return NoChangeCommand() }
         
         // 如果当前 heading 是文档最后一个，则在移动之后要在尾部加上换行符，同理，在被移下来的 heading 尾部去掉换行符
-        if heading.paragraphRange.upperBound == textStorage.string.count {
+        if heading.paragraphRange.upperBound == textStorage.string.nsstring.length {
             let currentHeadingText = textStorage.substring(heading.paragraphRange) + OutlineParser.Values.Character.linebreak
             let lastHeadingText = textStorage.substring(lastHeading.paragraphRange.moveRightBound(by: -1))
             let textToReplace = currentHeadingText.appending(lastHeadingText)
@@ -550,7 +550,7 @@ public class MoveHeadingDownCommandComposer: DocumentContentCommandComposer {
         guard let nextHeading = textStorage.heading(contains: heading.paragraphRange.upperBound + 1) else { return NoChangeCommand() }
         
         // 如果下一 heading 是文档的最后一个 heading，下一 heading 结尾没有换行符，因此需要在替换的时候，在当前 heading 末尾去掉换行符，并且在下一 heading 加上换行符
-        if nextHeading.paragraphRange.upperBound == textStorage.string.count {
+        if nextHeading.paragraphRange.upperBound == textStorage.string.nsstring.length {
             let currentHeadingText = textStorage.substring(heading.paragraphRange.moveRightBound(by: -1))
             let nextHeadingText = textStorage.substring(nextHeading.paragraphRange) + OutlineParser.Values.Character.linebreak
             let textToReplace = nextHeadingText.appending(currentHeadingText)
@@ -706,8 +706,8 @@ public class TagCommandComposer: DocumentContentCommandComposer {
         switch self.kind {
         case .remove(let tag):
             if let tagsRange = heading.tags {
-                var newTags = textStorage.string.substring(tagsRange)
-                for t in textStorage.string.substring(tagsRange).components(separatedBy: ":").filter({ $0.count > 0 }) {
+                var newTags = textStorage.string.nsstring.substring(with: tagsRange)
+                for t in textStorage.string.nsstring.substring(with: tagsRange).components(separatedBy: ":").filter({ $0.count > 0 }) {
                     if t == tag {
                         newTags = newTags.replacingOccurrences(of: t, with: "")
                         if newTags == "::" {
@@ -834,7 +834,7 @@ public class TextMarkCommandComposer: DocumentContentCommandComposer {
     }
 
     public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
-        let temp = textStorage.string.substring(self.range)
+        let temp = textStorage.string.nsstring.substring(with: self.range)
         let replacement = self.markType.mark + temp + self.markType.mark
 
         return ReplaceTextCommand(range: self.range, textToReplace: replacement, textStorage: textStorage)
@@ -905,7 +905,7 @@ public class DecreaseIndentCommandComposer: DocumentContentCommandComposer {
                                                       contentsEnd: &content,
                                                       for: NSRange(location: self.location, length: 0))
 
-        let line = textStorage.string.substring(NSRange(location: start, length: end - start))
+        let line = textStorage.string.nsstring.substring(with: NSRange(location: start, length: end - start))
         
         if line.hasPrefix(OutlineParser.Values.Character.tab) {
             let range = (line as NSString).range(of: OutlineParser.Values.Character.tab).offset(start)
@@ -1002,7 +1002,7 @@ public class OrderedListSwitchCommandComposer: DocumentContentCommandComposer {
             let lastLineStart = (textStorage.string as NSString).lineRange(for: NSRange(location: lineStart - 1, length: 0)).location
             for case let token in (textStorage.token(at: lastLineStart)) where token.name == OutlineParser.Key.Node.ordedList {
                 // 2. insert index
-                let lastPrefix = textStorage.string.substring(token.range(for: OutlineParser.Key.Element.OrderedList.prefix)!)
+                let lastPrefix = textStorage.string.nsstring.substring(with: token.range(for: OutlineParser.Key.Element.OrderedList.prefix)!)
                 return InsertTextCommandComposer(location: lineStart,
                                          textToInsert: OutlineParser.Values.List.orderListIncrease(prefix: lastPrefix))
                     .compose(textStorage: textStorage)

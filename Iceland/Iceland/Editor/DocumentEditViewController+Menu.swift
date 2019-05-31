@@ -348,7 +348,7 @@ extension DocumentEditViewController {
                 let oldLocation = self.textView.selectedRange.location
                 self.viewModel.coordinator?.showDocumentHeadingPicker(completion: { [unowned self] url, heading in
                     self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
-                    self.viewModel.refileOtherDocument(url: url, heading: heading, location: location, completion: { [unowned self] result in
+                    self.viewModel.moveParagraphToOtherDocument(url: url, heading: heading, location: location, completion: { [unowned self] result in
                         let changedLength = oldLocation < heading.location ? -result.content!.count : 0 // 如果新的位置的 heading 在原来 heading 的前面，新的位置的 heading需要减掉移走的文字的长度
                         self.textView.selectedRange = NSRange(location: heading.location + heading.length + changedLength, length: 0)
                     })

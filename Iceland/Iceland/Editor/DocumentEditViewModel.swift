@@ -230,7 +230,7 @@ public class DocumentEditViewModel {
     
     public func headingString(index: Int) -> String {
         let headingTextRange = self.headings[index].headingTextRange
-        return self._editorService.string.substring(headingTextRange)
+        return self._editorService.string.nsstring.substring(with: headingTextRange)
     }
     
     public func documentHeading(at: Int) -> DocumentHeading {
@@ -243,7 +243,7 @@ public class DocumentEditViewModel {
     
     public func priority(at location: Int) -> String? {
         if let priorityRange = self._editorService.heading(at: location)?.priority {
-            return self._editorService.string.substring(priorityRange)
+            return self._editorService.string.nsstring.substring(with: priorityRange)
         } else {
             return nil
         }
@@ -251,28 +251,33 @@ public class DocumentEditViewModel {
     
     public func planning(at location: Int) -> String? {
         if let planningRange = self._editorService.heading(at: location)?.planning {
-            return self._editorService.string.substring(planningRange)
+            return self._editorService.string.nsstring.substring(with: planningRange)
         } else {
             return nil
         }
     }
     
-    public func refileOtherDocument(url: URL, heading: DocumentHeading, location: Int, completion: @escaping (DocumentContentCommandResult) -> Void) {
+    public func moveParagraphToOtherDocument(url: URL, heading otherHeading: DocumentHeading, location: Int, completion: @escaping (DocumentContentCommandResult) -> Void) {
         self.coordinator?.dependency.editorContext.request(url: url).onReadyToUse = { [weak self] service in
             service.start(complete: { isReady, service in
                 guard let strongSelf = self else { return }
                 
                 guard let heading = strongSelf._editorService.heading(at: location) else { return }
                 
-                let text = heading.range.location == 0
-                    ? strongSelf._editorService.string.substring(heading.paragraphRange)
-                    : strongSelf._editorService.string.substring(heading.paragraphRange.moveLeftBound(by: -1)) // 移动的时候，把上一段末尾的换行符也带走
+                var text = heading.range.location == 0
+                    ? strongSelf._editorService.string.nsstring.substring(with: heading.paragraphRange) + "\n"
+                    : strongSelf._editorService.string.nsstring.substring(with: heading.paragraphRange)
                 
                 // 1. 删除当前的段落
                 let result = strongSelf._editorService.toggleContentCommandComposer(composer: EditAction.removeParagraph(location).commandComposer).perform()
                 
                 // 2. 插入到新的位置
-                service.replace(text: text, range: NSRange(location: heading.paragraphRange.upperBound - 1, length: 0))
+                if otherHeading.paragraphRange.upperBound == service.string.nsstring.length { // 如果将要插到文档末尾，添加一个换行符在插入的位置之前
+                    text = "\n" + text
+                }
+                
+                service.replace(text: text,
+                                range: NSRange(location: otherHeading.paragraphRange.upperBound, length: 0))
                 
                 completion(result)
             })
@@ -282,9 +287,9 @@ public class DocumentEditViewModel {
     public func moveParagraph(contains location: Int, to toHeading: DocumentHeading, textView: UITextView) -> DocumentContentCommandResult {
         guard let currentHeading = self._editorService.heading(at: location) else { return DocumentContentCommandResult.noChange }
         
-        var text = currentHeading.range.upperBound == self._editorService.string.count // 当前行位最后一行
-            ? self._editorService.string.substring(currentHeading.paragraphRange) + "\n"
-            : self._editorService.string.substring(currentHeading.paragraphRange)
+        var text = currentHeading.range.upperBound == self._editorService.string.nsstring.length // 当前行位最后一行
+            ? self._editorService.string.nsstring.substring(with: currentHeading.paragraphRange) + "\n"
+            : self._editorService.string.nsstring.substring(with: currentHeading.paragraphRange)
         
         // 1. 删除旧的段落
         let removedResult = self.performAction(EditAction.removeParagraph(location),
@@ -296,7 +301,7 @@ public class DocumentEditViewModel {
             newLocation = newLocation.offset(-removedResult.content!.count)
         }
         
-        if newLocation.upperBound == self._editorService.string.count { // 如果将要插到文档末尾，添加一个换行符在插入的位置之前
+        if newLocation.upperBound == self._editorService.string.nsstring.length { // 如果将要插到文档末尾，添加一个换行符在插入的位置之前
             text = "\n" + text
         }
         

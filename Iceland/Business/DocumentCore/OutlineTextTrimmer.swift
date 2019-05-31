@@ -14,15 +14,15 @@ public class OutlineTextTrimmer: OutlineParserDelegate {
     
     public func didFoundTextMark(text: String, markRanges: [[String : NSRange]]) {
         markRanges.forEach {
-            _result = _result.replacingOccurrences(of: text.substring($0[OutlineParser.Key.Element.TextMark.mark]!),
-                                                 with: text.substring($0[OutlineParser.Key.Element.TextMark.content]!))
+            _result = _result.replacingOccurrences(of: text.nsstring.substring(with: $0[OutlineParser.Key.Element.TextMark.mark]!),
+                                                   with: text.nsstring.substring(with: $0[OutlineParser.Key.Element.TextMark.content]!))
         }
     }
     
     public func didFoundLink(text: String, urlRanges: [[String : NSRange]]) {
         urlRanges.forEach {
-            _result = _result.replacingOccurrences(of: text.substring($0[OutlineParser.Key.Element.link]!),
-                                                 with: text.substring($0[OutlineParser.Key.Element.Link.title]!))
+            _result = _result.replacingOccurrences(of: text.nsstring.substring(with: $0[OutlineParser.Key.Element.link]!),
+                                                   with: text.nsstring.substring(with: $0[OutlineParser.Key.Element.Link.title]!))
         }
     }
     
@@ -38,8 +38,8 @@ public class OutlineTextTrimmer: OutlineParserDelegate {
     private var _result: String = ""
     
     public func trim(string: String, range: NSRange? = nil) -> String {
-        let range = range ?? NSRange(location: 0, length: string.count)
-        self._result = string.substring(range)
+        let range = range ?? NSRange(location: 0, length: string.nsstring.length)
+        self._result = string.nsstring.substring(with: range)
         self._parser.parse(str: string, range: range)
         return _result
     }

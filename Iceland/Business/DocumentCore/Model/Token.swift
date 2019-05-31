@@ -189,7 +189,7 @@ public class HeadingToken: Token {
     
     public func tagsArray(string: String) -> [String] {
         if let tagRange = self.tags {
-            return string.substring(tagRange).components(separatedBy: ":").filter { $0.count > 0 }
+            return string.nsstring.substring(with: tagRange).components(separatedBy: ":").filter { $0.count > 0 }
         } else {
             return []
         }

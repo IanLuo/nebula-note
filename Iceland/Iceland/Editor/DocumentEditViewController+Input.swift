@@ -41,13 +41,22 @@ extension DocumentEditViewController {
         // 如果在 heading 中，换行不在当前位置，而在 heading 之后
         guard let currentPosition = textView.selectedTextRange?.start else { return true }
         
-        // 如果当前位置在 heading 内部(除开最前端)，回车直接添加到行位
+        // 如果当前位置在 heading 内部(除开最前端)，回车的时候，先查找 tag 的位置，将 tag 之前，光标之后的内容，添加到行位
         for case let heading in self.viewModel.currentTokens where heading is HeadingToken {
+            let heading = heading as! HeadingToken
+            
             guard self.textView.selectedRange.location != heading.range.location else { return true }
             
-            let result = self.viewModel.performAction(EditAction.addNewLineBelow(location: textView.selectedRange.location), textView: textView)
-            textView.selectedRange = NSRange(location: result.range!.location, length: 0)
-            return false
+            if let tagRange = heading.tags {
+                let breakRange = NSRange(location: textView.selectedRange.location, length: tagRange.location - textView.selectedRange.location)
+                let textToPutInNextLine = "\n" + textView.text.nsstring.substring(with: breakRange)
+                _ = self.viewModel.performAction(EditAction.replaceText(NSRange(location: heading.range.upperBound, length: 0), textToPutInNextLine), textView: textView)
+                _ = self.viewModel.performAction(EditAction.replaceText(breakRange, ""), textView: textView)
+                textView.selectedRange = NSRange(location: heading.range.upperBound + 1, length: 0) // +1 是因为添加了一个换行符
+                return false
+            } else {
+                return true
+            }
         }
         
         // 有序列表，自动添加列表前缀，如果真有前缀没有内容，则删除前缀
@@ -85,16 +94,22 @@ extension DocumentEditViewController {
     private func _handelBackspace(_ textView: UITextView) -> Bool {
         if textView.selectedRange.length == 0 {
             for case let attachmentToken in self.viewModel.currentTokens where attachmentToken is AttachmentToken {
+                guard self.textView.selectedRange.location != attachmentToken.range.location else { return true }
+                
                 textView.selectedRange = attachmentToken.range
                 return false
             }
             
             for case let dateAndTimeToken in self.viewModel.currentTokens where dateAndTimeToken is DateAndTimeToken {
+                guard self.textView.selectedRange.location != dateAndTimeToken.range.location else { return true }
+                
                 textView.selectedRange = dateAndTimeToken.range
                 return false
             }
             
             for case let textMark in self.viewModel.currentTokens where textMark is TextMarkToken {
+                guard self.textView.selectedRange.location != textMark.range.location else { return true }
+                
                 if textMark.range.length == 2 /* 没有内容 */ {
                     let oldSelectedRange = textView.selectedRange
                     let result = self.viewModel.performAction(EditAction.replaceText(textMark.range, ""), textView: textView)
@@ -104,6 +119,8 @@ extension DocumentEditViewController {
             }
             
             for case let blockMark in self.viewModel.currentTokens where blockMark is BlockToken {
+                guard self.textView.selectedRange.location != blockMark.range.location else { return true }
+                
                 if blockMark.tokenRange.contains(self.textView.selectedRange.location) || blockMark.tokenRange.upperBound == self.textView.selectedRange.location {
                     textView.selectedRange = blockMark.range
                     return false
@@ -115,6 +132,8 @@ extension DocumentEditViewController {
                 let location = textView.selectedRange.location
                 
                 if let tagsRange = headingToken.tags {
+                    guard self.textView.selectedRange.location != tagsRange.location else { return true }
+                    
                     if tagsRange.contains(location) || tagsRange.upperBound == location {
                         textView.selectedRange = tagsRange
                         return false
@@ -122,6 +141,8 @@ extension DocumentEditViewController {
                 }
                 
                 if let planningRange = headingToken.planning {
+                    guard self.textView.selectedRange.location != planningRange.location else { return true }
+                    
                     if planningRange.contains(location) || planningRange.upperBound == location {
                         textView.selectedRange = planningRange
                         return false
@@ -129,6 +150,8 @@ extension DocumentEditViewController {
                 }
                 
                 if let priorityRange = headingToken.priority {
+                    guard self.textView.selectedRange.location != priorityRange.location else { return true }
+                    
                     if priorityRange.contains(location) || priorityRange.upperBound == location {
                         textView.selectedRange = priorityRange
                         return false

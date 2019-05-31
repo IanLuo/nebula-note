@@ -95,10 +95,10 @@ extension HeadingsOutlineViewController: DocumentEditViewModelDelegate {
         let attributedString = NSMutableAttributedString(string: labelString)
         attributedString.setAttributes([NSAttributedString.Key.foregroundColor : InterfaceTheme.Color.descriptive,
                                         NSAttributedString.Key.font : InterfaceTheme.Font.footnote],
-                                       range: NSRange(location: 0, length: prefix.count))
+                                       range: NSRange(location: 0, length: prefix.nsstring.length))
         attributedString.setAttributes([NSAttributedString.Key.foregroundColor : InterfaceTheme.Color.interactive,
                                         NSAttributedString.Key.font : InterfaceTheme.Font.footnote],
-                                       range: NSRange(location: prefix.count, length: labelString.count - prefix.count))
+                                       range: NSRange(location: prefix.count, length: labelString.nsstring.length - prefix.count))
         
         return attributedString
     }

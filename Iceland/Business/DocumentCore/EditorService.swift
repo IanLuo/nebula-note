@@ -123,7 +123,7 @@ public class EditorService {
     
     public var string: String {
         get { return _editorController.string }
-        set { self.replace(text: newValue, range: NSRange(location: 0, length: _editorController.string.count)) }
+        set { self.replace(text: newValue, range: NSRange(location: 0, length: _editorController.string.nsstring.length)) }
     }
     
     public func revertContent() {
@@ -263,7 +263,7 @@ public class EditorService {
         DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
             matcher.enumerateMatches(in: string,
                                      options: [],
-                                     range: NSRange(location: 0, length: string.count)) { (result, flag, stop) in
+                                     range: NSRange(location: 0, length: string.nsstring.length)) { (result, flag, stop) in
                                         guard let range = result?.range else { return }
                                         matchedRanges.append(range)
             }

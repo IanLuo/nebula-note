@@ -169,7 +169,7 @@ extension URL {
     public var deletingLastSplashIfThereIs: String {
         let absString = self.absoluteString
         if absString.hasSuffix("/") {
-            return absString.substring(NSRange(location: 0, length: absString.count - 1))
+            return absString.nsstring.substring(with: NSRange(location: 0, length: absString.nsstring.length - 1))
         } else {
             return absString
         }
@@ -369,11 +369,15 @@ extension URL {
 
 
 extension String {
-    public func substring(_ range: NSRange) -> String {
-        return (self as NSString).substring(with: range)
+//    public func substring(_ range: NSRange) -> String {
+//        return self.nsstring.substring(with: range)
+//    }
+//
+    public var nsstring: NSString {
+        return self as NSString
     }
     
     public func removing(_ range: NSRange) -> String {
-        return self.replacingOccurrences(of: self.substring(range), with: "")
+        return self.replacingOccurrences(of: self.nsstring.substring(with: range), with: "")
     }
 }

@@ -68,7 +68,7 @@ public class DateAndTimeType {
     }
     
     public convenience init?(_ string: String) {
-        let range = NSRange(location: 0, length: string.count)
+        let range = NSRange(location: 0, length: string.nsstring.length)
         let dateFormatter = DateFormatter()
         
         let extractDate: (String, NSRange) -> (Date, Bool, RepeatMode)? = { string, range in
@@ -76,20 +76,20 @@ public class DateAndTimeType {
                 let dateRange = dateAndTimeMatchResult.range(at: 1)
                 
                 dateFormatter.dateFormat = "yyyy-MM-dd"
-                var date = dateFormatter.date(from: string.substring(dateRange))!
+                var date = dateFormatter.date(from: string.nsstring.substring(with: dateRange))!
                 
                 var includeTime = false
                 if let timeResult = OutlineParser.Matcher.Element.DateAndTime.time.firstMatch(in: string, options: [], range: range) {
                     includeTime = true
                     dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
-                    date = dateFormatter.date(from: "\(string.substring(dateRange)) \(string.substring(timeResult.range))")!
+                    date = dateFormatter.date(from: "\(string.nsstring.substring(with: dateRange)) \(string.nsstring.substring(with: timeResult.range))")!
                 }
                 
                 var repeatMode: RepeatMode = .none
                 if let repeatResult = OutlineParser.Matcher.Element.DateAndTime.repeat.firstMatch(in: string, options: [], range: range) {
                     let countRange = repeatResult.range(at: 1)
                     let typeRange = repeatResult.range(at: 2)
-                    repeatMode = RepeatMode.create(type: string.substring(typeRange), count: string.substring(countRange))
+                    repeatMode = RepeatMode.create(type: string.nsstring.substring(with: typeRange), count: string.nsstring.substring(with: countRange))
                 }
                 
                 return (date, includeTime, repeatMode)
@@ -115,7 +115,7 @@ public class DateAndTimeType {
         // 4. find as time range
         else if let timeRangeResult =  OutlineParser.Matcher.Element.DateAndTime.timeRange.firstMatch(in: string, options: [], range: range) {
             if let rangePartResult = OutlineParser.Matcher.Element.DateAndTime.timeRangePart.firstMatch(in: string, options: [], range: timeRangeResult.range) {
-                let times = string.substring(rangePartResult.range).components(separatedBy: "-")
+                let times = string.nsstring.substring(with: rangePartResult.range).components(separatedBy: "-")
                 let date1String = (string as NSString).replacingCharacters(in: rangePartResult.range, with: times[0])
                 let date2String = (string as NSString).replacingCharacters(in: rangePartResult.range, with: times[1])
                 

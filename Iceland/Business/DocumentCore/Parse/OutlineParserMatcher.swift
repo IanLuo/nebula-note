@@ -77,7 +77,7 @@ extension OutlineParser {
         public struct Element {
             public struct Heading {
                 public static var planning = try! NSRegularExpression(pattern: RegexPattern.Element.Heading.planning, options: [])
-                public static var tags = try! NSRegularExpression(pattern: RegexPattern.Element.Heading.tags, options: [])
+                public static var tags = try! NSRegularExpression(pattern: RegexPattern.Element.Heading.tags, options: [.anchorsMatchLines])
                 public static var priority = try! NSRegularExpression(pattern: RegexPattern.Element.Heading.priority, options: [])
             }
             
@@ -206,7 +206,7 @@ extension OutlineParser {
         public static let character = "\\w"
         
         public struct Node {
-            public static let heading =         "^(\\*+) (.)*"
+            public static let heading =         "^(\\*+) ([^\\n])*"
             public static let codeBlock =       "^[\\t ]*\\#\\+BEGIN\\_SRC( [\(character)\\.]*)?\\n([^\\#\\+END\\_SRC]*)\\n\\s*\\#\\+END\\_SRC[\\t ]*\\n"
             public static let checkBox =        "^[\\t ]*(\\- \\[(X| |\\-)\\] )"
             public static let unorderedList =   "^[\\t ]*([\\-\\+] )[^\\[\\n]+" //用于匹配有内容的 unordered list 避免与 checkbox 冲突
@@ -215,7 +215,7 @@ extension OutlineParser {
             public static let seperator =       "^[\\t ]*(\\-{5,}[\\t ]*)"
             public static let attachment =      "\\#\\+ATTACHMENT\\:(image|video|audio|sketch|location)=([A-Z0-9\\-]+)" // like: #+ATTACHMENT:LKS-JDLF-JSDL-JFLSDF)
             public static let quote =           "^[\\t ]*\\#\\+BEGIN\\_QUOTE\\n([^\\#\\+END\\_QUOTE]*)\\n\\s*\\#\\+END\\_QUOTE[\\t ]*\\n"
-            public static let footnote =        "" // TODO: footnote regex pattern imp
+            public static let footnote =        "" // TODO: footnote regex pattern implementation
             public static let textAttachment =  "\\#\\+ATTACHMENT\\:(link|text)=([A-Z0-9\\-]+)"
         }
         
@@ -232,7 +232,7 @@ extension OutlineParser {
             
             public struct Heading {
                 public static var planning =                " (\(Values.Heading.Planning.pattern))? "
-                public static let tags =                    "(\\:(\(character)+\\:)+)"
+                public static let tags =                    "(\\:(\(character)+\\:)+)$"
                 public static let priority =                "\\[\\#[A-Z]{1}\\]"
             }
             
@@ -311,7 +311,7 @@ extension OutlineParser {
                 let indexRange = Matcher.Node.ordedList.firstMatch(in: prefix, options: [], range: NSRange(location: 0, length: prefix.count))!.range(at: 2)
                 var increasedIndex = ""
                 
-                let indexString = prefix.substring(indexRange)
+                let indexString = prefix.nsstring.substring(with: indexRange)
                 if let number = Int(indexString) {
                     increasedIndex = "\(number + 1)"
                 } else {

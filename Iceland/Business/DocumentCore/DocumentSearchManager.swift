@@ -30,26 +30,26 @@ public struct DocumentHeading {
         self.location = headingToken.range.location
         
         if let tagRange = headingToken.tags {
-            self.tags = documentString.substring(tagRange).components(separatedBy: ":").filter { $0.count != 0 }
+            self.tags = documentString.nsstring.substring(with: tagRange).components(separatedBy: ":").filter { $0.count != 0 }
         } else {
             self.tags = nil
         }
         
         if let planning = headingToken.planning {
-            self.planning = documentString.substring(planning)
+            self.planning = documentString.nsstring.substring(with: planning)
         } else {
             self.planning = nil
         }
         
         if let priority = headingToken.priority {
-            self.priority = documentString.substring(priority)
+            self.priority = documentString.nsstring.substring(with: priority)
         } else {
             self.priority = nil
         }
         
-        self.text = documentString.substring(headingToken.headingTextRange)
+        self.text = documentString.nsstring.substring(with: headingToken.headingTextRange)
         
-        self.paragraphSummery = documentString.substring(NSRange(location: headingToken.contentRange.location,
+        self.paragraphSummery = documentString.nsstring.substring(with: NSRange(location: headingToken.contentRange.location,
                                                                  length: min(100, headingToken.contentRange.length)))
     }
 }
@@ -161,7 +161,7 @@ public class DocumentSearchManager {
                     
                     matcher.enumerateMatches(in: string,
                                              options: NSRegularExpression.MatchingOptions.reportProgress,
-                                             range: NSRange(location: 0, length: string.count),
+                                             range: NSRange(location: 0, length: string.nsstring.length),
                                              using: { (result: NSTextCheckingResult?,
                                                 flags: NSRegularExpression.MatchingFlags,
                                                 stop: UnsafeMutablePointer<ObjCBool>) in
@@ -169,7 +169,7 @@ public class DocumentSearchManager {
                                                 guard let range = result?.range else { return }
                                                 
                                                 let lowerBound = max(0, range.location - 10)
-                                                let upperBound = min(range.upperBound + 30, string.count)
+                                                let upperBound = min(range.upperBound + 30, string.nsstring.length)
                                                 let contextRange = NSRange(location: lowerBound, length: upperBound - lowerBound)
                                                 let highlightRange = NSRange(location: range.location - lowerBound, length: range.length)
                                                 
@@ -181,7 +181,7 @@ public class DocumentSearchManager {
                                                 
                                                 items.append(DocumentTextSearchResult(documentInfo: DocumentInfo(wrapperURL: url.wrapperURL),
                                                                                       highlightRange: highlightRange,
-                                                                                      context: string.substring(contextRange),
+                                                                                      context: string.nsstring.substring(with: contextRange),
                                                                                       heading: documentHeading,
                                                                                       location: range.location))
                     })
@@ -228,7 +228,7 @@ public class DocumentSearchManager {
                     parseDelegate.dateAndTimes.forEach { dateAndTimeRange in
                         
                         if let headingToken = parseDelegate.heading(contains: dateAndTimeRange.location) {
-                            let result = DocumentHeadingSearchResult(dateAndTime: DateAndTimeType(string.substring(dateAndTimeRange))!,
+                            let result = DocumentHeadingSearchResult(dateAndTime: DateAndTimeType(string.nsstring.substring(with: dateAndTimeRange))!,
                                                      documentInfo: DocumentInfo(wrapperURL: url.wrapperURL),
                                                      dateAndTimeRange: dateAndTimeRange,
                                                      heading: DocumentHeading(documentString: string,

@@ -29,7 +29,9 @@ public class RenderAttachment: NSTextAttachment {
         self._manager.attachment(with: value, completion: { [weak self] attachment in
             self?._attachment = attachment
             self?.url = attachment.url
-            self?.image = AttachmentThumbnailView(bounds: self!.bounds, attachment: attachment).snapshot
+            DispatchQueue.main.async {
+                self?.image = AttachmentThumbnailView(bounds: self!.bounds, attachment: attachment).snapshot
+            }
         }) { error in
             
         }

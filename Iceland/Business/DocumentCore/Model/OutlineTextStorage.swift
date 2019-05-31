@@ -33,7 +33,7 @@ public class OutlineTextStorage: TextStorage {
     }
     
     public override var string: String {
-        set { super.replaceCharacters(in: NSRange(location: 0, length: self.string.count), with: newValue) }
+        set { super.replaceCharacters(in: NSRange(location: 0, length: self.string.nsstring.length), with: newValue) }
         get { return super.string }
     }
     
@@ -63,7 +63,7 @@ public class OutlineTextStorage: TextStorage {
         {
             didSet {
                 if let _ = oldValue {
-                    self.addAttribute(NSAttributedString.Key.backgroundColor, value: InterfaceTheme.Color.background1, range: NSRange(location: 0, length: self.string.count))
+                    self.addAttribute(NSAttributedString.Key.backgroundColor, value: InterfaceTheme.Color.background1, range: NSRange(location: 0, length: self.string.nsstring.length))
                 }
             }
         }
@@ -86,7 +86,7 @@ public class OutlineTextStorage: TextStorage {
     
     public var allTokenText: [String] {
         return self.allTokens.map {
-            self.string.substring($0.range)
+            self.string.nsstring.substring(with: $0.range)
         }
     }
     
@@ -103,7 +103,7 @@ public class OutlineTextStorage: TextStorage {
     }
     
     public func substring(_ range: NSRange) -> String {
-        return self.string.substring(range)
+        return self.string.nsstring.substring(with: range)
     }
     
     // 用于解析过程中临时数据处理, only useful during parsing, 在开始解析的时候重置
@@ -117,7 +117,7 @@ extension OutlineTextStorage: ContentUpdatingProtocol {
     public func performContentUpdate(_ string: String!, range: NSRange, delta: Int, action: NSTextStorage.EditActions) {
 
         guard action != .editedAttributes else { return } // 如果是修改属性，则不进行解析
-        guard self.string.count > 0 else { return }
+        guard self.string.nsstring.length > 0 else { return }
         
         // 如果是删除操作，直接删除已删除的部分的 token
         if delta < 0 {
@@ -168,15 +168,15 @@ extension OutlineTextStorage: ContentUpdatingProtocol {
         
         // -> DEBUG
         // 解析范围提示
-//                self.addAttributes([NSAttributedString.Key.backgroundColor: UIColor.gray.withAlphaComponent(0.5)], range: currentParseRange)
+                self.addAttributes([NSAttributedString.Key.backgroundColor: UIColor.gray.withAlphaComponent(0.5)], range: currentParseRange)
         // 添加 token 提示
         //        self._tempParsingTokenResult.forEach { token in
         //            self.addAttribute(NSAttributedString.Key.backgroundColor, value: UIColor.yellow.withAlphaComponent(0.3), range: token.range)
         //        }
         // 所有 token 提示
-//        self.allTokens.forEach { token in
-//            self.addAttribute(NSAttributedString.Key.backgroundColor, value: UIColor.green.withAlphaComponent(0.3), range: token.range)
-//        }
+        self.allTokens.forEach { token in
+            self.addAttribute(NSAttributedString.Key.backgroundColor, value: UIColor.green.withAlphaComponent(0.3), range: token.range)
+        }
         // <- DEBUG
     }
 }
@@ -185,7 +185,7 @@ extension OutlineTextStorage: ContentUpdatingProtocol {
 extension OutlineTextStorage {
     /// 找到对应位置之后的第一个 token
     public func token(at location: Int) -> [Token] {
-        let isFromStart = self.string.count / 2 > location // diceide from which end to search
+        let isFromStart = self.string.nsstring.length / 2 > location // diceide from which end to search
         var isHitBefore = false // if hit before, then then dosen't more, stop search
         var tokensFound: [Token] = []
         
@@ -244,7 +244,7 @@ extension OutlineTextStorage {
     }
     
     public func heading(contains location: Int) -> HeadingToken? {
-        guard location <= self.string.count else { return nil }
+        guard location <= self.string.nsstring.length else { return nil }
         
         for heading in self.headingTokens.reversed() {
             if location >= heading.range.location {
@@ -294,7 +294,7 @@ extension OutlineTextStorage {
     /// 计算 heading 所在的内容长度(包含 heading)
     public func parangraphsRange(at location: Int) -> NSRange {
 
-        var range = NSRange(location: 0, length: self.string.count)
+        var range = NSRange(location: 0, length: self.string.nsstring.length)
         let reversedIndex: (Int) -> Int = { index in
             return self.headingTokens.count - index - 1
         }
@@ -306,7 +306,7 @@ extension OutlineTextStorage {
                 if reversedIndex + 1 < self.headingTokens.count {
                     range.length = self.headingTokens[reversedIndex + 1].range.location - heading.range.location
                 } else {
-                    range.length = self.string.count - heading.range.location
+                    range.length = self.string.nsstring.length - heading.range.location
                 }
                 
                 break
@@ -398,8 +398,8 @@ extension OutlineTextStorage: OutlineParserDelegate {
                     textStorage.addAttributes([OutlineAttribute.hidden: 0, // 不隐藏
                         NSAttributedString.Key.foregroundColor: OutlineTheme.linkStyle.color,
                         NSAttributedString.Key.font: OutlineTheme.linkStyle.font,
-                        OutlineAttribute.Link.title: [OutlineParser.Key.Element.Link.title: text.substring(titleRange),
-                                                      OutlineParser.Key.Element.Link.url: text.substring(urlRange)]],
+                        OutlineAttribute.Link.title: [OutlineParser.Key.Element.Link.title: text.nsstring.substring(with: titleRange),
+                                                      OutlineParser.Key.Element.Link.url: text.nsstring.substring(with: urlRange)]],
                                               range: titleRange)
                     
                     textStorage.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment,
@@ -423,8 +423,8 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 guard let typeRange = token.range(for: OutlineParser.Key.Element.Attachment.type) else { return }
                 guard let valueRange = token.range(for: OutlineParser.Key.Element.Attachment.value) else { return }
                 
-                let type = text.substring(typeRange)
-                let value = text.substring(valueRange)
+                let type = text.nsstring.substring(with: typeRange)
+                let value = text.nsstring.substring(with: valueRange)
                 let attachment = RenderAttachment(type: type, value: value, manager: self._attachmentManager)
                 
                 textStorage.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment,
@@ -461,7 +461,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
             checkboxToken.decorationAttributesAction = { textStorage, token in
                 
                 if let checkboxRange = token.range(for: OutlineParser.Key.Node.checkbox) {
-                    textStorage.addAttribute(OutlineAttribute.checkbox, value: textStorage.string.substring(checkboxRange), range: checkboxRange)
+                    textStorage.addAttribute(OutlineAttribute.checkbox, value: textStorage.string.nsstring.substring(with: checkboxRange), range: checkboxRange)
                     textStorage.addAttributes(OutlineTheme.checkboxStyle.attributes, range: checkboxRange.moveLeftBound(by: 1))
                     textStorage.addAttributes(OutlineTheme.markStyle.attributes, range: checkboxRange.head(1))
                 }
@@ -616,13 +616,13 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 }
                 
                 if let tagsRange = token.range(for: OutlineParser.Key.Element.Heading.tags) {
-                    textStorage.addAttribute(OutlineAttribute.Heading.tags, value: textStorage.string.substring(tagsRange).components(separatedBy: ":").filter { $0.count > 0 }, range: tagsRange)
+                    textStorage.addAttribute(OutlineAttribute.Heading.tags, value: textStorage.string.nsstring.substring(with: tagsRange).components(separatedBy: ":").filter { $0.count > 0 }, range: tagsRange)
                     textStorage._addButtonAttributes(range: tagsRange, color: OutlineTheme.tagStyle.buttonColor)
                     textStorage.addAttributes(OutlineTheme.tagStyle.textStyle.attributes, range: tagsRange)
                 }
                 
                 if let priorityRange = token.range(for: OutlineParser.Key.Element.Heading.priority) {
-                    let priorityText = textStorage.string.substring(priorityRange)
+                    let priorityText = textStorage.string.nsstring.substring(with: priorityRange)
                     textStorage.addAttribute(OutlineAttribute.Heading.priority, value: priorityText, range: priorityRange)
                     let priorityStyle = OutlineTheme.priorityStyle(priorityText)
                     textStorage._addButtonAttributes(range: priorityRange, color: priorityStyle.buttonColor)
@@ -631,7 +631,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 
                 if let planningRange = token.range(for: OutlineParser.Key.Element.Heading.planning) {
                     
-                    let planningString = textStorage.string.substring(planningRange)
+                    let planningString = textStorage.string.nsstring.substring(with: planningRange)
                     
                     textStorage.addAttributes([OutlineAttribute.Heading.planning: planningString], range: planningRange)
                     
@@ -791,7 +791,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
     // MARK: - utils
     
     public func isHeadingFolded(heading: HeadingToken) -> Bool {
-        if heading.contentRange.location < self.string.count {
+        if heading.contentRange.location < self.string.nsstring.length {
             if let foldingAttribute = self.attribute(OutlineAttribute.showAttachment, at: heading.levelRange.location, effectiveRange: nil) as? String {
                 return foldingAttribute == OutlineAttribute.Heading.foldingFolded.rawValue
             } else {
@@ -942,8 +942,8 @@ extension OutlineTextStorage: OutlineParserDelegate {
             }
         }
         
-        if newRange.upperBound >= self.string.count {
-            newRange = NSRange(location: newRange.location, length: self.string.count - newRange.location)
+        if newRange.upperBound >= self.string.nsstring.length {
+            newRange = NSRange(location: newRange.location, length: self.string.nsstring.length - newRange.location)
         }
         
         if newRange.length < 0 {
@@ -995,7 +995,7 @@ extension NSRange {
         var characterBuf: String = ""
 
         while extendedRange.location > 0
-            && !self._checkShouldContinueExpand(buf: &characterBuf, next: string.substring(NSRange(location: extendedRange.location - 1, length: 1)), lineCount: lineCount) {
+            && !self._checkShouldContinueExpand(buf: &characterBuf, next: string.nsstring.substring(with: NSRange(location: extendedRange.location - 1, length: 1)), lineCount: lineCount) {
                 extendedRange = NSRange(location: extendedRange.location - 1, length: extendedRange.length + 1)
         }
         
@@ -1006,8 +1006,8 @@ extension NSRange {
         var extendedRange = self
         var characterBuf: String = ""
         
-        while extendedRange.upperBound < string.count - 1
-            && !self._checkShouldContinueExpand(buf: &characterBuf, next: string.substring(NSRange(location: extendedRange.upperBound, length: 1)), lineCount: lineCount) {
+        while extendedRange.upperBound < string.nsstring.length - 1
+            && !self._checkShouldContinueExpand(buf: &characterBuf, next: string.nsstring.substring(with: NSRange(location: extendedRange.upperBound, length: 1)), lineCount: lineCount) {
                 extendedRange = NSRange(location: extendedRange.location, length: extendedRange.length + 1)
         }
         
@@ -1027,7 +1027,7 @@ extension NSRange {
 extension OutlineTextStorage {
     public override var debugDescription: String {
         return """
-        length: \(self.string.count)
+        length: \(self.string.nsstring.length)
         heading count: \(self._savedHeadings.count)
         codeBlock count: \(self._codeBlocks.count)
         quoteBlock count: \(self._quoteBlocks.count)

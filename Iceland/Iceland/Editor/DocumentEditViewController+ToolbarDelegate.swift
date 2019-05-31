@@ -67,7 +67,7 @@ extension DocumentEditViewController: DocumentEditToolbarDelegate {
                     if self.inputbar.mode == .heading {
                         self.showHeadingEdit(at: lineRange.location)
                     } else {
-                        let lineContent = self.textView.text.substring(lineRange).trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+                        let lineContent = self.textView.text.nsstring.substring(with: lineRange).trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
                         if lineContent.count == 0 {
                             //  空行，直接转为标题
                             let lastSelectedRange = self.textView.selectedRange

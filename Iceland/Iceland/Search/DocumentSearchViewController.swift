@@ -313,7 +313,7 @@ private class SearchInputView: UIView, UITextFieldDelegate {
         
         let newString = textField.text == nil ? string : (textField.text! as NSString).replacingCharacters(in: range, with: string)
         
-        if newString.count > 0 {
+        if newString.nsstring.length > 0 {
             self.delegate?.didChangeQuery(string: newString)
         } else {
             self.delegate?.didClearQuery()
