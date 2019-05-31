@@ -282,7 +282,7 @@ public class DocumentEditViewModel {
     public func moveParagraph(contains location: Int, to toHeading: DocumentHeading, textView: UITextView) -> DocumentContentCommandResult {
         guard let currentHeading = self._editorService.heading(at: location) else { return DocumentContentCommandResult.noChange }
         
-        let text = currentHeading.range.upperBound == self._editorService.string.count
+        var text = currentHeading.range.upperBound == self._editorService.string.count // 当前行位最后一行
             ? self._editorService.string.substring(currentHeading.paragraphRange) + "\n"
             : self._editorService.string.substring(currentHeading.paragraphRange)
         
@@ -295,6 +295,11 @@ public class DocumentEditViewModel {
         if location <= newLocation.location {
             newLocation = newLocation.offset(-removedResult.content!.count)
         }
+        
+        if newLocation.upperBound == self._editorService.string.count { // 如果将要插到文档末尾，添加一个换行符在插入的位置之前
+            text = "\n" + text
+        }
+        
         let result = self.performAction(EditAction.replaceText(newLocation, text),
                                                   textView: textView)
         return result
