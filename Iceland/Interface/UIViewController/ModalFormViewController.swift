@@ -418,8 +418,8 @@ private class InputTextFieldCell: UITableViewCell, UITextFieldDelegate, Validata
         return self.textField.becomeFirstResponder()
     }
     
-    private let textField: UITextField = {
-        let textField = UITextField()
+    private let textField: TextField = {
+        let textField = TextField()
         textField.font = InterfaceTheme.Font.body
         textField.textColor = InterfaceTheme.Color.interactive
         textField.autocapitalizationType = .none
@@ -431,6 +431,20 @@ private class InputTextFieldCell: UITableViewCell, UITextFieldDelegate, Validata
         
         return textField
     }()
+    
+    private class TextField: UITextField {
+        override func textRect(forBounds bounds: CGRect) -> CGRect {
+            var bounds = bounds
+            bounds.origin.x += 10
+            return bounds
+        }
+        
+        override func editingRect(forBounds bounds: CGRect) -> CGRect {
+            var bounds = bounds
+            bounds.origin.x += 10
+            return bounds
+        }
+    }
     
     fileprivate var item: ModalFormViewController.InputType? {
         didSet {
