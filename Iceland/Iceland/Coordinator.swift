@@ -187,7 +187,7 @@ extension Coordinator {
         
         let dateAndTimeSelectViewController = DateAndTimeSelectViewController(nibName: "DateAndTimeSelectViewController", bundle: nil)
         dateAndTimeSelectViewController.title = title
-        dateAndTimeSelectViewController.dateAndTime = current
+        dateAndTimeSelectViewController.passInDateAndTime = current
         dateAndTimeSelectViewController.didSelectAction = { [unowned dateAndTimeSelectViewController] dateAndTime in
             dateAndTimeSelectViewController.dismiss(animated: true, completion: {
                 self.dependency.globalCaptureEntryWindow?.show()

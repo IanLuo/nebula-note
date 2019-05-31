@@ -189,7 +189,7 @@ public class AgendaTableCell: UITableViewCell {
         }
         
         self._dateAndTimeLabel.isHidden = cellModel.dateAndTime == nil
-        self._dateAndTimeLabel.text = cellModel.dateAndTime?.agendaLabel
+        self._dateAndTimeLabel.attributedText = cellModel.dateAndTime?.agendaLabel
         
         self.layoutIfNeeded()
     }
@@ -224,44 +224,63 @@ public class AgendaTableCell: UITableViewCell {
 }
 
 extension DateAndTimeType {
-    public var agendaLabel: String? {
+    public var agendaLabel: NSAttributedString? {
+        
+        var text: String? = ""
+        var color: UIColor = InterfaceTheme.Color.finished
+        
         let today = Date()
         if self.isSchedule {
             if today.isSameDay(self.date) {
-                return L10n.Agenda.startToday
+                text = L10n.Agenda.startToday
+                color = InterfaceTheme.Color.unfinished
             } else if today.timeIntervalSince1970 > self.date.timeIntervalSince1970 {
-                let daysBeforeDate = today.daysFrom(self.date)
+                let daysBeforeDate = today.dayBegin.daysFrom(self.date)
                 if daysBeforeDate == 1 {
-                    return L10n.Agenda.startYesterdayWithPlaceHodlerYesterday
+                    text = L10n.Agenda.startYesterdayWithPlaceHodlerYesterday
+                    color = InterfaceTheme.Color.warning
                 } else {
-                    return L10n.Agenda.startDaysAgoWithPlaceHodler("\(today.daysFrom(self.date))")
+                    text = L10n.Agenda.startDaysAgoWithPlaceHodler("\(today.daysFrom(self.date))")
+                    color = InterfaceTheme.Color.warning
                 }
             } else {
-                let daysFromToday = self.date.daysFrom(today)
+                let daysFromToday = self.date.dayBegin.daysFrom(today)
                 if daysFromToday == 1 {
-                    return L10n.Agenda.startTomorrowWithPlaceHolder
+                    text = L10n.Agenda.startTomorrowWithPlaceHolder
+                    color = InterfaceTheme.Color.unfinished
                 } else {
-                    return L10n.Agenda.startInDaysWithPlaceHolder("\(daysFromToday)")
+                    text = L10n.Agenda.startInDaysWithPlaceHolder("\(daysFromToday)")
+                    color = InterfaceTheme.Color.unfinished
                 }
             }
         } else if self.isDue {
             if today.isSameDay(self.date) {
-                return L10n.Agenda.dueToday
+                text = L10n.Agenda.dueToday
             } else if today.timeIntervalSince1970 > self.date.timeIntervalSince1970 {
                 let dateFromToday = today.daysFrom(self.date)
                 if dateFromToday == 1 {
-                    return L10n.Agenda.overdueYesterdayWihtPlaceHolder
+                    text = L10n.Agenda.overdueYesterdayWihtPlaceHolder
+                    color = InterfaceTheme.Color.warning
                 } else {
-                    return L10n.Agenda.overdueDaysWihtPlaceHolder("\(dateFromToday)")
+                    text = L10n.Agenda.overdueDaysWihtPlaceHolder("\(dateFromToday)")
+                    color = InterfaceTheme.Color.warning
                 }
             } else {
                 let daysAfterToday = self.date.daysFrom(today)
                 if daysAfterToday == 1 {
-                    return L10n.Agenda.willOverduTomorrowWithPlaceHolder
+                    text = L10n.Agenda.willOverduTomorrowWithPlaceHolder
+                    color = InterfaceTheme.Color.unfinished
                 } else {
-                    return L10n.Agenda.willOverduInDaysWithPlaceHolder("\(daysAfterToday)")
+                    text = L10n.Agenda.willOverduInDaysWithPlaceHolder("\(daysAfterToday)")
+                    color = InterfaceTheme.Color.unfinished
                 }
             }
+        } else {
+            text = nil
+        }
+        
+        if let text = text {
+            return NSAttributedString(string: text, attributes: [NSAttributedString.Key.foregroundColor : color])
         } else {
             return nil
         }

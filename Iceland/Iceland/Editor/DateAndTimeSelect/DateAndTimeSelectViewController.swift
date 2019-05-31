@@ -48,9 +48,9 @@ public class DateAndTimeSelectViewController: TransitionViewController {
     
     private let _transitionDelegate: FadeBackgroundTransition = FadeBackgroundTransition(animator: MoveInAnimtor())
     
-    public var dateAndTime: DateAndTimeType? {
+    public var passInDateAndTime: DateAndTimeType? {
         didSet {
-            if let dateAndTime = dateAndTime {
+            if let dateAndTime = passInDateAndTime {
                 self._selectedDate = dateAndTime.date
                 
                 if dateAndTime.includeTime {
@@ -144,12 +144,19 @@ public class DateAndTimeSelectViewController: TransitionViewController {
             
             let dateAndTime = DateAndTimeType(date: dateComponents.date!,
                                               includeTime: self._isEnabledSelectTime)
+            
+            dateAndTime.isDue = self.passInDateAndTime?.isDue ?? false
+            dateAndTime.isSchedule = self.passInDateAndTime?.isSchedule ?? false
+            
             self.delegate?.didSelect(dateAndTime: dateAndTime,
                                      viewController: self)
             self.didSelectAction?(dateAndTime)
         } else {
             let dateAndTime = DateAndTimeType(date: selectedDate,
                                               includeTime: self._isEnabledSelectTime)
+            dateAndTime.isDue = self.passInDateAndTime?.isDue ?? false
+            dateAndTime.isSchedule = self.passInDateAndTime?.isSchedule ?? false
+            
             self.delegate?.didSelect(dateAndTime: dateAndTime,
                                      viewController: self)
             self.didSelectAction?(dateAndTime)
