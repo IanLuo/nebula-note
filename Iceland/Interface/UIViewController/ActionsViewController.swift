@@ -33,8 +33,13 @@ public class ActionsViewController: UIViewController, TransitionProtocol {
         }
     }
     
-    public func addAction(icon: UIImage?, title: String, style: Style = .default, action: @escaping (ActionsViewController) -> Void) {
-        self.items.append(Item(icon: icon, title: title, action: action, style: style))
+    public func addAction(icon: UIImage?, title: String, style: Style = .default, at: Int? = nil, action: @escaping (ActionsViewController) -> Void) {
+        
+        if let at = at {
+            self.items.insert(Item(icon: icon, title: title, action: action, style: style), at: at)
+        } else {
+            self.items.append(Item(icon: icon, title: title, action: action, style: style))
+        }
         
         if self.isInitialized {
             self.tableView.insertRows(at: [IndexPath(row: self.items.count - 1, section: 0)], with: UITableView.RowAnimation.none)

@@ -119,7 +119,7 @@ extension CaptureListViewController: CaptureTableCellDelegate {
         
         let actionsViewController = self.createActionsViewController(index: index)
         
-        actionsViewController.addAction(icon: nil, title: L10n.CaptureList.Action.openLink) { viewController in
+        actionsViewController.addAction(icon: nil, title: L10n.CaptureList.Action.openLink, at: 0) { viewController in
             viewController.dismiss(animated: true, completion: {
                 if let url = URL(string: link ?? "") {
                     UIApplication.shared.open(url, options: [:], completionHandler: nil)
@@ -134,16 +134,17 @@ extension CaptureListViewController: CaptureTableCellDelegate {
     
     public func didTapActionsWithLocation(attachment: Attachment, location: CLLocationCoordinate2D) {
         guard let index = self._index(for: attachment) else { return }
-        
+
         let actionsViewController = self.createActionsViewController(index: index)
         
-        actionsViewController.addAction(icon: nil, title: L10n.CaptureList.Action.openLocation) { viewController in
+        actionsViewController.addAction(icon: nil, title: L10n.CaptureList.Action.openLocation, at: 0) { viewController in
             viewController.dismiss(animated: true, completion: {
                 let mapItem = MKMapItem(placemark: MKPlacemark(coordinate: location, addressDictionary:nil))
                 mapItem.openInMaps(launchOptions: [:])
                 self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
             })
         }
+        
         
         self.present(actionsViewController, animated: true, completion: nil)
         self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.hide()
