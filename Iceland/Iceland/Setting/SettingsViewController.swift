@@ -51,7 +51,7 @@ public class SettingsViewController: UITableViewController {
         self.isSyncEnabledLabel.text = L10n.Setting.storeIniCloud
         self.landingTabTitleLabel.text = L10n.Setting.LandingTab.title
         self.isSyncEnabledSwitch.isOn = self.viewModel.isSyncEnabled
-        self.chooseLandingTabButton.setTitle(self._landingTabNames[self.viewModel.currentLandigTabIndex], for: .normal)
+        self.chooseLandingTabButton.setTitle(LandingTab.allCases[self.viewModel.currentLandigTabIndex].name, for: .normal)
         
         self.planningFinishLabel.text = L10n.Setting.Planning.Finish.title
         self.planningFinishButton.setTitle(self.viewModel.getPlanning(isForFinished: true).joined(separator: ","), for: .normal)
@@ -148,10 +148,10 @@ public class SettingsViewController: UITableViewController {
     
     @objc private func _showLandingTabNamesSelector() {
         let selector = SelectorViewController()
-        let tabs = self._landingTabNames
+        let tabs = LandingTab.allCases
 
-        for tabName in tabs {
-            selector.addItem(title: tabName)
+        for tab in tabs {
+            selector.addItem(icon: tab.icon, title: tab.name)
         }
         
         selector.fromView = self.landingTabRow
@@ -164,10 +164,10 @@ public class SettingsViewController: UITableViewController {
         selector.onSelection = { index, viewController in
             viewController.dismiss(animated: true, completion: nil)
             self.viewModel.setLandingTabIndex(index)
-            self.chooseLandingTabButton.setTitle(self._landingTabNames[index], for: .normal)
+            self.chooseLandingTabButton.setTitle(tabs[index].name, for: .normal)
         }
         
-        selector.currentTitle = tabs[self.viewModel.currentLandigTabIndex]
+        selector.currentTitle = tabs[self.viewModel.currentLandigTabIndex].name
         
         self.present(selector, animated: true, completion: nil)
     }
@@ -261,13 +261,26 @@ public class SettingsViewController: UITableViewController {
         self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.hide()
     }
     
-    private var _landingTabNames: [String] {
-        return [
-            L10n.Agenda.title,
-            L10n.CaptureList.title,
-            L10n.Search.title,
-            L10n.Browser.title
-        ]
+    enum LandingTab: CaseIterable {
+        case agenda, captureList, search, browser
+        
+        var name: String {
+            switch self {
+            case .agenda: return  L10n.Agenda.title
+            case .captureList: return L10n.CaptureList.title
+            case .search: return L10n.Search.title
+            case .browser: return L10n.Browser.title
+            }
+        }
+        
+        var icon: UIImage {
+            switch self {
+            case .agenda: return Asset.Assets.agenda.image.fill(color: InterfaceTheme.Color.interactive)
+            case .captureList: return Asset.Assets.inspiration.image.fill(color: InterfaceTheme.Color.interactive)
+            case .search: return Asset.Assets.zoom.image.fill(color: InterfaceTheme.Color.interactive)
+            case .browser: return Asset.Assets.document.image.fill(color: InterfaceTheme.Color.interactive)
+            }
+        }
     }
 }
 

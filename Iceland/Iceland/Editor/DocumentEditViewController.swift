@@ -133,47 +133,41 @@ public class DocumentEditViewController: UIViewController {
     }
     
     @objc private func _keyboardWillShow(_ notification: Notification) {
-        if let userInfo = notification.userInfo {
-            
-        }
+        
     }
     
     @objc private func _keyboardWillHide(_ notification: Notification) {
-        if let userInfo = notification.userInfo {
-            let height = (userInfo["UIKeyboardFrameEndUserInfoKey"] as! CGRect).size.height
-            
-        }
+        UIView.animate(withDuration: 0.25, delay: 0.0, options: [], animations: {
+            self.textView.contentInset = UIEdgeInsets(top: self.textView.contentInset.top,
+                                                      left: self.textView.contentInset.left,
+                                                      bottom: 0,
+                                                      right: self.textView.contentInset.right)
+        }, completion: nil)
     }
     
     @objc private func _keyboardDidShow(_ notification: Notification) {
         if let userInfo = notification.userInfo {
             let keyboardHeight = (userInfo["UIKeyboardFrameEndUserInfoKey"] as! CGRect).height
-
+            
             self.textView.contentInset = UIEdgeInsets(top: self.textView.contentInset.top,
                                                       left: self.textView.contentInset.left,
-                                                      bottom: keyboardHeight + 100,
+                                                      bottom: keyboardHeight,
                                                       right: self.textView.contentInset.right)
             
             if let textRange = self.textView.selectedTextRange {
                 let targetRect = self.textView.caretRect(for: textRange.start)
-                let keyboarTopAsContentOffset = self.textView.contentOffset.y + self.textView.bounds.height - keyboardHeight - 100
+                let keyboarTopAsContentOffset = self.textView.contentOffset.y + self.textView.bounds.height - keyboardHeight
                 if targetRect.origin.y >= keyboarTopAsContentOffset {
                     UIView.animate(withDuration: 0.25) {
                         self.textView.contentOffset = CGPoint(x: self.textView.contentOffset.x, y: keyboarTopAsContentOffset)
                     }
                 }
             }
-            
         }
     }
     
     @objc private func _keyboardDidHide(_ notification: Notification) {
-        UIView.animate(withDuration: 0.25, delay: 0.2, options: [], animations: {
-            self.textView.contentInset = UIEdgeInsets(top: self.textView.contentInset.top,
-                                                      left: self.textView.contentInset.left,
-                                                      bottom: 0,
-                                                      right: self.textView.contentInset.right)
-        }, completion: nil)
+        
     }
     
     private var _lastState: UIDocument.State?
