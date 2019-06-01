@@ -113,10 +113,12 @@ public class AgendaTableCell: UITableViewCell {
     }
     
     private func setupUI() {
+        self.backgroundView = UIView()
         
         self.interface { (me, theme) in
             let me = me as! AgendaTableCell
             me.backgroundColor = theme.color.background1
+            me.contentView.backgroundColor = theme.color.background1
             if let cellModel = me.cellModel {
                 me.updateUI(cellModel: cellModel) // update the theme
             }

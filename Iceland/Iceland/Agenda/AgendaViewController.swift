@@ -281,6 +281,8 @@ private class DateSectionView: UITableViewHeaderFooterView {
     }
     
     private func setupUI() {
+        self.backgroundView = UIView()
+        
         self.contentView.addSubview(self.dateLabel)
         self.contentView.addSubview(self.weekdayLabel)
         

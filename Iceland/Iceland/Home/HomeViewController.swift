@@ -19,7 +19,7 @@ public protocol HomeViewControllerDelegate: class {
 public class HomeViewController: UIViewController {
     internal var currentDetailViewController: UIViewController?
     
-    private let masterViewWidth: CGFloat = UIScreen.main.bounds.width * 3 / 4
+    private let masterViewWidth: CGFloat = min(UIScreen.main.bounds.width, UIScreen.main.bounds.height) * 3 / 4
     
     public var isShowingMaster: Bool = false {
         didSet {
@@ -49,6 +49,8 @@ public class HomeViewController: UIViewController {
         self.view.addGestureRecognizer(tap)
         
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: Asset.Assets.master.image.fill(color: InterfaceTheme.Color.interactive), style: .plain, target: self, action: #selector(showMasterView))
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(_didChangeOrientation(notification:)), name: UIDevice.orientationDidChangeNotification, object: nil)
     }
     
     public init(masterViewController: UIViewController) {
@@ -62,11 +64,15 @@ public class HomeViewController: UIViewController {
     
     private func setupUI() {
         self.view.addSubview(self.masterViewController.view)
-        self.masterViewController.view.frame = CGRect(x: -masterViewWidth, y: 0, width: masterViewWidth, height: self.view.bounds.height)
+        self._setupFrames()
         
         self.masterViewController.view.interface { (me, theme) in
             me.setBorder(position: Border.Position.right, color: InterfaceTheme.Color.background3, width: 0.5)
         }
+    }
+    
+    private func _setupFrames() {
+        self.masterViewController.view.frame = CGRect(x: -masterViewWidth, y: 0, width: masterViewWidth, height: self.view.bounds.height)
     }
     
     internal func showChildViewController(_ viewController: UIViewController) {
@@ -145,6 +151,12 @@ public class HomeViewController: UIViewController {
         let alphaComponent = max(0.3, 1 - offset / self.masterViewWidth) // 透明度不小于 0.3
         self.currentDetailViewController?.view.alpha = alphaComponent
         self.navigationController?.navigationBar.alpha = alphaComponent
+    }
+    
+    @objc private func _didChangeOrientation(notification: Notification) {
+        UIView.animate(withDuration: 0.2) {
+            self._setupFrames()
+        }
     }
 }
 

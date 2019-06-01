@@ -18,10 +18,8 @@ public class Application: Coordinator {
     public init(window: UIWindow) {
         self.window = window
         
-        _entranceWindow = CaptureGlobalEntranceWindow(frame: CGRect(x: UIScreen.main.bounds.width - 90,
-                                                                    y: UIScreen.main.bounds.height - window.safeArea.bottom - 60 - 30,
-                                                                    width: 60,
-                                                                    height: 60))
+        _entranceWindow = CaptureGlobalEntranceWindow(window: window)
+        
         _entranceWindow.makeKeyAndVisible()
 
         let navigationController = Coordinator.createDefaultNavigationControlller()

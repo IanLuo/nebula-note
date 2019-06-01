@@ -14,14 +14,34 @@ import Interface
 public class CaptureGlobalEntranceWindow: UIWindow {
     public var entryAction: (() -> Void)?
     
-    public override init(frame: CGRect) {
-        super.init(frame: frame)
+    private weak var _fromWindow: UIWindow?
+    
+    private static func windowFrame(from window: UIWindow) -> CGRect {
+        return CGRect(x: UIScreen.main.bounds.width - window.safeArea.right - 90,
+                      y: UIScreen.main.bounds.height - window.safeArea.bottom - 60 - 30,
+                      width: 60,
+                      height: 60)
+    }
+    
+    public init(window: UIWindow) {
+        super.init(frame: CaptureGlobalEntranceWindow.windowFrame(from: window))
+        self._fromWindow = window
         self.windowLevel = .alert
         let viewController = _CaptureGlobalEntranceViewController()
         self.rootViewController = viewController
         
         viewController.tapped = {
             self.entryAction?()
+        }
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(_orientationChanged), name: UIDevice.orientationDidChangeNotification, object: nil)
+    }
+    
+    @objc private func _orientationChanged(notification: Notification) {
+        UIView.animate(withDuration: 0.2) {
+            if let window = self._fromWindow {
+                self.frame = CaptureGlobalEntranceWindow.windowFrame(from: window)
+            }
         }
     }
     

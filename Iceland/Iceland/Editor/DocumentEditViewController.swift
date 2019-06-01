@@ -77,7 +77,7 @@ public class DocumentEditViewController: UIViewController {
         
         self.textView.allSidesAnchors(to: self.view, edgeInset: 0)
         self._loadingIndicator.centerAnchors(position: [.centerX, .centerY], to: self.view)
-        self._toolBar.sideAnchor(for: [.left, .top, .right], to: self.view, edgeInset: 0, considerSafeArea: true)
+        self._toolBar.sideAnchor(for: [.left, .top, .right], to: self.view, edgeInsets: .init(top: 10, left: 0, bottom: 0, right: 0), considerSafeArea: true)
         self._toolBar.sizeAnchor(height: 44)
         
         self._closeButton = self.createActionButton(icon: Asset.Assets.down.image.fill(color: InterfaceTheme.Color.interactive))

@@ -82,6 +82,7 @@ public class DashboardViewController: UIViewController {
             let tableView = me as! UITableView
             tableView.backgroundColor = theme.color.background2
         })
+        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 80, right: 0)
         tableView.separatorStyle = .none
         tableView.register(TabView.self, forHeaderFooterViewReuseIdentifier: TabView.reuseIdentifier)
         tableView.register(SubtabCell.self, forCellReuseIdentifier: SubtabCell.reuseIdentifier)
@@ -504,6 +505,8 @@ private class TabView: UITableViewHeaderFooterView {
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
         
+        self.backgroundView = UIView()
+        self.backgroundColor = InterfaceTheme.Color.background2
         self.contentView.backgroundColor = InterfaceTheme.Color.background2
         self.contentView.addSubview(self.titleButton)
         self.contentView.addSubview(self.iconView)
