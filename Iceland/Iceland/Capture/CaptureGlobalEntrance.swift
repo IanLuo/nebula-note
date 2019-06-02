@@ -14,6 +14,8 @@ import Interface
 public class CaptureGlobalEntranceWindow: UIWindow {
     public var entryAction: (() -> Void)?
     
+    public var isOffScreen: Bool = false
+    
     private weak var _fromWindow: UIWindow?
     
     private static func windowFrame(from window: UIWindow) -> CGRect {
@@ -38,6 +40,9 @@ public class CaptureGlobalEntranceWindow: UIWindow {
     }
     
     @objc private func _orientationChanged(notification: Notification) {
+        
+        guard !self.isOffScreen else { return }
+        
         UIView.animate(withDuration: 0.2) {
             if let window = self._fromWindow {
                 self.frame = CaptureGlobalEntranceWindow.windowFrame(from: window)
@@ -48,13 +53,19 @@ public class CaptureGlobalEntranceWindow: UIWindow {
     public func hide() {
         UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveEaseInOut, animations: {
             self.frame = CGRect(x: UIScreen.main.bounds.width, y: self.frame.origin.y, width: self.frame.size.width, height: self.frame.size.height)
-        }, completion: nil)
+        }, completion: { _ in
+            self.isOffScreen = true
+            self.alpha = 0 // 防止旋转的时候在屏幕上出现
+        })
     }
     
     public func show() {
+        self.alpha = 1
         UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveEaseInOut, animations: {
             self.frame = CGRect(x: UIScreen.main.bounds.width - self.frame.width - 30, y: self.frame.origin.y, width: self.frame.size.width, height: self.frame.size.height)
-        }, completion: nil)
+        }, completion: { _ in
+            self.isOffScreen = false
+        })
     }
     
     required init?(coder aDecoder: NSCoder) {

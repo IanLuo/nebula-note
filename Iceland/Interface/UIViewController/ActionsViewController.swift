@@ -196,6 +196,7 @@ public class ActionsViewController: UIViewController, TransitionProtocol {
         self.actionsContainerView.columnAnchor(view: self.accessoryViewContainer)
         
         self.contentView.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 10, considerSafeArea: true)
+        self.contentView.topAnchor.constraint(greaterThanOrEqualTo: self.view.topAnchor, constant: 10).isActive = true
         
         self.accessoryViewContainer.sideAnchor(for: [.left, .right], to: self.contentView, edgeInset: 0)
         self.accessoryViewContainer.columnAnchor(view: self.tableView)

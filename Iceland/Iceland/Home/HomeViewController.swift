@@ -49,8 +49,6 @@ public class HomeViewController: UIViewController {
         self.view.addGestureRecognizer(tap)
         
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: Asset.Assets.master.image.fill(color: InterfaceTheme.Color.interactive), style: .plain, target: self, action: #selector(showMasterView))
-        
-//        NotificationCenter.default.addObserver(self, selector: #selector(_didChangeOrientation(notification:)), name: UIDevice.orientationDidChangeNotification, object: nil)
     }
     
     public init(masterViewController: UIViewController) {
@@ -162,9 +160,7 @@ public class HomeViewController: UIViewController {
     }
     
     public override func didRotate(from fromInterfaceOrientation: UIInterfaceOrientation) {
-        UIView.animate(withDuration: 0.2) {
-            self.masterViewController.view.frame = CGRect(x: self.masterViewController.view.frame.origin.x, y: 0, width: self.masterViewWidth, height: self.view.bounds.height)
-        }
+        self.masterViewController.view.frame = CGRect(x: self.masterViewController.view.frame.origin.x, y: 0, width: self.masterViewWidth, height: self.view.bounds.height)
     }
 }
 
