@@ -50,12 +50,18 @@ public class HomeViewController: UIViewController {
         
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: Asset.Assets.master.image.fill(color: InterfaceTheme.Color.interactive), style: .plain, target: self, action: #selector(showMasterView))
         
-        NotificationCenter.default.addObserver(self, selector: #selector(_didChangeOrientation(notification:)), name: UIDevice.orientationDidChangeNotification, object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(_didChangeOrientation(notification:)), name: UIDevice.orientationDidChangeNotification, object: nil)
     }
     
     public init(masterViewController: UIViewController) {
         self.masterViewController = masterViewController
         super.init(nibName: nil, bundle: nil)
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        self.masterViewController.view.frame = CGRect(x: -self.masterViewWidth, y: 0, width: self.masterViewWidth, height: self.view.bounds.height)
+        self.currentDetailViewController?.view.frame = CGRect(origin: .zero, size: self.view.bounds.size)
     }
     
     public required init?(coder aDecoder: NSCoder) {
@@ -84,7 +90,9 @@ public class HomeViewController: UIViewController {
         self.addChild(viewController)
         self.currentDetailViewController = viewController
         self.view.insertSubview(viewController.view, at: 0)
-        
+        viewController.view.frame = CGRect(origin: .zero, size: self.view.bounds.size)
+        viewController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            
         self.title = viewController.title
     }
     
@@ -153,9 +161,9 @@ public class HomeViewController: UIViewController {
         self.navigationController?.navigationBar.alpha = alphaComponent
     }
     
-    @objc private func _didChangeOrientation(notification: Notification) {
+    public override func didRotate(from fromInterfaceOrientation: UIInterfaceOrientation) {
         UIView.animate(withDuration: 0.2) {
-            self._setupFrames()
+            self.masterViewController.view.frame = CGRect(x: self.masterViewController.view.frame.origin.x, y: 0, width: self.masterViewWidth, height: self.view.bounds.height)
         }
     }
 }
