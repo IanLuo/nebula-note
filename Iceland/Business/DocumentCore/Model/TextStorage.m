@@ -44,11 +44,11 @@ static NSMutableDictionary *attachmentMap;
         linkAttachment.bounds = CGRectMake(0, 0, 15, 15);
         
         foldedAttachment = [[NSTextAttachment alloc] init];
-        foldedAttachment.image = [UIImage imageNamed: @"folded" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil];
+        foldedAttachment.image = [[UIImage imageNamed: @"folded" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil] fillWithColor:[[InterfaceTheme Color]spotlight]];
         foldedAttachment.bounds = CGRectMake(0, ([[SettingsAccessor shared] lineHeight] - 20) / 2, 20, 20);
         
         unfoldedAttachment = [[NSTextAttachment alloc] init];
-        unfoldedAttachment.image = [UIImage imageNamed: @"unfolded" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil];
+        unfoldedAttachment.image = [[UIImage imageNamed: @"unfolded" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil] fillWithColor:[[InterfaceTheme Color]spotlight]];
         unfoldedAttachment.bounds = CGRectMake(0, ([[SettingsAccessor shared] lineHeight] - 20) / 2, 20, 20);
         
         scheduleAttachment = [[NSTextAttachment alloc] init];

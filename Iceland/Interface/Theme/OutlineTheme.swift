@@ -122,7 +122,7 @@ public protocol OutlineThemeConfigProtocol {
 }
 
 private struct DefaultOutlineTheme: OutlineThemeConfigProtocol {
-    var headingStyle: TextStyle = TextStyle(font: InterfaceTheme.Font.body, color: InterfaceTheme.Color.level)
+    var headingStyle: TextStyle = TextStyle(font: InterfaceTheme.Font.title, color: InterfaceTheme.Color.interactive)
     
     var orderdedListStyle: TextStyle = TextStyle(font: InterfaceTheme.Font.title, color: InterfaceTheme.Color.descriptive)
     

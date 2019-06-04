@@ -15,87 +15,85 @@ public struct Layout {
     public static let backButtonSize: CGSize = CGSize(width: 40, height: 40)
 }
 
-public protocol InterfaceThemeProtocol {
-    var color: InterfaceThemeColorProtocol { get }
-    var font: InterfaceThemeFontProtocol { get }
-    var statusBarStyle: UIStatusBarStyle { get }
+@objc public protocol InterfaceThemeProtocol: class {
+    @objc var color: InterfaceThemeColorProtocol { get }
+    @objc var font: InterfaceThemeFontProtocol { get }
+    @objc var statusBarStyle: UIStatusBarStyle { get }
 }
 
-public protocol InterfaceThemeColorProtocol {
-    var interactive: UIColor { get }
-    var descriptive: UIColor { get }
-    var descriptiveHighlighted: UIColor { get }
-    var background1: UIColor { get }
-    var background2: UIColor { get }
-    var background3: UIColor { get }
-    var spotlight: UIColor { get }
-    var warning: UIColor { get }
+@objc public protocol InterfaceThemeColorProtocol: class {
+    @objc var interactive: UIColor { get }
+    @objc var descriptive: UIColor { get }
+    @objc var descriptiveHighlighted: UIColor { get }
+    @objc var background1: UIColor { get }
+    @objc var background2: UIColor { get }
+    @objc var background3: UIColor { get }
+    @objc var spotlight: UIColor { get }
+    @objc var warning: UIColor { get }
     
-    var finished: UIColor { get }
-    var unfinished: UIColor { get }
-    var level: UIColor { get }
-    var spotlitTitle: UIColor { get }
+    @objc var finished: UIColor { get }
+    @objc var unfinished: UIColor { get }
+    @objc var level: UIColor { get }
+    @objc var spotlitTitle: UIColor { get }
 }
 
-public protocol InterfaceThemeFontProtocol {
-    var largeTitle: UIFont { get }
-    var title: UIFont { get }
-    var subtitle: UIFont { get }
-    var body: UIFont { get }
-    var footnote: UIFont { get }
+@objc public protocol InterfaceThemeFontProtocol: class {
+    @objc var largeTitle: UIFont { get }
+    @objc var title: UIFont { get }
+    @objc var subtitle: UIFont { get }
+    @objc var body: UIFont { get }
+    @objc var footnote: UIFont { get }
 }
 
-public struct DarkInterfaceTheme: InterfaceThemeProtocol {
-    public init(){}
-    public var color: InterfaceThemeColorProtocol = DarkInterfaceColor()
-    public var font: InterfaceThemeFontProtocol = DefaultInterfaceFont()
-    public var statusBarStyle: UIStatusBarStyle {
+@objc public class DarkInterfaceTheme: NSObject, InterfaceThemeProtocol {
+    @objc public var color: InterfaceThemeColorProtocol = DarkInterfaceColor()
+    @objc public var font: InterfaceThemeFontProtocol = DefaultInterfaceFont()
+    @objc public var statusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
 }
 
-public struct LightInterfaceTheme: InterfaceThemeProtocol {
-    public init(){}
-    public var color: InterfaceThemeColorProtocol = LightInterfaceColor()
-    public var font: InterfaceThemeFontProtocol = DefaultInterfaceFont()
-    public var statusBarStyle: UIStatusBarStyle {
+@objc public class LightInterfaceTheme: NSObject, InterfaceThemeProtocol {
+    @objc public var color: InterfaceThemeColorProtocol = LightInterfaceColor()
+    @objc public var font: InterfaceThemeFontProtocol = DefaultInterfaceFont()
+    @objc public var statusBarStyle: UIStatusBarStyle {
         return .default
     }
 }
 
-public struct LightInterfaceColor: InterfaceThemeColorProtocol {
-    public var spotlitTitle: UIColor = UIColor(red:1.00, green:1.00, blue:1.00, alpha:1.00)
-    public var level: UIColor = UIColor(red:0.08, green:0.49, blue:0.98, alpha:1.00)
-    public var finished: UIColor = UIColor(red:0.45, green:0.67, blue:0.33, alpha:1.00)
-    public var unfinished: UIColor = UIColor(red:1.00, green:0.68, blue:0.20, alpha:1.00)
+@objc public class LightInterfaceColor: NSObject, InterfaceThemeColorProtocol {
+    @objc public var spotlitTitle: UIColor = UIColor(red:1.00, green:1.00, blue:1.00, alpha:1.00)
+    @objc public var level: UIColor = UIColor(red:0.08, green:0.49, blue:0.98, alpha:1.00)
+    @objc public var finished: UIColor = UIColor(red:0.14, green:0.87, blue:0.41, alpha:1.00)
+    @objc public var unfinished: UIColor = UIColor(red:0.94, green:0.64, blue:0.28, alpha:1.00)
     
-    public let interactive: UIColor = UIColor(red:0.15, green:0.15, blue:0.15, alpha:1.00)
-    public let descriptive: UIColor = UIColor(red:0.61, green:0.61, blue:0.61, alpha:1.00)
-    public let descriptiveHighlighted: UIColor = UIColor(red:0.71, green:0.71, blue:0.71, alpha:1.00)
-    public let background1: UIColor = UIColor(red:1.00, green:1.00, blue:1.00, alpha:1.00)
-    public let background2: UIColor = UIColor(red:0.96, green:0.96, blue:0.96, alpha:1.00)
-    public let background3: UIColor = UIColor(red:0.94, green:0.94, blue:0.94, alpha:1.00)
-    public let spotlight: UIColor = UIColor(red:0.08, green:0.49, blue:0.98, alpha:1.00)
-    public let warning: UIColor = UIColor(red:0.98, green:0.39, blue:0.41, alpha:1.00)
+    @objc public let interactive: UIColor = UIColor(red:0.00, green:0.00, blue:0.00, alpha:1.00)
+    @objc public let descriptive: UIColor = UIColor(red:0.58, green:0.58, blue:0.58, alpha:1.00)
+    @objc public let descriptiveHighlighted: UIColor = UIColor(red:0.58, green:0.58, blue:0.58, alpha:1.00)
+    @objc public let background1: UIColor = UIColor(red:1.00, green:1.00, blue:1.00, alpha:1.00)
+    @objc public let background2: UIColor = UIColor(red:0.95, green:0.95, blue:0.96, alpha:1.00)
+    @objc public let background3: UIColor = UIColor(red:0.94, green:0.94, blue:0.94, alpha:1.00)
+    @objc public let spotlight: UIColor = UIColor(red:0.08, green:0.49, blue:0.98, alpha:1.00)
+    @objc public let warning: UIColor = UIColor(red:0.99, green:0.24, blue:0.22, alpha:1.00)
 }
 
-public struct DarkInterfaceColor: InterfaceThemeColorProtocol {
-    public var spotlitTitle: UIColor = UIColor(red:1.00, green:1.00, blue:1.00, alpha:1.00)
-    public var level: UIColor = UIColor(red:0.08, green:0.49, blue:0.98, alpha:1.00)
-    public var finished: UIColor = UIColor(red:0.45, green:0.67, blue:0.33, alpha:1.00)
-    public var unfinished: UIColor = UIColor(red:1.00, green:0.68, blue:0.20, alpha:1.00)
+@objc public class DarkInterfaceColor: NSObject, InterfaceThemeColorProtocol {
+    @objc public var spotlitTitle: UIColor = UIColor(red:1.00, green:1.00, blue:1.00, alpha:1.00)
+    @objc public var level: UIColor = UIColor(red:0.08, green:0.49, blue:0.98, alpha:1.00)
+    @objc public var finished: UIColor = UIColor(red:0.14, green:0.87, blue:0.41, alpha:1.00)
+    @objc public var unfinished: UIColor = UIColor(red:0.94, green:0.64, blue:0.28, alpha:1.00)
     
-    public let interactive: UIColor = UIColor(red:0.97, green:0.97, blue:0.97, alpha:1.00)
-    public let descriptive: UIColor = UIColor(red:0.27, green:0.27, blue:0.27, alpha:1.00)
-    public let descriptiveHighlighted: UIColor = UIColor(red:0.41, green:0.41, blue:0.41, alpha:1.00)
-    public let background1: UIColor = UIColor(red:0.11, green:0.11, blue:0.11, alpha:1.00)
-    public let background2: UIColor = UIColor(red:0.15, green:0.15, blue:0.15, alpha:1.00)
-    public let background3: UIColor = UIColor(red:0.20, green:0.20, blue:0.20, alpha:1.00)
-    public let spotlight: UIColor = UIColor(red:0.08, green:0.49, blue:0.98, alpha:1.00)
-    public let warning: UIColor = UIColor(red:0.98, green:0.39, blue:0.41, alpha:1.00)
+    @objc public let interactive: UIColor = UIColor(red:0.97, green:0.97, blue:0.97, alpha:1.00)
+    @objc public let descriptive: UIColor = UIColor(red:0.27, green:0.27, blue:0.27, alpha:1.00)
+    @objc public let descriptiveHighlighted: UIColor = UIColor(red:0.41, green:0.41, blue:0.41, alpha:1.00)
+    @objc public let background1: UIColor = UIColor(red:0.00, green:0.00, blue:0.00, alpha:1.00)
+    @objc public let background2: UIColor = UIColor(red:0.11, green:0.11, blue:0.12, alpha:1.00)
+    @objc public let background3: UIColor = UIColor(red:0.35, green:0.35, blue:0.37, alpha:1.00)
+    @objc public let spotlight: UIColor = UIColor(red:0.08, green:0.49, blue:0.98, alpha:1.00)
+    @objc public let warning: UIColor = UIColor(red:0.99, green:0.24, blue:0.22, alpha:1.00)
 }
 
-public struct DefaultInterfaceFont: InterfaceThemeFontProtocol {
+@objc public class DefaultInterfaceFont: NSObject, InterfaceThemeFontProtocol {
     public let largeTitle: UIFont = UIFont.systemFont(ofSize: 40)
     public let title: UIFont = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.headline)
     public let subtitle: UIFont = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.subheadline)
@@ -135,16 +133,16 @@ public class InterfaceThemeSelector {
     }
 }
 
-public struct InterfaceTheme {
-    public static var Color: InterfaceThemeColorProtocol {
+@objc public class InterfaceTheme: NSObject {
+    @objc public static var Color: InterfaceThemeColorProtocol {
         return InterfaceThemeSelector.shared.currentTheme.color
     }
     
-    public static var Font: InterfaceThemeFontProtocol {
+    @objc public static var Font: InterfaceThemeFontProtocol {
         return InterfaceThemeSelector.shared.currentTheme.font
     }
     
-    public static var statusBarStyle: UIStatusBarStyle {
+    @objc public static var statusBarStyle: UIStatusBarStyle {
         return InterfaceThemeSelector.shared.currentTheme.statusBarStyle
     }
 }
