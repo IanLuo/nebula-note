@@ -47,7 +47,7 @@ extension DocumentEditViewController {
             
             guard self.textView.selectedRange.location != heading.range.location else { return true }
             
-            if let tagRange = heading.tags {
+            if let tagRange = heading.tags, tagRange.upperBound > self.textView.selectedRange.location  {
                 let breakRange = NSRange(location: textView.selectedRange.location, length: tagRange.location - textView.selectedRange.location)
                 let textToPutInNextLine = "\n" + textView.text.nsstring.substring(with: breakRange)
                 _ = self.viewModel.performAction(EditAction.replaceText(NSRange(location: heading.range.upperBound, length: 0), textToPutInNextLine), textView: textView)

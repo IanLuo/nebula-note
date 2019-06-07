@@ -69,11 +69,19 @@ public enum SettingsError: Error {
     }
     
     public var customizedUnfinishedPlannings: [String]? {
-       return Constants.store.get(key: Constants.Keys.unfinishedPlannings, type: [String].self)
+        if let plannings = Constants.store.get(key: Constants.Keys.unfinishedPlannings, type: [String].self) {
+            return plannings.count > 0 ? plannings : nil
+        } else {
+            return nil
+        }
     }
     
     public var customizedFinishedPlannings: [String]? {
-        return Constants.store.get(key: Constants.Keys.finishedPlannings, type: [String].self)
+        if let plannings = Constants.store.get(key: Constants.Keys.finishedPlannings, type: [String].self) {
+            return plannings.count > 0 ? plannings : nil
+        } else {
+            return nil
+        }
     }
     
     public var unfinishedPlanning: [String] {
