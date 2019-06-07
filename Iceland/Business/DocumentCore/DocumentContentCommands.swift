@@ -511,27 +511,49 @@ public class MoveHeadingUpCommandComposer: DocumentContentCommandComposer {
     public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
         guard let heading = textStorage.heading(contains: self.location) else { return NoChangeCommand() }
         
-        guard let lastHeading = textStorage.heading(contains: heading.range.location - 1) else { return NoChangeCommand() }
+        var findSameLevelHeadingUpwards: ((Int, OutlineTextStorage) -> HeadingToken?)!
+        findSameLevelHeadingUpwards = { location, textStorage in
+            guard location > 0 else { return nil }
+            
+            if let lastHeading = textStorage.heading(contains: location) {
+                if lastHeading.level == heading.level { // 上一级标题同级，则返回
+                    return lastHeading
+                } else if lastHeading.level < heading.level {
+                    return nil // 上一级标题是更大的标题，则忽略
+                } else { // 上一级是更小的标题，则继续查找
+                    return findSameLevelHeadingUpwards(lastHeading.range.location - 1, textStorage)
+                }
+            } else {
+                return nil
+            }
+        }
         
-        // 如果当前 heading 是文档最后一个，则在移动之后要在尾部加上换行符，同理，在被移下来的 heading 尾部去掉换行符
-        if heading.paragraphRange.upperBound == textStorage.string.nsstring.length {
-            let currentHeadingText = textStorage.substring(heading.paragraphRange) + OutlineParser.Values.Character.linebreak
-            let lastHeadingText = textStorage.substring(lastHeading.paragraphRange.moveRightBound(by: -1))
-            let textToReplace = currentHeadingText.appending(lastHeadingText)
-            let command =  ReplaceContentCommandComposer(range: lastHeading.paragraphRange.union(heading.paragraphRange),
+        // 查找上一个同级的标题，如果没有找到同级的，则忽略
+        guard let lastHeading = findSameLevelHeadingUpwards(heading.range.location - 1, textStorage) else { return NoChangeCommand() }
+        
+        // 如果当前 heading 是文档最后一个，则在移动之后要在尾部加上换行符，同理，在被移到末尾的 heading 尾部去掉换行符
+        if heading.paragraphWithSubRange.upperBound == textStorage.string.nsstring.length {
+            let currentHeadingText = textStorage.substring(heading.paragraphWithSubRange) + OutlineParser.Values.Character.linebreak
+            let lastParagraphText = textStorage.substring(lastHeading.paragraphWithSubRange.moveRightBound(by: -1))
+            let textToReplace = currentHeadingText.appending(lastParagraphText)
+            let command = ReplaceContentCommandComposer(range: lastHeading.paragraphWithSubRange.union(heading.paragraphWithSubRange),
                                                  textToReplace: textToReplace)
                 .compose(textStorage: textStorage)
+            
+            let delta = -lastHeading.paragraphWithSubRange.length
             (command as? ReplaceTextCommand)?.resultMap = { _ in
-                return DocumentContentCommandResult(isModifiedContent: true, range: nil, content: nil, delta: -lastHeadingText.count)
+                return DocumentContentCommandResult(isModifiedContent: true, range: nil, content: nil, delta: delta)
             }
             return command
         } else {
-            let textToReplace = textStorage.substring(heading.paragraphRange).appending(textStorage.substring(lastHeading.paragraphRange))
-            let command = ReplaceContentCommandComposer(range: lastHeading.paragraphRange.union(heading.paragraphRange),
+            let textToReplace = textStorage.substring(heading.paragraphWithSubRange).appending(textStorage.substring(lastHeading.paragraphWithSubRange))
+            let command = ReplaceContentCommandComposer(range: lastHeading.paragraphWithSubRange.union(heading.paragraphWithSubRange),
                                                  textToReplace: textToReplace)
                 .compose(textStorage: textStorage)
+            
+            let delta = -lastHeading.paragraphWithSubRange.length
             (command as? ReplaceTextCommand)?.resultMap = { _ in
-                return DocumentContentCommandResult(isModifiedContent: true, range: nil, content: nil, delta: -lastHeading.paragraphRange.length)
+                return DocumentContentCommandResult(isModifiedContent: true, range: nil, content: nil, delta: delta)
             }
             return command
         }
@@ -547,23 +569,29 @@ public class MoveHeadingDownCommandComposer: DocumentContentCommandComposer {
     public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
         guard let heading = textStorage.heading(contains: self.location) else { return NoChangeCommand() }
         
-        guard let nextHeading = textStorage.heading(contains: heading.paragraphRange.upperBound + 1) else { return NoChangeCommand() }
+        guard let nextHeading = textStorage.heading(contains: heading.paragraphWithSubRange.upperBound + 1) else { return NoChangeCommand() }
+        
+        guard nextHeading.level == heading.level else { return NoChangeCommand() } // 如果下一级是更大的标题，则忽略，这里不会有更小的标题，因为更小的标题是当前的子标题
         
         // 如果下一 heading 是文档的最后一个 heading，下一 heading 结尾没有换行符，因此需要在替换的时候，在当前 heading 末尾去掉换行符，并且在下一 heading 加上换行符
-        if nextHeading.paragraphRange.upperBound == textStorage.string.nsstring.length {
-            let currentHeadingText = textStorage.substring(heading.paragraphRange.moveRightBound(by: -1))
-            let nextHeadingText = textStorage.substring(nextHeading.paragraphRange) + OutlineParser.Values.Character.linebreak
-            let textToReplace = nextHeadingText.appending(currentHeadingText)
-            let command = ReplaceContentCommandComposer(range: heading.paragraphRange.union(nextHeading.paragraphRange), textToReplace: textToReplace).compose(textStorage: textStorage)
+        if nextHeading.paragraphWithSubRange.upperBound == textStorage.string.nsstring.length {
+            let currentHeadingText = textStorage.substring(heading.paragraphWithSubRange.moveRightBound(by: -1))
+            let nextParagraphText = textStorage.substring(nextHeading.paragraphWithSubRange) + OutlineParser.Values.Character.linebreak
+            let textToReplace = nextParagraphText.appending(currentHeadingText)
+            let command = ReplaceContentCommandComposer(range: heading.paragraphWithSubRange.union(nextHeading.paragraphWithSubRange), textToReplace: textToReplace).compose(textStorage: textStorage)
+            
+            let delta = nextParagraphText.nsstring.length
             (command as? ReplaceTextCommand)?.resultMap = { _ in
-                return DocumentContentCommandResult(isModifiedContent: true, range: nil, content: nil, delta: nextHeadingText.count)
+                return DocumentContentCommandResult(isModifiedContent: true, range: nil, content: nil, delta: delta)
             }
             return command
         } else {
-            let textToReplace = textStorage.substring(nextHeading.paragraphRange).appending(textStorage.substring(heading.paragraphRange))
-            let command = ReplaceContentCommandComposer(range: heading.paragraphRange.union(nextHeading.paragraphRange), textToReplace: textToReplace).compose(textStorage: textStorage)
+            let textToReplace = textStorage.substring(nextHeading.paragraphWithSubRange).appending(textStorage.substring(heading.paragraphWithSubRange))
+            let command = ReplaceContentCommandComposer(range: heading.paragraphWithSubRange.union(nextHeading.paragraphWithSubRange), textToReplace: textToReplace).compose(textStorage: textStorage)
+            
+            let delta = nextHeading.paragraphWithSubRange.length
             (command as? ReplaceTextCommand)?.resultMap = { _ in
-                return DocumentContentCommandResult(isModifiedContent: true, range: nil, content: nil, delta: nextHeading.paragraphRange.length)
+                return DocumentContentCommandResult(isModifiedContent: true, range: nil, content: nil, delta: delta)
             }
             return command
         }

@@ -234,6 +234,10 @@ public class HeadingToken: Token {
         return NSRange(location: self.range.upperBound, length: lastChild.paragraphRange.upperBound - self.range.upperBound)
     }
     
+    public var paragraphWithSubRange: NSRange {
+        return self.range.union(self.subheadingsRange)
+    }
+    
     public convenience init(data: [String: NSRange]) {
         self.init(range: data[OutlineParser.Key.Node.heading]!, name: OutlineParser.Key.Node.heading, data: data)
     }

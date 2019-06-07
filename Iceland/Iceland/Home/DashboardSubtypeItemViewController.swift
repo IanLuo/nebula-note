@@ -33,7 +33,7 @@ public class DashboardSubtypeItemViewController: UIViewController {
         tableView.dataSource = self
         tableView.register(ItemCell.self, forCellReuseIdentifier: ItemCell.reuseIdentifier)
         tableView.backgroundColor = InterfaceTheme.Color.background2
-        tableView.separatorColor = InterfaceTheme.Color.background3
+        tableView.separatorStyle = .none
         tableView.tableFooterView = UIView()
         return tableView
     }()

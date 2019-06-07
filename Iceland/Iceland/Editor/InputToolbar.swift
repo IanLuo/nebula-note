@@ -85,6 +85,7 @@ public class InputToolbar: UIView {
         self._collectionView.dataSource = self
         self._collectionView.register(ActionButtonCell.self, forCellWithReuseIdentifier: ActionButtonCell.reuseIdentifier)
         self._collectionView.register(GroupSeparator.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: GroupSeparator.reuseIdentifier)
+        self._collectionView.decelerationRate = .fast
         
         self._setupUI()
     }

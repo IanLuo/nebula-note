@@ -263,19 +263,19 @@ extension DateAndTimeType {
                 let dateFromToday = today.daysFrom(self.date)
                 if dateFromToday == 1 {
                     text = L10n.Agenda.overdueYesterdayWihtPlaceHolder
-                    color = InterfaceTheme.Color.unfinished
+                    color = InterfaceTheme.Color.warning
                 } else {
                     text = L10n.Agenda.overdueDaysWihtPlaceHolder("\(dateFromToday)")
-                    color = InterfaceTheme.Color.unfinished
+                    color = InterfaceTheme.Color.warning
                 }
             } else {
                 let daysAfterToday = self.date.daysFrom(today)
                 if daysAfterToday == 1 {
                     text = L10n.Agenda.willOverduTomorrowWithPlaceHolder
-                    color = InterfaceTheme.Color.warning
+                    color = InterfaceTheme.Color.unfinished
                 } else {
                     text = L10n.Agenda.willOverduInDaysWithPlaceHolder("\(daysAfterToday)")
-                    color = InterfaceTheme.Color.warning
+                    color = InterfaceTheme.Color.unfinished
                 }
             }
         } else {

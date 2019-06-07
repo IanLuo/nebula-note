@@ -88,7 +88,7 @@ public struct Layout {
     @objc public let descriptiveHighlighted: UIColor = UIColor(red:0.41, green:0.41, blue:0.41, alpha:1.00)
     @objc public let background1: UIColor = UIColor(red:0.00, green:0.00, blue:0.00, alpha:1.00)
     @objc public let background2: UIColor = UIColor(red:0.11, green:0.11, blue:0.12, alpha:1.00)
-    @objc public let background3: UIColor = UIColor(red:0.35, green:0.35, blue:0.37, alpha:1.00)
+    @objc public let background3: UIColor = UIColor(red:0.22, green:0.22, blue:0.22, alpha:1.00)
     @objc public let spotlight: UIColor = UIColor(red:0.08, green:0.49, blue:0.98, alpha:1.00)
     @objc public let warning: UIColor = UIColor(red:0.99, green:0.24, blue:0.22, alpha:1.00)
 }
