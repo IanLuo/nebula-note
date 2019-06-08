@@ -56,6 +56,11 @@ extension UIImage {
     }
     
     @objc public func resize(upto: CGSize) -> UIImage {
+        if self.size.width * self.scale <= upto.width
+            && self.size.height * self.scale <= upto.height {
+            return self
+        }
+        
         let newSize = self.size.aspectFitSizeScale(for: upto)
         
         var image: UIImage!

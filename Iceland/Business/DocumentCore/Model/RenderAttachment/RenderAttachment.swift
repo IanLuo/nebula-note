@@ -30,7 +30,21 @@ public class RenderAttachment: NSTextAttachment {
             self?._attachment = attachment
             self?.url = attachment.url
             DispatchQueue.main.async {
-                self?.image = AttachmentThumbnailView(bounds: self!.bounds, attachment: attachment).snapshot
+                switch attachment.kind {
+                case .sketch:
+                    fallthrough // 使用 image 同样的渲染方法
+                case .image:
+                    if let image = UIImage(contentsOfFile: attachment.url.path) {
+                        let image = image.resize(upto: CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width))
+                        let scale = UIScreen.main.scale / image.scale
+                        self?.image = image
+                        self?.bounds = CGRect(origin: .zero, size: image.size.applying(CGAffineTransform(scaleX: 1/scale, y: 1/scale)))
+                    } else {
+                        // TODO: 使用找不到图片的 placehoder 图片
+                    }
+                default:
+                    self?.image = AttachmentThumbnailView(bounds: self!.bounds, attachment: attachment).snapshot
+                }
             }
         }) { error in
             
@@ -64,26 +78,18 @@ private class AttachmentThumbnailView: UIView {
     
     private func createImage(attachment: Attachment) {
         switch attachment.kind {
-        case Attachment.Kind.sketch:
-            self.title.text = "sketch"
-            self.icon.contentMode = .scaleAspectFill
-            self.icon.image = UIImage(contentsOfFile: attachment.url.path)?.resize(upto: self.bounds.size)
-        case Attachment.Kind.image:
-            self.title.text = "image"
-            self.icon.contentMode = .scaleAspectFill
-            self.icon.image = UIImage(contentsOfFile: attachment.url.path)?.resize(upto: self.bounds.size)
         case .audio:
             self.title.text = "audio"
             self.icon.contentMode = .center
-            self.icon.image = Asset.Assets.audio.image.fill(color: InterfaceTheme.Color.descriptive)
+            self.icon.image = Asset.Assets.audio.image.fill(color: InterfaceTheme.Color.descriptive).fill(color: InterfaceTheme.Color.interactive)
         case .video:
             self.title.text = "video"
             self.icon.contentMode = .center
-            self.icon.image = Asset.Assets.video.image.fill(color: InterfaceTheme.Color.descriptive)
+            self.icon.image = Asset.Assets.video.image.fill(color: InterfaceTheme.Color.descriptive).fill(color: InterfaceTheme.Color.interactive)
         case .location:
             self.title.text = "location"
             self.icon.contentMode = .center
-            self.icon.image = Asset.Assets.location.image.fill(color: InterfaceTheme.Color.descriptive)
+            self.icon.image = Asset.Assets.location.image.fill(color: InterfaceTheme.Color.descriptive).fill(color: InterfaceTheme.Color.interactive)
         default: break
         }
     }

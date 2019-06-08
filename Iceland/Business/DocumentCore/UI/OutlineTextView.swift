@@ -43,6 +43,7 @@ public class OutlineTextView: UITextView {
         self.autocapitalizationType = .none
         self.autocorrectionType = .no
         self.keyboardDismissMode = .interactive
+        self.smartDashesType = .no
 
         if #available(iOS 11.0, *) {
             self.smartDashesType = .no
@@ -85,7 +86,6 @@ public class OutlineTextView: UITextView {
         } else if let _ = attributes[OutlineAttribute.Heading.level] as? Int {
             self.outlineDelegate?.didTapOnLevel(textView: self, chracterIndex: characterIndex, point: location)
         } else if let checkbox = attributes[OutlineAttribute.checkbox] as? String {
-            self.resignFirstResponder()
             self.outlineDelegate?.didTapOnCheckbox(textView: self, characterIndex: characterIndex, checkbox: checkbox, point: location)
         } else if let linkStructure = attributes[OutlineAttribute.Link.title] as? [String: String] {
             self.resignFirstResponder()

@@ -162,7 +162,11 @@ extension OutlineTextStorage: ContentUpdatingProtocol {
         // 更新段落缩进样式
         (self.string as NSString).enumerateSubstrings(in: currentParseRange, options: NSString.EnumerationOptions.byLines) { [unowned self] (string, range, enclosedRange, stop) in
             if let heading = self.heading(contains: range.location), heading.paragraphRange.intersection(range) != nil {
-                self.setParagraphIndent(heading: heading, for: enclosedRange)
+                for sub in self.subheadings(of: heading) {
+                    self.setParagraphIndent(heading: sub, for: heading.paragraphRange)
+                }
+                
+                self.setParagraphIndent(heading: heading, for: heading.paragraphRange)
             }
         }
         

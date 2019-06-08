@@ -167,8 +167,8 @@ extension Date {
   }
   
   public func daysFrom(_ date:Date) -> Int {
-    let timeIntervalSelf = self.timeIntervalSinceReferenceDate
-    let timeIntervalCompareDay = date.timeIntervalSinceReferenceDate
+    let timeIntervalSelf = self.dayEnd.timeIntervalSinceReferenceDate
+    let timeIntervalCompareDay = date.dayEnd.timeIntervalSinceReferenceDate
     return Int(ceil((timeIntervalSelf - timeIntervalCompareDay) / Double(TimeValue.Day)))
   }
 }

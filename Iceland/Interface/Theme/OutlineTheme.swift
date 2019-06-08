@@ -95,12 +95,16 @@ public class OutlineThemeSelector {
     
     public static func headingStyle(level: Int) -> TextStyle {
         let defaultStyle = OutlineThemeSelector.shared.currentTheme.headingStyle
-        let textStyle = TextStyle(font: defaultStyle.font, color: defaultStyle.color.withAlphaComponent(CGFloat(10 - level) / CGFloat(10)))
+        let textStyle = TextStyle(font: defaultStyle.font, color: defaultStyle.color)
         return textStyle
     }
     
     public static var tagStyle: ButtonStyle {
         return OutlineThemeSelector.shared.currentTheme.tagStyle
+    }
+    
+    public static var seperatorStyle: UIColor {
+        return OutlineThemeSelector.shared.currentTheme.seperatorStyle
     }
 }
 
@@ -119,9 +123,12 @@ public protocol OutlineThemeConfigProtocol {
     var codeBlockStyle: CodeBlockStyle { get }
     var quoteBlockStyle: QuoteBlockStyle { get }
     var headingStyle: TextStyle { get }
+    var seperatorStyle: UIColor { get }
 }
 
 private struct DefaultOutlineTheme: OutlineThemeConfigProtocol {
+    var seperatorStyle: UIColor = InterfaceTheme.Color.descriptiveHighlighted
+    
     var headingStyle: TextStyle = TextStyle(font: InterfaceTheme.Font.title, color: InterfaceTheme.Color.interactive)
     
     var orderdedListStyle: TextStyle = TextStyle(font: InterfaceTheme.Font.title, color: InterfaceTheme.Color.descriptive)
@@ -149,13 +156,13 @@ private struct DefaultOutlineTheme: OutlineThemeConfigProtocol {
     
     /// 目前没有使用 button color, 因为 button 显示有问题
     var dateAndTimeStyle: DateAndTimeStyle = DateAndTimeStyle(normal: ButtonStyle(buttonColor: InterfaceTheme.Color.background3,
-                                                                                  textStyle: TextStyle(font: InterfaceTheme.Font.body,
+                                                                                  textStyle: TextStyle(font: InterfaceTheme.Font.footnote,
                                                                                                        color: InterfaceTheme.Color.finished)),
                                                               soon: ButtonStyle(buttonColor: InterfaceTheme.Color.background3,
-                                                                                textStyle: TextStyle(font: InterfaceTheme.Font.body,
+                                                                                textStyle: TextStyle(font: InterfaceTheme.Font.footnote,
                                                                                                      color: InterfaceTheme.Color.unfinished)),
                                                               overtime: ButtonStyle(buttonColor: InterfaceTheme.Color.background3,
-                                                                                    textStyle: TextStyle(font: InterfaceTheme.Font.body,
+                                                                                    textStyle: TextStyle(font: InterfaceTheme.Font.footnote,
                                                                                                          color: InterfaceTheme.Color.warning)))
     
     var planningStyle: PlanningStyle = PlanningStyle(finished: ButtonStyle(buttonColor: InterfaceTheme.Color.background3,

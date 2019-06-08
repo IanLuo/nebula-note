@@ -78,7 +78,7 @@ public class DashboardViewModel {
     }
     
     public func loadData() {
-        let today = Date()
+        let today = Date().dayEnd
         
         self.allTags = []
         self.allPlannings = []
@@ -100,15 +100,15 @@ public class DashboardViewModel {
                 
                 if let dateAndTime = result.dateAndTime {
                     if dateAndTime.isDue {
-                        if dateAndTime.date <= today {
+                        if dateAndTime.date.daysFrom(today) < 0 {
                             self?.overdue.append(result)
-                        } else if dateAndTime.date.dayBefore(3) <= today {
+                        } else if dateAndTime.date.daysFrom(today) <= 3 {
                             self?.overdueSoon.append(result)
                         }
                     } else if dateAndTime.isSchedule {
-                        if dateAndTime.date <= today {
+                        if dateAndTime.date.daysFrom(today) < 0 {
                             self?.scheduled.append(result)
-                        } else if dateAndTime.date.dayBefore(3) <= today {
+                        } else if dateAndTime.date.daysFrom(today) <= 3 {
                             self?.startSoon.append(result)
                         }
                     } else {

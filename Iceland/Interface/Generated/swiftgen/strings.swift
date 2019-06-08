@@ -19,7 +19,7 @@ public enum L10n {
     public static func overdueDaysWihtPlaceHolder(_ p1: String) -> String {
       return L10n.tr("Localizable", "agenda.overdueDaysWihtPlaceHolder", p1)
     }
-    /// Overdue yesterday
+    /// Due yesterday
     public static let overdueYesterdayWihtPlaceHolder = L10n.tr("Localizable", "agenda.overdueYesterdayWihtPlaceHolder")
     /// Started %@ days ago
     public static func startDaysAgoWithPlaceHodler(_ p1: String) -> String {
@@ -261,6 +261,10 @@ public enum L10n {
           public static let underscore = L10n.tr("Localizable", "document.edit.action.mark.underscore")
           /// Verbatim
           public static let verbatim = L10n.tr("Localizable", "document.edit.action.mark.verbatim")
+        }
+        public enum Paragraph {
+          /// Paragraph actions
+          public static let title = L10n.tr("Localizable", "document.edit.action.paragraph.title")
         }
       }
       public enum Date {

@@ -95,6 +95,7 @@
 "document.edit.action.arrow-up" = "Arrow up";
 "document.edit.action.arrow-down" = "Arrow down";
 "document.edit.action.quote-block" = "Quote block";
+"document.edit.action.paragraph.title" = "Paragraph actions";
 "document.edit.action.code-block" = "Code block";
 "document.edit.tag.title" = "Edit tag";
 "document.edit.tag.add" = "Add new tag";
@@ -163,7 +164,7 @@
 "agenda.startYesterdayWithPlaceHodlerYesterday" = "Started yesterday";
 "agenda.dueToday" = "Due today";
 "agenda.overdueDaysWihtPlaceHolder" = "Overdue %@ days";
-"agenda.overdueYesterdayWihtPlaceHolder" = "Overdue yesterday";
+"agenda.overdueYesterdayWihtPlaceHolder" = "Due yesterday";
 "agenda.willOverduInDaysWithPlaceHolder" = "Will due in %@ days";
 "agenda.willOverduTomorrowWithPlaceHolder" = "Will due tomorrow";
 "agenda.sub.tags" = "Tags";

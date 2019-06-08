@@ -61,7 +61,7 @@ public class DateSelectViewController: UIViewController {
     
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
+
         self._calendarView.setDisplayDate(self.currentDate ?? Date())
 
         if let selected = self.currentDate {

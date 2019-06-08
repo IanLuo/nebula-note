@@ -54,7 +54,7 @@ public enum NormalAction: ToolbarActionProtocol, DocumentActon {
     public var icon: UIImage {
         switch self {
         case .paragraph:
-            return Asset.Assets.document.image
+            return Asset.Assets.paragraph.image
         case .heading:
             return Asset.Assets.heading.image
         case .increaseIndent:

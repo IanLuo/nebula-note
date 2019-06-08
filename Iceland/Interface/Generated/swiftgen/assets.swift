@@ -55,6 +55,7 @@ public enum Asset {
     public static let newDocument = ImageAsset(name: "newDocument")
     public static let next = ImageAsset(name: "next")
     public static let orderedList = ImageAsset(name: "ordered-list")
+    public static let paragraph = ImageAsset(name: "paragraph")
     public static let planning = ImageAsset(name: "planning")
     public static let priority = ImageAsset(name: "priority")
     public static let quote = ImageAsset(name: "quote")

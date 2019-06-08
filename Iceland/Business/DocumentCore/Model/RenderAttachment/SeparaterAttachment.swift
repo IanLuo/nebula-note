@@ -14,7 +14,9 @@ import Interface
     public required init() {
         super.init(data: nil, ofType: nil)
         
-        let image = UIImage.create(with: InterfaceTheme.Color.background2, size: CGSize(width: UIScreen.main.bounds.width, height: 1))
+        let image = UIImage.create(with: OutlineTheme.seperatorStyle,
+                                   size: CGSize(width: UIScreen.main.bounds.width - Layout.edgeInsets.left - Layout.edgeInsets.right,
+                                                height: 1))
         self.image = image
         self.bounds = CGRect(origin: .zero, size: image.size)
     }

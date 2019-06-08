@@ -297,6 +297,7 @@ extension DocumentEditViewController {
     /// 在 heading 里面点击 heading 按钮
     public func showHeadingEdit(at location: Int) {
         let actionsController = ActionsViewController()
+        actionsController.title = L10n.Document.Heading.title
         
         actionsController.addAction(icon: nil, title: L10n.Document.Heading.toParagraphContent) { viewController in
             viewController.dismiss(animated: true, completion: {
@@ -318,6 +319,7 @@ extension DocumentEditViewController {
     
     public func showParagraphActions(at location: Int) {
         let actionsController = ActionsViewController()
+        actionsController.title = L10n.Document.Edit.Action.Paragraph.title
         
         let isFolded = self.viewModel.isParagraphFolded(at: location)
         let foldTitle = isFolded ? L10n.Document.Heading.unfold : L10n.Document.Heading.fold
