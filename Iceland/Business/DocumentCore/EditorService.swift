@@ -26,8 +26,7 @@ public class EditorService {
     public var isReadyToUse: Bool = false {
         didSet {
             if isReadyToUse && isReadyToUse != oldValue {
-                unowned let unwoendSelf = self
-                onReadyToUse?(unwoendSelf)
+                onReadyToUse?(self)
             }
         }
     }
@@ -35,8 +34,7 @@ public class EditorService {
     public var onReadyToUse: ((EditorService) -> Void)? {
         didSet {
             if isReadyToUse {
-                unowned let unwoendSelf = self
-                onReadyToUse?(unwoendSelf)
+                onReadyToUse?(self)
             }
         }
     }

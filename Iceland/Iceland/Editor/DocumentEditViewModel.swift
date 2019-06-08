@@ -261,7 +261,7 @@ public class DocumentEditViewModel {
         }
     }
     
-    public func moveParagraphToOtherDocument(url: URL, heading otherHeading: DocumentHeading, location: Int, completion: @escaping (DocumentContentCommandResult) -> Void) {
+    public func moveParagraphToOtherDocument(url: URL, heading otherHeading: DocumentHeading, location: Int, textView: UITextView, completion: @escaping (DocumentContentCommandResult) -> Void) {
         self.coordinator?.dependency.editorContext.request(url: url).onReadyToUse = { [weak self] service in
             service.start(complete: { isReady, service in
                 guard let strongSelf = self else { return }
@@ -272,12 +272,19 @@ public class DocumentEditViewModel {
                     ? strongSelf._editorService.string.nsstring.substring(with: heading.paragraphWithSubRange) + "\n"
                     : strongSelf._editorService.string.nsstring.substring(with: heading.paragraphWithSubRange)
                 
-                // 1. 删除当前的段落
-                let result = strongSelf._editorService.toggleContentCommandComposer(composer: EditAction.removeParagraph(location).commandComposer).perform()
-                
-                _ = service.toggleContentCommandComposer(composer: AppendAsChildHeadingCommandComposer(text: text, to: otherHeading.paragraphRange.upperBound)).perform() // 移到另一个文件，不需要支持 redo/undo
-                
-                completion(result)
+                DispatchQueue.main.async {
+                    // 1. 删除当前的段落
+                    let result = strongSelf.performCommandComposer(EditAction.removeParagraph(location).commandComposer, textView: textView)
+                    _ = service.toggleContentCommandComposer(composer: AppendAsChildHeadingCommandComposer(text: text, to: otherHeading.paragraphRange.upperBound)).perform() // 移到另一个文件，不需要支持 undo
+                    service.save(completion: { [unowned service] _ in
+                        service.close(completion: { _ in
+                            DispatchQueue.main.async {
+                                completion(result)
+                            }
+                        })
+                    })
+                    
+                }
             })
         }
     }
@@ -290,7 +297,7 @@ public class DocumentEditViewModel {
             : self._editorService.string.nsstring.substring(with: currentHeading.paragraphWithSubRange)
         
         // 1. 删除旧的段落
-        let removedResult = self.performAction(EditAction.removeParagraph(location),
+        _ = self.performAction(EditAction.removeParagraph(location),
                                                textView: textView)
         
         
