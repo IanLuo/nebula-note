@@ -239,7 +239,7 @@ extension DocumentEditViewController: DocumentEditViewModelDelegate {
         
         // 移动到指定的位置（如果需要）
         self.allowScrollContentWhenKeyboardDisapearTemporaily()
-        self._moveTo(location: self.viewModel.onLoadingLocation)
+        self._scrollTo(location: self.viewModel.onLoadingLocation)
         
         // 打开文件时， 添加到最近使用的文件
         self.viewModel.coordinator?.dependency.editorContext.recentFilesManager.addRecentFile(url: self.viewModel.url, lastLocation: 0) { [weak self] in
@@ -248,7 +248,7 @@ extension DocumentEditViewController: DocumentEditViewModelDelegate {
         }
     }
     
-    internal func _moveTo(location: Int) {
+    internal func _scrollTo(location: Int) {
         if location > 0 {
             self.textView.scrollRangeToVisible(self.textView.selectedRange)
             self.textView.selectedRange = (self.textView.text as NSString).lineRange(for: NSRange(location: location, length: 0)).tail(0).offset(-1)

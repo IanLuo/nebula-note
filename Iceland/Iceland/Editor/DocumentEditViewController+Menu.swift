@@ -48,7 +48,7 @@ extension DocumentEditViewController {
             viewController.dismiss(animated: true, completion: {
                 self.viewModel.coordinator?.showOutline(completion: { [unowned self] heading in
                     self.allowScrollContentWhenKeyboardDisapearTemporaily()
-                    self._moveTo(location: heading.location)
+                    self._scrollTo(location: heading.location)
                 })
                 self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
             })

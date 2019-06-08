@@ -52,8 +52,8 @@ public class CaptureViewController: UIViewController, TransitionProtocol {
         
         tableView.interface({ (me, theme) in
             let me = me as! UITableView
-            me.backgroundColor = theme.color.background2
-            me.setBorder(position: .left, color: theme.color.background3, width: 0.5)
+            me.backgroundColor = theme.color.background1
+            me.setBorder(position: .left, color: theme.color.background2, width: 0.5)
         })
         return tableView
     }()
@@ -64,7 +64,7 @@ public class CaptureViewController: UIViewController, TransitionProtocol {
         button.interface({ (me, theme) in
             let me = me as! RoundButton
             me.setIcon(Asset.Assets.cross.image.fill(color: theme.color.interactive), for: .normal)
-            me.setBackgroundColor(theme.color.background3, for: .normal)
+            me.setBackgroundColor(theme.color.background2, for: .normal)
         })
         button.setBorder(color: nil)
         button.tapped({ _ in
@@ -79,12 +79,15 @@ public class CaptureViewController: UIViewController, TransitionProtocol {
         super.viewDidLoad()
         self.view.addSubview(self.contentView)
         
+        self.contentView.backgroundColor = InterfaceTheme.Color.background1
+        
         self.contentView.addSubview(self.tableView)
         self.contentView.addSubview(self.cancelButton)
         
-        self.contentView.allSidesAnchors(to: self.view, edgeInsets: .init(top: 0, left: self.view.bounds.width / 3, bottom: 0, right: 0))
+        self.contentView.sideAnchor(for: [.bottom, .top, .right], to: self.view, edgeInset: 0)
+        self.contentView.sizeAnchor(width: 200)
         
-        self.tableView.allSidesAnchors(to: self.contentView, edgeInset: 0)
+        self.tableView.allSidesAnchors(to: self.contentView, edgeInset: 0, considerSafeArea: true)
         
         self.cancelButton.sideAnchor(for: [.right, .bottom], to: self.contentView, edgeInset: 30, considerSafeArea: true)
         self.cancelButton.sizeAnchor(width: 60)
@@ -171,7 +174,7 @@ private class CaptureCell: UITableViewCell {
     
     private func setupUI() {
         self.interface { (me, theme) in
-            me.backgroundColor = InterfaceTheme.Color.background2
+            me.backgroundColor = InterfaceTheme.Color.background1
         }
         
         self.contentView.addSubview(self.iconView)
@@ -187,17 +190,17 @@ private class CaptureCell: UITableViewCell {
     
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
         if highlighted {
-            self.backgroundColor = InterfaceTheme.Color.background3
-        } else {
             self.backgroundColor = InterfaceTheme.Color.background2
+        } else {
+            self.backgroundColor = InterfaceTheme.Color.background1
         }
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
         if selected {
-            self.backgroundColor = InterfaceTheme.Color.background3
-        } else {
             self.backgroundColor = InterfaceTheme.Color.background2
+        } else {
+            self.backgroundColor = InterfaceTheme.Color.background1
         }
     }
 }

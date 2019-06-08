@@ -52,7 +52,7 @@ public class CaptureGlobalEntranceWindow: UIWindow {
     
     public func hide() {
         UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveEaseInOut, animations: {
-            self.frame = CGRect(x: UIScreen.main.bounds.width, y: self.frame.origin.y, width: self.frame.size.width, height: self.frame.size.height)
+            self.frame = CGRect(x: UIScreen.main.bounds.width, y: UIScreen.main.bounds.height - self._fromWindow!.safeArea.bottom - 60 - 30, width: self.frame.size.width, height: self.frame.size.height)
         }, completion: { _ in
             self.isOffScreen = true
             self.alpha = 0 // 防止旋转的时候在屏幕上出现
@@ -62,7 +62,7 @@ public class CaptureGlobalEntranceWindow: UIWindow {
     public func show() {
         self.alpha = 1
         UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveEaseInOut, animations: {
-            self.frame = CGRect(x: UIScreen.main.bounds.width - self.frame.width - 30, y: self.frame.origin.y, width: self.frame.size.width, height: self.frame.size.height)
+            self.frame = CGRect(x: UIScreen.main.bounds.width - self.frame.width - 30, y: UIScreen.main.bounds.height - self._fromWindow!.safeArea.bottom - 60 - 30, width: self.frame.size.width, height: self.frame.size.height)
         }, completion: { _ in
             self.isOffScreen = false
         })
