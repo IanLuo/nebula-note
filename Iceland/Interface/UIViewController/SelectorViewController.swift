@@ -41,6 +41,7 @@ open class SelectorViewController: UIViewController {
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 30, bottom: 0, right: 30)
         tableView.separatorColor = InterfaceTheme.Color.background2
         tableView.register(ActionCell.self, forCellReuseIdentifier: ActionCell.reuseIdentifier)
+        tableView.alwaysBounceVertical = true
         tableView.tableFooterView = UIView()
         return tableView
     }()
@@ -148,11 +149,11 @@ open class SelectorViewController: UIViewController {
     }
     
     public struct Item {
-        let icon: UIImage?
-        let title: String
-        let attributedString: NSAttributedString?
-        let description: String?
-        let enabled: Bool
+        public let icon: UIImage?
+        public let title: String
+        public let attributedString: NSAttributedString?
+        public let description: String?
+        public let enabled: Bool
     }
 }
 

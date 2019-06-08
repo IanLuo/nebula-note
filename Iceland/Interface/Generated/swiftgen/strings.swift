@@ -278,6 +278,8 @@ public enum L10n {
       public enum Tag {
         /// Add new tag
         public static let add = L10n.tr("Localizable", "document.edit.tag.add")
+        /// Choose
+        public static let choose = L10n.tr("Localizable", "document.edit.tag.choose")
         /// New tag name
         public static let placeHolder = L10n.tr("Localizable", "document.edit.tag.place-holder")
         /// Edit tag

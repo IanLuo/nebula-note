@@ -194,6 +194,40 @@ extension DocumentEditViewController {
             self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
         }
         
+        actionsViewController.addAction(icon: Asset.Assets.tag.image.fill(color: InterfaceTheme.Color.interactive), title: L10n.Document.Edit.Tag.choose, style: .highlight) { viewController in
+            viewController.dismiss(animated: true, completion: {
+                let selector = SelectorViewController()
+                selector.title = L10n.Document.Edit.Tag.title
+                
+                if let allTags = self.viewModel.coordinator?.loadAllTags() {
+                    for tag in allTags {
+                        selector.addItem(title: tag, enabled: !tags.contains(tag))
+                    }
+                }
+                
+                selector.onCancel = {
+                    self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
+                    $0.dismiss(animated: true, completion: nil)
+                }
+                
+                selector.onSelection = { index, viewController in
+                    self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
+                    viewController.dismiss(animated: true, completion: {
+                        let oldSelectedRange = self.textView.selectedRange
+                        let newTag = viewController.items[index].title
+                        let result = self.viewModel.performAction(EditAction.addTag(newTag, location), textView: self.textView)
+                        if self.textView.selectedRange.location > location {
+                            self.textView.selectedRange = oldSelectedRange.offset(result.delta)
+                        }
+                        location += newTag.count
+                    })
+                }
+                
+                self.present(selector, animated: true, completion: nil)
+            })
+            
+        }
+        
         actionsViewController.addAction(icon: Asset.Assets.add.image.fill(color: InterfaceTheme.Color.interactive), title: L10n.Document.Edit.Tag.add, style: .highlight) { actionViewController in
             actionViewController.dismiss(animated: true, completion: {
                 let formController = ModalFormViewController()

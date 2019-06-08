@@ -217,6 +217,28 @@ extension Coordinator {
 }
 
 extension Coordinator {
+    public var rootCoordinator: Coordinator {
+        var root: Coordinator = self
+        
+        while root.parent != nil {
+            root = root.parent!
+        }
+        
+        return root
+    }
+    
+    public func searchFirstCoordinator<T: Coordinator>(type: T.Type) -> T? {
+        for c in self.children {
+            if c is T {
+                return (c as! T)
+            } else {
+                return c.searchFirstCoordinator(type: type)
+            }
+        }
+        
+        return nil
+    }
+    
     public var topCoordinator: Coordinator? {
         if self.isShowing {
             return self

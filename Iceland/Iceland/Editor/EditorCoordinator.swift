@@ -113,6 +113,14 @@ public class EditorCoordinator: Coordinator {
         
         attachmentLinkCoordinator.start(from: self)
     }
+    
+    public func loadAllTags() -> [String] {
+        if let home = self.rootCoordinator.searchFirstCoordinator(type: HomeCoordinator.self) {
+            return home.getAllTags()
+        } else {
+            return []
+        }
+    }
 }
 
 extension EditorCoordinator: SearchCoordinatorDelegate {

@@ -152,7 +152,6 @@ public class DocumentSearchManager {
                 parser.delegate = parseDelegate
                 parser.includeParsee = [.heading]
                 
-                
                 var items: [DocumentTextSearchResult] = []
                 let matcher = try NSRegularExpression(pattern: "\(contain)", options: NSRegularExpression.Options.caseInsensitive)
                 try self.loadAllFiles().forEach { url in

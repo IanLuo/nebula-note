@@ -16,9 +16,13 @@ public class HomeCoordinator: Coordinator {
     
     private let _dashboardViewController: DashboardViewController
     
+    private let _viewModel: DashboardViewModel
+    
     public override init(stack: UINavigationController, dependency: Dependency) {
         let viewModel = DashboardViewModel(documentSearchManager: dependency.documentSearchManager)
         let dashboardViewController = DashboardViewController(viewModel: viewModel)
+        
+        self._viewModel = viewModel
         
         let navigationController = Coordinator.createDefaultNavigationControlller()
         navigationController.pushViewController(dashboardViewController, animated: false)
@@ -83,6 +87,10 @@ public class HomeCoordinator: Coordinator {
         let navigationController = Coordinator.createDefaultNavigationControlller()
         let settingsCoordinator = SettingsCoordinator(stack: navigationController, dependency: self.dependency)
         settingsCoordinator.start(from: self)
+    }
+    
+    public func getAllTags() -> [String] {
+        return self._viewModel.allTags
     }
 }
 

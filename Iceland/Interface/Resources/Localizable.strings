@@ -99,6 +99,7 @@
 "document.edit.action.code-block" = "Code block";
 "document.edit.tag.title" = "Edit tag";
 "document.edit.tag.add" = "Add new tag";
+"document.edit.tag.choose" = "Choose";
 "document.edit.tag.place-holder" = "New tag name";
 "document.edit.tag.validation" = "Don't use special characters in tag";
 
