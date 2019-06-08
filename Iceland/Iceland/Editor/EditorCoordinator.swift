@@ -19,7 +19,7 @@ public protocol EditorCoordinatorSelectHeadingDelegate: class {
 public class EditorCoordinator: Coordinator {
     public enum Usage {
         case editor(URL, Int)
-        case outline(URL)
+        case outline(URL, Int?)
     }
     
     public weak var delegate: EditorCoordinatorSelectHeadingDelegate?
@@ -43,11 +43,12 @@ public class EditorCoordinator: Coordinator {
             viewController.delegate = self
             viewModel.coordinator = self
             self.viewController = viewController
-        case .outline(let url):
+        case .outline(let url, let ignoredHeadingLocation):
             let viewModel = DocumentEditViewModel(editorService: dependency.editorContext.request(url: url))
             self._viewModel = viewModel
             super.init(stack: stack, dependency: dependency)
             let viewController = HeadingsOutlineViewController(viewModel: viewModel)
+            viewController.ignoredHeadingLocation = ignoredHeadingLocation
             viewController.outlineDelegate = self
             viewController.title = url.packageName
             viewModel.coordinator = self
@@ -55,10 +56,10 @@ public class EditorCoordinator: Coordinator {
         }
     }
     
-    public func showOutline(completion: @escaping (DocumentHeading) -> Void) {
+    public func showOutline(ignoredHeadingLocation: Int? = nil, completion: @escaping (DocumentHeading) -> Void) {
         let navigationController = Coordinator.createDefaultNavigationControlller()
         navigationController.isNavigationBarHidden = true
-        let coordinator = EditorCoordinator(stack: navigationController, dependency: self.dependency, usage: EditorCoordinator.Usage.outline(self._viewModel.url))
+        let coordinator = EditorCoordinator(stack: navigationController, dependency: self.dependency, usage: EditorCoordinator.Usage.outline(self._viewModel.url, ignoredHeadingLocation))
         coordinator.didSelectOutlineHeadingAction = { [weak coordinator] heading in
             coordinator?.stop(animated: true, completion: {
                 completion(heading)

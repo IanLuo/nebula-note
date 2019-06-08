@@ -20,6 +20,7 @@ public struct DocumentHeading {
     public let location: Int
     public let range: NSRange
     public let paragraphRange: NSRange
+    public let paragraphWithSubRange: NSRange
     
     public init(documentString: String, headingToken: HeadingToken, url: URL) {
         self.range = headingToken.range
@@ -28,6 +29,7 @@ public struct DocumentHeading {
         self.level = headingToken.level
         self.length = headingToken.paragraphRange.length
         self.location = headingToken.range.location
+        self.paragraphWithSubRange = headingToken.paragraphWithSubRange
         
         if let tagRange = headingToken.tags {
             self.tags = documentString.nsstring.substring(with: tagRange).components(separatedBy: ":").filter { $0.count != 0 }

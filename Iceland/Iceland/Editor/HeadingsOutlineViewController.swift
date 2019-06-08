@@ -21,6 +21,8 @@ public class HeadingsOutlineViewController: SelectorViewController {
     
     public weak var outlineDelegate: HeadingsOutlineViewControllerDelegate?
     
+    public var ignoredHeadingLocation: Int? = nil
+    
     public init(viewModel: DocumentEditViewModel) {
         self.viewModel = viewModel
         super.init()
@@ -59,9 +61,13 @@ extension HeadingsOutlineViewController: DocumentEditViewModelDelegate {
     }
     
     private func loadData() {
-        for index in 0..<self.viewModel.headings.count {
+        let ignoredRange = self.viewModel.paragraphWithSubRange(at: self.ignoredHeadingLocation ?? -1)
+        
+        for (index, heading) in self.viewModel.headings.enumerated() {
+            let isEnabled = ignoredRange != nil ? ignoredRange!.intersection(heading.paragraphRange) == nil : true
             self.addItem(attributedString: self.attributedString(level: self.viewModel.level(index: index),
-                                                                     string: self.viewModel.headingString(index: index)))
+                                                                     string: self.viewModel.headingString(index: index)),
+                         enabled: isEnabled)
         }
         
         
@@ -102,14 +108,4 @@ extension HeadingsOutlineViewController: DocumentEditViewModelDelegate {
         
         return attributedString
     }
-}
-
-fileprivate func *(lhs: String, rhs: Int) -> String {
-    guard rhs > 0 else { return "" }
-    var s = lhs
-    for _ in 1..<rhs {
-        s.append(lhs)
-    }
-    
-    return s
 }

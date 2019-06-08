@@ -41,6 +41,8 @@ public class DocumentEditViewController: UIViewController {
         self.textView.delegate = self
         viewModel.delegate = self
         
+        self.view.backgroundColor = InterfaceTheme.Color.background1
+        
         NotificationCenter.default.addObserver(self, selector: #selector(_documentStateChanged(_:)), name: UIDocument.stateChangedNotification, object: nil)
     }
     

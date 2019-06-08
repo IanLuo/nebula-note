@@ -99,7 +99,7 @@ public class RemoveParagraphCommandComposer: DocumentContentCommandComposer {
     public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
         guard let heading = textStorage.heading(contains: self.location) else { return NoChangeCommand() }
         
-        return ReplaceTextCommand(range: heading.paragraphRange, textToReplace: "", textStorage: textStorage)
+        return ReplaceTextCommand(range: heading.paragraphWithSubRange, textToReplace: "", textStorage: textStorage)
     }
 }
 
@@ -907,6 +907,62 @@ public class IncreaseIndentCommandComposer: DocumentContentCommandComposer {
                                                       for: NSRange(location: self.location, length: 0))
 
         return InsertTextCommandComposer(location: start, textToInsert: OutlineParser.Values.Character.tab).compose(textStorage: textStorage)
+    }
+}
+
+public class MoveToParagraphAsChildHeadingCommandComposer: DocumentContentCommandComposer {
+    public let isToLocationBehindFromLocation: Bool
+    public let text: String
+    public let toLocation: Int
+    
+    public init(text: String, to location: Int, isToLocationBehindFromLocation: Bool) {
+        self.text = text
+        self.toLocation = location
+        self.isToLocationBehindFromLocation = isToLocationBehindFromLocation
+    }
+    
+    public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
+        let location = self.isToLocationBehindFromLocation ? self.toLocation - self.text.nsstring.length : self.toLocation
+        return AppendAsChildHeadingCommandComposer(text: self.text, to: location).compose(textStorage: textStorage)
+    }
+}
+
+/// 将一段字符串添加到另一个 heading 下面，如果含有 heading 的话，插入的 heading 将会被修改该为目标 heading 的 child
+public class AppendAsChildHeadingCommandComposer: DocumentContentCommandComposer {
+    public let text: String
+    public let toLocation: Int
+
+    public init(text: String, to location: Int) {
+        self.text = text
+        self.toLocation = location
+    }
+
+    public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
+        guard let toHeading = textStorage.heading(contains: self.toLocation) else { return NoChangeCommand() }
+
+        // 解析文件中的全部 heading
+        let parseDelegate = SimpleParserDelegate()
+        let parser = OutlineParser()
+        parser.delegate = parseDelegate
+        parser.includeParsee = [.heading]
+
+        parser.parse(str: self.text)
+
+        var textToInsert = self.text
+        let firstHeadingLevel = parseDelegate.headings.first?.level ?? 0
+        for heading in parseDelegate.headings.reversed() {
+            let headingDiff = heading.level - firstHeadingLevel
+            textToInsert = textToInsert.nsstring.replacingCharacters(in: heading.levelRange, with: "*" * (toHeading.level + headingDiff + 1))
+        }
+
+        // 2. 插入到新的位置
+        let newLocation = NSRange(location: toHeading.paragraphRange.upperBound, length: 0) // 如果删除的文本在插入位置之前，则插入位置要先减少删除文本的长度
+        
+        if newLocation.upperBound == textStorage.string.nsstring.length { // 如果将要插到文档末尾，添加一个换行符在插入的位置之前
+            textToInsert = "\n" + textToInsert
+        }
+
+        return ReplaceTextCommand(range: newLocation, textToReplace: textToInsert, textStorage: textStorage)
     }
 }
 

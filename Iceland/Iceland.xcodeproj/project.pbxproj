@@ -112,6 +112,8 @@
 		E44683FD2289B5AD005D5B73 /* ExtensionProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44683FC2289B5AD005D5B73 /* ExtensionProperty.swift */; };
 		E44825A3219722C300C17568 /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44825A2219722C300C17568 /* Application.swift */; };
 		E44E60F521E9F2C0005AC25F /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44E60F421E9F2C0005AC25F /* Location.swift */; };
+		E45DCF8822AB646F007F34DB /* SimpleParserDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45DCF8722AB646F007F34DB /* SimpleParserDelegate.swift */; };
+		E45DCF8A22AB6649007F34DB /* String+Conenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45DCF8922AB6649007F34DB /* String+Conenience.swift */; };
 		E462DB97223D251A00BF7AB4 /* DateAndTimeSelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E462DB96223D251A00BF7AB4 /* DateAndTimeSelectViewController.swift */; };
 		E462DB9A223D259F00BF7AB4 /* DateSelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E462DB99223D259F00BF7AB4 /* DateSelectViewController.swift */; };
 		E462DB9C223D264800BF7AB4 /* TimeSelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E462DB9B223D264800BF7AB4 /* TimeSelectViewController.swift */; };
@@ -338,6 +340,8 @@
 		E44E60F421E9F2C0005AC25F /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 		E451B27A223A191B000BEA34 /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
 		E451B280223A1F80000BEA34 /* assets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = assets.swift; sourceTree = "<group>"; };
+		E45DCF8722AB646F007F34DB /* SimpleParserDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleParserDelegate.swift; sourceTree = "<group>"; };
+		E45DCF8922AB6649007F34DB /* String+Conenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Conenience.swift"; sourceTree = "<group>"; };
 		E462DB96223D251A00BF7AB4 /* DateAndTimeSelectViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateAndTimeSelectViewController.swift; sourceTree = "<group>"; };
 		E462DB99223D259F00BF7AB4 /* DateSelectViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateSelectViewController.swift; sourceTree = "<group>"; };
 		E462DB9B223D264800BF7AB4 /* TimeSelectViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSelectViewController.swift; sourceTree = "<group>"; };
@@ -697,6 +701,7 @@
 				E44E60F421E9F2C0005AC25F /* Location.swift */,
 				E4821DB022374C420063C0B2 /* WeakArray.swift */,
 				E4729BA32202E6BA00F22885 /* Range.swift */,
+				E45DCF8922AB6649007F34DB /* String+Conenience.swift */,
 			);
 			path = Business;
 			sourceTree = "<group>";
@@ -1052,6 +1057,7 @@
 				E4A46A2621B0E2D500FBDA04 /* OutlineParserMatcher.swift */,
 				E44825AC219C1AAA00C17568 /* OutlineParser.swift */,
 				E4162EF62254EA4F00D3619E /* DateAndTimeType.swift */,
+				E45DCF8722AB646F007F34DB /* SimpleParserDelegate.swift */,
 			);
 			path = Parse;
 			sourceTree = "<group>";
@@ -1543,6 +1549,7 @@
 				E41B892921E34238009C5AD7 /* AudioRecorder.swift in Sources */,
 				E43B909C2227CBC60008B44C /* Token.swift in Sources */,
 				E41CB1C321D88DD700EF0A3C /* DocumentManager.swift in Sources */,
+				E45DCF8822AB646F007F34DB /* SimpleParserDelegate.swift in Sources */,
 				E41CB1BF21D88DD400EF0A3C /* EditorController.swift in Sources */,
 				E43B909E2228EDA00008B44C /* EditorContext.swift in Sources */,
 				E43B90A6222903100008B44C /* EventObserver.swift in Sources */,
@@ -1550,6 +1557,7 @@
 				E41CB1B921D88DCE00EF0A3C /* OutlineAttribute.swift in Sources */,
 				E4E1B146224B27040061D327 /* KeyValueStore.swift in Sources */,
 				E4F9ECE121FECE5C009A08CD /* PathManager.swift in Sources */,
+				E45DCF8A22AB6649007F34DB /* String+Conenience.swift in Sources */,
 				E43E7877222AD0C70007EE4F /* DocumentContentCommands.swift in Sources */,
 				E41CB1C621D88DFD00EF0A3C /* Attachment.swift in Sources */,
 				E414A664227493D000748964 /* OrgImporter.swift in Sources */,

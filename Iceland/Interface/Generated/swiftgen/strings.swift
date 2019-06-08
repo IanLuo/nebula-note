@@ -139,6 +139,10 @@ public enum L10n {
       public static let rename = L10n.tr("Localizable", "browser.actions.rename")
       /// Perform Actions
       public static let title = L10n.tr("Localizable", "browser.actions.title")
+      public enum Delete {
+        /// Are you sure you want to delete this document and it's all child documents?
+        public static let confirm = L10n.tr("Localizable", "browser.actions.delete.confirm")
+      }
     }
     public enum Title {
       /// Copy

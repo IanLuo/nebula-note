@@ -218,6 +218,10 @@ public class DocumentEditViewModel {
         self.delegate?.didEnterTokens(self._editorService.currentCursorTokens)
     }
     
+    public func paragraphWithSubRange(at location: Int) -> NSRange? {
+        return self._editorService.heading(at: location)?.paragraphWithSubRange
+    }
+    
     public func save(completion: @escaping () -> Void) {
         _editorService.save { _  in
             completion()
@@ -264,20 +268,14 @@ public class DocumentEditViewModel {
                 
                 guard let heading = strongSelf._editorService.heading(at: location) else { return }
                 
-                var text = heading.range.location == 0
-                    ? strongSelf._editorService.string.nsstring.substring(with: heading.paragraphRange) + "\n"
-                    : strongSelf._editorService.string.nsstring.substring(with: heading.paragraphRange)
+                let text = heading.paragraphWithSubRange.location == 0
+                    ? strongSelf._editorService.string.nsstring.substring(with: heading.paragraphWithSubRange) + "\n"
+                    : strongSelf._editorService.string.nsstring.substring(with: heading.paragraphWithSubRange)
                 
                 // 1. 删除当前的段落
                 let result = strongSelf._editorService.toggleContentCommandComposer(composer: EditAction.removeParagraph(location).commandComposer).perform()
                 
-                // 2. 插入到新的位置
-                if otherHeading.paragraphRange.upperBound == service.string.nsstring.length { // 如果将要插到文档末尾，添加一个换行符在插入的位置之前
-                    text = "\n" + text
-                }
-                
-                service.replace(text: text,
-                                range: NSRange(location: otherHeading.paragraphRange.upperBound, length: 0))
+                _ = service.toggleContentCommandComposer(composer: AppendAsChildHeadingCommandComposer(text: text, to: otherHeading.paragraphRange.upperBound)).perform() // 移到另一个文件，不需要支持 redo/undo
                 
                 completion(result)
             })
@@ -287,26 +285,19 @@ public class DocumentEditViewModel {
     public func moveParagraph(contains location: Int, to toHeading: DocumentHeading, textView: UITextView) -> DocumentContentCommandResult {
         guard let currentHeading = self._editorService.heading(at: location) else { return DocumentContentCommandResult.noChange }
         
-        var text = currentHeading.range.upperBound == self._editorService.string.nsstring.length // 当前行位最后一行
-            ? self._editorService.string.nsstring.substring(with: currentHeading.paragraphRange) + "\n"
-            : self._editorService.string.nsstring.substring(with: currentHeading.paragraphRange)
+        let text = currentHeading.paragraphWithSubRange.upperBound == self._editorService.string.nsstring.length // 当前行位最后一行
+            ? self._editorService.string.nsstring.substring(with: currentHeading.paragraphWithSubRange) + "\n"
+            : self._editorService.string.nsstring.substring(with: currentHeading.paragraphWithSubRange)
         
         // 1. 删除旧的段落
         let removedResult = self.performAction(EditAction.removeParagraph(location),
                                                textView: textView)
         
+        
         // 2. 插入到新的位置
-        var newLocation = NSRange(location: toHeading.paragraphRange.upperBound, length: 0) // 如果删除的文本在插入位置之前，则插入位置要先减少删除文本的长度
-        if location <= newLocation.location {
-            newLocation = newLocation.offset(-removedResult.content!.count)
-        }
-        
-        if newLocation.upperBound == self._editorService.string.nsstring.length { // 如果将要插到文档末尾，添加一个换行符在插入的位置之前
-            text = "\n" + text
-        }
-        
-        let result = self.performAction(EditAction.replaceText(newLocation, text),
-                                                  textView: textView)
+        let result = self.performCommandComposer(MoveToParagraphAsChildHeadingCommandComposer(text: text, to: toHeading.location, isToLocationBehindFromLocation: location <= toHeading.paragraphRange.upperBound),
+                                                 textView: textView)
+
         return result
     }
     
@@ -329,7 +320,11 @@ public class DocumentEditViewModel {
     }
     
     public func performAction(_ action: EditAction, textView: UITextView) -> DocumentContentCommandResult {
-        let command = self._editorService.toggleContentCommandComposer(composer: action.commandComposer)
+        return performCommandComposer(action.commandComposer, textView: textView)
+    }
+    
+    public func performCommandComposer(_ commandComposer: DocumentContentCommandComposer, textView: UITextView) -> DocumentContentCommandResult {
+        let command = self._editorService.toggleContentCommandComposer(composer: commandComposer)
         
         if let replaceCommand = command as? ReplaceTextCommand {
             

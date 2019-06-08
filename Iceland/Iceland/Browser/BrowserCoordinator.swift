@@ -45,7 +45,7 @@ public class BrowserCoordinator: Coordinator {
         
         let editorCoord = EditorCoordinator(stack: navigationController,
                                             dependency: self.dependency,
-                                            usage: .outline(url))
+                                            usage: .outline(url, nil))
         editorCoord.delegate = self
         editorCoord.start(from: self)
     }

@@ -334,7 +334,7 @@ extension DocumentEditViewController {
         actionsController.addAction(icon: nil, title: L10n.Document.Heading.moveTo) { viewController in
             viewController.dismiss(animated: true, completion: {
                 self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
-                self.viewModel.coordinator?.showOutline(completion: { [unowned self] heading in
+                self.viewModel.coordinator?.showOutline(ignoredHeadingLocation: location, completion: { [unowned self] heading in
                     let oldLocation = self.textView.selectedRange.location
                     
                     let result = self.viewModel.moveParagraph(contains: oldLocation, to: heading, textView: self.textView)

@@ -345,7 +345,7 @@ extension DocumentBrowserViewController: DocumentBrowserCellDelegate {
             // 删除
             actionsViewController.addAction(icon: Asset.Assets.trash.image, title: L10n.Browser.Actions.delete, style: .warning) { viewController in
                 let confirmViewController = ConfirmViewController()
-                
+                confirmViewController.title = L10n.Browser.Actions.Delete.confirm
                 confirmViewController.confirmAction = {
                     $0.dismiss(animated: true, completion: {
                         viewController.dismiss(animated: true, completion: {
