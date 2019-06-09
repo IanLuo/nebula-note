@@ -420,6 +420,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
             
             let attachmentToken = AttachmentToken(range: rangeData[OutlineParser.Key.Node.attachment]!, name: OutlineParser.Key.Node.attachment, data: rangeData)
             self._tempParsingTokenResult.append(attachmentToken)
+            self._ignoreTextMarkRanges.append(attachmentToken.range)
             
             attachmentToken.decorationAttributesAction = { textStorage, token in
                 

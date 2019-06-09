@@ -24,7 +24,6 @@ public class RenderAttachment: NSTextAttachment {
         self.type = type
         self.value = value
         super.init(data: nil, ofType: nil)
-        self.bounds = CGRect(origin: .zero, size: .init(width: 200, height: 60))
         
         self._manager.attachment(with: value, completion: { [weak self] attachment in
             self?._attachment = attachment
@@ -43,6 +42,7 @@ public class RenderAttachment: NSTextAttachment {
                         // TODO: 使用找不到图片的 placehoder 图片
                     }
                 default:
+                    self?.bounds = CGRect(origin: .zero, size: .init(width: 200, height: 60))
                     self?.image = AttachmentThumbnailView(bounds: self!.bounds, attachment: attachment).snapshot
                 }
             }

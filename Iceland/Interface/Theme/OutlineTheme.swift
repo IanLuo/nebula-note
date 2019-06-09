@@ -152,7 +152,7 @@ private struct DefaultOutlineTheme: OutlineThemeConfigProtocol {
                                                      underscore: TextStyle(font: InterfaceTheme.Font.body, color: InterfaceTheme.Color.interactive, otherAttributes: [NSAttributedString.Key.underlineStyle: 1]),
                                                      strikethrought: TextStyle(font: InterfaceTheme.Font.body, color: InterfaceTheme.Color.interactive, otherAttributes: [NSAttributedString.Key.strikethroughStyle: 1]),
                                                      verbatim: TextStyle(font: InterfaceTheme.Font.body, color: InterfaceTheme.Color.interactive),
-                                                     code: TextStyle(font: InterfaceTheme.Font.body, color: InterfaceTheme.Color.interactive))
+                                                     code: TextStyle(font: InterfaceTheme.Font.body, color: InterfaceTheme.Color.descriptiveHighlighted))
     
     /// 目前没有使用 button color, 因为 button 显示有问题
     var dateAndTimeStyle: DateAndTimeStyle = DateAndTimeStyle(normal: ButtonStyle(buttonColor: InterfaceTheme.Color.background3,

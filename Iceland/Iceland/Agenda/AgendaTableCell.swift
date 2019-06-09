@@ -179,6 +179,13 @@ public class AgendaTableCell: UITableViewCell {
         }
         
         aString.append(NSAttributedString(string: cellModel.headingText, attributes: OutlineTheme.headingStyle(level: cellModel.level).attributes))
+        
+        // FIXME: 不能多行显示文本，目前只显示了一行
+//        let paragraph = NSMutableParagraphStyle()
+//        paragraph.lineSpacing = 1.5
+//        paragraph.lineBreakMode = .byTruncatingTail
+//        aString.addAttribute(NSAttributedString.Key.paragraphStyle, value: paragraph, range: NSRange(location: 0, length: aString.length))
+        
         self.headingTextLabel.attributedText = aString
         
         if let tags = cellModel.tags {

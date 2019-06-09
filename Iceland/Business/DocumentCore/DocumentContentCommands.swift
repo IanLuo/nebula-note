@@ -644,7 +644,7 @@ public class AddAttachmentCommandComposer: DocumentContentCommandComposer {
     }
     
     public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
-        let content = OutlineParser.Values.Attachment.serialize(kind: kind, value: self.attachmentId)
+        let content = " " + OutlineParser.Values.Attachment.serialize(kind: kind, value: self.attachmentId) + " " // 在添加附件前后添加空格，方便选择
         
         return InsertTextCommandComposer(location: self.location, textToInsert: content).compose(textStorage: textStorage)
     }
@@ -781,13 +781,18 @@ public class PriorityCommandComposer: DocumentContentCommandComposer {
         
         // 添加或者修改 priority
         if let newPriority = self.priority {
-            if let priorityRange = heading.priority {
+            if let priorityRange = heading.priority { // 修改现有的 priority
                 return ReplaceContentCommandComposer(range: priorityRange, textToReplace: newPriority).compose(textStorage: textStorage)
-            } else {
-                return ReplaceContentCommandComposer(range: NSRange(location: priorityLocation, length: 0), textToReplace: newPriority).compose(textStorage: textStorage)
+            } else { // 添加 prority
+                let priorityString = newPriority + " " // 新增 priortiy 的时候在后面增加一个空格
+                return ReplaceContentCommandComposer(range: NSRange(location: priorityLocation, length: 0), textToReplace: priorityString).compose(textStorage: textStorage)
             }
         } else /* 删除 priority */ {
-            guard let priorityRange = heading.priority else { return NoChangeCommand() }
+            guard var priorityRange = heading.priority else { return NoChangeCommand() }
+            
+            if textStorage.substring(priorityRange.moveRightBound(by: 1)).hasSuffix(" ") {
+                priorityRange = priorityRange.moveRightBound(by: 1) // 如果右面有空格，删除的时候去掉右边的空格
+            }
             
             return ReplaceContentCommandComposer(range: priorityRange, textToReplace: "").compose(textStorage: textStorage)
         }
@@ -815,7 +820,7 @@ public class PlanningCommandComposer: DocumentContentCommandComposer {
         switch self.kind {
         case .remove:
             if let planningRange = heading.planning {
-                return ReplaceTextCommand(range: planningRange, textToReplace: "", textStorage: textStorage)
+                return ReplaceTextCommand(range: planningRange.moveRightBound(by: 1), textToReplace: "", textStorage: textStorage) // 删除 planning 的时候，去掉紧跟 planning 后面的空格
             }
         case .addOrUpdate(let planning):
             var editRange: NSRange!
@@ -827,7 +832,7 @@ public class PlanningCommandComposer: DocumentContentCommandComposer {
             } else {
                 // 没有 planning， 则直接放在 level 之后添加
                 editRange = NSRange(location: heading.levelRange.upperBound + 1, length: 0)
-                replacement = planning + " "
+                replacement = planning + " " // 添加一个空格
             }
             
             return ReplaceTextCommand(range: editRange, textToReplace: replacement, textStorage: textStorage)
@@ -1057,8 +1062,16 @@ public class UnorderdListSwitchCommandComposer: DocumentContentCommandComposer {
     public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
         let lineStart = (textStorage.string as NSString).lineRange(for: NSRange(location: self.location, length: 0)).location
         
+        for case let token in (textStorage.token(at: lineStart)) where token is OrderedListToken {
+            return ReplaceTextCommand(range: (token as! OrderedListToken).prefix, textToReplace: OutlineParser.Values.List.unorderedList, textStorage: textStorage)
+        }
+        
         for case let token in (textStorage.token(at: lineStart)) where token is UnorderdListToken {
             return ReplaceTextCommand(range: (token as! UnorderdListToken).prefix, textToReplace: "", textStorage: textStorage)
+        }
+        
+        for case let token in (textStorage.token(at: lineStart)) where token is CheckboxToken {
+            return ReplaceTextCommand(range: (token as! CheckboxToken).range, textToReplace: OutlineParser.Values.List.unorderedList, textStorage: textStorage)
         }
         
         return InsertTextCommandComposer(location: lineStart, textToInsert: OutlineParser.Values.List.unorderedList).compose(textStorage: textStorage)
@@ -1079,6 +1092,14 @@ public class OrderedListSwitchCommandComposer: DocumentContentCommandComposer {
         
         for case let token in (textStorage.token(at: lineStart)) where token is OrderedListToken {
             return ReplaceTextCommand(range: (token as! OrderedListToken).prefix, textToReplace: "", textStorage: textStorage)
+        }
+        
+        for case let token in (textStorage.token(at: lineStart)) where token is UnorderdListToken {
+            return ReplaceTextCommand(range: (token as! UnorderdListToken).prefix, textToReplace: OutlineParser.Values.List.orderdList(index: "1"), textStorage: textStorage)
+        }
+        
+        for case let token in (textStorage.token(at: lineStart)) where token is CheckboxToken {
+            return ReplaceTextCommand(range: (token as! CheckboxToken).range, textToReplace: OutlineParser.Values.List.orderdList(index: "1"), textStorage: textStorage)
         }
         
         if lineStart > 0 {
@@ -1114,8 +1135,16 @@ public class CheckboxSwitchCommandComposer: DocumentContentCommandComposer {
     public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
         let lineStart = (textStorage.string as NSString).lineRange(for: NSRange(location: self.location, length: 0)).location
         
+        for case let token in (textStorage.token(at: lineStart)) where token is OrderedListToken {
+            return ReplaceTextCommand(range: (token as! OrderedListToken).prefix, textToReplace: OutlineParser.Values.Checkbox.unchecked, textStorage: textStorage)
+        }
+        
+        for case let token in (textStorage.token(at: lineStart)) where token is UnorderdListToken {
+            return ReplaceTextCommand(range: (token as! UnorderdListToken).prefix, textToReplace: OutlineParser.Values.Checkbox.unchecked, textStorage: textStorage)
+        }
+        
         for case let token in (textStorage.token(at: lineStart)) where token is CheckboxToken {
-            return ReplaceTextCommand(range: token.range, textToReplace: "", textStorage: textStorage)
+            return ReplaceTextCommand(range: (token as! CheckboxToken).range, textToReplace: "", textStorage: textStorage)
         }
         
         return InsertTextCommandComposer(location: lineStart, textToInsert: OutlineParser.Values.Checkbox.unchecked).compose(textStorage: textStorage)

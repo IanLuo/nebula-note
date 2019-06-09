@@ -43,6 +43,10 @@ public struct Layout {
     @objc var subtitle: UIFont { get }
     @objc var body: UIFont { get }
     @objc var footnote: UIFont { get }
+    @objc var italic: UIFont { get }
+    @objc var callout: UIFont { get }
+    @objc var caption1: UIFont { get }
+    @objc var caption2: UIFont { get }
 }
 
 @objc public class DarkInterfaceTheme: NSObject, InterfaceThemeProtocol {
@@ -94,7 +98,14 @@ public struct Layout {
 }
 
 @objc public class DefaultInterfaceFont: NSObject, InterfaceThemeFontProtocol {
-    public let largeTitle: UIFont = UIFont.systemFont(ofSize: 40)
+    public var caption1: UIFont = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.caption1)
+    
+    public var caption2: UIFont = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.caption2)
+    
+    public var callout: UIFont = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.callout)
+    
+    public var italic: UIFont = UIFont.italicSystemFont(ofSize: UIFont.preferredFont(forTextStyle: UIFont.TextStyle.body).pointSize)
+    public let largeTitle: UIFont = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.largeTitle)
     public let title: UIFont = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.headline)
     public let subtitle: UIFont = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.subheadline)
     public let body: UIFont = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.body)
