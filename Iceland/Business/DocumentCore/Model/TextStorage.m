@@ -183,7 +183,7 @@ static NSMutableDictionary *attachmentMap;
     
     if (hiddenType && hiddenType.intValue != 0) {
         NSInteger propertiesSize = sizeof(NSGlyphProperty) * glyphRange.length;
-        NSGlyphProperty aProperty = NSGlyphPropertyControlCharacter;
+        NSGlyphProperty aProperty = NSGlyphPropertyNull;
         properties = malloc(propertiesSize);
         memset_pattern4(properties, &aProperty, propertiesSize);
         
@@ -212,7 +212,7 @@ static NSMutableDictionary *attachmentMap;
     if (attachmentKey && ![attachmentKey isEqualToString: @""]) {
         return NSControlCharacterActionZeroAdvancement;
     }
-    
+
     return action;
 }
 

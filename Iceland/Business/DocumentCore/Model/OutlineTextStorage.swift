@@ -340,7 +340,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
             let range = dict.first!.value
             
             for ignorRange in self._ignoreTextMarkRanges {
-                if ignorRange.location <= range.location && ignorRange.upperBound >= range.upperBound {
+                if ignorRange.intersection(range) != nil {
                     markRanges.remove(at: count - index)
                     break
                 }
@@ -406,9 +406,15 @@ extension OutlineTextStorage: OutlineParserDelegate {
                                                       OutlineParser.Key.Element.Link.url: text.nsstring.substring(with: urlRange)]],
                                               range: titleRange)
                     
+                    let hiddenRange = urlRange.moveLeftBound(by: 1)
+                    let attachmentRange = urlRange.head(1)
+                    
                     textStorage.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment,
                                                OutlineAttribute.showAttachment: OutlineAttribute.Link.url],
-                                              range: urlRange)
+                                              range: attachmentRange)
+                    
+                    textStorage.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueDefault],
+                                              range: hiddenRange)
                 }
             }
         }

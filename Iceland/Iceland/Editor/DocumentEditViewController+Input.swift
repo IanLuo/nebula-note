@@ -19,9 +19,35 @@ extension DocumentEditViewController: UITextViewDelegate {
         
     }
     
+    
     public func textViewDidChangeSelection(_ textView: UITextView) {
-        self.viewModel.cursorLocationChanged(textView.selectedRange.location)
-    }
+        let location = textView.selectedRange.location
+        
+        self.viewModel.cursorLocationChanged(location)
+        
+        let lastLocation = self._lastLocation
+        self._lastLocation = location
+        
+        if location < textView.text.nsstring.length {
+            if let lastLocation = lastLocation,
+                let hiddenRange = self.viewModel.hiddenRange(at: location),
+                hiddenRange.upperBound != location,
+                textView.selectedRange.length == 0,
+                location != lastLocation {
+                print(">>>> hidden range: \(hiddenRange), hidden string: \(self.textView.text.nsstring.substring(with: hiddenRange))")
+                if location < lastLocation { // move back
+                    self._isAdjustingSelectRange = true
+                    textView.selectedRange = NSRange(location: max(0, hiddenRange.location - 1), length: 0)
+                    self._isAdjustingSelectRange = false
+                } else if location > lastLocation { // move forward
+                    self._isAdjustingSelectRange = true
+                    textView.selectedRange = NSRange(location: hiddenRange.upperBound, length: 0)
+                    self._isAdjustingSelectRange = false
+                }
+                print("adjust to \(textView.selectedRange)")
+            }
+        }
+    }   
     
     public func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         if text == "\n" { // 换行

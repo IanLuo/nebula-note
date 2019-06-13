@@ -213,6 +213,10 @@ public class DocumentEditViewModel {
         return self._editorService.isHeadingFolded(at: location)
     }
     
+    public func hiddenRange(at location: Int) -> NSRange? {
+        return self._editorService.hiddenRange(location: location)
+    }
+    
     public func cursorLocationChanged(_ newLocation: Int) {
         self._editorService.updateCurrentCursor(newLocation)
         self.delegate?.didEnterTokens(self._editorService.currentCursorTokens)

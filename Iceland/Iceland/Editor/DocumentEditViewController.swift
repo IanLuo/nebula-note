@@ -29,6 +29,9 @@ public class DocumentEditViewController: UIViewController {
     
     public weak var delegate: DocumentEditViewControllerDelegate?
     
+    internal var _lastLocation: Int?
+    internal var _isAdjustingSelectRange: Bool = false
+    
     public init(viewModel: DocumentEditViewModel) {
         self.viewModel = viewModel
         self.textView = OutlineTextView(frame: .zero,

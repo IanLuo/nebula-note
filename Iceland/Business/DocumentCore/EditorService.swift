@@ -161,6 +161,37 @@ public class EditorService {
         self._editorController.textStorage.cursorLocation = cursorLocation
     }
     
+    public func hiddenRange(location: Int) -> NSRange? {
+        var range: NSRange = NSRange(location: 0, length: 0)
+        if let value = self._editorController.textStorage.attribute(OutlineAttribute.hidden, at: location, effectiveRange: &range) as? NSNumber, value.intValue != 0  {
+            return range
+        } else if let value = self._editorController.textStorage.attribute(OutlineAttribute.tempHidden, at: location, effectiveRange: &range) as? NSNumber, value.intValue != 0 || value.intValue != 2 {
+            return range
+        }
+        
+        return nil
+    }
+    
+    public func allContinueHiddenRange(at location: Int) -> NSRange? {
+        if var range = hiddenRange(location: location) {
+            if range.location > 0 {
+                if let leftExt = hiddenRange(location: range.location - 1) {
+                    range = range.union(leftExt)
+                }
+            }
+            
+            if range.upperBound + 1 < self.string.nsstring.length {
+                if let rightExt = hiddenRange(location: range.upperBound + 1) {
+                    range = range.union(rightExt)
+                }
+            }
+            
+            return range
+        } else {
+            return nil
+        }
+    }
+    
     public func open(completion:((String?) -> Void)? = nil) {
         guard let document = self._document else {
             completion?(nil)
