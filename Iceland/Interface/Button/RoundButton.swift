@@ -146,7 +146,7 @@ public class RoundButton: UIView {
         self.button.setContentHuggingPriority(UILayoutPriority.required, for: NSLayoutConstraint.Axis.horizontal)
         self.button.setContentHuggingPriority(UILayoutPriority.required, for: NSLayoutConstraint.Axis.vertical)
         
-        self.setBackgroundColor(InterfaceTheme.Color.background1, for: .normal)
+        self.setBackgroundColor(InterfaceTheme.Color.background2, for: .normal)
         
         // default border color
         self.setBorder(color: nil)

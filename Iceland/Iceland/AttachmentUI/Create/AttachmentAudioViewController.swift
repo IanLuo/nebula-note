@@ -209,7 +209,7 @@ public class RecorderView: UIView {
     private lazy var playButton: RoundButton = {
         let button = RoundButton()
         button.title = L10n.Audio.Player.play
-        button.setIcon(Asset.Assets.right.image.fill(color: InterfaceTheme.Color.spotlight), for: .normal)
+        button.setIcon(Asset.Assets.play.image.fill(color: InterfaceTheme.Color.spotlight), for: .normal)
         button.tapped { _ in
             self.delegate?.tappedPlay()
         }
@@ -219,7 +219,7 @@ public class RecorderView: UIView {
     private lazy var recordButton: RoundButton = {
         let button = RoundButton()
         button.title = L10n.Audio.Recorder.start
-        button.setIcon(Asset.Assets.down.image.fill(color: InterfaceTheme.Color.warning), for: .normal)
+        button.setIcon(Asset.Assets.record.image.fill(color: InterfaceTheme.Color.warning), for: .normal)
         button.tapped { _ in
             self.delegate?.tappedRecord()
         }
@@ -229,7 +229,7 @@ public class RecorderView: UIView {
     private lazy var pauseRecordingButton: RoundButton = {
         let button = RoundButton()
         button.title = L10n.Audio.Recorder.pause
-        button.setIcon(Asset.Assets.up.image.fill(color: InterfaceTheme.Color.spotlight), for: .normal)
+        button.setIcon(Asset.Assets.pause.image.fill(color: InterfaceTheme.Color.spotlight), for: .normal)
         button.tapped { _ in
             self.delegate?.tappedPause()
         }
@@ -239,7 +239,7 @@ public class RecorderView: UIView {
     private lazy var stopRecordingButton: RoundButton = {
         let button = RoundButton()
         button.title = L10n.Audio.Recorder.stop
-        button.setIcon(Asset.Assets.left.image.fill(color: InterfaceTheme.Color.spotlight), for: .normal)
+        button.setIcon(Asset.Assets.stop.image.fill(color: InterfaceTheme.Color.spotlight), for: .normal)
         button.tapped { _ in
             self.delegate?.tappedStopRecording()
         }
@@ -249,7 +249,7 @@ public class RecorderView: UIView {
     private lazy var stopPlayingButton: RoundButton = {
         let button = RoundButton()
         button.title = L10n.Audio.Player.stop
-        button.setIcon(Asset.Assets.left.image.fill(color: InterfaceTheme.Color.spotlight), for: .normal)
+        button.setIcon(Asset.Assets.stop.image.fill(color: InterfaceTheme.Color.spotlight), for: .normal)
         button.tapped { _ in
             self.delegate?.tappedStopPlaying()
         }
@@ -259,7 +259,7 @@ public class RecorderView: UIView {
     private lazy var reRecordButton: RoundButton = {
         let button = RoundButton()
         button.title = L10n.Audio.Recorder.restart
-        button.setIcon(Asset.Assets.right.image.fill(color: InterfaceTheme.Color.warning), for: .normal)
+        button.setIcon(Asset.Assets.record.image.fill(color: InterfaceTheme.Color.warning), for: .normal)
         button.tapped { _ in
             self.delegate?.tappedRecord()
         }
@@ -269,7 +269,7 @@ public class RecorderView: UIView {
     private lazy var continueRecordingButton: RoundButton = {
         let button = RoundButton()
         button.title = L10n.Audio.Recorder.continue
-        button.setIcon(Asset.Assets.right.image.fill(color: InterfaceTheme.Color.spotlight), for: .normal)
+        button.setIcon(Asset.Assets.record.image.fill(color: InterfaceTheme.Color.spotlight), for: .normal)
         button.tapped { _ in
             self.delegate?.tappedResumRecording()
         }
@@ -286,7 +286,7 @@ public class RecorderView: UIView {
     }
     
     private func setupUI() {
-        self.backgroundColor = InterfaceTheme.Color.background2
+        self.backgroundColor = InterfaceTheme.Color.background1
         
         self.playButton.translatesAutoresizingMaskIntoConstraints = false
         self.recordButton.translatesAutoresizingMaskIntoConstraints = false

@@ -30,7 +30,7 @@ public class DashboardViewController: UIViewController {
         
         button.interface({ (me, theme) in
             (me as? RoundButton)?.setIcon(Asset.Assets.settings.image.fill(color: theme.color.interactive), for: .normal)
-            (me as? RoundButton)?.setBackgroundColor(theme.color.background3, for: .normal)
+            (me as? RoundButton)?.setBackgroundColor(theme.color.background2, for: .normal)
         })
         return button
     }()
@@ -51,8 +51,9 @@ public class DashboardViewController: UIViewController {
         
         self.interface { me, theme in
             me.setNeedsStatusBarAppearanceUpdate()
-            me.view.backgroundColor = theme.color.background2
+            me.view.backgroundColor = theme.color.background1
         }
+        
         
         self.view.addSubview(self.tableView)
         self.view.addSubview(self.settingsButton)
@@ -80,7 +81,7 @@ public class DashboardViewController: UIViewController {
         
         tableView.interface({ (me, theme) in
             let tableView = me as! UITableView
-            tableView.backgroundColor = theme.color.background2
+            tableView.backgroundColor = theme.color.background1
         })
         tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 80, right: 0)
         tableView.separatorStyle = .none
@@ -436,8 +437,8 @@ private class TabView: UITableViewHeaderFooterView {
             let button = me as! UIButton
             button.titleLabel?.font = theme.font.title
             button.setTitleColor(theme.color.interactive, for: .normal)
-            button.setBackgroundImage(UIImage.create(with: theme.color.background3, size: .singlePoint), for: .selected)
-            button.setBackgroundImage(UIImage.create(with: theme.color.background2, size: .singlePoint), for: .normal)
+            button.setBackgroundImage(UIImage.create(with: theme.color.background2, size: .singlePoint), for: .selected)
+            button.setBackgroundImage(UIImage.create(with: theme.color.background1, size: .singlePoint), for: .normal)
         })
         button.contentHorizontalAlignment = .left
         button.addTarget(self, action: #selector(actionTapped), for: .touchUpInside)
@@ -506,8 +507,8 @@ private class TabView: UITableViewHeaderFooterView {
         super.init(reuseIdentifier: reuseIdentifier)
         
         self.backgroundView = UIView()
-        self.backgroundColor = InterfaceTheme.Color.background2
-        self.contentView.backgroundColor = InterfaceTheme.Color.background2
+        self.backgroundColor = InterfaceTheme.Color.background1
+        self.contentView.backgroundColor = InterfaceTheme.Color.background1
         self.contentView.addSubview(self.titleButton)
         self.contentView.addSubview(self.iconView)
         self.contentView.addSubview(self.showSubtabsButton)
@@ -581,7 +582,7 @@ private class SubtabCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         self.interface { (me, theme) in
-            me.backgroundColor = theme.color.background2
+            me.backgroundColor = theme.color.background1
         }
         
         self.contentView.addSubview(self.titleLabel)
@@ -609,17 +610,17 @@ private class SubtabCell: UITableViewCell {
     
     override public func setHighlighted(_ highlighted: Bool, animated: Bool) {
         if highlighted {
-            self.backgroundColor = InterfaceTheme.Color.background3
-        } else {
             self.backgroundColor = InterfaceTheme.Color.background2
+        } else {
+            self.backgroundColor = InterfaceTheme.Color.background1
         }
     }
     
     override public func setSelected(_ selected: Bool, animated: Bool) {
         if selected {
-            self.backgroundColor = InterfaceTheme.Color.background3
-        } else {
             self.backgroundColor = InterfaceTheme.Color.background2
+        } else {
+            self.backgroundColor = InterfaceTheme.Color.background1
         }
     }
 }
