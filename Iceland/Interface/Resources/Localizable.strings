@@ -182,7 +182,8 @@
 "captureList.action.openLocation" = "Open location";
 "captureList.action.openLink" = "Open link";
 "captureList.action.delete" = "Delete idea";
-"captureList.action.insertToDocument" = "Insert to document";
+"captureList.action.copyToDocument" = "Copy to document";
+"captureList.action.moveToDocument" = "Move to document";
 "captureList.action.refile" = "Refile";
 "captureList.action.title" = "Action";
 

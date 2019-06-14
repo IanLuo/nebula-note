@@ -450,6 +450,11 @@ extension OutlineTextStorage: OutlineParserDelegate {
                     
                     textStorage.addAttributes([OutlineAttribute.showAttachment: value],
                                        range: attachmentRange.head(1))
+                    
+                    attachment.didLoadImage = { [weak self] in
+                        self?.layoutManagers.first?.invalidateLayout(forCharacterRange: attachmentRange, actualCharacterRange: nil)
+                        self?.layoutManagers.first?.invalidateDisplay(forCharacterRange: attachmentRange)
+                    }
                 } else {
                     textStorage.addAttributes([OutlineAttribute.showAttachment: OutlineAttribute.Attachment.unavailable],
                                        range: attachmentRange.head(1))

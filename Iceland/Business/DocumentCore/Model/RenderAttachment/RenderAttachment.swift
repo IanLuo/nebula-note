@@ -19,6 +19,8 @@ public class RenderAttachment: NSTextAttachment {
     
     public var url: URL?
     
+    public var didLoadImage: (() -> Void)?
+    
     @objc required public init?(type: String, value: String, manager: AttachmentManager) {
         self._manager = manager
         self.type = type
@@ -45,6 +47,8 @@ public class RenderAttachment: NSTextAttachment {
                     self?.bounds = CGRect(origin: .zero, size: .init(width: 200, height: 60))
                     self?.image = AttachmentThumbnailView(bounds: self!.bounds, attachment: attachment).snapshot
                 }
+                
+                self?.didLoadImage?()
             }
         }) { error in
             

@@ -173,10 +173,12 @@ public enum L10n {
     /// Captured ideas
     public static let title = L10n.tr("Localizable", "captureList.title")
     public enum Action {
+      /// Copy to document
+      public static let copyToDocument = L10n.tr("Localizable", "captureList.action.copyToDocument")
       /// Delete idea
       public static let delete = L10n.tr("Localizable", "captureList.action.delete")
-      /// Insert to document
-      public static let insertToDocument = L10n.tr("Localizable", "captureList.action.insertToDocument")
+      /// Move to document
+      public static let moveToDocument = L10n.tr("Localizable", "captureList.action.moveToDocument")
       /// Open link
       public static let openLink = L10n.tr("Localizable", "captureList.action.openLink")
       /// Open location

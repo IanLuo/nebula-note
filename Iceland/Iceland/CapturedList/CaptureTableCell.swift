@@ -39,6 +39,16 @@ public class CaptureTableCell: UITableViewCell {
         return label
     }()
     
+    private var dateAndTimelabel: UILabel = {
+        let label = UILabel()
+        label.interface({ (me, theme) in
+            let label = me as! UILabel
+            label.font = theme.font.callout
+            label.textColor = theme.color.descriptive
+        })
+        return label
+    }()
+    
     private lazy var actionsButton: UIButton = {
         let button = UIButton()
         button.interface({ (me, theme) in
@@ -92,6 +102,10 @@ public class CaptureTableCell: UITableViewCell {
         self.actionsContainerView.addSubview(self.titleLabel)
         self.titleLabel.sideAnchor(for: [.left, .top, .bottom], to: self.actionsContainerView, edgeInset: 0)
         
+        self.actionsContainerView.addSubview(self.dateAndTimelabel)
+        self.titleLabel.rowAnchor(view: self.dateAndTimelabel, space: 10)
+        self.dateAndTimelabel.sideAnchor(for: .bottom, to: self.actionsContainerView, edgeInset: 0)
+        
         self.actionsContainerView.addSubview(self.actionsButton)
         self.actionsButton.sideAnchor(for: [.top, .right, .bottom], to: self.actionsContainerView, edgeInset: 0)
         self.actionsButton.sizeAnchor(width: 60, height: 60)
@@ -102,6 +116,8 @@ public class CaptureTableCell: UITableViewCell {
     
     private func setupAttachmentUI(attachmentView: AttachmentViewType) {
         self.titleLabel.text = attachmentView.attachment.kind.rawValue
+        self.dateAndTimelabel.text = attachmentView.attachment.date.shortDateString
+        
         self.attachmentContentView.addSubview(attachmentView)
         attachmentView.allSidesAnchors(to: self.attachmentContentView, edgeInset: 0)
     }

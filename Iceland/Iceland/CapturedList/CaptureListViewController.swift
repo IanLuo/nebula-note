@@ -53,6 +53,12 @@ public class CaptureListViewController: UIViewController {
         fatalError()
     }
     
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        self.viewModel.loadAllCapturedData()
+    }
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -173,9 +179,17 @@ extension CaptureListViewController: CaptureTableCellDelegate {
                 })
             }
         case .pick:
-            actionsViewController.addAction(icon: nil, title: L10n.CaptureList.Action.insertToDocument) { viewController in
+            actionsViewController.addAction(icon: nil, title: L10n.CaptureList.Action.copyToDocument) { viewController in
                 viewController.dismiss(animated: true, completion: {
                     self.viewModel.selectAttachment(index: index)
+                    self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
+                })
+            }
+            
+            actionsViewController.addAction(icon: nil, title: L10n.CaptureList.Action.moveToDocument) { viewController in
+                viewController.dismiss(animated: true, completion: {
+                    self.viewModel.selectAttachment(index: index)
+                    self.viewModel.delete(index: index)
                     self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                 })
             }
