@@ -88,8 +88,7 @@ public class RecentFilesManager {
                     let newPath = documentInfo.url.deletingLastPathComponent().path.replacingOccurrences(of: oldSubfolderPath,
                                                                            with: event.newUrl.convertoFolderURL.documentRelativePath)
                     
-                    let newSubURL = URL(fileURLWithPath: newPath)
-                    self.addRecentFile(url: newSubURL, lastLocation: 0, date: openDate) { [weak self] in
+                    self.addRecentFile(url: event.newUrl, lastLocation: 0, date: openDate) { [weak self] in
                         self?.eventObserver.emit(RecentDocumentRenamedEvent(renameDocumentEvent: event))
                         self?.clearFilesDoesNotExists({})
                     }

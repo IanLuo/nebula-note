@@ -123,6 +123,7 @@
 		E466D186221D930A007F140B /* SeparaterAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = E466D185221D930A007F140B /* SeparaterAttachment.swift */; };
 		E466D18D221E3E65007F140B /* RenderAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = E466D18C221E3E65007F140B /* RenderAttachment.swift */; };
 		E4686E4322915A190004D950 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4686E4222915A190004D950 /* CloudKit.framework */; };
+		E46BEC5A22BB6A1600EE7DAA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E46BEC5922BB6A1600EE7DAA /* Assets.xcassets */; };
 		E4729BA82204160200F22885 /* DashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4729BA72204160200F22885 /* DashboardViewController.swift */; };
 		E4729BB02205372D00F22885 /* DashboardSubtypeItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4729BAF2205372D00F22885 /* DashboardSubtypeItemViewController.swift */; };
 		E472FF9A227092C1004C8495 /* DocumentInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E472FF99227092C1004C8495 /* DocumentInfoViewController.swift */; };
@@ -356,6 +357,7 @@
 		E466D195221ED586007F140B /* MoveToAnimtor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveToAnimtor.swift; sourceTree = "<group>"; };
 		E466D197221ED6A1007F140B /* MoveInAnimtor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MoveInAnimtor.swift; sourceTree = "<group>"; };
 		E4686E4222915A190004D950 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
+		E46BEC5922BB6A1600EE7DAA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E4729B9E2202B70200F22885 /* SquareButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SquareButton.swift; sourceTree = "<group>"; };
 		E4729BA12202BBE300F22885 /* Rotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rotation.swift; sourceTree = "<group>"; };
 		E4729BA32202E6BA00F22885 /* Range.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Range.swift; sourceTree = "<group>"; };
@@ -841,6 +843,7 @@
 				E4F885E9226D5BE700748868 /* Coordinator.swift */,
 				E43428022121BF5F00EC6DC3 /* LaunchScreen.storyboard */,
 				E43428052121BF5F00EC6DC3 /* Info.plist */,
+				E46BEC5922BB6A1600EE7DAA /* Assets.xcassets */,
 			);
 			path = Iceland;
 			sourceTree = "<group>";
@@ -1323,6 +1326,7 @@
 				E43428042121BF5F00EC6DC3 /* LaunchScreen.storyboard in Resources */,
 				E4FD88E9223DE3C3005514C5 /* TimeSelectViewController.xib in Resources */,
 				E44683F6228997CA005D5B73 /* Settings.storyboard in Resources */,
+				E46BEC5A22BB6A1600EE7DAA /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
