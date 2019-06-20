@@ -63,7 +63,6 @@ extension BrowserCoordinator: DocumentBrowserViewControllerDelegate {
     }
     
     public func didCancel() {
-        self.stop()
         self.didCancelAction?()
     }
 }

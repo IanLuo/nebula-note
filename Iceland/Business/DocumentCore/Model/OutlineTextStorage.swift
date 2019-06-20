@@ -117,7 +117,7 @@ extension OutlineTextStorage: ContentUpdatingProtocol {
     public func performContentUpdate(_ string: String!, range: NSRange, delta: Int, action: NSTextStorage.EditActions) {
 
         guard action != .editedAttributes else { return } // 如果是修改属性，则不进行解析
-        guard self.string.nsstring.length > 0 else { return }
+//        guard self.string.nsstring.length > 0 else { return }
         
         // 如果是删除操作，直接删除已删除的部分的 token
         if delta < 0 {

@@ -87,6 +87,7 @@ public class AgendaViewModel {
         }
     }
     
+    // 加载过滤之后的数据，也就是在 dashboard 中显示的，子分类里面所显示的那些
     public func loadFiltered() {
         if let filterType = self.filterType {
             switch filterType {
@@ -95,9 +96,10 @@ public class AgendaViewModel {
                     var __data: [AgendaCellModel] = []
                     
                     for result in results {
-                        let children = result.getWholdTree().map {
-                            AgendaCellModel(searchResult: $0)
-                        }
+                        let children = result.getWholdTree()
+                            .map {
+                                AgendaCellModel(searchResult: $0)
+                            }.sortedByPriority
                         
                         __data.append(contentsOf: children)
                     }
@@ -109,28 +111,28 @@ public class AgendaViewModel {
                 }
             case .planning(let planning):
                 self._documentSearchManager.searchPlanning(planning, completion: { [weak self] results in
-                    self?.data = results.map { AgendaCellModel(searchResult: $0) }
+                    self?.data = results.map { AgendaCellModel(searchResult: $0) }.sortedByPriority
                     self?.delegate?.didCompleteLoadAllData()
                 }) { error in
                     log.error(error)
                 }
             case .dueSoon(let results):
-                self.data = results.map { AgendaCellModel(searchResult: $0) }
+                self.data = results.map { AgendaCellModel(searchResult: $0) }.sortedByPriority
                 self.delegate?.didCompleteLoadAllData()
             case .overdue(let results):
-                self.data = results.map { AgendaCellModel(searchResult: $0) }
+                self.data = results.map { AgendaCellModel(searchResult: $0) }.sortedByPriority
                 self.delegate?.didCompleteLoadAllData()
             case .scheduled(let results):
-                self.data = results.map { AgendaCellModel(searchResult: $0) }
+                self.data = results.map { AgendaCellModel(searchResult: $0) }.sortedByPriority
                 self.delegate?.didCompleteLoadAllData()
             case .startSoon(let results):
-                self.data = results.map { AgendaCellModel(searchResult: $0) }
+                self.data = results.map { AgendaCellModel(searchResult: $0) }.sortedByPriority
                 self.delegate?.didCompleteLoadAllData()
             case .unfinished(let results):
-                self.data = results.map { AgendaCellModel(searchResult: $0) }
+                self.data = results.map { AgendaCellModel(searchResult: $0) }.sortedByPriority
                 self.delegate?.didCompleteLoadAllData()
             case .finished(let results):
-                self.data = results.map { AgendaCellModel(searchResult: $0) }
+                self.data = results.map { AgendaCellModel(searchResult: $0) }.sortedByPriority
                 self.delegate?.didCompleteLoadAllData()
             }
         }
@@ -197,5 +199,23 @@ public class AgendaViewModel {
                                                                     action: { [weak self] (event: iCloudOpeningStatusChangedEvent) in
             self?._shouldReloadData = true
         })
+    }
+}
+
+extension Array where Element == AgendaCellModel {
+    var sortedByPriority: [Element] {
+        return self.sorted { (cellModel1: Element, cellModel2: Element) -> Bool in
+            // 按照 priority 排序
+            switch (cellModel1.priority, cellModel2.priority) {
+            case (nil, nil): // 如果都没有添加 priority 则直接使用文档中的顺序
+                return true
+            case (_?, nil): // 如果其中一个有 priority，则排在前面
+                return true
+            case (nil, _?): // 如果其中一个有 priority，则排在前面
+                return false
+            case let (p1?, p2?): // 都有 priority，则比较 priority
+                return p1 < p2
+            }
+        }
     }
 }

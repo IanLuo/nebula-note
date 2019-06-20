@@ -86,17 +86,26 @@ public class CaptureListViewModel {
                     return
                 }
                 
-                let content = OutlineParser.Values.Attachment.serialize(attachment: attachment)
-                service.insert(content: content, headingLocation: heading.location) // 添加字符串到对应的 heading 中
+                var content = OutlineParser.Values.Attachment.serialize(attachment: attachment)
+                // 添加的内容，新建一行
+                content = OutlineParser.Values.Character.linebreak + content
+
+                let insertion = InsertTextCommandComposer(location: heading.paragraphRange.upperBound, textToInsert: content)
+                _ = service.toggleContentCommandComposer(composer: insertion).perform()
+                
                 self.currentIndex = nil // 移除当前选中的
                 self.service.delete(key: attachment.key) // 删除 capture 中的 attachment 记录
                 self.data.remove(at: index)
                 self.cellModels.remove(at: index)
                 
-                DispatchQueue.main.async {
-                    self.delegate?.didCompleteRefile(index: index)
-                    self.delegate?.didDeleteCapture(index: index)
-                    completion()
+                    service.save { _ in
+                        service.close { _ in
+                            DispatchQueue.main.async {
+                                self.delegate?.didCompleteRefile(index: index)
+                                self.delegate?.didDeleteCapture(index: index)
+                                completion()
+                            }
+                    }
                 }
             }
         }

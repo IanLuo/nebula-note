@@ -186,6 +186,7 @@
 "captureList.action.moveToDocument" = "Move to document";
 "captureList.action.refile" = "Refile";
 "captureList.action.title" = "Action";
+"captureList.action.deleteConfirm" = "Are your sure de delete this idea?";
 
 //location
 "location.title" = "Add a location";

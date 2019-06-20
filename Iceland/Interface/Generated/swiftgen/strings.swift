@@ -177,6 +177,8 @@ public enum L10n {
       public static let copyToDocument = L10n.tr("Localizable", "captureList.action.copyToDocument")
       /// Delete idea
       public static let delete = L10n.tr("Localizable", "captureList.action.delete")
+      /// Are your sure de delete this idea?
+      public static let deleteConfirm = L10n.tr("Localizable", "captureList.action.deleteConfirm")
       /// Move to document
       public static let moveToDocument = L10n.tr("Localizable", "captureList.action.moveToDocument")
       /// Open link

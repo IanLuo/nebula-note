@@ -27,6 +27,16 @@ public class ConfirmViewController: TransitionViewController {
     
     private let _transitionDelegate: UIViewControllerTransitioningDelegate = FadeBackgroundTransition(animator: MoveToAnimtor())
     
+    public convenience init(contentText: String,
+                            onConfirm: @escaping (UIViewController) -> Void,
+                            onCancel: @escaping (UIViewController) -> Void) {
+        self.init()
+        
+        self.cancelAction = onCancel
+        self.confirmAction = onConfirm
+        self.contentText = contentText
+    }
+    
     public init() {
         super.init(nibName: nil, bundle: nil)
         

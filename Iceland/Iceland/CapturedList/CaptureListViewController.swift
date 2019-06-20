@@ -156,11 +156,13 @@ extension CaptureListViewController: CaptureTableCellDelegate {
         self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.hide()
     }
     
+    // 创建菜单
     private func createActionsViewController(index: Int) -> ActionsViewController {
         let actionsViewController = ActionsViewController()
         actionsViewController.title = L10n.CaptureList.title
         
         switch self.viewModel.mode {
+            // 在 capture list 中显示的菜单，至少包含 refile 和 delete 操作
         case .manage:
             actionsViewController.addAction(icon: nil, title: L10n.CaptureList.Action.refile) { viewController in
                 viewController.dismiss(animated: true, completion: {
@@ -174,8 +176,20 @@ extension CaptureListViewController: CaptureTableCellDelegate {
             
             actionsViewController.addAction(icon: nil, title: L10n.CaptureList.Action.delete, style: .warning) { viewController in
                 viewController.dismiss(animated: true, completion: {
-                    self.viewModel.delete(index: index)
-                    self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
+                    let confirmViewController = ConfirmViewController()
+                    confirmViewController.contentText = L10n.CaptureList.Action.deleteConfirm
+                    confirmViewController.cancelAction = { vc in
+                        vc.dismiss(animated: true)
+                    }
+                    
+                    confirmViewController.confirmAction = { vc in
+                        vc.dismiss(animated: true) {
+                            self.viewModel.delete(index: index)
+                            self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
+                        }
+                    }
+                    
+                    self.present(confirmViewController, animated: true)
                 })
             }
         case .pick:

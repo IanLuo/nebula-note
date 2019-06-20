@@ -644,7 +644,13 @@ public class AddAttachmentCommandComposer: DocumentContentCommandComposer {
     }
     
     public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
-        let content = " " + OutlineParser.Values.Attachment.serialize(kind: kind, value: self.attachmentId) + " " // 在添加附件前后添加空格，方便选择
+        
+        var content = OutlineParser.Values.Attachment.serialize(kind: kind, value: self.attachmentId)
+        
+        // 文字和链接附件不添加前后的空行
+        if ![Attachment.Kind.link.rawValue, Attachment.Kind.text.rawValue].contains(kind) {
+            content = OutlineParser.Values.Character.linebreak + OutlineParser.Values.Attachment.serialize(kind: kind, value: self.attachmentId) + OutlineParser.Values.Character.linebreak // 在添加附件前后添加空行，方便选择
+        }
         
         return InsertTextCommandComposer(location: self.location, textToInsert: content).compose(textStorage: textStorage)
     }
