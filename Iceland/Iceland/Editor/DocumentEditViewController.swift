@@ -36,7 +36,7 @@ public class DocumentEditViewController: UIViewController {
         self.viewModel = viewModel
         self.textView = OutlineTextView(frame: .zero,
                                         textContainer: viewModel.container)
-        self.textView.contentInset = UIEdgeInsets(top: 160, left: 10, bottom: 0, right: 10)
+        self.textView.contentInset = UIEdgeInsets(top: 60, left: 10, bottom: 0, right: 10)
 
         super.init(nibName: nil, bundle: nil)
         

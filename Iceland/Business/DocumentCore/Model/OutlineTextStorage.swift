@@ -699,7 +699,9 @@ extension OutlineTextStorage: OutlineParserDelegate {
     private func _remove<T: Token>(in range: NSRange, from cache: inout [T]) -> [T] {
         var removedTokens: [T] = []
         for index in self._findIntersectionTokenIndex(in: range, tokens: cache).reversed() {
-            removedTokens.append(cache.remove(at: index))
+            let removed = cache.remove(at: index)
+            removedTokens.append(removed)
+            removed.clearDecoraton(textStorage: self)
         }
         return removedTokens
     }
@@ -824,7 +826,8 @@ extension OutlineTextStorage: OutlineParserDelegate {
         } else {
             self.addAttribute(OutlineAttribute.showAttachment, value: OutlineAttribute.Heading.foldingUnfolded, range: heading.levelRange)
         }
-        self.addAttribute(OutlineAttribute.hidden, value: OutlineAttribute.hiddenValueWithAttachment, range: heading.levelRange)
+        self.addAttribute(OutlineAttribute.hidden, value: OutlineAttribute.hiddenValueWithAttachment, range: heading.levelRange.head(1))
+        self.addAttribute(OutlineAttribute.hidden, value: OutlineAttribute.hiddenValueDefault, range: heading.levelRange.tail(heading.levelRange.length - 1))
     }
     
     private func _addStylesForCodeBlock() {
