@@ -172,11 +172,11 @@ extension OutlineTextStorage: ContentUpdatingProtocol {
         
         // -> DEBUG
         // 解析范围提示
-//                self.addAttributes([NSAttributedString.Key.backgroundColor: UIColor.gray.withAlphaComponent(0.5)], range: currentParseRange)
+                self.addAttributes([NSAttributedString.Key.backgroundColor: UIColor.gray.withAlphaComponent(0.5)], range: currentParseRange)
         // 添加 token 提示
-        //        self._tempParsingTokenResult.forEach { token in
-        //            self.addAttribute(NSAttributedString.Key.backgroundColor, value: UIColor.yellow.withAlphaComponent(0.3), range: token.range)
-        //        }
+                self._tempParsingTokenResult.forEach { token in
+                    self.addAttribute(NSAttributedString.Key.backgroundColor, value: UIColor.yellow.withAlphaComponent(0.3), range: token.range)
+                }
         // 所有 token 提示
 //        self.allTokens.forEach { token in
 //            self.addAttribute(NSAttributedString.Key.backgroundColor, value: UIColor.green.withAlphaComponent(0.3), range: token.range)
@@ -438,10 +438,13 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 let value = text.nsstring.substring(with: valueRange)
                 let attachment = RenderAttachment(type: type, value: value, manager: self._attachmentManager)
                 
-                textStorage.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment,
-                                           OutlineAttribute.Attachment.type: type,
+                textStorage.addAttributes([OutlineAttribute.Attachment.type: type,
                                            OutlineAttribute.Attachment.value: value],
-                                   range: attachmentRange)
+                                          range: attachmentRange)
+                textStorage.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment],
+                                          range: attachmentRange.head(1))
+                textStorage.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueDefault],
+                                          range: attachmentRange.tail(attachmentRange.length - 1))
                 
                 if let attachment = attachment {
 //                    if !super.isAttachmentExists(withKey: value) {
@@ -452,8 +455,8 @@ extension OutlineTextStorage: OutlineParserDelegate {
                                        range: attachmentRange.head(1))
                     
                     attachment.didLoadImage = { [weak self] in
-                        self?.layoutManagers.first?.invalidateLayout(forCharacterRange: attachmentRange, actualCharacterRange: nil)
-                        self?.layoutManagers.first?.invalidateDisplay(forCharacterRange: attachmentRange)
+                        self?.layoutManagers.first?.invalidateLayout(forCharacterRange: attachmentRange.head(1), actualCharacterRange: nil)
+                        self?.layoutManagers.first?.invalidateDisplay(forCharacterRange: attachmentRange.head(1))
                     }
                 } else {
                     textStorage.addAttributes([OutlineAttribute.showAttachment: OutlineAttribute.Attachment.unavailable],
@@ -702,6 +705,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
             let removed = cache.remove(at: index)
             removedTokens.append(removed)
             removed.clearDecoraton(textStorage: self)
+            log.info("delete token: \(removed)")
         }
         return removedTokens
     }

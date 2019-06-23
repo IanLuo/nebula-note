@@ -58,7 +58,9 @@ public class Token {
     internal var decorationAttributesAction: ((OutlineTextStorage, Token) -> Void)?
     
     public func clearDecoraton(textStorage: OutlineTextStorage) {
-        textStorage.setAttributes(nil, range: self.range)
+        let range = NSRange(location: min(self.range.location, textStorage.string.nsstring.length - 1),
+                                          length: max(0, min(self.range.length, textStorage.string.nsstring.length - self.range.location)))
+        textStorage.setAttributes(nil, range: range)
     }
     
     public func renderDecoration(textStorage: OutlineTextStorage) {
