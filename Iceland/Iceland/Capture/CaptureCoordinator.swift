@@ -20,7 +20,7 @@ public class CaptureCoordinator: Coordinator {
     private let captureService: CaptureService
     
     public override init(stack: UINavigationController, dependency: Dependency) {
-        self.captureService = CaptureService(attachmentManager: dependency.attachmentManager)
+        self.captureService = dependency.captureService
         
         super.init(stack: stack, dependency: dependency)
         

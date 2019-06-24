@@ -73,7 +73,7 @@ FOUNDATION_EXPORT const unsigned char TextStorageVersionString[];
 
 - (void)addAttachment:(NSTextAttachment *)attachment for:(NSString *)key;
     
-- (BOOL)isAttachmentExistsWithKey:(NSString *)key;
+- (NSTextAttachment *)cachedAttachmentWith:(NSString *)key;
     
 @end
 

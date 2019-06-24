@@ -30,6 +30,7 @@ public class Application: Coordinator {
         let documentManager = DocumentManager(editorContext: editorContext,
                                               eventObserver: eventObserver,
                                               syncManager: syncManager)
+        let attachmentManager = AttachmentManager()
         
         super.init(stack: navigationController,
                    dependency: Dependency(documentManager: documentManager,
@@ -40,9 +41,11 @@ public class Application: Coordinator {
                                           eventObserver: eventObserver,
                                           settingAccessor: SettingsAccessor.shared,
                                           syncManager: syncManager,
-                                          attachmentManager: AttachmentManager(),
+                                          attachmentManager: attachmentManager,
                                           urlHandlerManager: URLHandlerManager(documentManager: documentManager,
                                                                                eventObserver: eventObserver),
+                                          shareExtensionHandler: ShareExtensionDataHandler(),
+                                          captureService: CaptureService(attachmentManager: attachmentManager),
                                           globalCaptureEntryWindow: _entranceWindow))
         
         self.window?.rootViewController = self.stack
@@ -78,6 +81,43 @@ public class Application: Coordinator {
         }
         
         self._setupiCloud()
+        
+        self.handleSharedIdeas()
+    }
+    
+    var isHandlingSharedIdeas: Bool = false
+    public func handleSharedIdeas() {
+        guard isHandlingSharedIdeas == false else { return }
+        isHandlingSharedIdeas = true
+        
+        let handler = self.dependency.shareExtensionHandler
+        let group = DispatchGroup()
+        DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
+            let ideas = handler.loadAllUnHandledShareIdeas()
+            let ideasCount = ideas.count
+            for url in ideas {
+                let attachmentKindString = url.deletingPathExtension().pathExtension // kind 已经在保存的时候，添加成为了 url 的前一个 ext
+                if let kind = Attachment.Kind(rawValue: attachmentKindString) {
+                    group.enter()
+                    self.dependency.attachmentManager.insert(content: url.path, kind: kind, description: "shared idea", complete: { [weak self] key in
+                        self?.dependency.captureService.save(key: key, completion: {
+                            group.leave()
+                        })
+                    }) { error in
+                        group.leave()
+                        log.error(error)
+                    }
+                }
+            }
+            
+            group.notify(queue: DispatchQueue.main) {
+                handler.clearAllSharedIdeas()
+                if ideasCount > 0 {
+                    self.dependency.eventObserver.emit(NewCaptureAddedEvent(attachmentId: "", kind: ""))
+                }
+                self.isHandlingSharedIdeas = false
+            }
+        }
     }
     
     private func _setupiCloud() {

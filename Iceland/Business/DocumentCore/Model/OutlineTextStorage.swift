@@ -444,7 +444,13 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 
                 let type = text.nsstring.substring(with: typeRange)
                 let value = text.nsstring.substring(with: valueRange)
-                let attachment = RenderAttachment(type: type, value: value, manager: self._attachmentManager)
+                
+                var attachment: RenderAttachment!
+                if let a = super.cachedAttachment(with: value) as? RenderAttachment {
+                    attachment = a
+                } else {
+                    attachment = RenderAttachment(type: type, value: value, manager: self._attachmentManager)
+                }
                 
                 textStorage.addAttributes([OutlineAttribute.Attachment.type: type,
                                            OutlineAttribute.Attachment.value: value],
@@ -455,9 +461,9 @@ extension OutlineTextStorage: OutlineParserDelegate {
                                           range: attachmentRange.tail(attachmentRange.length - 1))
                 
                 if let attachment = attachment {
-//                    if !super.isAttachmentExists(withKey: value) {
+                    if super.cachedAttachment(with: value) == nil {
                         super.add(attachment, for: value)
-//                    }
+                    }
                     
                     textStorage.addAttributes([OutlineAttribute.showAttachment: value],
                                        range: attachmentRange.head(1))
@@ -966,8 +972,15 @@ extension OutlineTextStorage: OutlineParserDelegate {
         newRange = NSRange(location: line1Start, length: line2End - line1Start)
         
         // 如果范围在某个 item 内，并且小于这个 item 原来的范围，则扩大至这个 item 原来的范围
-        for item in self.allTokens {
-            if item.range.intersection(newRange) != nil && item is BlockToken {
+        for item in self.codeBlocks {
+            if item.range.intersection(newRange) != nil {
+                newRange = item.range.union(newRange)
+                break
+            }
+        }
+        
+        for item in self.quoteBlocks {
+            if item.range.intersection(newRange) != nil {
                 newRange = item.range.union(newRange)
                 break
             }

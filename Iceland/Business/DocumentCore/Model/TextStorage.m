@@ -93,8 +93,8 @@ static NSMutableDictionary *attachmentMap;
     [attachmentMap setObject:attachment forKey:key];
 }
     
-- (BOOL)isAttachmentExistsWithKey:(NSString *)key {
-    return [attachmentMap objectForKey:key] != nil;
+- (NSTextAttachment *)cachedAttachmentWith:(NSString *)key {
+    return [attachmentMap objectForKey:key];
 }
 
 - (NSString *)string {

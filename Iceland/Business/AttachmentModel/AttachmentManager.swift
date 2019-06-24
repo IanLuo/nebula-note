@@ -53,13 +53,15 @@ public enum AttachmentError: Error {
             attachmentDocument.attachment = attachment
             attachmentDocument.fileToSave = attachmentURL
             attachmentDocument.save(to: fileURL, for: UIDocument.SaveOperation.forCreating) { result in
-                DispatchQueue.main.async {
-                    if result {
-                        complete(newKey)
-                    } else {
-                        failure(AttachmentError.failToSaveAttachment)
+                attachmentDocument.close(completionHandler: { result in
+                    DispatchQueue.main.async {
+                        if result {
+                            complete(newKey)
+                        } else {
+                            failure(AttachmentError.failToSaveAttachment)
+                        }
                     }
-                }
+                })
             }
         }
         

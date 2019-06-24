@@ -20,6 +20,8 @@ public struct Dependency {
     let syncManager: SyncManager
     let attachmentManager: AttachmentManager
     let urlHandlerManager: URLHandlerManager
+    let shareExtensionHandler: ShareExtensionDataHandler
+    let captureService: CaptureService
     weak var globalCaptureEntryWindow: CaptureGlobalEntranceWindow?
 }
 

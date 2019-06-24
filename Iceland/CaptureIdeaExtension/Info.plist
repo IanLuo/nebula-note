@@ -7,7 +7,7 @@
 	<key>CFBundleDisplayName</key>
 	<string>CaptureIdeaExtension</string>
 	<key>CFBundleExecutable</key>
-	<string>$(EXECUTABLE_NAME)</string>
+	<string>$(PRODUCT_NAME)</string>
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -27,13 +27,13 @@
 			<key>NSExtensionActivationRule</key>
 			<dict>
 				<key>NSExtensionActivationSupportsImageWithMaxCount</key>
-				<integer>1</integer>
+				<integer>5</integer>
 				<key>NSExtensionActivationSupportsMovieWithMaxCount</key>
-				<integer>1</integer>
-				<key>NSExtensionActivationSupportsWebURLWithMaxCount</key>
-				<integer>1</integer>
+				<integer>5</integer>
 				<key>NSExtensionActivationSupportsText</key>
-				<integer>1</integer>
+				<integer>5</integer>
+				<key>NSExtensionActivationSupportsWebURLWithMaxCount</key>
+				<integer>5</integer>
 			</dict>
 		</dict>
 		<key>NSExtensionMainStoryboard</key>
