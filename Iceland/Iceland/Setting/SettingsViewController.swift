@@ -147,6 +147,8 @@ public class SettingsViewController: UITableViewController {
     }
     
     @objc private func _showLandingTabNamesSelector() {
+        let dependency = self.viewModel.coordinator?.dependency
+        
         let selector = SelectorViewController()
         let tabs = LandingTab.allCases
 
@@ -159,17 +161,20 @@ public class SettingsViewController: UITableViewController {
         
         selector.onCancel = { viewController in
             viewController.dismiss(animated: true, completion: nil)
+            dependency?.globalCaptureEntryWindow?.show()
         }
         
         selector.onSelection = { index, viewController in
             viewController.dismiss(animated: true, completion: nil)
             self.viewModel.setLandingTabIndex(index)
             self.chooseLandingTabButton.setTitle(tabs[index].name, for: .normal)
+            dependency?.globalCaptureEntryWindow?.show()
         }
         
         selector.currentTitle = tabs[self.viewModel.currentLandigTabIndex].name
         
         self.present(selector, animated: true, completion: nil)
+        dependency?.globalCaptureEntryWindow?.hide()
     }
     
     @objc func _planningManageFinish() {
