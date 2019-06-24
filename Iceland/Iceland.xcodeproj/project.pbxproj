@@ -103,6 +103,10 @@
 		E43B909E2228EDA00008B44C /* EditorContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43B909D2228EDA00008B44C /* EditorContext.swift */; };
 		E43B90A6222903100008B44C /* EventObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43B90A5222903100008B44C /* EventObserver.swift */; };
 		E43B90A8222903170008B44C /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43B90A7222903160008B44C /* Event.swift */; };
+		E43D4F4022C0BFAF00B2322B /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43D4F3F22C0BFAF00B2322B /* ShareViewController.swift */; };
+		E43D4F4322C0BFAF00B2322B /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E43D4F4122C0BFAF00B2322B /* MainInterface.storyboard */; };
+		E43D4F4722C0BFAF00B2322B /* CaptureIdeaExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = E43D4F3D22C0BFAF00B2322B /* CaptureIdeaExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		E43D4F4E22C0C0BF00B2322B /* ShareExtensionDataHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43D4F4D22C0C0BF00B2322B /* ShareExtensionDataHandler.swift */; };
 		E43E7875222ACF780007EE4F /* OutlineTextTrimmer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43E7874222ACF780007EE4F /* OutlineTextTrimmer.swift */; };
 		E43E7877222AD0C70007EE4F /* DocumentContentCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43E7876222AD0C70007EE4F /* DocumentContentCommands.swift */; };
 		E43FDAD2228B028600FA899B /* Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43FDAD1228B028600FA899B /* Alert.swift */; };
@@ -233,9 +237,27 @@
 			remoteGlobalIDString = E43427F52121BF5B00EC6DC3;
 			remoteInfo = Iceland;
 		};
+		E43D4F4522C0BFAF00B2322B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E43427EE2121BF5B00EC6DC3 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E43D4F3C22C0BFAF00B2322B;
+			remoteInfo = CaptureIdeaExtension;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		E43D4F4B22C0BFAF00B2322B /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				E43D4F4722C0BFAF00B2322B /* CaptureIdeaExtension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E43F74CB21840083000206E5 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -325,6 +347,12 @@
 		E43B909D2228EDA00008B44C /* EditorContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorContext.swift; sourceTree = "<group>"; };
 		E43B90A5222903100008B44C /* EventObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventObserver.swift; sourceTree = "<group>"; };
 		E43B90A7222903160008B44C /* Event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
+		E43D4F3D22C0BFAF00B2322B /* CaptureIdeaExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = CaptureIdeaExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		E43D4F3F22C0BFAF00B2322B /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
+		E43D4F4222C0BFAF00B2322B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
+		E43D4F4422C0BFAF00B2322B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E43D4F4C22C0BFE300B2322B /* CaptureIdeaExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CaptureIdeaExtension.entitlements; sourceTree = "<group>"; };
+		E43D4F4D22C0C0BF00B2322B /* ShareExtensionDataHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareExtensionDataHandler.swift; sourceTree = "<group>"; };
 		E43E7874222ACF780007EE4F /* OutlineTextTrimmer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineTextTrimmer.swift; sourceTree = "<group>"; };
 		E43E7876222AD0C70007EE4F /* DocumentContentCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentContentCommands.swift; sourceTree = "<group>"; };
 		E43EBDA522336E8B002571D8 /* strings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = strings.swift; sourceTree = "<group>"; };
@@ -501,6 +529,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		E43428122121BF6000EC6DC3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E43D4F3A22C0BFAF00B2322B /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -806,6 +841,7 @@
 				E41CB19C21D88D9300EF0A3C /* Business */,
 				E41CB1A921D88D9400EF0A3C /* BusinessTests */,
 				E40F6E7F223B78AE00FFF53F /* Interface */,
+				E43D4F3E22C0BFAF00B2322B /* CaptureIdeaExtension */,
 				E43427F72121BF5B00EC6DC3 /* Products */,
 				64A7409AC7374688F3C99B32 /* Pods */,
 				12C79086BDCD360A64A82947 /* Frameworks */,
@@ -821,6 +857,7 @@
 				E41CB19B21D88D9300EF0A3C /* Business.framework */,
 				E41CB1A321D88D9400EF0A3C /* BusinessTests.xctest */,
 				E40F6E7E223B78AE00FFF53F /* Interface.framework */,
+				E43D4F3D22C0BFAF00B2322B /* CaptureIdeaExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -878,6 +915,17 @@
 				E43B90A5222903100008B44C /* EventObserver.swift */,
 			);
 			path = Events;
+			sourceTree = "<group>";
+		};
+		E43D4F3E22C0BFAF00B2322B /* CaptureIdeaExtension */ = {
+			isa = PBXGroup;
+			children = (
+				E43D4F4C22C0BFE300B2322B /* CaptureIdeaExtension.entitlements */,
+				E43D4F3F22C0BFAF00B2322B /* ShareViewController.swift */,
+				E43D4F4122C0BFAF00B2322B /* MainInterface.storyboard */,
+				E43D4F4422C0BFAF00B2322B /* Info.plist */,
+			);
+			path = CaptureIdeaExtension;
 			sourceTree = "<group>";
 		};
 		E43EBDA322336E8B002571D8 /* Generated */ = {
@@ -988,6 +1036,7 @@
 		E47FA8FE227026B8005AD0BA /* Import */ = {
 			isa = PBXGroup;
 			children = (
+				E43D4F4D22C0C0BF00B2322B /* ShareExtensionDataHandler.swift */,
 				E47FA8FC227025D6005AD0BA /* ImportManager.swift */,
 				E414A663227493D000748964 /* OrgImporter.swift */,
 			);
@@ -1178,12 +1227,14 @@
 				E43427F42121BF5B00EC6DC3 /* Resources */,
 				E43F74CB21840083000206E5 /* Embed Frameworks */,
 				89BB8E1A607231A876C83FE3 /* [CP] Embed Pods Frameworks */,
+				E43D4F4B22C0BFAF00B2322B /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				E41CB1AF21D88D9400EF0A3C /* PBXTargetDependency */,
 				E40F6E84223B78AE00FFF53F /* PBXTargetDependency */,
+				E43D4F4622C0BFAF00B2322B /* PBXTargetDependency */,
 			);
 			name = Iceland;
 			productName = Iceland;
@@ -1228,13 +1279,30 @@
 			productReference = E43428152121BF6000EC6DC3 /* IcelandUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		E43D4F3C22C0BFAF00B2322B /* CaptureIdeaExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E43D4F4A22C0BFAF00B2322B /* Build configuration list for PBXNativeTarget "CaptureIdeaExtension" */;
+			buildPhases = (
+				E43D4F3922C0BFAF00B2322B /* Sources */,
+				E43D4F3A22C0BFAF00B2322B /* Frameworks */,
+				E43D4F3B22C0BFAF00B2322B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CaptureIdeaExtension;
+			productName = CaptureIdeaExtension;
+			productReference = E43D4F3D22C0BFAF00B2322B /* CaptureIdeaExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		E43427EE2121BF5B00EC6DC3 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1010;
+				LastSwiftUpdateCheck = 1020;
 				LastUpgradeCheck = 1000;
 				ORGANIZATIONNAME = wod;
 				TargetAttributes = {
@@ -1252,6 +1320,9 @@
 					E43427F52121BF5B00EC6DC3 = {
 						CreatedOnToolsVersion = 10.0;
 						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
 							com.apple.Push = {
 								enabled = 1;
 							};
@@ -1267,6 +1338,14 @@
 					E43428142121BF6000EC6DC3 = {
 						CreatedOnToolsVersion = 10.0;
 						TestTargetID = E43427F52121BF5B00EC6DC3;
+					};
+					E43D4F3C22C0BFAF00B2322B = {
+						CreatedOnToolsVersion = 10.2;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -1289,6 +1368,7 @@
 				E41CB19A21D88D9300EF0A3C /* Business */,
 				E41CB1A221D88D9400EF0A3C /* BusinessTests */,
 				E40F6E7D223B78AE00FFF53F /* Interface */,
+				E43D4F3C22C0BFAF00B2322B /* CaptureIdeaExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -1341,6 +1421,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E43D4F3B22C0BFAF00B2322B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E43D4F4322C0BFAF00B2322B /* MainInterface.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1558,6 +1646,7 @@
 				E43B909E2228EDA00008B44C /* EditorContext.swift in Sources */,
 				E43B90A6222903100008B44C /* EventObserver.swift in Sources */,
 				E4C932D52244B55100E3A176 /* AttachmentDocument.swift in Sources */,
+				E43D4F4E22C0C0BF00B2322B /* ShareExtensionDataHandler.swift in Sources */,
 				E41CB1B921D88DCE00EF0A3C /* OutlineAttribute.swift in Sources */,
 				E4E1B146224B27040061D327 /* KeyValueStore.swift in Sources */,
 				E4F9ECE121FECE5C009A08CD /* PathManager.swift in Sources */,
@@ -1691,6 +1780,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E43D4F3922C0BFAF00B2322B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E43D4F4022C0BFAF00B2322B /* ShareViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -1724,6 +1821,11 @@
 			target = E43427F52121BF5B00EC6DC3 /* Iceland */;
 			targetProxy = E43428162121BF6000EC6DC3 /* PBXContainerItemProxy */;
 		};
+		E43D4F4622C0BFAF00B2322B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E43D4F3C22C0BFAF00B2322B /* CaptureIdeaExtension */;
+			targetProxy = E43D4F4522C0BFAF00B2322B /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
@@ -1733,6 +1835,14 @@
 				E43428032121BF5F00EC6DC3 /* Base */,
 			);
 			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		E43D4F4122C0BFAF00B2322B /* MainInterface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E43D4F4222C0BFAF00B2322B /* Base */,
+			);
+			name = MainInterface.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -2173,6 +2283,50 @@
 			};
 			name = Release;
 		};
+		E43D4F4822C0BFAF00B2322B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = CaptureIdeaExtension/CaptureIdeaExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 26RSSM9Q9P;
+				INFOPLIST_FILE = CaptureIdeaExtension/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.wod.Icenote.CaptureIdeaExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		E43D4F4922C0BFAF00B2322B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = CaptureIdeaExtension/CaptureIdeaExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 26RSSM9Q9P;
+				INFOPLIST_FILE = CaptureIdeaExtension/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.wod.Icenote.CaptureIdeaExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -2235,6 +2389,15 @@
 			buildConfigurations = (
 				E43428252121BF6000EC6DC3 /* Debug */,
 				E43428262121BF6000EC6DC3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E43D4F4A22C0BFAF00B2322B /* Build configuration list for PBXNativeTarget "CaptureIdeaExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E43D4F4822C0BFAF00B2322B /* Debug */,
+				E43D4F4922C0BFAF00B2322B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
