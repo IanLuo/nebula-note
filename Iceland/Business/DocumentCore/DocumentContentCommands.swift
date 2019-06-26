@@ -169,9 +169,12 @@ public class FoldingAndUnfoldingCommand: DocumentContentCommand {
         
         textStorage.setParagraphIndent(heading: heading)
         
-        textStorage.addAttributes([OutlineAttribute.tempHidden: OutlineAttribute.hiddenValueFolded,
+        textStorage.addAttributes([OutlineAttribute.tempHidden: OutlineAttribute.showAttachment,
                                    OutlineAttribute.tempShowAttachment: OutlineAttribute.Heading.folded],
-                                  range: range)
+                                  range: range.head(1))
+        
+        textStorage.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueDefault],
+                                  range: range.tail(range.length - 1))
         
         textStorage.addAttributes([OutlineAttribute.showAttachment: OutlineAttribute.Heading.foldingFolded,
                                    OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment],
