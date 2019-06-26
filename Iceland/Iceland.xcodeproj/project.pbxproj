@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0A606A2E4ED3462C64375D03 /* Pods_CaptureIdeaExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38881950D776CA36CB0BEED1 /* Pods_CaptureIdeaExtension.framework */; };
 		4C458BEB751059812B9E1017 /* Pods_Business.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16249794A457196CF93AC9F8 /* Pods_Business.framework */; };
 		67BA3CC510702431FFD23301 /* Pods_IcelandTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC69118DDC07F2D89DFC636D /* Pods_IcelandTests.framework */; };
 		E40F6E82223B78AE00FFF53F /* Interface.h in Headers */ = {isa = PBXBuildFile; fileRef = E40F6E80223B78AE00FFF53F /* Interface.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -275,6 +276,7 @@
 /* Begin PBXFileReference section */
 		06D728128324C34CAC2A4580 /* Pods_DocumentCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DocumentCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		16249794A457196CF93AC9F8 /* Pods_Business.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Business.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		38881950D776CA36CB0BEED1 /* Pods_CaptureIdeaExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CaptureIdeaExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		58F6ADB9E7BCAC752C4FE4C6 /* Pods_Storage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Storage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		66920F60EDF553A0B97C7619 /* Pods-Storage.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Storage.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Storage/Pods-Storage.debug.xcconfig"; sourceTree = "<group>"; };
 		66B5D4AC5AD67507B5534E6A /* Pods-IcelandTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IcelandTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-IcelandTests/Pods-IcelandTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -282,8 +284,10 @@
 		6F09C95A99055449AA521BE4 /* Pods-DocumentCore.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DocumentCore.release.xcconfig"; path = "Pods/Target Support Files/Pods-DocumentCore/Pods-DocumentCore.release.xcconfig"; sourceTree = "<group>"; };
 		719879CCE4BDF3C38E58B969 /* Pods-Iceland.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Iceland.release.xcconfig"; path = "Pods/Target Support Files/Pods-Iceland/Pods-Iceland.release.xcconfig"; sourceTree = "<group>"; };
 		7AD86DEC929199B246F94293 /* Pods_Interface.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Interface.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9A30CB7915F2899C7899D697 /* Pods-CaptureIdeaExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CaptureIdeaExtension.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CaptureIdeaExtension/Pods-CaptureIdeaExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		A8E4EC2FC1088F978E881464 /* Pods-Iceland.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Iceland.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Iceland/Pods-Iceland.debug.xcconfig"; sourceTree = "<group>"; };
 		AA6BE9F0E63F15EB98E44990 /* Pods-IcelandTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IcelandTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-IcelandTests/Pods-IcelandTests.release.xcconfig"; sourceTree = "<group>"; };
+		AEDD5953C1BF1CB1EEC8A710 /* Pods-CaptureIdeaExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CaptureIdeaExtension.release.xcconfig"; path = "Pods/Target Support Files/Pods-CaptureIdeaExtension/Pods-CaptureIdeaExtension.release.xcconfig"; sourceTree = "<group>"; };
 		AF58CA37A416A771D1640265 /* Pods-DocumentCore.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DocumentCore.debug.xcconfig"; path = "Pods/Target Support Files/Pods-DocumentCore/Pods-DocumentCore.debug.xcconfig"; sourceTree = "<group>"; };
 		B03B21DC28F546E7D3A966E7 /* Pods_Iceland.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Iceland.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D009710A21317A905D2FBAC1 /* Pods-Business.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Business.release.xcconfig"; path = "Pods/Target Support Files/Pods-Business/Pods-Business.release.xcconfig"; sourceTree = "<group>"; };
@@ -539,6 +543,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0A606A2E4ED3462C64375D03 /* Pods_CaptureIdeaExtension.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -555,6 +560,7 @@
 				06D728128324C34CAC2A4580 /* Pods_DocumentCore.framework */,
 				16249794A457196CF93AC9F8 /* Pods_Business.framework */,
 				7AD86DEC929199B246F94293 /* Pods_Interface.framework */,
+				38881950D776CA36CB0BEED1 /* Pods_CaptureIdeaExtension.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -574,6 +580,8 @@
 				D009710A21317A905D2FBAC1 /* Pods-Business.release.xcconfig */,
 				FDCA0585533F2DF37A968E3E /* Pods-Interface.debug.xcconfig */,
 				EE7066485686E586B5DADB73 /* Pods-Interface.release.xcconfig */,
+				9A30CB7915F2899C7899D697 /* Pods-CaptureIdeaExtension.debug.xcconfig */,
+				AEDD5953C1BF1CB1EEC8A710 /* Pods-CaptureIdeaExtension.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -1283,6 +1291,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = E43D4F4A22C0BFAF00B2322B /* Build configuration list for PBXNativeTarget "CaptureIdeaExtension" */;
 			buildPhases = (
+				22B7F9642E28ECD7D2A1E330 /* [CP] Check Pods Manifest.lock */,
 				E43D4F3922C0BFAF00B2322B /* Sources */,
 				E43D4F3A22C0BFAF00B2322B /* Frameworks */,
 				E43D4F3B22C0BFAF00B2322B /* Resources */,
@@ -1435,6 +1444,28 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		22B7F9642E28ECD7D2A1E330 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-CaptureIdeaExtension-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 		2321C1BB856E335423F37C5B /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1870,7 +1901,7 @@
 					"@loader_path/Frameworks",
 				);
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = hna.Interface;
+				PRODUCT_BUNDLE_IDENTIFIER = com.wod.Interface;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.2;
@@ -1902,7 +1933,7 @@
 					"@loader_path/Frameworks",
 				);
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = hna.Interface;
+				PRODUCT_BUNDLE_IDENTIFIER = com.wod.Interface;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.2;
@@ -1943,10 +1974,9 @@
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/SwiftyBeaver/SwiftyBeaver.framework/Headers\"",
 				);
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
-				PRODUCT_BUNDLE_IDENTIFIER = wod.Business;
+				PRODUCT_BUNDLE_IDENTIFIER = com.wod.Business;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1985,7 +2015,7 @@
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/SwiftyBeaver/SwiftyBeaver.framework/Headers\"",
 				);
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
-				PRODUCT_BUNDLE_IDENTIFIER = wod.Business;
+				PRODUCT_BUNDLE_IDENTIFIER = com.wod.Business;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.2;
@@ -2090,7 +2120,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -2144,7 +2174,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -2157,13 +2187,12 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = A8E4EC2FC1088F978E881464 /* Pods-Iceland.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Iceland/Iceland.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 26RSSM9Q9P;
 				INFOPLIST_FILE = Iceland/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2180,13 +2209,12 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 719879CCE4BDF3C38E58B969 /* Pods-Iceland.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Iceland/Iceland.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 26RSSM9Q9P;
 				INFOPLIST_FILE = Iceland/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2285,12 +2313,13 @@
 		};
 		E43D4F4822C0BFAF00B2322B /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9A30CB7915F2899C7899D697 /* Pods-CaptureIdeaExtension.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = CaptureIdeaExtension/CaptureIdeaExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 26RSSM9Q9P;
 				INFOPLIST_FILE = CaptureIdeaExtension/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 11;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2300,19 +2329,20 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.wod.Icenote.CaptureIdeaExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
 		E43D4F4922C0BFAF00B2322B /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = AEDD5953C1BF1CB1EEC8A710 /* Pods-CaptureIdeaExtension.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = CaptureIdeaExtension/CaptureIdeaExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 26RSSM9Q9P;
 				INFOPLIST_FILE = CaptureIdeaExtension/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 11;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2322,7 +2352,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.wod.Icenote.CaptureIdeaExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

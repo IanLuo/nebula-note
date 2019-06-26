@@ -119,6 +119,10 @@ public class EditorService {
         return self._editorController.getParagraphs()
     }
     
+    public func foldedRange(at location: Int) -> NSRange? {
+        return self._editorController.textStorage.foldedRange(at: location)
+    }
+    
     public var string: String {
         get { return _editorController.string }
         set { self.replace(text: newValue, range: NSRange(location: 0, length: _editorController.string.nsstring.length)) }

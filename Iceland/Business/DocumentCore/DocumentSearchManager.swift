@@ -51,8 +51,12 @@ public struct DocumentHeading {
         
         self.text = documentString.nsstring.substring(with: headingToken.headingTextRange)
         
-        self.paragraphSummery = documentString.nsstring.substring(with: NSRange(location: headingToken.contentRange.location,
-                                                                 length: min(100, headingToken.contentRange.length)))
+        if let contentRange = headingToken.contentRange {
+            self.paragraphSummery = documentString.nsstring.substring(with: NSRange(location: contentRange.location,
+                                                                                    length: min(100, contentRange.length)))
+        } else {
+            self.paragraphSummery = ""
+        }
     }
 }
 

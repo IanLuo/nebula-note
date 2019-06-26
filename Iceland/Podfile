@@ -8,7 +8,7 @@ target 'Iceland' do
     pod 'SwiftyBeaver'
 #    pod 'Result'
     pod 'Haptico' # https://github.com/iSapozhnik/Haptico
-    pod 'Drawsana' # https://github.com/Asana/Drawsan
+    pod 'Drawsana' # https://github.com/Asana/Drawsana
     pod 'SwiftGen', '~> 6.0'
     pod 'KDCalendar', '~> 1.6.5'
 end
@@ -24,5 +24,9 @@ target 'Business' do
 end
 
 target 'Interface' do
+    pod 'SwiftyBeaver'
+end
+
+target 'CaptureIdeaExtension' do
     pod 'SwiftyBeaver'
 end

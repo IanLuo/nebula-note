@@ -177,7 +177,6 @@ public class FoldingAndUnfoldingCommand: DocumentContentCommand {
                                    OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment],
                                   range: heading.levelRange.head(1))
         textStorage.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueDefault], range: heading.levelRange.tail(heading.levelRange.length - 1))
-        
     }
     
     fileprivate func _unFoldHeadingAndChildren(heading: HeadingToken, textStorage: OutlineTextStorage) {
@@ -207,9 +206,7 @@ public class FoldingAndUnfoldingCommand: DocumentContentCommand {
     public func perform() -> DocumentContentCommandResult {
         if let heading = textStorage.heading(contains: location) {
             
-            log.info("fold range: \(heading.contentRange)")
-            
-            guard heading.contentRange.length > 0 else { return DocumentContentCommandResult.noChange }
+            guard heading.contentRange != nil else { return DocumentContentCommandResult.noChange }
             
             var toggleFoldAndUnfoldAction: ((OutlineTextStorage, HeadingToken, FoldingAndUnfoldingCommand) -> Void)!
             toggleFoldAndUnfoldAction = { textStorage, heading, command in

@@ -47,7 +47,7 @@ extension DocumentEditViewController: UITextViewDelegate {
                 print("adjust to \(textView.selectedRange)")
             }
         }
-    }   
+    }
     
     public func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         if text == "\n" { // 换行
@@ -118,7 +118,13 @@ extension DocumentEditViewController {
     
     /// 输入退格键，自动选中某些 tokne 范围
     private func _handelBackspace(_ textView: UITextView) -> Bool {
+        // 只有在没有选中多个字符时有效
         if textView.selectedRange.length == 0 {
+            if let foldedRange = self.viewModel.foldedRange(at: self.textView.selectedRange.location) {
+                textView.selectedRange = NSRange(location: foldedRange.location - 1, length: 0)
+                return false
+            }
+            
             for case let attachmentToken in self.viewModel.currentTokens where attachmentToken is AttachmentToken {
                 guard self.textView.selectedRange.location != attachmentToken.range.location else { return true }
                 

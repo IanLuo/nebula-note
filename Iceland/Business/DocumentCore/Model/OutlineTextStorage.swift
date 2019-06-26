@@ -718,7 +718,6 @@ extension OutlineTextStorage: OutlineParserDelegate {
         for index in self._findIntersectionTokenIndex(in: range, tokens: cache).reversed() {
             let removed = cache.remove(at: index)
             removedTokens.append(removed)
-            removed.clearDecoraton(textStorage: self)
             log.info("delete token: \(removed)")
         }
         return removedTokens
@@ -827,7 +826,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
     // MARK: - utils
     
     public func isHeadingFolded(heading: HeadingToken) -> Bool {
-        if heading.contentRange.location < self.string.nsstring.length {
+        if heading.contentRange != nil {
             if let foldingAttribute = self.attribute(OutlineAttribute.showAttachment, at: heading.levelRange.location, effectiveRange: nil) as? String {
                 return foldingAttribute == OutlineAttribute.Heading.foldingFolded.rawValue
             } else {
@@ -998,7 +997,28 @@ extension OutlineTextStorage: OutlineParserDelegate {
             newRange = NSRange(location: 0, length: newRange.length - (-newRange.location))
         }
         
+        if newRange.location >= self.string.nsstring.length {
+            newRange = NSRange(location: max(0, self.string.nsstring.length - 1), length: 0)
+        }
+        
+        // 不包含已经折叠的部分
+        if let folded = self.foldedRange(at: newRange.location) {
+            newRange = NSRange(location: folded.upperBound, length: max(0, newRange.upperBound - folded.upperBound))
+        }
+        
         return newRange
+    }
+    
+    public func foldedRange(at location: Int) -> NSRange? {
+        guard location < self.string.nsstring.length else { return nil }
+        
+        var folded: NSRange = NSRange(location: 0, length: 0)
+        if let value = self.attribute(OutlineAttribute.tempHidden, at: location, effectiveRange: &folded) as? NSNumber,
+            value == OutlineAttribute.hiddenValueFolded {
+            return folded
+        } else {
+            return nil
+        }
     }
     
     

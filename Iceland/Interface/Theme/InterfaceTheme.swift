@@ -105,7 +105,7 @@ public struct Layout {
     public var callout: UIFont = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.callout)
     
     public var italic: UIFont = UIFont.italicSystemFont(ofSize: UIFont.preferredFont(forTextStyle: UIFont.TextStyle.body).pointSize)
-    public let largeTitle: UIFont = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.largeTitle)
+    public let largeTitle: UIFont = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.title1)
     public let title: UIFont = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.headline)
     public let subtitle: UIFont = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.subheadline)
     public let body: UIFont = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.body)

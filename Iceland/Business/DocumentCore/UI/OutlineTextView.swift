@@ -43,7 +43,6 @@ public class OutlineTextView: UITextView {
         self.autocapitalizationType = .none
         self.autocorrectionType = .no
         self.keyboardDismissMode = .interactive
-        self.smartDashesType = .no
 
         if #available(iOS 11.0, *) {
             self.smartDashesType = .no

@@ -223,8 +223,15 @@ public class HeadingToken: Token {
         return NSRange(location: self.range.location, length: self.level)
     }
     
-    public var contentRange: NSRange {
-        return self.paragraphRange.moveLeftBound(by: self.range.length)
+    public var contentRange: NSRange? {
+        let calculatedContentRange = self.paragraphRange.moveLeftBound(by: self.range.length)
+        
+        // 如果计算出的 contentRange 长度为 0，表示没有内容，这个 range 的 location 实际上是不可用的
+        if calculatedContentRange.length == 0 {
+            return nil
+        } else {
+            return calculatedContentRange
+        }
     }
     
     public var paragraphRange: NSRange {
