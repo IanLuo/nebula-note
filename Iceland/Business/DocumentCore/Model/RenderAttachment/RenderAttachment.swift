@@ -36,7 +36,7 @@ public class RenderAttachment: NSTextAttachment {
                     fallthrough // 使用 image 同样的渲染方法
                 case .image:
                     if let image = UIImage(contentsOfFile: attachment.url.path) {
-                        let image = image.resize(upto: CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width))
+                        let image = image.resize(upto: CGSize(width: UIScreen.main.bounds.width * 0.7, height: UIScreen.main.bounds.width * 0.7))
                         let scale = UIScreen.main.scale / image.scale
                         self?.image = image
                         self?.bounds = CGRect(origin: .zero, size: image.size.applying(CGAffineTransform(scaleX: 1/scale, y: 1/scale)))
