@@ -11,6 +11,10 @@ import Foundation
 public class Event: NSObject {
 }
 
+// MARK: - App Events
+public class AppStartedEvent: Event {}
+
+
 // MARK: - Editor events
 
 

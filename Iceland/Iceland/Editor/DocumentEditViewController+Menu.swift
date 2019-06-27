@@ -168,8 +168,9 @@ extension DocumentEditViewController {
         self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.hide()
     }
     
+    // 编辑和选择标签
     public func showTagEditor(location: Int) {
-        let tags = self.viewModel.tags(at: location)
+        let tags = self.viewModel.tags(at: location) // 当前选中的所有 tag
         
         let actionsViewController = ActionsViewController()
         actionsViewController.title = L10n.Document.Edit.Tag.title
@@ -185,7 +186,8 @@ extension DocumentEditViewController {
                 }
                 
                 actionViewController.removeAction(with: tag)
-                location -= tag.count
+                location -= tag.count // 删除 tag 后，当前光标所在的位置减去对应 tag 字符串的长度
+                self.viewModel.coordinator?.dependency.eventObserver.emit(TagDeleteEvent(tag: tag)) // 更新已保存的 tag
             }
         }
         
@@ -194,6 +196,7 @@ extension DocumentEditViewController {
             self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
         }
         
+        // 选择一个已经存在的标签
         actionsViewController.addAction(icon: Asset.Assets.tag.image.fill(color: InterfaceTheme.Color.interactive), title: L10n.Document.Edit.Tag.choose, style: .highlight) { viewController in
             viewController.dismiss(animated: true, completion: {
                 let selector = SelectorViewController()
@@ -219,7 +222,7 @@ extension DocumentEditViewController {
                         if self.textView.selectedRange.location > location {
                             self.textView.selectedRange = oldSelectedRange.offset(result.delta)
                         }
-                        location += newTag.count
+                        location += newTag.count // 删除 tag 后，当前光标所在的位置减去对应 tag 字符串的长度 (可能不需要，暂时先留着)
                     })
                 }
                 
@@ -228,6 +231,7 @@ extension DocumentEditViewController {
             
         }
         
+        // 添加新的标签
         actionsViewController.addAction(icon: Asset.Assets.add.image.fill(color: InterfaceTheme.Color.interactive), title: L10n.Document.Edit.Tag.add, style: .highlight) { actionViewController in
             actionViewController.dismiss(animated: true, completion: {
                 let formController = ModalFormViewController()
@@ -253,6 +257,8 @@ extension DocumentEditViewController {
                                 self.textView.selectedRange = oldSelectedRange.offset(result.delta)
                             }
                             location += newTagName.count
+                            
+                            self.viewModel.coordinator?.dependency.eventObserver.emit(TagAddedEvent(tag: newTagName))
                         })
                     }
                 }

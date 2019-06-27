@@ -83,6 +83,8 @@ public class Application: Coordinator {
         self._setupiCloud()
         
         self.handleSharedIdeas()
+        
+        self.dependency.eventObserver.emit(AppStartedEvent())
     }
     
     var isHandlingSharedIdeas: Bool = false

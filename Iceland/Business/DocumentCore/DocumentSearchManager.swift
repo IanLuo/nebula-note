@@ -106,6 +106,20 @@ public class DocumentSearchHeadingUpdateEvent: Event {
     }
 }
 
+public class TagAddedEvent: Event {
+    public let tag: String
+    public init(tag: String) {
+        self.tag = tag
+    }
+}
+
+public class TagDeleteEvent: Event {
+    public let tag: String
+    public init(tag: String) {
+        self.tag = tag
+    }
+}
+
 public class DocumentSearchManager {
     private let _headingSearchOperationQueue: OperationQueue
     private let _contentSearchOperationQueue: OperationQueue
