@@ -68,20 +68,15 @@ public class DashboardViewModel {
                                                                     eventType: TagAddedEvent.self,
                                                                     queue: self._headingChangeObservingQueue) { [weak self] (event: TagAddedEvent) -> Void in
                                                                         self?._isHeadingsNeedsReload = true
-                                                                        self?.allTags.append(event.tag)
+                                                                        if self?.allTags.contains(event.tag) == nil {
+                                                                            self?.allTags.append(event.tag)
+                                                                        }
         }
         
         self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
                                                                     eventType: TagDeleteEvent.self,
                                                                     queue: self._headingChangeObservingQueue) { [weak self] (event: TagDeleteEvent) -> Void in
                                                                         self?._isHeadingsNeedsReload = true
-                                                                        guard let strongSelf = self else { return }
-                                                                        for (index, tag) in strongSelf.allTags.enumerated() {
-                                                                            if tag == event.tag {
-                                                                                strongSelf.allTags.remove(at: index)
-                                                                                return
-                                                                            }
-                                                                        }
         }
         
         self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
