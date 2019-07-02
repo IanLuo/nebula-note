@@ -46,6 +46,8 @@ public class CaptureListViewModel {
     
     private var currentIndex: Int?
     
+    public var currentFilteredAttachmentKind: Attachment.Kind?
+    
     public init(service: CaptureServiceProtocol, mode: Mode) {
         self.service = service
         self.mode = mode
@@ -87,8 +89,8 @@ public class CaptureListViewModel {
                 }
                 
                 var content = OutlineParser.Values.Attachment.serialize(attachment: attachment)
-                // 添加的内容，新建一行
-                content = OutlineParser.Values.Character.linebreak + content
+                // 添加的内容，新建一行，空一行
+                content = OutlineParser.Values.Character.linebreak + OutlineParser.Values.Character.linebreak + content
 
                 let insertion = InsertTextCommandComposer(location: heading.paragraphRange.upperBound, textToInsert: content)
                 _ = service.toggleContentCommandComposer(composer: insertion).perform()
@@ -116,9 +118,14 @@ public class CaptureListViewModel {
         DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
             self.service
                 .loadAll(completion: { [weak self] attachments in
-                    let attachments = attachments.sorted(by: { last, next -> Bool in
+                    var attachments = attachments.sorted(by: { last, next -> Bool in
                         last.date.timeIntervalSince1970 > next.date.timeIntervalSince1970
                     })
+                    
+                    if let filterKind = self?.currentFilteredAttachmentKind {
+                        attachments = attachments.filter { $0.kind == filterKind }
+                    }
+                    
                     self?.data = attachments
                     self?.cellModels = attachments.map { CaptureTableCellModel(attacment: $0) }
                     

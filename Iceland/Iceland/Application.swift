@@ -101,8 +101,17 @@ public class Application: Coordinator {
             for url in ideas {
                 let attachmentKindString = url.deletingPathExtension().pathExtension // kind 已经在保存的时候，添加成为了 url 的前一个 ext
                 if let kind = Attachment.Kind(rawValue: attachmentKindString) {
+                    var content = url.path
+                    switch kind {
+                    case .text: fallthrough
+                    case .link: fallthrough
+                    case .location: 
+                    content = try! String(contentsOf: url)
+                    default: break
+                    }
+                    
                     group.enter()
-                    self.dependency.attachmentManager.insert(content: url.path, kind: kind, description: "shared idea", complete: { [weak self] key in
+                    self.dependency.attachmentManager.insert(content: content, kind: kind, description: "shared idea", complete: { [weak self] key in
                         self?.dependency.captureService.save(key: key, completion: {
                             group.leave()
                         })

@@ -21,6 +21,28 @@ public class CaptureListViewController: UIViewController {
     
     public weak var delegate: CaptureListViewControllerDelegate?
     
+    private let filterSegmentedControl: UISegmentedControl = {
+        let seg = UISegmentedControl(items: [
+            L10n.Attachment.Kind.all,
+            Asset.Assets.text.image,
+            Asset.Assets.link.image,
+            Asset.Assets.imageLibrary.image,
+            Asset.Assets.location.image,
+            Asset.Assets.audio.image,
+            Asset.Assets.video.image
+            ])
+        
+        seg.selectedSegmentIndex = 0
+
+        seg.interface { (view, theme) in
+            view.tintColor = theme.color.interactive
+        }
+        
+        seg.addTarget(self, action: #selector(filterIdeas), for: UIControl.Event.valueChanged)
+        
+        return seg
+    }()
+    
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
         tableView.delegate = self
@@ -87,9 +109,12 @@ public class CaptureListViewController: UIViewController {
     private func setupUI() {
         self.view.backgroundColor = InterfaceTheme.Color.background1
         
+        self.view.addSubview(self.filterSegmentedControl)
         self.view.addSubview(self.tableView)
         
-        self.tableView.allSidesAnchors(to: self.view, edgeInset: 0)
+        self.filterSegmentedControl.sideAnchor(for: [.left, .top, .right], to: self.view, edgeInset: 30, considerSafeArea: true)
+        self.filterSegmentedControl.columnAnchor(view: self.tableView, space: 10)
+        self.tableView.sideAnchor(for: [.left, .bottom, .right], to: self.view, edgeInset: 0, considerSafeArea: true)
         
         if self.viewModel.coordinator?.isModal ?? false {
             self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: Asset.Assets.cross.image, style: .plain, target: self, action: #selector(cancel))
@@ -98,6 +123,31 @@ public class CaptureListViewController: UIViewController {
     
     @objc private func cancel() {
         self.viewModel.coordinator?.stop()
+    }
+    
+    @objc private func filterIdeas() {
+        let index = self.filterSegmentedControl.selectedSegmentIndex
+        
+        switch index {
+        case 0: //all
+            self.viewModel.currentFilteredAttachmentKind = nil
+        case 1: // text
+            self.viewModel.currentFilteredAttachmentKind = .text
+        case 2: // link
+            self.viewModel.currentFilteredAttachmentKind = .link
+        case 3: // image
+            self.viewModel.currentFilteredAttachmentKind = .image
+        case 4: // location
+            self.viewModel.currentFilteredAttachmentKind = .location
+        case 5: // voice
+            self.viewModel.currentFilteredAttachmentKind = .audio
+        case 6: // video
+            self.viewModel.currentFilteredAttachmentKind = .video
+        default: return // ignore
+        }
+        
+        self.viewModel.loadAllCapturedData()
+        self.tableView.showProcessingAnimation()
     }
 }
 

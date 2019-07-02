@@ -23,6 +23,7 @@
 "attachment.kind.sketch" = "Sketch";
 "attachment.kind.location" = "Location";
 "attachment.kind.text" = "Text";
+"attachment.kind.all" = "All";
 
 // edit document
 "document.dateAndTime.title" = "Date and time";

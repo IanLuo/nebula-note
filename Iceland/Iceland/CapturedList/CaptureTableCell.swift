@@ -132,6 +132,7 @@ public class CaptureTableCell: UITableViewCell {
                 self.delegate?.didTapActionsWithLink(attachment: attachment, link: dic["link"])
             } catch {
                 log.error(error)
+                self.delegate?.didTapActions(attachment: attachment)
             }
         case .location:
             do {
@@ -140,6 +141,7 @@ public class CaptureTableCell: UITableViewCell {
                 self.delegate?.didTapActionsWithLocation(attachment: attachment, location: coord)
             } catch {
                 log.error(error)
+                self.delegate?.didTapActions(attachment: attachment)
             }
         default: self.delegate?.didTapActions(attachment: attachment)
         }

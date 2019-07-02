@@ -63,6 +63,8 @@ public enum L10n {
 
   public enum Attachment {
     public enum Kind {
+      /// All
+      public static let all = L10n.tr("Localizable", "attachment.kind.all")
       /// Audio
       public static let audio = L10n.tr("Localizable", "attachment.kind.audio")
       /// Image
