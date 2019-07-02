@@ -128,8 +128,10 @@ public class FoldingAndUnfoldingCommand: DocumentContentCommand {
         
         textStorage.removeAttribute(OutlineAttribute.tempHidden, range: range)
         textStorage.removeAttribute(OutlineAttribute.tempShowAttachment, range: range)
+        textStorage.removeAttribute(OutlineAttribute.hidden, range: range)
         textStorage.removeAttribute(OutlineAttribute.showAttachment, range: heading.levelRange)
         textStorage.removeAttribute(OutlineAttribute.hidden, range: heading.levelRange)
+        textStorage.removeAttribute(OutlineAttribute.hidden, range: heading.range)
         
         range = range.length > 0 ? range : NSRange(location: range.location, length: 0)
         
@@ -160,21 +162,19 @@ public class FoldingAndUnfoldingCommand: DocumentContentCommand {
             range = range.moveRightBound(by: -1)
         }
         
+        textStorage.setParagraphIndent(heading: heading)
+        
+        guard range.length > 0 else { return }
+        
         textStorage.removeAttribute(OutlineAttribute.tempHidden, range: range)
+        textStorage.removeAttribute(OutlineAttribute.hidden, range: range)
         textStorage.removeAttribute(OutlineAttribute.tempShowAttachment, range: range)
         textStorage.removeAttribute(OutlineAttribute.showAttachment, range: heading.levelRange)
         textStorage.removeAttribute(OutlineAttribute.hidden, range: heading.levelRange)
         
-        range = range.length > 0 ? range : NSRange(location: range.location, length: 0)
-        
-        textStorage.setParagraphIndent(heading: heading)
-        
-        textStorage.addAttributes([OutlineAttribute.tempHidden: OutlineAttribute.showAttachment,
+        textStorage.addAttributes([OutlineAttribute.tempHidden: OutlineAttribute.hiddenValueFolded,
                                    OutlineAttribute.tempShowAttachment: OutlineAttribute.Heading.folded],
-                                  range: range.head(1))
-        
-        textStorage.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueDefault],
-                                  range: range.tail(range.length - 1))
+                                  range: range)
         
         textStorage.addAttributes([OutlineAttribute.showAttachment: OutlineAttribute.Heading.foldingFolded,
                                    OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment],

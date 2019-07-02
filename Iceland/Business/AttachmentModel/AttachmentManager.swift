@@ -120,10 +120,10 @@ public enum AttachmentError: Error {
         
         let document = AttachmentDocument(fileURL: url)
         
-        document.open {
+        document.open { [weak document] in
             if $0 {
-                if let attachment = document.attachment {
-                    document.close(completionHandler: { completed in
+                if let attachment = document?.attachment {
+                    document?.close(completionHandler: { completed in
                         if completed {
                             completion(attachment)
                         } else {
