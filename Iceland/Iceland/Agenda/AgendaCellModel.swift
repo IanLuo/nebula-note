@@ -19,6 +19,7 @@ public class AgendaCellModel {
     public var priority: String?
     public let heading: DocumentHeading
     public let level: Int
+    public let isFinished: Bool?
     
     public init(searchResult: DocumentHeadingSearchResult) {
         self.level = searchResult.heading.level
@@ -30,5 +31,11 @@ public class AgendaCellModel {
         self.headingText = searchResult.heading.text.trimmingCharacters(in: CharacterSet.whitespaces)
         self.planning = searchResult.heading.planning
         self.tags = searchResult.heading.tags
+        
+        if let planning = searchResult.heading.planning {
+            self.isFinished = SettingsAccessor.shared.finishedPlanning.contains(planning)
+        } else {
+            self.isFinished = nil
+        }
     }
 }

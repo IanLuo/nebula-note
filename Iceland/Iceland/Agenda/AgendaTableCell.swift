@@ -168,8 +168,8 @@ public class AgendaTableCell: UITableViewCell {
         self.documentNameLabel.text = cellModel.url.packageName
         
         let aString: NSMutableAttributedString = NSMutableAttributedString()
-        if let planning = cellModel.planning {
-            let style = OutlineTheme.planningStyle(isFinished: SettingsAccessor.shared.finishedPlanning.contains(planning))
+        if let isFinished = cellModel.isFinished, let planning = cellModel.planning {
+            let style = OutlineTheme.planningStyle(isFinished: isFinished)
             aString.append(NSAttributedString(string: planning + " ", attributes: style.textStyle.attributes))
         }
         

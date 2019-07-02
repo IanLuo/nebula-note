@@ -99,7 +99,7 @@ public class AgendaViewModel {
                         let children = result.getWholdTree()
                             .map {
                                 AgendaCellModel(searchResult: $0)
-                            }.sortedByPriority
+                            }.sortedByPriority.reversed().sortedByPlanning
                         
                         __data.append(contentsOf: children)
                     }
@@ -215,6 +215,27 @@ extension Array where Element == AgendaCellModel {
                 return false
             case let (p1?, p2?): // 都有 priority，则比较 priority
                 return p1 < p2
+            }
+        }
+    }
+    
+    var sortedByPlanning: [Element] {
+        return self.sorted { (cellModel1: Element, cellModel2: Element) -> Bool in
+            switch (cellModel1.isFinished, cellModel2.isFinished) {
+            case (nil, nil):
+                return true
+            case (let f1?, nil):
+                return !f1
+            case (nil, let f1?):
+                return f1
+            case let (f1?, f2?):
+                if f1 && f2 {
+                    return true
+                } else if f1 && !f2 {
+                    return false
+                } else {
+                    return true
+                }
             }
         }
     }
