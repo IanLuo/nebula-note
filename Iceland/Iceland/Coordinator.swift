@@ -22,6 +22,7 @@ public struct Dependency {
     let urlHandlerManager: URLHandlerManager
     let shareExtensionHandler: ShareExtensionDataHandler
     let captureService: CaptureService
+    let exportManager: ExportManager
     weak var globalCaptureEntryWindow: CaptureGlobalEntranceWindow?
 }
 

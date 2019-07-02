@@ -89,6 +89,7 @@
 		E41CB1D921D894DC00EF0A3C /* OutlineStorageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49FF46321A429F9003A5B3C /* OutlineStorageTests.swift */; };
 		E41CB1DB21D8953F00EF0A3C /* DocumentSearchManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EA857121D27C3600DD92F9 /* DocumentSearchManager.swift */; };
 		E41CB1DF21D896A300EF0A3C /* DocumentSearchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A3F21B6891700FBDA04 /* DocumentSearchTests.swift */; };
+		E41EC83022C4BFE3009ACFA4 /* TxtExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41EC82F22C4BFE3009ACFA4 /* TxtExporter.swift */; };
 		E41F86C3218EF4BF006C4CDB /* AttachmentCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F86C2218EF4BF006C4CDB /* AttachmentCoordinator.swift */; };
 		E41F86C5218EF4E1006C4CDB /* AgendaCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F86C4218EF4E1006C4CDB /* AgendaCoordinator.swift */; };
 		E41FA5752191569C001D8C63 /* DocumentEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41FA5742191569C001D8C63 /* DocumentEditViewController.swift */; };
@@ -325,6 +326,7 @@
 		E41CB1AC21D88D9400EF0A3C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E41CB1C821D88E2200EF0A3C /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		E41CB1E121D8BD9B00EF0A3C /* UIView+Processing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Processing.swift"; sourceTree = "<group>"; };
+		E41EC82F22C4BFE3009ACFA4 /* TxtExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TxtExporter.swift; sourceTree = "<group>"; };
 		E41F86C2218EF4BF006C4CDB /* AttachmentCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentCoordinator.swift; sourceTree = "<group>"; };
 		E41F86C4218EF4E1006C4CDB /* AgendaCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgendaCoordinator.swift; sourceTree = "<group>"; };
 		E41F86C6218EF5D8006C4CDB /* CaptureService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureService.swift; sourceTree = "<group>"; };
@@ -1037,6 +1039,7 @@
 				E47FA8FA227025B8005AD0BA /* ExportManager.swift */,
 				E47FA8FF227026DB005AD0BA /* HTMLExporter.swift */,
 				E47FA90122702717005AD0BA /* OrgExporter.swift */,
+				E41EC82F22C4BFE3009ACFA4 /* TxtExporter.swift */,
 			);
 			path = Export;
 			sourceTree = "<group>";
@@ -1664,6 +1667,7 @@
 				E44683FD2289B5AD005D5B73 /* ExtensionProperty.swift in Sources */,
 				E44683FB2289B554005D5B73 /* UIControlClosure.swift in Sources */,
 				E466D186221D930A007F140B /* SeparaterAttachment.swift in Sources */,
+				E41EC83022C4BFE3009ACFA4 /* TxtExporter.swift in Sources */,
 				E41B892C21E34297009C5AD7 /* AudioPlayer.swift in Sources */,
 				E4D31DEE227DA633001F5272 /* URLHandlerManager.swift in Sources */,
 				E4D31DEC227D39A4001F5272 /* URLlHandler.swift in Sources */,

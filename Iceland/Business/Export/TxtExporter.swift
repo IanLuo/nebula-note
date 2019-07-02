@@ -1,17 +1,17 @@
 //
-//  HTMLExporter.swift
+//  TxtExporter.swift
 //  Business
 //
-//  Created by ian luo on 2019/4/24.
+//  Created by ian luo on 2019/6/27.
 //  Copyright © 2019 wod. All rights reserved.
 //
 
 import Foundation
 
-public struct HTMLExporter: Exportable {
+public struct TxtExporter: Exportable {
     public var url: URL
     
-    public var fileExtension: String = "html"
+    public var fileExtension: String = "txt"
     
     private let _editorContext: EditorContext
     
@@ -22,9 +22,7 @@ public struct HTMLExporter: Exportable {
     
     public func export(completion: @escaping (String) -> Void) {
         let service = self._editorContext.request(url: self.url)
-        
         var headingIndexs: [[Int]] = []
-        
         service.onReadyToUse = { service in
             service.open { string in
                 
@@ -57,8 +55,8 @@ public struct HTMLExporter: Exportable {
                     
                     if let _ = token as? HeadingToken {
                         if let indexs = headingIndexs.last {
-                            let index = indexs.map { "\($0)" }.joined(separator: ".") + " "
-                            tokenString.insert(contentsOf: index, at: tokenString.index(tokenString.startIndex, offsetBy: 4))
+                            let index = indexs.map { "\($0)" }.joined(separator: ".")
+                            tokenString = index + " " + tokenString
                             headingIndexs.remove(at: headingIndexs.count - 1)
                         }
                     }
@@ -69,19 +67,14 @@ public struct HTMLExporter: Exportable {
                 completion(result)
             }
         }
+
     }
 }
 
 extension Token {
     fileprivate func render(string: String) -> String {
-        if let heading = self as? HeadingToken {
-            return "<h\(heading.level)>\(string.nsstring.substring(with: heading.headingTextRange))</h\(heading.level)>"
-        } else if let orderedList = self as? OrderedListToken {
-            return "<li>\(string.nsstring.substring(with: orderedList.range).nsstring.replacingCharacters(in: orderedList.prefix.moveRightBound(by: 1).offset(-orderedList.range.location), with: ""))</li>"
-        } else if let unorderedList = self as? UnorderdListToken {
-            return "<li>\(string.nsstring.substring(with: unorderedList.range).nsstring.replacingCharacters(in: unorderedList.prefix.moveRightBound(by: 1).offset(-unorderedList.range.location), with: ""))</li>"
-        } else if let checkbox = self as? CheckboxToken {
-            return "<a>[\(string.nsstring.substring(with: checkbox.range(for: "status")!))] </a>"
+        if self is HeadingToken {
+            return string.nsstring.substring(with: (self as! HeadingToken).headingTextRange)
         } else {
             return string.nsstring.substring(with: self.range)
         }

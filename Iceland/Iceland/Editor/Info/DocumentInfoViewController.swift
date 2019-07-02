@@ -61,7 +61,7 @@ public class DocumentInfoViewController: TransitionViewController {
         self._backButton.sideAnchor(for: [.right, .top], to: self.contentView, edgeInsets: UIEdgeInsets(top: 0, left: 0, bottom: 0, right: -Layout.edgeInsets.right), considerSafeArea: true)
         self._backButton.sizeAnchor(width: 44)
         
-        let exportViewController = ExportSelectViewController()
+        let exportViewController = ExportSelectViewController(exporterManager: self._viewModel.coordinator!.dependency.exportManager)
         exportViewController.delegate = self
         
         let basicInfoViewController = BasicInfoViewController(viewModel: self._viewModel)

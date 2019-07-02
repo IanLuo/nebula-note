@@ -23,13 +23,11 @@ public protocol OutlineTextStorageDataSource: class {
 public class OutlineTextStorage: TextStorage {
     public var parser: OutlineParser!
     
-    private var _eventObserver: EventObserver!
     private var _attachmentManager: AttachmentManager!
     
-    public convenience init(eventObserver: EventObserver, attachmentManager: AttachmentManager) {
+    public convenience init(attachmentManager: AttachmentManager) {
         self.init()
         self._attachmentManager = attachmentManager
-        self._eventObserver = eventObserver
     }
     
     public override var string: String {

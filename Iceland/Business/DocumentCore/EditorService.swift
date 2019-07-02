@@ -42,7 +42,7 @@ public class EditorService {
     internal init(url: URL, queue: DispatchQueue, eventObserver: EventObserver, parser: OutlineParser) {
         self._url = url
         self._eventObserver = eventObserver
-        self._editorController = EditorController(parser: parser, eventObserver: eventObserver, attachmentManager: AttachmentManager())
+        self._editorController = EditorController(parser: parser, attachmentManager: AttachmentManager())
         self._queue = queue
         
         self._editorController.delegate = self
@@ -72,6 +72,9 @@ public class EditorService {
         return self._editorController.toggleCommandComposer(composer: composer)
     }
     
+    public var allTokens: [Token] {
+        return self._editorController.textStorage.allTokens
+    }
 
     public func start(complete: @escaping (Bool, EditorService) -> Void) {
         guard let document = self._document else {

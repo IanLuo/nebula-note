@@ -16,7 +16,7 @@ public protocol ExportSelectViewControllerDelegate: class {
 }
 
 public class ExportSelectViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    private let _exportManager: ExportManager = ExportManager()
+    private var _exportManager: ExportManager!
     
     public weak var delegate: ExportSelectViewControllerDelegate?
     
@@ -43,11 +43,12 @@ public class ExportSelectViewController: UIViewController, UICollectionViewDeleg
         return collectionView
     }()
     
-    public init() {
+    public init(exporterManager: ExportManager) {
         super.init(nibName: nil, bundle: nil)
+        self._exportManager = exporterManager
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     

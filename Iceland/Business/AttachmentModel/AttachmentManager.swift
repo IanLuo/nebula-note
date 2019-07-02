@@ -77,8 +77,13 @@ public enum AttachmentError: Error {
             if let url = URL(string: content) {
                 saveAttahmentAction(URL(fileURLWithPath: url.path))
             } else {
-                log.error("fail to create url \(content)")
-                fatalError()
+                let url = URL(fileURLWithPath: content)
+                if FileManager.default.fileExists(atPath: url.path) {
+                    saveAttahmentAction(URL(fileURLWithPath: url.path))
+                } else {
+                    log.error("fail to create url \(content)")
+                    fatalError()
+                }
             }
         }
     }

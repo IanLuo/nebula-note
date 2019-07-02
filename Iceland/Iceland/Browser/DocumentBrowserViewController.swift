@@ -315,7 +315,8 @@ extension DocumentBrowserViewController: DocumentBrowserCellDelegate {
             // 导出
             actionsViewController.addAction(icon: nil, title: L10n.Document.Export.title) { viewController in
                 viewController.dismiss(animated: true, completion: {
-                    let exportManager = ExportManager()
+                    guard let exportManager = self.viewModel.coordinator?.dependency.exportManager else { return }
+                    
                     let selector = SelectorViewController()
                     selector.title = L10n.Document.Export.msg
                     for item in exportManager.exportMethods {
@@ -325,7 +326,7 @@ extension DocumentBrowserViewController: DocumentBrowserCellDelegate {
                     selector.onSelection = { index, viewController in
                         viewController.dismiss(animated: true, completion: {
                             self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
-                            exportManager.export(url: url, type:.org, completion: { url in
+                            exportManager.export(url: url, type:exportManager.exportMethods[index], completion: { url in
                                 exportManager.share(from: self, url: url)
                             }, failure: { error in
                                 // TODO: show error

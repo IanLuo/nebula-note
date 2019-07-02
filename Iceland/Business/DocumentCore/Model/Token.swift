@@ -213,7 +213,10 @@ public class HeadingToken: Token {
         let planningUpperBound = self.planning?.upperBound ?? 0
         let priorityUpperBound = self.priority?.upperBound ?? 0
         
-        let lowerBound = max(levelUpperBound, max(planningUpperBound, priorityUpperBound))
+        var lowerBound = max(levelUpperBound, max(planningUpperBound, priorityUpperBound))
+        if lowerBound > self.range.location {
+            lowerBound += 1 // 当 lowerbound 大于 heading 的开始位置时，+ 1 从空格之后开始计算
+        }
         let upperBound = min(self.range.upperBound, self.tags?.location ?? self.range.upperBound)
         
         return NSRange(location: lowerBound, length: upperBound - lowerBound)

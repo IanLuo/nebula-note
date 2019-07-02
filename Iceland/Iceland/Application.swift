@@ -46,6 +46,7 @@ public class Application: Coordinator {
                                                                                eventObserver: eventObserver),
                                           shareExtensionHandler: ShareExtensionDataHandler(),
                                           captureService: CaptureService(attachmentManager: attachmentManager),
+                                          exportManager: ExportManager(editorContext: editorContext),
                                           globalCaptureEntryWindow: _entranceWindow))
         
         self.window?.rootViewController = self.stack

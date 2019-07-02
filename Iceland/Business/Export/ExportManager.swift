@@ -13,7 +13,7 @@ public protocol Exportable {
     var url: URL { get }
     var fileExtension: String { get }
     
-    func export() -> String
+    func export(completion: @escaping (String) -> Void)
 }
 
 public enum ExportType {
@@ -40,17 +40,21 @@ public enum ExportType {
         }
     }
     
-    public func exportable(url: URL) -> Exportable {
+    public func exportable(url: URL, exportManager: ExportManager) -> Exportable {
         switch self {
         case .org: return OrgExporter(url: url)
-        case .html: return HTMLExporter(url: url)
+        case .html: return HTMLExporter(editorContext: exportManager._editorContext, url: url)
+        case .txt: return TxtExporter(editorContext: exportManager._editorContext, url: url)
         default: return OrgExporter(url: url)
         }
     }
 }
 
 public struct ExportManager {
-    public init() {}
+    fileprivate let _editorContext: EditorContext
+    public init(editorContext: EditorContext) {
+        self._editorContext = editorContext
+    }
     
     public let exportMethods: [ExportType] = [.org, .html, .txt, .markdown]
     
@@ -59,25 +63,26 @@ public struct ExportManager {
                        completion: @escaping (URL) -> Void,
                        failure: @escaping (Error) -> Void) {
         
-        let exportable = type.exportable(url: url)
+        let exportable = type.exportable(url: url, exportManager: self)
         let exportFileDir = URL.directory(location: URLLocation.temporary, relativePath: "export")
         exportFileDir.createDirectoryIfNeeded { error in
             
             if let error = error {
                 failure(error)
             } else {
-                let translated = exportable.export()
-                let fileName = exportable.url.deletingPathExtension().lastPathComponent
-                let tempFileURL = URL.file(directory: exportFileDir, name: fileName, extension: exportable.fileExtension)
-                
-                do {
-                    try translated.write(to: tempFileURL, atomically: true, encoding: .utf8)
-                    DispatchQueue.main.async {
-                        completion(tempFileURL)
-                    }
-                } catch {
-                    DispatchQueue.main.async {
-                        failure(error)
+                exportable.export { exportedContent in
+                    let fileName = exportable.url.deletingPathExtension().lastPathComponent
+                    let tempFileURL = URL.file(directory: exportFileDir, name: fileName, extension: exportable.fileExtension)
+                    
+                    do {
+                        try exportedContent.write(to: tempFileURL, atomically: true, encoding: .utf8)
+                        DispatchQueue.main.async {
+                            completion(tempFileURL)
+                        }
+                    } catch {
+                        DispatchQueue.main.async {
+                            failure(error)
+                        }
                     }
                 }
             }
