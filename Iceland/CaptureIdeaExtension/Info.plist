@@ -25,16 +25,22 @@
 		<key>NSExtensionAttributes</key>
 		<dict>
 			<key>NSExtensionActivationRule</key>
-			<dict>
-				<key>NSExtensionActivationSupportsImageWithMaxCount</key>
-				<integer>5</integer>
-				<key>NSExtensionActivationSupportsMovieWithMaxCount</key>
-				<integer>5</integer>
-				<key>NSExtensionActivationSupportsText</key>
-				<integer>5</integer>
-				<key>NSExtensionActivationSupportsWebURLWithMaxCount</key>
-				<integer>5</integer>
-			</dict>
+			<string>
+                SUBQUERY (
+                    extensionItems,
+                    $extensionItem,
+                    SUBQUERY (
+                        $extensionItem.attachments,
+                        $attachment,
+                        (
+                        ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "public.image" ||
+                        ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "public.movie" ||
+                        ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "public.audio" ||
+                        ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "public.text"
+                        )
+                    ).@count == $extensionItem.attachments.@count
+                ).@count >= 1
+            </string>
 		</dict>
 		<key>NSExtensionMainStoryboard</key>
 		<string>MainInterface</string>

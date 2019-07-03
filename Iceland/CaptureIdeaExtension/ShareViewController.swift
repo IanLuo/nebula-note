@@ -21,20 +21,53 @@ class ShareViewController: SLComposeServiceViewController {
     
     override func didSelectPost() {
         self.textView.isEditable = false
-        if let item = self.extensionContext?.inputItems.first as? NSExtensionItem {
-            for attachment in item.attachments ?? [] {
-                let text = item.attributedContentText?.string ?? ""
-                if attachment.hasItemConformingToTypeIdentifier("public.image") {
-                    self._saveImage(attachment: attachment)
-                } else if attachment.hasItemConformingToTypeIdentifier("public.movie") {
-                    self._saveVideo(attachment: attachment)
-                } else if attachment.hasItemConformingToTypeIdentifier("public.url") {
-                    self._saveURL(attachment: attachment, text: text)
-                } else if attachment.hasItemConformingToTypeIdentifier("public.text") {
-                    self._saveText(attachment: attachment)
-                } else {
-                    self.extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
+        let group = DispatchGroup()
+        
+        DispatchQueue.global(qos: DispatchQoS.QoSClass.default).async {
+            if let item = self.extensionContext?.inputItems.first as? NSExtensionItem {
+                for attachment in item.attachments ?? [] {
+                    
+                    let text = item.attributedContentText?.string ?? ""
+                    if attachment.hasItemConformingToTypeIdentifier("public.image") {
+                        group.enter()
+                        self._saveImage(attachment: attachment) {
+                            group.leave()
+                        }
+                    }
+                    
+                    if attachment.hasItemConformingToTypeIdentifier("public.movie") {
+                        group.enter()
+                        self._saveVideo(attachment: attachment) {
+                            group.leave()
+                        }
+                    }
+                    
+                    if attachment.hasItemConformingToTypeIdentifier("public.url") && !attachment.hasItemConformingToTypeIdentifier("public.file-url") {
+                        group.enter()
+                        self._saveURL(attachment: attachment, text: text) {
+                            group.leave()
+                        }
+                    }
+                    
+                    if attachment.hasItemConformingToTypeIdentifier("public.text") {
+                        group.enter()
+                        self._saveText(attachment: attachment) {
+                            group.leave()
+                        }
+                    }
+                    
+                    if attachment.hasItemConformingToTypeIdentifier("public.audio") {
+                        group.enter()
+                        self._saveAudio(attachment: attachment) {
+                            group.leave()
+                        }
+                    }
+                    
                 }
+        }
+            
+            group.notify(queue: DispatchQueue.main) {
+                self.extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
             }
         }
         
@@ -48,37 +81,50 @@ class ShareViewController: SLComposeServiceViewController {
         return []
     }
     
-    private func _saveVideo(attachment: NSItemProvider) {
+    private func _saveVideo(attachment: NSItemProvider, completion: @escaping () -> Void) {
         attachment.loadItem(forTypeIdentifier: "public.movie", options: nil) { (data, error) in
-            if let audioURL = data as? NSURL {
-                self._saveFile(url: audioURL as URL, kind: Attachment.Kind.video)
+            if let videoURL = data as? NSURL {
+                self._saveFile(url: videoURL as URL, kind: Attachment.Kind.video, completion: completion)
             }
             
             if let error = error {
                 print("ERROR: \(error)")
             }
-            self.extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
         }
     }
     
-    private func _saveText(attachment: NSItemProvider) {
+    private func _saveAudio(attachment: NSItemProvider, completion: @escaping () -> Void) {
+        attachment.loadItem(forTypeIdentifier: "public.audio", options: nil) { (data, error) in
+            if let audioURL = data as? NSURL {
+                self._saveFile(url: audioURL as URL, kind: Attachment.Kind.audio, completion: completion)
+            } else {
+                completion()
+            }
+            
+            if let error = error {
+                print("ERROR: \(error)")
+            }
+        }
+    }
+    
+    private func _saveText(attachment: NSItemProvider, completion: @escaping () -> Void) {
         attachment.loadItem(forTypeIdentifier: "public.text", options: nil) { (data, error) in
             if let url = data as? NSURL {
-                self._saveFile(url: url as URL, kind: Attachment.Kind.text)
+                self._saveFile(url: url as URL, kind: Attachment.Kind.text, completion: completion)
             } else if let string = data as? String {
                 let url = URL.file(directory: URL.directory(location: URLLocation.temporary), name: UUID().uuidString, extension: "txt")
                 do {
                     try string.write(to: url, atomically: true, encoding: .utf8)
-                    self._saveFile(url: url, kind: Attachment.Kind.text)
+                    self._saveFile(url: url, kind: Attachment.Kind.text, completion: completion)
                 } catch {
                     print("ERROR: \(error)")
+                    completion()
                 }
             }
-            self.extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
         }
     }
     
-    private func _saveURL(attachment: NSItemProvider, text: String) {
+    private func _saveURL(attachment: NSItemProvider, text: String, completion: @escaping () -> Void) {
         attachment.loadItem(forTypeIdentifier: "public.url", options: nil) { (data, error) in
             if let url = data as? URL {
                 let tempURL = URL.file(directory: URL.directory(location: URLLocation.temporary), name: UUID().uuidString, extension: "txt")
@@ -91,17 +137,18 @@ class ShareViewController: SLComposeServiceViewController {
                     let data = try jsonEncoder.encode(linkData)
                     let string = String(data: data, encoding: .utf8) ?? ""
                     try string.write(to: tempURL, atomically: true, encoding: .utf8)
-                    self._saveFile(url: tempURL, kind: Attachment.Kind.link)
-                    self.extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
+                    self._saveFile(url: tempURL, kind: Attachment.Kind.link, completion: completion)
                 } catch {
                     print("ERROR: \(error)")
+                    completion()
                 }
+            } else {
+                completion()
             }
-            self.extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
         }
     }
     
-    private func _saveImage(attachment: NSItemProvider) {
+    private func _saveImage(attachment: NSItemProvider, completion: @escaping () -> Void) {
         let containerURL = handler.sharedContainterURL
 
         attachment.loadItem(forTypeIdentifier: "public.image", options: nil) { data, error in
@@ -109,12 +156,15 @@ class ShareViewController: SLComposeServiceViewController {
                 let name = UUID().uuidString
                 do {
                     try image.pngData()!.write(to: containerURL.appendingPathComponent(name).appendingPathExtension(Attachment.Kind.image.rawValue).appendingPathExtension("png"))
-                    self.extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
+                    completion()
                 } catch {
                     print("ERROR: \(error)")
+                    completion()
                 }
             } else if let imageURL = data as? NSURL {
-                self._saveFile(url: imageURL as URL, kind: Attachment.Kind.image)
+                self._saveFile(url: imageURL as URL, kind: Attachment.Kind.image, completion: completion)
+            } else {
+                completion()
             }
             
             if let error = error {
@@ -124,7 +174,7 @@ class ShareViewController: SLComposeServiceViewController {
 
     }
     
-    private func _saveFile(url: URL, kind: Attachment.Kind) {
+    private func _saveFile(url: URL, kind: Attachment.Kind, completion: @escaping () -> Void) {
         let containerURL = handler.sharedContainterURL
         
         let fileName = url.lastPathComponent
@@ -139,10 +189,11 @@ class ShareViewController: SLComposeServiceViewController {
             
             do {
                 try FileManager.default.copyItem(at: url as URL, to: newFileName)
-                self.extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
             } catch {
                 print("ERROR: \(error)")
             }
+            
+            completion()
         })
     }
 

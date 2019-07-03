@@ -147,7 +147,7 @@ public class CaptureListViewController: UIViewController {
         }
         
         self.viewModel.loadAllCapturedData()
-        self.tableView.showProcessingAnimation()
+        self.view.showProcessingAnimation()
     }
 }
 
