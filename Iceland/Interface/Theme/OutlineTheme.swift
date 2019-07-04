@@ -147,16 +147,18 @@ private struct DefaultOutlineTheme: OutlineThemeConfigProtocol {
                                                                              color: InterfaceTheme.Color.interactive),
                                                         backgroundColor: InterfaceTheme.Color.background3)
     
-    var quoteBlockStyle: QuoteBlockStyle = QuoteBlockStyle(textStyle: TextStyle(font: InterfaceTheme.Font.callout,
+    var quoteBlockStyle: QuoteBlockStyle = QuoteBlockStyle(textStyle: TextStyle(font: InterfaceTheme.Font.body,
                                                                                 color: InterfaceTheme.Color.descriptiveHighlighted),
                                                            backgroundColor: InterfaceTheme.Color.background3)
     
     var textMarkStyle: TextMarkStyle = TextMarkStyle(bold: TextStyle(font: InterfaceTheme.Font.title, color: InterfaceTheme.Color.interactive),
-                                                     italic: TextStyle(font: InterfaceTheme.Font.body, color: InterfaceTheme.Color.interactive),
-                                                     underscore: TextStyle(font: InterfaceTheme.Font.body, color: InterfaceTheme.Color.interactive, otherAttributes: [NSAttributedString.Key.underlineStyle: 1]),
-                                                     strikethrought: TextStyle(font: InterfaceTheme.Font.body, color: InterfaceTheme.Color.interactive, otherAttributes: [NSAttributedString.Key.strikethroughStyle: 1]),
+                                                     italic: TextStyle(font: InterfaceTheme.Font.italic, color: InterfaceTheme.Color.interactive),
+                                                     underscore: TextStyle(font: InterfaceTheme.Font.body, color: InterfaceTheme.Color.interactive,
+                                                                           otherAttributes: [NSAttributedString.Key.underlineStyle: 1]),
+                                                     strikethrought: TextStyle(font: InterfaceTheme.Font.body, color: InterfaceTheme.Color.interactive,
+                                                                               otherAttributes: [NSAttributedString.Key.strikethroughStyle: 1]),
                                                      verbatim: TextStyle(font: InterfaceTheme.Font.body, color: InterfaceTheme.Color.interactive),
-                                                     code: TextStyle(font: InterfaceTheme.Font.body, color: InterfaceTheme.Color.descriptiveHighlighted))
+                                                     code: TextStyle(font: InterfaceTheme.Font.footnote, color: InterfaceTheme.Color.interactive))
     
     /// 目前没有使用 button color, 因为 button 显示有问题
     var dateAndTimeStyle: DateAndTimeStyle = DateAndTimeStyle(normal: ButtonStyle(buttonColor: InterfaceTheme.Color.background3,

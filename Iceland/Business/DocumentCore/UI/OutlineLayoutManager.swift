@@ -39,11 +39,7 @@ public class OutlineLayoutManager: NSLayoutManager {
             
             self._handleButton(textStorage: textStorage, range: glyphsToShow, origin: origin, shouldStop: &stop)
             
-//            guard !stop else { return }
-            
             self._handleForQuote(textStorage: textStorage, range: glyphsToShow, origin: origin, shouldStop: &stop)
-            
-//            guard !stop else { return }
             
             self._handleForCode(textStorage: textStorage, range: glyphsToShow, origin: origin, shouldStop: &stop)
             

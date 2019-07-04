@@ -374,7 +374,9 @@ extension OutlineTextStorage: OutlineParserDelegate {
                     case OutlineParser.Key.Element.TextMark.strikeThough:
                         textStorage.addAttributes(OutlineTheme.textMarkStyle.strikethrought.attributes, range: contentRange)
                     case OutlineParser.Key.Element.TextMark.code:
-                        textStorage.addAttributes(OutlineTheme.textMarkStyle.code.attributes, range: contentRange)
+                        var attributes = OutlineTheme.textMarkStyle.code.attributes
+                        attributes[OutlineAttribute.button] = InterfaceTheme.Color.background3
+                        textStorage.addAttributes(attributes, range: contentRange)
                     case OutlineParser.Key.Element.TextMark.underscore:
                         textStorage.addAttributes(OutlineTheme.textMarkStyle.underscore.attributes, range: contentRange)
                     case OutlineParser.Key.Element.TextMark.verbatim:
