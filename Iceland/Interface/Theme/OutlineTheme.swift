@@ -143,9 +143,13 @@ private struct DefaultOutlineTheme: OutlineThemeConfigProtocol {
     
     var paragraphStyle: TextStyle = TextStyle(font: InterfaceTheme.Font.body, color: InterfaceTheme.Color.interactive)
     
-    var codeBlockStyle: CodeBlockStyle = CodeBlockStyle(textStyle: TextStyle(font: InterfaceTheme.Font.body, color: InterfaceTheme.Color.interactive))
+    var codeBlockStyle: CodeBlockStyle = CodeBlockStyle(textStyle: TextStyle(font: InterfaceTheme.Font.body,
+                                                                             color: InterfaceTheme.Color.interactive),
+                                                        backgroundColor: InterfaceTheme.Color.background3)
     
-    var quoteBlockStyle: QuoteBlockStyle = QuoteBlockStyle(textStyle: TextStyle(font: InterfaceTheme.Font.body, color: InterfaceTheme.Color.interactive))
+    var quoteBlockStyle: QuoteBlockStyle = QuoteBlockStyle(textStyle: TextStyle(font: InterfaceTheme.Font.callout,
+                                                                                color: InterfaceTheme.Color.descriptiveHighlighted),
+                                                           backgroundColor: InterfaceTheme.Color.background3)
     
     var textMarkStyle: TextMarkStyle = TextMarkStyle(bold: TextStyle(font: InterfaceTheme.Font.title, color: InterfaceTheme.Color.interactive),
                                                      italic: TextStyle(font: InterfaceTheme.Font.body, color: InterfaceTheme.Color.interactive),
@@ -196,6 +200,7 @@ private struct DefaultOutlineTheme: OutlineThemeConfigProtocol {
 
 public struct CodeBlockStyle {
     public let textStyle: TextStyle
+    public let backgroundColor: UIColor
     
     public var attributes: [NSAttributedString.Key: Any] {
         return textStyle.attributes
@@ -204,6 +209,7 @@ public struct CodeBlockStyle {
 
 public struct QuoteBlockStyle {
     public let textStyle: TextStyle
+    public let backgroundColor: UIColor
     
     public var attributes: [NSAttributedString.Key: Any] {
         return textStyle.attributes

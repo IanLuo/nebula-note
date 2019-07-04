@@ -63,4 +63,9 @@ public struct OutlineAttribute {
         public static let priority: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_HEADING_PRIORITY)
         public static let planning: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_HEADING_PLANNING)
     }
+    
+    public struct Block {
+        public static let quote: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_BLOCK_QUOTE)
+        public static let code: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_BLOCK_CODE)
+    }
 }

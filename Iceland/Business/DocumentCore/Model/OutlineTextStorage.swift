@@ -568,11 +568,14 @@ extension OutlineTextStorage: OutlineParserDelegate {
             self._tempParsingTokenResult.append(token)
             
             token.decorationAttributesAction = { textStorage, token in
-                guard let range = token.range(for: OutlineParser.Key.Node.codeBlockBegin) else { return }
+                guard let token = token as? BlockBeginToken else { return }
+                textStorage.addAttributes(OutlineTheme.markStyle.attributes, range: token.tokenRange)
                 
-                textStorage.addAttributes(OutlineTheme.markStyle.attributes, range: range)
+                if let contentRange = token.contentRange {
+                    self.addAttributes(OutlineTheme.codeBlockStyle.attributes, range: contentRange)
+                }
                 
-                textStorage._addStylesForQuoteBlock()
+                textStorage.addAttributes([OutlineAttribute.Block.code: OutlineTheme.codeBlockStyle.backgroundColor], range: token.range)
             }
             
         }
@@ -602,11 +605,15 @@ extension OutlineTextStorage: OutlineParserDelegate {
             self._tempParsingTokenResult.append(token)
             
             token.decorationAttributesAction = { textStorage, token in
-                guard let range = token.range(for: OutlineParser.Key.Node.quoteBlockBegin) else { return }
+                guard let token = token as? BlockBeginToken else { return }
                 
-                textStorage.addAttributes(OutlineTheme.markStyle.attributes, range: range)
+                if let contentRange = token.contentRange {
+                    self.addAttributes(OutlineTheme.quoteBlockStyle.attributes, range: contentRange)
+                }
                 
-                textStorage._addStylesForQuoteBlock()
+                textStorage.addAttributes(OutlineTheme.markStyle.attributes, range: token.tokenRange)
+                
+                textStorage.addAttributes([OutlineAttribute.Block.quote: OutlineTheme.quoteBlockStyle.backgroundColor], range: token.range)
             }
             
         }
@@ -620,9 +627,9 @@ extension OutlineTextStorage: OutlineParserDelegate {
             self._tempParsingTokenResult.append(token)
             
             token.decorationAttributesAction = { textStorage, token in
-                guard let range = token.range(for: OutlineParser.Key.Node.quoteBlockEnd) else { return }
+                guard let token = token as? BlockEndToken else { return }
                 
-                textStorage.addAttributes(OutlineTheme.markStyle.attributes, range: range)
+                textStorage.addAttributes(OutlineTheme.markStyle.attributes, range: token.tokenRange)
                 
             }
         }
@@ -853,19 +860,6 @@ extension OutlineTextStorage: OutlineParserDelegate {
             if blockBeginToken.range.intersection(currentRange) != nil {
                 if let contentRange = blockBeginToken.contentRange {
                     self.addAttributes(OutlineTheme.codeBlockStyle.attributes, range: contentRange)
-                }
-            }
-        }
-    }
-    
-    private func _addStylesForQuoteBlock() {
-        guard let currentRange = self.currentParseRange else { return }
-        
-        for blockBeginToken in self._pairedQuoteBlocks {
-            // find current block range
-            if blockBeginToken.range.intersection(currentRange) != nil {
-                if let contentRange = blockBeginToken.contentRange {
-                    self.addAttributes(OutlineTheme.quoteBlockStyle.attributes, range: contentRange)
                 }
             }
         }

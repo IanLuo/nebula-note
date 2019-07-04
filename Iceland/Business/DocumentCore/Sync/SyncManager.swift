@@ -192,8 +192,10 @@ public class SyncManager: NSObject {
         set { UserDefaults.standard.set(newValue.rawValue, forKey: "iCloudStatus") }
     }
     
+    /// move local files to iCloud folder, if there already old file exists, overrid it
     public func moveLocalFilesToIcloud(completion: @escaping (Error?) -> Void) {
 
+        // if there's no root folders for documents, attachment, and key value store folder, means sync is not enabled, ignore
         guard let icloudDocumentRoot = SyncManager.iCloudDocumentRoot,
             let icloudAttachmentRoot = SyncManager.iCloudAttachmentRoot,
         let icloudKeyValueStoreRoot = SyncManager.iCloudKeyValueStoreRoot else {
@@ -201,24 +203,31 @@ public class SyncManager: NSObject {
             return
         }
         
-        let queue = DispatchQueue(label: "moveLocalFilesToIcloud")
+        // the queue for perform moving files action
+        let queue = DispatchQueue(label: "move local files to iCloud")
 
         queue.async {
             do {
                 var isDir = ObjCBool(true)
                 
+                // move local documents folder to icloud document folder, and keep the files in it's place in local
                 if FileManager.default.fileExists(atPath: URL.localDocumentBaseURL.path, isDirectory: &isDir) {
                     for path in try self._allPaths(in: URL.localDocumentBaseURL) {
+                        
+                        // use the documents folder related path, of all contents inside documents file, combine to iCloud base folder, to get a destination of move to iCloud action destination url
                         let destination = icloudDocumentRoot.appendingPathComponent(path)
                         
+                        // in case the file is not at root of iCloud documents folder, and the parent's folder not created, then create it
                         try self._createIntermiaFoldersIfNeeded(url: destination)
                         
+                        // do the moving action
                         try FileManager.default.setUbiquitous(true,
                                                               itemAt: URL.localDocumentBaseURL.appendingPathComponent(path),
                                                               destinationURL: destination)
                     }
                 }
                 
+                // move local attachments to iCloud attachment folder
                 if FileManager.default.fileExists(atPath: URL.localAttachmentURL.path, isDirectory: &isDir) {
                     for path in try self._allPaths(in: URL.localAttachmentURL) {
                         let destination = icloudAttachmentRoot.appendingPathComponent(path)
@@ -231,6 +240,7 @@ public class SyncManager: NSObject {
                     }
                 }
                 
+                // move local key values store files to iCloud key value store folder
                 if FileManager.default.fileExists(atPath: URL.localKeyValueStoreURL.path, isDirectory: &isDir) {
                     for path in try self._allPaths(in: URL.localKeyValueStoreURL) {
                         let destination = icloudKeyValueStoreRoot.appendingPathComponent(path)
@@ -250,8 +260,10 @@ public class SyncManager: NSObject {
         }
     }
     
+    /// move iCloud files to local folder
     public func moveiCloudFilesToLocal(completion: @escaping (Error?) -> Void) {
         
+        // if there's no root folders for documents, attachment, and key value store folder, means sync is not enabled, ignore
         guard let icloudDocumentRoot = SyncManager.iCloudDocumentRoot,
             let icloudAttachmentRoot = SyncManager.iCloudAttachmentRoot,
             let icloudKeyValueStoreRoot = SyncManager.iCloudKeyValueStoreRoot else {
@@ -259,7 +271,7 @@ public class SyncManager: NSObject {
                 return
         }
         
-        let queue = DispatchQueue(label: "moveLocalFilesToIcloud")
+        let queue = DispatchQueue(label: "move iCloud file to local")
         
         queue.async {
             do {
@@ -316,6 +328,7 @@ public class SyncManager: NSObject {
         }
     }
     
+    /// find all file paths under the specifiled url (which is a folder)
     private func _allPaths(in folder: URL) throws -> [String] {
         var urls: [String] = []
         let keys: [URLResourceKey] = [.isPackageKey, .isDirectoryKey]
@@ -324,15 +337,25 @@ public class SyncManager: NSObject {
                                        options: [.skipsHiddenFiles, .skipsPackageDescendants], errorHandler: nil)
         
         while let url = enumerator?.nextObject() as? URL {
+            // if the url is a symbolic link, resove it
             let url = url.resolvingSymlinksInPath()
+            // get the file resource properties, including 'isPackageKey' and 'isDirectoryKey'
             let resouece = try url.resourceValues(forKeys: Set(keys))
+            // if the url is a directory, and the path extension is document's extension, which means a wrapped document, skip the contents, and add the url to return
             if resouece.isDirectory! && url.pathExtension == Document.fileExtension {
                 enumerator?.skipDescendants()
+                // before return, remove the first part of url only keep the related path to the passed in folder
                 urls.append(url.path.replacingOccurrences(of: folder.path, with: ""))
+                
+            // add attachment wrapped director to return, ignore it's contents
             } else if resouece.isDirectory! && url.pathExtension == AttachmentDocument.fileExtension {
                 enumerator?.skipDescendants()
+                // before return, remove the first part of url only keep the related path to the passed in folder
                 urls.append(url.path.replacingOccurrences(of: folder.path, with: ""))
+                
+            // any file that's not a directory, add to return
             } else if resouece.isDirectory == false {
+                // before return, remove the first part of url only keep the related path to the passed in folder
                 urls.append(url.path.replacingOccurrences(of: folder.path, with: ""))
             }
         }
@@ -369,14 +392,17 @@ extension SyncManager: NSMetadataQueryDelegate {
         }
         
         if let addedItems = notification.userInfo?["kMDQueryUpdateAddedItems"] as? [NSMetadataItem] {
+            log.info("found \(addedItems.count) added items")
             handleItemsAction(addedItems)
         }
         
         if let removedItems = notification.userInfo?["kMDQueryUpdateRemovedItems"] as? [NSMetadataItem] {
+            log.info("found  \(removedItems.count) removed items")
             handleItemsAction(removedItems)
         }
         
         if let changedItems = notification.userInfo?["kMDQueryUpdateChangedItems"] as? [NSMetadataItem] {
+            log.info("found \(changedItems) changed items")
             handleItemsAction(changedItems)
         }
         

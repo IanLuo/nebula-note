@@ -35,35 +35,107 @@ public class OutlineLayoutManager: NSLayoutManager {
         if let textStorage = self.textStorage {
             var acturaRange: NSRange = NSRange(location: 0, length: 0)
             _ = self.characterRange(forGlyphRange: glyphsToShow, actualGlyphRange: &acturaRange)
-            textStorage.enumerateAttribute(OutlineAttribute.button, in: glyphsToShow, options: []) { (value, range, stop) in
-                guard let value = value else {
-                    super.drawGlyphs(forGlyphRange: range, at: origin);return
-                }
-                
-                guard let color = (value as? UIColor) else { return }
-                let glRange = glyphRange(forCharacterRange: range, actualCharacterRange: nil);
-                self.enumerateEnclosingRects(forGlyphRange: glRange, withinSelectedGlyphRange: NSRange(location: 0, length: 0), in: self.textContainers[0], using: { (rect, stop) in
-                    
-                    guard let context = UIGraphicsGetCurrentContext() else { return }
-                    let font = InterfaceTheme.Font.footnote
-                    context.saveGState()
-                    context.translateBy(x: origin.x, y: origin.y)
-                    color.setFill()
-                    
-                    var rect = rect
-                    rect.origin.y = rect.origin.y - font.descender
-                    rect.size.height = font.lineHeight - font.descender
-                    
-                    let path = UIBezierPath(roundedRect: rect, cornerRadius: 4)
-                    path.fill()
-                    context.restoreGState()
-                })
-
-                super.drawGlyphs(forGlyphRange: range, at: origin)
-            }
+            var stop: Bool = false
+            
+            self._handleButton(textStorage: textStorage, range: glyphsToShow, origin: origin, shouldStop: &stop)
+            
+//            guard !stop else { return }
+            
+            self._handleForQuote(textStorage: textStorage, range: glyphsToShow, origin: origin, shouldStop: &stop)
+            
+//            guard !stop else { return }
+            
+            self._handleForCode(textStorage: textStorage, range: glyphsToShow, origin: origin, shouldStop: &stop)
+            
+            super.drawGlyphs(forGlyphRange: glyphsToShow, at: origin)
         } else {
             super.drawGlyphs(forGlyphRange: glyphsToShow, at: origin)
         }
-        
+    }
+    
+    private func _handleButton(textStorage: NSTextStorage, range: NSRange, origin: CGPoint, shouldStop: inout Bool) {
+        textStorage.enumerateAttribute(OutlineAttribute.button, in: range, options: []) { (value, range, stop) in
+            guard let value = value else {
+                super.drawGlyphs(forGlyphRange: range, at: origin);return
+            }
+            
+            guard let color = (value as? UIColor) else { return }
+            let glRange = glyphRange(forCharacterRange: range, actualCharacterRange: nil);
+            
+            self.enumerateEnclosingRects(forGlyphRange: glRange, withinSelectedGlyphRange: NSRange(location: 0, length: 0), in: self.textContainers[0], using: { (rect, stop) in
+                
+                guard let context = UIGraphicsGetCurrentContext() else { return }
+                let font = InterfaceTheme.Font.footnote
+                context.saveGState()
+                context.translateBy(x: origin.x, y: origin.y)
+                color.setFill()
+                
+                var rect = rect
+                rect.origin.y = rect.origin.y - font.descender
+                rect.size.height = font.lineHeight - font.descender
+                
+                let path = UIBezierPath(roundedRect: rect, cornerRadius: 4)
+                path.fill()
+                context.restoreGState()
+            })
+            
+        }
+    }
+    
+    private func _handleForQuote(textStorage: NSTextStorage, range: NSRange, origin: CGPoint, shouldStop: inout Bool) {
+        textStorage.enumerateAttribute(OutlineAttribute.Block.quote, in: range, options: []) { (value, range, stop) in
+            guard let value = value else {
+                super.drawGlyphs(forGlyphRange: range, at: origin);return
+            }
+            
+            guard let color = (value as? UIColor) else { return }
+            let glRange = glyphRange(forCharacterRange: range, actualCharacterRange: nil);
+            
+            guard let context = UIGraphicsGetCurrentContext() else { return }
+            let font = InterfaceTheme.Font.footnote
+            context.saveGState()
+            context.translateBy(x: origin.x, y: origin.y)
+            color.setFill()
+            
+            var rect = self.boundingRect(forGlyphRange: glRange, in: self.textContainers[0])
+            rect.origin.y = rect.origin.y + font.descender
+            
+            let path = UIBezierPath(roundedRect: rect, cornerRadius: 4)
+            path.fill()
+            context.restoreGState()
+            
+            context.saveGState()
+            context.translateBy(x: origin.x, y: origin.y)
+            InterfaceTheme.Color.spotlight.setFill()
+            let lineRect = CGRect(x: rect.origin.x, y: rect.origin.y, width: 10, height: rect.height)
+            let lineRectPath = UIBezierPath(roundedRect: lineRect, cornerRadius: 0)
+            lineRectPath.fill()
+            context.restoreGState()
+        }
+    }
+    
+    private func _handleForCode(textStorage: NSTextStorage, range: NSRange, origin: CGPoint, shouldStop: inout Bool) {
+        textStorage.enumerateAttribute(OutlineAttribute.Block.code, in: range, options: []) { (value, range, stop) in
+            guard let value = value else {
+                super.drawGlyphs(forGlyphRange: range, at: origin);return
+            }
+            
+            guard let color = (value as? UIColor) else { return }
+            let glRange = glyphRange(forCharacterRange: range, actualCharacterRange: nil);
+            
+            guard let context = UIGraphicsGetCurrentContext() else { return }
+            let font = InterfaceTheme.Font.footnote
+            context.saveGState()
+            context.translateBy(x: origin.x, y: origin.y)
+            color.setFill()
+            
+            var rect = self.boundingRect(forGlyphRange: glRange, in: self.textContainers[0])
+            rect.origin.y = rect.origin.y + font.descender
+            
+            let path = UIBezierPath(roundedRect: rect, cornerRadius: 4)
+            path.fill()
+            context.restoreGState()
+            
+        }
     }
 }

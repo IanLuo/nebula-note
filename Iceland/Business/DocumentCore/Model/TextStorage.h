@@ -61,6 +61,9 @@ FOUNDATION_EXPORT const unsigned char TextStorageVersionString[];
 
 #define OUTLINE_ATTRIBUTE_ATTACHMENT_UNAVAILABLE @"OUTLINE_ATTRIBUTE_ATTACHMENT_UNAVAILABLE"
 
+#define OUTLINE_ATTRIBUTE_BLOCK_QUOTE @"OUTLINE_ATTRIBUTE_BLOCK_QUOTE"
+#define OUTLINE_ATTRIBUTE_BLOCK_CODE @"OUTLINE_ATTRIBUTE_BLOCK_CODE"
+
 @protocol ContentUpdatingProtocol<NSObject>
     
 - (void)performContentUpdate:(NSString *)string range:(NSRange)range delta:(NSInteger)delta action:(NSTextStorageEditActions)action;

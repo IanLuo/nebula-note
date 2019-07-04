@@ -118,7 +118,7 @@ public class BlockBeginToken: BlockToken {
         }
     }
     
-    // the range from first of begin token to last of end token
+    /// the range from first of begin token to last of end token
     public override var range: NSRange {
         if let endToken = self.endToken {
             return NSRange(location: super.range.location, length: endToken.range.upperBound - super.range.location)
@@ -131,9 +131,10 @@ public class BlockBeginToken: BlockToken {
         return super.range
     }
     
+    /// the range of the part exclude the block token
     public var contentRange: NSRange? {
         if let endToken = self.endToken {
-            return self.range.moveLeftBound(by: super.range.length).moveRightBound(by: -endToken.tokenRange.length)
+            return self.range.moveLeftBound(by: self.tokenRange.length).moveRightBound(by: -endToken.tokenRange.length)
         } else {
             return nil
         }
