@@ -148,14 +148,13 @@ public class CaptureListViewController: UIViewController {
         default: return // ignore
         }
         
-        self.viewModel.loadAllCapturedData()
-        self.view.showProcessingAnimation()
+        self.viewModel.loadFilterdData(kind: self.viewModel.currentFilteredAttachmentKind)
     }
 }
 
 extension CaptureListViewController: CaptureTableCellDelegate {
     private func _index(for attachment: Attachment) -> Int? {
-        for (index, t) in self.viewModel.data.enumerated() {
+        for (index, t) in self.viewModel.currentFilteredData.enumerated() {
             if attachment.key == t.key {
                 return index
             }
@@ -273,18 +272,18 @@ extension CaptureListViewController: CaptureTableCellDelegate {
 
 extension CaptureListViewController: UITableViewDataSource {
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.cellModels.count
+        return viewModel.currentFilterdCellModels.count
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: CaptureTableCell.reuseIdentifier, for: indexPath) as! CaptureTableCell
-        cell.cellModel = self.viewModel.cellModels[indexPath.row]
+        cell.cellModel = self.viewModel.currentFilterdCellModels[indexPath.row]
         cell.delegate = self
         return cell
     }
     
     public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return self.viewModel.cellModels[indexPath.row].attachmentView.size(for: tableView.bounds.width - 60).height + 120
+        return self.viewModel.currentFilterdCellModels[indexPath.row].attachmentView.size(for: tableView.bounds.width - 60).height + 120
     }
 }
 

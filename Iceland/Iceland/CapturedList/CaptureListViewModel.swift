@@ -40,9 +40,11 @@ public class CaptureListViewModel {
     
     private let service: CaptureServiceProtocol
     
-    public var data: [Attachment] = []
+    private var data: [Attachment] = []
     
-    public var cellModels: [CaptureTableCellModel] = []
+    public var currentFilteredData: [Attachment] = []
+    
+    public var currentFilterdCellModels: [CaptureTableCellModel] = []
     
     private var currentIndex: Int?
     
@@ -98,7 +100,7 @@ public class CaptureListViewModel {
                 self.currentIndex = nil // 移除当前选中的
                 self.service.delete(key: attachment.key) // 删除 capture 中的 attachment 记录
                 self.data.remove(at: index)
-                self.cellModels.remove(at: index)
+                self.currentFilterdCellModels.remove(at: index)
                 
                     service.save { _ in
                         service.close { _ in
@@ -114,22 +116,30 @@ public class CaptureListViewModel {
         
     }
     
+    public func loadFilterdData(kind: Attachment.Kind?) {
+        if let filterKind = kind {
+            self.currentFilteredData = self.data.filter { $0.kind == filterKind }
+        } else {
+            self.currentFilteredData = self.data
+        }
+        
+        self.currentFilterdCellModels = self.currentFilteredData.map { CaptureTableCellModel(attacment: $0) }
+        
+        self.delegate?.didLoadData()
+    }
+    
     public func loadAllCapturedData() {
         DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
             self.service
                 .loadAll(completion: { [weak self] attachments in
-                    var attachments = attachments.sorted(by: { last, next -> Bool in
+                    let attachments = attachments.sorted(by: { last, next -> Bool in
                         last.date.timeIntervalSince1970 > next.date.timeIntervalSince1970
                     })
                     
-                    if let filterKind = self?.currentFilteredAttachmentKind {
-                        attachments = attachments.filter { $0.kind == filterKind }
-                    }
-                    
                     self?.data = attachments
-                    self?.cellModels = attachments.map { CaptureTableCellModel(attacment: $0) }
                     
                     DispatchQueue.main.async {
+                        self?.loadFilterdData(kind: self?.currentFilteredAttachmentKind)
                         self?.delegate?.didLoadData()
                     }
                     }, failure: { [weak self] error in
@@ -141,13 +151,17 @@ public class CaptureListViewModel {
     }
     
     public func delete(index: Int) {
-        self.service.delete(key: self.data[index].key)
-        self.data.remove(at: index)
-        self.cellModels.remove(at: index)
-        self.delegate?.didDeleteCapture(index: index)
-        
-        if index == self.currentIndex {
-            self.currentIndex = nil
+        let removedCellModel = self.currentFilterdCellModels.remove(at: index)
+        let filterdData = self.data.filter { (attachment:Attachment) -> Bool in
+            attachment.url == removedCellModel.url
+        }
+        if let dataToRemove = filterdData.first {
+            self.service.delete(key: dataToRemove.key)
+            self.delegate?.didDeleteCapture(index: index)
+            
+            if index == self.currentIndex {
+                self.currentIndex = nil
+            }
         }
     }
     
