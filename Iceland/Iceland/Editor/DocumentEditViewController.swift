@@ -50,6 +50,8 @@ public class DocumentEditViewController: UIViewController {
     }
     
     deinit {
+        self.textView.endEditing(true)
+        self.viewModel.close { _ in }
         NotificationCenter.default.removeObserver(self)
     }
     
@@ -68,8 +70,8 @@ public class DocumentEditViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.interface { (me, theme) in
-            me.setNeedsStatusBarAppearanceUpdate()
+        self.interface { [weak self] (me, theme) in
+            self?.setNeedsStatusBarAppearanceUpdate()
         }
         
         self.view.addSubview(self.textView)
@@ -123,6 +125,14 @@ public class DocumentEditViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(_keyboardWillHide(_:)), name: UIApplication.keyboardWillHideNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(_keyboardDidShow(_:)), name: UIApplication.keyboardDidShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(_keyboardDidHide(_:)), name: UIApplication.keyboardDidHideNotification, object: nil)
+    }
+    
+    public override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        if self.presentingViewController == nil {
+            self.viewModel.coordinator?.removeFromParent()
+        }
     }
     
     public override var preferredStatusBarStyle: UIStatusBarStyle {

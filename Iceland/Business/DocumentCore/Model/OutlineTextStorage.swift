@@ -116,22 +116,22 @@ extension OutlineTextStorage: ContentUpdatingProtocol {
 
         guard action != .editedAttributes else { return } // 如果是修改属性，则不进行解析
 //        guard self.string.nsstring.length > 0 else { return }
-        
-        // 如果是删除操作，直接删除已删除的部分的 token
-        if delta < 0 {
-            let deletionRange = NSRange(location: range.upperBound, length: -delta)
-            
-            _ = self._remove(in: deletionRange, from: &self.allTokens)
-            _ = self._remove(in: deletionRange, from: &self._savedHeadings)
-            _ = self._remove(in: deletionRange, from: &self._codeBlocks)
-            _ = self._remove(in: deletionRange, from: &self._quoteBlocks)
-        }
 
         // 更新 item 偏移
         self.updateTokenRangeOffset(delta: delta, from: range.location)
 
         // 调整需要解析的字符串范围
         self.currentParseRange = self._adjustParseRange(range)
+        
+        // 如果是删除操作，直接删除已删除的部分的 token
+        if delta < 0 {
+            let deletionRange = NSRange(location: range.upperBound, length: -delta)
+            _ = self._remove(in: deletionRange, from: &self.allTokens)
+            _ = self._remove(in: deletionRange, from: &self._savedHeadings)
+            _ = self._remove(in: deletionRange, from: &self._codeBlocks)
+            _ = self._remove(in: deletionRange, from: &self._quoteBlocks)
+        }
+
         
         guard let currentParseRange = self.currentParseRange else { return }
         
@@ -966,14 +966,14 @@ extension OutlineTextStorage: OutlineParserDelegate {
         
         // 如果范围在某个 item 内，并且小于这个 item 原来的范围，则扩大至这个 item 原来的范围
         for item in self.codeBlocks {
-            if item.range.intersection(newRange) != nil {
+            if item.range.intersection(newRange) != nil || newRange.location == item.range.upperBound {
                 newRange = item.range.union(newRange)
                 break
             }
         }
         
         for item in self.quoteBlocks {
-            if item.range.intersection(newRange) != nil {
+            if item.range.intersection(newRange) != nil || newRange.location == item.range.upperBound {
                 newRange = item.range.union(newRange)
                 break
             }

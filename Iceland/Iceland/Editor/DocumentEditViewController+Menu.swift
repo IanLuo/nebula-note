@@ -14,9 +14,7 @@ import Interface
 extension DocumentEditViewController {
     @objc public func cancel(_ button: UIView) {
         button.showProcessingAnimation()
-        self.textView.endEditing(true)
-        self.viewModel.close { _ in }
-        self.viewModel.coordinator?.stop()
+        self.dismiss(animated: true, completion: nil)
     }
     
     @objc public func showInfo() {

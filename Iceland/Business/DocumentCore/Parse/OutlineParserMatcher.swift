@@ -121,7 +121,7 @@ extension OutlineParser {
             public static let codeBlockBegin = "codeBlockBegin"
             public static let codeBlockEnd = "codeBlockEnd"
             public static let quoteBlockBegin = "quoteBlockBegin"
-            public static let quoteBlockEnd = "codeBlockEnd"
+            public static let quoteBlockEnd = "quoteBlockEnd"
         }
         
         public struct Element {

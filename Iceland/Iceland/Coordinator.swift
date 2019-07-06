@@ -110,10 +110,14 @@ public class Coordinator {
     @objc public func stop(animated: Bool = true, completion: (() -> Void)? = nil) {
         if let viewController = self.viewController {
             self.moveOut(top: viewController, animated: animated, completion: {
-                self.parent?.remove(self)
+                self.removeFromParent()
                 completion?()
             })
         }
+    }
+    
+    public func removeFromParent() {
+        self.parent?.remove(self)
     }
     
     open func start(from: Coordinator?, animated: Bool = true) {
