@@ -145,7 +145,10 @@ public class SettingsViewController: UITableViewController {
     /// user interface style
     @objc private func _interfaceStyleButtonTapped(_ button: UIButton) {
         let selector = SelectorViewController()
+        selector.title = L10n.Setting.InterfaceStyle.title
         let dependency = self.viewModel.coordinator?.dependency
+        
+        selector.fromView = button.superview
         
         let styles = [SettingsAccessor.InterfaceStyle.dark,
         SettingsAccessor.InterfaceStyle.light,
