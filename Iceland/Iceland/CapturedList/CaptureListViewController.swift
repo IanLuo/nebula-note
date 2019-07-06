@@ -48,7 +48,10 @@ public class CaptureListViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(CaptureTableCell.self, forCellReuseIdentifier: CaptureTableCell.reuseIdentifier)
-        tableView.backgroundColor = InterfaceTheme.Color.background1
+        
+        tableView.interface { (me, theme) in
+            me.backgroundColor = theme.color.background1
+        }
         tableView.separatorStyle = .none
         tableView.tableFooterView = UIView()
         return tableView

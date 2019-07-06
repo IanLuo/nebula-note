@@ -29,11 +29,15 @@ public class CaptureListViewModel {
     public weak var coordinator: CaptureListCoordinator? {
         didSet {
             coordinator?.dependency.eventObserver.registerForEvent(on: self, eventType: NewCaptureAddedEvent.self, queue: .main, action: { [weak self] (event: NewCaptureAddedEvent) in
-                self?.loadAllCapturedData()
+                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1) {
+                    self?.loadAllCapturedData()
+                }
             })
             
             coordinator?.dependency.eventObserver.registerForEvent(on: self, eventType: NewCaptureListDownloadedEvent.self, queue: .main, action: { [weak self] (event: NewCaptureListDownloadedEvent) in
-                self?.loadAllCapturedData()
+                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1) {
+                    self?.loadAllCapturedData()
+                }
             })
         }
     }
@@ -152,17 +156,21 @@ public class CaptureListViewModel {
     
     public func delete(index: Int) {
         let removedCellModel = self.currentFilterdCellModels.remove(at: index)
-        let filterdData = self.data.filter { (attachment:Attachment) -> Bool in
-            attachment.url == removedCellModel.url
-        }
-        if let dataToRemove = filterdData.first {
-            self.service.delete(key: dataToRemove.key)
-            self.delegate?.didDeleteCapture(index: index)
-            
-            if index == self.currentIndex {
-                self.currentIndex = nil
+        
+        for (indexInTotal, dataToRemove) in self.data.enumerated() {
+            if dataToRemove.url == removedCellModel.url {
+                self.data.remove(at: indexInTotal)
+                self.service.delete(key: dataToRemove.key)
+                self.delegate?.didDeleteCapture(index: index)
+                
+                if index == self.currentIndex {
+                    self.currentIndex = nil
+                }
+
+                return
             }
         }
+        
     }
     
     public func chooseRefileLocation(index: Int, completion: @escaping () -> Void, canceled: @escaping () -> Void) {

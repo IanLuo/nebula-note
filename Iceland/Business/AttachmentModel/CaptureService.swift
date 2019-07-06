@@ -69,6 +69,7 @@ public struct CaptureService: CaptureServiceProtocol {
                     attachments.append($0)
                     group.leave()
                 }, failure: { (error) in
+                    group.leave()
                     failure(error)
                 })
             }
