@@ -120,22 +120,30 @@ public enum AttachmentError: Error {
         
         let document = AttachmentDocument(fileURL: url)
         
-        document.open { [weak document] in
-            if $0 {
-                if let attachment = document?.attachment {
-                    document?.close(completionHandler: { completed in
-                        if completed {
-                            completion(attachment)
-                        } else {
-                            failure(AttachmentError.failToCloseDocument(attachment.wrapperURL.path))
-                        }
-                    })
-                } else {
-                    failure(AttachmentError.failToOpenAttachment)
-                }
+        let getContentAndCloseDocument: (AttachmentDocument?) -> Void = { document in
+            if let attachment = document?.attachment {
+                document?.close(completionHandler: { completed in
+                    if completed {
+                        completion(attachment)
+                    } else {
+                        failure(AttachmentError.failToCloseDocument(attachment.wrapperURL.path))
+                    }
+                })
             } else {
                 failure(AttachmentError.failToOpenAttachment)
             }
+        }
+        
+        if document.documentState != .normal {
+            document.open { [weak document] in
+                if $0 {
+                    getContentAndCloseDocument(document)
+                } else {
+                    failure(AttachmentError.failToOpenAttachment)
+                }
+            }
+        } else {
+            getContentAndCloseDocument(document)
         }
     }
     

@@ -73,18 +73,25 @@ public class Application: Coordinator {
                                         dependency: self.dependency)
         homeCoord.start(from: self, animated: animated)
         
+        // 初始化界面主题
         self.dependency.documentManager.getFileLocationComplete { _ in
-            InterfaceThemeSelector.shared.changeTheme(
-                SettingsAccessor.shared.isDarkInterfaceOn
-                    ? DarkInterfaceTheme()
-                    : LightInterfaceTheme()
-            )
+            let theme:InterfaceThemeProtocol = SettingsAccessor.shared.isDarkInterfaceOn
+                ? DarkInterfaceTheme()
+                : LightInterfaceTheme()
+            
+            InterfaceThemeSelector.shared.changeTheme(theme)
+            
+            let newOutlineTheme: OutlineThemeConfigProtocol = OutlineThemeStyle(theme: theme)
+            OutlineThemeSelector.shared.changeTheme(newOutlineTheme)
         }
         
+        // 设置 iCloud
         self._setupiCloud()
         
+        // 导入 extension 收集的 idea
         self.handleSharedIdeas()
         
+        // 通知完成初始化
         self.dependency.eventObserver.emit(AppStartedEvent())
     }
     

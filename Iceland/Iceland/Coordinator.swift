@@ -131,7 +131,6 @@ public class Coordinator {
 extension Coordinator {
     public func openDocument(url: URL, location: Int) {
         let navigationController = Coordinator.createDefaultNavigationControlller()
-        navigationController.isNavigationBarHidden = true
         
         let documentCoordinator = EditorCoordinator(stack: navigationController, dependency: self.dependency,
                                                     usage: EditorCoordinator.Usage.editor(url, location))

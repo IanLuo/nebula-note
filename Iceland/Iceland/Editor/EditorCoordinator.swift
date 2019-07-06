@@ -40,6 +40,7 @@ public class EditorCoordinator: Coordinator {
             self._viewModel = viewModel
             super.init(stack: stack, dependency: dependency)
             let viewController = DocumentEditViewController(viewModel: viewModel)
+            viewController.title = url.packageName
             viewController.delegate = self
             viewModel.coordinator = self
             self.viewController = viewController

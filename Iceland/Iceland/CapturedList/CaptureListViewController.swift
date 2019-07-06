@@ -107,7 +107,9 @@ public class CaptureListViewController: UIViewController {
     }
     
     private func setupUI() {
-        self.view.backgroundColor = InterfaceTheme.Color.background1
+        self.interface { (me, theme) in
+            me.view.backgroundColor = InterfaceTheme.Color.background1
+        }
         
         self.view.addSubview(self.filterSegmentedControl)
         self.view.addSubview(self.tableView)

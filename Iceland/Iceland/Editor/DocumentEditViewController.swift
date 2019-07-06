@@ -62,9 +62,6 @@ public class DocumentEditViewController: UIViewController {
     public let inputbar = InputToolbar(mode: .paragraph)
     
     private let _toolBar: UIStackView = UIStackView()
-    private var _closeButton: RoundButton!
-    private var _menuButton: RoundButton!
-    private var _infoButton: RoundButton!
     private var _keyboardHeight: CGFloat = 0
     
     public override func viewDidLoad() {
@@ -75,45 +72,22 @@ public class DocumentEditViewController: UIViewController {
         }
         
         self.view.addSubview(self.textView)
-        self.view.addSubview(self._toolBar)
         self.view.addSubview(self._loadingIndicator)
         
         if !self.viewModel.isReadyToEdit {
             self._loadingIndicator.startAnimating()
         }
         
-        self.textView.allSidesAnchors(to: self.view, edgeInset: 0, considerSafeArea: true)
+        self.textView.allSidesAnchors(to: self.view, edgeInset: 0)
         self._loadingIndicator.centerAnchors(position: [.centerX, .centerY], to: self.view)
-        self._toolBar.sideAnchor(for: [.left, .top, .right], to: self.view, edgeInsets: .init(top: 10, left: 0, bottom: 0, right: 0), considerSafeArea: true)
-        self._toolBar.sizeAnchor(height: 44)
+
+        let closeButton = UIBarButtonItem(image: Asset.Assets.down.image.fill(color: InterfaceTheme.Color.interactive), style: .plain, target: self, action: #selector(cancel(_:)))
+        self.navigationItem.leftBarButtonItem = closeButton
         
-        self._closeButton = self.createActionButton(icon: Asset.Assets.down.image.fill(color: InterfaceTheme.Color.interactive))
-        self._menuButton = self.createActionButton(icon: Asset.Assets.more.image.fill(color: InterfaceTheme.Color.interactive))
-        self._infoButton = self.createActionButton(icon: Asset.Assets.left.image.fill(color: InterfaceTheme.Color.interactive))
+        let menuButton = UIBarButtonItem(image: Asset.Assets.more.image.fill(color: InterfaceTheme.Color.interactive), style: .plain, target: self, action: #selector(showMenu))
+        let infoButton = UIBarButtonItem(image: Asset.Assets.left.image.fill(color: InterfaceTheme.Color.interactive), style: .plain, target: self, action: #selector(showInfo))
         
-        self._closeButton.tapped { [weak self] _ in
-            guard let strongSelf = self else { return }
-            strongSelf.cancel(strongSelf._closeButton)
-        }
-        self._menuButton.tapped { [weak self] _ in self?.showMenu() }
-        self._infoButton.tapped { [weak self] _ in self?.showInfo() }
-        
-        self._toolBar.addSubview(_closeButton)
-        self._toolBar.addSubview(_menuButton)
-        self._toolBar.addSubview(_infoButton)
-        
-        self._closeButton.sizeAnchor(width: 44)
-        self._infoButton.sizeAnchor(width: 44)
-        self._menuButton.sizeAnchor(width: 44)
-        
-        self._closeButton.sideAnchor(for: .left, to: self._toolBar, edgeInset: Layout.edgeInsets.left)
-        self._closeButton.centerAnchors(position: .centerY, to: self._toolBar)
-        
-        self._infoButton.sideAnchor(for: .right, to: self._toolBar, edgeInset: Layout.edgeInsets.right)
-        self._infoButton.centerAnchors(position: .centerY, to: self._toolBar)
-        
-        self._menuButton.rightAnchor.constraint(equalTo: self._infoButton.leftAnchor, constant: -10).isActive = true
-        self._menuButton.centerAnchors(position: .centerY, to: self._toolBar)
+        self.navigationItem.rightBarButtonItems = [menuButton, infoButton]
         
         self.inputbar.frame = CGRect(origin: .zero, size: .init(width: self.view.bounds.width, height: 44))
         self.inputbar.delegate = self

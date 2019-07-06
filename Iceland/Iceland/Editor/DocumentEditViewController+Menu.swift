@@ -13,7 +13,6 @@ import Interface
 
 extension DocumentEditViewController {
     @objc public func cancel(_ button: UIView) {
-        button.showProcessingAnimation()
         self.dismiss(animated: true, completion: nil)
     }
     

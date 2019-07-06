@@ -293,6 +293,9 @@ extension SettingsViewController: SettingsViewModelDelegate {
     public func didSetInterfaceTheme(isOn: Bool) {
         let newTheme:InterfaceThemeProtocol = isOn ? DarkInterfaceTheme() : LightInterfaceTheme()
         InterfaceThemeSelector.shared.changeTheme(newTheme)
+        
+        let newOutlineTheme: OutlineThemeConfigProtocol = OutlineThemeStyle(theme: newTheme)
+        OutlineThemeSelector.shared.changeTheme(newOutlineTheme)
     }
     
     public func didSetLandingTabIndex(index: Int) {

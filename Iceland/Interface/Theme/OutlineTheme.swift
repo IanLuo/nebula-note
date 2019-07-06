@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 public class OutlineThemeSelector {
-    private static let _instance: OutlineThemeSelector = OutlineThemeSelector(theme: DefaultOutlineTheme())
+    private static let _instance: OutlineThemeSelector = OutlineThemeSelector(theme: OutlineThemeStyle(theme: LightInterfaceTheme()))
     fileprivate var currentTheme: OutlineThemeConfigProtocol
     
     private init(theme: OutlineThemeConfigProtocol) {
@@ -126,78 +126,83 @@ public protocol OutlineThemeConfigProtocol {
     var seperatorStyle: UIColor { get }
 }
 
-private struct DefaultOutlineTheme: OutlineThemeConfigProtocol {
-    var seperatorStyle: UIColor = InterfaceTheme.Color.descriptiveHighlighted
+public struct OutlineThemeStyle: OutlineThemeConfigProtocol {
+    public init(theme: InterfaceThemeProtocol) {
+        self.seperatorStyle = theme.color.descriptiveHighlighted
+        self.headingStyle = TextStyle(font: theme.font.title, color: theme.color.interactive)
+        self.orderdedListStyle = TextStyle(font: theme.font.title, color: theme.color.descriptive)
+        self.unorderdedListStyle = TextStyle(font: theme.font.title, color: theme.color.descriptive)
+        self.checkboxStyle = TextStyle(font: theme.font.title, color: theme.color.spotlight)
+        self.linkStyle = TextStyle(font: theme.font.body, color: theme.color.spotlight)
+        self.markStyle = TextStyle(font: theme.font.footnote, color: theme.color.descriptive)
+        self.paragraphStyle = TextStyle(font: theme.font.body, color: theme.color.interactive)
+        self.codeBlockStyle = CodeBlockStyle(textStyle: TextStyle(font: theme.font.body,
+                                                                  color: theme.color.interactive),
+                                             backgroundColor: theme.color.background2)
+        self.quoteBlockStyle = QuoteBlockStyle(textStyle: TextStyle(font: theme.font.body,
+                                                                    color: theme.color.descriptiveHighlighted),
+                                               backgroundColor: theme.color.background2)
+        self.textMarkStyle = TextMarkStyle(bold: TextStyle(font: theme.font.title, color: theme.color.interactive),
+                                           italic: TextStyle(font: theme.font.italic, color: theme.color.interactive),
+                                           underscore: TextStyle(font: theme.font.body, color: theme.color.interactive,
+                                                                 otherAttributes: [NSAttributedString.Key.underlineStyle: 1]),
+                                           strikethrought: TextStyle(font: theme.font.body, color: theme.color.interactive,
+                                                                     otherAttributes: [NSAttributedString.Key.strikethroughStyle: 1]),
+                                           verbatim: TextStyle(font: theme.font.body, color: theme.color.interactive),
+                                           code: TextStyle(font: theme.font.footnote, color: theme.color.interactive))
+     /// 目前没有使用 button color, 因为 button 显示有问题
+       self.dateAndTimeStyle = DateAndTimeStyle(normal: ButtonStyle(buttonColor: theme.color.background3,
+                                                                     textStyle: TextStyle(font: theme.font.footnote,
+                                                                                          color: theme.color.finished)),
+                                                 soon: ButtonStyle(buttonColor: theme.color.background3,
+                                                                   textStyle: TextStyle(font: theme.font.footnote,
+                                                                                        color: theme.color.unfinished)),
+                                                 overtime: ButtonStyle(buttonColor: theme.color.background3,
+                                                                       textStyle: TextStyle(font: theme.font.footnote,
+                                                                                            color: theme.color.warning)))
+        self.planningStyle = PlanningStyle(finished: ButtonStyle(buttonColor: theme.color.background3,
+                                                                 textStyle: TextStyle(font: theme.font.footnote,
+                                                                                      color: theme.color.finished)),
+                                           unfinished: ButtonStyle(buttonColor: theme.color.background3,
+                                                                   textStyle: TextStyle(font: theme.font.footnote,
+                                                                                        color: theme.color.unfinished)))
+        self.tagStyle = ButtonStyle(buttonColor: theme.color.background3,
+                                    textStyle: TextStyle(font: theme.font.footnote, color: theme.color.interactive))
+        self.priorityStyle = PriorityStyle(a: ButtonStyle(buttonColor: theme.color.background3,
+                                                          textStyle: TextStyle(font: theme.font.footnote,
+                                                                               color: theme.color.warning.withAlphaComponent(1))),
+                                           b: ButtonStyle(buttonColor: theme.color.background3,
+                                                          textStyle: TextStyle(font: theme.font.footnote,
+                                                                               color: theme.color.warning.withAlphaComponent(0.9))),
+                                           c: ButtonStyle(buttonColor: theme.color.background3,
+                                                          textStyle: TextStyle(font: theme.font.footnote,
+                                                                               color: theme.color.warning.withAlphaComponent(0.8))),
+                                           d: ButtonStyle(buttonColor: theme.color.background3,
+                                                          textStyle: TextStyle(font: theme.font.footnote,
+                                                                               color: theme.color.warning.withAlphaComponent(0.7))),
+                                           e: ButtonStyle(buttonColor: theme.color.background3,
+                                                          textStyle: TextStyle(font: theme.font.footnote,
+                                                                               color: theme.color.warning.withAlphaComponent(0.6))),
+                                           f: ButtonStyle(buttonColor: theme.color.background3,
+                                                          textStyle: TextStyle(font: theme.font.footnote,
+                                                                               color: theme.color.warning.withAlphaComponent(0.5))))
+    }
     
-    var headingStyle: TextStyle = TextStyle(font: InterfaceTheme.Font.title, color: InterfaceTheme.Color.interactive)
-    
-    var orderdedListStyle: TextStyle = TextStyle(font: InterfaceTheme.Font.title, color: InterfaceTheme.Color.descriptive)
-    
-    var unorderdedListStyle: TextStyle = TextStyle(font: InterfaceTheme.Font.title, color: InterfaceTheme.Color.descriptive)
-    
-    var checkboxStyle: TextStyle = TextStyle(font: InterfaceTheme.Font.title, color: InterfaceTheme.Color.spotlight)
-    
-    var linkStyle: TextStyle = TextStyle(font: InterfaceTheme.Font.body, color: InterfaceTheme.Color.spotlight)
-    
-    var markStyle: TextStyle = TextStyle(font: InterfaceTheme.Font.footnote, color: InterfaceTheme.Color.descriptive)
-    
-    var paragraphStyle: TextStyle = TextStyle(font: InterfaceTheme.Font.body, color: InterfaceTheme.Color.interactive)
-    
-    var codeBlockStyle: CodeBlockStyle = CodeBlockStyle(textStyle: TextStyle(font: InterfaceTheme.Font.body,
-                                                                             color: InterfaceTheme.Color.interactive),
-                                                        backgroundColor: InterfaceTheme.Color.background3)
-    
-    var quoteBlockStyle: QuoteBlockStyle = QuoteBlockStyle(textStyle: TextStyle(font: InterfaceTheme.Font.body,
-                                                                                color: InterfaceTheme.Color.descriptiveHighlighted),
-                                                           backgroundColor: InterfaceTheme.Color.background3)
-    
-    var textMarkStyle: TextMarkStyle = TextMarkStyle(bold: TextStyle(font: InterfaceTheme.Font.title, color: InterfaceTheme.Color.interactive),
-                                                     italic: TextStyle(font: InterfaceTheme.Font.italic, color: InterfaceTheme.Color.interactive),
-                                                     underscore: TextStyle(font: InterfaceTheme.Font.body, color: InterfaceTheme.Color.interactive,
-                                                                           otherAttributes: [NSAttributedString.Key.underlineStyle: 1]),
-                                                     strikethrought: TextStyle(font: InterfaceTheme.Font.body, color: InterfaceTheme.Color.interactive,
-                                                                               otherAttributes: [NSAttributedString.Key.strikethroughStyle: 1]),
-                                                     verbatim: TextStyle(font: InterfaceTheme.Font.body, color: InterfaceTheme.Color.interactive),
-                                                     code: TextStyle(font: InterfaceTheme.Font.footnote, color: InterfaceTheme.Color.interactive))
-    
-    /// 目前没有使用 button color, 因为 button 显示有问题
-    var dateAndTimeStyle: DateAndTimeStyle = DateAndTimeStyle(normal: ButtonStyle(buttonColor: InterfaceTheme.Color.background3,
-                                                                                  textStyle: TextStyle(font: InterfaceTheme.Font.footnote,
-                                                                                                       color: InterfaceTheme.Color.finished)),
-                                                              soon: ButtonStyle(buttonColor: InterfaceTheme.Color.background3,
-                                                                                textStyle: TextStyle(font: InterfaceTheme.Font.footnote,
-                                                                                                     color: InterfaceTheme.Color.unfinished)),
-                                                              overtime: ButtonStyle(buttonColor: InterfaceTheme.Color.background3,
-                                                                                    textStyle: TextStyle(font: InterfaceTheme.Font.footnote,
-                                                                                                         color: InterfaceTheme.Color.warning)))
-    
-    var planningStyle: PlanningStyle = PlanningStyle(finished: ButtonStyle(buttonColor: InterfaceTheme.Color.background3,
-                                                                           textStyle: TextStyle(font: InterfaceTheme.Font.footnote,
-                                                                                                color: InterfaceTheme.Color.finished)),
-                                                     unfinished: ButtonStyle(buttonColor: InterfaceTheme.Color.background3,
-                                                                             textStyle: TextStyle(font: InterfaceTheme.Font.footnote,
-                                                                                                  color: InterfaceTheme.Color.unfinished)))
-    var tagStyle: ButtonStyle = ButtonStyle(buttonColor: InterfaceTheme.Color.background3,
-                                            textStyle: TextStyle(font: InterfaceTheme.Font.footnote, color: InterfaceTheme.Color.interactive))
-    
-    var priorityStyle: PriorityStyle = PriorityStyle(a: ButtonStyle(buttonColor: InterfaceTheme.Color.background3,
-                                                                    textStyle: TextStyle(font: InterfaceTheme.Font.footnote,
-                                                                                         color: InterfaceTheme.Color.warning.withAlphaComponent(1))),
-                                                     b: ButtonStyle(buttonColor: InterfaceTheme.Color.background3,
-                                                                    textStyle: TextStyle(font: InterfaceTheme.Font.footnote,
-                                                                                         color: InterfaceTheme.Color.warning.withAlphaComponent(0.9))),
-                                                     c: ButtonStyle(buttonColor: InterfaceTheme.Color.background3,
-                                                                    textStyle: TextStyle(font: InterfaceTheme.Font.footnote,
-                                                                                         color: InterfaceTheme.Color.warning.withAlphaComponent(0.8))),
-                                                     d: ButtonStyle(buttonColor: InterfaceTheme.Color.background3,
-                                                                    textStyle: TextStyle(font: InterfaceTheme.Font.footnote,
-                                                                                         color: InterfaceTheme.Color.warning.withAlphaComponent(0.7))),
-                                                     e: ButtonStyle(buttonColor: InterfaceTheme.Color.background3,
-                                                                    textStyle: TextStyle(font: InterfaceTheme.Font.footnote,
-                                                                                         color: InterfaceTheme.Color.warning.withAlphaComponent(0.6))),
-                                                     f: ButtonStyle(buttonColor: InterfaceTheme.Color.background3,
-                                                                    textStyle: TextStyle(font: InterfaceTheme.Font.footnote,
-                                                                                         color: InterfaceTheme.Color.warning.withAlphaComponent(0.5))))
+    public let seperatorStyle: UIColor
+    public let headingStyle: TextStyle
+    public let orderdedListStyle: TextStyle
+    public let unorderdedListStyle: TextStyle
+    public let checkboxStyle: TextStyle
+    public let linkStyle: TextStyle
+    public let markStyle: TextStyle
+    public let paragraphStyle: TextStyle
+    public let codeBlockStyle: CodeBlockStyle
+    public let quoteBlockStyle: QuoteBlockStyle
+    public let textMarkStyle: TextMarkStyle
+    public let dateAndTimeStyle: DateAndTimeStyle
+    public let planningStyle: PlanningStyle
+    public let tagStyle: ButtonStyle
+    public let priorityStyle: PriorityStyle
 }
 
 public struct CodeBlockStyle {
