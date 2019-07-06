@@ -430,9 +430,15 @@ public enum L10n {
       /// General
       public static let title = L10n.tr("Localizable", "setting.general.title")
     }
-    public enum IsUseDarkInterface {
-      /// Dark interface
-      public static let title = L10n.tr("Localizable", "setting.isUseDarkInterface.title")
+    public enum InterfaceStyle {
+      /// Auto
+      public static let auto = L10n.tr("Localizable", "setting.interfaceStyle.auto")
+      /// Dark
+      public static let dark = L10n.tr("Localizable", "setting.interfaceStyle.dark")
+      /// Light
+      public static let light = L10n.tr("Localizable", "setting.interfaceStyle.light")
+      /// Interface style
+      public static let title = L10n.tr("Localizable", "setting.interfaceStyle.title")
     }
     public enum LandingTab {
       /// Choose landing tab

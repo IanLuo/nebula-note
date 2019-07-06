@@ -14,7 +14,7 @@ public protocol SettingsViewModelDelegate: class {
     func didUpdateFinishedPlanning()
     func didUpdateUnfinishedPlanning()
     func didSetLandingTabIndex(index: Int)
-    func didSetInterfaceTheme(isOn: Bool)
+    func didSetInterfaceStyle(newStyle: SettingsAccessor.InterfaceStyle)
 }
 
 public class SettingsViewModel {
@@ -31,13 +31,13 @@ public class SettingsViewModel {
             && SyncManager.status == .on
     }
     
-    public var isDarkInterfaceOn: Bool {
-        return self.coordinator?.dependency.settingAccessor.isDarkInterfaceOn ?? false
+    public var interfaceStyle: SettingsAccessor.InterfaceStyle {
+        return self.coordinator!.dependency.settingAccessor.interfaceStyle
     }
     
-    public func setDarkInterfaceOn(_ isOn: Bool) {
-        self.coordinator?.dependency.settingAccessor.setIsDarkInterfaceOn(isOn, completion: { [weak self] in
-            self?.delegate?.didSetInterfaceTheme(isOn: isOn)
+    public func setInterfaceStyle(_ newStyle: SettingsAccessor.InterfaceStyle) {
+        self.coordinator?.dependency.settingAccessor.setInterfaceStyle(newStyle, completion: { [weak self] in
+            self?.delegate?.didSetInterfaceStyle(newStyle: newStyle)
         })
     }
 

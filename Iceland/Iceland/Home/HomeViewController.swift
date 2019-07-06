@@ -162,6 +162,12 @@ public class HomeViewController: UIViewController {
     public override func didRotate(from fromInterfaceOrientation: UIInterfaceOrientation) {
         self.masterViewController.view.frame = CGRect(x: self.masterViewController.view.frame.origin.x, y: 0, width: self.masterViewWidth, height: self.view.bounds.height)
     }
+    
+    public override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        self.setupTheme()
+    }
 }
 
 

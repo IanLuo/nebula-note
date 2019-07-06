@@ -34,15 +34,15 @@ public class SyncManager: NSObject {
     }
     
     public static var iCloudDocumentRoot: URL? {
-        return SyncManager.iCloudRoot?.appendingPathComponent("files")
+        return SyncManager.iCloudRoot?.appendingPathComponent("files").resolvingSymlinksInPath()
     }
     
     public static var iCloudAttachmentRoot: URL? {
-        return self.iCloudRoot?.appendingPathComponent("attachments")
+        return self.iCloudRoot?.appendingPathComponent("attachments").resolvingSymlinksInPath()
     }
     
     public static var iCloudKeyValueStoreRoot: URL? {
-        return self.iCloudRoot?.appendingPathComponent("keyValueStore")
+        return self.iCloudRoot?.appendingPathComponent("keyValueStore").resolvingSymlinksInPath()
     }
     
     private let _eventObserver: EventObserver

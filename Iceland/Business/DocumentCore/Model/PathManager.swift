@@ -17,13 +17,13 @@ public enum URLLocation {
     fileprivate var url: URL {
         switch self {
         case .document:
-            return URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])
+            return URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]).resolvingSymlinksInPath()
         case .library:
-            return URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.libraryDirectory, .userDomainMask, true)[0])
+            return URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.libraryDirectory, .userDomainMask, true)[0]).resolvingSymlinksInPath()
         case .cache:
-            return URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true)[0])
+            return URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true)[0]).resolvingSymlinksInPath()
         case .temporary:
-            return URL(fileURLWithPath: NSTemporaryDirectory())
+            return URL(fileURLWithPath: NSTemporaryDirectory()).resolvingSymlinksInPath()
         }
     }
 }

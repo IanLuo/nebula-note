@@ -127,7 +127,10 @@
 "setting.alert.icloudIsNotEnabled.msg" = "Please login your iCloud account";
 "setting.alert.failToStoreIniCloud" = "Fail to configure sync";
 
-"setting.isUseDarkInterface.title" = "Dark interface";
+"setting.interfaceStyle.title" = "Interface style";
+"setting.interfaceStyle.dark" = "Dark";
+"setting.interfaceStyle.light" = "Light";
+"setting.interfaceStyle.auto" = "Auto";
 
 "setting.landingTab.title" = "Choose landing tab";
 

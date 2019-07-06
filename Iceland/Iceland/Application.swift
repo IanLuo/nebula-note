@@ -73,17 +73,7 @@ public class Application: Coordinator {
                                         dependency: self.dependency)
         homeCoord.start(from: self, animated: animated)
         
-        // 初始化界面主题
-        self.dependency.documentManager.getFileLocationComplete { _ in
-            let theme:InterfaceThemeProtocol = SettingsAccessor.shared.isDarkInterfaceOn
-                ? DarkInterfaceTheme()
-                : LightInterfaceTheme()
-            
-            InterfaceThemeSelector.shared.changeTheme(theme)
-            
-            let newOutlineTheme: OutlineThemeConfigProtocol = OutlineThemeStyle(theme: theme)
-            OutlineThemeSelector.shared.changeTheme(newOutlineTheme)
-        }
+        UIViewController().setupTheme()
         
         // 设置 iCloud
         self._setupiCloud()
@@ -218,5 +208,53 @@ extension Coordinator {
 extension UINavigationController {
     open override var preferredStatusBarStyle: UIStatusBarStyle {
         return InterfaceTheme.statusBarStyle
+    }
+}
+
+extension UIViewController {
+    public var currentInterfaceStye: SettingsAccessor.InterfaceStyle {
+        if SettingsAccessor.shared.interfaceStyle == .auto {
+            if #available(iOS 13, *) {
+                return .auto // 之后 13 以后才显示 auto
+            } else {
+                return .light // 默认为 light
+            }
+        } else {
+            return SettingsAccessor.shared.interfaceStyle
+        }
+    }
+    
+    public var interfaceTheme: InterfaceThemeProtocol {
+        switch currentInterfaceStye {
+        case .light:
+            return LightInterfaceTheme()
+        case .dark:
+            return DarkInterfaceTheme()
+        case .auto:
+            if #available(iOS 12.0, *) {
+                switch self.traitCollection.userInterfaceStyle {
+                case .dark:
+                    return DarkInterfaceTheme()
+                case .light:
+                    return LightInterfaceTheme()
+                case .unspecified:
+                    return LightInterfaceTheme() // default to light
+                }
+            } else {
+                return LightInterfaceTheme() // default to light
+            }
+        }
+    }
+    
+    public var oultineTheme: OutlineThemeConfigProtocol {
+        return OutlineThemeStyle(theme: interfaceTheme)
+    }
+    
+    public func setupTheme() {
+        let theme = interfaceTheme
+        InterfaceThemeSelector.shared.changeTheme(theme)
+        
+        let newOutlineTheme: OutlineThemeConfigProtocol = OutlineThemeStyle(theme: theme)
+        OutlineThemeSelector.shared.changeTheme(newOutlineTheme)
     }
 }

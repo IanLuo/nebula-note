@@ -21,8 +21,8 @@ public class SettingsViewController: UITableViewController {
     @IBOutlet var isSyncEnabledLabel: UILabel!
     @IBOutlet var isSyncEnabledSwitch: UISwitch!
     
-    @IBOutlet var useDarkThemeLabel: UILabel!
-    @IBOutlet var isDarkThemeEnabledSwitch: UISwitch!
+    @IBOutlet var interfaceStyleLabel: UILabel!
+    @IBOutlet var interfaceStyleButton: UIButton!
     
     @IBOutlet var landingTabTitleLabel: UILabel!
     @IBOutlet var chooseLandingTabButton: UIButton!
@@ -53,6 +53,9 @@ public class SettingsViewController: UITableViewController {
         self.isSyncEnabledSwitch.isOn = self.viewModel.isSyncEnabled
         self.chooseLandingTabButton.setTitle(LandingTab.allCases[self.viewModel.currentLandigTabIndex].name, for: .normal)
         
+        self.interfaceStyleLabel.text = L10n.Setting.InterfaceStyle.title
+        self.interfaceStyleButton.setTitle(self.viewModel.interfaceStyle.localizedTitle, for: .normal)
+        
         self.planningFinishLabel.text = L10n.Setting.Planning.Finish.title
         self.planningFinishButton.setTitle(self.viewModel.getPlanning(isForFinished: true).joined(separator: ","), for: .normal)
         self.planningUnfinishLabel.text = L10n.Setting.Planning.Unfinish.title
@@ -63,9 +66,6 @@ public class SettingsViewController: UITableViewController {
         self.title = L10n.Setting.title
         
         self.tableView.separatorStyle = .none
-        
-        self.useDarkThemeLabel.text = L10n.Setting.IsUseDarkInterface.title
-        self.isDarkThemeEnabledSwitch.isOn = self.viewModel.isDarkInterfaceOn
         
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: Asset.Assets.down.image,
                                                                  style: .plain,
@@ -78,8 +78,8 @@ public class SettingsViewController: UITableViewController {
             self?.isSyncEnabledLabel.textColor = theme.color.interactive
             self?.isSyncEnabledSwitch.onTintColor = theme.color.spotlight
             
-            self?.useDarkThemeLabel.textColor = theme.color.interactive
-            self?.isDarkThemeEnabledSwitch.onTintColor = theme.color.spotlight
+            self?.interfaceStyleLabel.textColor = theme.color.interactive
+            self?.interfaceStyleButton.setTitleColor(theme.color.spotlight, for: .normal)
             
             self?.landingTabTitleLabel.textColor = theme.color.interactive
             self?.chooseLandingTabButton.setTitleColor(theme.color.spotlight, for: .normal)
@@ -111,7 +111,7 @@ public class SettingsViewController: UITableViewController {
     
     private func _setupObserver() {
         self.isSyncEnabledSwitch.addTarget(self, action: #selector(_iCloudSwitchTapped), for: .touchUpInside)
-        self.isDarkThemeEnabledSwitch.addTarget(self, action: #selector(_isDarkInterfaceSwitchButtonTapped), for: .touchUpInside)
+        self.interfaceStyleButton.addTarget(self, action: #selector(_interfaceStyleButtonTapped), for: .touchUpInside)
         self.chooseLandingTabButton.addTarget(self, action: #selector(_showLandingTabNamesSelector), for: .touchUpInside)
         self.planningFinishButton.addTarget(self, action: #selector(_planningManageFinish), for: .touchUpInside)
         self.planningUnfinishButton.addTarget(self, action: #selector(_planningManageUnfinish), for: .touchUpInside)
@@ -142,8 +142,36 @@ public class SettingsViewController: UITableViewController {
         })
     }
     
-    @objc private func _isDarkInterfaceSwitchButtonTapped(_ switchButton: UISwitch) {
-        self.viewModel.setDarkInterfaceOn(switchButton.isOn)
+    /// user interface style
+    @objc private func _interfaceStyleButtonTapped(_ button: UIButton) {
+        let selector = SelectorViewController()
+        let dependency = self.viewModel.coordinator?.dependency
+        
+        let styles = [SettingsAccessor.InterfaceStyle.dark,
+        SettingsAccessor.InterfaceStyle.light,
+        SettingsAccessor.InterfaceStyle.auto]
+        
+        selector.addItem(title: styles[0].localizedTitle)
+        selector.addItem(title: styles[1].localizedTitle)
+        
+        if #available(iOS 13, *) {
+            selector.addItem(title: styles[2].localizedTitle)
+        }
+        
+        selector.onCancel = { viewController in
+            viewController.dismiss(animated: true)
+            dependency?.globalCaptureEntryWindow?.show()
+        }
+        
+        selector.onSelection = { index, viewController in
+            viewController.dismiss(animated: true)
+            self.viewModel.setInterfaceStyle(styles[index])
+            dependency?.globalCaptureEntryWindow?.show()
+            self.interfaceStyleButton.setTitle(styles[index].localizedTitle, for: .normal)
+        }
+        
+        self.present(selector, animated: true)
+        dependency?.globalCaptureEntryWindow?.hide()
     }
     
     @objc private func _showLandingTabNamesSelector() {
@@ -290,12 +318,8 @@ public class SettingsViewController: UITableViewController {
 }
 
 extension SettingsViewController: SettingsViewModelDelegate {
-    public func didSetInterfaceTheme(isOn: Bool) {
-        let newTheme:InterfaceThemeProtocol = isOn ? DarkInterfaceTheme() : LightInterfaceTheme()
-        InterfaceThemeSelector.shared.changeTheme(newTheme)
-        
-        let newOutlineTheme: OutlineThemeConfigProtocol = OutlineThemeStyle(theme: newTheme)
-        OutlineThemeSelector.shared.changeTheme(newOutlineTheme)
+    public func didSetInterfaceStyle(newStyle: SettingsAccessor.InterfaceStyle) {
+        self.setupTheme()
     }
     
     public func didSetLandingTabIndex(index: Int) {
@@ -312,5 +336,19 @@ extension SettingsViewController: SettingsViewModelDelegate {
     
     public func didUpdateUnfinishedPlanning() {
         
+    }
+}
+
+// MARK: -
+extension SettingsAccessor.InterfaceStyle {
+    public var localizedTitle: String {
+        switch self {
+        case .auto:
+            return L10n.Setting.InterfaceStyle.auto
+        case .dark:
+            return L10n.Setting.InterfaceStyle.dark
+        case .light:
+            return L10n.Setting.InterfaceStyle.light
+        }
     }
 }

@@ -50,7 +50,7 @@ public class MoveToAnimtor: NSObject, Animator {
                 UIView.animate(withDuration: self.transitionDuration(using: transitionContext), delay: 0.0, options: .curveEaseInOut, animations: ({
                     animatableView.frame = destRect
                     animatableView.alpha = 1
-                    transitionViewController.view.backgroundColor = InterfaceTheme.Color.interactive.withAlphaComponent(0.3)
+                    transitionViewController.view.backgroundColor = InterfaceTheme.Color.interactive.withAlphaComponent(0.1)
                 }), completion: { completeion in
                     transitionViewController.contentView.alpha = 1
                     animatableView.removeFromSuperview()

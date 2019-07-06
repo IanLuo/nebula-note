@@ -15,13 +15,19 @@ public enum SettingsError: Error {
 
 /// used to fetch settings values
 @objc public class SettingsAccessor: NSObject {
+    public enum InterfaceStyle: String, CaseIterable {
+        case dark
+        case light
+        case auto
+    }
+    
     private struct Constants {
         static var store: KeyValueStore { return KeyValueStoreFactory.store(type: KeyValueStoreType.plist(PlistStoreType.custom("Settings"))) }
         struct Keys {
             static let finishedPlannings = "finishedPlannings"
             static let unfinishedPlannings = "unfinishedPlannings"
             static let landingTabIndex = "landingTabIndex"
-            static let isDarkInterfaceOn = "isDarkInterfaceOn"
+            static let interfaceStyle = "interfaceStyle"
         }
     }
     
@@ -52,12 +58,17 @@ public enum SettingsError: Error {
         return OutlineParser.Values.Heading.Priority.all
     }
     
-    public func setIsDarkInterfaceOn(_ isOn: Bool, completion: @escaping () -> Void) {
-        Constants.store.set(value: isOn, key: Constants.Keys.isDarkInterfaceOn, completion: completion)
+    public var interfaceStyle: InterfaceStyle {
+        // 支持 dark mode 的系统，默认值为自动，否则为 light
+        if #available(iOS 13, *) {
+            return InterfaceStyle(rawValue: Constants.store.get(key: Constants.Keys.interfaceStyle, type: String.self) ?? InterfaceStyle.auto.rawValue) ?? InterfaceStyle.auto
+        } else {
+            return InterfaceStyle(rawValue: Constants.store.get(key: Constants.Keys.interfaceStyle, type: String.self) ?? InterfaceStyle.light.rawValue) ?? InterfaceStyle.light
+        }
     }
     
-    public var isDarkInterfaceOn: Bool {
-        return Constants.store.get(key: Constants.Keys.isDarkInterfaceOn, type: Bool.self) ?? false
+    public func setInterfaceStyle(_ style: InterfaceStyle, completion: @escaping () -> Void) {
+        Constants.store.set(value: style.rawValue, key: Constants.Keys.interfaceStyle, completion: completion)
     }
     
     public func setLandingTabIndex(_ index: Int, completion: @escaping () -> Void) {
