@@ -96,21 +96,21 @@ public class CaptureListViewModel {
                 
                 var content = OutlineParser.Values.Attachment.serialize(attachment: attachment)
                 // 添加的内容，新建一行，空一行
-                content = OutlineParser.Values.Character.linebreak + OutlineParser.Values.Character.linebreak + content
+                content = OutlineParser.Values.Character.linebreak + OutlineParser.Values.Character.linebreak + content + OutlineParser.Values.Character.linebreak
 
                 let insertion = InsertTextCommandComposer(location: heading.paragraphRange.upperBound, textToInsert: content)
                 _ = service.toggleContentCommandComposer(composer: insertion).perform()
                 
                 self.currentIndex = nil // 移除当前选中的
-                self.service.delete(key: attachment.key) // 删除 capture 中的 attachment 记录
-                self.data.remove(at: index)
-                self.currentFilterdCellModels.remove(at: index)
+                
+                DispatchQueue.main.async {
+                    self.delete(index: index)
+                    self.delegate?.didCompleteRefile(index: index)
+                }
                 
                     service.save { _ in
                         service.close { _ in
                             DispatchQueue.main.async {
-                                self.delegate?.didCompleteRefile(index: index)
-                                self.delegate?.didDeleteCapture(index: index)
                                 completion()
                             }
                     }

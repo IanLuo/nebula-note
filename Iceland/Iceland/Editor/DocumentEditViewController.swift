@@ -50,7 +50,6 @@ public class DocumentEditViewController: UIViewController {
     }
     
     deinit {
-        self.textView.endEditing(true)
         self.viewModel.close { _ in }
         NotificationCenter.default.removeObserver(self)
     }
@@ -104,6 +103,7 @@ public class DocumentEditViewController: UIViewController {
     public override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         
+        self.textView.endEditing(true)
         if self.presentingViewController == nil {
             self.viewModel.coordinator?.removeFromParent()
         }
