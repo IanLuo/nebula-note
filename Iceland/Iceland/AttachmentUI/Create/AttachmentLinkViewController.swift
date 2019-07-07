@@ -67,9 +67,6 @@ extension AttachmentLinkViewController: ModalFormViewControllerDelegate {
             let data = try jsonEncoder.encode(linkData)
             let string = String(data: data, encoding: .utf8) ?? ""
             self.viewModel.save(content: string, kind: .link, description: "link by user input")
-            viewController.dismiss(animated: true) {
-                self.viewModel.coordinator?.stop()
-            }
         } catch {
             log.error(error)
         }
