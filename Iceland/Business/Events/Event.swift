@@ -109,3 +109,6 @@ public class ImportFileEvent: Event {
         self.url = url
     }
 }
+
+public class iCloudEnabledEvent: Event {}
+public class iCloudDisabledEvent: Event {}

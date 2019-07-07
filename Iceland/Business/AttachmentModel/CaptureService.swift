@@ -38,6 +38,7 @@ public struct CaptureService: CaptureServiceProtocol {
     public func save(key: String, completion: @escaping () -> Void) {
         let plist = KeyValueStoreFactory.store(type: .plist(.custom(CaptureService.plistFileName)))
         plist.set(value: "", key: key) {
+            log.info("successfully add new capture idea for key: \(key)")
             completion()
         } // value 没用
     }
@@ -45,6 +46,7 @@ public struct CaptureService: CaptureServiceProtocol {
     /// 删除 capture 中的 attachment
     public func delete(key: String) {
         let plist = KeyValueStoreFactory.store(type: .plist(.custom(CaptureService.plistFileName)))
+        log.info("successfully deleted capture idea for key: \(key)")
         plist.remove(key: key) {}
     }
     

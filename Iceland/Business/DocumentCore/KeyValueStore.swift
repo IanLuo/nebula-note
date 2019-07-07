@@ -52,6 +52,7 @@ fileprivate struct PlistStore: KeyValueStore {
             self._url = URL.file(directory: URL.keyValueStoreURL, name: fileName, extension: "plist")
             
             _store = NSMutableDictionary(contentsOf: self._url!) ?? NSMutableDictionary()
+            log.info("created key value store with url: \(self._url)")
         default: break
         }
     }
@@ -132,4 +133,22 @@ fileprivate struct PlistStore: KeyValueStore {
             return UserDefaults.standard.dictionaryRepresentation().keys.map {$0}
         }
     }
+}
+
+public func mergePlistFiles(name: String, url1: URL, url2: URL) -> URL {
+    let plist1 = NSMutableDictionary(contentsOf: url1) ?? NSMutableDictionary()
+    let plist2 = NSMutableDictionary(contentsOf: url2) ?? NSMutableDictionary()
+    
+    for (key, value) in plist2 {
+        plist1[key] = value
+    }
+    
+    let mergedFileURL = URL.file(directory: URL.directory(location: URLLocation.temporary), name: name, extension: "plist")
+    
+    if FileManager.default.fileExists(atPath: mergedFileURL.path) {
+        try? FileManager.default.removeItem(at: mergedFileURL)
+    }
+    
+    plist2.write(to: mergedFileURL, atomically: false)
+    return mergedFileURL
 }

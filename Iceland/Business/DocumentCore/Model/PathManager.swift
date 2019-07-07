@@ -17,11 +17,11 @@ public enum URLLocation {
     fileprivate var url: URL {
         switch self {
         case .document:
-            return URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]).resolvingSymlinksInPath()
+            return URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])
         case .library:
-            return URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.libraryDirectory, .userDomainMask, true)[0]).resolvingSymlinksInPath()
+            return URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.libraryDirectory, .userDomainMask, true)[0])
         case .cache:
-            return URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true)[0]).resolvingSymlinksInPath()
+            return URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true)[0])
         case .temporary:
             return URL(fileURLWithPath: NSTemporaryDirectory()).resolvingSymlinksInPath()
         }
@@ -174,6 +174,15 @@ extension URL {
             return absString
         }
     }
+    
+    public var pathDeletingFirstSplashIfThereIs: String {
+        let path = self.path
+        if path.hasPrefix("/") {
+            return path.nsstring.substring(with: NSRange(location: 1, length: path.nsstring.length - 1))
+        } else {
+            return path
+        }
+    }
 }
 
 private struct DocumentConstants {
@@ -236,14 +245,14 @@ extension URL {
     }
     
     public var documentRelativePath: String {
-        let path = self.path
-        let separator = URL.documentBaseURL.path + "/" // 在末尾加上斜线，在替换的时候，相对路径开始则不会有斜线
+        let path = self.resolvingSymlinksInPath().path
+        let separator = URL.documentBaseURL.resolvingSymlinksInPath().path + "/" // 在末尾加上斜线，在替换的时候，相对路径开始则不会有斜线
         return path.components(separatedBy: separator).last!
     }
     
     public var attachmentRelativePath: String {
-        let path = self.path
-        let separator = URL.attachmentURL.path + "/" // 在末尾加上斜线，在替换的时候，相对路径开始则不会有斜线
+        let path = self.resolvingSymlinksInPath().path
+        let separator = URL.attachmentURL.resolvingSymlinksInPath().path + "/" // 在末尾加上斜线，在替换的时候，相对路径开始则不会有斜线
         return path.components(separatedBy: separator).last!
     }
     

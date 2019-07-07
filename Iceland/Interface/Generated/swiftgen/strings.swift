@@ -383,6 +383,10 @@ public enum L10n {
         public static let save = L10n.tr("Localizable", "general.button.title.save")
       }
     }
+    public enum Loading {
+      /// Loading...
+      public static let title = L10n.tr("Localizable", "general.loading.title")
+    }
   }
 
   public enum ImagePicker {

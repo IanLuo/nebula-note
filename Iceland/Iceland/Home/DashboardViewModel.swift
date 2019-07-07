@@ -59,6 +59,12 @@ public class DashboardViewModel {
         }
         
         self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
+                                                                    eventType: NewAttachmentDownloadedEvent.self,
+                                                                    queue: self._headingChangeObservingQueue) { [weak self] (event: NewAttachmentDownloadedEvent) -> Void in
+                                                                        self?._isHeadingsNeedsReload = true
+        }
+        
+        self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
                                                                     eventType: AppStartedEvent.self,
                                                                     queue: self._headingChangeObservingQueue) { [weak self] (event: AppStartedEvent) -> Void in
                                                                         self?.loadDataIfNeeded()

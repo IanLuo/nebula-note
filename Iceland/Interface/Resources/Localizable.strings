@@ -11,6 +11,7 @@
 "general.button.title.cancel" = "Cancel";
 "general.button.title.delete" = "Delete";
 "general.button.title.close" = "Close";
+"general.loading.title" = "Loading...";
 
 "selector.empty" = "No item";
 

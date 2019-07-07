@@ -40,6 +40,7 @@ public class EditorService {
     }
     
     internal init(url: URL, queue: DispatchQueue, eventObserver: EventObserver, parser: OutlineParser) {
+        log.info("creating editor service with url: \(url)")
         self._url = url
         self._eventObserver = eventObserver
         self._editorController = EditorController(parser: parser, attachmentManager: AttachmentManager())
@@ -321,6 +322,7 @@ extension EditorService: EditorControllerDelegate {
     }
     
     public func headingChanged(newHeadings: [HeadingToken], oldHeadings: [HeadingToken]) {
+        log.info("heading changed from file: \(self.fileURL)")
         self._eventObserver.emit(DocumentHeadingChangeEvent(url: self.fileURL,
                                                            oldHeadings: oldHeadings,
                                                            newHeadings: newHeadings))

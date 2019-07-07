@@ -26,6 +26,7 @@ public class EditorContext {
     }
     
     public func request(url: URL) -> EditorService {
+        log.info("requesing editor service with url: \(url)")
         var url = url.wrapperURL
         
         let ext = url.path.hasSuffix(Document.fileExtension) ? "" : Document.fileExtension
@@ -36,14 +37,17 @@ public class EditorContext {
     
     private func _getCachedService(with url: URL) -> EditorService {
         if let editorInstance = _tryGetCachedService(with: url) {
+            log.info("load editor service from cache: \(url)")
             return editorInstance
         } else {
+            log.info("no editor service found in cache, creating a new one")
             return _createAndCacheNewService(with: url)
         }
     }
     
     private func _tryGetCachedService(with url: URL) -> EditorService? {
         let cacheKey = url.documentRelativePath
+        log.info("trying to get editor service from cache with key: \(cacheKey)")
         return EditorContext._cachedServiceInstances[cacheKey]
     }
     
@@ -56,6 +60,7 @@ public class EditorContext {
         let cacheKey = url.documentRelativePath
         let newService = EditorService(url: url, queue: self._editingQueue, eventObserver: self._eventObserver, parser: OutlineParser())
         EditorContext._cachedServiceInstances[cacheKey] = newService
+        log.info("created new editor service with url: \(url), and saved with cache key: \(cacheKey)")
         return newService
     }
     

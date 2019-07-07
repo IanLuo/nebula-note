@@ -34,15 +34,15 @@ public class SyncManager: NSObject {
     }
     
     public static var iCloudDocumentRoot: URL? {
-        return SyncManager.iCloudRoot?.appendingPathComponent("files").resolvingSymlinksInPath()
+        return SyncManager.iCloudRoot?.appendingPathComponent("files")
     }
     
     public static var iCloudAttachmentRoot: URL? {
-        return self.iCloudRoot?.appendingPathComponent("attachments").resolvingSymlinksInPath()
+        return self.iCloudRoot?.appendingPathComponent("attachments")
     }
     
     public static var iCloudKeyValueStoreRoot: URL? {
-        return self.iCloudRoot?.appendingPathComponent("keyValueStore").resolvingSymlinksInPath()
+        return self.iCloudRoot?.appendingPathComponent("keyValueStore")
     }
     
     private let _eventObserver: EventObserver
@@ -189,7 +189,10 @@ public class SyncManager: NSObject {
     
     public static var status: iCloudStatus {
         get { return iCloudStatus(rawValue: UserDefaults.standard.string(forKey: "iCloudStatus") ?? "unknown")! }
-        set { UserDefaults.standard.set(newValue.rawValue, forKey: "iCloudStatus") }
+        set {
+            UserDefaults.standard.set(newValue.rawValue, forKey: "iCloudStatus")
+            UserDefaults.standard.synchronize()
+        }
     }
     
     /// move local files to iCloud folder, if there already old file exists, overrid it
@@ -207,15 +210,24 @@ public class SyncManager: NSObject {
         let queue = DispatchQueue(label: "move local files to iCloud")
 
         queue.async {
+            
             do {
                 var isDir = ObjCBool(true)
                 
+                log.info("start moving from local to iCloud(\(icloudDocumentRoot))...")
                 // move local documents folder to icloud document folder, and keep the files in it's place in local
                 if FileManager.default.fileExists(atPath: URL.localDocumentBaseURL.path, isDirectory: &isDir) {
                     for path in try self._allPaths(in: URL.localDocumentBaseURL) {
                         
                         // use the documents folder related path, of all contents inside documents file, combine to iCloud base folder, to get a destination of move to iCloud action destination url
                         let destination = icloudDocumentRoot.appendingPathComponent(path)
+                        
+                        if FileManager.default.fileExists(atPath: destination.absoluteString) {
+                            log.info("there's an old file existed, replace it")
+                            try FileManager.default.removeItem(at: destination)
+                        }
+                        
+                        log.info("moving \(path) to \(destination)")
                         
                         // in case the file is not at root of iCloud documents folder, and the parent's folder not created, then create it
                         try self._createIntermiaFoldersIfNeeded(url: destination)
@@ -227,10 +239,18 @@ public class SyncManager: NSObject {
                     }
                 }
                 
+                log.info("start moving from local to iCloud(\(icloudAttachmentRoot))...")
                 // move local attachments to iCloud attachment folder
                 if FileManager.default.fileExists(atPath: URL.localAttachmentURL.path, isDirectory: &isDir) {
                     for path in try self._allPaths(in: URL.localAttachmentURL) {
                         let destination = icloudAttachmentRoot.appendingPathComponent(path)
+                        
+                        if FileManager.default.fileExists(atPath: destination.absoluteString) {
+                            log.info("there's an old file existed, replace it")
+                            try FileManager.default.removeItem(at: destination)
+                        }
+                        
+                        log.info("moving \(path) to \(destination)")
                         
                         try self._createIntermiaFoldersIfNeeded(url: destination)
                         
@@ -240,16 +260,29 @@ public class SyncManager: NSObject {
                     }
                 }
                 
+                log.info("start moving from local to iCloud(\(icloudKeyValueStoreRoot))...")
                 // move local key values store files to iCloud key value store folder
                 if FileManager.default.fileExists(atPath: URL.localKeyValueStoreURL.path, isDirectory: &isDir) {
                     for path in try self._allPaths(in: URL.localKeyValueStoreURL) {
+                        var isDir: ObjCBool = ObjCBool(false)
                         let destination = icloudKeyValueStoreRoot.appendingPathComponent(path)
                         
                         try self._createIntermiaFoldersIfNeeded(url: destination)
+                        log.info("moving \(path) to \(destination)")
                         
-                        try FileManager.default.setUbiquitous(true,
-                                                              itemAt: URL.localKeyValueStoreURL.appendingPathComponent(path),
-                                                              destinationURL: destination)
+                        if FileManager.default.fileExists(atPath: destination.path, isDirectory: &isDir) {
+                            log.info("there's an old file existed for \(destination.path), merge it")
+                            let originalFile: URL = URL.localKeyValueStoreURL.appendingPathComponent(path)
+                            let mergedFileURL: URL = mergePlistFiles(name: originalFile.deletingPathExtension().lastPathComponent.removeFirstSplashIfThereIsAny, url1: originalFile, url2: destination)
+                            try FileManager.default.removeItem(at: destination)
+                            try FileManager.default.setUbiquitous(true,
+                                                                  itemAt: mergedFileURL,
+                                                                  destinationURL: destination)
+                        } else {
+                            try FileManager.default.setUbiquitous(true,
+                                                                  itemAt: URL.localKeyValueStoreURL.appendingPathComponent(path),
+                                                                  destinationURL: destination)
+                        }
                     }
                 }
                 
@@ -274,13 +307,22 @@ public class SyncManager: NSObject {
         let queue = DispatchQueue(label: "move iCloud file to local")
         
         queue.async {
+            
             do {
                 var isDir = ObjCBool(true)
                 
+                log.info("start moving from iCloud(\(icloudDocumentRoot)) to local...")
                 if FileManager.default.fileExists(atPath: icloudDocumentRoot.path, isDirectory: &isDir) {
                     for path in try self._allPaths(in: icloudDocumentRoot) {
                         let destination = URL.localDocumentBaseURL.appendingPathComponent(path)
+
+                        if FileManager.default.fileExists(atPath: destination.absoluteString) {
+                            log.info("there's an old file existed, replace it")
+                            try FileManager.default.removeItem(at: destination)
+                        }
                         
+                        log.info("moving \(path) to \(destination)")
+
                         try self._createIntermiaFoldersIfNeeded(url: destination)
                         
                         try FileManager.default.setUbiquitous(false,
@@ -289,10 +331,18 @@ public class SyncManager: NSObject {
                     }
                 }
                 
+                log.info("start moving from iCloud(\(icloudAttachmentRoot)) to local...")
                 if FileManager.default.fileExists(atPath: icloudAttachmentRoot.path, isDirectory: &isDir) {
                     for path in try self._allPaths(in: icloudAttachmentRoot) {
                         let destination = URL.localAttachmentURL.appendingPathComponent(path)
 
+                        if FileManager.default.fileExists(atPath: destination.absoluteString) {
+                            log.info("there's an old file existed, replace it")
+                            try FileManager.default.removeItem(at: destination)
+                        }
+                        
+                        log.info("moving \(path) to \(destination)")
+                        
                         try self._createIntermiaFoldersIfNeeded(url: destination)
                         
                         try FileManager.default.setUbiquitous(false,
@@ -301,15 +351,28 @@ public class SyncManager: NSObject {
                     }
                 }
                 
+                log.info("start moving from iCloud(\(icloudKeyValueStoreRoot)) to local...")
                 if FileManager.default.fileExists(atPath: icloudKeyValueStoreRoot.path, isDirectory: &isDir) {
                     for path in try self._allPaths(in: icloudKeyValueStoreRoot) {
                         let destination = URL.localKeyValueStoreURL.appendingPathComponent(path)
                         // create intermiea folder if needed
                         try self._createIntermiaFoldersIfNeeded(url: destination)
                         
-                        try FileManager.default.setUbiquitous(false,
-                                                              itemAt: icloudKeyValueStoreRoot.appendingPathComponent(path),
-                                                              destinationURL: destination)
+                        log.info("moving \(path) to \(destination)")
+                        if FileManager.default.fileExists(atPath: destination.path) {
+                            log.info("there's an old file existed for \(destination.path), merge it")
+                            let originalFile: URL = URL.localKeyValueStoreURL.appendingPathComponent(path)
+                            let mergedFileURL: URL = mergePlistFiles(name: originalFile.deletingPathExtension().lastPathComponent.removeFirstSplashIfThereIsAny, url1: originalFile, url2: destination)
+                            try FileManager.default.removeItem(at: destination)
+                            try FileManager.default.setUbiquitous(false,
+                                                                  itemAt: mergedFileURL,
+                                                                  destinationURL: destination)
+                        } else {
+                            try FileManager.default.setUbiquitous(false,
+                                                                  itemAt: icloudKeyValueStoreRoot.appendingPathComponent(path),
+                                                                  destinationURL: destination)
+                        }
+                        
                     }
                 }
                 
@@ -330,6 +393,7 @@ public class SyncManager: NSObject {
     
     /// find all file paths under the specifiled url (which is a folder)
     private func _allPaths(in folder: URL) throws -> [String] {
+        let folder = folder.resolvingSymlinksInPath()
         var urls: [String] = []
         let keys: [URLResourceKey] = [.isPackageKey, .isDirectoryKey]
         let enumerator = FileManager.default.enumerator(at: folder,
@@ -337,6 +401,7 @@ public class SyncManager: NSObject {
                                        options: [.skipsHiddenFiles, .skipsPackageDescendants], errorHandler: nil)
         
         while let url = enumerator?.nextObject() as? URL {
+            log.info("found url: \(url)")
             // if the url is a symbolic link, resove it
             let url = url.resolvingSymlinksInPath()
             // get the file resource properties, including 'isPackageKey' and 'isDirectoryKey'
@@ -345,22 +410,32 @@ public class SyncManager: NSObject {
             if resouece.isDirectory! && url.pathExtension == Document.fileExtension {
                 enumerator?.skipDescendants()
                 // before return, remove the first part of url only keep the related path to the passed in folder
-                urls.append(url.path.replacingOccurrences(of: folder.path, with: ""))
+                urls.append(url.path.replacingOccurrences(of: folder.path, with: "").removeFirstSplashIfThereIsAny)
                 
             // add attachment wrapped director to return, ignore it's contents
             } else if resouece.isDirectory! && url.pathExtension == AttachmentDocument.fileExtension {
                 enumerator?.skipDescendants()
                 // before return, remove the first part of url only keep the related path to the passed in folder
-                urls.append(url.path.replacingOccurrences(of: folder.path, with: ""))
+                urls.append(url.path.replacingOccurrences(of: folder.path, with: "").removeFirstSplashIfThereIsAny)
                 
             // any file that's not a directory, add to return
             } else if resouece.isDirectory == false {
                 // before return, remove the first part of url only keep the related path to the passed in folder
-                urls.append(url.path.replacingOccurrences(of: folder.path, with: ""))
+                urls.append(url.path.replacingOccurrences(of: folder.path, with: "").removeFirstSplashIfThereIsAny)
             }
         }
         
         return urls
+    }
+}
+
+extension String {
+    var removeFirstSplashIfThereIsAny: String {
+        if self.hasPrefix("/") {
+            return self.nsstring.substring(from: 1)
+        } else {
+            return self
+        }
     }
 }
 
@@ -402,7 +477,7 @@ extension SyncManager: NSMetadataQueryDelegate {
         }
         
         if let changedItems = notification.userInfo?["kMDQueryUpdateChangedItems"] as? [NSMetadataItem] {
-            log.info("found \(changedItems) changed items")
+            log.info("found \(changedItems.count) changed items")
             handleItemsAction(changedItems)
         }
         

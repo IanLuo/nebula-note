@@ -120,24 +120,25 @@ public class SettingsViewController: UITableViewController {
     @objc private func _iCloudSwitchTapped(_ switchButton: UISwitch) {
         switchButton.isEnabled = false
         switchButton.showProcessingAnimation()
-        
+        self.showLoading()
         self.viewModel.setSyncEnabled(switchButton.isOn, completion: { [weak self] result in
-            
-            switchButton.hideProcessingAnimation()
-            switchButton.isEnabled = true
-            
-            switch result {
-            case .failure(let error):
-                switchButton.isOn = !switchButton.isOn
+            self?.hideLoading { [weak self] in
+                switchButton.hideProcessingAnimation()
+                switchButton.isEnabled = true
                 
-                if case let error = error as? SyncError, error == .iCloudIsNotAvailable {
-                    self?.showAlert(title: L10n.Setting.Alert.IcloudIsNotEnabled.title,
-                                    message: L10n.Setting.Alert.IcloudIsNotEnabled.msg)
-                } else {
-                    self?.showAlert(title: L10n.Setting.Alert.failToStoreIniCloud, message: "\(error)")
+                switch result {
+                case .failure(let error):
+                    switchButton.isOn = !switchButton.isOn
+                    
+                    if case let error = error as? SyncError, error == .iCloudIsNotAvailable {
+                        self?.showAlert(title: L10n.Setting.Alert.IcloudIsNotEnabled.title,
+                                        message: L10n.Setting.Alert.IcloudIsNotEnabled.msg)
+                    } else {
+                        self?.showAlert(title: L10n.Setting.Alert.failToStoreIniCloud, message: "\(error)")
+                    }
+                    
+                default: break
                 }
-                
-            default: break
             }
         })
     }

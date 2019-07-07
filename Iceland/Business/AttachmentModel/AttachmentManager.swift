@@ -54,10 +54,12 @@ public enum AttachmentError: Error {
             attachmentDocument.fileToSave = attachmentURL
             attachmentDocument.save(to: fileURL, for: UIDocument.SaveOperation.forCreating) { result in
                 attachmentDocument.close(completionHandler: { result in
+                    log.info("successfully insert new attachment key: \(newKey), url: \(fileURL)")
                     DispatchQueue.main.async {
                         if result {
                             complete(newKey)
                         } else {
+                            log.error("failed to insert new attachment key: \(newKey), url: \(fileURL)")
                             failure(AttachmentError.failToSaveAttachment)
                         }
                     }
@@ -97,10 +99,12 @@ public enum AttachmentError: Error {
     public func delete(key: String, completion: @escaping () -> Void, failure: @escaping (Error) -> Void) {
         
         self.attachment(with: key, completion: { attachment in
+            let url = attachment.wrapperURL
             attachment.wrapperURL.delete(queue: DispatchQueue.main, completion: { error in
                 if let error = error {
                     failure(error)
                 } else {
+                    log.info("deleted attachment with key: \(key), url: \(url)")
                     completion()
                 }
             })
@@ -124,12 +128,15 @@ public enum AttachmentError: Error {
             if let attachment = document?.attachment {
                 document?.close(completionHandler: { completed in
                     if completed {
+                        log.info("loaded attachment with key: \(key), url: \(url)")
                         completion(attachment)
                     } else {
+                        log.error("failed to load attachment with key: \(key), url: \(url), fail to close file")
                         failure(AttachmentError.failToCloseDocument(attachment.wrapperURL.path))
                     }
                 })
             } else {
+                log.error("failed to load attachment with key: \(key), url: \(url), fail to open file")
                 failure(AttachmentError.failToOpenAttachment)
             }
         }

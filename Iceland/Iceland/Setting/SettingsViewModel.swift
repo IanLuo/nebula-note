@@ -92,6 +92,11 @@ public class SettingsViewModel {
                     SyncManager.status = enable ? .on : .off
                     completion(.success(()))
                     self?.delegate?.didSetIsSyncEnabled(enable)
+                    if enable {
+                        self?.coordinator?.dependency.eventObserver.emit(iCloudEnabledEvent())
+                    } else {
+                        self?.coordinator?.dependency.eventObserver.emit(iCloudDisabledEvent())
+                    }
                 }
             }
         }

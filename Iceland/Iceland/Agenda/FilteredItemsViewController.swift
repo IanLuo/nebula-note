@@ -45,6 +45,7 @@ public class FilteredItemsViewController: UIViewController {
         self.view.addSubview(self.tableView)
         self.tableView.allSidesAnchors(to: self.view, edgeInset: 0)
         
+        self.view.showProcessingAnimation()
         self.viewModel.loadFiltered()
     }
 }
@@ -75,6 +76,7 @@ extension FilteredItemsViewController: UITableViewDelegate {
 extension FilteredItemsViewController: AgendaViewModelDelegate {
     public func didCompleteLoadAllData() {
         DispatchQueue.main.async {
+            self.view.hideProcessingAnimation()
             self.tableView.reloadData()
         }
     }

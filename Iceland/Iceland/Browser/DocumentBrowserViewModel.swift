@@ -20,15 +20,17 @@ public protocol DocumentBrowserViewModelDelegate: class {
 
 public class DocumentBrowserViewModel {
     public weak var delegate: DocumentBrowserViewModelDelegate?
-    public weak var coordinator: BrowserCoordinator?
+    public weak var coordinator: BrowserCoordinator? {
+        didSet {
+            self._setupObservers()
+        }
+    }
     private let documentManager: DocumentManager
     
     public var data: [DocumentBrowserCellModel] = []
     
     public init(documentManager: DocumentManager) {
         self.documentManager = documentManager
-        
-        self._setupObservers()
     }
     
     deinit {
@@ -286,34 +288,44 @@ public class DocumentBrowserViewModel {
     }
     
     private func _setupObservers() {
-        self.coordinator?.dependency.eventObserver.registerForEvent(on: self, eventType: AddDocumentEvent.self, queue: nil, action: { [weak self] (event: AddDocumentEvent) -> Void in
+        let eventObserver = self.coordinator?.dependency.eventObserver
+        
+        eventObserver?.registerForEvent(on: self, eventType: iCloudEnabledEvent.self, queue: nil, action: { [weak self] (event: iCloudEnabledEvent) in
+            self?.loadData()
+        })
+        
+        eventObserver?.registerForEvent(on: self, eventType: iCloudDisabledEvent.self, queue: nil, action: { [weak self] (event: iCloudDisabledEvent) in
+            self?.loadData()
+        })
+        
+        eventObserver?.registerForEvent(on: self, eventType: AddDocumentEvent.self, queue: nil, action: { [weak self] (event: AddDocumentEvent) -> Void in
             self?.delegate?.didLoadData()
         })
         
-        self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
-                                                                    eventType: iCloudOpeningStatusChangedEvent.self,
-                                                                    queue: OperationQueue.main,
-                                                                    action: { [weak self] (event: iCloudOpeningStatusChangedEvent) in
-                                                                        
-                                                                        self?.loadData()
+        eventObserver?.registerForEvent(on: self,
+                                        eventType: iCloudOpeningStatusChangedEvent.self,
+                                        queue: OperationQueue.main,
+                                        action: { [weak self] (event: iCloudOpeningStatusChangedEvent) in
+                                            
+                                            self?.loadData()
         })
         
-        self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
-                                                                    eventType: NewDocumentPackageDownloadedEvent.self,
-                                                                    queue: OperationQueue.main,
-                                                                    action: { [weak self] (event: NewDocumentPackageDownloadedEvent) in
-                                                                        let newDocumentURL = event.url
-                                                                        let newDocumentParentURL = event.url.parentDocumentURL
-                                                                        
-                                                                        if newDocumentParentURL == nil {
-                                                                            self?.data.append(DocumentBrowserCellModel(url: newDocumentURL))
-                                                                        } else {
-                                                                            for (index, cellModel) in (self?.data ?? []).enumerated() {
-                                                                                if cellModel.url.documentRelativePath == newDocumentParentURL?.documentRelativePath {
-                                                                                    self?.data.insert(DocumentBrowserCellModel(url: newDocumentURL), at: index + 1)
-                                                                                }
-                                                                            }
-                                                                        }
+        eventObserver?.registerForEvent(on: self,
+                                        eventType: NewDocumentPackageDownloadedEvent.self,
+                                        queue: OperationQueue.main,
+                                        action: { [weak self] (event: NewDocumentPackageDownloadedEvent) in
+                                            let newDocumentURL = event.url
+                                            let newDocumentParentURL = event.url.parentDocumentURL
+                                            
+                                            if newDocumentParentURL == nil {
+                                                self?.data.append(DocumentBrowserCellModel(url: newDocumentURL))
+                                            } else {
+                                                for (index, cellModel) in (self?.data ?? []).enumerated() {
+                                                    if cellModel.url.documentRelativePath == newDocumentParentURL?.documentRelativePath {
+                                                        self?.data.insert(DocumentBrowserCellModel(url: newDocumentURL), at: index + 1)
+                                                    }
+                                                }
+                                            }
         })
     }
 }

@@ -14,6 +14,7 @@ import Interface
 public class Application: Coordinator {
     weak var window: UIWindow?
     private let _entranceWindow: CaptureGlobalEntranceWindow
+    fileprivate var _didTheUserTurnOffiCloudFromSettings: Bool = false
 
     public init(window: UIWindow) {
         self.window = window
@@ -21,12 +22,21 @@ public class Application: Coordinator {
         _entranceWindow = CaptureGlobalEntranceWindow(window: window)
         
         _entranceWindow.makeKeyAndVisible()
+        
 
         let navigationController = Coordinator.createDefaultNavigationControlller()
         
         let eventObserver = EventObserver()
         let editorContext = EditorContext(eventObserver: eventObserver)
         let syncManager = SyncManager(eventObserver: eventObserver)
+        
+        // if the user turn off iCloud from settings, this sign must be set here
+        if syncManager.updateCurrentiCloudAccountStatus() == .closed {
+            if SyncManager.status == .on {
+                SyncManager.status = .off
+                self._didTheUserTurnOffiCloudFromSettings = true
+            }
+        }
         let documentManager = DocumentManager(editorContext: editorContext,
                                               eventObserver: eventObserver,
                                               syncManager: syncManager)
@@ -146,7 +156,7 @@ public class Application: Coordinator {
                 self.stack.showAlert(title: L10n.Sync.Alert.Account.Changed.title, message: L10n.Sync.Alert.Account.Changed.msg)
             }
         case .closed:
-            if SyncManager.status == .on {
+            if self._didTheUserTurnOffiCloudFromSettings {
                 self.stack.showAlert(title: L10n.Sync.Alert.Account.Closed.title, message: L10n.Sync.Alert.Account.Closed.msg)
                 
                 // mark iCloud off

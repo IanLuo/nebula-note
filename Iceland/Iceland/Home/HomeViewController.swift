@@ -71,7 +71,7 @@ public class HomeViewController: UIViewController {
         self._setupFrames()
         
         self.masterViewController.view.interface { (me, theme) in
-            me.setBorder(position: Border.Position.right, color: InterfaceTheme.Color.background3, width: 0.5)
+            me.setBorder(position: Border.Position.right, color: InterfaceTheme.Color.background2, width: 0.5)
         }
     }
     
