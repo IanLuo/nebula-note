@@ -35,6 +35,10 @@ public class EditorContext {
         return self._getCachedService(with: url)
     }
     
+    public func end(with url: URL) {
+        self._removeCachedService(with: url)
+    }
+    
     private func _getCachedService(with url: URL) -> EditorService {
         if let editorInstance = _tryGetCachedService(with: url) {
             log.info("load editor service from cache: \(url)")

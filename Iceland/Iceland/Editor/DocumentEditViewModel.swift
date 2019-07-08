@@ -242,6 +242,7 @@ public class DocumentEditViewModel {
     
     public func close(completion: @escaping (Bool) -> Void) {
         self._editorService.close(completion: completion)
+        self.coordinator?.dependency.editorContext.end(with: self._editorService.fileURL)
     }
     
     public func headingString(index: Int) -> String {

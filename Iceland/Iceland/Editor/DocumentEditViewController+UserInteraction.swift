@@ -10,6 +10,8 @@ import Foundation
 import UIKit
 import Business
 import Interface
+import CoreLocation
+import MapKit
 
 extension DocumentEditViewController: OutlineTextViewDelegate {
     public func didTapOnAttachment(textView: UITextView, characterIndex: Int, type: String, value: String, point: CGPoint) {
@@ -116,6 +118,21 @@ extension DocumentEditViewController: OutlineTextViewDelegate {
         
         actionsView.accessoryView = view
         actionsView.title = attachment.kind.rawValue
+        
+        if attachment.kind == .location {
+            actionsView.addAction(icon: nil, title: L10n.CaptureList.Action.openLocation) { viewController in
+                viewController.dismiss(animated: true, completion: {
+                    let jsonDecoder = JSONDecoder()
+                    do {
+                        let coord = try jsonDecoder.decode(CLLocationCoordinate2D.self, from: try Data(contentsOf: attachment.url))
+                        let mapItem = MKMapItem(placemark: MKPlacemark(coordinate: coord, addressDictionary:nil))
+                        mapItem.openInMaps(launchOptions: [:])
+                    } catch {
+                        log.error("\(error)")
+                    }
+                })
+            }
+        }
         
         actionsView.addAction(icon: nil, title: L10n.General.Button.Title.close) { viewController in
             viewController.dismiss(animated: true, completion: {

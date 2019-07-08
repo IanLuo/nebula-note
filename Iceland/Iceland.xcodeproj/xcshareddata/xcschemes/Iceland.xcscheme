@@ -148,11 +148,11 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "SHOW_ALL_TOKEN_RANGE"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "SHOW_PARSING_TOKEN_RANGE"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
       <AdditionalOptions>
