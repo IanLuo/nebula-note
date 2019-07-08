@@ -20,6 +20,8 @@ static NSTextAttachment *scheduleAttachment;
 static NSTextAttachment *dueAttachment;
 static NSTextAttachment *tagAttachment;
 static NSTextAttachment *unavailableAttachment;
+static NSTextAttachment *checkboxCheckedAttachment;
+static NSTextAttachment *checkboxUncheckedAttachment;
 
 static NSMutableDictionary *attachmentMap;
 
@@ -67,6 +69,14 @@ static NSMutableDictionary *attachmentMap;
         unavailableAttachment.image = [UIImage imageNamed: @"cross" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil];
         unavailableAttachment.bounds = CGRectMake(0, 0, 10, 10);
         
+        checkboxCheckedAttachment = [[NSTextAttachment alloc] init];
+        checkboxCheckedAttachment.image = [[UIImage imageNamed: @"checkbox-checked" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil] fillWithColor:[[InterfaceTheme Color]spotlight]];
+        checkboxCheckedAttachment.bounds = CGRectMake(0, ([[SettingsAccessor shared] lineHeight] - 20) / 2, 20, 20);
+        
+        checkboxUncheckedAttachment = [[NSTextAttachment alloc] init];
+        checkboxUncheckedAttachment.image = [[UIImage imageNamed: @"checkbox-unchecked" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil] fillWithColor:[[InterfaceTheme Color]spotlight]];
+        checkboxUncheckedAttachment.bounds = CGRectMake(0, ([[SettingsAccessor shared] lineHeight] - 20) / 2, 20, 20);
+        
         attachmentMap = [@{
                           OUTLINE_ATTRIBUTE_HEADING_FOLDED: foldingAttachment,
                           OUTLINE_ATTRIBUTE_LINK_URL: linkAttachment,
@@ -76,7 +86,9 @@ static NSMutableDictionary *attachmentMap;
                           OUTLINE_ATTRIBUTE_HEADING_SCHEDULE: scheduleAttachment,
                           OUTLINE_ATTRIBUTE_HEADING_DUE: dueAttachment,
                           OUTLINE_ATTRIBUTE_HEADING_TAGS: tagAttachment,
-                          OUTLINE_ATTRIBUTE_ATTACHMENT_UNAVAILABLE: unavailableAttachment
+                          OUTLINE_ATTRIBUTE_ATTACHMENT_UNAVAILABLE: unavailableAttachment,
+                          OUTLINE_ATTRIBUTE_ATTACHMENT_CHECKBOX_CHECKED: checkboxCheckedAttachment,
+                          OUTLINE_ATTRIBUTE_ATTACHMENT_CHECKBOX_UNCHECKED: checkboxUncheckedAttachment
                           } mutableCopy];
     }
 }

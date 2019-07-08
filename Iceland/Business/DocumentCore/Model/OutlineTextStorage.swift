@@ -495,8 +495,19 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 
                 if let checkboxRange = token.range(for: OutlineParser.Key.Node.checkbox) {
                     textStorage.addAttribute(OutlineAttribute.checkbox, value: textStorage.string.nsstring.substring(with: checkboxRange), range: checkboxRange)
-                    textStorage.addAttributes(OutlineTheme.checkboxStyle.attributes, range: checkboxRange.moveLeftBound(by: 1))
-                    textStorage.addAttributes(OutlineTheme.markStyle.attributes, range: checkboxRange.head(1))
+                    
+                    if let statusRange = token.range(for: OutlineParser.Key.Node.checkbox)  {
+                        textStorage.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueDefault], range: checkboxRange.moveLeftBound(by: 1).moveRightBound(by: -1))
+                        let status = textStorage.string.nsstring.substring(with: statusRange)
+                        if status == OutlineParser.Values.Checkbox.checked {
+                            textStorage.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment,
+                                                       OutlineAttribute.showAttachment: OUTLINE_ATTRIBUTE_ATTACHMENT_CHECKBOX_CHECKED], range: checkboxRange.head(1))
+                        } else {
+                            textStorage.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment,
+                                                       OutlineAttribute.showAttachment: OUTLINE_ATTRIBUTE_ATTACHMENT_CHECKBOX_UNCHECKED], range: checkboxRange.head(1))
+                        }
+                    }
+                    
                 }
             }
         }
