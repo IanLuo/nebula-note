@@ -13,6 +13,7 @@ import Interface
 
 extension DocumentEditViewController {
     @objc public func cancel(_ button: UIView) {
+        self.viewModel.close { _ in }
         self.dismiss(animated: true, completion: nil)
     }
     

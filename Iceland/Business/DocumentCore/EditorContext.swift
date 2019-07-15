@@ -35,6 +35,7 @@ public class EditorContext {
         return self._getCachedService(with: url)
     }
     
+    /// remove the editor service with specifiled url from cache
     public func end(with url: URL) {
         self._removeCachedService(with: url)
     }

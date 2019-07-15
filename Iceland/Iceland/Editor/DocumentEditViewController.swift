@@ -40,6 +40,8 @@ public class DocumentEditViewController: UIViewController {
 
         super.init(nibName: nil, bundle: nil)
         
+        self.modalPresentationStyle = .overFullScreen
+        
         self.textView.outlineDelegate = self
         self.textView.delegate = self
         viewModel.delegate = self
@@ -50,7 +52,6 @@ public class DocumentEditViewController: UIViewController {
     }
     
     deinit {
-        self.viewModel.close { _ in }
         NotificationCenter.default.removeObserver(self)
     }
     

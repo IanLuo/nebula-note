@@ -41,7 +41,12 @@ public class SettingsViewController: UITableViewController {
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        self.modalPresentationStyle = .overCurrentContext
+        
+        if #available(iOS 13.0, *) {
+            // ignroe
+        } else {
+            self.modalPresentationStyle = .overCurrentContext
+        }
     }
     
     public override func viewDidLoad() {
