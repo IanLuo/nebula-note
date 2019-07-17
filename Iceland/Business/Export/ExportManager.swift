@@ -13,14 +13,20 @@ public protocol Exportable {
     var url: URL { get }
     var fileExtension: String { get }
     
-    func export(completion: @escaping (String) -> Void)
+    func export(completion: @escaping (ExportResult) -> Void)
 }
 
-public enum ExportType {
+public enum ExportResult {
+    case string(String)
+    case file(URL)
+}
+
+public enum ExportType: CaseIterable {
     case org
     case html
     case txt
     case markdown
+    case pdf
     
     public var fileExtension: String {
         switch self {
@@ -28,6 +34,7 @@ public enum ExportType {
         case .html: return ".html"
         case .txt: return ".txt"
         case .markdown: return ".md"
+        case .pdf: return ".pdf"
         }
     }
     
@@ -37,6 +44,7 @@ public enum ExportType {
         case .html: return "HTML"
         case .txt: return "TXT"
         case .markdown: return "Mark Down"
+        case .pdf: return "PDF"
         }
     }
     
@@ -45,6 +53,7 @@ public enum ExportType {
         case .org: return OrgExporter(url: url)
         case .html: return HTMLExporter(editorContext: exportManager._editorContext, url: url)
         case .txt: return TxtExporter(editorContext: exportManager._editorContext, url: url)
+        case .pdf: return PDFExporter(editorContext: exportManager._editorContext, url: url)
         default: return OrgExporter(url: url)
         }
     }
@@ -56,7 +65,7 @@ public struct ExportManager {
         self._editorContext = editorContext
     }
     
-    public let exportMethods: [ExportType] = [.org, .html, .txt, .markdown]
+    public let exportMethods: [ExportType] = [.org, .html, .txt, .markdown, .pdf]
     
     public func export(url: URL,
                        type: ExportType, 
@@ -70,19 +79,24 @@ public struct ExportManager {
             if let error = error {
                 failure(error)
             } else {
-                exportable.export { exportedContent in
-                    let fileName = exportable.url.deletingPathExtension().lastPathComponent
-                    let tempFileURL = URL.file(directory: exportFileDir, name: fileName, extension: exportable.fileExtension)
-                    
-                    do {
-                        try exportedContent.write(to: tempFileURL, atomically: true, encoding: .utf8)
-                        DispatchQueue.main.async {
-                            completion(tempFileURL)
+                exportable.export { exportedResult in
+                    switch exportedResult {
+                    case .string(let exportedContent):
+                            let fileName = exportable.url.deletingPathExtension().lastPathComponent
+                            let tempFileURL = URL.file(directory: exportFileDir, name: fileName, extension: exportable.fileExtension)
+                            
+                            do {
+                                try exportedContent.write(to: tempFileURL, atomically: true, encoding: .utf8)
+                                DispatchQueue.main.async {
+                                    completion(tempFileURL)
+                                }
+                            } catch {
+                                DispatchQueue.main.async {
+                                    failure(error)
+                                }
                         }
-                    } catch {
-                        DispatchQueue.main.async {
-                            failure(error)
-                        }
+                    case .file(let url):
+                        completion(url)
                     }
                 }
             }

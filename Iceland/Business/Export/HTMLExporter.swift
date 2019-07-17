@@ -20,7 +20,7 @@ public struct HTMLExporter: Exportable {
         self.url = url
     }
     
-    public func export(completion: @escaping (String) -> Void) {
+    public func export(completion: @escaping (ExportResult) -> Void) {
         let service = self._editorContext.request(url: self.url)
         
         var headingIndexs: [[Int]] = []
@@ -66,7 +66,7 @@ public struct HTMLExporter: Exportable {
                     result = result.nsstring.replacingCharacters(in: token.range, with: tokenString)
                 }
                 
-                completion(result)
+                completion(.string(result))
             }
         }
     }
@@ -82,6 +82,14 @@ extension Token {
             return "<li>\(string.nsstring.substring(with: unorderedList.range).nsstring.replacingCharacters(in: unorderedList.prefix.moveRightBound(by: 1).offset(-unorderedList.range.location), with: ""))</li>"
         } else if let checkbox = self as? CheckboxToken {
             return "<a>[\(string.nsstring.substring(with: checkbox.range(for: "status")!))] </a>"
+        } else if let attachmentToken = self as? AttachmentToken {
+            guard let typeRange = attachmentToken.range(for: OutlineParser.Key.Element.Attachment.type) else { return ""}
+            guard let valueRange = attachmentToken.range(for: OutlineParser.Key.Element.Attachment.value) else { return ""}
+            
+            let type = string.nsstring.substring(with: typeRange)
+            let value = string.nsstring.substring(with: valueRange)
+            
+            return "#\(type):\(value)"
         } else {
             return string.nsstring.substring(with: self.range)
         }

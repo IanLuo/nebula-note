@@ -94,6 +94,7 @@
 		E41F86C5218EF4E1006C4CDB /* AgendaCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F86C4218EF4E1006C4CDB /* AgendaCoordinator.swift */; };
 		E41FA5752191569C001D8C63 /* DocumentEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41FA5742191569C001D8C63 /* DocumentEditViewController.swift */; };
 		E42574C32294DEF3008993BC /* InterfaceTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = E42574C22294DEF3008993BC /* InterfaceTheme.swift */; };
+		E42A7F8722DC679A0038A4DD /* PDFExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E42A7F8622DC679A0038A4DD /* PDFExporter.swift */; };
 		E42A87FD21CFC9B300151C90 /* AttachmentTextViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E42A87FC21CFC9B300151C90 /* AttachmentTextViewController.swift */; };
 		E42A87FF21CFCAC500151C90 /* AttachmentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E42A87FE21CFCAC500151C90 /* AttachmentViewModel.swift */; };
 		E43427FA2121BF5B00EC6DC3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43427F92121BF5B00EC6DC3 /* AppDelegate.swift */; };
@@ -336,6 +337,7 @@
 		E41F870321902DB3006C4CDB /* KeyValueStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyValueStore.swift; sourceTree = "<group>"; };
 		E41FA5742191569C001D8C63 /* DocumentEditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentEditViewController.swift; sourceTree = "<group>"; };
 		E42574C22294DEF3008993BC /* InterfaceTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterfaceTheme.swift; sourceTree = "<group>"; };
+		E42A7F8622DC679A0038A4DD /* PDFExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFExporter.swift; sourceTree = "<group>"; };
 		E42A87FC21CFC9B300151C90 /* AttachmentTextViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentTextViewController.swift; sourceTree = "<group>"; };
 		E42A87FE21CFCAC500151C90 /* AttachmentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentViewModel.swift; sourceTree = "<group>"; };
 		E43427F62121BF5B00EC6DC3 /* Iceland.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Iceland.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1042,6 +1044,7 @@
 				E47FA8FF227026DB005AD0BA /* HTMLExporter.swift */,
 				E47FA90122702717005AD0BA /* OrgExporter.swift */,
 				E41EC82F22C4BFE3009ACFA4 /* TxtExporter.swift */,
+				E42A7F8622DC679A0038A4DD /* PDFExporter.swift */,
 			);
 			path = Export;
 			sourceTree = "<group>";
@@ -1689,6 +1692,7 @@
 				E41CB1B921D88DCE00EF0A3C /* OutlineAttribute.swift in Sources */,
 				E4E1B146224B27040061D327 /* KeyValueStore.swift in Sources */,
 				E4F9ECE121FECE5C009A08CD /* PathManager.swift in Sources */,
+				E42A7F8722DC679A0038A4DD /* PDFExporter.swift in Sources */,
 				E45DCF8A22AB6649007F34DB /* String+Conenience.swift in Sources */,
 				E43E7877222AD0C70007EE4F /* DocumentContentCommands.swift in Sources */,
 				E41CB1C621D88DFD00EF0A3C /* Attachment.swift in Sources */,

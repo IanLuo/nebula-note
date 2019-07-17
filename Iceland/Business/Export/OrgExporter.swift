@@ -9,12 +9,12 @@
 import Foundation
 
 public struct OrgExporter: Exportable {
-    public func export(completion: @escaping (String) -> Void) {
+    public func export(completion: @escaping (ExportResult) -> Void) {
         let doc = Document(fileURL: self.url)
         
         doc.open { [weak doc] result in
             guard let strongDoc = doc else { return }
-            completion(strongDoc.string)
+            completion(.string(strongDoc.string))
         }
     }
     

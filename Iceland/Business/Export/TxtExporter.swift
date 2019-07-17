@@ -20,7 +20,7 @@ public struct TxtExporter: Exportable {
         self.url = url
     }
     
-    public func export(completion: @escaping (String) -> Void) {
+    public func export(completion: @escaping (ExportResult) -> Void) {
         let service = self._editorContext.request(url: self.url)
         var headingIndexs: [[Int]] = []
         service.onReadyToUse = { service in
@@ -64,7 +64,7 @@ public struct TxtExporter: Exportable {
                     result = result.nsstring.replacingCharacters(in: token.range, with: tokenString)
                 }
                 
-                completion(result)
+                completion(.string(result))
             }
         }
 
