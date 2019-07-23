@@ -26,6 +26,7 @@ public struct Layout {
     @objc var descriptive: UIColor { get }
     @objc var descriptiveHighlighted: UIColor { get }
     @objc var background1: UIColor { get }
+    
     @objc var background2: UIColor { get }
     @objc var background3: UIColor { get }
     @objc var spotlight: UIColor { get }

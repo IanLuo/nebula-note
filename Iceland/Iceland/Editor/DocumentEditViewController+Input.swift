@@ -34,7 +34,7 @@ extension DocumentEditViewController: UITextViewDelegate {
                 hiddenRange.upperBound != location,
                 textView.selectedRange.length == 0,
                 location != lastLocation {
-                print(">>>> hidden range: \(hiddenRange), hidden string: \(self.textView.text.nsstring.substring(with: hiddenRange))")
+                log.info("hidden range: \(hiddenRange), hidden string: \(self.textView.text.nsstring.substring(with: hiddenRange))")
                 if location < lastLocation { // move back
                     self._isAdjustingSelectRange = true
                     textView.selectedRange = NSRange(location: max(0, hiddenRange.location - 1), length: 0)
@@ -44,7 +44,7 @@ extension DocumentEditViewController: UITextViewDelegate {
                     textView.selectedRange = NSRange(location: hiddenRange.upperBound, length: 0)
                     self._isAdjustingSelectRange = false
                 }
-                print("adjust to \(textView.selectedRange)")
+                log.info("adjust to \(textView.selectedRange)")
             }
         }
     }

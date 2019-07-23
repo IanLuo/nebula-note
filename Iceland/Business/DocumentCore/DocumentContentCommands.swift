@@ -138,8 +138,7 @@ public class FoldingAndUnfoldingCommand: DocumentContentCommand {
         // 重新渲染折叠部分的 attribute
         textStorage.setAttributes(nil, range: range)
         // 设置文字默认样式
-        textStorage.addAttributes([NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.interactive,
-                            NSAttributedString.Key.font: InterfaceTheme.Font.body],
+        textStorage.addAttributes(OutlineTheme.paragraphStyle.attributes,
                            range: range)
         
         textStorage.setParagraphIndent(heading: heading)

@@ -111,6 +111,23 @@ public enum AttachmentError: Error {
         }, failure: failure)
     }
     
+    public static func attachmentFileURL(key: String) -> URL? {
+        let wrapperName = AttachmentManager.wrappterURL(key: key)
+        let jsonFileURL = wrapperName.appendingPathComponent(AttachmentDocument.jsonFile)
+        
+        do {
+            let json = try JSONSerialization.jsonObject(with: Data(contentsOf: jsonFileURL), options: []) as? [String: Any]
+            if let fileName = json?["fileName"] as? String {
+                return wrapperName.appendingPathComponent(fileName)
+            } else {
+                return nil
+            }
+        } catch {
+            log.error(error)
+            return nil
+        }
+    }
+    
     /// 已经添加的文档的附件，直接使用 key 来加载
     public func attachment(with key: String, completion: @escaping (Attachment) -> Void, failure: @escaping (Error) -> Void) {
         

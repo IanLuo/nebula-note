@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct PDFExporter: Exportable {
+public class PDFExporter: Exportable {
     public var url: URL
     
     public var fileExtension: String = "pdf"
@@ -20,14 +20,36 @@ public struct PDFExporter: Exportable {
         self.url = url
     }
     
+    let tempDelegate = TempWebViewDelegate()
+    var keeper: Any?
+    
     public func export(completion: @escaping (ExportResult) -> Void) {
         let htmlExporter = HTMLExporter(editorContext: self._editorContext, url: self.url)
         htmlExporter.export { exportContent in
             switch exportContent {
             case .string(let htmlString):
-                completion(.file(self._createPDF(string: htmlString)))
+                self.keeper = self
+                let webView = UIWebView(frame: CGRect(origin: .zero, size: CGSize(width: 10, height: 10)))
+                webView.delegate = self.tempDelegate
+                webView.loadHTMLString(htmlString, baseURL: nil)
+                UIApplication.shared.keyWindow?.addSubview(webView)
+                self.tempDelegate.didLoaded = {
+                    completion(.file(self._createPDF(string: htmlString)))
+                    self.keeper = nil
+                }
             default: break
             }
+        }
+    }
+    
+    class TempWebViewDelegate: NSObject, UIWebViewDelegate {
+        var didLoaded: (() -> Void)?
+        func webViewDidFinishLoad(_ webView: UIWebView) {
+            didLoaded?()
+        }
+        
+        func webView(_ webView: UIWebView, didFailLoadWithError error: Error) {
+            log.error(error)
         }
     }
     

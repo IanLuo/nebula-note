@@ -82,6 +82,8 @@ extension Token {
             return "<li>\(string.nsstring.substring(with: unorderedList.range).nsstring.replacingCharacters(in: unorderedList.prefix.moveRightBound(by: 1).offset(-unorderedList.range.location), with: ""))</li>"
         } else if let checkbox = self as? CheckboxToken {
             return "<a>[\(string.nsstring.substring(with: checkbox.range(for: "status")!))] </a>"
+        } else if let quoteBlock = self as? BlockBeginToken, quoteBlock.blockType == .quote {
+            return "<q>\(string.nsstring.substring(with: quoteBlock.contentRange!))</q>"
         } else if let attachmentToken = self as? AttachmentToken {
             guard let typeRange = attachmentToken.range(for: OutlineParser.Key.Element.Attachment.type) else { return ""}
             guard let valueRange = attachmentToken.range(for: OutlineParser.Key.Element.Attachment.value) else { return ""}
@@ -89,7 +91,11 @@ extension Token {
             let type = string.nsstring.substring(with: typeRange)
             let value = string.nsstring.substring(with: valueRange)
             
-            return "#\(type):\(value)"
+            if type == Attachment.Kind.image.rawValue, let url = AttachmentManager.attachmentFileURL(key: value) {
+                return "<img src=\"\(url.absoluteString)\"/>"
+            } else {
+                return "#\(type):\(value)#"
+            }
         } else {
             return string.nsstring.substring(with: self.range)
         }

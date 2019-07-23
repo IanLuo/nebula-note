@@ -103,6 +103,7 @@ public class OutlineTextView: UITextView {
             self.outlineDelegate?.didTapOnPriority(textView: self, characterIndex: characterIndex, priority: priority, point: location)
         }  else if let type = attributes[OutlineAttribute.Attachment.type] as? String,
             let value = attributes[OutlineAttribute.Attachment.value] as? String {
+            self.resignFirstResponder()
             self.outlineDelegate?.didTapOnAttachment(textView: self, characterIndex: characterIndex, type: type, value: value, point: location)
         }
 //        else if let hiddenValue = attributes[OutlineAttribute.hidden] as? Int {

@@ -11,7 +11,7 @@ import UIKit
 
 public class AttachmentDocument: UIDocument {
     public static let fileExtension = "ica"
-    private static let _jsonFile = "info.json"
+    public static let jsonFile = "info.json"
     public var fileToSave: URL?
     
     public var attachment: Attachment?
@@ -29,7 +29,7 @@ public class AttachmentDocument: UIDocument {
         let json = try encoder.encode(attachment)
         let jsonWrapper = FileWrapper(regularFileWithContents: json)
         
-        jsonWrapper.preferredFilename = AttachmentDocument._jsonFile
+        jsonWrapper.preferredFilename = AttachmentDocument.jsonFile
         wrapper.addFileWrapper(jsonWrapper)
         
         let dataWrapper = FileWrapper(regularFileWithContents: try Data(contentsOf: fileToSave)) // use the outter file url, and write to wrapper directory
@@ -41,7 +41,7 @@ public class AttachmentDocument: UIDocument {
     
     public override func load(fromContents contents: Any, ofType typeName: String?) throws {
         if let wrapper = contents as? FileWrapper {
-            if let jsonData = wrapper.fileWrappers?[AttachmentDocument._jsonFile]?.regularFileContents {
+            if let jsonData = wrapper.fileWrappers?[AttachmentDocument.jsonFile]?.regularFileContents {
                 let decoder = JSONDecoder()
                 decoder.dateDecodingStrategy = .secondsSince1970
                 self.attachment = try decoder.decode(Attachment.self, from: jsonData)
