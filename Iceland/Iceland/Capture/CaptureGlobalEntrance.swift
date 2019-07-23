@@ -12,6 +12,16 @@ import Business
 import Interface
 
 public class CaptureGlobalEntranceWindow: UIWindow {
+    public var isForcedToHide: Bool = false {
+        didSet {
+            if isForcedToHide {
+                self.hide()
+            } else {
+                self.show()
+            }
+        }
+    }
+    
     public var entryAction: (() -> Void)?
     
     public var isOffScreen: Bool = false
@@ -60,6 +70,8 @@ public class CaptureGlobalEntranceWindow: UIWindow {
     }
     
     public func show() {
+        guard self.isForcedToHide == false else { return }
+        
         self.alpha = 1
         UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveEaseInOut, animations: {
             self.frame = CGRect(x: UIScreen.main.bounds.width - self.frame.width - 30, y: UIScreen.main.bounds.height - self._fromWindow!.safeArea.bottom - 60 - 30, width: self.frame.size.width, height: self.frame.size.height)

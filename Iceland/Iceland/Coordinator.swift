@@ -136,6 +136,7 @@ extension Coordinator {
                                                     usage: EditorCoordinator.Usage.editor(url, location))
         
         documentCoordinator.start(from: self)
+        self.dependency.globalCaptureEntryWindow?.isForcedToHide = true
     }
     
     public func showAttachmentPicker(kind: Attachment.Kind, complete: @escaping (String) -> Void, cancel: @escaping () -> Void) {

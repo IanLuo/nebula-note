@@ -15,6 +15,7 @@ extension DocumentEditViewController {
     @objc public func cancel(_ button: UIView) {
         self.viewModel.close { _ in }
         self.dismiss(animated: true, completion: nil)
+        self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.isForcedToHide = false
     }
     
     @objc public func showInfo() {
@@ -55,6 +56,14 @@ extension DocumentEditViewController {
                 viewController.dismiss(animated: true, completion: nil)
                 self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
             })
+        }
+        
+        actionsController.addAction(icon: Asset.Assets.inspiration.image,
+                                    title: L10n.Document.Menu.capture,
+                                    style: .highlight) { viewController in
+                                        viewController.dismiss(animated: true) {
+                                            self.viewModel.coordinator?.showCaptureEntrance()
+                                        }
         }
         
         actionsController.setCancel { viewController in
