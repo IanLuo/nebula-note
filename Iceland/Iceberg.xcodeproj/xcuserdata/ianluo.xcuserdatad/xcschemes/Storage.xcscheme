@@ -17,7 +17,7 @@
                BlueprintIdentifier = "E41F86E521902D94006C4CDB"
                BuildableName = "Storage.framework"
                BlueprintName = "Storage"
-               ReferencedContainer = "container:Iceland.xcodeproj">
+               ReferencedContainer = "container:Iceberg.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -29,8 +29,6 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
       </Testables>
-      <AdditionalOptions>
-      </AdditionalOptions>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
@@ -48,11 +46,9 @@
             BlueprintIdentifier = "E41F86E521902D94006C4CDB"
             BuildableName = "Storage.framework"
             BlueprintName = "Storage"
-            ReferencedContainer = "container:Iceland.xcodeproj">
+            ReferencedContainer = "container:Iceberg.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
-      <AdditionalOptions>
-      </AdditionalOptions>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -66,7 +62,7 @@
             BlueprintIdentifier = "E41F86E521902D94006C4CDB"
             BuildableName = "Storage.framework"
             BlueprintName = "Storage"
-            ReferencedContainer = "container:Iceland.xcodeproj">
+            ReferencedContainer = "container:Iceberg.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

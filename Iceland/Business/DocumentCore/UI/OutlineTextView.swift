@@ -120,6 +120,7 @@ public class OutlineTextView: UITextView {
         return shouldPassTapToOtherGuestureRecognizers
     }
     
+    // 调整光标的高度
     public override func caretRect(for position: UITextPosition) -> CGRect {
         var rect = super.caretRect(for: position)
         rect.size.height -= 10

@@ -1367,7 +1367,7 @@
 					};
 				};
 			};
-			buildConfigurationList = E43427F12121BF5B00EC6DC3 /* Build configuration list for PBXProject "Iceland" */;
+			buildConfigurationList = E43427F12121BF5B00EC6DC3 /* Build configuration list for PBXProject "Iceberg" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -2400,7 +2400,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E43427F12121BF5B00EC6DC3 /* Build configuration list for PBXProject "Iceland" */ = {
+		E43427F12121BF5B00EC6DC3 /* Build configuration list for PBXProject "Iceberg" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E434281C2121BF6000EC6DC3 /* Debug */,

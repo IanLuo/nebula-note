@@ -17,7 +17,7 @@
                BlueprintIdentifier = "E43427F52121BF5B00EC6DC3"
                BuildableName = "Iceland.app"
                BlueprintName = "Iceland"
-               ReferencedContainer = "container:Iceland.xcodeproj">
+               ReferencedContainer = "container:Iceberg.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -34,7 +34,7 @@
             BlueprintIdentifier = "E43427F52121BF5B00EC6DC3"
             BuildableName = "Iceland.app"
             BlueprintName = "Iceland"
-            ReferencedContainer = "container:Iceland.xcodeproj">
+            ReferencedContainer = "container:Iceberg.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <CodeCoverageTargets>
@@ -43,7 +43,7 @@
             BlueprintIdentifier = "E43427F52121BF5B00EC6DC3"
             BuildableName = "Iceland.app"
             BlueprintName = "Iceland"
-            ReferencedContainer = "container:Iceland.xcodeproj">
+            ReferencedContainer = "container:Iceberg.xcodeproj">
          </BuildableReference>
       </CodeCoverageTargets>
       <Testables>
@@ -54,7 +54,7 @@
                BlueprintIdentifier = "E43428092121BF5F00EC6DC3"
                BuildableName = "IcelandTests.xctest"
                BlueprintName = "IcelandTests"
-               ReferencedContainer = "container:Iceland.xcodeproj">
+               ReferencedContainer = "container:Iceberg.xcodeproj">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -64,7 +64,7 @@
                BlueprintIdentifier = "E43428142121BF6000EC6DC3"
                BuildableName = "IcelandUITests.xctest"
                BlueprintName = "IcelandUITests"
-               ReferencedContainer = "container:Iceland.xcodeproj">
+               ReferencedContainer = "container:Iceberg.xcodeproj">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -74,7 +74,7 @@
                BlueprintIdentifier = "E43F74B821840082000206E5"
                BuildableName = "OrgEngineTests.xctest"
                BlueprintName = "OrgEngineTests"
-               ReferencedContainer = "container:Iceland.xcodeproj">
+               ReferencedContainer = "container:Iceberg.xcodeproj">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -84,7 +84,7 @@
                BlueprintIdentifier = "E41F86ED21902D94006C4CDB"
                BuildableName = "StorageTests.xctest"
                BlueprintName = "StorageTests"
-               ReferencedContainer = "container:Iceland.xcodeproj">
+               ReferencedContainer = "container:Iceberg.xcodeproj">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -94,7 +94,7 @@
                BlueprintIdentifier = "E41CB17121D88B7100EF0A3C"
                BuildableName = "DocumentCoreTests.xctest"
                BlueprintName = "DocumentCoreTests"
-               ReferencedContainer = "container:Iceland.xcodeproj">
+               ReferencedContainer = "container:Iceberg.xcodeproj">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -104,7 +104,7 @@
                BlueprintIdentifier = "E41CB1A221D88D9400EF0A3C"
                BuildableName = "BusinessTests.xctest"
                BlueprintName = "BusinessTests"
-               ReferencedContainer = "container:Iceland.xcodeproj">
+               ReferencedContainer = "container:Iceberg.xcodeproj">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -114,7 +114,7 @@
                BlueprintIdentifier = "E4BFD45A21F71185003C048C"
                BuildableName = "TextStorageTests.xctest"
                BlueprintName = "TextStorageTests"
-               ReferencedContainer = "container:Iceland.xcodeproj">
+               ReferencedContainer = "container:Iceberg.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -137,7 +137,7 @@
             BlueprintIdentifier = "E43427F52121BF5B00EC6DC3"
             BuildableName = "Iceland.app"
             BlueprintName = "Iceland"
-            ReferencedContainer = "container:Iceland.xcodeproj">
+            ReferencedContainer = "container:Iceberg.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <CommandLineArguments>
@@ -175,7 +175,7 @@
             BlueprintIdentifier = "E43427F52121BF5B00EC6DC3"
             BuildableName = "Iceland.app"
             BlueprintName = "Iceland"
-            ReferencedContainer = "container:Iceland.xcodeproj">
+            ReferencedContainer = "container:Iceberg.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
