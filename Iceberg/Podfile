@@ -1,0 +1,32 @@
+platform :ios, '9.0'
+
+use_frameworks!
+
+target 'Iceberg' do
+#    pod 'RxSwift'
+#    pod 'RxCocoa'
+    pod 'SwiftyBeaver'
+#    pod 'Result'
+    pod 'Haptico' # https://github.com/iSapozhnik/Haptico
+    pod 'Drawsana' # https://github.com/Asana/Drawsana
+    pod 'SwiftGen', '~> 6.0'
+    pod 'KDCalendar', '~> 1.6.5'
+end
+
+target 'IcebergTests' do
+    pod 'RxSwift'
+    pod 'RxCocoa'
+end
+
+target 'Business' do
+    pod 'SwiftyBeaver'
+#    pod 'Result'
+end
+
+target 'Interface' do
+    pod 'SwiftyBeaver'
+end
+
+target 'CaptureIdeaExtension' do
+    pod 'SwiftyBeaver'
+end
