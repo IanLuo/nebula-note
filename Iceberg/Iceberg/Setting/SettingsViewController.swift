@@ -68,6 +68,7 @@ public class SettingsViewController: UITableViewController {
     }
     
     private func _setupUI() {
+        self.tableView.contentInset = .init(top: 0, left: 0, bottom: 80, right: 0)
         self.title = L10n.Setting.title
         
         self.tableView.separatorStyle = .none
