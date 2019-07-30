@@ -97,6 +97,7 @@ public class Application: Coordinator {
     
     var isHandlingSharedIdeas: Bool = false
     public func handleSharedIdeas() {
+        // 避免正在处理的过程中，重复处理
         guard isHandlingSharedIdeas == false else { return }
         isHandlingSharedIdeas = true
         

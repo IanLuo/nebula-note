@@ -8,6 +8,7 @@
 
 import Foundation
 
+/// 通过第三发 app 分享
 public struct ShareExtensionDataHandler {
     public init() {}
     

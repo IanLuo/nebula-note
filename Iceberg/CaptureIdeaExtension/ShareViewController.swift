@@ -19,8 +19,11 @@ class ShareViewController: SLComposeServiceViewController {
 
     let handler = ShareExtensionDataHandler()
     
+    override func viewDidLoad() {
+        self.textView.isHidden = true
+    }
+    
     override func didSelectPost() {
-        self.textView.isEditable = false
         let group = DispatchGroup()
         
         DispatchQueue.global(qos: DispatchQoS.QoSClass.default).async {
