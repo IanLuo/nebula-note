@@ -137,7 +137,7 @@ public class Document: UIDocument {
         super.save(to: url, for: saveOperation, completionHandler: { success in
             completionHandler?(success)
             if success {
-                log.info("save complete \(CFAbsoluteTimeGetCurrent() - time) ms ++")
+                log.info("save complete \(CFAbsoluteTimeGetCurrent() - time) s ++")
             } else {
                 log.info("save faild --")
             }

@@ -148,7 +148,14 @@ public struct DocumentManager {
                 addDocumentAction(newURL)
             }
         } else {
-            addDocumentAction(newURL)
+            URL.documentBaseURL.createDirectoryIfNeeded { error in
+                if let error = error {
+                    log.error(error)
+                    completion?(nil)
+                } else {
+                    addDocumentAction(newURL)
+                }
+            }
         }
     }
     

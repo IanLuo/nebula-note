@@ -38,11 +38,11 @@ public class SyncManager: NSObject {
     }
     
     public static var iCloudAttachmentRoot: URL? {
-        return self.iCloudRoot?.appendingPathComponent("attachments")
+        return SyncManager.iCloudRoot?.appendingPathComponent("attachments")
     }
     
     public static var iCloudKeyValueStoreRoot: URL? {
-        return self.iCloudRoot?.appendingPathComponent("keyValueStore")
+        return SyncManager.iCloudRoot?.appendingPathComponent("keyValueStore")
     }
     
     private let _eventObserver: EventObserver

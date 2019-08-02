@@ -17,20 +17,25 @@ public class AttachmentDocument: UIDocument {
     public var attachment: Attachment?
     
     public override func contents(forType typeName: String) throws -> Any {
-        guard let attachment = self.attachment else { fatalError("attachment can't be nill") }
-        guard let fileToSave = self.fileToSave else { fatalError("no file to save") }
+        guard let attachment = self.attachment else { return "".data(using: .utf8)! }
+        guard let fileToSave = self.fileToSave else { return "".data(using: .utf8)! }
         
         let wrapper = FileWrapper(directoryWithFileWrappers: [:])
         
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .secondsSince1970
         
-        // change the url of content in to be the one inside attchment wrapper
-        let json = try encoder.encode(attachment)
-        let jsonWrapper = FileWrapper(regularFileWithContents: json)
-        
-        jsonWrapper.preferredFilename = AttachmentDocument.jsonFile
-        wrapper.addFileWrapper(jsonWrapper)
+        do {
+            // change the url of content in to be the one inside attchment wrapper
+            let json = try encoder.encode(attachment)
+            let jsonWrapper = FileWrapper(regularFileWithContents: json)
+            
+            jsonWrapper.preferredFilename = AttachmentDocument.jsonFile
+            wrapper.addFileWrapper(jsonWrapper)
+        } catch {
+            log.error(error)
+            throw error
+        }
         
         let dataWrapper = FileWrapper(regularFileWithContents: try Data(contentsOf: fileToSave)) // use the outter file url, and write to wrapper directory
         dataWrapper.preferredFilename = attachment.fileName
@@ -47,5 +52,11 @@ public class AttachmentDocument: UIDocument {
                 self.attachment = try decoder.decode(Attachment.self, from: jsonData)
             }
         }
+    }
+    
+    public override func handleError(_ error: Error, userInteractionPermitted: Bool) {
+        super.handleError(error, userInteractionPermitted: userInteractionPermitted)
+        
+        log.error(error)
     }
 }

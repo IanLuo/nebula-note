@@ -79,7 +79,7 @@ fileprivate struct PlistStore: KeyValueStore {
                     if let error = error {
                         log.error(error)
                     } else {
-                        store.write(to: url, atomically: true)
+                        store.write(to: url, atomically: false)
                         completion()
                     }
                 })

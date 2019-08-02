@@ -49,21 +49,29 @@ public enum AttachmentError: Error {
                                         description: description,
                                         kind: kind)
             
-            let attachmentDocument = AttachmentDocument(fileURL: fileURL)
-            attachmentDocument.attachment = attachment
-            attachmentDocument.fileToSave = attachmentURL
-            attachmentDocument.save(to: fileURL, for: UIDocument.SaveOperation.forCreating) { result in
-                attachmentDocument.close(completionHandler: { result in
-                    log.info("successfully insert new attachment key: \(newKey), url: \(fileURL)")
-                    DispatchQueue.main.async {
-                        if result {
-                            complete(newKey)
-                        } else {
-                            log.error("failed to insert new attachment key: \(newKey), url: \(fileURL)")
-                            failure(AttachmentError.failToSaveAttachment)
-                        }
+            let attachmentDocument = AttachmentDocument.init(fileURL: fileURL)
+            attachmentDocument.save(to: fileURL, for: UIDocument.SaveOperation.forCreating) { [unowned attachmentDocument] result in
+                if result {
+                    attachmentDocument.attachment = attachment
+                    attachmentDocument.fileToSave = attachmentURL
+                    attachmentDocument.updateChangeCount(UIDocument.ChangeKind.done)
+                    attachmentDocument.save(to: fileURL, for: UIDocument.SaveOperation.forOverwriting) { [unowned attachmentDocument] result in
+                        attachmentDocument.close(completionHandler: { result in
+                            log.info("successfully insert new attachment key: \(newKey), url: \(fileURL)")
+                            DispatchQueue.main.async {
+                                if result {
+                                    complete(newKey)
+                                } else {
+                                    log.error("failed to insert new attachment key: \(newKey), url: \(fileURL)")
+                                    failure(AttachmentError.failToSaveAttachment)
+                                }
+                            }
+                        })
                     }
-                })
+                } else {
+                    log.error("failed to insert new attachment key: \(newKey), url: \(fileURL)")
+                    failure(AttachmentError.failToSaveAttachment)
+                }
             }
         }
         
