@@ -49,7 +49,7 @@ public class DateSelectViewController: UIViewController {
         CalendarView.Style.cellTextColorToday       = InterfaceTheme.Color.spotlight
         CalendarView.Style.cellColorToday           = InterfaceTheme.Color.background1
         CalendarView.Style.cellEventColor           = InterfaceTheme.Color.spotlight
-        CalendarView.Style.headerTextColor          = InterfaceTheme.Color.descriptiveHighlighted
+        CalendarView.Style.headerTextColor          = InterfaceTheme.Color.secondaryDescriptive
         
         CalendarView.Style.cellTextColorWeekend = InterfaceTheme.Color.descriptive
 

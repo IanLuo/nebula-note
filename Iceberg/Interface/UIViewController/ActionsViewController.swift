@@ -12,7 +12,7 @@ import UIKit
 public class ActionsViewController: UIViewController, TransitionProtocol {
     fileprivate struct Constants {
         static let rowHeight: CGFloat = 50
-        static let specialItemSeparatorHeight: CGFloat = 5
+        static let specialItemSeparatorHeight: CGFloat = 1
         static let titleHeight: CGFloat = 60
     }
     
@@ -138,13 +138,13 @@ public class ActionsViewController: UIViewController, TransitionProtocol {
     
     private let actionsContainerView: UIView = {
         let view = UIView()
-        view.backgroundColor = InterfaceTheme.Color.background1
+        view.backgroundColor = InterfaceTheme.Color.background2
         return view
     }()
     
     public let contentView: UIView = {
         let view = UIView()
-        view.backgroundColor = InterfaceTheme.Color.background1
+        view.backgroundColor = InterfaceTheme.Color.background2
         view.layer.cornerRadius = 8
         view.layer.masksToBounds = true
         return view
@@ -170,7 +170,7 @@ public class ActionsViewController: UIViewController, TransitionProtocol {
         let tableView = UITableView()
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.backgroundColor = InterfaceTheme.Color.background1
+        tableView.backgroundColor = InterfaceTheme.Color.background2
         tableView.separatorStyle = .none
         tableView.register(ActionCell.self, forCellReuseIdentifier: ActionCell.reuseIdentifier)
         return tableView
@@ -269,13 +269,13 @@ fileprivate class ActionCell: UITableViewCell {
                 self.titleLabel.textColor = InterfaceTheme.Color.interactive
             case .highlight:
                 self.titleLabel.textColor = InterfaceTheme.Color.spotlight
-                self.contentView.setBorder(position: .top, color: InterfaceTheme.Color.background2, width: ActionsViewController.Constants.specialItemSeparatorHeight)
+                self.contentView.setBorder(position: .top, color: InterfaceTheme.Color.background3, width: ActionsViewController.Constants.specialItemSeparatorHeight)
                 self.titleLabel.constraint(for: .top)?.constant = ActionsViewController.Constants.specialItemSeparatorHeight / 2
                 self.titleLabel.constraint(for: .bottom)?.constant = -ActionsViewController.Constants.specialItemSeparatorHeight / 2
                 self.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
             case .warning:
                 self.titleLabel.textColor = InterfaceTheme.Color.warning
-                self.contentView.setBorder(position: .top, color: InterfaceTheme.Color.background2, width: ActionsViewController.Constants.specialItemSeparatorHeight)
+                self.contentView.setBorder(position: .top, color: InterfaceTheme.Color.background3, width: ActionsViewController.Constants.specialItemSeparatorHeight)
                 self.titleLabel.constraint(for: .top)?.constant = ActionsViewController.Constants.specialItemSeparatorHeight / 2
                 self.titleLabel.constraint(for: .bottom)?.constant = -ActionsViewController.Constants.specialItemSeparatorHeight / 2
                 self.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
@@ -301,7 +301,7 @@ fileprivate class ActionCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        self.backgroundColor = InterfaceTheme.Color.background1
+        self.backgroundColor = InterfaceTheme.Color.background2
         
         self.contentView.addSubview(self.iconView)
         self.contentView.addSubview(self.titleLabel)
@@ -320,17 +320,17 @@ fileprivate class ActionCell: UITableViewCell {
     
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
         if highlighted {
-            self.backgroundColor = InterfaceTheme.Color.background2
+            self.backgroundColor = InterfaceTheme.Color.background3
         } else {
-            self.backgroundColor = InterfaceTheme.Color.background1
+            self.backgroundColor = InterfaceTheme.Color.background2
         }
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         if selected {
-            self.backgroundColor = InterfaceTheme.Color.background2
+            self.backgroundColor = InterfaceTheme.Color.background3
         } else {
-            self.backgroundColor = InterfaceTheme.Color.background1
+            self.backgroundColor = InterfaceTheme.Color.background2
         }
     }
 }

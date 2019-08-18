@@ -37,7 +37,7 @@ public class AgendaTableCell: UITableViewCell {
         
         label.interface({ (me, theme) in
             let me = me as! UILabel
-            me.textColor = theme.color.descriptiveHighlighted
+            me.textColor = theme.color.secondaryDescriptive
         })
         label.font = InterfaceTheme.Font.footnote
         label.textAlignment = .left
@@ -71,7 +71,7 @@ public class AgendaTableCell: UITableViewCell {
         
         imageView.interface({ (me, theme) in
             let me = me as! UIImageView
-            me.image = Asset.Assets.tag.image.fill(color: theme.color.descriptiveHighlighted)
+            me.image = Asset.Assets.tag.image.fill(color: theme.color.secondaryDescriptive)
         })
 
         return imageView
@@ -81,7 +81,7 @@ public class AgendaTableCell: UITableViewCell {
         let label = UILabel()
         label.interface({ (me, theme) in
             let me = me as! UILabel
-            me.textColor = theme.color.descriptiveHighlighted
+            me.textColor = theme.color.secondaryDescriptive
             me.font = theme.font.footnote
         })
         label.textAlignment = .left
@@ -93,7 +93,7 @@ public class AgendaTableCell: UITableViewCell {
         
         button.interface({ (me, theme) in
             let me = me as! UIButton
-            button.setImage(Asset.Assets.moreV.image.fill(color: theme.color.descriptiveHighlighted), for: .normal)
+            button.setImage(Asset.Assets.moreV.image.fill(color: theme.color.secondaryDescriptive), for: .normal)
         })
         return button
     }()

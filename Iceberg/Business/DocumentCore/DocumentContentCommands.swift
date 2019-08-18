@@ -723,7 +723,8 @@ public class UpdateDateAndTimeCommandComposer: DocumentContentCommandComposer {
         // 没有找到原来的 data and time
         if let newDateAndTime = self.newDateAndTime {
             // 创建新的
-            return ReplaceTextCommand(range: NSRange(location: self.location, length: 0), textToReplace: newDateAndTime.markString, textStorage: textStorage)
+            let stringToInsert = newDateAndTime.markString + " " // 在日期后面添加一个空格，避免在文档尾部时，无法移动光标
+            return ReplaceTextCommand(range: NSRange(location: self.location, length: 0), textToReplace: stringToInsert, textStorage: textStorage)
         } else {
             // 忽略
             return NoChangeCommand()

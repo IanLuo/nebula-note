@@ -24,7 +24,7 @@ public class DocumentBrowserCell: UITableViewCell {
         button.interface({ (me, theme) in
             let button = me as! UIButton
             button.setImage(Asset.Assets.down.image.resize(upto: CGSize(width: 10, height: 10)).withRenderingMode(.alwaysTemplate), for: .normal)
-            button.tintColor = InterfaceTheme.Color.descriptiveHighlighted
+            button.tintColor = InterfaceTheme.Color.secondaryDescriptive
         })
         button.isHidden = true
         return button

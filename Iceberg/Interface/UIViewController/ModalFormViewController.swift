@@ -332,7 +332,7 @@ private class InputTextViewCell: UITableViewCell, UITextViewDelegate, Validatabl
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.font = InterfaceTheme.Font.footnote
-        label.textColor = InterfaceTheme.Color.descriptiveHighlighted
+        label.textColor = InterfaceTheme.Color.secondaryDescriptive
         return label
     }()
     
@@ -410,7 +410,7 @@ private class InputTextFieldCell: UITableViewCell, UITextFieldDelegate, Validata
         let label = UILabel()
         label.font = InterfaceTheme.Font.footnote
         label.textAlignment = .left
-        label.textColor = InterfaceTheme.Color.descriptiveHighlighted
+        label.textColor = InterfaceTheme.Color.secondaryDescriptive
         return label
     }()
     

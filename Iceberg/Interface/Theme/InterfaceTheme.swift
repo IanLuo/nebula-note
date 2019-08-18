@@ -24,7 +24,7 @@ public struct Layout {
 @objc public protocol InterfaceThemeColorProtocol: class {
     @objc var interactive: UIColor { get }
     @objc var descriptive: UIColor { get }
-    @objc var descriptiveHighlighted: UIColor { get }
+    @objc var secondaryDescriptive: UIColor { get }
     @objc var background1: UIColor { get }
     
     @objc var background2: UIColor { get }
@@ -68,34 +68,34 @@ public struct Layout {
 
 @objc public class LightInterfaceColor: NSObject, InterfaceThemeColorProtocol {
     @objc public var spotlitTitle: UIColor = UIColor(red:1.00, green:1.00, blue:1.00, alpha:1.00)
-    @objc public var level: UIColor = UIColor(red:0.08, green:0.49, blue:0.98, alpha:1.00)
-    @objc public var finished: UIColor = UIColor(red:0.14, green:0.87, blue:0.41, alpha:1.00)
-    @objc public var unfinished: UIColor = UIColor(red:0.94, green:0.64, blue:0.28, alpha:1.00)
+    @objc public var level: UIColor = UIColor(88, 86, 214)
+    @objc public var finished: UIColor = UIColor(52, 199, 89)
+    @objc public var unfinished: UIColor = UIColor(255, 149, 0)
     
-    @objc public let interactive: UIColor = UIColor(red:0.00, green:0.00, blue:0.00, alpha:1.00)
-    @objc public let descriptive: UIColor = UIColor(red:0.58, green:0.58, blue:0.58, alpha:1.00)
-    @objc public let descriptiveHighlighted: UIColor = UIColor(red:0.58, green:0.58, blue:0.58, alpha:1.00)
-    @objc public let background1: UIColor = UIColor(red:1.00, green:1.00, blue:1.00, alpha:1.00)
-    @objc public let background2: UIColor = UIColor(red:0.95, green:0.95, blue:0.96, alpha:1.00)
-    @objc public let background3: UIColor = UIColor(red:0.94, green:0.94, blue:0.94, alpha:1.00)
-    @objc public let spotlight: UIColor = UIColor(red:0.08, green:0.49, blue:0.98, alpha:1.00)
-    @objc public let warning: UIColor = UIColor(red:0.99, green:0.24, blue:0.22, alpha:1.00)
+    @objc public let interactive: UIColor = UIColor(28, 28, 30)
+    @objc public let descriptive: UIColor = UIColor(72, 72, 74)
+    @objc public let secondaryDescriptive: UIColor = UIColor(142, 142, 147)
+    @objc public let background1: UIColor = UIColor(242, 242, 247)
+    @objc public let background2: UIColor = UIColor(229, 229, 234)
+    @objc public let background3: UIColor = UIColor(209, 209, 214)
+    @objc public let spotlight: UIColor = UIColor(90, 200, 250)
+    @objc public let warning: UIColor = UIColor(255, 59, 48)
 }
 
 @objc public class DarkInterfaceColor: NSObject, InterfaceThemeColorProtocol {
-    @objc public var spotlitTitle: UIColor = UIColor(red:1.00, green:1.00, blue:1.00, alpha:1.00)
-    @objc public var level: UIColor = UIColor(red:0.08, green:0.49, blue:0.98, alpha:1.00)
-    @objc public var finished: UIColor = UIColor(red:0.14, green:0.87, blue:0.41, alpha:1.00)
-    @objc public var unfinished: UIColor = UIColor(red:0.94, green:0.64, blue:0.28, alpha:1.00)
+    @objc public var spotlitTitle: UIColor = UIColor(242, 242, 247)
+    @objc public var level: UIColor = UIColor(10, 132, 255)
+    @objc public var finished: UIColor = UIColor(48, 209, 88)
+    @objc public var unfinished: UIColor = UIColor(255, 214, 10)
     
-    @objc public let interactive: UIColor = UIColor(red:0.97, green:0.97, blue:0.97, alpha:1.00)
-    @objc public let descriptive: UIColor = UIColor(red:0.27, green:0.27, blue:0.27, alpha:1.00)
-    @objc public let descriptiveHighlighted: UIColor = UIColor(red:0.41, green:0.41, blue:0.41, alpha:1.00)
-    @objc public let background1: UIColor = UIColor(red:0.00, green:0.00, blue:0.00, alpha:1.00)
-    @objc public let background2: UIColor = UIColor(red:0.11, green:0.11, blue:0.12, alpha:1.00)
-    @objc public let background3: UIColor = UIColor(red:0.22, green:0.22, blue:0.22, alpha:1.00)
-    @objc public let spotlight: UIColor = UIColor(red:0.08, green:0.49, blue:0.98, alpha:1.00)
-    @objc public let warning: UIColor = UIColor(red:0.99, green:0.24, blue:0.22, alpha:1.00)
+    @objc public let interactive: UIColor = UIColor(242, 242, 247)
+    @objc public let descriptive: UIColor = UIColor(142, 142, 147)
+    @objc public let secondaryDescriptive: UIColor = UIColor(72, 72, 74)
+    @objc public let background1: UIColor = UIColor(28, 28, 30)
+    @objc public let background2: UIColor = UIColor(44, 44, 46)
+    @objc public let background3: UIColor = UIColor(58, 58, 60)
+    @objc public let spotlight: UIColor = UIColor(100, 210, 255)
+    @objc public let warning: UIColor = UIColor(255, 69, 58)
 }
 
 @objc public class DefaultInterfaceFont: NSObject, InterfaceThemeFontProtocol {
@@ -172,5 +172,11 @@ extension UIView {
         InterfaceThemeSelector.shared.register(observer: self) { [unowned self] theme in
             action(self, theme)
         }
+    }
+}
+
+extension UIColor {
+    public convenience init(_ r: CGFloat, _ g: CGFloat, _ b: CGFloat) {
+        self.init(red: r / 255.0, green: g / 255.0, blue: b / 255.0, alpha: 1)
     }
 }

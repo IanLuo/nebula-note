@@ -37,9 +37,9 @@ open class SelectorViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.alwaysBounceVertical = false
-        tableView.backgroundColor = InterfaceTheme.Color.background1
+        tableView.backgroundColor = InterfaceTheme.Color.background2
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 30, bottom: 0, right: 30)
-        tableView.separatorColor = InterfaceTheme.Color.background2
+        tableView.separatorColor = InterfaceTheme.Color.background3
         tableView.register(ActionCell.self, forCellReuseIdentifier: ActionCell.reuseIdentifier)
         tableView.alwaysBounceVertical = true
         tableView.tableFooterView = UIView()
@@ -52,7 +52,7 @@ open class SelectorViewController: UIViewController {
         label.textColor = InterfaceTheme.Color.descriptive
         label.textAlignment = .center
 
-        label.backgroundColor = InterfaceTheme.Color.background1
+        label.backgroundColor = InterfaceTheme.Color.background2
         return label
     }()
     
@@ -135,7 +135,7 @@ open class SelectorViewController: UIViewController {
         
         self.titleLabel.sizeAnchor(height: 60)
         self.titleLabel.sideAnchor(for: [.left, .right, .top], to: self.contentView, edgeInset: 0)
-        self.titleLabel.setBorder(position: .bottom, color: InterfaceTheme.Color.background2, width: 0.5)
+        self.titleLabel.setBorder(position: .bottom, color: InterfaceTheme.Color.background3, width: 0.5)
         
         self.titleLabel.columnAnchor(view: self.tableView, space: 0)
         self.tableView.sideAnchor(for: [.left, .right, .bottom], to: self.contentView, edgeInset: 0)
@@ -282,7 +282,7 @@ fileprivate class ActionCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        self.backgroundColor = InterfaceTheme.Color.background1
+        self.backgroundColor = InterfaceTheme.Color.background2
         self.selectedBackgroundView?.isHidden = true
         
         self.descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -306,9 +306,9 @@ fileprivate class ActionCell: UITableViewCell {
     
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
         if highlighted {
-            self.backgroundColor = InterfaceTheme.Color.background2
+            self.backgroundColor = InterfaceTheme.Color.background3
         } else {
-            self.backgroundColor = InterfaceTheme.Color.background1
+            self.backgroundColor = InterfaceTheme.Color.background2
         }
     }
     
@@ -316,9 +316,9 @@ fileprivate class ActionCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
         
         if selected {
-            self.backgroundColor = InterfaceTheme.Color.background2
+            self.backgroundColor = InterfaceTheme.Color.background3
         } else {
-            self.backgroundColor = InterfaceTheme.Color.background1
+            self.backgroundColor = InterfaceTheme.Color.background2
         }
     }
     

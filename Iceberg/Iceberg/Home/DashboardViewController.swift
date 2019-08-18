@@ -461,8 +461,8 @@ private class TabView: UITableViewHeaderFooterView {
         
         button.interface({ (me, theme) in
             let button = me as! UIButton
-            button.tintColor = theme.color.descriptiveHighlighted
-            button.setImage(Asset.Assets.down.image.resize(upto: CGSize(width: 15, height: 15)).fill(color: theme.color.descriptiveHighlighted), for: .normal)
+            button.tintColor = theme.color.secondaryDescriptive
+            button.setImage(Asset.Assets.down.image.resize(upto: CGSize(width: 15, height: 15)).fill(color: theme.color.secondaryDescriptive), for: .normal)
         })
         button.addTarget(self, action: #selector(subtabActionTapped), for: .touchUpInside)
         button.imageView?.contentMode = .scaleAspectFit
