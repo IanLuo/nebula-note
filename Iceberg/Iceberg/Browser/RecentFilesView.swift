@@ -186,7 +186,7 @@ private class OpenningFileCell: UICollectionViewCell {
         self.contentView.addSubview(self.titleLabel)
         
         self.coverView.allSidesAnchors(to: self.contentView, edgeInset: 0)
-        self.titleLabel.sideAnchor(for: [.left, .right], to: self.contentView, edgeInset: 0)
+        self.titleLabel.sideAnchor(for: [.left, .right], to: self.contentView, edgeInset: 5)
         self.titleLabel.centerAnchors(position: .centerY, to: self.contentView)
     }
 }

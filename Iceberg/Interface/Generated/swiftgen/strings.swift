@@ -13,6 +13,14 @@ import Foundation
 public enum L10n {
 
   public enum Agenda {
+    /// in %@ days
+    public static func daysAfter(_ p1: String) -> String {
+      return L10n.tr("Localizable", "agenda.daysAfter", p1)
+    }
+    /// %@ days before
+    public static func daysBefore(_ p1: String) -> String {
+      return L10n.tr("Localizable", "agenda.daysBefore", p1)
+    }
     /// Due today
     public static let dueToday = L10n.tr("Localizable", "agenda.dueToday")
     /// Overdue %@ days
@@ -37,12 +45,18 @@ public enum L10n {
     public static let startYesterdayWithPlaceHodlerYesterday = L10n.tr("Localizable", "agenda.startYesterdayWithPlaceHodlerYesterday")
     /// Agenda
     public static let title = L10n.tr("Localizable", "agenda.title")
+    /// Today
+    public static let today = L10n.tr("Localizable", "agenda.today")
+    /// Tomorrow
+    public static let tomorrow = L10n.tr("Localizable", "agenda.tomorrow")
     /// Will due in %@ days
     public static func willOverduInDaysWithPlaceHolder(_ p1: String) -> String {
       return L10n.tr("Localizable", "agenda.willOverduInDaysWithPlaceHolder", p1)
     }
     /// Will due tomorrow
     public static let willOverduTomorrowWithPlaceHolder = L10n.tr("Localizable", "agenda.willOverduTomorrowWithPlaceHolder")
+    /// Yesterday
+    public static let yesterday = L10n.tr("Localizable", "agenda.yesterday")
     public enum Sub {
       /// No tag
       public static let noTag = L10n.tr("Localizable", "agenda.sub.noTag")

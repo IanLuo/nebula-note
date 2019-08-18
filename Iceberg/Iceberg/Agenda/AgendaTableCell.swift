@@ -286,7 +286,25 @@ extension DateAndTimeType {
                 }
             }
         } else {
-            text = nil
+            if today.isSameDay(self.date) {
+                text = L10n.Agenda.today
+                color = InterfaceTheme.Color.unfinished
+            } else {
+                let dateFromToday = self.date.daysFrom(today)
+                if dateFromToday == 1 { // tomorrow
+                    text = L10n.Agenda.tomorrow
+                    color = InterfaceTheme.Color.unfinished
+                } else if dateFromToday == -1 { // yesterday
+                    text = L10n.Agenda.yesterday
+                    color = InterfaceTheme.Color.warning
+                } else if dateFromToday > 1 { // after tomorrow
+                    text = L10n.Agenda.daysBefore("\(dateFromToday)")
+                    color = InterfaceTheme.Color.finished
+                } else { // before yesterday
+                    text = L10n.Agenda.daysAfter("\(-dateFromToday)")
+                    color = InterfaceTheme.Color.warning
+                }
+            }
         }
         
         if let text = text {

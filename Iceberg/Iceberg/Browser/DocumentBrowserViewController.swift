@@ -27,6 +27,7 @@ public class DocumentBrowserViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(DocumentBrowserCell.self, forCellReuseIdentifier: DocumentBrowserCell.reuseIdentifier)
+        tableView.showsVerticalScrollIndicator = false
         
         tableView.interface({ (me, theme) in
             me.backgroundColor = theme.color.background1
