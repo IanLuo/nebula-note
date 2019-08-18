@@ -299,7 +299,7 @@ public class DocumentBrowserViewModel {
         })
         
         eventObserver?.registerForEvent(on: self, eventType: AddDocumentEvent.self, queue: nil, action: { [weak self] (event: AddDocumentEvent) -> Void in
-            self?.delegate?.didLoadData()
+            self?.loadData()
         })
         
         eventObserver?.registerForEvent(on: self,

@@ -20,54 +20,21 @@ class ShareViewController: SLComposeServiceViewController {
     let handler = ShareExtensionDataHandler()
     
     override func viewDidLoad() {
-        self.textView.isHidden = true
+//        self.textView.isHidden = true
     }
     
     override func didSelectPost() {
         let group = DispatchGroup()
         
         DispatchQueue.global(qos: DispatchQoS.QoSClass.default).async {
-            if let item = self.extensionContext?.inputItems.first as? NSExtensionItem {
-                for attachment in item.attachments ?? [] {
-                    
-                    let text = item.attributedContentText?.string ?? ""
-                    if attachment.hasItemConformingToTypeIdentifier("public.image") {
-                        group.enter()
-                        self._saveImage(attachment: attachment) {
-                            group.leave()
-                        }
+            for item in self.extensionContext?.inputItems ?? [] {
+                if let item = item as? NSExtensionItem {
+                    group.enter()
+                    self._handleExtensinoItem(item) {
+                        group.leave()
                     }
-                    
-                    if attachment.hasItemConformingToTypeIdentifier("public.movie") {
-                        group.enter()
-                        self._saveVideo(attachment: attachment) {
-                            group.leave()
-                        }
-                    }
-                    
-                    if attachment.hasItemConformingToTypeIdentifier("public.url") && !attachment.hasItemConformingToTypeIdentifier("public.file-url") {
-                        group.enter()
-                        self._saveURL(attachment: attachment, text: text) {
-                            group.leave()
-                        }
-                    }
-                    
-                    if attachment.hasItemConformingToTypeIdentifier("public.text") {
-                        group.enter()
-                        self._saveText(attachment: attachment) {
-                            group.leave()
-                        }
-                    }
-                    
-                    if attachment.hasItemConformingToTypeIdentifier("public.audio") {
-                        group.enter()
-                        self._saveAudio(attachment: attachment) {
-                            group.leave()
-                        }
-                    }
-                    
                 }
-        }
+            }
             
             group.notify(queue: DispatchQueue.main) {
                 self.extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
@@ -82,6 +49,54 @@ class ShareViewController: SLComposeServiceViewController {
     override func configurationItems() -> [Any]! {
         // To add configuration options via table cells at the bottom of the sheet, return an array of SLComposeSheetConfigurationItem here.
         return []
+    }
+    
+    private func _handleExtensinoItem(_ item: NSExtensionItem,
+                                      completion: @escaping () -> Void) {
+        let group = DispatchGroup()
+        
+        for attachment in item.attachments ?? [] {
+            
+            let text = item.attributedContentText?.string ?? ""
+            if attachment.hasItemConformingToTypeIdentifier("public.image") {
+                group.enter()
+                self._saveImage(attachment: attachment) {
+                    group.leave()
+                }
+            }
+            
+            if attachment.hasItemConformingToTypeIdentifier("public.movie") {
+                group.enter()
+                self._saveVideo(attachment: attachment) {
+                    group.leave()
+                }
+            }
+            
+            if attachment.hasItemConformingToTypeIdentifier("public.url") && !attachment.hasItemConformingToTypeIdentifier("public.file-url") {
+                group.enter()
+                self._saveURL(attachment: attachment, text: text) {
+                    group.leave()
+                }
+            }
+            
+            if attachment.hasItemConformingToTypeIdentifier("public.text") {
+                group.enter()
+                self._saveText(attachment: attachment) {
+                    group.leave()
+                }
+            }
+            
+            if attachment.hasItemConformingToTypeIdentifier("public.audio") {
+                group.enter()
+                self._saveAudio(attachment: attachment) {
+                    group.leave()
+                }
+            }
+        }
+        
+        group.notify(queue: DispatchQueue.main) {
+            completion()
+        }
     }
     
     private func _saveVideo(attachment: NSItemProvider, completion: @escaping () -> Void) {
@@ -112,8 +127,13 @@ class ShareViewController: SLComposeServiceViewController {
     
     private func _saveText(attachment: NSItemProvider, completion: @escaping () -> Void) {
         attachment.loadItem(forTypeIdentifier: "public.text", options: nil) { (data, error) in
-            if let url = data as? NSURL {
-                self._saveFile(url: url as URL, kind: Attachment.Kind.text, completion: completion)
+            if let url = data as? URL {
+                // if the shared text file is one of that can be imported, so import it
+                if ImportType(rawValue: url.pathExtension) != nil {
+                    self._copyFile(url: url, completion: completion)
+                } else {
+                    self._saveFile(url: url as URL, kind: Attachment.Kind.text, completion: completion)
+                }
             } else if let string = data as? String {
                 let url = URL.file(directory: URL.directory(location: URLLocation.temporary), name: UUID().uuidString, extension: "txt")
                 do {
@@ -185,6 +205,26 @@ class ShareViewController: SLComposeServiceViewController {
         let ext = newFileName.pathExtension
         newFileName = newFileName.deletingPathExtension()
         newFileName = newFileName.appendingPathExtension(kind.rawValue).appendingPathExtension(ext) // add attachment kind in the url, second to the ext
+        newFileName.writeBlock(queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.background), accessor: { error in
+            if let error = error {
+                print("ERROR: \(error)")
+            }
+            
+            do {
+                try FileManager.default.copyItem(at: url as URL, to: newFileName)
+            } catch {
+                print("ERROR: \(error)")
+            }
+            
+            completion()
+        })
+    }
+    
+    private func _copyFile(url: URL, completion: @escaping () -> Void) {
+        let containerURL = handler.sharedContainterURL
+        
+        let fileName = url.lastPathComponent
+        let newFileName = containerURL.appendingPathComponent(fileName)
         newFileName.writeBlock(queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.background), accessor: { error in
             if let error = error {
                 print("ERROR: \(error)")

@@ -71,6 +71,7 @@ public class Application: Coordinator {
     private func _setupObservers() {
         self.dependency.eventObserver.registerForEvent(on: self, eventType: ImportFileEvent.self, queue: nil) { [weak self] (event: ImportFileEvent) -> Void in
             self?.topCoordinator?.openDocument(url: event.url, location: 0)
+            self?.dependency.eventObserver.emit(AddDocumentEvent(url: event.url))
         }
     }
     
@@ -114,7 +115,7 @@ public class Application: Coordinator {
                     case .text: fallthrough
                     case .link: fallthrough
                     case .location: 
-                    content = try! String(contentsOf: url)
+                    content = try! String(contentsOf: url) // if the shared type is location, read the content of the file and insert it, otherwise, use the url as content
                     default: break
                     }
                     

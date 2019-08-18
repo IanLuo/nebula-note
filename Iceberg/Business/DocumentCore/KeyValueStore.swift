@@ -52,7 +52,7 @@ fileprivate struct PlistStore: KeyValueStore {
             self._url = URL.file(directory: URL.keyValueStoreURL, name: fileName, extension: "plist")
             
             _store = NSMutableDictionary(contentsOf: self._url!) ?? NSMutableDictionary()
-            log.info("created key value store with url: \(String(describing: self._url))")
+            log.verbose("created key value store with url: \(String(describing: self._url))")
         default: break
         }
     }

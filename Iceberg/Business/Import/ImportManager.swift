@@ -20,16 +20,14 @@ public protocol Importable {
     func createDocument(documentManager: DocumentManager, completion: @escaping (Result<URL, ImportError>) -> Void)
 }
 
-public enum ImportType: String {
+public enum ImportType: String, CaseIterable {
     case org
     case md
-    case txt
     
     public var title: String {
         switch self {
         case .org: return "Org"
         case .md: return "Mark Down"
-        case .txt: return "txt"
         }
     }
     
