@@ -23,8 +23,7 @@ public class DocumentBrowserCell: UITableViewCell {
         let button = UIButton()
         button.interface({ (me, theme) in
             let button = me as! UIButton
-            button.setImage(Asset.Assets.down.image.resize(upto: CGSize(width: 10, height: 10)).withRenderingMode(.alwaysTemplate), for: .normal)
-            button.tintColor = InterfaceTheme.Color.secondaryDescriptive
+            button.setImage(Asset.Assets.right.image.resize(upto: CGSize(width: 10, height: 10)).fill(color: theme.color.spotlight), for: .normal)
         })
         button.isHidden = true
         return button
@@ -44,7 +43,7 @@ public class DocumentBrowserCell: UITableViewCell {
         let button = UIButton()
         button.interface({ (me, theme) in
             let button = me as! UIButton
-            button.setImage(Asset.Assets.more.image.fill(color: theme.color.interactive), for: .normal)
+            button.setImage(Asset.Assets.more.image.fill(color: theme.color.spotlight), for: .normal)
         })
         return button
     }()
@@ -76,10 +75,10 @@ public class DocumentBrowserCell: UITableViewCell {
         guard let cellModel = self.cellModel else { return }
 
         if cellModel.isFolded {
-            self.arrowButton.perspectiveRotate(angel: CGFloat.pi)
+            self.arrowButton.rotate(angel: CGFloat.pi / 2)
             self.delegate?.didTapUnfold(url: cellModel.url)
         } else {
-            self.arrowButton.perspectiveRotate(angel: 0)
+            self.arrowButton.rotate(angel: 0)
             self.delegate?.didTapFold(url: cellModel.url)
         }
     }
@@ -126,9 +125,9 @@ public class DocumentBrowserCell: UITableViewCell {
         if cellModel.hasSubDocuments {
             self.arrowButton.isHidden = false
             if cellModel.isFolded {
-                self.arrowButton.perspectiveRotate(angel: 0, skipAnimation: true)
+                self.arrowButton.rotate(angel: 0, skipAnimation: true)
             } else {
-                self.arrowButton.perspectiveRotate(angel: CGFloat.pi, skipAnimation: true)
+                self.arrowButton.rotate(angel: CGFloat.pi / 2, skipAnimation: true)
             }
         } else {
             self.arrowButton.isHidden = true

@@ -461,8 +461,7 @@ private class TabView: UITableViewHeaderFooterView {
         
         button.interface({ (me, theme) in
             let button = me as! UIButton
-            button.tintColor = theme.color.secondaryDescriptive
-            button.setImage(Asset.Assets.down.image.resize(upto: CGSize(width: 15, height: 15)).fill(color: theme.color.secondaryDescriptive), for: .normal)
+            button.setImage(Asset.Assets.right.image.resize(upto: CGSize(width: 15, height: 15)).fill(color: theme.color.spotlight), for: .normal)
         })
         button.addTarget(self, action: #selector(subtabActionTapped), for: .touchUpInside)
         button.imageView?.contentMode = .scaleAspectFit
@@ -475,9 +474,9 @@ private class TabView: UITableViewHeaderFooterView {
     var isOpen: Bool = false {
         didSet {
             if isOpen {
-                self.showSubtabsButton.perspectiveRotate(angel: CGFloat.pi)
+                self.showSubtabsButton.rotate(angel: CGFloat.pi / 2)
             } else {
-                self.showSubtabsButton.perspectiveRotate(angel: 0)
+                self.showSubtabsButton.rotate(angel: 0)
             }
         }
     }

@@ -27,4 +27,15 @@ extension UIView {
             self.layer.transform = transform
         }
     }
+    
+    public func rotate(angel: CGFloat, skipAnimation: Bool = false) {
+        if skipAnimation {
+            self.layer.setAffineTransform(CGAffineTransform(rotationAngle: angel))
+            return
+        }
+        
+        UIView.animate(withDuration: 0.25) {
+            self.layer.setAffineTransform(CGAffineTransform(rotationAngle: angel))
+        }
+    }
 }
