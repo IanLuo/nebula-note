@@ -130,8 +130,8 @@ public struct DocumentManager {
                 document.save(to: newURL, for: UIDocument.SaveOperation.forCreating) { [document] success in
                     DispatchQueue.main.async {
                         if success {
-                            self._eventObserver.emit(AddDocumentEvent(url: newURL))
                             completion?(newURL)
+                            self._eventObserver.emit(AddDocumentEvent(url: newURL))
                         } else {
                             completion?(nil)
                         }
