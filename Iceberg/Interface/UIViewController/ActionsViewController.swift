@@ -188,7 +188,7 @@ public class ActionsViewController: UIViewController, TransitionProtocol {
         self.actionsContainerView.addSubview(self.cancelButton)
         self.actionsContainerView.addSubview(self.titleLabel)
         
-        self.cancelButton.sideAnchor(for: [.right, .top, .bottom], to: self.actionsContainerView, edgeInset: 10)
+        self.cancelButton.sideAnchor(for: [.right, .top, .bottom], to: self.actionsContainerView, edgeInsets: .init(top: 10, left: 0, bottom: -10, right: -Layout.edgeInsets.right + 7)) // make it align to the icon
         self.cancelButton.sizeAnchor(width: 30)
         self.titleLabel.sideAnchor(for: [.left, .top, .bottom], to: self.actionsContainerView, edgeInsets: .init(top: 0, left: Layout.edgeInsets.left, bottom: 0, right: 0))
         self.titleLabel.rowAnchor(view: self.cancelButton)

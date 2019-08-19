@@ -107,7 +107,7 @@ public class DocumentBrowserCell: UITableViewCell {
         self.titleLabel.sideAnchor(for: [.top, .bottom], to: self.contentView, edgeInset: 0)
         
         self.titleLabel.rowAnchor(view: self.actionButton, space: 10)
-        self.actionButton.sideAnchor(for: [.top, .bottom, .right], to: self.contentView, edgeInsets: .init(top: 0, left: 0, bottom: 0, right: -30))
+        self.actionButton.sideAnchor(for: [.top, .bottom, .right], to: self.contentView, edgeInsets: .init(top: 0, left: 0, bottom: 0, right: -10))
         self.actionButton.ratioAnchor(1)
         
         self.interface { (me, theme) in
