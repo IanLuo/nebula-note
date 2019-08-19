@@ -81,6 +81,7 @@ public class InputToolbar: UIView {
         super.init(frame: .zero)
         
         self._collectionView.backgroundColor = InterfaceTheme.Color.background2
+        self._collectionView.showsHorizontalScrollIndicator = false
         self._collectionView.delegate = self
         self._collectionView.dataSource = self
         self._collectionView.register(ActionButtonCell.self, forCellWithReuseIdentifier: ActionButtonCell.reuseIdentifier)
