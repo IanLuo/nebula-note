@@ -299,7 +299,15 @@ public class DocumentBrowserViewModel {
         })
         
         eventObserver?.registerForEvent(on: self, eventType: AddDocumentEvent.self, queue: nil, action: { [weak self] (event: AddDocumentEvent) -> Void in
-            self?.loadData()
+            guard let strongSelf = self else { return }
+            
+            if strongSelf.data.contains(where: { (cellModel: DocumentBrowserCellModel) -> Bool in
+                cellModel.url.documentRelativePath == event.url.documentRelativePath
+            }){
+                strongSelf.delegate?.didLoadData()
+            } else {
+                strongSelf.loadData()
+            }
         })
         
         eventObserver?.registerForEvent(on: self,
