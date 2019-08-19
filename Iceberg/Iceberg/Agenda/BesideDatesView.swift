@@ -25,6 +25,7 @@ public class BesideDatesView: UIView {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.delegate = self
         collectionView.dataSource = self
+        collectionView.showsHorizontalScrollIndicator = false
         
         collectionView.interface({ (me, theme) in
             me.backgroundColor = theme.color.background1
