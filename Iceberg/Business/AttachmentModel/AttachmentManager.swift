@@ -40,7 +40,7 @@ public enum AttachmentError: Error {
                        failure: @escaping (Error) -> Void) {
         
         let newKey = self.newKey()
-        let fileURL: URL = URL(fileURLWithPath: newKey + "." + AttachmentDocument.fileExtension, relativeTo: URL.attachmentURL)
+        let fileURL: URL = URL.attachmentURL.appendingPathComponent(newKey).appendingPathExtension(AttachmentDocument.fileExtension)
 
         let saveAttahmentAction: (URL) -> Void = { attachmentURL in
             let attachment = Attachment(date: Date(),
@@ -49,13 +49,15 @@ public enum AttachmentError: Error {
                                         description: description,
                                         kind: kind)
             
-            let attachmentDocument = AttachmentDocument.init(fileURL: fileURL)
-            attachmentDocument.save(to: fileURL, for: UIDocument.SaveOperation.forCreating) { [unowned attachmentDocument] result in
-                if result {
-                    attachmentDocument.attachment = attachment
-                    attachmentDocument.fileToSave = attachmentURL
-                    attachmentDocument.updateChangeCount(UIDocument.ChangeKind.done)
-                    attachmentDocument.save(to: fileURL, for: UIDocument.SaveOperation.forOverwriting) { [unowned attachmentDocument] result in
+            let attachmentDocument = AttachmentDocument(fileURL: fileURL)
+            attachmentDocument.attachment = attachment
+            attachmentDocument.fileToSave = attachmentURL
+            
+            URL.attachmentURL.createDirectoryIfNeeded { error in
+                if let error = error {
+                    log.error(error)
+                } else {
+                    attachmentDocument.save(to: fileURL, for: UIDocument.SaveOperation.forCreating) { [unowned attachmentDocument] result in
                         attachmentDocument.close(completionHandler: { result in
                             log.info("successfully insert new attachment key: \(newKey), url: \(fileURL)")
                             DispatchQueue.main.async {
@@ -68,9 +70,6 @@ public enum AttachmentError: Error {
                             }
                         })
                     }
-                } else {
-                    log.error("failed to insert new attachment key: \(newKey), url: \(fileURL)")
-                    failure(AttachmentError.failToSaveAttachment)
                 }
             }
         }
