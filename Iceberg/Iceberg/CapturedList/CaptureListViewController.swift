@@ -167,8 +167,8 @@ extension CaptureListViewController: CaptureTableCellDelegate {
     
     public func didTapActions(attachment: Attachment) {
         guard let index = self._index(for: attachment) else { return }
-        
-        let actionsViewController = self.createActionsViewController(index: index)
+        let cellModel = self.viewModel.currentFilterdCellModels[index]
+        let actionsViewController = self.createActionsViewController(cellModel: cellModel)
         
         self.present(actionsViewController, animated: true, completion: nil)
         self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.hide()
@@ -176,8 +176,8 @@ extension CaptureListViewController: CaptureTableCellDelegate {
     
     public func didTapActionsWithLink(attachment: Attachment, link: String?) {
         guard let index = self._index(for: attachment) else { return }
-        
-        let actionsViewController = self.createActionsViewController(index: index)
+        let cellModel = self.viewModel.currentFilterdCellModels[index]
+        let actionsViewController = self.createActionsViewController(cellModel: cellModel)
         
         actionsViewController.addAction(icon: nil, title: L10n.CaptureList.Action.openLink, at: 0) { viewController in
             viewController.dismiss(animated: true, completion: {
@@ -194,8 +194,8 @@ extension CaptureListViewController: CaptureTableCellDelegate {
     
     public func didTapActionsWithLocation(attachment: Attachment, location: CLLocationCoordinate2D) {
         guard let index = self._index(for: attachment) else { return }
-
-        let actionsViewController = self.createActionsViewController(index: index)
+        let cellModel = self.viewModel.currentFilterdCellModels[index]
+        let actionsViewController = self.createActionsViewController(cellModel: cellModel)
         
         actionsViewController.addAction(icon: nil, title: L10n.CaptureList.Action.openLocation, at: 0) { viewController in
             viewController.dismiss(animated: true, completion: {
@@ -211,7 +211,7 @@ extension CaptureListViewController: CaptureTableCellDelegate {
     }
     
     // 创建菜单
-    private func createActionsViewController(index: Int) -> ActionsViewController {
+    private func createActionsViewController(cellModel: CaptureTableCellModel) -> ActionsViewController {
         let actionsViewController = ActionsViewController()
         actionsViewController.title = L10n.CaptureList.title
         
@@ -220,6 +220,7 @@ extension CaptureListViewController: CaptureTableCellDelegate {
         case .manage:
             actionsViewController.addAction(icon: nil, title: L10n.CaptureList.Action.refile) { viewController in
                 viewController.dismiss(animated: true, completion: {
+                    guard let index = self.viewModel.index(for: cellModel) else { return }
                     self.viewModel.chooseRefileLocation(index: index, completion: {
                         self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                     }, canceled: {
@@ -238,6 +239,7 @@ extension CaptureListViewController: CaptureTableCellDelegate {
                     
                     confirmViewController.confirmAction = { vc in
                         vc.dismiss(animated: true) {
+                            guard let index = self.viewModel.index(for: cellModel) else { return }
                             self.viewModel.delete(index: index)
                             self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                         }
@@ -249,6 +251,7 @@ extension CaptureListViewController: CaptureTableCellDelegate {
         case .pick:
             actionsViewController.addAction(icon: nil, title: L10n.CaptureList.Action.copyToDocument) { viewController in
                 viewController.dismiss(animated: true, completion: {
+                    guard let index = self.viewModel.index(for: cellModel) else { return }
                     self.viewModel.selectAttachment(index: index)
                     self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                 })
@@ -256,6 +259,7 @@ extension CaptureListViewController: CaptureTableCellDelegate {
             
             actionsViewController.addAction(icon: nil, title: L10n.CaptureList.Action.moveToDocument) { viewController in
                 viewController.dismiss(animated: true, completion: {
+                    guard let index = self.viewModel.index(for: cellModel) else { return }
                     self.viewModel.selectAttachment(index: index)
                     self.viewModel.delete(index: index)
                     self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()

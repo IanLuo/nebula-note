@@ -154,12 +154,23 @@ public class CaptureListViewModel {
         }
     }
     
+    public func index(for cellModel: CaptureTableCellModel) -> Int? {
+        for (index, cm) in self.currentFilteredData.enumerated() {
+            if cellModel.url == cm.url {
+                return index
+            }
+        }
+        
+        return nil
+    }
+    
     public func delete(index: Int) {
         let removedCellModel = self.currentFilterdCellModels.remove(at: index)
         
         for (indexInTotal, dataToRemove) in self.data.enumerated() {
             if dataToRemove.url == removedCellModel.url {
                 self.data.remove(at: indexInTotal)
+                self.currentFilteredData.remove(at: index)
                 self.service.delete(key: dataToRemove.key)
                 self.delegate?.didDeleteCapture(index: index)
                 
