@@ -117,12 +117,6 @@ extension OutlineTextStorage: ContentUpdatingProtocol {
         guard action != .editedAttributes else { return } // 如果是修改属性，则不进行解析
 //        guard self.string.nsstring.length > 0 else { return }
 
-        // 更新 item 偏移
-        self.updateTokenRangeOffset(delta: delta, from: range.location)
-
-        // 调整需要解析的字符串范围
-        self.currentParseRange = self._adjustParseRange(range)
-        
         // 如果是删除操作，直接删除已删除的部分的 token
         if delta < 0 {
             let deletionRange = NSRange(location: range.upperBound, length: -delta)
@@ -131,7 +125,12 @@ extension OutlineTextStorage: ContentUpdatingProtocol {
             _ = self._remove(in: deletionRange, from: &self._codeBlocks)
             _ = self._remove(in: deletionRange, from: &self._quoteBlocks)
         }
+        
+        // 更新 item 偏移
+        self.updateTokenRangeOffset(delta: delta, from: range.location)
 
+        // 调整需要解析的字符串范围
+        self.currentParseRange = self._adjustParseRange(range)
         
         guard let currentParseRange = self.currentParseRange else { return }
         
