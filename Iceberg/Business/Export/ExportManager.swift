@@ -106,8 +106,8 @@ public struct ExportManager {
     public func share(from: UIViewController, url: URL) {
         let activityViewController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
         
-        activityViewController.completionWithItemsHandler = { activityType, completed, returnedItem, error in
-            // TODO:
+        activityViewController.completionWithItemsHandler = { [weak activityViewController] activityType, completed, returnedItem, error in
+            activityViewController?.dismiss(animated: true, completion: nil)
         }
         
         activityViewController.excludedActivityTypes = nil
