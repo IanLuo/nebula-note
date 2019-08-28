@@ -79,15 +79,28 @@ extension DocumentEditViewController {
     }
     
     public func showDateAndTimeCreator(location: Int) {
+        
+        let handleNewDateAndTime: (DateAndTimeType) -> Void = { newDateAndTime in
+            let oldSelectedRange = self.textView.selectedRange
+            let result = self.viewModel.performAction(EditAction.updateDateAndTime(location, newDateAndTime), textView: self.textView)
+            self.textView.selectedRange = oldSelectedRange.offset(result.delta)
+            self.viewModel.coordinator?.dependency.eventObserver.emit(DateAndTimeChangedEvent(oldDateAndTime: nil,
+                                                                                              newDateAndTime: newDateAndTime))
+        }
+        
+        let handleDeleteDateAndTime: () -> Void = {
+            self.viewModel.coordinator?.dependency.eventObserver.emit(DateAndTimeChangedEvent(oldDateAndTime: nil,
+                                                                                              newDateAndTime: nil))
+        }
+        
         let actionsViewController = ActionsViewController()
         actionsViewController.addAction(icon: nil, title: L10n.Document.DateAndTime.schedule, action: { viewController in
             viewController.dismiss(animated: true, completion: {
                 self.viewModel.coordinator?.showDateSelector(title: L10n.Document.DateAndTime.schedule, current: nil, add: { newDateAndTime in
                     newDateAndTime.isSchedule = true
-                    let oldSelectedRange = self.textView.selectedRange
-                    let result = self.viewModel.performAction(EditAction.updateDateAndTime(location, newDateAndTime), textView: self.textView)
-                    self.textView.selectedRange = oldSelectedRange.offset(result.delta)
+                    handleNewDateAndTime(newDateAndTime)
                 }, delete: { [weak self] in
+                    handleDeleteDateAndTime()
                     self?.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                 }, cancel: { [weak self] in
                     self?.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
@@ -99,10 +112,9 @@ extension DocumentEditViewController {
             viewController.dismiss(animated: true, completion: {
                 self.viewModel.coordinator?.showDateSelector(title: L10n.Document.DateAndTime.due, current: nil, add: { newDateAndTime in
                     newDateAndTime.isDue = true
-                    let oldSelectedRange = self.textView.selectedRange
-                    let result = self.viewModel.performAction(EditAction.updateDateAndTime(location, newDateAndTime), textView: self.textView)
-                    self.textView.selectedRange = oldSelectedRange.offset(result.delta)
+                    handleNewDateAndTime(newDateAndTime)
                 }, delete: { [weak self] in
+                    handleDeleteDateAndTime()
                     self?.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                 }, cancel: { [weak self] in
                     self?.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
@@ -113,11 +125,9 @@ extension DocumentEditViewController {
         actionsViewController.addAction(icon: nil, title: L10n.Document.DateAndTime.title, action: { viewController in
             viewController.dismiss(animated: true, completion: {
                 self.viewModel.coordinator?.showDateSelector(title: L10n.Document.DateAndTime.title, current: nil, add: { newDateAndTime in
-                    
-                    let oldSelectedRange = self.textView.selectedRange
-                    let result = self.viewModel.performAction(EditAction.updateDateAndTime(location, newDateAndTime), textView: self.textView)
-                    self.textView.selectedRange = oldSelectedRange.offset(result.delta)
+                    handleNewDateAndTime(newDateAndTime)
                 }, delete: { [weak self] in
+                    handleDeleteDateAndTime()
                     self?.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                 }, cancel: { [weak self] in
                     self?.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()

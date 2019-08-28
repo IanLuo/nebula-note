@@ -126,21 +126,25 @@ public class DashboardViewModel {
                 }
                 
                 if let dateAndTime = result.dateAndTime {
+                    let daysFromToday = dateAndTime.date.daysFrom(today) // date from the date to today
+                    
                     if dateAndTime.isDue {
-                        if dateAndTime.date.daysFrom(today) < 0 {
+                        if daysFromToday < 0 {
                             self?.overdue.append(result)
-                        } else if dateAndTime.date.daysFrom(today) <= 3 {
+                        } else if daysFromToday <= 3 {
                             self?.overdueSoon.append(result)
                         }
                     } else if dateAndTime.isSchedule {
-                        if dateAndTime.date.daysFrom(today) < 0 {
-                            self?.scheduled.append(result)
-                        } else if dateAndTime.date.daysFrom(today) <= 3 {
+                        if daysFromToday <= 3 && daysFromToday > 0 {
                             self?.startSoon.append(result)
+                        } else {
+                            self?.scheduled.append(result)
                         }
                     } else {
-                        if dateAndTime.date.isSameDay(today) {
+                        if daysFromToday <= 3 && daysFromToday > 0 {
                             self?.startSoon.append(result)
+                        } else {
+                            self?.scheduled.append(result)
                         }
                     }
                 }

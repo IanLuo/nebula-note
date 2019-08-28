@@ -17,7 +17,7 @@ public enum L10n {
     public static func daysAfter(_ p1: String) -> String {
       return L10n.tr("Localizable", "agenda.daysAfter", p1)
     }
-    /// %@ days before
+    /// %@ days ago
     public static func daysBefore(_ p1: String) -> String {
       return L10n.tr("Localizable", "agenda.daysBefore", p1)
     }

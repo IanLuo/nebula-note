@@ -175,7 +175,7 @@
 "agenda.willOverduInDaysWithPlaceHolder" = "Will due in %@ days";
 "agenda.willOverduTomorrowWithPlaceHolder" = "Will due tomorrow";
 "agenda.today" = "Today";
-"agenda.daysBefore" = "%@ days before";
+"agenda.daysBefore" = "%@ days ago";
 "agenda.daysAfter" = "in %@ days";
 "agenda.tomorrow" = "Tomorrow";
 "agenda.yesterday" = "Yesterday";
