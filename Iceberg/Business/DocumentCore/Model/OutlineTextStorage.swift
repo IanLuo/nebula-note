@@ -714,6 +714,8 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 let dateAndTimeStyle = OutlineTheme.dateAndTimeStyle(datesFromToday: datesFromToday)
                 textStorage.addAttributes([OutlineAttribute.dateAndTime: dataAndTimeString], range: range)
                 textStorage.addAttributes(dateAndTimeStyle.textStyle.attributes, range: range)
+                textStorage.addAttributes(OutlineTheme.markStyle.attributes, range: range.head(1))
+                textStorage.addAttributes(OutlineTheme.markStyle.attributes, range: range.tail(1))
             }
         }
     }
