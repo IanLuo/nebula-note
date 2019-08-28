@@ -95,10 +95,9 @@ public class DocumentEditViewController: UIViewController {
         
         self.inputbar.mode = .paragraph
         
-        NotificationCenter.default.addObserver(self, selector: #selector(_keyboardWillShow(_:)), name: UIApplication.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(_keyboardWillHide(_:)), name: UIApplication.keyboardWillHideNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(_keyboardDidShow(_:)), name: UIApplication.keyboardDidShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(_keyboardDidHide(_:)), name: UIApplication.keyboardDidHideNotification, object: nil)
+        let notificationCenter = NotificationCenter.default
+        notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillHideNotification, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
     }
     
     public override func viewDidDisappear(_ animated: Bool) {
@@ -135,29 +134,22 @@ public class DocumentEditViewController: UIViewController {
         }, completion: nil)
     }
     
-    @objc private func _keyboardDidShow(_ notification: Notification) {
-        if let userInfo = notification.userInfo {
-            let keyboardHeight = (userInfo["UIKeyboardFrameEndUserInfoKey"] as! CGRect).height
-            
-            self.textView.contentInset = UIEdgeInsets(top: self.textView.contentInset.top,
-                                                      left: self.textView.contentInset.left,
-                                                      bottom: keyboardHeight,
-                                                      right: self.textView.contentInset.right)
-            
-            if let textRange = self.textView.selectedTextRange {
-                let targetRect = self.textView.caretRect(for: textRange.start)
-                let keyboarTopAsContentOffset = self.textView.contentOffset.y + self.textView.bounds.height - keyboardHeight
-                if targetRect.origin.y >= keyboarTopAsContentOffset {
-                    UIView.animate(withDuration: 0.25) {
-                        self.textView.contentOffset = CGPoint(x: self.textView.contentOffset.x, y: keyboarTopAsContentOffset)
-                    }
-                }
-            }
+    @objc func adjustForKeyboard(notification: Notification) {
+        guard let keyboardValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
+
+        let keyboardScreenEndFrame = keyboardValue.cgRectValue
+        let keyboardViewEndFrame = view.convert(keyboardScreenEndFrame, from: view.window)
+
+        if notification.name == UIResponder.keyboardWillHideNotification {
+            self.textView.contentInset = .zero
+        } else {
+            self.textView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardViewEndFrame.height - view.safeAreaInsets.bottom, right: 0)
         }
-    }
-    
-    @objc private func _keyboardDidHide(_ notification: Notification) {
-        
+
+        self.textView.scrollIndicatorInsets = self.textView.contentInset
+
+        let selectedRange = self.textView.selectedRange
+        self.textView.scrollRangeToVisible(selectedRange)
     }
     
     private var _lastState: UIDocument.State?
