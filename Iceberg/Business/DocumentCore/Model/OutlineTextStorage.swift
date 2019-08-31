@@ -714,8 +714,17 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 let dateAndTimeStyle = OutlineTheme.dateAndTimeStyle(datesFromToday: datesFromToday)
                 textStorage.addAttributes([OutlineAttribute.dateAndTime: dataAndTimeString], range: range)
                 textStorage.addAttributes(dateAndTimeStyle.textStyle.attributes, range: range)
-                textStorage.addAttributes(OutlineTheme.markStyle.attributes, range: range.head(1))
-                textStorage.addAttributes(OutlineTheme.markStyle.attributes, range: range.tail(1))
+                
+                if let dataAndTimeObj = dateAndTime {
+                    if dataAndTimeObj.isSchedule {
+                        textStorage.addAttributes(OutlineTheme.markStyle.attributes, range: range.moveLeftBound(by: OutlineParser.Values.Other.scheduled.count + 2).head(1)) // set the left '<' to mark style
+                    } else if dataAndTimeObj.isDue {
+                        textStorage.addAttributes(OutlineTheme.markStyle.attributes, range: range.moveLeftBound(by: OutlineParser.Values.Other.due.count + 2).head(1)) // set the left '<' to mark style
+                    } else {
+                        textStorage.addAttributes(OutlineTheme.markStyle.attributes, range: range.head(1)) // set the left '<' to mark style
+                    }
+                    textStorage.addAttributes(OutlineTheme.markStyle.attributes, range: range.tail(1)) // set the right '>' to mark style
+                }
             }
         }
     }
