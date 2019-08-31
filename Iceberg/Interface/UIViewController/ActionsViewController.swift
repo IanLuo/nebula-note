@@ -12,7 +12,7 @@ import UIKit
 public class ActionsViewController: UIViewController, TransitionProtocol {
     fileprivate struct Constants {
         static let rowHeight: CGFloat = 50
-        static let specialItemSeparatorHeight: CGFloat = 1
+        static let specialItemSeparatorHeight: CGFloat = 0.5
         static let titleHeight: CGFloat = 60
     }
     
@@ -139,6 +139,7 @@ public class ActionsViewController: UIViewController, TransitionProtocol {
     private let actionsContainerView: UIView = {
         let view = UIView()
         view.backgroundColor = InterfaceTheme.Color.background2
+        view.setBorder(position: Border.Position.bottom, color: InterfaceTheme.Color.background3, width: 0.5)
         return view
     }()
     
@@ -269,13 +270,13 @@ fileprivate class ActionCell: UITableViewCell {
                 self.titleLabel.textColor = InterfaceTheme.Color.interactive
             case .highlight:
                 self.titleLabel.textColor = InterfaceTheme.Color.spotlight
-                self.contentView.setBorder(position: .top, color: InterfaceTheme.Color.background3, width: ActionsViewController.Constants.specialItemSeparatorHeight)
+                self.contentView.setBorder(position: .top, color: InterfaceTheme.Color.background3, width: ActionsViewController.Constants.specialItemSeparatorHeight, insets: .both(20))
                 self.titleLabel.constraint(for: .top)?.constant = ActionsViewController.Constants.specialItemSeparatorHeight / 2
                 self.titleLabel.constraint(for: .bottom)?.constant = -ActionsViewController.Constants.specialItemSeparatorHeight / 2
                 self.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
             case .warning:
                 self.titleLabel.textColor = InterfaceTheme.Color.warning
-                self.contentView.setBorder(position: .top, color: InterfaceTheme.Color.background3, width: ActionsViewController.Constants.specialItemSeparatorHeight)
+                self.contentView.setBorder(position: .top, color: InterfaceTheme.Color.background3, width: ActionsViewController.Constants.specialItemSeparatorHeight, insets: .both(20))
                 self.titleLabel.constraint(for: .top)?.constant = ActionsViewController.Constants.specialItemSeparatorHeight / 2
                 self.titleLabel.constraint(for: .bottom)?.constant = -ActionsViewController.Constants.specialItemSeparatorHeight / 2
                 self.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
