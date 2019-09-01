@@ -188,7 +188,7 @@ public class DocumentBrowserViewModel {
                 var index: Int = self.data.count
                 if let below = below {
                     if let i = self.index(of: below) {
-                        let subCount = self.visualSubDocumentcount(index: i) // 计算子文件的数量，将新文件插入到子文件的末尾
+                        let subCount = self.visualSubDocumentcount(index: i, recursively: true) // 计算子文件的数量，将新文件插入到子文件的末尾
                         index = subCount + i + 1
                     }
                 }
@@ -234,7 +234,12 @@ public class DocumentBrowserViewModel {
                                         for (index, data) in self.data.enumerated() {
                                             // 移除改名后的文件
                                             if data.url.documentRelativePath == url.documentRelativePath {
-                                                self.data.remove(at: index)
+                                                let childCount = self.visualSubDocumentcount(index: index, recursively: true)
+                                                if childCount > 0 {
+                                                    self.data.removeSubrange(index...index+childCount) // remove the change file and it's children
+                                                } else {
+                                                    self.data.remove(at: index)
+                                                }
                                                 break
                                             }
                                         }
