@@ -30,3 +30,7 @@ end
 target 'CaptureIdeaExtension' do
     pod 'SwiftyBeaver'
 end
+
+target 'CaptureActionExtension' do
+    pod 'SwiftyBeaver'
+end

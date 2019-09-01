@@ -130,8 +130,8 @@ public struct OutlineThemeStyle: OutlineThemeConfigProtocol {
     public init(theme: InterfaceThemeProtocol) {
         self.seperatorStyle = theme.color.secondaryDescriptive
         self.headingStyle = TextStyle(font: theme.font.body, color: theme.color.interactive)
-        self.orderdedListStyle = TextStyle(font: theme.font.title, color: theme.color.descriptive)
-        self.unorderdedListStyle = TextStyle(font: theme.font.title, color: theme.color.descriptive)
+        self.orderdedListStyle = TextStyle(font: theme.font.title, color: theme.color.secondaryDescriptive)
+        self.unorderdedListStyle = TextStyle(font: theme.font.title, color: theme.color.secondaryDescriptive)
         self.checkboxStyle = TextStyle(font: theme.font.title, color: theme.color.spotlight)
         self.linkStyle = TextStyle(font: theme.font.body, color: theme.color.spotlight)
         self.markStyle = TextStyle(font: theme.font.footnote, color: theme.color.secondaryDescriptive)
