@@ -96,61 +96,23 @@ public class Application: Coordinator {
         self.dependency.eventObserver.emit(AppStartedEvent())
     }
     
-    var isHandlingSharedIdeas: Bool = false
+    private var _isHandlingSharedIdeas: Bool = false
     public func handleSharedIdeas() {
         // 避免正在处理的过程中，重复处理
-        guard isHandlingSharedIdeas == false else { return }
-        isHandlingSharedIdeas = true
+        guard _isHandlingSharedIdeas == false else { return }
+        _isHandlingSharedIdeas = true
         
         let handler = self.dependency.shareExtensionHandler
-        DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
-            let sharedItem = handler.loadAllUnHandledShareIdeas()
-            let ideasCount = sharedItem.count
-            
-            let completeHandleSharedItems: () -> Void = {
-                handler.clearAllSharedIdeas()
-                if ideasCount > 0 {
-                    self.dependency.eventObserver.emit(NewCaptureAddedEvent(attachmentId: "", kind: ""))
-                }
-                self.isHandlingSharedIdeas = false
-            }
-            
-            var handleSaveItem: (([URL]) -> Void)!
-            handleSaveItem = { urls in
-                guard let url = urls.first else {
-                    completeHandleSharedItems()
-                    return
-                }
-                
-                let remains: [URL] = Array(urls.dropFirst())
-                
-                let attachmentKindString = url.deletingPathExtension().pathExtension // kind 已经在保存的时候，添加成为了 url 的前一个 ext
-                if let kind = Attachment.Kind(rawValue: attachmentKindString) {
-                    var content = url.path
-                    switch kind {
-                    case .text: fallthrough
-                    case .link: fallthrough
-                    case .location:
-                    content = try! String(contentsOf: url) // if the shared type is location, read the content of the file and insert it, otherwise, use the url as content
-                    default: break
-                    }
-                    
-                    self.dependency.attachmentManager.insert(content: content, kind: kind, description: "shared idea", complete: { [weak self] key in
-                        self?.dependency.captureService.save(key: key, completion: {
-                            handleSaveItem(remains)
-                        })
-                    }) { error in
-                        log.error(error)
-                        handleSaveItem(remains)
-                    }
-                } else { //  if the url is not an attachment, try handle it use url scheme handler
-                    _ = self.dependency.urlHandlerManager.handle(url: url, sourceApp: "")
-                    handleSaveItem(remains)
-                }
-            }
-                        
-            
-            handleSaveItem(sharedItem)
+        
+        handler.harvestSharedItems(attachmentManager: self.dependency.attachmentManager,
+                                   urlHandler: self.dependency.urlHandlerManager,
+                                   captureService: self.dependency.captureService) { ideasCount in
+                                    
+                                    if ideasCount > 0 {
+                                        self.dependency.eventObserver.emit(NewCaptureAddedEvent(attachmentId: "", kind: ""))
+                                    }
+                                    
+                                    self._isHandlingSharedIdeas = false
         }
     }
     
