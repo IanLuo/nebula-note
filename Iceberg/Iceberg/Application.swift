@@ -103,43 +103,54 @@ public class Application: Coordinator {
         isHandlingSharedIdeas = true
         
         let handler = self.dependency.shareExtensionHandler
-        let group = DispatchGroup()
         DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
             let sharedItem = handler.loadAllUnHandledShareIdeas()
             let ideasCount = sharedItem.count
-            for url in sharedItem {
-                let attachmentKindString = url.deletingPathExtension().pathExtension // kind 已经在保存的时候，添加成为了 url 的前一个 ext
-                if let kind = Attachment.Kind(rawValue: attachmentKindString) {
-                    var content = url.path
-                    switch kind {
-                    case .text: fallthrough
-                    case .link: fallthrough
-                    case .location: 
-                    content = try! String(contentsOf: url) // if the shared type is location, read the content of the file and insert it, otherwise, use the url as content
-                    default: break
-                    }
-                    
-                    group.enter()
-                    self.dependency.attachmentManager.insert(content: content, kind: kind, description: "shared idea", complete: { [weak self] key in
-                        self?.dependency.captureService.save(key: key, completion: {
-                            group.leave()
-                        })
-                    }) { error in
-                        group.leave()
-                        log.error(error)
-                    }
-                } else { //  if the url is not an attachment, try handle it use url scheme handler
-                    _ = self.dependency.urlHandlerManager.handle(url: url, sourceApp: "")
-                }
-            }
             
-            group.notify(queue: DispatchQueue.main) {
+            let completeHandleSharedItems: () -> Void = {
                 handler.clearAllSharedIdeas()
                 if ideasCount > 0 {
                     self.dependency.eventObserver.emit(NewCaptureAddedEvent(attachmentId: "", kind: ""))
                 }
                 self.isHandlingSharedIdeas = false
             }
+            
+            var handleSaveItem: (([URL]) -> Void)!
+            handleSaveItem = { urls in
+                guard let url = urls.first else {
+                    completeHandleSharedItems()
+                    return
+                }
+                
+                let remains: [URL] = Array(urls.dropFirst())
+                
+                let attachmentKindString = url.deletingPathExtension().pathExtension // kind 已经在保存的时候，添加成为了 url 的前一个 ext
+                if let kind = Attachment.Kind(rawValue: attachmentKindString) {
+                    var content = url.path
+                    switch kind {
+                    case .text: fallthrough
+                    case .link: fallthrough
+                    case .location:
+                    content = try! String(contentsOf: url) // if the shared type is location, read the content of the file and insert it, otherwise, use the url as content
+                    default: break
+                    }
+                    
+                    self.dependency.attachmentManager.insert(content: content, kind: kind, description: "shared idea", complete: { [weak self] key in
+                        self?.dependency.captureService.save(key: key, completion: {
+                            handleSaveItem(remains)
+                        })
+                    }) { error in
+                        log.error(error)
+                        handleSaveItem(remains)
+                    }
+                } else { //  if the url is not an attachment, try handle it use url scheme handler
+                    _ = self.dependency.urlHandlerManager.handle(url: url, sourceApp: "")
+                    handleSaveItem(remains)
+                }
+            }
+                        
+            
+            handleSaveItem(sharedItem)
         }
     }
     

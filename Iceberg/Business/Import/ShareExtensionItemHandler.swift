@@ -38,6 +38,7 @@ public struct ShareExtensionItemHandler {
                 }
             }
             
+            // ignore local file url
             if attachment.hasItemConformingToTypeIdentifier("public.url") && !attachment.hasItemConformingToTypeIdentifier("public.file-url") {
                 isHandled = true
                 group.enter()
@@ -78,6 +79,7 @@ public struct ShareExtensionItemHandler {
             
             if let error = error {
                 print("ERROR: \(error)")
+                completion()
             }
         }
     }
@@ -92,6 +94,7 @@ public struct ShareExtensionItemHandler {
             
             if let error = error {
                 print("ERROR: \(error)")
+                completion()
             }
         }
     }
@@ -114,6 +117,9 @@ public struct ShareExtensionItemHandler {
                     print("ERROR: \(error)")
                     completion()
                 }
+            } else {
+                print(log.info("unhandled text !!!"))
+                completion()
             }
         }
     }
@@ -163,6 +169,7 @@ public struct ShareExtensionItemHandler {
             
             if let error = error {
                 print("ERROR: \(error)")
+                completion()
             }
         }
 
@@ -171,7 +178,7 @@ public struct ShareExtensionItemHandler {
     private func _saveFile(url: URL, kind: Attachment.Kind, completion: @escaping () -> Void) {
         let containerURL = handler.sharedContainterURL
         
-        let fileName = url.lastPathComponent
+        let fileName = UUID().uuidString + "-" + url.lastPathComponent
         var newFileName = containerURL.appendingPathComponent(fileName)
         let ext = newFileName.pathExtension
         newFileName = newFileName.deletingPathExtension()
@@ -179,6 +186,7 @@ public struct ShareExtensionItemHandler {
         newFileName.writeBlock(queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.background), accessor: { error in
             if let error = error {
                 print("ERROR: \(error)")
+                completion()
             }
             
             do {
@@ -199,6 +207,7 @@ public struct ShareExtensionItemHandler {
         newFileName.writeBlock(queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.background), accessor: { error in
             if let error = error {
                 print("ERROR: \(error)")
+                completion()
             }
             
             do {
