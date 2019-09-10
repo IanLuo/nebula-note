@@ -472,13 +472,13 @@ public enum L10n {
         }
       }
       public enum Finish {
-        /// New Unfinish planning
+        /// New Finish planning
         public static let add = L10n.tr("Localizable", "setting.planning.finish.add")
         /// Finish
         public static let title = L10n.tr("Localizable", "setting.planning.finish.title")
       }
       public enum Unfinish {
-        /// New Finish planning
+        /// New Unfinish planning
         public static let add = L10n.tr("Localizable", "setting.planning.unfinish.add")
         /// Unfinish
         public static let title = L10n.tr("Localizable", "setting.planning.unfinish.title")

@@ -136,8 +136,8 @@
 "setting.landingTab.title" = "Choose landing tab";
 
 "setting.planning.title" = "Customized planning";
-"setting.planning.unfinish.add" = "New Finish planning";
-"setting.planning.finish.add" = "New Unfinish planning";
+"setting.planning.unfinish.add" = "New Unfinish planning";
+"setting.planning.finish.add" = "New Finish planning";
 "setting.planning.add.error.nameTaken" = "Planning name is taken, Use a different one";
 "setting.planning.unfinish.title" = "Unfinish";
 "setting.planning.finish.title" = "Finish";
