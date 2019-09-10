@@ -30,7 +30,7 @@ class ShareViewController: SLComposeServiceViewController {
             for item in self.extensionContext?.inputItems ?? [] {
                 if let item = item as? NSExtensionItem {
                     group.enter()
-                    self._extensionItemHandler.handleExtensionItem(item) {
+                    self._extensionItemHandler.handleExtensionItem(item, text: self.textView.text) {
                         group.leave()
                     }
                 }

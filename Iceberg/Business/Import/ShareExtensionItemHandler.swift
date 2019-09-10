@@ -14,13 +14,22 @@ public struct ShareExtensionItemHandler {
     public init() {}
     
     @discardableResult public func handleExtensionItem(_ item: NSExtensionItem,
+                                                       text: String? = nil,
                                       completion: @escaping () -> Void) -> Bool {
         
         var isHandled: Bool = false
         let group = DispatchGroup()
         
-        for attachment in item.attachments ?? [] {
+        // save user input text if there is any
+        if let text = text {
+            group.enter()
             
+            self._saveString(text) {
+                group.leave()
+            }
+        }
+        
+        for attachment in item.attachments ?? [] {
             let text = item.attributedContentText?.string ?? ""
             if attachment.hasItemConformingToTypeIdentifier("public.image") {
                 isHandled = true
@@ -173,6 +182,15 @@ public struct ShareExtensionItemHandler {
             }
         }
 
+    }
+    
+    private func _saveString(_ string: String, completion: @escaping () -> Void) {
+        let fileName = UUID().uuidString
+        let url = URL.file(directory: URL.directory(location: URLLocation.temporary), name: fileName, extension: "txt")
+        
+        try? string.write(to: url, atomically: false, encoding: String.Encoding.utf8)
+        
+        self._saveFile(url: url, kind: Attachment.Kind.text, completion: completion)
     }
     
     private func _saveFile(url: URL, kind: Attachment.Kind, completion: @escaping () -> Void) {
