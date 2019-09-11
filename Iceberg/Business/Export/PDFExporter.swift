@@ -72,8 +72,7 @@ public class PDFExporter: Exportable {
         }
         UIGraphicsEndPDFContext();
         // 5. Save PDF file
-        guard let outputURL = try? FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent(self.url.packageName).appendingPathExtension(self.fileExtension)
-            else { fatalError("Destination URL not created") }
+        let outputURL = URL.file(directory: URL.directory(location: URLLocation.temporary), name: self.url.packageName, extension: self.fileExtension)
         pdfData.write(to: outputURL, atomically: true)
         
         return outputURL
