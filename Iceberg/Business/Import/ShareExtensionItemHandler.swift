@@ -14,20 +14,13 @@ public struct ShareExtensionItemHandler {
     public init() {}
     
     @discardableResult public func handleExtensionItem(_ item: NSExtensionItem,
-                                                       text: String? = nil,
+                                                       userInput: String? = nil,
                                       completion: @escaping () -> Void) -> Bool {
         
         var isHandled: Bool = false
         let group = DispatchGroup()
         
-        // save user input text if there is any
-        if let text = text {
-            group.enter()
-            
-            self._saveString(text) {
-                group.leave()
-            }
-        }
+        var shouldHandleUserInput: Bool = true
         
         for attachment in item.attachments ?? [] {
             let text = item.attributedContentText?.string ?? ""
@@ -50,8 +43,15 @@ public struct ShareExtensionItemHandler {
             // ignore local file url
             if attachment.hasItemConformingToTypeIdentifier("public.url") && !attachment.hasItemConformingToTypeIdentifier("public.file-url") {
                 isHandled = true
+                
+                var linkTitle = text
+                if let userInput = userInput, userInput.count > 0 {
+                    linkTitle = userInput
+                }
+                
+                shouldHandleUserInput = false // if there is link, don't save the user input as text, but as url title
                 group.enter()
-                self._saveURL(attachment: attachment, text: text) {
+                self._saveURL(attachment: attachment, text: linkTitle) {
                     group.leave()
                 }
             }
@@ -59,7 +59,7 @@ public struct ShareExtensionItemHandler {
             if attachment.hasItemConformingToTypeIdentifier("public.text") {
                 isHandled = true
                 group.enter()
-                self._saveText(attachment: attachment) {
+                self._saveText(attachment: attachment, userInput: userInput) {
                     group.leave()
                 }
             }
@@ -73,6 +73,18 @@ public struct ShareExtensionItemHandler {
             }
         }
         
+        // save user input text if there is any, and should
+        if let userInput = userInput,
+            userInput.count > 0,
+            shouldHandleUserInput {
+            group.enter()
+            
+            self._saveString(userInput) {
+                group.leave()
+            }
+        }
+        
+
         group.notify(queue: DispatchQueue.main) {
             completion()
         }
@@ -108,7 +120,7 @@ public struct ShareExtensionItemHandler {
         }
     }
     
-    private func _saveText(attachment: NSItemProvider, completion: @escaping () -> Void) {
+    private func _saveText(attachment: NSItemProvider, userInput: String?, completion: @escaping () -> Void) {
         attachment.loadItem(forTypeIdentifier: "public.text", options: nil) { (data, error) in
             if let url = data as? URL {
                 // if the shared text file is one of that can be imported, so import it
@@ -118,6 +130,11 @@ public struct ShareExtensionItemHandler {
                     self._saveFile(url: url as URL, kind: Attachment.Kind.text, completion: completion)
                 }
             } else if let string = data as? String {
+                guard userInput?.count ?? 0 <= 0 else {
+                    completion()
+                    return
+                }// if user typed something, ignore this part of text
+                
                 let url = URL.file(directory: URL.directory(location: URLLocation.temporary), name: UUID().uuidString, extension: "txt")
                 do {
                     try string.write(to: url, atomically: true, encoding: .utf8)

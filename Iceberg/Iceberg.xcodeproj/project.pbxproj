@@ -3,14 +3,13 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		0A606A2E4ED3462C64375D03 /* Pods_CaptureIdeaExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38881950D776CA36CB0BEED1 /* Pods_CaptureIdeaExtension.framework */; };
 		27750F4B73713847366B4121 /* Pods_CaptureActionExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80D35D4405E5FF60F37D5C21 /* Pods_CaptureActionExtension.framework */; };
 		4C458BEB751059812B9E1017 /* Pods_Business.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16249794A457196CF93AC9F8 /* Pods_Business.framework */; };
-		67BA3CC510702431FFD23301 /* Pods_IcelandTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC69118DDC07F2D89DFC636D /* Pods_IcelandTests.framework */; };
 		8EB6486B41D1682B45A8309A /* Pods_IcebergTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E2A9BE499C23AB391EC19B0 /* Pods_IcebergTests.framework */; };
 		B39490D41DA7ABDF54007D65 /* Pods_Iceberg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA2AFBAEE3338563A1DC848D /* Pods_Iceberg.framework */; };
 		E40F6E82223B78AE00FFF53F /* Interface.h in Headers */ = {isa = PBXBuildFile; fileRef = E40F6E80223B78AE00FFF53F /* Interface.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -127,6 +126,10 @@
 		E44683FD2289B5AD005D5B73 /* ExtensionProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44683FC2289B5AD005D5B73 /* ExtensionProperty.swift */; };
 		E44825A3219722C300C17568 /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44825A2219722C300C17568 /* Application.swift */; };
 		E44E60F521E9F2C0005AC25F /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44E60F421E9F2C0005AC25F /* Location.swift */; };
+		E45D74BA2329B9CE003C1BC2 /* BrowserContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45D74B92329B9CE003C1BC2 /* BrowserContainer.swift */; };
+		E45D74BC2329BA1D003C1BC2 /* BrowserRecentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45D74BB2329BA1D003C1BC2 /* BrowserRecentViewController.swift */; };
+		E45D74BE2329BA48003C1BC2 /* BrowserFolderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45D74BD2329BA47003C1BC2 /* BrowserFolderViewController.swift */; };
+		E45D74C02329BA6C003C1BC2 /* BrowserFolderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45D74BF2329BA6C003C1BC2 /* BrowserFolderViewModel.swift */; };
 		E45DCF8822AB646F007F34DB /* SimpleParserDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45DCF8722AB646F007F34DB /* SimpleParserDelegate.swift */; };
 		E45DCF8A22AB6649007F34DB /* String+Conenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45DCF8922AB6649007F34DB /* String+Conenience.swift */; };
 		E462DB97223D251A00BF7AB4 /* DateAndTimeSelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E462DB96223D251A00BF7AB4 /* DateAndTimeSelectViewController.swift */; };
@@ -409,6 +412,10 @@
 		E451B27A223A191B000BEA34 /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
 		E451B280223A1F80000BEA34 /* assets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = assets.swift; sourceTree = "<group>"; };
 		E457D51F230C342200B307C7 /* CaptureActionExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CaptureActionExtension.entitlements; sourceTree = "<group>"; };
+		E45D74B92329B9CE003C1BC2 /* BrowserContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserContainer.swift; sourceTree = "<group>"; };
+		E45D74BB2329BA1D003C1BC2 /* BrowserRecentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserRecentViewController.swift; sourceTree = "<group>"; };
+		E45D74BD2329BA47003C1BC2 /* BrowserFolderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserFolderViewController.swift; sourceTree = "<group>"; };
+		E45D74BF2329BA6C003C1BC2 /* BrowserFolderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserFolderViewModel.swift; sourceTree = "<group>"; };
 		E45DCF8722AB646F007F34DB /* SimpleParserDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleParserDelegate.swift; sourceTree = "<group>"; };
 		E45DCF8922AB6649007F34DB /* String+Conenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Conenience.swift"; sourceTree = "<group>"; };
 		E462DB96223D251A00BF7AB4 /* DateAndTimeSelectViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateAndTimeSelectViewController.swift; sourceTree = "<group>"; };
@@ -521,7 +528,6 @@
 		E4FD88EA223DE67E005514C5 /* DateAndTimeSelectViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DateAndTimeSelectViewController.xib; sourceTree = "<group>"; };
 		E68A1109AE2343C161D810A1 /* Pods-Business.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Business.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Business/Pods-Business.debug.xcconfig"; sourceTree = "<group>"; };
 		EE7066485686E586B5DADB73 /* Pods-Interface.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Interface.release.xcconfig"; path = "Pods/Target Support Files/Pods-Interface/Pods-Interface.release.xcconfig"; sourceTree = "<group>"; };
-		FC69118DDC07F2D89DFC636D /* Pods_IcelandTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_IcelandTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FDCA0585533F2DF37A968E3E /* Pods-Interface.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Interface.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Interface/Pods-Interface.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -565,7 +571,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				67BA3CC510702431FFD23301 /* Pods_IcelandTests.framework in Frameworks */,
 				8EB6486B41D1682B45A8309A /* Pods_IcebergTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -602,7 +607,6 @@
 				E4686E4222915A190004D950 /* CloudKit.framework */,
 				B03B21DC28F546E7D3A966E7 /* Pods_Iceland.framework */,
 				58F6ADB9E7BCAC752C4FE4C6 /* Pods_Storage.framework */,
-				FC69118DDC07F2D89DFC636D /* Pods_IcelandTests.framework */,
 				06D728128324C34CAC2A4580 /* Pods_DocumentCore.framework */,
 				16249794A457196CF93AC9F8 /* Pods_Business.framework */,
 				7AD86DEC929199B246F94293 /* Pods_Interface.framework */,
@@ -749,6 +753,10 @@
 			children = (
 				E41CB15821D87CD100EF0A3C /* BrowserCoordinator.swift */,
 				E4A46A3521B646DF00FBDA04 /* DocumentBrowserViewController.swift */,
+				E45D74B92329B9CE003C1BC2 /* BrowserContainer.swift */,
+				E45D74BB2329BA1D003C1BC2 /* BrowserRecentViewController.swift */,
+				E45D74BD2329BA47003C1BC2 /* BrowserFolderViewController.swift */,
+				E45D74BF2329BA6C003C1BC2 /* BrowserFolderViewModel.swift */,
 				E4A46A3721B6470100FBDA04 /* DocumentBrowserViewModel.swift */,
 				E41CB15321D7E0F200EF0A3C /* DocumentBrowserCell.swift */,
 				E41CB15221D7E0F200EF0A3C /* DocumentBrowserCellModel.swift */,
@@ -1594,21 +1602,16 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-IcebergTests/Pods-IcebergTests-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/RxAtomic/RxAtomic.framework",
-				"${BUILT_PRODUCTS_DIR}/RxCocoa/RxCocoa.framework",
-				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-IcebergTests/Pods-IcebergTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxAtomic.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxCocoa.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-IcebergTests/Pods-IcebergTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-IcebergTests/Pods-IcebergTests-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-IcebergTests/Pods-IcebergTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		63394FCFE959CE24700FDAD4 /* [CP] Check Pods Manifest.lock */ = {
@@ -1656,23 +1659,16 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-Iceberg/Pods-Iceberg-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/Drawsana/Drawsana.framework",
-				"${BUILT_PRODUCTS_DIR}/Haptico/Haptico.framework",
-				"${BUILT_PRODUCTS_DIR}/KDCalendar/KDCalendar.framework",
-				"${BUILT_PRODUCTS_DIR}/SwiftyBeaver/SwiftyBeaver.framework",
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Iceberg/Pods-Iceberg-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Drawsana.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Haptico.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/KDCalendar.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyBeaver.framework",
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Iceberg/Pods-Iceberg-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Iceberg/Pods-Iceberg-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Iceberg/Pods-Iceberg-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		A379F6F5A85BFA01E78EA04A /* [CP] Check Pods Manifest.lock */ = {
@@ -1850,6 +1846,7 @@
 				E41CB15F21D887D500EF0A3C /* AttachmentViewController.swift in Sources */,
 				E41A538D21D5F629002B11E9 /* CaptureTableCell.swift in Sources */,
 				E41B893721E3497D009C5AD7 /* SketchAttachmentView.swift in Sources */,
+				E45D74BA2329B9CE003C1BC2 /* BrowserContainer.swift in Sources */,
 				E4C7FB8521BA916D006E3CD8 /* AgendaCellModel.swift in Sources */,
 				E4A46A3621B646DF00FBDA04 /* DocumentBrowserViewController.swift in Sources */,
 				E4EA855E21D1DAEB00DD92F9 /* AttachmentLocationViewController.swift in Sources */,
@@ -1887,6 +1884,7 @@
 				E4EA855821D1DA8700DD92F9 /* AttachmentLinkViewController.swift in Sources */,
 				E4773BA821F7505E000F8F3F /* SearchTableCell.swift in Sources */,
 				E4EA855A21D1DAAF00DD92F9 /* AttachmentAudioViewController.swift in Sources */,
+				E45D74BC2329BA1D003C1BC2 /* BrowserRecentViewController.swift in Sources */,
 				E41CB15521D7E0F200EF0A3C /* DocumentBrowserCell.swift in Sources */,
 				E49F3E4A21B9186D003F468D /* SettingsViewController.swift in Sources */,
 				E4F885EA226D5BE700748868 /* Coordinator.swift in Sources */,
@@ -1904,6 +1902,7 @@
 				E4AB056522068C7D00F98BEB /* FilteredItemsViewController.swift in Sources */,
 				E465F8802241FF6800FA6E83 /* TextViewCommand.swift in Sources */,
 				E49F3E4821B9183F003F468D /* SettingsCoordinator.swift in Sources */,
+				E45D74C02329BA6C003C1BC2 /* BrowserFolderViewModel.swift in Sources */,
 				E498AAFF21BBE9B900D2A8EA /* CaptureListViewController.swift in Sources */,
 				E41CB16421D8899200EF0A3C /* HomeViewController.swift in Sources */,
 				E41CB15D21D8844000EF0A3C /* CaptureListCoordinator.swift in Sources */,
@@ -1913,6 +1912,7 @@
 				E41CB15421D7E0F200EF0A3C /* DocumentBrowserCellModel.swift in Sources */,
 				E41B893321E3497D009C5AD7 /* TextAttachmentView.swift in Sources */,
 				E41B893521E3497D009C5AD7 /* AudioAttachmentView.swift in Sources */,
+				E45D74BE2329BA48003C1BC2 /* BrowserFolderViewController.swift in Sources */,
 				E465F8822242269000FA6E83 /* DocumentEditViewController+ToolbarDelegate.swift in Sources */,
 				E47829FD222E683B0054513E /* InputToolbar.swift in Sources */,
 				E41F86C5218EF4E1006C4CDB /* AgendaCoordinator.swift in Sources */,

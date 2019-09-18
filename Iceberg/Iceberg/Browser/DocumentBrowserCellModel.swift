@@ -9,6 +9,12 @@
 import Foundation
 import UIKit
 
+public protocol DocumentBrowserCellModelDelegate: class {
+    func didRename(from: URL, to: URL)
+    func didDelete(url: URL)
+    
+}
+
 public class DocumentBrowserCellModel {
     public var url: URL
     public var isFolded: Bool = true
@@ -30,7 +36,30 @@ public class DocumentBrowserCellModel {
         self.url = newParent.convertoFolderURL.appendingPathComponent(self.url.lastPathComponent)
     }
     
+    public func rename(to: URL) {
+        
+    }
+    
+    public func delete() {
+        
+    }
+    
+    /// check if there's sub files, any delete empty folder if there is any empty child file folder
+    /// `an empty child file folder is remained, if child file move to other place, or deleted`
     public var hasSubDocuments: Bool {
-        return url.hasSubDocuments
+        if url.hasSubDocuments {
+            if url.isEmptyFolder {
+                url.convertoFolderURL.delete(queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.background)) { error in
+                    if let error = error {
+                        log.error(error)
+                    }
+                }
+                return false
+            }
+            
+            return true
+        }
+        
+        return false
     }
 }

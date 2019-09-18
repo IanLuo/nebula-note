@@ -61,10 +61,11 @@ public struct DocumentManager {
 
             return urls
         } else {
-            return try FileManager.default.contentsOfDirectory(at: folder,
-                                                               includingPropertiesForKeys: nil,
+            let urls = try FileManager.default.contentsOfDirectory(at: folder,
+                                                               includingPropertiesForKeys: [],
                                                                options: .skipsHiddenFiles)
                 .filter { $0.pathExtension == Document.fileExtension }
+            return urls
         }
     }
     

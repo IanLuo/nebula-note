@@ -167,6 +167,7 @@ extension DocumentBrowserViewController: DocumentBrowserViewModelDelegate {
             indexPaths.append(IndexPath(row: index, section: 0))
         }
         self.tableView.insertRows(at: indexPaths, with: .top)
+        self.tableView.scrollToRow(at: IndexPath(row: index, section: 0), at: .middle, animated: true)
     }
     
     public func didRemoveDocument(index: Int, count: Int) {

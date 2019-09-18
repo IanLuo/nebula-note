@@ -56,6 +56,7 @@ public class DocumentBrowserViewModel {
         return !FileManager.default.fileExists(atPath: newURL.path)
     }
     
+    // only look the first level of directorys
     public func loadData() {
         do {
             self.data = try self.documentManager.query(in: URL.documentBaseURL).map { [unowned self] in
@@ -71,6 +72,7 @@ public class DocumentBrowserViewModel {
         }
     }
     
+    // get all files in documents directory
     public func loadAllFiles(completion: ([DocumentBrowserCellModel]) -> Void) {
         do {
             let files = try self.documentManager.query(in: URL.documentBaseURL, recursively: true).map { [unowned self] (url: URL) -> DocumentBrowserCellModel in

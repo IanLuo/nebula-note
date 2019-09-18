@@ -228,6 +228,20 @@ extension URL {
             ((try? fm.contentsOfDirectory(at: subDocumentFolderURL, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles])) ?? []).count > 0
     }
     
+    public var hasSubDocumentFolder: Bool {
+        let subDocumentFolderURL = self.convertoFolderURL
+        let subDocumentFolder = subDocumentFolderURL.path
+        var isDir = ObjCBool(true)
+        let fm = FileManager.default
+        return fm.fileExists(atPath: subDocumentFolder, isDirectory: &isDir)
+    }
+    
+    public var isEmptyFolder: Bool {
+        return ((try? FileManager.default.contentsOfDirectory(at: self,
+                                                              includingPropertiesForKeys: nil,
+                                                              options: [.skipsHiddenFiles])) ?? []).count == 0
+    }
+        
     public var packageName: String {        
         return self.wrapperURL.deletingPathExtension().lastPathComponent.replacingOccurrences(of: "/", with: "").unescaped
     }
