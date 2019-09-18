@@ -976,11 +976,16 @@ public class AppendAsChildHeadingCommandComposer: DocumentContentCommandComposer
         let firstHeadingLevel = parseDelegate.headings.first?.level ?? 0
         for heading in parseDelegate.headings.reversed() {
             let headingDiff = heading.level - firstHeadingLevel
-            textToInsert = textToInsert.nsstring.replacingCharacters(in: heading.levelRange, with: "*" * (toHeading.level + headingDiff + 1))
+            textToInsert = textToInsert.nsstring.replacingCharacters(in: heading.levelRange, with: "*" * (headingDiff + toHeading.level + 1))
+        }
+        
+        // if the heading it at the end of document, add line break to it
+        if !textToInsert.hasSuffix("\n") {
+            textToInsert.append("\n")
         }
 
         // 2. 插入到新的位置
-        let newLocation = NSRange(location: toHeading.paragraphRange.upperBound, length: 0) // 如果删除的文本在插入位置之前，则插入位置要先减少删除文本的长度
+        let newLocation = NSRange(location: toHeading.paragraphRange.upperBound, length: 0)
         
         if newLocation.upperBound == textStorage.string.nsstring.length { // 如果将要插到文档末尾，添加一个换行符在插入的位置之前
             textToInsert = "\n" + textToInsert

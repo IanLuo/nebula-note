@@ -288,12 +288,17 @@ public class DocumentEditViewModel {
                 DispatchQueue.main.async {
                     // 1. 删除当前的段落
                     let result = strongSelf.performCommandComposer(EditAction.removeParagraph(location).commandComposer, textView: textView)
-                    _ = service.toggleContentCommandComposer(composer: AppendAsChildHeadingCommandComposer(text: text, to: otherHeading.paragraphRange.upperBound)).perform() // 移到另一个文件，不需要支持 undo
+                    _ = service.toggleContentCommandComposer(composer: AppendAsChildHeadingCommandComposer(text: text, to: otherHeading.paragraphRange.location)).perform() // 移到另一个文件，不需要支持 undo
                     service.save(completion: { [unowned service] _ in
                         service.close(completion: { _ in
                             DispatchQueue.main.async {
                                 completion(result)
                             }
+                            
+                            // add to file to recent changed file
+                            self?.coordinator?.dependency.editorContext.recentFilesManager.addRecentFile(url: url, lastLocation: 0, completion: {
+                                self?.coordinator?.dependency.eventObserver.emit(OpenDocumentEvent(url: url))
+                            })
                         })
                     })
                     
