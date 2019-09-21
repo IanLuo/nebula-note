@@ -514,8 +514,13 @@ extension SyncManager: NSMetadataQueryDelegate {
             }
         }
         
-        if item.downloadingStatus == NSMetadataUbiquitousItemDownloadingStatusDownloaded {
-            if item.isDownloading == true && item.downloadPercentage == 100 {
+        if let isDownloading = item.isDownloading, isDownloading == true,
+            let downloadPercent = item.downloadPercentage,
+            let downloadSize = item.downloadingSize {
+            log.info("downloading \(url) (\(downloadPercent)%), (\(downloadSize))")
+            
+            if item.downloadPercentage == 100 {
+                log.info("** complete downloading: \(item.fileName ?? "") size:(\(item.fileSize ?? 0)) **")
                 if url.pathExtension == Document.fileExtension {
                     self._eventObserver.emit(NewDocumentPackageDownloadedEvent(url: url))
                 } else if url.pathExtension == "plist" {
@@ -532,12 +537,6 @@ extension SyncManager: NSMetadataQueryDelegate {
                     self._eventObserver.emit(NewAttachmentDownloadedEvent(url: url))
                 }
             }
-        }
-        
-        if let isDownloading = item.isDownloading, isDownloading == true,
-            let downloadPercent = item.downloadPercentage,
-            let downloadSize = item.downloadingSize {
-            log.info("downloading \(url) (\(downloadPercent)%), (\(downloadSize))")
         }
         
     }
