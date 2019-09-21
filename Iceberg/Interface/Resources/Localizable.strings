@@ -109,8 +109,8 @@
 "sync.confirm.useiCloud" = "Do you want use iCloud to store, your documents. If so, you will be able to access the contents from any device with your iCloud account, and they will be kept safe if you remove the app, or even lose your device.";
 "sync.alert.status.on.title" = "Using iCloud storage";
 "sync.alert.status.on.msg" = "Now everything is stored using iCloud, you can access them on all of your devices";
-"sync.alert.status.off.title" = "Using iCloud storage";
-"sync.alert.status.off.msg" = "Now everything is stored using iCloud, you can access them on all of your devices";
+"sync.alert.status.off.title" = "Not using iCloud storage";
+"sync.alert.status.off.msg" = "Now everything is stored locally on your iPhone, you can turn on iCloud later in the configuration";
 "sync.alert.account.changed.title" = "iCloud account changed";
 "sync.alert.account.changed.msg" = "You have login another iCloud account, your document is now access from that account's storage";
 "sync.alert.account.closed.title" = "iCloud account closed";

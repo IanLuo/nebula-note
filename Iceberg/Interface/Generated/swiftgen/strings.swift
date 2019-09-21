@@ -508,9 +508,9 @@ public enum L10n {
       }
       public enum Status {
         public enum Off {
-          /// Now everything is stored using iCloud, you can access them on all of your devices
+          /// Now everything is stored locally on your iPhone, you can turn on iCloud later in the configuration
           public static let msg = L10n.tr("Localizable", "sync.alert.status.off.msg")
-          /// Using iCloud storage
+          /// Not using iCloud storage
           public static let title = L10n.tr("Localizable", "sync.alert.status.off.title")
         }
         public enum On {
