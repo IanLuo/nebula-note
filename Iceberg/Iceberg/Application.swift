@@ -73,6 +73,10 @@ public class Application: Coordinator {
             self?.topCoordinator?.openDocument(url: event.url, location: 0)
             self?.dependency.eventObserver.emit(AddDocumentEvent(url: event.url))
         }
+        
+        self.dependency.eventObserver.registerForEvent(on: self, eventType: iCloudEnabledEvent.self, queue: nil) { [weak self] (event: iCloudEnabledEvent) -> Void in
+            self?._setupiCloud()
+        }
     }
     
     deinit {
