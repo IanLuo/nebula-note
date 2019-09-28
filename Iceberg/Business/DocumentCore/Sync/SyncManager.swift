@@ -466,18 +466,23 @@ extension SyncManager: NSMetadataQueryDelegate {
             }
         }
         
-        if let addedItems = notification.userInfo?["kMDQueryUpdateAddedItems"] as? [NSMetadataItem] {
+        if let addedItems = notification.userInfo?["kMDQueryUpdateAddedItems"] as? [NSMetadataItem], addedItems.count > 0 {
             log.info("found \(addedItems.count) added items")
             handleItemsAction(addedItems)
         }
         
-        if let removedItems = notification.userInfo?["kMDQueryUpdateRemovedItems"] as? [NSMetadataItem] {
+        if let removedItems = notification.userInfo?["kMDQueryUpdateRemovedItems"] as? [NSMetadataItem], removedItems.count > 0 {
             log.info("found  \(removedItems.count) removed items")
-            handleItemsAction(removedItems)
+            
+            for item in removedItems {
+                if let url = item.url {
+                    self._eventObserver.emit(DocumentRemovedFromiCloudEvent(url: url))
+                }
+            }
         }
         
-        if let changedItems = notification.userInfo?["kMDQueryUpdateChangedItems"] as? [NSMetadataItem] {
-            log.info("found \(changedItems.count) changed items")
+        if let changedItems = notification.userInfo?["kMDQueryUpdateChangedItems"] as? [NSMetadataItem], changedItems.count > 0 {
+//            log.info("found \(changedItems.count) changed items")
             handleItemsAction(changedItems)
         }
         
@@ -514,29 +519,38 @@ extension SyncManager: NSMetadataQueryDelegate {
             }
         }
         
+        let handleDocumentDownloadCompletion: () -> Void = {
+            log.info("** complete downloading: \(item.fileName ?? "") size:(\(item.fileSize ?? 0)) **")
+            if url.pathExtension == Document.fileExtension {
+                self._eventObserver.emit(NewDocumentPackageDownloadedEvent(url: url))
+            } else if url.pathExtension == "plist" {
+                if let fileName = item.fileName {
+                    switch fileName {
+                    case CaptureService.plistFileName + ".plist":
+                        self._eventObserver.emit(NewCaptureListDownloadedEvent(url: url))
+                    case RecentFilesManager.recentFilesPlistFileName + ".plist":
+                        self._eventObserver.emit(NewRecentFilesListDownloadedEvent(url: url))
+                    default: break
+                    }
+                }
+            } else if url.pathExtension == AttachmentDocument.fileExtension {
+                self._eventObserver.emit(NewAttachmentDownloadedEvent(url: url))
+            }
+        }
+        
         if let isDownloading = item.isDownloading, isDownloading == true,
             let downloadPercent = item.downloadPercentage,
             let downloadSize = item.downloadingSize {
             log.info("downloading \(url) (\(downloadPercent)%), (\(downloadSize))")
             
             if item.downloadPercentage == 100 {
-                log.info("** complete downloading: \(item.fileName ?? "") size:(\(item.fileSize ?? 0)) **")
-                if url.pathExtension == Document.fileExtension {
-                    self._eventObserver.emit(NewDocumentPackageDownloadedEvent(url: url))
-                } else if url.pathExtension == "plist" {
-                    if let fileName = item.fileName {
-                        switch fileName {
-                        case CaptureService.plistFileName + ".plist":
-                            self._eventObserver.emit(NewCaptureListDownloadedEvent(url: url))
-                        case RecentFilesManager.recentFilesPlistFileName + ".plist":
-                            self._eventObserver.emit(NewRecentFilesListDownloadedEvent(url: url))
-                        default: break
-                        }
-                    }
-                } else if url.pathExtension == AttachmentDocument.fileExtension {
-                    self._eventObserver.emit(NewAttachmentDownloadedEvent(url: url))
-                }
+                handleDocumentDownloadCompletion()
             }
+        }
+        
+        if let isDownloaded = item.isDownloaded, isDownloaded == true,
+            let isDownloading = item.isDownloading, isDownloading == true{
+            handleDocumentDownloadCompletion()
         }
         
     }

@@ -20,6 +20,7 @@ public class AgendaCellModel {
     public let heading: DocumentHeading
     public let level: Int
     public let isFinished: Bool?
+    public var date: Date?
     
     public init(searchResult: DocumentHeadingSearchResult) {
         self.level = searchResult.heading.level

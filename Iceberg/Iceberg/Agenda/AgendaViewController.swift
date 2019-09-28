@@ -124,7 +124,9 @@ extension AgendaViewController: UITableViewDataSource {
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: AgendaTableCell.reuseIdentifier, for: indexPath) as! AgendaTableCell
-        cell.cellModel = self.viewModel.dateOrderedData[indexPath.section][indexPath.row]
+        let cellModel = self.viewModel.dateOrderedData[indexPath.section][indexPath.row]
+        cellModel.date = self.viewModel.dates[indexPath.section]
+        cell.cellModel = cellModel
         cell.delegate = self
         return cell
     }

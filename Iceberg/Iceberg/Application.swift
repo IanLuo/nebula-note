@@ -86,9 +86,6 @@ public class Application: Coordinator {
     public override func start(from: Coordinator?, animated: Bool) {
         let homeCoord = HomeCoordinator(stack: self.stack,
                                         dependency: self.dependency)
-        homeCoord.start(from: self, animated: animated)
-        
-        UIViewController().setupTheme()
         
         // 设置 iCloud
         self._setupiCloud()
@@ -96,8 +93,16 @@ public class Application: Coordinator {
         // 导入 extension 收集的 idea
         self.handleSharedIdeas()
         
+        // if use without delay, the settings may has no data, mode setting may not take effect
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
+            // 设置主题
+            UIViewController().setupTheme()
+        }
+
         // 通知完成初始化
         self.dependency.eventObserver.emit(AppStartedEvent())
+        
+        homeCoord.start(from: self, animated: animated)
     }
     
     private var _isHandlingSharedIdeas: Bool = false
@@ -247,5 +252,9 @@ extension UIViewController {
         
         let newOutlineTheme: OutlineThemeConfigProtocol = OutlineThemeStyle(theme: theme)
         OutlineThemeSelector.shared.changeTheme(newOutlineTheme)
+        
+        self.interface { (viewController, interface) in
+            viewController.setNeedsStatusBarAppearanceUpdate()
+        }
     }
 }

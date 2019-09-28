@@ -198,7 +198,9 @@ public class AgendaTableCell: UITableViewCell {
         }
         
         self._dateAndTimeLabel.isHidden = cellModel.dateAndTime == nil
-        self._dateAndTimeLabel.attributedText = cellModel.dateAndTime?.agendaLabel
+        if let today = cellModel.date {
+            self._dateAndTimeLabel.attributedText = cellModel.dateAndTime?.agendaLabel(today: today)
+        }
         
         self.layoutIfNeeded()
     }
@@ -233,12 +235,11 @@ public class AgendaTableCell: UITableViewCell {
 }
 
 extension DateAndTimeType {
-    public var agendaLabel: NSAttributedString? {
+    public func agendaLabel(today: Date) -> NSAttributedString? {
         
         var text: String? = ""
         var color: UIColor = InterfaceTheme.Color.finished
         
-        let today = Date()
         if self.isSchedule {
             if today.isSameDay(self.date) {
                 text = L10n.Agenda.startToday

@@ -167,15 +167,15 @@ public class DocumentEditViewController: UIViewController {
                 }
             } else if document.documentState == .normal {
                 if self._lastState == .editingDisabled { // recovered from editDisabled, that means other process has modified it, revert content
-                    // TODO: handle new document conent arrived
+                    self.viewModel.revertContent() // load content from disk
                 }
-                print("document state is: normal")
+                log.info("document state is: normal")
             } else if document.documentState == .progressAvailable {
-                print("document state is: progressAvailable")
+                log.info("document state is: progressAvailable")
             } else if document.documentState == .savingError {
-                print("document state is: savingError")
+                log.info("document state is: savingError")
             }
-            print("document state is: \(document.documentState)")
+            log.info("document state is: \(document.documentState)")
             
             self._lastState = document.documentState
         }
