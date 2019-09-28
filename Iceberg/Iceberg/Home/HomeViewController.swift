@@ -49,6 +49,10 @@ public class HomeViewController: UIViewController {
         self.view.addGestureRecognizer(tap)
         
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: Asset.Assets.master.image.fill(color: InterfaceTheme.Color.interactive), style: .plain, target: self, action: #selector(showMasterView))
+        
+        self.interface { (me, theme) in
+            me.setNeedsStatusBarAppearanceUpdate()
+        }
     }
     
     public init(masterViewController: UIViewController) {
@@ -64,6 +68,10 @@ public class HomeViewController: UIViewController {
     
     public required init?(coder aDecoder: NSCoder) {
         fatalError()
+    }
+    
+    public override var preferredStatusBarStyle: UIStatusBarStyle {
+        return InterfaceTheme.statusBarStyle
     }
     
     private func setupUI() {

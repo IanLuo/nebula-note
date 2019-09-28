@@ -105,6 +105,11 @@
 "document.edit.tag.place-holder" = "New tag name";
 "document.edit.tag.validation" = "Don't use special characters in tag";
 
+"document.edit.remote_editing_arrived_title" = "Another device modified this document";
+"document.edit.remote_editing_arrived_message" = "Which version do you want to keep?";
+"document.edit.remote_editing_arrived_keep_this_one" = "Keep this one";
+"document.edit.remote_editing_arrived_keep_remote.one" = "Keep remote one";
+
 // sync
 "sync.confirm.useiCloud" = "Do you want use iCloud to store, your documents. If so, you will be able to access the contents from any device with your iCloud account, and they will be kept safe if you remove the app, or even lose your device.";
 "sync.alert.status.on.title" = "Using iCloud storage";
