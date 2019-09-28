@@ -161,6 +161,8 @@ public class SettingsViewController: UITableViewController {
         SettingsAccessor.InterfaceStyle.light,
         SettingsAccessor.InterfaceStyle.auto]
         
+        selector.currentTitle = self.viewModel.interfaceStyle.localizedTitle
+        
         selector.addItem(title: styles[0].localizedTitle)
         selector.addItem(title: styles[1].localizedTitle)
         

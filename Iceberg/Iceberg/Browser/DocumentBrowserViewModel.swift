@@ -331,5 +331,12 @@ public class DocumentBrowserViewModel {
                                         action: { [weak self] (event: NewDocumentPackageDownloadedEvent) in
                                             self?.loadData()
         })
+        
+        eventObserver?.registerForEvent(on: self,
+                                        eventType: DocumentRemovedFromiCloudEvent.self,
+                                        queue: OperationQueue.main,
+                                        action: { [weak self] (event: DocumentRemovedFromiCloudEvent) in
+                                            self?.loadData()
+        })
     }
 }

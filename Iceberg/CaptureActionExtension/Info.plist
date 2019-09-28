@@ -33,12 +33,12 @@
                         $extensionItem.attachments,
                         $attachment,
                         (
-                        ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO &quot;public.image&quot; ||
-                        ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO &quot;public.movie&quot; ||
-                        ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO &quot;public.audio&quot; ||
-                        ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO &quot;public.url&quot; ||
-                        ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO &quot;public.text&quot; ||
-                        ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO &quot;com.apple.property-list&quot;
+                        ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "public.image" ||
+                        ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "public.movie" ||
+                        ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "public.audio" ||
+                        ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "public.url" ||
+                        ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "public.text" ||
+                        ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "com.apple.property-list"
                         )
                     ).@count == $extensionItem.attachments.@count
                 ).@count &gt;= 1

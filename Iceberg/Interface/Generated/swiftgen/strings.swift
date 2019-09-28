@@ -235,6 +235,12 @@ public enum L10n {
       public static let update = L10n.tr("Localizable", "document.dateAndTime.update")
     }
     public enum Edit {
+      /// Keep this one
+      public static let remoteEditingArrivedKeepThisOne = L10n.tr("Localizable", "document.edit.remote_editing_arrived_keep_this_one")
+      /// Which version do you want to keep?
+      public static let remoteEditingArrivedMessage = L10n.tr("Localizable", "document.edit.remote_editing_arrived_message")
+      /// Another device modified this document
+      public static let remoteEditingArrivedTitle = L10n.tr("Localizable", "document.edit.remote_editing_arrived_title")
       public enum Action {
         /// Arrow down
         public static let arrowDown = L10n.tr("Localizable", "document.edit.action.arrow-down")
@@ -294,6 +300,10 @@ public enum L10n {
       public enum Date {
         /// All day
         public static let allDay = L10n.tr("Localizable", "document.edit.date.all-day")
+      }
+      public enum RemoteEditingArrivedKeepRemote {
+        /// Keep remote one
+        public static let one = L10n.tr("Localizable", "document.edit.remote_editing_arrived_keep_remote.one")
       }
       public enum Tag {
         /// Add new tag
