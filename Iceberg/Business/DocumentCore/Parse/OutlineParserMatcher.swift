@@ -263,7 +263,7 @@ extension OutlineParser {
                 public static let code =            "\(pre)(\\~([^\(ignoredCharacters)\\~]*)\\~)\(post)"
             }
             
-            public static let link = "\\[\\[((http|https|file)\\:.*)\\]\\[(.*)\\]\\]"
+            public static let link = "\\[\\[(\(Values.Link.patternAll)\\:.*)\\]\\[(.*)\\]\\]"
         }
     }
     
@@ -429,6 +429,13 @@ extension OutlineParser {
             public struct Priority {
                 public static let all: [String] = ["[#A]", "[#B]", "[#C]", "[#D]", "[#E]", "[#F]"]
             }
+        }
+        
+        public struct Link {
+            public static let icetea: String = "icetea"
+            public static let http: String = "http"
+            public static let https: String = "https"
+            public static let patternAll: String = "(\(http)|\(https)|\(icetea))"
         }
     }
 }
