@@ -49,7 +49,7 @@ public class HomeCoordinator: Coordinator {
         searchCoordinator.delegate = self
         self.addPersistentCoordinator(searchCoordinator)
         
-        let browserCoordinator = BrowserCoordinator(stack: stack, dependency: dependency, usage: .chooseDocument)
+        let browserCoordinator = BrowserCoordinator(stack: stack, dependency: dependency, usage: .browseDocument)
         browserCoordinator.delegate = self
         self.addPersistentCoordinator(browserCoordinator)
         

@@ -261,7 +261,11 @@ extension URL {
     public var documentRelativePath: String {
         let path = self.resolvingSymlinksInPath().path
         let separator = URL.documentBaseURL.resolvingSymlinksInPath().path + "/" // 在末尾加上斜线，在替换的时候，相对路径开始则不会有斜线
-        return path.components(separatedBy: separator).last!
+        return path.replacingOccurrences(of: separator, with: "", options: [], range: nil)
+    }
+    
+    public var levelsToRoot: Int {
+        return self.documentRelativePath.components(separatedBy: "/").filter { $0.count > 0 }.count
     }
     
     public var attachmentRelativePath: String {

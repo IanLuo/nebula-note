@@ -65,6 +65,8 @@ public class ModalFormViewController: TransitionViewController {
     
     public var onSaveValue: (([String: Codable], ModalFormViewController) -> Void)?
     
+    public var onSaveValueAutoDismissed: (([String: Codable]) -> Void)?
+    
     public var onCancel: ((ModalFormViewController) -> Void)?
     
     public var onValidating: (([String: Codable]) -> [String: String])?
@@ -230,6 +232,12 @@ public class ModalFormViewController: TransitionViewController {
         self.tableView.endEditing(true)
         self.delegate?.modalFormDidSave(viewController: self, formData: self.formData)
         self.onSaveValue?(self.formData, self)
+        
+        if let onSaveValueAutoDismissed = self.onSaveValueAutoDismissed {
+            self.dismiss(animated: true) { [unowned self] in
+                onSaveValueAutoDismissed(self.formData)
+            }
+        }
     }
     
     // MARK: - validation -

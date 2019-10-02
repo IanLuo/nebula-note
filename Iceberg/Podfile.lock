@@ -1,9 +1,14 @@
 PODS:
+  - Differentiator (3.1.0)
   - Drawsana (0.9.2)
   - Haptico (1.0.2)
   - KDCalendar (1.6.5)
   - RxAtomic (4.4.0)
   - RxCocoa (4.4.0):
+    - RxSwift (~> 4.0)
+  - RxDataSources (3.1.0):
+    - Differentiator (~> 3.0)
+    - RxCocoa (~> 4.0)
     - RxSwift (~> 4.0)
   - RxSwift (4.4.0):
     - RxAtomic (~> 4.4)
@@ -15,31 +20,36 @@ DEPENDENCIES:
   - Haptico
   - KDCalendar (~> 1.6.5)
   - RxCocoa
+  - RxDataSources
   - RxSwift
   - SwiftGen (~> 6.0)
   - SwiftyBeaver
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
+    - Differentiator
     - Drawsana
     - Haptico
     - KDCalendar
     - RxAtomic
     - RxCocoa
+    - RxDataSources
     - RxSwift
     - SwiftGen
     - SwiftyBeaver
 
 SPEC CHECKSUMS:
+  Differentiator: be49ca3408f0ecfc761e4c7763d20c62be01b9ad
   Drawsana: e6c738958804d69769b034019bc274fa58a56d10
   Haptico: ce38d1f993f3a0df9a6d7795a9dd2849648aa9d1
   KDCalendar: 15e74f37bd3d206bf7549c594fd08e0347c276f4
   RxAtomic: eacf60db868c96bfd63320e28619fe29c179656f
   RxCocoa: df63ebf7b9a70d6b4eeea407ed5dd4efc8979749
+  RxDataSources: a843bad90c29817f5923ec8163f4af2de084ceb3
   RxSwift: 5976ecd04fc2fefd648827c23de5e11157faa973
   SwiftGen: e5b047067aa84082826a0c4f1c4c2ddc95bcf74c
   SwiftyBeaver: ccfcdf85a04d429f1633f668650b0ce8020bda3a
 
-PODFILE CHECKSUM: 8e071a48eb291ad5f64387b63eaac853ceb6f45e
+PODFILE CHECKSUM: c4178b6adce23859c4372ec73d1f0e4e23ee1f5a
 
 COCOAPODS: 1.7.5

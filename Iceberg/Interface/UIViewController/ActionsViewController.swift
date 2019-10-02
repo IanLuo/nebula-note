@@ -50,6 +50,14 @@ public class ActionsViewController: UIViewController, TransitionProtocol {
         }
     }
     
+    public func addActionAutoDismiss(icon: UIImage?, title: String, style: Style = .default, at: Int? = nil, action: @escaping () -> Void) {
+        self.addAction(icon: icon, title: title) { viewController in
+            viewController.dismiss(animated: true) {
+                action()
+            }
+        }
+    }
+    
     public func removeAction(with title: String) {
         var index = -1
         for (i, item) in self.items.enumerated() {

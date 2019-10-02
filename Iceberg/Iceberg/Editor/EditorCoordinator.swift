@@ -74,7 +74,7 @@ public class EditorCoordinator: Coordinator {
         
         let documentCoord = BrowserCoordinator(stack: navigationController,
                                                dependency: super.dependency,
-                                               usage: .chooseHeading)
+                                               usage: .chooseHeader)
         
         documentCoord.didSelectHeadingAction = { [weak documentCoord]  url, heading in
             documentCoord?.stop()

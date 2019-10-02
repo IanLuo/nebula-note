@@ -104,6 +104,12 @@ public struct ExportManager {
     }
     
     public func share(from: UIViewController, url: URL) {
+        let activityViewController = self.createShareViewController(url: url)
+        
+        from.present(activityViewController, animated: true, completion: nil)
+    }
+    
+    public func createShareViewController(url: URL) -> UIActivityViewController {
         let activityViewController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
         
         activityViewController.completionWithItemsHandler = { [weak activityViewController] activityType, completed, returnedItem, error in
@@ -112,6 +118,6 @@ public struct ExportManager {
         
         activityViewController.excludedActivityTypes = nil
         
-        from.present(activityViewController, animated: true, completion: nil)
+        return activityViewController
     }
 }

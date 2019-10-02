@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 
 public struct Layout {
+    public static let cornerRadius: CGFloat = 10
     public static let edgeInsets: UIEdgeInsets = UIEdgeInsets(top: 30, left: 30, bottom: 30, right: 30)
     public static let innerViewEdgeInsets: UIEdgeInsets = UIEdgeInsets(top: 30, left: 30, bottom: 30, right: 30)
     public static let backButtonSize: CGSize = CGSize(width: 40, height: 40)

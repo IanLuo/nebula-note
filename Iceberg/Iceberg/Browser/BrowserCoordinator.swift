@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import Business
+import RxSwift
 
 public protocol BrowserCoordinatorDelegate: class {
     func didSelectDocument(url: URL, coordinator: BrowserCoordinator)
@@ -18,8 +19,15 @@ public protocol BrowserCoordinatorDelegate: class {
 
 public class BrowserCoordinator: Coordinator {
     public enum Usage {
-        case chooseDocument
-        case chooseHeading
+        case browseDocument
+        case chooseHeader
+        
+        var browserFolderMode: BrowserFolderViewModel.Mode {
+            switch self {
+            case .browseDocument: return .browser
+            case .chooseHeader: return .chooser
+            }
+        }
     }
     
     public let usage: Usage
@@ -29,14 +37,51 @@ public class BrowserCoordinator: Coordinator {
     public var didSelectHeadingAction: ((URL, DocumentHeading) -> Void)?
     public var didCancelAction: (() -> Void)?
     
+    private let disposeBag = DisposeBag()
+    
     public init(stack: UINavigationController, dependency: Dependency, usage: Usage) {
-        let viewModel = DocumentBrowserViewModel(documentManager: dependency.documentManager)
-        let viewController = DocumentBrowserViewController(viewModel: viewModel)
+        let browserFolderViewModel = BrowserFolderViewModel(url: URL.documentBaseURL, mode: usage.browserFolderMode)
+        let browserFolderViewController = BrowserFolderViewController(viewModel: browserFolderViewModel)
+        
+        let browseRecentViewModel = BrowserRecentViewModel()
+        let browseRecentViewController = BrowserRecentViewController(viewModel: browseRecentViewModel)
+        
+        let browseViewController = BrowserViewController(recentViewController: browseRecentViewController,
+                                                         browserFolderViewController: browserFolderViewController)
+        
         self.usage = usage
         super.init(stack: stack, dependency: dependency)
-        viewModel.coordinator = self
-        viewController.delegate = self
-        self.viewController = viewController
+        
+        browserFolderViewModel.coordinator = self
+        browseRecentViewModel.coordinator = self
+        
+        self.viewController = browseViewController
+        
+        // binding
+        browserFolderViewController.output.onSelectDocument.subscribe(onNext: { url in
+            switch self.usage {
+            case .browseDocument:
+                self.delegate?.didSelectDocument(url: url, coordinator: self)
+                self.didSelectDocumentAction?(url)
+            case .chooseHeader:
+                self.showOutlineHeadings(url: url)
+            }
+        }).disposed(by: self.disposeBag)
+        
+        browseViewController.output.canceld.subscribe(onNext: {
+            self.delegate?.didCancel(coordinator: self)
+            self.didCancelAction?()
+        }).disposed(by: self.disposeBag)
+        
+        browseRecentViewController.output.choosenDocument.subscribe(onNext: { url in
+            switch self.usage {
+            case .browseDocument:
+                self.delegate?.didSelectDocument(url: url, coordinator: self)
+                self.didSelectDocumentAction?(url)
+            case .chooseHeader:
+                self.showOutlineHeadings(url: url)
+            }
+        }).disposed(by: self.disposeBag)
     }
     
     public func showOutlineHeadings(url: URL) {
@@ -48,22 +93,6 @@ public class BrowserCoordinator: Coordinator {
                                             usage: .outline(url, nil))
         editorCoord.delegate = self
         editorCoord.start(from: self)
-    }
-}
-
-extension BrowserCoordinator: DocumentBrowserViewControllerDelegate {
-    public func didSelectDocument(url: URL) {
-        switch self.usage {
-        case .chooseDocument:
-            self.delegate?.didSelectDocument(url: url, coordinator: self)
-            self.didSelectDocumentAction?(url)
-        case .chooseHeading:
-            self.showOutlineHeadings(url: url)
-        }
-    }
-    
-    public func didCancel() {
-        self.didCancelAction?()
     }
 }
 

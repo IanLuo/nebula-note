@@ -5,6 +5,7 @@ use_frameworks!
 target 'Iceberg' do
     pod 'RxSwift'
     pod 'RxCocoa'
+    pod 'RxDataSources'
     pod 'SwiftyBeaver'
     pod 'Haptico' # https://github.com/iSapozhnik/Haptico
     pod 'Drawsana' # https://github.com/Asana/Drawsana
