@@ -21,7 +21,7 @@ public class CaptureListViewController: UIViewController {
     
     public weak var delegate: CaptureListViewControllerDelegate?
     
-    private let filterSegmentedControl: UISegmentedControl = {
+    private lazy var filterSegmentedControl: UISegmentedControl = {
         let seg = UISegmentedControl(items: [
             L10n.Attachment.Kind.all,
             Asset.Assets.text.image,

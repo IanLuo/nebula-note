@@ -46,6 +46,7 @@ extension DocumentEditViewController {
         actionsController.addAction(icon: Asset.Assets.master.image, title: L10n.Document.Menu.outline) { viewController in
             viewController.dismiss(animated: true, completion: {
                 self.viewModel.coordinator?.showOutline(completion: { [unowned self] selection in
+                    self.viewModel.unfoldAll()
                     self.allowScrollContentWhenKeyboardDisapearTemporaily()
                     
                     switch selection {

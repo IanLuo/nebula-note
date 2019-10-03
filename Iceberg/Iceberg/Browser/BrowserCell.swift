@@ -130,8 +130,6 @@ public class BrowserCell: UITableViewCell {
     private func _loadActionsView() {
         self.actionsContainerView.subviews.forEach { $0.removeFromSuperview() }
         
-        guard self.cellModel?.shouldShowActions == true else { return }
-        
         if self.cellModel?.hasSubDocuments == true {
             self.actionsContainerView.addSubview(self._actionsViewWithTwoButtons)
             self._actionsViewWithTwoButtons.allSidesAnchors(to: self.actionsContainerView, edgeInset: 0)
@@ -145,6 +143,7 @@ public class BrowserCell: UITableViewCell {
         let view = UIView()
         
         let actionButton = RoundButton()
+        actionButton.isHidden = self.cellModel?.shouldShowActions == false
         actionButton.interface { (me, theme) in
             if let button = me as? RoundButton {
                 actionButton.setIcon(Asset.Assets.more.image.fill(color: theme.color.descriptive), for: .normal)
@@ -168,6 +167,7 @@ public class BrowserCell: UITableViewCell {
         let view = UIView()
         
         let actionButton = RoundButton()
+        actionButton.isHidden = self.cellModel?.shouldShowActions == false
         actionButton.interface { (me, theme) in
             if let button = me as? RoundButton {
                 actionButton.setIcon(Asset.Assets.more.image.fill(color: theme.color.descriptive), for: .normal)

@@ -294,7 +294,7 @@ public class DocumentEditViewModel {
                         let location = heading.paragraphRange.location
                         _ = service.toggleContentCommandComposer(composer: AppendAsChildHeadingCommandComposer(text: text, to: location)).perform() // 移到另一个文件，不需要支持 undo
                     case .position(let location):
-                        _ = service.toggleContentCommandComposer(composer: InsertTextCommandComposer(location: location, textToInsert: text))
+                        _ = service.toggleContentCommandComposer(composer: InsertTextCommandComposer(location: location, textToInsert: text)).perform()
                     }
                     
                     service.save(completion: { [unowned service] _ in
