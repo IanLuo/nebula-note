@@ -45,9 +45,16 @@ extension DocumentEditViewController {
         
         actionsController.addAction(icon: Asset.Assets.master.image, title: L10n.Document.Menu.outline) { viewController in
             viewController.dismiss(animated: true, completion: {
-                self.viewModel.coordinator?.showOutline(completion: { [unowned self] heading in
+                self.viewModel.coordinator?.showOutline(completion: { [unowned self] selection in
                     self.allowScrollContentWhenKeyboardDisapearTemporaily()
-                    self._scrollTo(location: heading.location)
+                    
+                    switch selection {
+                    case .heading(let heading):
+                        self._scrollTo(location: heading.location, shouldScrollToZero: true)
+                    case .position(let location):
+                        self._scrollTo(location: location, shouldScrollToZero: true)
+                    }
+                    
                 })
                 self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
             })
@@ -391,13 +398,22 @@ extension DocumentEditViewController {
         actionsController.addAction(icon: nil, title: L10n.Document.Heading.moveTo) { viewController in
             viewController.dismiss(animated: true, completion: {
                 self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
-                self.viewModel.coordinator?.showOutline(ignoredHeadingLocation: location, completion: { [unowned self] heading in
+                self.viewModel.coordinator?.showOutline(ignoredHeadingLocation: location, completion: { [unowned self] outlineLocation in
                     let oldLocation = self.textView.selectedRange.location
                     
-                    let result = self.viewModel.moveParagraph(contains: oldLocation, to: heading, textView: self.textView)
+                    let result = self.viewModel.moveParagraph(contains: oldLocation, to: outlineLocation, textView: self.textView)
                     
-                    let changedLength = oldLocation < heading.location ? -result.content!.count : 0 // 如果新的位置的 heading 在原来 heading 的前面，新的位置的 heading需要减掉移走的文字的长度
-                    self.textView.selectedRange = NSRange(location: heading.location + heading.length + changedLength, length: 0)
+                    var location: Int!
+                    var insertionLength: Int = 0
+                    switch outlineLocation {
+                    case .heading(let heading):
+                        location = heading.location
+                        insertionLength = heading.length
+                    case .position(let _location): location = _location
+                    }
+                    
+                    let changedLength = oldLocation < location ? -result.content!.count : 0 // 如果新的位置的 heading 在原来 heading 的前面，新的位置的 heading需要减掉移走的文字的长度
+                    self.textView.selectedRange = NSRange(location: location + insertionLength + changedLength, length: 0)
                 })
             })
         }
@@ -405,10 +421,19 @@ extension DocumentEditViewController {
         actionsController.addAction(icon: nil, title: L10n.Document.Heading.moveToAnotherDocument) { viewController in
             viewController.dismiss(animated: true, completion: {
                 let oldLocation = self.textView.selectedRange.location
-                self.viewModel.coordinator?.showDocumentHeadingPicker(completion: { [unowned self] url, heading in
+                self.viewModel.coordinator?.showDocumentHeadingPicker(completion: { [unowned self] url, outlineLocation in
                     self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
-                    self.viewModel.moveParagraphToOtherDocument(url: url, heading: heading, location: location, textView: self.textView, completion: { [unowned self] result in
-                        let changedLength = oldLocation < heading.location ? -result.content!.count : 0 // 如果新的位置的 heading 在原来 heading 的前面，新的位置的 heading需要减掉移走的文字的长度
+                    self.viewModel.moveParagraphToOtherDocument(url: url, outline: outlineLocation, location: location, textView: self.textView, completion: { [unowned self] result in
+                        
+                        var location: Int!
+                        switch outlineLocation {
+                        case .heading(let heading):
+                            location = heading.location
+                        case .position(let _location):
+                            location = _location
+                        }
+                        
+                        let changedLength = oldLocation < location ? -result.content!.count : 0 // 如果新的位置的 heading 在原来 heading 的前面，新的位置的 heading需要减掉移走的文字的长度
                         self.textView.selectedRange = NSRange(location: oldLocation + changedLength, length: 0)
                     })
                 })

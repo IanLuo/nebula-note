@@ -160,6 +160,12 @@ public enum L10n {
         public static let confirm = L10n.tr("Localizable", "browser.actions.delete.confirm")
       }
     }
+    public enum Outline {
+      /// Document begining
+      public static let beginingOfDocument = L10n.tr("Localizable", "browser.outline.beginingOfDocument")
+      /// Document ending
+      public static let endOfDocument = L10n.tr("Localizable", "browser.outline.endOfDocument")
+    }
     public enum Title {
       /// Copy
       public static let copyExt = L10n.tr("Localizable", "browser.title.copyExt")

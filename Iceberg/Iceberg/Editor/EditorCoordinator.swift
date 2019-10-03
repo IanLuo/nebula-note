@@ -12,7 +12,7 @@ import Business
 import Interface
 
 public protocol EditorCoordinatorSelectHeadingDelegate: class {
-    func didSelectHeading(url: URL, heading: DocumentHeading, coordinator: EditorCoordinator)
+    func didSelectOutline(url: URL, selection: OutlineLocation, coordinator: EditorCoordinator)
     func didCancel(coordinator: EditorCoordinator)
 }
 
@@ -28,7 +28,7 @@ public class EditorCoordinator: Coordinator {
     
     private let _viewModel: DocumentEditViewModel
     
-    public var didSelectOutlineHeadingAction: ((DocumentHeading) -> Void)?
+    public var didSelectOutlineSelectionAction: ((OutlineLocation) -> Void)?
     
     public init(stack: UINavigationController, dependency: Dependency, usage: Usage) {
         self.usage = usage
@@ -57,28 +57,28 @@ public class EditorCoordinator: Coordinator {
         }
     }
     
-    public func showOutline(ignoredHeadingLocation: Int? = nil, completion: @escaping (DocumentHeading) -> Void) {
+    public func showOutline(ignoredHeadingLocation: Int? = nil, completion: @escaping (OutlineLocation) -> Void) {
         let navigationController = Coordinator.createDefaultNavigationControlller()
         navigationController.isNavigationBarHidden = true
         let coordinator = EditorCoordinator(stack: navigationController, dependency: self.dependency, usage: EditorCoordinator.Usage.outline(self._viewModel.url, ignoredHeadingLocation))
-        coordinator.didSelectOutlineHeadingAction = { [weak coordinator] heading in
+        coordinator.didSelectOutlineSelectionAction = { [weak coordinator] selection in
             coordinator?.stop(animated: true, completion: {
-                completion(heading)
+                completion(selection)
             })
         }
         coordinator.start(from: self)
     }
     
-    public func showDocumentHeadingPicker(completion: @escaping (URL, DocumentHeading) -> Void) {
+    public func showDocumentHeadingPicker(completion: @escaping (URL, OutlineLocation) -> Void) {
         let navigationController = Coordinator.createDefaultNavigationControlller()
         
         let documentCoord = BrowserCoordinator(stack: navigationController,
                                                dependency: super.dependency,
                                                usage: .chooseHeader)
         
-        documentCoord.didSelectHeadingAction = { [weak documentCoord]  url, heading in
+        documentCoord.didSelectOutlineAction = { [weak documentCoord]  url, outlineLocation in
             documentCoord?.stop()
-            completion(url, heading)
+            completion(url, outlineLocation)
         }
         
         documentCoord.didCancelAction = { [weak documentCoord] in
@@ -153,8 +153,8 @@ extension EditorCoordinator: HeadingsOutlineViewControllerDelegate {
         self.delegate?.didCancel(coordinator: self)
     }
     
-    public func didSelectHeading(url: URL, heading: DocumentHeading) {
-        self.delegate?.didSelectHeading(url: url, heading: heading, coordinator: self)
-        self.didSelectOutlineHeadingAction?(heading)
+    public func didSelect(url: URL, selection: OutlineLocation) {
+        self.delegate?.didSelectOutline(url: url, selection: selection, coordinator: self)
+        self.didSelectOutlineSelectionAction?(selection)
     }
 }

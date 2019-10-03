@@ -166,6 +166,8 @@
 "browser.actions.delete" = "Delete";
 "browser.actions.delete.confirm" = "Are you sure you want to delete this document and it's all child documents?";
 "browser.actions.rename" = "Rename";
+"browser.outline.beginingOfDocument" = "Document begining";
+"browser.outline.endOfDocument" = "Document ending";
 
 // agenda
 "agenda.title" = "Agenda";

@@ -34,16 +34,16 @@ public class CaptureListCoordinator: Coordinator {
         viewModel.coordinator = self
     }
     
-    public func showDocumentHeadingSelector(completion: @escaping (URL, DocumentHeading) -> Void, canceled: @escaping () -> Void) {
+    public func showDocumentHeadingSelector(completion: @escaping (URL, OutlineLocation) -> Void, canceled: @escaping () -> Void) {
         let navigationController = Coordinator.createDefaultNavigationControlller()
         
         let documentCoord = BrowserCoordinator(stack: navigationController,
                                                dependency: super.dependency,
                                                usage: .chooseHeader)
         
-        documentCoord.didSelectHeadingAction = { [weak documentCoord]  url, heading in
+        documentCoord.didSelectOutlineAction = { [weak documentCoord]  url, outlineLocation in
             documentCoord?.stop()
-            completion(url, heading)
+            completion(url, outlineLocation)
         }
         
         documentCoord.didCancelAction = { [weak documentCoord] in

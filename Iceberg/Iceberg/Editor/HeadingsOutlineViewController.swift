@@ -11,8 +11,13 @@ import UIKit
 import Interface
 import Business
 
+public enum OutlineLocation {
+    case heading(DocumentHeading)
+    case position(Int)
+}
+
 public protocol HeadingsOutlineViewControllerDelegate: class {
-    func didSelectHeading(url: URL, heading: DocumentHeading)
+    func didSelect(url: URL, selection: OutlineLocation)
     func didCancel()
 }
 
@@ -47,7 +52,14 @@ extension HeadingsOutlineViewController: SelectorViewControllerDelegate {
     }
     
     public func SelectorDidSelect(index: Int, viewController: SelectorViewController) {
-        self.outlineDelegate?.didSelectHeading(url: self.viewModel.url, heading: self.viewModel.documentHeading(at: index))
+        switch index {
+        case 0:
+            self.outlineDelegate?.didSelect(url: self.viewModel.url, selection: .position(0))
+        case self.items.count - 1:
+            self.outlineDelegate?.didSelect(url: self.viewModel.url, selection: .position(self.viewModel.string.count > 0 ? self.viewModel.string.count - 1 : 0))
+        default:
+            self.outlineDelegate?.didSelect(url: self.viewModel.url, selection: .heading(self.viewModel.documentHeading(at: index - 1))) // minus 1, because 1 is extra 'document beginnig'
+        }
     }
 }
 
@@ -63,6 +75,8 @@ extension HeadingsOutlineViewController: DocumentEditViewModelDelegate {
     private func loadData() {
         let ignoredRange = self.viewModel.paragraphWithSubRange(at: self.ignoredHeadingLocation ?? -1)
         
+        self.addItem(title: L10n.Browser.Outline.beginingOfDocument)
+        
         for (index, heading) in self.viewModel.headings.enumerated() {
             let isEnabled = ignoredRange != nil ? ignoredRange!.intersection(heading.paragraphRange) == nil : true
             self.addItem(attributedString: self.attributedString(level: self.viewModel.level(index: index),
@@ -70,6 +84,7 @@ extension HeadingsOutlineViewController: DocumentEditViewModelDelegate {
                          enabled: isEnabled)
         }
         
+        self.addItem(title: L10n.Browser.Outline.endOfDocument)
         
         self.onCancel = { viewController in
             viewController.dismiss(animated: true, completion: nil)

@@ -274,7 +274,7 @@ public class DocumentEditViewModel {
         }
     }
     
-    public func moveParagraphToOtherDocument(url: URL, heading otherHeading: DocumentHeading, location: Int, textView: UITextView, completion: @escaping (DocumentContentCommandResult) -> Void) {
+    public func moveParagraphToOtherDocument(url: URL, outline otherOutline: OutlineLocation, location: Int, textView: UITextView, completion: @escaping (DocumentContentCommandResult) -> Void) {
         self.coordinator?.dependency.editorContext.request(url: url).onReadyToUse = { [weak self] service in
             service.start(complete: { isReady, service in
                 guard let strongSelf = self else { return }
@@ -288,7 +288,15 @@ public class DocumentEditViewModel {
                 DispatchQueue.main.async {
                     // 1. 删除当前的段落
                     let result = strongSelf.performCommandComposer(EditAction.removeParagraph(location).commandComposer, textView: textView)
-                    _ = service.toggleContentCommandComposer(composer: AppendAsChildHeadingCommandComposer(text: text, to: otherHeading.paragraphRange.location)).perform() // 移到另一个文件，不需要支持 undo
+                    
+                    switch otherOutline {
+                    case .heading(let heading):
+                        let location = heading.paragraphRange.location
+                        _ = service.toggleContentCommandComposer(composer: AppendAsChildHeadingCommandComposer(text: text, to: location)).perform() // 移到另一个文件，不需要支持 undo
+                    case .position(let location):
+                        _ = service.toggleContentCommandComposer(composer: InsertTextCommandComposer(location: location, textToInsert: text))
+                    }
+                    
                     service.save(completion: { [unowned service] _ in
                         service.close(completion: { _ in
                             DispatchQueue.main.async {
@@ -307,7 +315,7 @@ public class DocumentEditViewModel {
         }
     }
     
-    public func moveParagraph(contains location: Int, to toHeading: DocumentHeading, textView: UITextView) -> DocumentContentCommandResult {
+    public func moveParagraph(contains location: Int, to outlineLocation: OutlineLocation, textView: UITextView) -> DocumentContentCommandResult {
         guard let currentHeading = self._editorService.heading(at: location) else { return DocumentContentCommandResult.noChange }
         
         let text = currentHeading.paragraphWithSubRange.upperBound == self._editorService.string.nsstring.length // 当前行位最后一行
@@ -320,10 +328,15 @@ public class DocumentEditViewModel {
         
         
         // 2. 插入到新的位置
-        let result = self.performCommandComposer(MoveToParagraphAsChildHeadingCommandComposer(text: text, to: toHeading.location, isToLocationBehindFromLocation: location <= toHeading.paragraphRange.upperBound),
-                                                 textView: textView)
-
-        return result
+        switch outlineLocation {
+        case .heading(let toHeading):
+            return self.performCommandComposer(MoveToParagraphAsChildHeadingCommandComposer(text: text,
+                                                                                            to: toHeading.location,
+                                                                                            isToLocationBehindFromLocation: location <= toHeading.paragraphRange.upperBound),
+                                                     textView: textView)
+        case .position(let toLocation):
+            return self.performCommandComposer(InsertTextCommandComposer(location: toLocation, textToInsert: text), textView: textView)
+        }
     }
     
     public func foldOrUnfold(location: Int) {

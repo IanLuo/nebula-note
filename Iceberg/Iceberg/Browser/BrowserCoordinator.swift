@@ -13,7 +13,7 @@ import RxSwift
 
 public protocol BrowserCoordinatorDelegate: class {
     func didSelectDocument(url: URL, coordinator: BrowserCoordinator)
-    func didSelectHeading(url: URL, heading: DocumentHeading, coordinator: BrowserCoordinator)
+    func didSelectOutline(url: URL, selection: OutlineLocation, coordinator: BrowserCoordinator)
     func didCancel(coordinator: BrowserCoordinator)
 }
 
@@ -34,7 +34,7 @@ public class BrowserCoordinator: Coordinator {
     public weak var delegate: BrowserCoordinatorDelegate?
     
     public var didSelectDocumentAction: ((URL) -> Void)?
-    public var didSelectHeadingAction: ((URL, DocumentHeading) -> Void)?
+    public var didSelectOutlineAction: ((URL, OutlineLocation) -> Void)?
     public var didCancelAction: (() -> Void)?
     
     private let disposeBag = DisposeBag()
@@ -97,10 +97,10 @@ public class BrowserCoordinator: Coordinator {
 }
 
 extension BrowserCoordinator: EditorCoordinatorSelectHeadingDelegate {
-    public func didSelectHeading(url: URL, heading: DocumentHeading, coordinator: EditorCoordinator) {
+    public func didSelectOutline(url: URL, selection: OutlineLocation, coordinator: EditorCoordinator) {
         coordinator.stop {
-            self.delegate?.didSelectHeading(url: url, heading: heading, coordinator: self)
-            self.didSelectHeadingAction?(url, heading)
+            self.delegate?.didSelectOutline(url: url, selection: selection, coordinator: self)
+            self.didSelectOutlineAction?(url, selection)
         }
     }
     

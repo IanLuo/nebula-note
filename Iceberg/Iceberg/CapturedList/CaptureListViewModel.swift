@@ -68,7 +68,7 @@ public class CaptureListViewModel {
     }
     
     public func refile(editorService: EditorService,
-                       heading: DocumentHeading,
+                       outline: OutlineLocation,
                        completion: @escaping() -> Void) {
         
         guard let attachment = self.currentCapture else { return }
@@ -98,7 +98,15 @@ public class CaptureListViewModel {
                 // 添加的内容，新建一行，空一行
                 content = OutlineParser.Values.Character.linebreak + OutlineParser.Values.Character.linebreak + content + OutlineParser.Values.Character.linebreak
 
-                let insertion = InsertTextCommandComposer(location: heading.paragraphRange.upperBound, textToInsert: content)
+                var insertLocation: Int!
+                switch outline {
+                case .heading(let heading):
+                    insertLocation = heading.paragraphRange.upperBound
+                case .position(let location):
+                    insertLocation = location
+                }
+                
+                let insertion = InsertTextCommandComposer(location: insertLocation, textToInsert: content)
                 _ = service.toggleContentCommandComposer(composer: insertion).perform()
                 
                 self.currentIndex = nil // 移除当前选中的
@@ -186,12 +194,12 @@ public class CaptureListViewModel {
     
     public func chooseRefileLocation(index: Int, completion: @escaping () -> Void, canceled: @escaping () -> Void) {
         self.currentIndex = index
-        self.coordinator?.showDocumentHeadingSelector(completion: { [unowned self] url, heading in
+        self.coordinator?.showDocumentHeadingSelector(completion: { [unowned self] url, outlineLocation in
             guard let service = self.coordinator?.dependency.editorContext.request(url: url) else {
                 return
             }
             
-            self.refile(editorService: service, heading: heading, completion: completion)
+            self.refile(editorService: service, outline: outlineLocation, completion: completion)
             }, canceled: canceled)
     }
     
