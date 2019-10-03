@@ -192,28 +192,31 @@ public class DocumentEditViewController: UIViewController {
 
 extension DocumentEditViewController: DocumentEditViewModelDelegate {
     public func didEnterTokens(_ tokens: [Token]) {
-        if tokens.count == 0 {
-            self.inputbar.mode = .paragraph
-        } else {
-            for token in tokens {
-                if token is HeadingToken {
-                    self.inputbar.mode = .heading
-                    break
-                } else if token is BlockBeginToken {
-                    if token.name == OutlineParser.Key.Node.quoteBlockBegin {
+        self.viewModel.currentTokens = tokens
+        
+        if let firstHeading = self.viewModel.headings.first {
+            if self.textView.selectedRange.location < firstHeading.range.location {
+                self.inputbar.mode = .headless
+                return
+            }
+            
+            if let lastToken = tokens.last {
+                if lastToken is BlockBeginToken {
+                    if lastToken.name == OutlineParser.Key.Node.quoteBlockBegin {
                         self.inputbar.mode = .quote
-                        break
-                    } else if token.name == OutlineParser.Key.Node.codeBlockBegin {
+                    } else if lastToken.name == OutlineParser.Key.Node.codeBlockBegin {
                         self.inputbar.mode = .code
-                        break
                     }
                 } else {
                     self.inputbar.mode = .paragraph
                 }
+            } else {
+                self.inputbar.mode = .paragraph
             }
+
+        } else {
+            self.inputbar.mode = .headless
         }
-        
-        self.viewModel.currentTokens = tokens
     }
     
     public func didReadyToEdit() {

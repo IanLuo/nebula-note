@@ -403,6 +403,8 @@ extension DocumentEditViewController {
                     
                     let result = self.viewModel.moveParagraph(contains: oldLocation, to: outlineLocation, textView: self.textView)
                     
+                    guard result.content != nil else { return }
+                    
                     var location: Int!
                     var insertionLength: Int = 0
                     switch outlineLocation {
@@ -424,6 +426,8 @@ extension DocumentEditViewController {
                 self.viewModel.coordinator?.showDocumentHeadingPicker(completion: { [unowned self] url, outlineLocation in
                     self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                     self.viewModel.moveParagraphToOtherDocument(url: url, outline: outlineLocation, location: location, textView: self.textView, completion: { [unowned self] result in
+                        
+                        guard result.content != nil else { return }
                         
                         var location: Int!
                         switch outlineLocation {

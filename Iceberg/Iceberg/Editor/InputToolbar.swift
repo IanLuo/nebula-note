@@ -16,8 +16,8 @@ public protocol DocumentEditToolbarDelegate: class {
 }
 
 public class InputToolbar: UIView {
-    
-    private static let headingActions = [NormalAction.paragraph, NormalAction.heading, NormalAction.planning, NormalAction.tag, NormalAction.priority]
+    private static let paragraphActions = [NormalAction.paragraph]
+    private static let headingActions = [NormalAction.heading, NormalAction.planning, NormalAction.tag, NormalAction.priority]
     private static let textMark = [NormalAction.bold, NormalAction.italic, NormalAction.underscore, NormalAction.strikethrough, NormalAction.code]
     private static let moveCursor: [ToolbarActionProtocol] = [CursorAction.moveUp, CursorAction.moveDown, CursorAction.moveLeft, CursorAction.moveRight]
     private static let moveContent: [ToolbarActionProtocol] = [NormalAction.increaseIndent, NormalAction.decreaseIndent, NormalAction.moveUp, NormalAction.moveDown]
@@ -25,12 +25,14 @@ public class InputToolbar: UIView {
     private static let insertSpecailContent: [ToolbarActionProtocol] = [NormalAction.seperator, NormalAction.sourcecode, NormalAction.quote, NormalAction.checkbox, NormalAction.dateAndTime, NormalAction.list, NormalAction.orderedList]
     private static let attachment: [ToolbarActionProtocol] = [NormalAction.captured, AttachmentAction.image, AttachmentAction.sketch, AttachmentAction.link, AttachmentAction.location, AttachmentAction.audio, AttachmentAction.video]
     
-    private static let actionsParagraph: [[ToolbarActionProtocol]] = [headingActions, textMark, undoAndRedo, moveCursor, moveContent, insertSpecailContent, attachment]
-    private static let actionsHeading: [[ToolbarActionProtocol]] = [headingActions, textMark, undoAndRedo, moveCursor, moveContent]
-    private static let quoteBlock: [[ToolbarActionProtocol]] = [headingActions, textMark, undoAndRedo, moveCursor, moveContent]
-    private static let codeBlock: [[ToolbarActionProtocol]] = [headingActions, undoAndRedo, moveCursor, moveContent]
+    private static let headless: [[ToolbarActionProtocol]] = [headingActions, textMark, undoAndRedo, moveCursor, moveContent, insertSpecailContent, attachment]
+    private static let actionsParagraph: [[ToolbarActionProtocol]] = [paragraphActions, headingActions, textMark, undoAndRedo, moveCursor, moveContent, insertSpecailContent, attachment]
+    private static let actionsHeading: [[ToolbarActionProtocol]] = [paragraphActions, headingActions, textMark, undoAndRedo, moveCursor, moveContent]
+    private static let quoteBlock: [[ToolbarActionProtocol]] = [paragraphActions, headingActions, textMark, undoAndRedo, moveCursor, moveContent]
+    private static let codeBlock: [[ToolbarActionProtocol]] = [paragraphActions, headingActions, undoAndRedo, moveCursor, moveContent]
     
     public enum Mode {
+        case  headless
         case heading
         case paragraph
         case quote
@@ -38,6 +40,8 @@ public class InputToolbar: UIView {
         
         fileprivate func _createActions(mode: Mode) -> [[ToolbarActionProtocol]] {
             switch mode {
+            case .headless:
+                return InputToolbar.headless
             case.paragraph:
                 return InputToolbar.actionsParagraph
             case .heading:
