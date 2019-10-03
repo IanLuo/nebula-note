@@ -33,7 +33,7 @@ public class BrowserRecentViewController: UIViewController {
         })
         
         collectionView.register(RecentFileCell.self, forCellWithReuseIdentifier: RecentFileCell.reuseIdentifier)
-        collectionView.contentInset = UIEdgeInsets(top: 0, left: 30, bottom: 0, right: 30)
+        collectionView.contentInset = UIEdgeInsets(top: 0, left: Layout.edgeInsets.left, bottom: 0, right: -Layout.edgeInsets.right)
         
         return collectionView
     }()

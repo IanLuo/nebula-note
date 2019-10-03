@@ -154,8 +154,14 @@ public class BrowserCellModel {
     
     public func updateCover(cover: UIImage) -> Observable<URL> {
         self.cover = UIImage(contentsOfFile: self.url.coverURL.path)?.resize(upto: CGSize(width: 120, height: 120))
-        self.coordinator?.dependency.documentManager.setCover(cover, url: self.url)
-        return Observable.just(self.url)
+        
+        return Observable.create { (observer) -> Disposable in
+            self.coordinator?.dependency.documentManager.setCover(cover, url: self.url) { url in
+                observer.onNext(url)
+                observer.onCompleted()
+            }
+            return Disposables.create()
+        }
     }
     
     public func isNameAvailable(newName: String) -> Bool {

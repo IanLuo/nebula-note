@@ -64,7 +64,7 @@ public class BrowserFolderViewController: UIViewController {
         self.tableView.allSidesAnchors(to: self.view, edgeInset: 0)
         
         // bind add document button
-        let rightBarButtonItem = UIBarButtonItem(image: Asset.Assets.add.image, style: .plain, target: nil, action: nil)
+        let rightBarButtonItem = UIBarButtonItem(image: Asset.Assets.newDocument.image, style: .plain, target: nil, action: nil)
         rightBarButtonItem.rx
             .tap
             .map { _ in L10n.Browser.Title.untitled } // use default documentname

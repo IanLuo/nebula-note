@@ -66,9 +66,9 @@ public class BrowserCell: UITableViewCell {
     private func _setupUI() {
         self.contentView.addSubview(self.container)
         
-        self.container.allSidesAnchors(to: self.contentView, edgeInsets: .init(top: 0,
+        self.container.allSidesAnchors(to: self.contentView, edgeInsets: .init(top: Layout.edgeInsets.top,
                                                                                left: Layout.edgeInsets.left,
-                                                                               bottom: -Layout.edgeInsets.bottom,
+                                                                               bottom: 0,
                                                                                right: -Layout.edgeInsets.right))
         
         self.container.addSubview(self.iconView)
@@ -147,8 +147,8 @@ public class BrowserCell: UITableViewCell {
         let actionButton = RoundButton()
         actionButton.interface { (me, theme) in
             if let button = me as? RoundButton {
-                actionButton.setIcon(Asset.Assets.more.image.fill(color: theme.color.interactive), for: .normal)
-                actionButton.setBackgroundColor(theme.color.background3, for: .normal)
+                actionButton.setIcon(Asset.Assets.more.image.fill(color: theme.color.descriptive), for: .normal)
+                actionButton.setBackgroundColor(theme.color.background2, for: .normal)
             }
         }
         actionButton.tapped { _ in
@@ -157,7 +157,7 @@ public class BrowserCell: UITableViewCell {
         }
         
         view.addSubview(actionButton)
-        actionButton.sizeAnchor(width: 44, height: 44)
+        actionButton.sizeAnchor(width: 44)
         view.sizeAnchor(width: 44)
         actionButton.centerAnchors(position: [.centerX, .centerY], to: view)
         
@@ -170,8 +170,8 @@ public class BrowserCell: UITableViewCell {
         let actionButton = RoundButton()
         actionButton.interface { (me, theme) in
             if let button = me as? RoundButton {
-                actionButton.setIcon(Asset.Assets.more.image.fill(color: theme.color.interactive), for: .normal)
-                actionButton.setBackgroundColor(theme.color.background3, for: .normal)
+                actionButton.setIcon(Asset.Assets.more.image.fill(color: theme.color.descriptive), for: .normal)
+                actionButton.setBackgroundColor(theme.color.background2, for: .normal)
             }
         }
         actionButton.tapped { _ in
@@ -182,8 +182,8 @@ public class BrowserCell: UITableViewCell {
         let enterButton = RoundButton()
         enterButton.interface { (me, theme) in
             if let button = me as? RoundButton {
-                enterButton.setBackgroundColor(theme.color.background3, for: .normal)
-                enterButton.setIcon(Asset.Assets.next.image.fill(color: theme.color.interactive), for: .normal)
+                enterButton.setBackgroundColor(theme.color.background2, for: .normal)
+                enterButton.setIcon(Asset.Assets.next.image.fill(color: theme.color.spotlight), for: .normal)
             }
         }
         
@@ -196,10 +196,10 @@ public class BrowserCell: UITableViewCell {
         view.addSubview(actionButton)
         view.addSubview(enterButton)
         actionButton.sideAnchor(for: [.left, .top, .right], to: view, edgeInset: 0)
-        actionButton.sizeAnchor(width: 44, height: 44)
-        actionButton.columnAnchor(view: enterButton, space: 10)
+        actionButton.sizeAnchor(width: 44)
+        actionButton.columnAnchor(view: enterButton)
         enterButton.sideAnchor(for: [.left, .bottom, .right], to: view, edgeInset: 0)
-        enterButton.sizeAnchor(width: 44, height: 44)
+        enterButton.sizeAnchor(width: 44)
         
         return view
     }()

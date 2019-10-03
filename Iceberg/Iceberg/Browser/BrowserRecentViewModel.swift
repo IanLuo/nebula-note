@@ -62,6 +62,10 @@ public class BrowserRecentViewModel {
             self?.loadData()
         })
         
+        self.coordinator?.dependency.eventObserver.registerForEvent(on: self, eventType: DocumentRemovedFromiCloudEvent.self, queue: .main, action: { [weak self] (event: DocumentRemovedFromiCloudEvent) in
+            self?.loadData()
+        })
+        
         self.coordinator?.dependency.eventObserver.registerForEvent(on: self, eventType: NewRecentFilesListDownloadedEvent.self, queue: .main, action: { [weak self] (event: NewRecentFilesListDownloadedEvent) in
             self?.loadData()
         })
