@@ -53,10 +53,10 @@ public class HomeCoordinator: Coordinator {
         browserCoordinator.delegate = self
         self.addPersistentCoordinator(browserCoordinator)
         
-        let tabs = [agendaCoordinator.viewController!,
-                    captureCoordinator.viewController!,
-                    searchCoordinator.viewController!,
-                    browserCoordinator.viewController!]
+        let tabs = [Coordinator.createDefaultNavigationControlller(root: agendaCoordinator.viewController!),
+                    Coordinator.createDefaultNavigationControlller(root: captureCoordinator.viewController!),
+                    Coordinator.createDefaultNavigationControlller(root: searchCoordinator.viewController!),
+                    Coordinator.createDefaultNavigationControlller(root: browserCoordinator.viewController!)]
         
         dashboardViewController.addTab(tabs: [DashboardViewController.TabType.agenda(tabs[0], 0),
                                               DashboardViewController.TabType.captureList(tabs[1], 1),

@@ -72,7 +72,6 @@ public class BrowserViewController: UIViewController {
         self.interface { (me, theme) in
             self.view.backgroundColor = theme.color.background1
             nav.navigationBar.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.background1, size: .singlePoint), for: .default)
-
         }
     }
 }

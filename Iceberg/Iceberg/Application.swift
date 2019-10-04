@@ -183,8 +183,12 @@ public class Application: Coordinator {
 }
 
 extension Coordinator {
-    public static func createDefaultNavigationControlller() -> UINavigationController {
+    public static func createDefaultNavigationControlller(root: UIViewController? = nil) -> UINavigationController {
         let navigationController = UINavigationController()
+        
+        if let root = root {
+            navigationController.pushViewController(root, animated: false)
+        }
         
         navigationController.interface { (me, theme) in
             let navigationController = me as! UINavigationController
@@ -194,9 +198,10 @@ extension Coordinator {
             navigationController.navigationBar.backIndicatorTransitionMaskImage = Asset.Assets.left.image
         }
         
-        UIBarButtonItem.appearance().setBackButtonTitlePositionAdjustment(UIOffset(horizontal: -500, vertical: 0), for: UIBarMetrics.default)
-        navigationController.navigationBar.setBackgroundImage(UIImage(), for: .default)
         navigationController.navigationBar.shadowImage = UIImage()
+        navigationController.navigationBar.setBackgroundImage(UIImage(), for: .default)
+//        UIBarButtonItem.appearance().setBackButtonTitlePositionAdjustment(UIOffset(horizontal: -100, vertical: 0), for: UIBarMetrics.default)
+        
         return navigationController
     }
 }

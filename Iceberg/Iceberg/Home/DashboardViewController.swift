@@ -52,8 +52,8 @@ public class DashboardViewController: UIViewController {
         self.interface { me, theme in
             me.setNeedsStatusBarAppearanceUpdate()
             me.view.backgroundColor = theme.color.background1
+            me.navigationController?.navigationBar.setBackgroundImage(UIImage.create(with: theme.color.background1, size: .singlePoint), for: .default)
         }
-        
         
         self.view.addSubview(self.tableView)
         self.view.addSubview(self.settingsButton)
@@ -162,15 +162,15 @@ public class DashboardViewController: UIViewController {
         }
     }
     
-    private func selectOnTabFoldArrow(tab index: Int, isOpen: Bool) {
-        let count = self.tabs[index].sub.count
-        let indexPaths = Array<Int>(0..<count).map { IndexPath(row: $0, section: index) }
-        if isOpen {
-            self.tableView.insertRows(at: indexPaths, with: .top)
-        } else {
-            self.tableView.deleteRows(at: indexPaths, with: .top)
-        }
-    }
+//    private func selectOnTabFoldArrow(tab index: Int, isOpen: Bool) {
+//        let count = self.tabs[index].sub.count
+//        let indexPaths = Array<Int>(0..<count).map { IndexPath(row: $0, section: index) }
+//        if isOpen {
+//            self.tableView.insertRows(at: indexPaths, with: .top)
+//        } else {
+//            self.tableView.deleteRows(at: indexPaths, with: .top)
+//        }
+//    }
     
     public enum TabType {
         case agenda(UIViewController, Int)
@@ -323,7 +323,7 @@ public class DashboardViewController: UIViewController {
 
 extension DashboardViewController: UITableViewDelegate, UITableViewDataSource {
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard self.tabs[section].isOpen else { return 0 }
+//        guard self.tabs[section].isOpen else { return 0 }
 
         return self.tabs[section].sub.count
     }
@@ -351,16 +351,9 @@ extension DashboardViewController: UITableViewDelegate, UITableViewDataSource {
         let view = tableView.dequeueReusableHeaderFooterView(withIdentifier: TabView.reuseIdentifier) as! TabView
         let tab = self.tabs[section]
         view.tab = tab
-        view.shoudShowSubtabsButton = (self.tabs[section].sub.count) > 0
         
         view.action = {
             self.selectOnTab(index: section)
-        }
-        
-        view.showSubtabsAction = {
-            tab.isOpen = !tab.isOpen
-            
-            self.selectOnTabFoldArrow(tab: section, isOpen: tab.isOpen)
         }
         
         return view
@@ -418,15 +411,11 @@ private class TabView: UITableViewHeaderFooterView {
             self.iconView.image = tab.icon?.withRenderingMode(.alwaysTemplate)
             self.titleButton.setTitle(tab.title, for: .normal)
             self.isHighlighted = tab.isCurrent
-            self.isOpen = tab.isOpen
             
             tab.didSetIsCurrent = {
                 self.isHighlighted = $0
             }
             
-            tab.didSetIsOpen = {
-                self.isOpen = $0
-            }
         }
     }
     
@@ -455,51 +444,15 @@ private class TabView: UITableViewHeaderFooterView {
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
-    
-    let showSubtabsButton: UIButton = {
-        let button = UIButton()
         
-        button.interface({ (me, theme) in
-            let button = me as! UIButton
-            button.setImage(Asset.Assets.right.image.resize(upto: CGSize(width: 15, height: 15)).fill(color: theme.color.spotlight), for: .normal)
-        })
-        button.addTarget(self, action: #selector(subtabActionTapped), for: .touchUpInside)
-        button.imageView?.contentMode = .scaleAspectFit
-        return button
-    }()
-    
     var action: (() -> Void)?
-    var showSubtabsAction: (() -> Void)?
-    
-    var isOpen: Bool = false {
-        didSet {
-            if isOpen {
-                self.showSubtabsButton.rotate(angel: CGFloat.pi / 2)
-            } else {
-                self.showSubtabsButton.rotate(angel: 0)
-            }
-        }
-    }
-    
     var isHighlighted: Bool {
         get { return self.titleButton.isSelected }
         set { self.titleButton.isSelected = newValue }
     }
     
-    var shoudShowSubtabsButton: Bool = false {
-        didSet {
-            showSubtabsButton.constraint(for: .width)?.constant = shoudShowSubtabsButton ? 40 : 0
-            showSubtabsButton.isHidden = !shoudShowSubtabsButton
-            self.layoutIfNeeded()
-        }
-    }
-    
     @objc private func actionTapped() {
         self.action?()
-    }
-    
-    @objc private func subtabActionTapped() {
-        self.showSubtabsAction?()
     }
     
     override init(reuseIdentifier: String?) {
@@ -510,7 +463,6 @@ private class TabView: UITableViewHeaderFooterView {
         self.contentView.backgroundColor = InterfaceTheme.Color.background1
         self.contentView.addSubview(self.titleButton)
         self.contentView.addSubview(self.iconView)
-        self.contentView.addSubview(self.showSubtabsButton)
         
         self.iconView.sideAnchor(for: .left, to: self.contentView, edgeInsets: .init(top: 0, left: Layout.edgeInsets.left, bottom: 0, right: 0))
         self.iconView.centerAnchors(position: .centerY, to: self.contentView)
@@ -518,10 +470,6 @@ private class TabView: UITableViewHeaderFooterView {
         
         self.titleButton.allSidesAnchors(to: self.contentView, edgeInset: 0)
         self.titleButton.contentEdgeInsets = UIEdgeInsets(top: 20, left: 70, bottom: 20, right: 0)
-        
-        self.showSubtabsButton.sizeAnchor(width: 0)
-        self.showSubtabsButton.lastBaselineAnchor.constraint(equalTo: self.titleButton.lastBaselineAnchor).isActive = true
-        self.showSubtabsButton.sideAnchor(for: [.top, .bottom, .right], to: self.contentView, edgeInsets: .init(top: 0, left: 0, bottom: 0, right: -30))
     }
     
     required init?(coder aDecoder: NSCoder) {

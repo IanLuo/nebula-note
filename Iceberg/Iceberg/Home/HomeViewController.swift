@@ -64,6 +64,7 @@ public class HomeViewController: UIViewController {
         super.viewDidAppear(animated)
         self.masterViewController.view.frame = CGRect(x: -self.masterViewWidth, y: 0, width: self.masterViewWidth, height: self.view.bounds.height)
         self.currentDetailViewController?.view.frame = CGRect(origin: .zero, size: self.view.bounds.size)
+        self.navigationController?.setNavigationBarHidden(true, animated: false)
     }
     
     public required init?(coder aDecoder: NSCoder) {

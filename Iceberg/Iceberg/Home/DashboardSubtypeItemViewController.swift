@@ -32,7 +32,7 @@ public class DashboardSubtypeItemViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(ItemCell.self, forCellReuseIdentifier: ItemCell.reuseIdentifier)
-        tableView.backgroundColor = InterfaceTheme.Color.background2
+        tableView.backgroundColor = InterfaceTheme.Color.background1
         tableView.separatorStyle = .none
         tableView.tableFooterView = UIView()
         return tableView
@@ -54,7 +54,7 @@ public class DashboardSubtypeItemViewController: UIViewController {
     }
 
     private func setupUI() {
-        self.view.backgroundColor = InterfaceTheme.Color.background2
+        self.view.backgroundColor = InterfaceTheme.Color.background1
         
         self.view.addSubview(self.tableView)
         
@@ -102,7 +102,7 @@ private class ItemCell: UITableViewCell {
             let me = me as! UITableViewCell
             me.textLabel?.textColor = theme.color.interactive
             me.textLabel?.font = theme.font.body
-            me.backgroundColor = theme.color.background2
+            me.backgroundColor = theme.color.background1
         }
         self.imageView?.contentMode = .scaleAspectFit
     }
@@ -113,17 +113,17 @@ private class ItemCell: UITableViewCell {
     
     override public func setHighlighted(_ highlighted: Bool, animated: Bool) {
         if highlighted {
-            self.backgroundColor = InterfaceTheme.Color.background3
-        } else {
             self.backgroundColor = InterfaceTheme.Color.background2
+        } else {
+            self.backgroundColor = InterfaceTheme.Color.background1
         }
     }
     
     override public func setSelected(_ selected: Bool, animated: Bool) {
         if selected {
-            self.backgroundColor = InterfaceTheme.Color.background3
-        } else {
             self.backgroundColor = InterfaceTheme.Color.background2
+        } else {
+            self.backgroundColor = InterfaceTheme.Color.background1
         }
     }
 }
