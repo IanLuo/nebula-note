@@ -56,7 +56,7 @@ extension HeadingsOutlineViewController: SelectorViewControllerDelegate {
         case 0:
             self.outlineDelegate?.didSelect(url: self.viewModel.url, selection: .position(0))
         case self.items.count - 1:
-            self.outlineDelegate?.didSelect(url: self.viewModel.url, selection: .position(self.viewModel.string.count > 0 ? self.viewModel.string.count - 1 : 0))
+            self.outlineDelegate?.didSelect(url: self.viewModel.url, selection: .position(self.viewModel.string.count))
         default:
             self.outlineDelegate?.didSelect(url: self.viewModel.url, selection: .heading(self.viewModel.documentHeading(at: index - 1))) // minus 1, because 1 is extra 'document beginnig'
         }
@@ -110,7 +110,7 @@ extension HeadingsOutlineViewController: DocumentEditViewModelDelegate {
     }
     
     private func attributedString(level: Int, string: String) -> NSAttributedString {
-        let prefix = "∙" * (level - 1) * 1
+        let prefix = "∙" * (level) * 1
         let infix = prefix.count > 0 ? " " : ""
         let labelString = prefix + infix + string
         let attributedString = NSMutableAttributedString(string: labelString)
