@@ -81,6 +81,7 @@ public class BrowserFolderViewModel {
                         let cellModel = BrowserCellModel(url: url)
                         cellModel.coordinator = self?.coordinator
                         secion.items.append(cellModel)
+                        secion.items.sort(by: { $0.updateDate.timeIntervalSince1970 > $1.updateDate.timeIntervalSince1970 })
                         self?.output.documents.value = [secion] // trigger reload table
                         observer.onNext(url)
                         observer.onCompleted()
@@ -126,6 +127,8 @@ public class BrowserFolderViewModel {
             } catch {
                 log.error(error)
             }
+            
+            cellModels.sort(by: { $0.updateDate.timeIntervalSince1970 > $1.updateDate.timeIntervalSince1970 })
             
             observer.onNext(cellModels)
             observer.onCompleted()

@@ -20,6 +20,7 @@ public class BrowserCellModel {
     public var levelFromRoot: Int
     public var shouldShowActions: Bool = true
     public var shouldShowChooseHeadingIndicator: Bool = false
+    public var updateDate: Date
     public lazy var cover: UIImage? = {
         return UIImage(contentsOfFile: self.url.coverURL.path)?.resize(upto: CGSize(width: 120, height: 120))
     }()
@@ -30,6 +31,8 @@ public class BrowserCellModel {
         self.url = url
         self.parent = url.parentDocumentURL
         self.levelFromRoot = url.documentRelativePath.components(separatedBy: "/").filter { $0.count > 0 }.count
+        let attriutes = try? FileManager.default.attributesOfItem(atPath: url.path)
+        self.updateDate = (attriutes?[FileAttributeKey.modificationDate] as? Date) ?? Date.distantPast
     }
     
     /// check if there's sub files, any delete empty folder if there is any empty child file folder
