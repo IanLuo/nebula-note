@@ -154,23 +154,24 @@ public class AgendaViewModel {
             self?.dateOrderedData = [:]
             let today = Date().dayEnd
             
+            // filter data for each date
             self?.dates.forEach { date in
                 let mappedCellModels = allData.filter { cellModel in
-                    if let planning = cellModel.planning, SettingsAccessor.shared.finishedPlanning.contains(planning) // 已完成的条目不显示
-                    {
+                    // 已完成的条目不显示
+                    if let planning = cellModel.planning, SettingsAccessor.shared.finishedPlanning.contains(planning) {
                         return false
                     }
-                    else if let dateAndTime = cellModel.dateAndTime
-                    {
-                        if dateAndTime.isSchedule || dateAndTime.isDue
-                        {
-                            return dateAndTime.date.dayEnd >= date.dayEnd
-                                && date.dayEnd >= today
+                        // only for item that has date and time
+                    else if let dateAndTime = cellModel.dateAndTime {
+                        if dateAndTime.isSchedule || dateAndTime.isDue {
+                            if date.isSameDay(today) {
+                                return dateAndTime.date.dayEnd <= date.dayEnd
+                            } else {
+                                return dateAndTime.date.dayEnd.isSameDay(date.dayEnd)
+                            }
                         }
                         return dateAndTime.date.isSameDay(date)
-                    }
-                    else
-                    {
+                    } else {
                         return true
                     }
                 }

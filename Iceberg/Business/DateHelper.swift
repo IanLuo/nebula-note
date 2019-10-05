@@ -272,10 +272,6 @@ extension Date {
 
 extension Date {}
 
-public func <(lhs: Date, rhs: Date) -> Bool {
-  return lhs.compare(rhs) == ComparisonResult.orderedAscending
-}
-
 public func <=(lhs: Date, rhs: Date) -> Bool {
   let comparisionResult = lhs.compare(rhs)
   return comparisionResult == ComparisonResult.orderedAscending || comparisionResult == ComparisonResult.orderedSame
