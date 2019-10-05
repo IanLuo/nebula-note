@@ -424,7 +424,7 @@ public class BrowserCell: UITableViewCell {
                     cellModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                     exportManager.export(url: cellModel.url, type:exportManager.exportMethods[index], completion: { url in
                         
-                        let shareViewController = exportManager.createShareViewController(url: url)
+                        let shareViewController = exportManager.createPreviewController(url: url)
                         self.onPresentingModalViewController.onNext(shareViewController)
                     }, failure: { error in
                         // TODO: show error

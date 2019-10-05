@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import QuickLook
 
 public protocol Exportable {
     var url: URL { get }
@@ -107,6 +108,15 @@ public struct ExportManager {
         let activityViewController = self.createShareViewController(url: url)
         
         from.present(activityViewController, animated: true, completion: nil)
+    }
+    
+    public func preview(from: UIViewController, url: URL) {
+        let previewManager = PreviewManager(url: url)
+        previewManager.preview(from: from)
+    }
+    
+    public func createPreviewController(url: URL) -> UIViewController {
+        return PreviewManager(url: url).createPreviewController()
     }
     
     public func createShareViewController(url: URL) -> UIActivityViewController {

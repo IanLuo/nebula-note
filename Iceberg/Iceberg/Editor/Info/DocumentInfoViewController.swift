@@ -96,7 +96,7 @@ extension DocumentInfoViewController: ExportSelectViewControllerDelegate {
     public func didSelectExportType(_ type: ExportType, exportManager: ExportManager) {
         exportManager.export(url: self._viewModel.url, type: type, completion: { [weak self] url in
             guard let strongSelf = self else { return }
-            exportManager.share(from: strongSelf, url: url)
+            exportManager.preview(from: strongSelf, url: url)
         }) { error in
             // TODO:
         }
