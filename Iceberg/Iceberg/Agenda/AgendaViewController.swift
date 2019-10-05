@@ -27,6 +27,7 @@ public class AgendaViewController: UIViewController {
         tableView.register(DateSectionView.self, forHeaderFooterViewReuseIdentifier: DateSectionView.reuseIdentifier)
         tableView.tableFooterView = UIView()
         tableView.separatorStyle = .none
+        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 100, right: 0)
         
         tableView.interface { (me, theme) in
             tableView.backgroundColor = theme.color.background1

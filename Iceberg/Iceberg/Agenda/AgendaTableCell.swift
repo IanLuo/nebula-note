@@ -49,7 +49,6 @@ public class AgendaTableCell: UITableViewCell {
         
         label.interface({ (me, theme) in
             let me = me as! UILabel
-            me.textColor = theme.color.warning
             me.font = theme.font.footnote
         })
         return label
@@ -238,7 +237,7 @@ extension DateAndTimeType {
             if today.isSameDay(self.date) {
                 text = L10n.Agenda.startToday
                 color = InterfaceTheme.Color.unfinished
-            } else if today.timeIntervalSince1970 > self.date.timeIntervalSince1970 {
+            } else if today.dayEnd.timeIntervalSince1970 > self.date.dayEnd.timeIntervalSince1970 {
                 let daysBeforeDate = today.dayBegin.daysFrom(self.date)
                 if daysBeforeDate == 1 {
                     text = L10n.Agenda.startYesterdayWithPlaceHodlerYesterday
@@ -261,7 +260,7 @@ extension DateAndTimeType {
             if today.isSameDay(self.date) {
                 text = L10n.Agenda.dueToday
                 color = InterfaceTheme.Color.unfinished
-            } else if today.timeIntervalSince1970 > self.date.timeIntervalSince1970 {
+            } else if today.dayEnd.timeIntervalSince1970 > self.date.dayEnd.timeIntervalSince1970 {
                 let dateFromToday = today.daysFrom(self.date)
                 if dateFromToday == 1 {
                     text = L10n.Agenda.overdueYesterdayWihtPlaceHolder
@@ -277,7 +276,7 @@ extension DateAndTimeType {
                     color = InterfaceTheme.Color.unfinished
                 } else {
                     text = L10n.Agenda.willOverduInDaysWithPlaceHolder("\(daysAfterToday)")
-                    color = InterfaceTheme.Color.unfinished
+                    color = InterfaceTheme.Color.warning
                 }
             }
         } else {
