@@ -40,6 +40,12 @@ public class BrowserCell: UITableViewCell {
         label.numberOfLines = 0
         return label
     }()
+    
+    public let lastModifiedDateLabel: UILabel = {
+        let label = LabelStyle.description.create()
+        return label
+    }()
+    
     public let actionButton: RoundButton = RoundButton()
     public let enterChildButton: RoundButton = RoundButton()
     public let actionsContainerView: UIView = UIView()
@@ -74,6 +80,7 @@ public class BrowserCell: UITableViewCell {
         self.container.addSubview(self.iconView)
         self.container.addSubview(self.titleLabel)
         self.container.addSubview(self.actionsContainerView)
+        self.container.addSubview(self.lastModifiedDateLabel)
         
         self.interface { (me, theme) in
             let cell = me as! BrowserCell
@@ -82,6 +89,8 @@ public class BrowserCell: UITableViewCell {
             cell.titleLabel.font = theme.font.title
             cell.contentView.backgroundColor = theme.color.background1
             self.container.backgroundColor = theme.color.background2
+            self.lastModifiedDateLabel.textColor = theme.color.descriptive
+            self.lastModifiedDateLabel.font = theme.font.footnote
         }
         
         self.iconView.sideAnchor(for: [.left, .top, .bottom],
@@ -94,7 +103,7 @@ public class BrowserCell: UITableViewCell {
         self.iconView.sizeAnchor(width: 70)
         
         self.iconView.rowAnchor(view: self.titleLabel, space: 10)
-        self.titleLabel.sideAnchor(for: [.top, .bottom],
+        self.titleLabel.sideAnchor(for: [.top],
                                    to: self.container,
                                    edgeInsets: .init(top: 10,
                                                      left: 0,
@@ -108,6 +117,11 @@ public class BrowserCell: UITableViewCell {
                                                                left: 0,
                                                                bottom: -10,
                                                                right: -10))
+        
+        self.iconView.rowAnchor(view: self.lastModifiedDateLabel, space: 10)
+        self.titleLabel.columnAnchor(view: self.lastModifiedDateLabel, space: 8)
+        self.lastModifiedDateLabel.sideAnchor(for: [.bottom], to: self.container, edgeInset: 10)
+        self.lastModifiedDateLabel.sizeAnchor(height: 14)
     }
     
     public func configure(cellModel: BrowserCellModel) {
@@ -117,6 +131,7 @@ public class BrowserCell: UITableViewCell {
         
         self.titleLabel.text = cellModel.url.packageName
         self.iconView.image = cellModel.cover
+        self.lastModifiedDateLabel.text = cellModel.updateDate.format(DateFormatter.Style.short, timeStyle: DateFormatter.Style.short)
         
         self._loadActionsView()
         

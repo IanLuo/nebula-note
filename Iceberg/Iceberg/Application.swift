@@ -196,6 +196,7 @@ extension Coordinator {
             navigationController.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: theme.color.interactive]
             navigationController.navigationBar.backIndicatorImage = Asset.Assets.left.image.fill(color: theme.color.descriptive)
             navigationController.navigationBar.backIndicatorTransitionMaskImage = Asset.Assets.left.image
+//            navigationController.navigationBar.setBorder(position: .bottom, color: theme.color.background3, width: 0.5)
         }
         
         navigationController.navigationBar.shadowImage = UIImage()
@@ -203,6 +204,12 @@ extension Coordinator {
 //        UIBarButtonItem.appearance().setBackButtonTitlePositionAdjustment(UIOffset(horizontal: -100, vertical: 0), for: UIBarMetrics.default)
         
         return navigationController
+    }
+}
+
+extension UINavigationController {
+    open override func resignFirstResponder() -> Bool {
+        return self.topViewController?.resignFirstResponder() ?? false
     }
 }
 
@@ -253,10 +260,11 @@ extension UIViewController {
     
     public func setupTheme() {
         let theme = interfaceTheme
-        InterfaceThemeSelector.shared.changeTheme(theme)
         
         let newOutlineTheme: OutlineThemeConfigProtocol = OutlineThemeStyle(theme: theme)
         OutlineThemeSelector.shared.changeTheme(newOutlineTheme)
+        
+        InterfaceThemeSelector.shared.changeTheme(theme)
         
         self.interface { (viewController, interface) in
             viewController.setNeedsStatusBarAppearanceUpdate()

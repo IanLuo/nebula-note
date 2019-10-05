@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import Business
 import Interface
+import RxSwift
 
 public class AgendaViewController: UIViewController {
     public struct Constants {
@@ -17,8 +18,6 @@ public class AgendaViewController: UIViewController {
     }
     
     private let viewModel: AgendaViewModel
-    
-    private var _shouldChangeBesideDateBarContentOffset: Bool = true
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
@@ -28,14 +27,17 @@ public class AgendaViewController: UIViewController {
         tableView.register(DateSectionView.self, forHeaderFooterViewReuseIdentifier: DateSectionView.reuseIdentifier)
         tableView.tableFooterView = UIView()
         tableView.separatorStyle = .none
-        tableView.backgroundColor = InterfaceTheme.Color.background1
+        
+        tableView.interface { (me, theme) in
+            tableView.backgroundColor = theme.color.background1
+        }
         return tableView
     }()
     
-    private lazy var besideDatesView: BesideDatesView = {
-        let besideDatesView = BesideDatesView()
-        besideDatesView.delegate = self
-        return besideDatesView
+    private lazy var agendaDateSelectView: AgendaDateSelectView = {
+        let agendaDateSelectView = AgendaDateSelectView()
+        agendaDateSelectView.delegate = self
+        return agendaDateSelectView
     }()
     
     public init(viewModel: AgendaViewModel) {
@@ -78,15 +80,18 @@ public class AgendaViewController: UIViewController {
         }
         
         self.view.addSubview(self.tableView)
-        self.view.addSubview(self.besideDatesView)
+        self.view.addSubview(self.agendaDateSelectView)
         
-        self.besideDatesView.sideAnchor(for: [.top, .left, .right],
+        self.agendaDateSelectView.sideAnchor(for: [.top, .left, .right],
                                         to: self.view,
-                                        edgeInsets: .init(top: Layout.edgeInsets.top, left: 0, bottom: 0, right: 0),
+                                        edgeInsets: .init(top: Layout.edgeInsets.top,
+                                                          left: 0,
+                                                          bottom: 0,
+                                                          right: 0),
                                         considerSafeArea: true)
-        self.besideDatesView.sizeAnchor(height: Constants.besideDateBarHeight)
+        self.agendaDateSelectView.sizeAnchor(height: Constants.besideDateBarHeight)
         
-        self.besideDatesView.columnAnchor(view: self.tableView)
+        self.agendaDateSelectView.columnAnchor(view: self.tableView, space: 20)
         self.tableView.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 0)
     }
     
@@ -95,17 +100,9 @@ public class AgendaViewController: UIViewController {
     }
 }
 
-extension AgendaViewController: BesideDatesViewDelegate {
+extension AgendaViewController: AgendaDateSelectViewDelegate {
     public func didSelectDate(at index: Int) {
-        self._shouldChangeBesideDateBarContentOffset = false
-        UIView.animate(withDuration: 0.3, animations: {
-            let frame = self.tableView.rectForHeader(inSection: index)
-            self.tableView.setContentOffset(CGPoint(x: 0, y: frame.origin.y), animated: false)
-        }) {
-            if $0 {
-                self._shouldChangeBesideDateBarContentOffset = true
-            }
-        }
+        self.viewModel.loadData(for: index)
     }
     
     public func dates() -> [Date] {
@@ -114,37 +111,22 @@ extension AgendaViewController: BesideDatesViewDelegate {
 }
 
 extension AgendaViewController: UITableViewDataSource {
-    public func numberOfSections(in tableView: UITableView) -> Int {
-        return self.viewModel.dates.count
-    }
-    
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.viewModel.cellModels(at: section).count
+        return self.viewModel.data.count
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: AgendaTableCell.reuseIdentifier, for: indexPath) as! AgendaTableCell
-        let cellModel = self.viewModel.dateOrderedData[indexPath.section][indexPath.row]
-        cellModel.date = self.viewModel.dates[indexPath.section]
+        let cellModel = self.viewModel.data[indexPath.row]
+        cellModel.date = self.viewModel.dates[self.agendaDateSelectView.currentIndex]
         cell.cellModel = cellModel
-        cell.delegate = self
         return cell
     }
     
     public func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let dateSectionView = tableView.dequeueReusableHeaderFooterView(withIdentifier: DateSectionView.reuseIdentifier) as! DateSectionView
-        dateSectionView.date = self.viewModel.dates[section]
+        dateSectionView.date = self.viewModel.dates[self.agendaDateSelectView.currentIndex]
         return dateSectionView
-    }
-    
-    public func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return DateSectionView.Constants.height
-    }
-    
-    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        guard self._shouldChangeBesideDateBarContentOffset else { return }
-
-        self.besideDatesView.moveTo(index: self.tableView.firstVisibleHeaderIndex)
     }
     
     public func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
@@ -155,47 +137,11 @@ extension AgendaViewController: UITableViewDataSource {
 extension AgendaViewController: UITableViewDelegate {
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let data = self.viewModel.dateOrderedData[indexPath.section][indexPath.row]
+        let data = self.viewModel.data[indexPath.row]
         self.viewModel.coordinator?.openDocument(url: data.url, location: data.heading.location)
     }
 }
 
-extension AgendaViewController: AgendaTableCellDelegate {
-    public func didTapActionButton(cellModel: AgendaCellModel) {
-//        let actionsViewController = ActionsViewController()
-        
-//        actionsViewController.title = L10n.Agenda.Actions.title
-        
-//        actionsViewController.addAction(icon: nil, title: L10n.Agenda.Actions.markDone) { viewController in
-//            viewController.dismiss(animated: true, completion: {
-//
-//            })
-//        }
-        
-//        actionsViewController.addAction(icon: nil, title: L10n.Agenda.Actions.delay) { viewController in
-//            viewController.dismiss(animated: true, completion: {
-//                self.viewModel.coordinator?.showDateSelector(title: L10n.Agenda.Actions.delay, current: cellModel.dateAndTime, add: { [unowned self] dateAndTime in
-//                    self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
-//                    self.viewModel.updateDate(cellModel: cellModel, dateAndTime)
-//                    }, delete: { [unowned self] in
-//                        self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
-//                        self.viewModel.updateDate(cellModel: cellModel, nil)
-//                    }, cancel: {})
-//            })
-//        }
-        
-//        actionsViewController.setCancel { viewController in
-//            viewController.dismiss(animated: true, completion: {
-//                self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
-//            })
-//        }
-        
-//        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now()) {
-//            self.present(actionsViewController, animated: true, completion: nil)
-//            self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.hide()
-//        }
-    }
-}
 
 extension UITableView {
     var firstVisibleHeaderIndex: Int {
@@ -210,15 +156,12 @@ extension UITableView {
 }
 
 extension AgendaViewController: AgendaViewModelDelegate {
-    public func didCompleteLoadAllData() {
+    public func didLoadData() {
         self.tableView.reloadData()
-        
-        self.besideDatesView.moveTo(index: self.viewModel.indexOfToday)
-        
-        self._shouldChangeBesideDateBarContentOffset = false
-        let frame = self.tableView.rectForHeader(inSection: self.viewModel.indexOfToday)
-        self.tableView.setContentOffset(CGPoint(x: 0, y: frame.origin.y), animated: false)
-        self._shouldChangeBesideDateBarContentOffset = true
+    }
+    
+    public func didCompleteLoadAllData() {
+        self.agendaDateSelectView.moveTo(index: 0)
     }
     
     public func didFailed(_ error: Error) {
@@ -238,7 +181,7 @@ private class DateSectionView: UITableViewHeaderFooterView {
         label.interface({ (me, theme) in
             let label = me as! UILabel
             label.textColor = theme.color.descriptive
-            label.font = theme.font.body
+            label.font = theme.font.largeTitle
         })
         label.textAlignment = .left
         return label
@@ -250,7 +193,7 @@ private class DateSectionView: UITableViewHeaderFooterView {
         label.interface({ (me, theme) in
             let label = me as! UILabel
             label.textColor = theme.color.descriptive
-            label.font = theme.font.body
+            label.font = theme.font.largeTitle
         })
         label.textAlignment = .left
         return label
@@ -288,17 +231,15 @@ private class DateSectionView: UITableViewHeaderFooterView {
         self.contentView.addSubview(self.dateLabel)
         self.contentView.addSubview(self.weekdayLabel)
         
-        self.weekdayLabel.sideAnchor(for: .left,
+        self.weekdayLabel.sideAnchor(for: [.top, .left, .right],
                                      to: self.contentView,
                                      edgeInset: Layout.edgeInsets.left)
+                
+        self.weekdayLabel.columnAnchor(view: self.dateLabel, space: 10)
         
-        self.weekdayLabel.centerAnchors(position: .centerY, to: self.contentView)
-        
-        self.weekdayLabel.rowAnchor(view: self.dateLabel, space: 20)
-        
-        self.dateLabel.sideAnchor(for: .right, to: self.contentView, edgeInset: Layout.edgeInsets.right)
-        
-        self.weekdayLabel.lastBaselineAnchor.constraint(equalTo: self.dateLabel.lastBaselineAnchor).isActive = true
+        self.dateLabel.sideAnchor(for: [.left, .right, .bottom],
+                                  to: self.contentView,
+                                  edgeInset: Layout.edgeInsets.left)
         
         self.interface { [weak self] (me, theme) in
             self?.contentView.backgroundColor = theme.color.background1

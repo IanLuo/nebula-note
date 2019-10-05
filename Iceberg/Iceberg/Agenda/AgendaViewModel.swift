@@ -8,13 +8,22 @@
 
 import Foundation
 import Business
+import RxSwift
+import RxCocoa
 
 public protocol AgendaViewModelDelegate: class {
     func didCompleteLoadAllData()
+    func didLoadData()
     func didFailed(_ error: Error)
 }
 
 public class AgendaViewModel {
+
+    public struct Output {
+        let tasks: BehaviorSubject<[AgendaCellModel]> = BehaviorSubject(value: [])
+        let filsteredData: BehaviorSubject<[AgendaCellModel]> = BehaviorSubject(value: [])
+    }
+    
     public weak var delegate: AgendaViewModelDelegate?
     public weak var coordinator: AgendaCoordinator? {
         didSet {
@@ -26,27 +35,28 @@ public class AgendaViewModel {
     public init(documentSearchManager: DocumentSearchManager) {
         self._documentSearchManager = documentSearchManager
         
-        var dates: [Date] = []
-        let today = Date()
-        for i in 0..<30 {
-            dates.append(today.dayBefore(30 - i))
-        }
-        
-        for i in 0..<30 {
-            dates.append(today.dayAfter(i))
-        }
-        
-        self.dates = dates
+        self.dates = self.generateDates()
     }
     
     /// 用于显示的数据
-    public private(set) var dateOrderedData: [[AgendaCellModel]] = []
+    public private(set) var dateOrderedData: [Date: [AgendaCellModel]] = [:]
     public private(set) var data: [AgendaCellModel] = []
     public private(set) var dates: [Date] = []
     
     private var _shouldReloadData: Bool = true // 如果在这个界面打开的 document 修改了这个 heading，应该刷新
     public var isConnectingScreen: Bool = false
     
+    public let output: Output = Output()
+    
+    private func generateDates() -> [Date] {
+        var dates: [Date] = []
+        let today = Date()
+        for i in 0..<30 {
+            dates.append(today.dayAfter(i))
+        }
+
+        return dates
+    }
     
     private let _headingChangeObservingQueue: OperationQueue = {
         let queue = OperationQueue()
@@ -56,14 +66,6 @@ public class AgendaViewModel {
     }()
     
     public var filterType: AgendaCoordinator.FilterType?
-    
-    public func cellModels(at section: Int) -> [AgendaCellModel] {
-        if self.dateOrderedData.count > section {
-            return self.dateOrderedData[section]
-        } else {
-            return []
-        }
-    }
     
     public var indexOfToday: Int {
         let today = Date()
@@ -138,11 +140,18 @@ public class AgendaViewModel {
         }
     }
     
+    public func loadData(for index: Int) {
+        self.output.tasks.onNext(self.dateOrderedData[self.dates[index]] ?? [])
+        self.data = self.dateOrderedData[self.dates[index]] ?? []
+        self.delegate?.didLoadData()
+    }
+    
     // 加载 agenda 界面所有数据
     public func loadAgendaData() {
+        
         self._documentSearchManager.searchDateAndTime(completion: { [weak self] results in
             let allData = results.map { AgendaCellModel(searchResult: $0) }
-            self?.dateOrderedData = []
+            self?.dateOrderedData = [:]
             let today = Date().dayEnd
             
             self?.dates.forEach { date in
@@ -166,7 +175,7 @@ public class AgendaViewModel {
                     }
                 }
                 
-                self?.dateOrderedData.append(mappedCellModels)
+                self?.dateOrderedData[date] = mappedCellModels
             }
             
             DispatchQueue.main.async {

@@ -14,6 +14,7 @@ import RxDataSources
 
 public struct BrowserDocumentSection {
     public var items: [BrowserCellModel]
+    public var identity: String = UUID().uuidString
 }
 
 extension BrowserDocumentSection: SectionModelType {
@@ -23,6 +24,10 @@ extension BrowserDocumentSection: SectionModelType {
     }
     
     public typealias Item = BrowserCellModel
+}
+
+extension BrowserDocumentSection: AnimatableSectionModelType {
+    public typealias Identity = String
 }
 
 public class BrowserFolderViewModel {

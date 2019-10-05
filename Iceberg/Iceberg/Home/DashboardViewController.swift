@@ -162,16 +162,6 @@ public class DashboardViewController: UIViewController {
         }
     }
     
-//    private func selectOnTabFoldArrow(tab index: Int, isOpen: Bool) {
-//        let count = self.tabs[index].sub.count
-//        let indexPaths = Array<Int>(0..<count).map { IndexPath(row: $0, section: index) }
-//        if isOpen {
-//            self.tableView.insertRows(at: indexPaths, with: .top)
-//        } else {
-//            self.tableView.deleteRows(at: indexPaths, with: .top)
-//        }
-//    }
-    
     public enum TabType {
         case agenda(UIViewController, Int)
         case captureList(UIViewController, Int)
@@ -323,8 +313,6 @@ public class DashboardViewController: UIViewController {
 
 extension DashboardViewController: UITableViewDelegate, UITableViewDataSource {
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        guard self.tabs[section].isOpen else { return 0 }
-
         return self.tabs[section].sub.count
     }
     

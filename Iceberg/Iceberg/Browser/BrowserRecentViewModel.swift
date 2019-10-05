@@ -13,15 +13,19 @@ import Business
 
 public struct RecentDocumentSection: SectionModelType {
     public var items: [BrowserCellModel]
+    public var identity: String = UUID().uuidString
 }
 
 extension RecentDocumentSection {
+    public typealias Item = BrowserCellModel
     public init(original: RecentDocumentSection, items: [BrowserCellModel]) {
         self = original
         self.items = items
     }
-    
-    public typealias Item = BrowserCellModel
+}
+
+extension RecentDocumentSection: AnimatableSectionModelType {
+    public typealias Identity = String
 }
 
 public class BrowserRecentViewModel {

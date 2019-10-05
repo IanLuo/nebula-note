@@ -76,7 +76,8 @@ public class HomeCoordinator: Coordinator {
         coordinator.parent = self
         self.addChild(coordinator)
         self.tempCoordinator = coordinator
-        self.homeViewController.showChildViewController(coordinator.viewController!)
+        
+        self.homeViewController.showChildViewController(Coordinator.createDefaultNavigationControlller(root: coordinator.viewController!))
         self.homeViewController.showDetailView()
     }
     

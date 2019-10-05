@@ -11,14 +11,16 @@ import UIKit
 import Business
 import Interface
 
-public protocol BesideDatesViewDelegate: class {
+public protocol AgendaDateSelectViewDelegate: class {
     func didSelectDate(at index: Int)
     func dates() -> [Date]
 }
 
-public class BesideDatesView: UIView {
-    public weak var delegate: BesideDatesViewDelegate?
+public class AgendaDateSelectView: UIView {
+    public weak var delegate: AgendaDateSelectViewDelegate?
     
+    public var currentIndex: Int = 0
+        
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
@@ -35,12 +37,14 @@ public class BesideDatesView: UIView {
     }()
     
     public func moveTo(index: Int) {
+        self.currentIndex = index
         self.collectionView.selectItem(at: IndexPath(row: index, section: 0), animated: false, scrollPosition: UICollectionView.ScrollPosition.centeredHorizontally)
         if let frame = self.collectionView.layoutAttributesForItem(at: IndexPath(row: index, section: 0))?.frame {
             self.collectionView.scrollRectToVisible(frame, animated: false)
         } else {
             self.collectionView.scrollToItem(at: IndexPath(row: index, section: 0), at: UICollectionView.ScrollPosition.centeredHorizontally, animated: false)
         }
+        self.delegate?.didSelectDate(at: index)
     }
     
     public init() {
@@ -57,13 +61,18 @@ public class BesideDatesView: UIView {
     }
 }
 
-extension BesideDatesView: UICollectionViewDelegate {
+extension AgendaDateSelectView: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        self.currentIndex = indexPath.row
         self.delegate?.didSelectDate(at: indexPath.row)
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 0, left: Layout.edgeInsets.left, bottom: 0, right: Layout.edgeInsets.right)
     }
 }
 
-extension BesideDatesView: UICollectionViewDataSource {
+extension AgendaDateSelectView: UICollectionViewDataSource {
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return self.delegate?.dates().count ?? 0
     }
@@ -83,7 +92,7 @@ extension BesideDatesView: UICollectionViewDataSource {
     }
 }
 
-extension BesideDatesView: UICollectionViewDelegateFlowLayout {
+extension AgendaDateSelectView: UICollectionViewDelegateFlowLayout {
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: collectionView.bounds.width / 5,
                       height: collectionView.bounds.height)
@@ -107,7 +116,6 @@ private class DateCell: UICollectionViewCell {
         
         label.interface({ (me, theme) in
             let me = me as! UILabel
-            me.textColor = theme.color.descriptive
             me.font = theme.font.title
         })
         return label
@@ -152,7 +160,7 @@ private class DateCell: UICollectionViewCell {
     public func update(date: Date) {
         self.date = date
         
-        self.updateFor(isSelected: self.isSelected)
+        self.updateFor(isSelected:  self.isSelected)
         
         self.todayLabel.isHidden = !date.isToday()
     }

@@ -37,7 +37,7 @@ public class AgendaTableCell: UITableViewCell {
         
         label.interface({ (me, theme) in
             let me = me as! UILabel
-            me.textColor = theme.color.secondaryDescriptive
+            me.textColor = theme.color.descriptive
         })
         label.font = InterfaceTheme.Font.footnote
         label.textAlignment = .left
@@ -71,7 +71,7 @@ public class AgendaTableCell: UITableViewCell {
         
         imageView.interface({ (me, theme) in
             let me = me as! UIImageView
-            me.image = Asset.Assets.tag.image.fill(color: theme.color.secondaryDescriptive)
+            me.image = Asset.Assets.tag.image.fill(color: theme.color.descriptive)
         })
 
         return imageView
@@ -81,7 +81,7 @@ public class AgendaTableCell: UITableViewCell {
         let label = UILabel()
         label.interface({ (me, theme) in
             let me = me as! UILabel
-            me.textColor = theme.color.secondaryDescriptive
+            me.textColor = theme.color.descriptive
             me.font = theme.font.footnote
         })
         label.textAlignment = .left
@@ -93,7 +93,7 @@ public class AgendaTableCell: UITableViewCell {
         
         button.interface({ (me, theme) in
             let me = me as! UIButton
-            button.setImage(Asset.Assets.moreV.image.fill(color: theme.color.secondaryDescriptive), for: .normal)
+            button.setImage(Asset.Assets.moreV.image.fill(color: theme.color.descriptive), for: .normal)
         })
         return button
     }()
@@ -179,12 +179,6 @@ public class AgendaTableCell: UITableViewCell {
         }
         
         aString.append(NSAttributedString(string: cellModel.headingText, attributes: OutlineTheme.headingStyle(level: cellModel.level).attributes))
-        
-        // FIXME: 不能多行显示文本，目前只显示了一行
-//        let paragraph = NSMutableParagraphStyle()
-//        paragraph.lineSpacing = 1.5
-//        paragraph.lineBreakMode = .byTruncatingTail
-//        aString.addAttribute(NSAttributedString.Key.paragraphStyle, value: paragraph, range: NSRange(location: 0, length: aString.length))
         
         self.headingTextLabel.attributedText = aString
         

@@ -192,7 +192,7 @@
 		E4EA855E21D1DAEB00DD92F9 /* AttachmentLocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EA855D21D1DAEB00DD92F9 /* AttachmentLocationViewController.swift */; };
 		E4EA856021D1DB1400DD92F9 /* AttachmentSketchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EA855F21D1DB1400DD92F9 /* AttachmentSketchViewController.swift */; };
 		E4EA856321D1F83800DD92F9 /* HeadingsOutlineViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EA856221D1F83800DD92F9 /* HeadingsOutlineViewController.swift */; };
-		E4EA857521D3AF0D00DD92F9 /* BesideDatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EA857421D3AF0D00DD92F9 /* BesideDatesView.swift */; };
+		E4EA857521D3AF0D00DD92F9 /* AgendaDateSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EA857421D3AF0D00DD92F9 /* AgendaDateSelectView.swift */; };
 		E4EA857721D3B0AC00DD92F9 /* EditorCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EA857621D3B0AC00DD92F9 /* EditorCoordinator.swift */; };
 		E4EFA45D222F681700611FF5 /* CaptureCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EFA45C222F681700611FF5 /* CaptureCoordinator.swift */; };
 		E4EFA45F222F684B00611FF5 /* CaptureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EFA45E222F684B00611FF5 /* CaptureViewController.swift */; };
@@ -504,7 +504,7 @@
 		E4EA856221D1F83800DD92F9 /* HeadingsOutlineViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadingsOutlineViewController.swift; sourceTree = "<group>"; };
 		E4EA856F21D279A500DD92F9 /* DocumentManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentManager.swift; sourceTree = "<group>"; };
 		E4EA857121D27C3600DD92F9 /* DocumentSearchManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentSearchManager.swift; sourceTree = "<group>"; };
-		E4EA857421D3AF0D00DD92F9 /* BesideDatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BesideDatesView.swift; sourceTree = "<group>"; };
+		E4EA857421D3AF0D00DD92F9 /* AgendaDateSelectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgendaDateSelectView.swift; sourceTree = "<group>"; };
 		E4EA857621D3B0AC00DD92F9 /* EditorCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorCoordinator.swift; sourceTree = "<group>"; };
 		E4EFA45C222F681700611FF5 /* CaptureCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureCoordinator.swift; sourceTree = "<group>"; };
 		E4EFA45E222F684B00611FF5 /* CaptureViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureViewController.swift; sourceTree = "<group>"; };
@@ -871,7 +871,7 @@
 			children = (
 				E41F86C4218EF4E1006C4CDB /* AgendaCoordinator.swift */,
 				E49F3E4321B8EDBD003F468D /* AgendaViewController.swift */,
-				E4EA857421D3AF0D00DD92F9 /* BesideDatesView.swift */,
+				E4EA857421D3AF0D00DD92F9 /* AgendaDateSelectView.swift */,
 				E49F3E4521B8EDC8003F468D /* AgendaViewModel.swift */,
 				E4C7FB8421BA916D006E3CD8 /* AgendaCellModel.swift */,
 				E41A538521D4C577002B11E9 /* AgendaTableCell.swift */,
@@ -1882,7 +1882,7 @@
 				E42A87FD21CFC9B300151C90 /* AttachmentTextViewController.swift in Sources */,
 				E462DB9C223D264800BF7AB4 /* TimeSelectViewController.swift in Sources */,
 				E4B1BED22340EFF600683E10 /* BrowserCell.swift in Sources */,
-				E4EA857521D3AF0D00DD92F9 /* BesideDatesView.swift in Sources */,
+				E4EA857521D3AF0D00DD92F9 /* AgendaDateSelectView.swift in Sources */,
 				E4A46A2921B28ED800FBDA04 /* DocumentEditViewModel.swift in Sources */,
 				E4F3029C21D74E8700BDE178 /* CaptureTableCellModel.swift in Sources */,
 				E41CB15921D87CD100EF0A3C /* BrowserCoordinator.swift in Sources */,

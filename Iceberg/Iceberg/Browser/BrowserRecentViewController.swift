@@ -33,6 +33,7 @@ public class BrowserRecentViewController: UIViewController {
         })
         
         collectionView.register(RecentFileCell.self, forCellWithReuseIdentifier: RecentFileCell.reuseIdentifier)
+        collectionView.register(RecentDocumentsHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header")
         collectionView.contentInset = UIEdgeInsets(top: 0, left: Layout.edgeInsets.left, bottom: 0, right: -Layout.edgeInsets.right)
         
         return collectionView
@@ -57,6 +58,10 @@ public class BrowserRecentViewController: UIViewController {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RecentFileCell.reuseIdentifier, for: indexPath) as! RecentFileCell
             cell.configure(cellModel: cellModel)
             return cell
+        }, configureSupplementaryView: { dataSource, collectionView, string, indexPath in
+            let header = collectionView.dequeueReusableSupplementaryView(ofKind: string, withReuseIdentifier: "header", for: indexPath) as! RecentDocumentsHeader
+            header.titleLabel.text = "Recent Documents"
+            return header
         })
         
         self.viewModel
@@ -75,6 +80,30 @@ public class BrowserRecentViewController: UIViewController {
         
         self.viewModel.loadData()
     }
+}
+
+class RecentDocumentsHeader: UICollectionReusableView {
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        self.addSubview(self.titleLabel)
+        self.titleLabel.allSidesAnchors(to: self, edgeInset: 0)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    public let titleLabel: UILabel = {
+        let label = UILabel()
+        
+        label.interface { (me, theme) in
+            let label = me as! UILabel
+            label.font = theme.font.body
+        }
+        
+        return label
+    }()
 }
 
 extension BrowserRecentViewController: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {

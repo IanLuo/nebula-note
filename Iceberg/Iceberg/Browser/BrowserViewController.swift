@@ -56,20 +56,22 @@ public class BrowserViewController: UIViewController {
         }
                 
         self.view.addSubview(self.recentViewController.view)
-        self.recentViewController.view.sideAnchor(for: [.left, .top, .right], to: self.view, edgeInsets: .init(top: 0, left: 0, bottom: 0, right: 0), considerSafeArea: true)
-        self.recentViewController.view.sizeAnchor(height: 120)
+        self.recentViewController.view.sideAnchor(for: [.left, .top, .right], to: self.view, edgeInsets: .init(top: 20, left: 0, bottom: 0, right: 0), considerSafeArea: true)
+        self.recentViewController.view.sizeAnchor(height: 80)
         self.addChild(self.recentViewController)
         self.recentViewController.didMove(toParent: self)
+        
         
         let nav = Coordinator.createDefaultNavigationControlller()
         nav.pushViewController(self.browserFolderViewController, animated: false)
         self.view.addSubview(nav.view)
         nav.view.sideAnchor(for: [.left, .bottom, .right], to: self.view, edgeInset: 0)
-        self.recentViewController.view.columnAnchor(view: nav.view, space: 10)
+        self.recentViewController.view.columnAnchor(view: nav.view, space: 20)
         self.addChild(nav)
         nav.didMove(toParent: self)
         
         self.interface { (me, theme) in
+            nav.view.setBorder(position: .top, color: theme.color.background3, width: 0.5)
             self.view.backgroundColor = theme.color.background1
             nav.navigationBar.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.background1, size: .singlePoint), for: .default)
         }
