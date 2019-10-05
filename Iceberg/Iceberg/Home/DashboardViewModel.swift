@@ -74,7 +74,7 @@ public class DashboardViewModel {
                                                                     eventType: TagAddedEvent.self,
                                                                     queue: self._headingChangeObservingQueue) { [weak self] (event: TagAddedEvent) -> Void in
                                                                         self?._isHeadingsNeedsReload = true
-                                                                        if self?.allTags.contains(event.tag) == nil {
+                                                                        if self?.allTags.contains(event.tag) == false {
                                                                             self?.allTags.append(event.tag)
                                                                         }
         }

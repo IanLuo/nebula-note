@@ -47,6 +47,7 @@ public class DocumentEditViewController: UIViewController {
         viewModel.delegate = self
         
         self.view.backgroundColor = InterfaceTheme.Color.background1
+        self.modalPresentationStyle = .fullScreen
         
         NotificationCenter.default.addObserver(self, selector: #selector(_documentStateChanged(_:)), name: UIDocument.stateChangedNotification, object: nil)
     }
