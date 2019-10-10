@@ -339,9 +339,7 @@ extension DocumentEditViewController {
                                             let oldSelectedRange = self.textView.selectedRange
                                             let result = self.viewModel.performAction(EditAction.removePlanning(location),
                                                                                       textView: self.textView)
-                                            if self.textView.selectedRange.location >= location {
-                                                self.textView.selectedRange = oldSelectedRange.offset(result.delta)
-                                            }
+                                            self.textView.selectedRange = oldSelectedRange.offset(result.delta)
                                             
                                             viewController.dismiss(animated: true, completion: nil)
                                             self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
@@ -436,7 +434,7 @@ extension DocumentEditViewController {
                             location = _location
                         }
                         
-                        let changedLength = oldLocation < location ? -result.content!.count : 0 // 如果新的位置的 heading 在原来 heading 的前面，新的位置的 heading需要减掉移走的文字的长度
+                        let changedLength = oldLocation > location ? -result.content!.count : 0 // 如果新的位置的 heading 在原来 heading 的前面，新的位置的 heading需要减掉移走的文字的长度
                         self.textView.selectedRange = NSRange(location: oldLocation + changedLength, length: 0)
                     })
                 })

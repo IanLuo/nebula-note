@@ -40,7 +40,7 @@ public class HomeViewController: UIViewController {
     
     private let moveIndicator: UIView = {
         let view = UIView()
-        view.sizeAnchor(width: 10, height: 100)
+        view.sizeAnchor(width: 10, height: 50)
         view.roundConer(radius: 5)
 
         return view
