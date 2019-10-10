@@ -51,7 +51,7 @@ extension DocumentEditViewController {
                     
                     switch selection {
                     case .heading(let heading):
-                        self._scrollTo(location: heading.location, shouldScrollToZero: true)
+                        self._scrollTo(location: heading.range.upperBound, shouldScrollToZero: true)
                     case .position(let location):
                         self._scrollTo(location: location, shouldScrollToZero: true)
                     }
@@ -325,9 +325,7 @@ extension DocumentEditViewController {
                 let oldSelectedRange = self.textView.selectedRange
                 let result = self.viewModel.performAction(EditAction.changePlanning(planning, location),
                                                           textView: self.textView)
-                if self.textView.selectedRange.location >= location {
-                    self.textView.selectedRange = oldSelectedRange.offset(result.delta)
-                }
+                self.textView.selectedRange = oldSelectedRange.offset(result.delta)
                 
                 viewController.dismiss(animated: true, completion: nil)
                 self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()

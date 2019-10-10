@@ -38,6 +38,14 @@ public class HomeViewController: UIViewController {
     private lazy var pan = UIPanGestureRecognizer(target: self, action: #selector(didPan(gesture:)))
     private lazy var tap = UITapGestureRecognizer(target: self, action: #selector(didTap(gesture:)))
     
+    private let moveIndicator: UIView = {
+        let view = UIView()
+        view.sizeAnchor(width: 10, height: 100)
+        view.roundConer(radius: 5)
+
+        return view
+    }()
+    
     public override func viewDidLoad() {
         self.setupUI()
 
@@ -48,10 +56,9 @@ public class HomeViewController: UIViewController {
         tap.delegate = self
         self.view.addGestureRecognizer(tap)
         
-//        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: Asset.Assets.master.image.fill(color: InterfaceTheme.Color.interactive), style: .plain, target: self, action: #selector(showMasterView))
-        
-        self.interface { (me, theme) in
+        self.interface { [weak self] (me, theme) in
             me.setNeedsStatusBarAppearanceUpdate()
+            self?.moveIndicator.backgroundColor = theme.color.background2
         }
     }
     
@@ -82,6 +89,10 @@ public class HomeViewController: UIViewController {
         self.masterViewController.view.interface { (me, theme) in
             me.setBorder(position: Border.Position.right, color: InterfaceTheme.Color.background2, width: 0.5)
         }
+        
+        self.view.addSubview(self.moveIndicator)
+        self.moveIndicator.centerAnchors(position: .centerY, to: self.view)
+        self.moveIndicator.centerXAnchor.constraint(equalTo: self.masterViewController.view.rightAnchor).isActive = true
     }
     
     private func _setupFrames() {
@@ -113,9 +124,6 @@ public class HomeViewController: UIViewController {
             if newLocation < 0
             && newLocation > -masterViewWidth {
                 self.view.bounds = CGRect(x: newLocation, y: 0, width: self.view.bounds.width, height: self.view.bounds.height)
-//                if let frame = self.navigationController?.navigationBar.frame {
-//                    self.navigationController?.navigationBar.frame = frame.offsetX(-newLocation)
-//                }
             }
             self._updateDetailViewAlpha(offset: -newLocation)
         case .ended: fallthrough
@@ -139,9 +147,6 @@ public class HomeViewController: UIViewController {
     @objc internal func showDetailView() {
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: {
             self.view.bounds = CGRect(origin: .zero, size: self.view.bounds.size)
-//            if let frame = self.navigationController?.navigationBar.frame {
-//                self.navigationController?.navigationBar.frame = CGRect(origin: CGPoint(x: 0, y: frame.origin.y), size: frame.size)
-//            }
             self._updateDetailViewAlpha(offset: 0)
         }, completion: { _ in
             self.currentDetailViewController?.becomeFirstResponder()
@@ -152,9 +157,6 @@ public class HomeViewController: UIViewController {
     @objc private func showMasterView() {
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: {
             self.view.bounds = CGRect(origin: .init(x: -self.masterViewWidth, y: 0), size: self.view.bounds.size)
-//            if let frame = self.navigationController?.navigationBar.frame {
-//                self.navigationController?.navigationBar.frame = frame.offsetX(-self.view.bounds.origin.x)
-//            }
             self._updateDetailViewAlpha(offset: self.masterViewWidth)
         }, completion: { _ in
             self.currentDetailViewController?.resignFirstResponder()
@@ -165,7 +167,6 @@ public class HomeViewController: UIViewController {
     private func _updateDetailViewAlpha(offset: CGFloat) {
         let alphaComponent = max(0.3, 1 - offset / self.masterViewWidth) // 透明度不小于 0.3
         self.currentDetailViewController?.view.alpha = alphaComponent
-//        self.navigationController?.navigationBar.alpha = alphaComponent
     }
     
     public override func didRotate(from fromInterfaceOrientation: UIInterfaceOrientation) {

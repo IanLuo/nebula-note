@@ -251,6 +251,14 @@ public class HeadingToken: Token {
         return self.range.union(self.subheadingsRange)
     }
     
+    public var upperBoundWithoutLineBreak: Int {
+        if self.range.upperBound == self.outlineTextStorage?.length {
+            return self.range.upperBound
+        } else {
+            return self.range.upperBound - 1
+        }
+    }
+    
     public convenience init(data: [String: NSRange]) {
         self.init(range: data[OutlineParser.Key.Node.heading]!, name: OutlineParser.Key.Node.heading, data: data)
     }

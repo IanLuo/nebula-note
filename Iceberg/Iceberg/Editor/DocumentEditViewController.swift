@@ -237,7 +237,7 @@ extension DocumentEditViewController: DocumentEditViewModelDelegate {
     internal func _scrollTo(location: Int, shouldScrollToZero: Bool = false) {
         if location > 0 {
             self.textView.scrollRangeToVisible(self.textView.selectedRange)
-            self.textView.selectedRange = (self.textView.text as NSString).lineRange(for: NSRange(location: location, length: 0)).tail(0).offset(-1)
+            self.textView.selectedRange = NSRange(location: location, length: 0)
             self.textView.becomeFirstResponder()
         } else if shouldScrollToZero && location == 0 {
             self.textView.scrollRectToVisible(CGRect.zero, animated: true)

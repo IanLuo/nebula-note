@@ -457,7 +457,7 @@ private class TabView: UITableViewHeaderFooterView {
         self.iconView.sizeAnchor(width: 20, height: 20)
         
         self.titleButton.allSidesAnchors(to: self.contentView, edgeInset: 0)
-        self.titleButton.contentEdgeInsets = UIEdgeInsets(top: 20, left: 70, bottom: 20, right: 0)
+        self.titleButton.contentEdgeInsets = UIEdgeInsets(top: 20, left: 50, bottom: 20, right: 0)
     }
     
     required init?(coder aDecoder: NSCoder) {
