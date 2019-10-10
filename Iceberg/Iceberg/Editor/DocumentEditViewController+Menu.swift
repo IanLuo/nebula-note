@@ -164,9 +164,7 @@ extension DocumentEditViewController {
                     self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                     let oldSelectedRange = self.textView.selectedRange
                     let result = self.viewModel.performAction(EditAction.changePriority(priority, location), textView: self.textView)
-                    if self.textView.selectedRange.location > location {
-                        self.textView.selectedRange = oldSelectedRange.offset(result.delta)
-                    }
+                    self.textView.selectedRange = oldSelectedRange.offset(result.delta)
                 })
             }
         }
@@ -177,9 +175,7 @@ extension DocumentEditViewController {
                     self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                     let oldSelectedRange = self.textView.selectedRange
                     let result = self.viewModel.performAction(EditAction.changePriority(nil, location), textView: self.textView)
-                    if self.textView.selectedRange.location > location {
-                        self.textView.selectedRange = oldSelectedRange.offset(result.delta)
-                    }
+                    self.textView.selectedRange = oldSelectedRange.offset(result.delta)
                 })
             }
         }
