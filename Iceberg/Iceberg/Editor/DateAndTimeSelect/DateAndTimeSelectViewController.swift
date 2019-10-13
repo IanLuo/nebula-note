@@ -106,7 +106,7 @@ public class DateAndTimeSelectViewController: TransitionViewController {
     
     private func _setupUI() {
         self.interface { [weak self] (me, theme) in
-            self?._contentView.backgroundColor = theme.color.background1
+            self?._contentView.backgroundColor = theme.color.background2
             self?._titleLabel.textColor = theme.color.descriptive
             self?._titleLabel.font = theme.font.title
             self?._saveButton.setBackgroundImage(UIImage.create(with: theme.color.background2, size: .singlePoint), for: .normal)

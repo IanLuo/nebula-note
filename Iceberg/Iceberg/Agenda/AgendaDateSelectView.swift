@@ -36,6 +36,11 @@ public class AgendaDateSelectView: UIView {
         return collectionView
     }()
     
+    public func reload() {
+        self.collectionView.reloadData()
+        self.moveTo(index: 0)
+    }
+    
     public func moveTo(index: Int) {
         self.currentIndex = index
         self.collectionView.selectItem(at: IndexPath(row: index, section: 0), animated: false, scrollPosition: UICollectionView.ScrollPosition.centeredHorizontally)
@@ -52,8 +57,7 @@ public class AgendaDateSelectView: UIView {
         
         self.addSubview(self.collectionView)
         
-        self.collectionView.frame = self.bounds
-        self.collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        self.collectionView.allSidesAnchors(to: self, edgeInset: 0)
     }
     
     public required init?(coder aDecoder: NSCoder) {

@@ -61,13 +61,24 @@ public class AgendaViewController: UIViewController {
         self.setupUI()
         
         self.viewModel.loadData()
+        
+        // add observer to be able to reload dates
+        NotificationCenter.default.addObserver(self, selector: #selector(reloadDatesIfNeeded), name: UIApplication.didBecomeActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(reloadDatesIfNeeded), name: UIApplication.willEnterForegroundNotification, object: nil)
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
     
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
         self.viewModel.isConnectingScreen = true
+        
         self.viewModel.loadData()
+        
+        reloadDatesIfNeeded()
     }
     
     public override func viewDidDisappear(_ animated: Bool) {
@@ -98,6 +109,13 @@ public class AgendaViewController: UIViewController {
     
     @objc private func cancel() {
         self.viewModel.coordinator?.stop()
+    }
+    
+    @objc private func reloadDatesIfNeeded() {
+        if self.viewModel.regenerateDatesIfNeeded() {
+            self.agendaDateSelectView.reload()
+            self.viewModel.loadData()
+        }
     }
 }
 
@@ -176,25 +194,33 @@ private class DateSectionView: UITableViewHeaderFooterView {
         static let height: CGFloat = 80
     }
     
-    private let weekdayLabel: UILabel = {
+    private lazy var weekdayLabel: UILabel = {
         let label = UILabel()
         
         label.interface({ (me, theme) in
             let label = me as! UILabel
-            label.textColor = theme.color.descriptive
             label.font = theme.font.largeTitle
+            if self.date?.isToday() == true {
+                label.textColor = theme.color.interactive
+            } else {
+                label.textColor = theme.color.descriptive
+            }
         })
         label.textAlignment = .left
         return label
     }()
     
-    let dateLabel: UILabel = {
+    lazy var dateLabel: UILabel = {
         let label = UILabel()
         
         label.interface({ (me, theme) in
             let label = me as! UILabel
-            label.textColor = theme.color.descriptive
             label.font = theme.font.largeTitle
+            if self.date?.isToday() == true {
+                label.textColor = theme.color.interactive
+            } else {
+                label.textColor = theme.color.descriptive
+            }
         })
         label.textAlignment = .left
         return label

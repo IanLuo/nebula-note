@@ -58,6 +58,23 @@ public class AgendaViewModel {
         return dates
     }
     
+    public func regenerateDatesIfNeeded() -> Bool {
+        if self.checkShouldRegenerateDates(dates: self.dates) {
+            self.dates = self.generateDates()
+            return true
+        }
+        
+        return false
+    }
+    
+    private func checkShouldRegenerateDates(dates: [Date]) -> Bool {
+        if dates.first?.isSameDay(Date()) == false {
+            return true
+        }
+        
+        return false
+    }
+    
     private let _headingChangeObservingQueue: OperationQueue = {
         let queue = OperationQueue()
         let dispatchQueue = DispatchQueue(label: "dashboard handling heading change", qos: DispatchQoS.background, attributes: [])
