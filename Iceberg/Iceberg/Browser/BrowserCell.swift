@@ -115,8 +115,8 @@ public class BrowserCell: UITableViewCell {
                                              to: self.container,
                                              edgeInsets: .init(top: 10,
                                                                left: 0,
-                                                               bottom: -10,
-                                                               right: -10))
+                                                               bottom: 0,
+                                                               right: 0))
         
         self.iconView.rowAnchor(view: self.lastModifiedDateLabel, space: 10)
         self.titleLabel.columnAnchor(view: self.lastModifiedDateLabel, space: 8)
@@ -194,19 +194,21 @@ public class BrowserCell: UITableViewCell {
             self.cellModel?.coordinator?.dependency.globalCaptureEntryWindow?.hide()
         }
         
-        let enterButton = RoundButton()
+        let enterButton = UIButton()
         enterButton.interface { (me, theme) in
-            if let button = me as? RoundButton {
-                enterButton.setBackgroundColor(theme.color.background2, for: .normal)
-                enterButton.setIcon(Asset.Assets.next.image.fill(color: theme.color.spotlight), for: .normal)
+            if let button = me as? UIButton {
+                enterButton.setBackgroundImage(UIImage.create(with: theme.color.spotlight, size: .singlePoint), for: .normal)
+                enterButton.setImage(Asset.Assets.next.image.fill(color: theme.color.spotlitTitle), for: .normal)
             }
         }
         
-        enterButton.tapped { _ in
+        enterButton.roundConer(radius: 10)
+        
+        enterButton.rx.tap.subscribe(onNext: {
             if let cellModel = self.cellModel {
                 self.onEnter.onNext(cellModel.url)
             }
-        }
+        }).disposed(by: self.disposeBag)
         
         view.addSubview(actionButton)
         view.addSubview(enterButton)
