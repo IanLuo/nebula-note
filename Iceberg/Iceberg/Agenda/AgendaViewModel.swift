@@ -69,6 +69,7 @@ public class AgendaViewModel {
     
     private func checkShouldRegenerateDates(dates: [Date]) -> Bool {
         if dates.first?.isSameDay(Date()) == false {
+            self._shouldReloadData = true
             return true
         }
         
