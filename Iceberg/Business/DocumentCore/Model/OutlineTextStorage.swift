@@ -414,7 +414,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
                                               range: titleRange)
                     
                     let hiddenRange = urlRange.moveLeftBound(by: 1)
-                    let attachmentRange = urlRange.head(1)
+                    let attachmentRange = token.range.head(1)
                     
                     textStorage.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment,
                                                OutlineAttribute.showAttachment: OutlineAttribute.Link.url],
