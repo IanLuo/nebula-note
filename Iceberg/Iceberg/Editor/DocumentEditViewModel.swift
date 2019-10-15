@@ -281,7 +281,7 @@ public class DocumentEditViewModel {
                 
                 guard let heading = strongSelf._editorService.heading(at: location) else { return }
                 
-                let text = heading.paragraphWithSubRange.location == 0
+                var text = heading.paragraphWithSubRange.location == 0
                     ? strongSelf._editorService.string.nsstring.substring(with: heading.paragraphWithSubRange) + "\n"
                     : strongSelf._editorService.string.nsstring.substring(with: heading.paragraphWithSubRange)
                 
@@ -294,6 +294,11 @@ public class DocumentEditViewModel {
                         let location = heading.paragraphRange.location
                         _ = service.toggleContentCommandComposer(composer: AppendAsChildHeadingCommandComposer(text: text, to: location)).perform() // 移到另一个文件，不需要支持 undo
                     case .position(let location):
+                        if location == 0 {
+                            text = text + "\n"
+                        } else if location == service.string.count {
+                            text = "\n" + text
+                        }
                         _ = service.toggleContentCommandComposer(composer: InsertTextCommandComposer(location: location, textToInsert: text)).perform()
                     }
                     
@@ -318,14 +323,12 @@ public class DocumentEditViewModel {
     public func moveParagraph(contains location: Int, to outlineLocation: OutlineLocation, textView: UITextView) -> DocumentContentCommandResult {
         guard let currentHeading = self._editorService.heading(at: location) else { return DocumentContentCommandResult.noChange }
         
-        let text = currentHeading.paragraphWithSubRange.upperBound == self._editorService.string.nsstring.length // 当前行位最后一行
+        var text = currentHeading.paragraphWithSubRange.upperBound == self._editorService.string.nsstring.length // 当前行为最后一行，插入前在会后一行加上换行符
             ? self._editorService.string.nsstring.substring(with: currentHeading.paragraphWithSubRange) + "\n"
             : self._editorService.string.nsstring.substring(with: currentHeading.paragraphWithSubRange)
         
         // 1. 删除旧的段落
-        _ = self.performAction(EditAction.removeParagraph(location),
-                                               textView: textView)
-        
+        _ = self.performAction(EditAction.removeParagraph(location), textView: textView)
         
         // 2. 插入到新的位置
         switch outlineLocation {
@@ -335,6 +338,18 @@ public class DocumentEditViewModel {
                                                                                             isToLocationBehindFromLocation: location <= toHeading.paragraphRange.upperBound),
                                                      textView: textView)
         case .position(let toLocation):
+            // if the move to location is after move from location, should minus the removed text length then move
+            var toLocation = toLocation
+            if location < toLocation {
+                toLocation = toLocation - text.count
+            }
+            
+            if toLocation == 0 {
+                text = text + "\n"
+            } else if toLocation == self._editorService.string.count {
+                text = "\n" + text
+            }
+            
             return self.performCommandComposer(InsertTextCommandComposer(location: toLocation, textToInsert: text), textView: textView)
         }
     }
