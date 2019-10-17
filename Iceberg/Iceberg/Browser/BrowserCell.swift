@@ -57,7 +57,9 @@ public class BrowserCell: UITableViewCell {
     
     private var cellModel: BrowserCellModel?
     
-    public var disposeBag = DisposeBag()
+    private let disposeBag = DisposeBag()
+    
+    public var reuseDisposeBag = DisposeBag()
     
     public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -100,7 +102,7 @@ public class BrowserCell: UITableViewCell {
                                                    bottom: -10,
                                                    right: 0))
         self.iconView.ratioAnchor(2.0 / 3)
-        self.iconView.sizeAnchor(width: 70)
+        self.iconView.sizeAnchor(width: 50)
         
         self.iconView.rowAnchor(view: self.titleLabel, space: 10)
         self.titleLabel.sideAnchor(for: [.top],
@@ -125,7 +127,7 @@ public class BrowserCell: UITableViewCell {
     }
     
     public func configure(cellModel: BrowserCellModel) {
-        self.disposeBag = DisposeBag() // this line is important, if missed, the cell might bind multiple times
+        self.reuseDisposeBag = DisposeBag() // this line is important, if missed, the cell might bind multiple times
         
         self.cellModel = cellModel
         
@@ -197,8 +199,8 @@ public class BrowserCell: UITableViewCell {
         let enterButton = UIButton()
         enterButton.interface { (me, theme) in
             if let button = me as? UIButton {
-                enterButton.setBackgroundImage(UIImage.create(with: theme.color.spotlight, size: .singlePoint), for: .normal)
-                enterButton.setImage(Asset.Assets.next.image.fill(color: theme.color.spotlitTitle), for: .normal)
+                enterButton.setBackgroundImage(UIImage.create(with: theme.color.background3, size: .singlePoint), for: .normal)
+                enterButton.setImage(Asset.Assets.next.image.fill(color: theme.color.interactive), for: .normal)
             }
         }
         

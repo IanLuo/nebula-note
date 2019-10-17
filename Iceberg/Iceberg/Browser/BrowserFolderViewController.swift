@@ -89,15 +89,15 @@ public class BrowserFolderViewController: UIViewController {
                 .asObserver()
                 .observeOn(MainScheduler())
                 .bind(to: self.present)
-                .disposed(by: cell.disposeBag)
+                .disposed(by: cell.reuseDisposeBag)
             
-            cell.onMoveDocument.bind(to: self.tableCellMoved).disposed(by: cell.disposeBag)
-            cell.onCreateSubDocument.do(onNext: { _ in self.enterChild(url: cellModel.url)}).bind(to: self.tableCellInserted).disposed(by: cell.disposeBag)
-            cell.onChangeCover.bind(to: self.tableCellUpdate).disposed(by: cell.disposeBag)
-            cell.onDeleteDocument.bind(to: self.tableCellDeleted).disposed(by: cell.disposeBag)
-            cell.onRenameDocument.bind(to: self.tableCellUpdate).disposed(by: cell.disposeBag)
-            cell.onDuplicateDocument.bind(to: self.tableCellInserted).disposed(by: cell.disposeBag)
-            cell.onEnter.bind(to: self.enter).disposed(by: cell.disposeBag)
+            cell.onMoveDocument.bind(to: self.tableCellMoved).disposed(by: cell.reuseDisposeBag)
+            cell.onCreateSubDocument.do(onNext: { _ in self.enterChild(url: cellModel.url)}).bind(to: self.tableCellInserted).disposed(by: cell.reuseDisposeBag)
+            cell.onChangeCover.bind(to: self.tableCellUpdate).disposed(by: cell.reuseDisposeBag)
+            cell.onDeleteDocument.bind(to: self.tableCellDeleted).disposed(by: cell.reuseDisposeBag)
+            cell.onRenameDocument.bind(to: self.tableCellUpdate).disposed(by: cell.reuseDisposeBag)
+            cell.onDuplicateDocument.bind(to: self.tableCellInserted).disposed(by: cell.reuseDisposeBag)
+            cell.onEnter.bind(to: self.enter).disposed(by: cell.reuseDisposeBag)
             
             return cell
         })
