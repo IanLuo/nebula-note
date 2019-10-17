@@ -71,6 +71,10 @@ public class BrowserFolderViewController: UIViewController {
             .bind(to: self.viewModel.input.addDocument)
             .disposed(by: self.disposeBag)
         self.navigationItem.rightBarButtonItem = rightBarButtonItem
+        
+        self.interface { (me, theme) in
+            rightBarButtonItem.tintColor = theme.color.spotlight
+        }
                 
         self._setupObserver()
         
