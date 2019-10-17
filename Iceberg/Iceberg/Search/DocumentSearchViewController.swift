@@ -103,6 +103,8 @@ public class DocumentSearchViewController: UIViewController {
         self.searchStatus = .ready
         
         self.searchInputView.delegate = self
+        
+        self.showEmptyContentImage(self.viewModel.data.count == 0)
     }
     
     public required init?(coder aDecoder: NSCoder) {
@@ -175,13 +177,25 @@ extension DocumentSearchViewController: UITableViewDataSource, UITableViewDelega
     }
 }
 
+extension DocumentSearchViewController: EmptyContentPlaceHolderProtocol {
+    public var image: UIImage {
+        return Asset.Assets.zoom.image
+    }
+    
+    public var viewToShowImage: UIView {
+        return self.searchResultTableView
+    }
+}
+
 extension DocumentSearchViewController: DocumentSearchViewModelDelegate {
     public func didCompleteSearching() {
         self.searchResultTableView.reloadData()
+        self.showEmptyContentImage(self.viewModel.data.count == 0)
     }
     
     public func didClearResults() {
         self.searchResultTableView.reloadData()
+        self.showEmptyContentImage(true)
     }
 }
 

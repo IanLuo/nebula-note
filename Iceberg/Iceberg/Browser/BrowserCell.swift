@@ -216,7 +216,7 @@ public class BrowserCell: UITableViewCell {
         actionButton.sizeAnchor(width: 44)
         actionButton.columnAnchor(view: enterButton)
         enterButton.sideAnchor(for: [.left, .bottom, .right], to: view, edgeInset: 0)
-        enterButton.sizeAnchor(width: 44)
+        enterButton.sizeAnchor(width: 44, height: 44)
         
         return view
     }()

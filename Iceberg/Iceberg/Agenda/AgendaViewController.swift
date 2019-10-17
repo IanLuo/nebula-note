@@ -177,6 +177,7 @@ extension UITableView {
 extension AgendaViewController: AgendaViewModelDelegate {
     public func didLoadData() {
         self.tableView.reloadData()
+        self.showEmptyContentImage(self.viewModel.data.count == 0)
     }
     
     public func didCompleteLoadAllData() {
@@ -185,6 +186,16 @@ extension AgendaViewController: AgendaViewModelDelegate {
     
     public func didFailed(_ error: Error) {
         log.error(error)
+    }
+}
+
+extension AgendaViewController: EmptyContentPlaceHolderProtocol {
+    public var viewToShowImage: UIView {
+        return self.tableView
+    }
+    
+    public var image: UIImage {
+        return Asset.Assets.link.image
     }
 }
 

@@ -294,6 +294,16 @@ extension CaptureListViewController: UITableViewDataSource {
     }
 }
 
+extension CaptureListViewController: EmptyContentPlaceHolderProtocol {
+    public var image: UIImage {
+        return Asset.Assets.zoom.image
+    }
+    
+    public var viewToShowImage: UIView {
+        return self.tableView
+    }
+}
+
 extension CaptureListViewController: UITableViewDelegate {
     // nothing to do yet
 }
@@ -307,6 +317,7 @@ extension CaptureListViewController: CaptureListViewModelDelegate {
     
     public func didDeleteCapture(index: Int) {
         self.tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .left)
+        self.showEmptyContentImage(self.viewModel.currentFilterdCellModels.count == 0)
     }
     
     public func didFail(error: String) {
@@ -317,10 +328,12 @@ extension CaptureListViewController: CaptureListViewModelDelegate {
         if let cell = self.tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? CaptureTableCell {
             cell.hideProcessingAnimation()
         }
+        self.showEmptyContentImage(self.viewModel.currentFilterdCellModels.count == 0)
     }
     
     public func didLoadData() {
         self.view.hideProcessingAnimation()
         self.tableView.reloadData()
+        self.showEmptyContentImage(self.viewModel.currentFilterdCellModels.count == 0)
     }
 }

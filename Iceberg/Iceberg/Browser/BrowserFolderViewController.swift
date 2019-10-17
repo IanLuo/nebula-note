@@ -31,7 +31,7 @@ public class BrowserFolderViewController: UIViewController {
         tableView.register(BrowserCell.self, forCellReuseIdentifier: BrowserCell.reuseIdentifier)
         tableView.tableFooterView = UIView()
         tableView.separatorStyle = .none
-        tableView.contentInset = .init(top: 0, left: 0, bottom: 80, right: 0)
+        tableView.contentInset = .init(top: 0, left: 0, bottom: 120, right: 0)
         tableView.interface { (me, theme) in
             let tableView = me as! UITableView
             tableView.backgroundColor = theme.color.background1
@@ -106,6 +106,9 @@ public class BrowserFolderViewController: UIViewController {
             .output
             .documents
             .asDriver()
+            .do(onNext: { [weak self] in
+                self?.showEmptyContentImage($0.first?.items.count == 0)
+            })
             .drive(self.tableView.rx.items(dataSource: dataSource))
             .disposed(by: self.disposeBag)
         
@@ -170,5 +173,15 @@ public class BrowserFolderViewController: UIViewController {
         viewController.output.onSelectDocument.bind(to: self.output.onSelectDocument).disposed(by: self.disposeBag)
         
         self.navigationController?.pushViewController(viewController, animated: true)
+    }
+}
+
+extension BrowserFolderViewController: EmptyContentPlaceHolderProtocol {
+    public var image: UIImage {
+        return Asset.Assets.zoom.image
+    }
+    
+    public var viewToShowImage: UIView {
+        return self.tableView
     }
 }

@@ -46,6 +46,7 @@
 		E4144EA722854B5800CB12FF /* DocumentEditViewController+UserInteraction.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4144EA622854B5800CB12FF /* DocumentEditViewController+UserInteraction.swift */; };
 		E414A664227493D000748964 /* OrgImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E414A663227493D000748964 /* OrgImporter.swift */; };
 		E4162EF72254EA4F00D3619E /* DateAndTimeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4162EF62254EA4F00D3619E /* DateAndTimeType.swift */; };
+		E4191B8823560B370003263C /* UIViewController+Empty.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4191B8723560B370003263C /* UIViewController+Empty.swift */; };
 		E41A538621D4C577002B11E9 /* AgendaTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41A538521D4C577002B11E9 /* AgendaTableCell.swift */; };
 		E41A538D21D5F629002B11E9 /* CaptureTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41A538C21D5F629002B11E9 /* CaptureTableCell.swift */; };
 		E41B892621E31B07009C5AD7 /* DashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41B892521E31B07009C5AD7 /* DashboardViewModel.swift */; };
@@ -331,6 +332,7 @@
 		E4144EA622854B5800CB12FF /* DocumentEditViewController+UserInteraction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DocumentEditViewController+UserInteraction.swift"; sourceTree = "<group>"; };
 		E414A663227493D000748964 /* OrgImporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrgImporter.swift; sourceTree = "<group>"; };
 		E4162EF62254EA4F00D3619E /* DateAndTimeType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateAndTimeType.swift; sourceTree = "<group>"; };
+		E4191B8723560B370003263C /* UIViewController+Empty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Empty.swift"; sourceTree = "<group>"; };
 		E41A538521D4C577002B11E9 /* AgendaTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgendaTableCell.swift; sourceTree = "<group>"; };
 		E41A538C21D5F629002B11E9 /* CaptureTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureTableCell.swift; sourceTree = "<group>"; };
 		E41A539021D62095002B11E9 /* EditorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorService.swift; sourceTree = "<group>"; };
@@ -1144,6 +1146,7 @@
 				E4B331DC22432F9400A7F44F /* ConfirmViewController.swift */,
 				E4AE275222D1E42600315CE6 /* LoadingViewController.swift */,
 				E43FDAD1228B028600FA899B /* Alert.swift */,
+				E4191B8723560B370003263C /* UIViewController+Empty.swift */,
 			);
 			path = UIViewController;
 			sourceTree = "<group>";
@@ -1752,6 +1755,7 @@
 				E40F6E8A223B78DB00FFF53F /* Autolayout+Shortcuts.swift in Sources */,
 				E40F6E90223B78DB00FFF53F /* Border.swift in Sources */,
 				E40F6EA1223B7A7200FFF53F /* ActionsViewController.swift in Sources */,
+				E4191B8823560B370003263C /* UIViewController+Empty.swift in Sources */,
 				E40F6E99223B7A5300FFF53F /* assets.swift in Sources */,
 				E43FDAD2228B028600FA899B /* Alert.swift in Sources */,
 				E4AE275322D1E42600315CE6 /* LoadingViewController.swift in Sources */,
