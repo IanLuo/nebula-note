@@ -157,7 +157,7 @@ extension AgendaViewController: UITableViewDelegate {
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let data = self.viewModel.data[indexPath.row]
-        self.viewModel.coordinator?.openDocument(url: data.url, location: data.heading.location)
+        self.viewModel.coordinator?.openDocument(url: data.url, location: data.heading.range.upperBound)
     }
 }
 

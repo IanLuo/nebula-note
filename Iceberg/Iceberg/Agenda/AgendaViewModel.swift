@@ -167,45 +167,52 @@ public class AgendaViewModel {
     // 加载 agenda 界面所有数据
     public func loadAgendaData() {
         
-        self._documentSearchManager.searchDateAndTime(completion: { [weak self] results in
-            let allData = results.map { AgendaCellModel(searchResult: $0) }
-            self?.dateOrderedData = [:]
-            let today = Date().dayEnd
-            
-            // filter data for each date
-            self?.dates.forEach { date in
-                let mappedCellModels = allData.filter { cellModel in
-                    // 已完成的条目不显示
-                    if let planning = cellModel.planning, SettingsAccessor.shared.finishedPlanning.contains(planning) {
-                        return false
-                    }
-                        // only for item that has date and time
-                    else if let dateAndTime = cellModel.dateAndTime {
-                        if dateAndTime.isSchedule || dateAndTime.isDue {
-                            if date.isSameDay(today) {
-                                return dateAndTime.date.dayEnd <= date.dayEnd
-                            } else {
-                                return dateAndTime.date.dayEnd.isSameDay(date.dayEnd)
-                            }
+        self._documentSearchManager.allHeadings(completion: { [weak self] (results1) in
+            self?._documentSearchManager.searchDateAndTime(completion: { (results2) in
+                var results = results1.filter { $0.heading.planning != nil }
+                results.append(contentsOf: results2)
+                let allData = results.map { AgendaCellModel(searchResult: $0) }
+                
+                self?.dateOrderedData = [:]
+                let today = Date().dayEnd
+                
+                // filter data for each date
+                self?.dates.forEach { date in
+                    let mappedCellModels = allData.filter { cellModel in
+                        // 已完成的条目不显示
+                        if let planning = cellModel.planning, SettingsAccessor.shared.finishedPlanning.contains(planning) {
+                            return false
                         }
-                        return dateAndTime.date.isSameDay(date)
-                    } else {
-                        return true
+                            // only for item that has date and time
+                        else if let dateAndTime = cellModel.dateAndTime {
+                            if dateAndTime.isSchedule || dateAndTime.isDue {
+                                if date.isSameDay(today) {
+                                    return dateAndTime.date.dayEnd <= date.dayEnd
+                                } else {
+                                    return dateAndTime.date.dayEnd.isSameDay(date.dayEnd)
+                                }
+                            }
+                            return dateAndTime.date.isSameDay(date)
+                        } else {
+                            return true
+                        }
+                    }
+                    
+                    self?.dateOrderedData[date] = mappedCellModels._trim()._sort()
+                    DispatchQueue.main.async {
+                        self?.delegate?.didCompleteLoadAllData()
                     }
                 }
-                
-                self?.dateOrderedData[date] = mappedCellModels
-            }
+                    
+            }, failure: { [weak self] (error) in
+                self?.delegate?.didFailed(error)
+            })
             
-            DispatchQueue.main.async {
-                self?.delegate?.didCompleteLoadAllData()
-            }
-            
-        }) { [weak self] error in
+        }, failure: { [weak self] (error) in
             self?.delegate?.didFailed(error)
-        }
+        })
     }
-    
+        
     private func _setupObserver() {
         self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
                                                                     eventType: DocumentSearchHeadingUpdateEvent.self,
@@ -230,6 +237,31 @@ public class AgendaViewModel {
 }
 
 extension Array where Element == AgendaCellModel {
+    fileprivate func _trim() -> [AgendaCellModel] {
+        var tempDic: [String: AgendaCellModel] = [:]
+        self.forEach {
+            let key = "\($0.url.path)\($0.heading.range)"
+            tempDic[key] = $0
+        }
+        
+        return Array(tempDic.values)
+    }
+    
+    fileprivate func _sort() -> [AgendaCellModel] {
+        return self.sorted { (cm1, cm2) -> Bool in
+            switch (cm1.priority, cm2.priority, cm1.dateAndTime?.date, cm2.dateAndTime?.date) {
+            case let (cm1p?, cm2p?, _, _): return cm1p > cm2p
+            case (_?, nil, _, _): return true
+            case (nil, _?, _, _): return false
+            case let (nil, nil, cm1d?, cm2d?): return cm1d < cm2d
+            case (nil, nil, _?, nil): return true
+            case (nil, nil, nil, _?): return false
+                
+            default: return true
+            }
+        }
+    }
+
     var sortedByPriority: [Element] {
         return self.sorted { (cellModel1: Element, cellModel2: Element) -> Bool in
             // 按照 priority 排序
