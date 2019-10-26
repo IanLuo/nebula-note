@@ -250,14 +250,14 @@ extension Array where Element == AgendaCellModel {
     fileprivate func _sort() -> [AgendaCellModel] {
         return self.sorted { (cm1, cm2) -> Bool in
             switch (cm1.priority, cm2.priority, cm1.dateAndTime?.date, cm2.dateAndTime?.date) {
-            case let (cm1p?, cm2p?, _, _): return cm1p > cm2p
+            case let (cm1p?, cm2p?, _, _): return cm1p < cm2p
             case (_?, nil, _, _): return true
             case (nil, _?, _, _): return false
             case let (nil, nil, cm1d?, cm2d?): return cm1d < cm2d
             case (nil, nil, _?, nil): return true
             case (nil, nil, nil, _?): return false
                 
-            default: return true
+            default: return cm1.headingText < cm2.headingText
             }
         }
     }
