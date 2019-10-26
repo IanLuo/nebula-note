@@ -66,7 +66,7 @@ public struct ExportManager {
         self._editorContext = editorContext
     }
     
-    public let exportMethods: [ExportType] = [.org, .html, .txt, .markdown, .pdf]
+    public let exportMethods: [ExportType] = [.org, .html, .txt, .pdf]
     
     public func export(url: URL,
                        type: ExportType, 
