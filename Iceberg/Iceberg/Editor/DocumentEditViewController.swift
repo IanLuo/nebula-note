@@ -208,8 +208,8 @@ extension DocumentEditViewController: DocumentEditViewModelDelegate {
                     } else if lastToken.name == OutlineParser.Key.Node.codeBlockBegin {
                         self.inputbar.mode = .code
                     }
-                } else {
-                    self.inputbar.mode = .paragraph
+                } else if lastToken is HeadingToken {
+                    self.inputbar.mode = .heading
                 }
             } else {
                 self.inputbar.mode = .paragraph
