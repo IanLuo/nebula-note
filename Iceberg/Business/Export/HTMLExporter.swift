@@ -92,7 +92,7 @@ extension Token {
             let value = string.nsstring.substring(with: valueRange)
             
             if type == Attachment.Kind.image.rawValue, let url = AttachmentManager.attachmentFileURL(key: value) {
-                return "<img src=\"\(url.absoluteString)\"/>"
+                return "<img src=\"\(url.absoluteString)\" style=\"max-width:600px;width:100%\"/>"
             } else {
                 return "#\(type):\(value)#"
             }
