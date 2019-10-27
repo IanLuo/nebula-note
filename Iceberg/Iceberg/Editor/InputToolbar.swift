@@ -27,7 +27,7 @@ public class InputToolbar: UIView {
     
     private static let headless: [[ToolbarActionProtocol]] = [headingActions, textMark, undoAndRedo, moveCursor, moveContent, insertSpecailContent, attachment]
     private static let actionsParagraph: [[ToolbarActionProtocol]] = [paragraphActions, headingActions, textMark, undoAndRedo, moveCursor, moveContent, insertSpecailContent, attachment]
-    private static let actionsHeading: [[ToolbarActionProtocol]] = [paragraphActions, headingActions, textMark, undoAndRedo, moveCursor, moveContent]
+    private static let actionsHeading: [[ToolbarActionProtocol]] = [paragraphActions, headingActions, undoAndRedo, moveCursor, moveContent]
     private static let quoteBlock: [[ToolbarActionProtocol]] = [paragraphActions, headingActions, textMark, undoAndRedo, moveCursor, moveContent]
     private static let codeBlock: [[ToolbarActionProtocol]] = [paragraphActions, headingActions, undoAndRedo, moveCursor, moveContent]
     
