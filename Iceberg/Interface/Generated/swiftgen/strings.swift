@@ -64,7 +64,7 @@ public enum L10n {
       public static let overdue = L10n.tr("Localizable", "agenda.sub.overdue")
       /// Overdue soon
       public static let overdueSoon = L10n.tr("Localizable", "agenda.sub.overdueSoon")
-      /// Plannings
+      /// Status
       public static let planning = L10n.tr("Localizable", "agenda.sub.planning")
       /// Scheduled
       public static let scheduled = L10n.tr("Localizable", "agenda.sub.scheduled")
@@ -270,7 +270,7 @@ public enum L10n {
         public static let moveDown = L10n.tr("Localizable", "document.edit.action.move-down")
         /// Move up
         public static let moveUp = L10n.tr("Localizable", "document.edit.action.move-up")
-        /// Planning
+        /// Status
         public static let planning = L10n.tr("Localizable", "document.edit.action.planning")
         /// Quote block
         public static let quoteBlock = L10n.tr("Localizable", "document.edit.action.quote-block")
@@ -387,7 +387,7 @@ public enum L10n {
       public static let noHeading = L10n.tr("Localizable", "document.outlet.noHeading")
     }
     public enum Planning {
-      /// Planning
+      /// Status
       public static let title = L10n.tr("Localizable", "document.planning.title")
     }
     public enum Priority {
@@ -479,22 +479,22 @@ public enum L10n {
       public static let title = L10n.tr("Localizable", "setting.landingTab.title")
     }
     public enum Planning {
-      /// Customized planning
+      /// Customized status
       public static let title = L10n.tr("Localizable", "setting.planning.title")
       public enum Add {
         public enum Error {
-          /// Planning name is taken, Use a different one
+          /// Status name is taken, Use a different one
           public static let nameTaken = L10n.tr("Localizable", "setting.planning.add.error.nameTaken")
         }
       }
       public enum Finish {
-        /// New Finish planning
+        /// New Finish status
         public static let add = L10n.tr("Localizable", "setting.planning.finish.add")
         /// Finish
         public static let title = L10n.tr("Localizable", "setting.planning.finish.title")
       }
       public enum Unfinish {
-        /// New Unfinish planning
+        /// New Unfinish status
         public static let add = L10n.tr("Localizable", "setting.planning.unfinish.add")
         /// Unfinish
         public static let title = L10n.tr("Localizable", "setting.planning.unfinish.title")
