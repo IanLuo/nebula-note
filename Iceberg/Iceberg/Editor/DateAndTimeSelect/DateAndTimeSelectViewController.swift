@@ -41,7 +41,7 @@ public class DateAndTimeSelectViewController: TransitionViewController {
     private var _selectedDate: Date?
     private var _selectTime: (Int, Int, Int)?
     private var _isEnabledSelectTime: Bool = false
-    @IBOutlet var _contentView: UIView!
+    @IBOutlet var _contentView: UIScrollView!
     
     private let _dateSelectViewController: DateSelectViewController = DateSelectViewController()
     private let _timeSelectViewController: TimeSelectViewController = TimeSelectViewController()
@@ -72,6 +72,16 @@ public class DateAndTimeSelectViewController: TransitionViewController {
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    public override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        let viewHeight = self.view.bounds.height - self.view.safeAreaInsets.top - self.view.safeAreaInsets.bottom
+        self._contentView.frame = CGRect(x: (self.view.bounds.width - self._contentView.contentSize.width) / 2,
+                                         y: max(0, viewHeight - self._contentView.contentSize.height) + self.view.safeAreaInsets.top,
+                                         width: self._contentView.contentSize.width,
+                                         height: min(self._contentView.contentSize.height, viewHeight))
     }
     
     public override func viewDidLoad() {
@@ -127,6 +137,8 @@ public class DateAndTimeSelectViewController: TransitionViewController {
         self._deleteButton.setTitle(L10n.General.Button.Title.delete, for: .normal)
         
         self._timeSelectViewController.switch.isOn = self._selectTime == nil
+        
+        self._contentView.roundConer(radius: 10)
     }
     
     @IBAction private func _save() {
