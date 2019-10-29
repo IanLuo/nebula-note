@@ -29,7 +29,7 @@ public class BrowserRecentViewController: UIViewController {
         
         collectionView.interface({ (me, theme) in
             let collectionView = me as! UICollectionView
-            collectionView.backgroundColor = InterfaceTheme.Color.background1
+            collectionView.backgroundColor = InterfaceTheme.Color.background2
         })
         
         collectionView.register(RecentFileCell.self, forCellWithReuseIdentifier: RecentFileCell.reuseIdentifier)
@@ -108,11 +108,13 @@ class RecentDocumentsHeader: UICollectionReusableView {
 
 extension BrowserRecentViewController: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.bounds.height * 2 / 3, height: collectionView.bounds.height)
+        let height = collectionView.bounds.height - 20
+        let width = height * 2 / 3
+        return CGSize(width: width, height: height)
     }
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 0, left: Layout.edgeInsets.left, bottom: 0, right: Layout.edgeInsets.right)
+        return UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0)
     }
 }
 
@@ -158,7 +160,7 @@ private class RecentFileCell: UICollectionViewCell {
     
     private func setupUI() {
         self.interface { [weak self] (me, theme) in
-            self?.contentView.backgroundColor = InterfaceTheme.Color.background2
+            self?.contentView.backgroundColor = InterfaceTheme.Color.background3
         }
         self.contentView.layer.cornerRadius = 8
         self.contentView.layer.masksToBounds = true

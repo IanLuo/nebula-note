@@ -66,8 +66,6 @@ public class DashboardViewController: UIViewController {
         self.settingsButton.tapped { [unowned self] _ in
             self.viewModel.coordinator?.showSettings()
         }
-        
-        self.viewModel.loadData()
     }
     
     public override var preferredStatusBarStyle: UIStatusBarStyle {

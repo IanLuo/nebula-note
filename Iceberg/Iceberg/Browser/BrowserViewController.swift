@@ -56,8 +56,8 @@ public class BrowserViewController: UIViewController {
         }
                 
         self.view.addSubview(self.recentViewController.view)
-        self.recentViewController.view.sideAnchor(for: [.left, .top, .right], to: self.view, edgeInsets: .init(top: 20, left: 0, bottom: 0, right: 0), considerSafeArea: true)
-        self.recentViewController.view.sizeAnchor(height: 80)
+        self.recentViewController.view.sideAnchor(for: [.left, .top, .right], to: self.view, edgeInsets: .init(top: 20, left: 10, bottom: 0, right: -10), considerSafeArea: true)
+        self.recentViewController.view.sizeAnchor(height: 100)
         self.addChild(self.recentViewController)
         self.recentViewController.didMove(toParent: self)
         
@@ -70,8 +70,9 @@ public class BrowserViewController: UIViewController {
         self.addChild(nav)
         nav.didMove(toParent: self)
         
+        self.recentViewController.view.roundConer(radius: 10)
+        
         self.interface { (me, theme) in
-            nav.view.setBorder(position: .top, color: theme.color.background3, width: 0.5, insets: .both(12))
             self.view.backgroundColor = theme.color.background1
             nav.navigationBar.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.background1, size: .singlePoint), for: .default)
         }
