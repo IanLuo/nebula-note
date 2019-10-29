@@ -259,11 +259,11 @@ private class SearchInputView: UIView, UITextFieldDelegate {
         
         clearButton.interface({ (me, theme) in
             let clearButton = me as! UIButton
-            clearButton.setBackgroundImage(UIImage.create(with: theme.color.descriptive, size: .singlePoint), for: .normal)
+            clearButton.setBackgroundImage(UIImage.create(with: theme.color.background2, size: .singlePoint), for: .normal)
             clearButton.setImage(Asset.Assets.cross.image.fill(color: theme.color.interactive), for: .normal)
         })
         clearButton.addTarget(self, action: #selector(clear), for: .touchUpInside)
-        clearButton.layer.cornerRadius = 10
+        clearButton.layer.cornerRadius = 13
         clearButton.layer.masksToBounds = true
         clearButton.contentEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
         textField.rightView = clearButton

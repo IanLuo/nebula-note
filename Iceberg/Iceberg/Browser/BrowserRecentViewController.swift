@@ -29,7 +29,7 @@ public class BrowserRecentViewController: UIViewController {
         
         collectionView.interface({ (me, theme) in
             let collectionView = me as! UICollectionView
-            collectionView.backgroundColor = InterfaceTheme.Color.background2
+            collectionView.backgroundColor = InterfaceTheme.Color.background1
         })
         
         collectionView.register(RecentFileCell.self, forCellWithReuseIdentifier: RecentFileCell.reuseIdentifier)
@@ -160,7 +160,7 @@ private class RecentFileCell: UICollectionViewCell {
     
     private func setupUI() {
         self.interface { [weak self] (me, theme) in
-            self?.contentView.backgroundColor = InterfaceTheme.Color.background3
+            self?.contentView.backgroundColor = InterfaceTheme.Color.background2
         }
         self.contentView.layer.cornerRadius = 8
         self.contentView.layer.masksToBounds = true

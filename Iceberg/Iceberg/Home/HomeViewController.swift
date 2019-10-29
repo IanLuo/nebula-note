@@ -86,10 +86,6 @@ public class HomeViewController: UIViewController {
         self.view.addSubview(self.masterViewController.view)
         self._setupFrames()
         
-        self.masterViewController.view.interface { (me, theme) in
-            me.setBorder(position: Border.Position.right, color: InterfaceTheme.Color.background2, width: 0.5)
-        }
-        
         self.view.addSubview(self.moveIndicator)
         self.moveIndicator.centerAnchors(position: .centerY, to: self.view)
         self.moveIndicator.centerXAnchor.constraint(equalTo: self.masterViewController.view.rightAnchor).isActive = true
