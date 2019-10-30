@@ -61,7 +61,6 @@ public class BrowserViewController: UIViewController {
         self.addChild(self.recentViewController)
         self.recentViewController.didMove(toParent: self)
         
-        
         let nav = Coordinator.createDefaultNavigationControlller()
         nav.pushViewController(self.browserFolderViewController, animated: false)
         self.view.addSubview(nav.view)
@@ -73,7 +72,7 @@ public class BrowserViewController: UIViewController {
         self.recentViewController.view.roundConer(radius: 10)
         
         self.interface { [unowned self] (me, theme) in
-            self.recentViewController.view.border(color: theme.color.background2, width: 0.5)
+            self.recentViewController.view.border(color: theme.color.background2, width: 1)
             self.view.backgroundColor = theme.color.background1
             nav.navigationBar.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.background1, size: .singlePoint), for: .default)
         }
