@@ -155,11 +155,12 @@ public class BrowserFolderViewModel {
         
         let eventObserver = self.coordinator?.dependency.eventObserver
         
-        eventObserver?.registerForEvent(on: self, eventType: iCloudEnabledEvent.self, queue: nil, action: { [weak self] (event: iCloudEnabledEvent) in
+        /// observe disable, but not observe enable, because enabled will send iCloudAvailabilityChangedEvent when iCloud files are ready
+        eventObserver?.registerForEvent(on: self, eventType: iCloudDisabledEvent.self, queue: nil, action: { [weak self] (event: iCloudDisabledEvent) in
             self?.reload()
         })
         
-        eventObserver?.registerForEvent(on: self, eventType: iCloudDisabledEvent.self, queue: nil, action: { [weak self] (event: iCloudDisabledEvent) in
+        eventObserver?.registerForEvent(on: self, eventType: iCloudAvailabilityChangedEvent.self, queue: nil, action: { [weak self] (event: iCloudAvailabilityChangedEvent) in
             self?.reload()
         })
         

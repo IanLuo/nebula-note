@@ -463,3 +463,44 @@ extension BrowserCell {
         }
     }
 }
+
+
+public class BrowserCellWithSubFolder: BrowserCell {
+    public  static let reuseIdentifierForBrowserCellWithSubFolder = "BrowserCellWithSubFolder"
+    
+    private let _subFolderIndicatorView: UIView = {
+       let view = UIView()
+        view.roundConer(radius: 10)
+        view.layer.borderWidth = 1
+        view.interface { (me, interface) in
+            me.layer.borderColor = interface.color.background3.cgColor
+            me.backgroundColor = interface.color.background1
+        }
+        
+        return view
+    }()
+    
+    public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
+        self.contentView.insertSubview(self._subFolderIndicatorView, at: 0)
+        
+        self._subFolderIndicatorView.allSidesAnchors(to: self.contentView, edgeInsets: .init(top: Layout.edgeInsets.top + 2,
+                                                                                             left: Layout.edgeInsets.left,
+                                                                                             bottom: -2,
+                                                                                             right: -Layout.edgeInsets.right))
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override public func configure(cellModel: BrowserCellModel) {
+        super.configure(cellModel: cellModel)
+        
+        if let rightConstraint = self.container.constraint(for: Position.right) {
+            self.removeConstraint(rightConstraint)
+            self.container.sideAnchor(for: Position.right, to: self, edgeInset: Layout.edgeInsets.right + 5)
+        }
+    }
+}

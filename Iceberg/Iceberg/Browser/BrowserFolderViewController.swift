@@ -29,6 +29,7 @@ public class BrowserFolderViewController: UIViewController {
     public let tableView: UITableView = {
         let tableView = UITableView()
         tableView.register(BrowserCell.self, forCellReuseIdentifier: BrowserCell.reuseIdentifier)
+        tableView.register(BrowserCellWithSubFolder.self, forCellReuseIdentifier: BrowserCellWithSubFolder.reuseIdentifierForBrowserCellWithSubFolder)
         tableView.tableFooterView = UIView()
         tableView.separatorStyle = .none
         tableView.contentInset = .init(top: 0, left: 0, bottom: 120, right: 0)
@@ -87,7 +88,12 @@ public class BrowserFolderViewController: UIViewController {
 
         //bind table view
         let dataSource = RxTableViewSectionedReloadDataSource<BrowserDocumentSection>(configureCell: { (dataSource, tableView, indexPath, cellModel) -> UITableViewCell in
-            let cell = tableView.dequeueReusableCell(withIdentifier: BrowserCell.reuseIdentifier, for: indexPath) as! BrowserCell
+            var cell = tableView.dequeueReusableCell(withIdentifier: BrowserCell.reuseIdentifier, for: indexPath) as! BrowserCell
+            
+            if cellModel.hasSubDocuments {
+                cell = tableView.dequeueReusableCell(withIdentifier: BrowserCellWithSubFolder.reuseIdentifierForBrowserCellWithSubFolder, for: indexPath) as! BrowserCell
+            }
+            
             cell.configure(cellModel: cellModel)
             cell.onPresentingModalViewController
                 .asObserver()
