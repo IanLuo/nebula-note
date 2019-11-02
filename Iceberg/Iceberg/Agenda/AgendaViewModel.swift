@@ -186,8 +186,10 @@ public class AgendaViewModel {
                             // only for item that has date and time
                         else if let dateAndTime = cellModel.dateAndTime {
                             if dateAndTime.isSchedule || dateAndTime.isDue {
-                                if date.isSameDay(today) {
-                                    return dateAndTime.date.dayEnd <= date.dayEnd
+                                if dateAndTime.date.dayEnd <= date.dayEnd {
+                                    return true
+                                } else if dateAndTime.date.dayEnd.timeIntervalSince1970 > today.timeIntervalSince1970 {
+                                    return dateAndTime.date.daysFrom(today) <= 3
                                 } else {
                                     return dateAndTime.date.dayEnd.isSameDay(date.dayEnd)
                                 }
@@ -248,17 +250,18 @@ extension Array where Element == AgendaCellModel {
     }
     
     fileprivate func _sort() -> [AgendaCellModel] {
-        return self.sorted { (cm1, cm2) -> Bool in
-            switch (cm1.priority, cm2.priority, cm1.dateAndTime?.date, cm2.dateAndTime?.date) {
-            case let (cm1p?, cm2p?, _, _): return cm1p < cm2p
-            case (_?, nil, _, _): return true
-            case (nil, _?, _, _): return false
-            case let (nil, nil, cm1d?, cm2d?): return cm1d < cm2d
-            case (nil, nil, _?, nil): return true
-            case (nil, nil, nil, _?): return false
-                
-            default: return cm1.headingText < cm2.headingText
-            }
+        return self.sorted { $0.headingText < $1.headingText }
+            .sorted { (cm1, cm2) -> Bool in
+                switch (cm1.priority, cm2.priority, cm1.dateAndTime?.date, cm2.dateAndTime?.date) {
+                case let (cm1p?, cm2p?, _, _): return cm1p < cm2p
+                case (_?, nil, _, _): return true
+                case (nil, _?, _, _): return false
+                case let (nil, nil, cm1d?, cm2d?): return cm1d < cm2d
+                case (nil, nil, _?, nil): return true
+                case (nil, nil, nil, _?): return false
+                    
+                default: return true
+                }
         }
     }
 
