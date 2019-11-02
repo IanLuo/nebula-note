@@ -110,5 +110,13 @@ public class ImportFileEvent: Event {
     }
 }
 
+/// icloud turned on in settings
 public class iCloudEnabledEvent: Event {}
+/// icloud turnd off in settings
 public class iCloudDisabledEvent: Event {}
+
+/// is files available for iCloud
+public class iCloudAvailabilityChangedEvent: Event {
+    public let isEnabled: Bool
+    public init(isEnabled: Bool) { self.isEnabled = isEnabled }
+}

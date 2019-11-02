@@ -136,10 +136,14 @@ public class Application: Coordinator {
         switch status {
         case .changed:
             if SyncManager.status == .on {
-                // 开始同步 iCloud 文件
-                self.dependency.syncManager.startMonitoringiCloudFileUpdateIfNeeded()
-                
-                self.stack.showAlert(title: L10n.Sync.Alert.Account.Changed.title, message: L10n.Sync.Alert.Account.Changed.msg)
+                self.dependency.syncManager.geticloudContainerURL(completion: { [unowned self] url in
+                    // 开始同步 iCloud 文件
+                    self.dependency.syncManager.startMonitoringiCloudFileUpdateIfNeeded()
+                    
+                    self.stack.showAlert(title: L10n.Sync.Alert.Account.Changed.title, message: L10n.Sync.Alert.Account.Changed.msg)
+                    
+                    self.dependency.eventObserver.emit(iCloudAvailabilityChangedEvent(isEnabled: true))
+                })
             }
         case .closed:
             if self._didTheUserTurnOffiCloudFromSettings {
@@ -147,6 +151,8 @@ public class Application: Coordinator {
                 
                 // mark iCloud off
                 SyncManager.status = .off
+                
+                self.dependency.eventObserver.emit(iCloudAvailabilityChangedEvent(isEnabled: false))
             }
         case .open:
             if SyncManager.status == .unknown {
@@ -160,6 +166,8 @@ public class Application: Coordinator {
                             // 开始同步 iCloud 文件
                             self.dependency.syncManager.startMonitoringiCloudFileUpdateIfNeeded()
                             self.stack.showAlert(title: L10n.Sync.Alert.Status.On.title, message: L10n.Sync.Alert.Status.On.msg)
+                            
+                            self.dependency.eventObserver.emit(iCloudAvailabilityChangedEvent(isEnabled: true))
                         })
                     })
                 }
@@ -170,13 +178,19 @@ public class Application: Coordinator {
                         SyncManager.status = .off
 
                         self.stack.showAlert(title: L10n.Sync.Alert.Status.Off.title, message: L10n.Sync.Alert.Status.Off.msg)
+                        
+                        self.dependency.eventObserver.emit(iCloudAvailabilityChangedEvent(isEnabled: false))
                     })
                 }
                 
                 self.stack.present(confirmViewController, animated: true, completion: nil)
             } else if SyncManager.status == .on {
-                // 开始同步 iCloud 文件
-                self.dependency.syncManager.startMonitoringiCloudFileUpdateIfNeeded()
+                
+                self.dependency.syncManager.geticloudContainerURL(completion: { [unowned self] url in
+                    // 开始同步 iCloud 文件
+                    self.dependency.syncManager.startMonitoringiCloudFileUpdateIfNeeded()
+                    self.dependency.eventObserver.emit(iCloudAvailabilityChangedEvent(isEnabled: true))
+                })
             }
         }
     }
@@ -196,12 +210,10 @@ extension Coordinator {
             navigationController.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: theme.color.interactive]
             navigationController.navigationBar.backIndicatorImage = Asset.Assets.left.image.fill(color: theme.color.descriptive)
             navigationController.navigationBar.backIndicatorTransitionMaskImage = Asset.Assets.left.image
-//            navigationController.navigationBar.setBorder(position: .bottom, color: theme.color.background3, width: 0.5)
         }
         
         navigationController.navigationBar.shadowImage = UIImage()
         navigationController.navigationBar.setBackgroundImage(UIImage(), for: .default)
-//        UIBarButtonItem.appearance().setBackButtonTitlePositionAdjustment(UIOffset(horizontal: -100, vertical: 0), for: UIBarMetrics.default)
         
         return navigationController
     }

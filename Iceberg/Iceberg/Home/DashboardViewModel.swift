@@ -55,7 +55,7 @@ public class DashboardViewModel {
         self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
                                                                     eventType: DocumentSearchHeadingUpdateEvent.self,
                                                                     queue: self._headingChangeObservingQueue) { [weak self] (event: DocumentSearchHeadingUpdateEvent) -> Void in
-            self?._isHeadingsNeedsReload = true
+                                                                        self?._isHeadingsNeedsReload = true
         }
         
         self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
@@ -96,14 +96,22 @@ public class DashboardViewModel {
                                                                     eventType: iCloudOpeningStatusChangedEvent.self,
                                                                     queue: .main,
                                                                     action: { [weak self] (event: iCloudOpeningStatusChangedEvent) in
-            self?._isHeadingsNeedsReload = true
+                                                                        self?._isHeadingsNeedsReload = true
         })
         
         self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
                                                                     eventType: NewDocumentPackageDownloadedEvent.self,
                                                                     queue: .main,
                                                                     action: { [weak self] (event: NewDocumentPackageDownloadedEvent) in
-            self?._isHeadingsNeedsReload = true
+                                                                        self?._isHeadingsNeedsReload = true
+        })
+        
+        self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
+                                                                    eventType: iCloudAvailabilityChangedEvent.self,
+                                                                    queue: .main,
+                                                                    action: { [weak self] (event: iCloudAvailabilityChangedEvent) in
+                                                                        self?._isHeadingsNeedsReload = true
+                                                                        self?.loadDataIfNeeded()
         })
     }
     

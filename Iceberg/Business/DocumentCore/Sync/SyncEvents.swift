@@ -8,6 +8,7 @@
 
 import Foundation
 
+/// user changed the icloud switch status
 public class iCloudOpeningStatusChangedEvent: Event {
     public let isiCloudEnabled: Bool
     
