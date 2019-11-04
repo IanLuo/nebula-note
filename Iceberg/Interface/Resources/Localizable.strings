@@ -235,3 +235,8 @@
 "audio.recorder.continue" = "Continue recording";
 "audio.recorder.stop" = "Stop";
 "audio.recorder.restart" = "Restart record";
+
+// Activity
+"activity.document.createDocument.title" = "Create new document";
+"activity.document.createDocument.description" = "Create an empty new document";
+"activity.document.createDocument.phrase" = "New Document";

@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import Interface
 import RxSwift
+import Business
 
 public class BrowserViewController: UIViewController {
     
@@ -76,5 +77,10 @@ public class BrowserViewController: UIViewController {
             self.view.backgroundColor = theme.color.background1
             nav.navigationBar.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.background1, size: .singlePoint), for: .default)
         }
+        
+        // add activity
+        let activity = Document.createDocumentActivity()
+        self.userActivity = activity
+        activity.becomeCurrent()
     }
 }

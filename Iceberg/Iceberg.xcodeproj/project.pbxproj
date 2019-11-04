@@ -183,6 +183,9 @@
 		E4C268EB22436C90006FC68A /* SyncEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C268EA22436C90006FC68A /* SyncEvents.swift */; };
 		E4C7FB8521BA916D006E3CD8 /* AgendaCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C7FB8421BA916D006E3CD8 /* AgendaCellModel.swift */; };
 		E4C932D52244B55100E3A176 /* AttachmentDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C932D42244B55100E3A176 /* AttachmentDocument.swift */; };
+		E4CBCD1B236D80F500A0FFDB /* CreateDocumentActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4CBCD1A236D80F500A0FFDB /* CreateDocumentActivity.swift */; };
+		E4CBCD1D236D914400A0FFDB /* EditAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4CBCD1C236D914400A0FFDB /* EditAction.swift */; };
+		E4CBCD1F2370695500A0FFDB /* ActivityHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4CBCD1E2370695500A0FFDB /* ActivityHandler.swift */; };
 		E4D0FD7B2348D774001C3BA2 /* PreviewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D0FD7A2348D774001C3BA2 /* PreviewManager.swift */; };
 		E4D31DEC227D39A4001F5272 /* URLlHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D31DEB227D39A4001F5272 /* URLlHandler.swift */; };
 		E4D31DEE227DA633001F5272 /* URLHandlerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D31DED227DA633001F5272 /* URLHandlerManager.swift */; };
@@ -495,6 +498,9 @@
 		E4C46FE221EB311900F6374F /* ModalFormViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModalFormViewController.swift; sourceTree = "<group>"; };
 		E4C7FB8421BA916D006E3CD8 /* AgendaCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgendaCellModel.swift; sourceTree = "<group>"; };
 		E4C932D42244B55100E3A176 /* AttachmentDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentDocument.swift; sourceTree = "<group>"; };
+		E4CBCD1A236D80F500A0FFDB /* CreateDocumentActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateDocumentActivity.swift; sourceTree = "<group>"; };
+		E4CBCD1C236D914400A0FFDB /* EditAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditAction.swift; sourceTree = "<group>"; };
+		E4CBCD1E2370695500A0FFDB /* ActivityHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityHandler.swift; sourceTree = "<group>"; };
 		E4CC0C5821EEF92900058E5D /* Size.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Size.swift; sourceTree = "<group>"; };
 		E4D0FD7A2348D774001C3BA2 /* PreviewManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewManager.swift; sourceTree = "<group>"; };
 		E4D31DEB227D39A4001F5272 /* URLlHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLlHandler.swift; sourceTree = "<group>"; };
@@ -795,6 +801,7 @@
 		E41CB19C21D88D9300EF0A3C /* Business */ = {
 			isa = PBXGroup;
 			children = (
+				E4CBCD19236D80C300A0FFDB /* Activities */,
 				E44683F72289B554005D5B73 /* Delegate2Closure */,
 				E4B54C4E2275E8B10073AE31 /* URLSchema */,
 				E47FA8FE227026B8005AD0BA /* Import */,
@@ -953,6 +960,7 @@
 				E4F3028921D738D200BDE178 /* CapturedList */,
 				E41F86BF218EF4A0006C4CDB /* AttachmentUI */,
 				E43427F92121BF5B00EC6DC3 /* AppDelegate.swift */,
+				E4CBCD1E2370695500A0FFDB /* ActivityHandler.swift */,
 				E44825A2219722C300C17568 /* Application.swift */,
 				E4F885E9226D5BE700748868 /* Coordinator.swift */,
 				E43428022121BF5F00EC6DC3 /* LaunchScreen.storyboard */,
@@ -1173,6 +1181,7 @@
 				E4EA856221D1F83800DD92F9 /* HeadingsOutlineViewController.swift */,
 				E465F87F2241FF6800FA6E83 /* TextViewCommand.swift */,
 				E4A46A2821B28ED800FBDA04 /* DocumentEditViewModel.swift */,
+				E4CBCD1C236D914400A0FFDB /* EditAction.swift */,
 				E462DB98223D257100BF7AB4 /* DateAndTimeSelect */,
 				E472FF9B2270A630004C8495 /* Info */,
 			);
@@ -1204,6 +1213,14 @@
 				E4A168D122904F690040D909 /* MetadataItem+property.swift */,
 			);
 			path = Sync;
+			sourceTree = "<group>";
+		};
+		E4CBCD19236D80C300A0FFDB /* Activities */ = {
+			isa = PBXGroup;
+			children = (
+				E4CBCD1A236D80F500A0FFDB /* CreateDocumentActivity.swift */,
+			);
+			path = Activities;
 			sourceTree = "<group>";
 		};
 		E4EA857321D3AE4200DD92F9 /* Parse */ = {
@@ -1784,6 +1801,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E4CBCD1B236D80F500A0FFDB /* CreateDocumentActivity.swift in Sources */,
 				E4D0FD7B2348D774001C3BA2 /* PreviewManager.swift in Sources */,
 				E41CB1BC21D88DD100EF0A3C /* OutlineTextView.swift in Sources */,
 				E41CB1C121D88DD700EF0A3C /* OutlineParser.swift in Sources */,
@@ -1918,6 +1936,7 @@
 				E42A87FF21CFCAC500151C90 /* AttachmentViewModel.swift in Sources */,
 				E4AB056522068C7D00F98BEB /* FilteredItemsViewController.swift in Sources */,
 				E465F8802241FF6800FA6E83 /* TextViewCommand.swift in Sources */,
+				E4CBCD1D236D914400A0FFDB /* EditAction.swift in Sources */,
 				E49F3E4821B9183F003F468D /* SettingsCoordinator.swift in Sources */,
 				E498AAFF21BBE9B900D2A8EA /* CaptureListViewController.swift in Sources */,
 				E41CB16421D8899200EF0A3C /* HomeViewController.swift in Sources */,
@@ -1933,6 +1952,7 @@
 				E41F86C5218EF4E1006C4CDB /* AgendaCoordinator.swift in Sources */,
 				E428B89A23439F560026AC1F /* BrowserRecentViewModel.swift in Sources */,
 				E472FF9D2270A691004C8495 /* ExportSelectViewController.swift in Sources */,
+				E4CBCD1F2370695500A0FFDB /* ActivityHandler.swift in Sources */,
 				E4729BB02205372D00F22885 /* DashboardSubtypeItemViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

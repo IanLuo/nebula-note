@@ -93,8 +93,6 @@ public class SettingsViewModel {
                     completion(.success(()))
                     self?.delegate?.didSetIsSyncEnabled(enable)
                     
-                    self?.coordinator?.dependency.eventObserver.emit(iCloudAvailabilityChangedEvent(isEnabled: enable))
-                    
                     if enable {
                         self?.coordinator?.dependency.eventObserver.emit(iCloudEnabledEvent())
                     } else {

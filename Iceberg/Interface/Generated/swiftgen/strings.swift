@@ -12,6 +12,19 @@ import Foundation
 // swiftlint:disable nesting type_body_length type_name
 public enum L10n {
 
+  public enum Activity {
+    public enum Document {
+      public enum CreateDocument {
+        /// Create an empty new document
+        public static let description = L10n.tr("Localizable", "activity.document.createDocument.description")
+        /// New Document
+        public static let phrase = L10n.tr("Localizable", "activity.document.createDocument.phrase")
+        /// Create new document
+        public static let title = L10n.tr("Localizable", "activity.document.createDocument.title")
+      }
+    }
+  }
+
   public enum Agenda {
     /// in %@ days
     public static func daysAfter(_ p1: String) -> String {

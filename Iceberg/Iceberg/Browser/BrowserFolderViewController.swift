@@ -84,7 +84,7 @@ public class BrowserFolderViewController: UIViewController {
         
     private func _setupObserver() {
         // bind title from foldler name
-        self.viewModel.title.asDriver().drive(self.rx.title).disposed(by: self.disposeBag)
+        self.viewModel.title.asDriver(onErrorJustReturn: "").drive(self.rx.title).disposed(by: self.disposeBag)
 
         //bind table view
         let dataSource = RxTableViewSectionedReloadDataSource<BrowserDocumentSection>(configureCell: { (dataSource, tableView, indexPath, cellModel) -> UITableViewCell in
@@ -115,7 +115,7 @@ public class BrowserFolderViewController: UIViewController {
         self.viewModel
             .output
             .documents
-            .asDriver()
+            .asDriver(onErrorJustReturn: [])
             .do(onNext: { [weak self] in
                 self?.showEmptyContentImage($0.first?.items.count == 0)
             })

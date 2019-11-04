@@ -103,7 +103,7 @@ public class DashboardViewController: UIViewController {
         }
     }
     
-    fileprivate func selectOnTab(index: Int?) {
+    public func selectOnTab(index: Int?) {
         if let index = index {
             self.tabs.forEach { $0.isCurrent = $0 == self.tabs[index] }
             self.delegate?.didSelectTab(at: index, viewController: self.tabs[index].type.viewController)
@@ -486,6 +486,8 @@ private class SubtabCell: UITableViewCell {
             label.font = theme.font.footnote
             label.textColor = theme.color.descriptive
         })
+        
+        label.textAlignment = .right
         return label
     }()
     

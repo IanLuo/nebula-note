@@ -24,11 +24,12 @@ public struct Dependency {
     let captureService: CaptureService
     let exportManager: ExportManager
     weak var globalCaptureEntryWindow: CaptureGlobalEntranceWindow?
+    let activityHandler: ActivityHandler
 }
 
 public class Coordinator {
     private let id: String = UUID().uuidString
-    private var children: [Coordinator] = []
+    public var children: [Coordinator] = []
     public let stack: UINavigationController
     
     /// modal level

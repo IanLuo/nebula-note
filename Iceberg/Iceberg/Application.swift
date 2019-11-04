@@ -10,11 +10,14 @@ import Foundation
 import UIKit
 import Business
 import Interface
+import RxSwift
 
 public class Application: Coordinator {
     weak var window: UIWindow?
     private let _entranceWindow: CaptureGlobalEntranceWindow
     fileprivate var _didTheUserTurnOffiCloudFromSettings: Bool = false
+    
+    public let startComplete: BehaviorSubject<Bool> = BehaviorSubject(value: false)
 
     public init(window: UIWindow) {
         self.window = window
@@ -22,7 +25,6 @@ public class Application: Coordinator {
         _entranceWindow = CaptureGlobalEntranceWindow(window: window)
         
         _entranceWindow.makeKeyAndVisible()
-        
 
         let navigationController = Coordinator.createDefaultNavigationControlller()
         
@@ -57,7 +59,8 @@ public class Application: Coordinator {
                                           shareExtensionHandler: ShareExtensionDataHandler(),
                                           captureService: CaptureService(attachmentManager: attachmentManager),
                                           exportManager: ExportManager(editorContext: editorContext),
-                                          globalCaptureEntryWindow: _entranceWindow))
+                                          globalCaptureEntryWindow: _entranceWindow,
+                                          activityHandler: ActivityHandler()))
         
         self.window?.rootViewController = self.stack
         
@@ -103,6 +106,9 @@ public class Application: Coordinator {
         self.dependency.eventObserver.emit(AppStartedEvent())
         
         homeCoord.start(from: self, animated: animated)
+        
+        // UI complete loading
+        self.startComplete.onNext(true)
     }
     
     private var _isHandlingSharedIdeas: Bool = false

@@ -49,12 +49,12 @@ public class BrowserFolderViewModel {
     }
     
     public struct Output {
-        public let documents: Variable<[BrowserDocumentSection]> = Variable([])
+        public let documents: BehaviorRelay<[BrowserDocumentSection]> = BehaviorRelay(value: [])
         public let createdDocument: PublishSubject<URL> = PublishSubject()
     }
     
-    public let title: Variable<String>
-    public let url: Variable<URL>
+    public let title: BehaviorRelay<String>
+    public let url: BehaviorRelay<URL>
     public weak var coordinator: BrowserCoordinator? { didSet { self._setupObservers() }}
     public let mode: Mode
     public let isRoot: Bool
@@ -65,10 +65,10 @@ public class BrowserFolderViewModel {
     public let output: Output = Output()
     
     public init(url: URL, mode: Mode) {
-        self.url = Variable(url)
+        self.url = BehaviorRelay(value: url)
         self.mode = mode
         self.isRoot = url.levelsToRoot == 0
-        self.title = Variable(self.isRoot ? "" : url.packageName)
+        self.title = BehaviorRelay(value: self.isRoot ? "" : url.packageName)
         
         self.bind()
     }
@@ -87,7 +87,7 @@ public class BrowserFolderViewModel {
                         cellModel.coordinator = self?.coordinator
                         secion.items.append(cellModel)
                         secion.items.sort(by: { $0.updateDate.timeIntervalSince1970 > $1.updateDate.timeIntervalSince1970 })
-                        self?.output.documents.value = [secion] // trigger reload table
+                        self?.output.documents.accept([secion]) // trigger reload table
                         observer.onNext(url)
                         observer.onCompleted()
                     }
@@ -101,7 +101,7 @@ public class BrowserFolderViewModel {
     public func reload() {
         self._loadFolderData(url: self.url.value)
             .subscribe(onNext: { [weak self] in
-                self?.output.documents.value = [BrowserDocumentSection(items: $0)]
+                self?.output.documents.accept([BrowserDocumentSection(items: $0)])
             })
             .disposed(by: self.disposeBag)
     }

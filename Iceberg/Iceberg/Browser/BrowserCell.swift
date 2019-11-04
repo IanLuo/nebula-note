@@ -485,9 +485,9 @@ public class BrowserCellWithSubFolder: BrowserCell {
         
         self.contentView.insertSubview(self._subFolderIndicatorView, at: 0)
         
-        self._subFolderIndicatorView.allSidesAnchors(to: self.contentView, edgeInsets: .init(top: Layout.edgeInsets.top + 2,
+        self._subFolderIndicatorView.allSidesAnchors(to: self.contentView, edgeInsets: .init(top: Layout.edgeInsets.top + 5,
                                                                                              left: Layout.edgeInsets.left,
-                                                                                             bottom: -2,
+                                                                                             bottom: -5,
                                                                                              right: -Layout.edgeInsets.right))
     }
     

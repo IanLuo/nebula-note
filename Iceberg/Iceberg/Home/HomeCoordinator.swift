@@ -71,6 +71,10 @@ public class HomeCoordinator: Coordinator {
     
     private var tempCoordinator: Coordinator?
     
+    public func selectOnDashboardTab(at index: Int) {
+        self._dashboardViewController.selectOnTab(index: index)
+    }
+    
     public func showTempCoordinator(_ coordinator: Coordinator) {
         // set temp coordinator as child of current coordinator
         coordinator.parent = self
