@@ -66,6 +66,9 @@ public struct HTMLExporter: Exportable {
                     result = result.nsstring.replacingCharacters(in: token.range, with: tokenString)
                 }
                 
+                result.insert(contentsOf: "<html><meta charset=\"utf-8\"/>", at: result.startIndex)
+                result.append("</html>")
+                
                 completion(.string(result))
             }
         }
@@ -77,9 +80,9 @@ extension Token {
         if let heading = self as? HeadingToken {
             return "<h\(heading.level)>\(string.nsstring.substring(with: heading.headingTextRange))</h\(heading.level)>"
         } else if let orderedList = self as? OrderedListToken {
-            return "<li>\(string.nsstring.substring(with: orderedList.range).nsstring.replacingCharacters(in: orderedList.prefix.moveRightBound(by: 1).offset(-orderedList.range.location), with: ""))</li>"
+            return "<li>\(string.nsstring.substring(with: orderedList.range).nsstring.replacingCharacters(in: orderedList.prefix.offset(-orderedList.range.location), with: ""))</li>"
         } else if let unorderedList = self as? UnorderdListToken {
-            return "<li>\(string.nsstring.substring(with: unorderedList.range).nsstring.replacingCharacters(in: unorderedList.prefix.moveRightBound(by: 1).offset(-unorderedList.range.location), with: ""))</li>"
+            return "<li>\(string.nsstring.substring(with: unorderedList.range).nsstring.replacingCharacters(in: unorderedList.prefix.offset(-unorderedList.range.location), with: ""))</li>"
         } else if let checkbox = self as? CheckboxToken {
             return "<a>[\(string.nsstring.substring(with: checkbox.range(for: "status")!))] </a>"
         } else if let quoteBlock = self as? BlockBeginToken, quoteBlock.blockType == .quote {
