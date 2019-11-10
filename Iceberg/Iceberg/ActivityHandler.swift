@@ -23,8 +23,9 @@ public class ActivityHandler {
                 for case let homeCoordinator in application.children where homeCoordinator is HomeCoordinator {
                     let homeCoordinator = homeCoordinator as! HomeCoordinator
                     homeCoordinator.selectOnDashboardTab(at: 3)
-                    homeCoordinator.dependency.documentManager.add(title: L10n.Browser.Title.untitled, below: nil) { url in
+                    homeCoordinator.dependency.documentManager.add(title: L10n.Browser.Title.untitled, below: nil) { [unowned homeCoordinator] url in
                         if let top = homeCoordinator.topCoordinator, let url = url {
+                            homeCoordinator.dependency.globalCaptureEntryWindow?.hide()
                             let editor = EditorCoordinator(stack: Coordinator.createDefaultNavigationControlller(),
                                                            dependency: top.dependency,
                                                            usage: EditorCoordinator.Usage.editor(url, 0))
@@ -62,7 +63,9 @@ public class ActivityHandler {
     }
     
     private func handleCapture(application: Application, kind: Attachment.Kind) {
+        application.dependency.globalCaptureEntryWindow?.hide()
         application.topCoordinator?.showAttachmentPicker(kind: kind, complete: { [unowned application] attachmentId in
+            application.dependency.globalCaptureEntryWindow?.show()
             application.dependency.captureService.save(key: attachmentId) {
                 HUD.flash(HUDContentType.success, delay: 1)
             }
