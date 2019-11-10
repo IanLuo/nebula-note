@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import Business
+import PKHUD
 
 public struct Dependency {
     let documentManager: DocumentManager
@@ -285,6 +286,7 @@ extension Coordinator: CaptureCoordinatorDelegate {
                 self.showAttachmentPicker(kind: attachmentKind, complete: { [weak self] attachmentId in
                     self?.dependency.globalCaptureEntryWindow?.show()
                     coordinator.addAttachment(attachmentId: attachmentId) {
+                        HUD.flash(HUDContentType.success, delay: 1)
                         self?.dependency.eventObserver.emit(NewCaptureAddedEvent(attachmentId: attachmentId, kind: attachmentKind.rawValue))
                     }
                     }, cancel: { [weak self] in

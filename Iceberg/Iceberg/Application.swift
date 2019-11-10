@@ -11,13 +11,19 @@ import UIKit
 import Business
 import Interface
 import RxSwift
+import RxCocoa
 
 public class Application: Coordinator {
     weak var window: UIWindow?
     private let _entranceWindow: CaptureGlobalEntranceWindow
     fileprivate var _didTheUserTurnOffiCloudFromSettings: Bool = false
+    private let disposeBag = DisposeBag()
     
-    public let startComplete: BehaviorSubject<Bool> = BehaviorSubject(value: false)
+    public let isFileReadyToAccess: BehaviorRelay<Bool> = BehaviorRelay(value: false)
+    public let uiStackReady: BehaviorRelay<Bool> = BehaviorRelay(value: false)
+    public lazy var startComplete: Observable<Bool> =  Observable.combineLatest(isFileReadyToAccess, uiStackReady).map { isFileReady, isUIReady in
+        return isFileReady && isUIReady
+    }
 
     public init(window: UIWindow) {
         self.window = window
@@ -96,11 +102,12 @@ public class Application: Coordinator {
         // 导入 extension 收集的 idea
         self.handleSharedIdeas()
         
-        // if use without delay, the settings may has no data, mode setting may not take effect
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
-            // 设置主题
-            UIViewController().setupTheme()
-        }
+        // 设置主题, set up the theme when the settings file is ready
+        startComplete.subscribe(onNext: {
+            if $0 {
+                UIViewController().setupTheme()
+            }
+        }).disposed(by: self.disposeBag)
 
         // 通知完成初始化
         self.dependency.eventObserver.emit(AppStartedEvent())
@@ -108,7 +115,7 @@ public class Application: Coordinator {
         homeCoord.start(from: self, animated: animated)
         
         // UI complete loading
-        self.startComplete.onNext(true)
+        self.uiStackReady.accept(true)
     }
     
     private var _isHandlingSharedIdeas: Bool = false
@@ -134,6 +141,7 @@ public class Application: Coordinator {
     private func _setupiCloud() {
         if SyncManager.status == .off {
             // 用户已关闭 iCloud，忽略
+            self.isFileReadyToAccess.accept(true)
             return
         }
         
@@ -149,6 +157,8 @@ public class Application: Coordinator {
                     self.stack.showAlert(title: L10n.Sync.Alert.Account.Changed.title, message: L10n.Sync.Alert.Account.Changed.msg)
                     
                     self.dependency.eventObserver.emit(iCloudAvailabilityChangedEvent(isEnabled: true))
+                    
+                    self.isFileReadyToAccess.accept(true)
                 })
             }
         case .closed:
@@ -159,6 +169,8 @@ public class Application: Coordinator {
                 SyncManager.status = .off
                 
                 self.dependency.eventObserver.emit(iCloudAvailabilityChangedEvent(isEnabled: false))
+                
+                self.isFileReadyToAccess.accept(true)
             }
         case .open:
             if SyncManager.status == .unknown {
@@ -174,6 +186,8 @@ public class Application: Coordinator {
                             self.stack.showAlert(title: L10n.Sync.Alert.Status.On.title, message: L10n.Sync.Alert.Status.On.msg)
                             
                             self.dependency.eventObserver.emit(iCloudAvailabilityChangedEvent(isEnabled: true))
+                            
+                            self.isFileReadyToAccess.accept(true)
                         })
                     })
                 }
@@ -186,6 +200,8 @@ public class Application: Coordinator {
                         self.stack.showAlert(title: L10n.Sync.Alert.Status.Off.title, message: L10n.Sync.Alert.Status.Off.msg)
                         
                         self.dependency.eventObserver.emit(iCloudAvailabilityChangedEvent(isEnabled: false))
+                        
+                        self.isFileReadyToAccess.accept(true)
                     })
                 }
                 
@@ -196,6 +212,8 @@ public class Application: Coordinator {
                     // 开始同步 iCloud 文件
                     self.dependency.syncManager.startMonitoringiCloudFileUpdateIfNeeded()
                     self.dependency.eventObserver.emit(iCloudAvailabilityChangedEvent(isEnabled: true))
+                    
+                    self.isFileReadyToAccess.accept(true)
                 })
             }
         }

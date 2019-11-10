@@ -224,8 +224,12 @@ extension DocumentEditViewController: DocumentEditViewModelDelegate {
         self._loadingIndicator.stopAnimating()
         
         // 移动到指定的位置（如果需要）
-        self.allowScrollContentWhenKeyboardDisapearTemporaily()
-        self._scrollTo(location: self.viewModel.onLoadingLocation)
+        if self.viewModel.onLoadingLocation > 0 {
+            self.allowScrollContentWhenKeyboardDisapearTemporaily()
+            self._scrollTo(location: self.viewModel.onLoadingLocation)
+        } else {
+            self.viewModel.foldAll()
+        }
         
         // 打开文件时， 添加到最近使用的文件
         self.viewModel.coordinator?.dependency.editorContext.recentFilesManager.addRecentFile(url: self.viewModel.url, lastLocation: 0) { [weak self] in

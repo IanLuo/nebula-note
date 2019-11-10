@@ -11,6 +11,7 @@ target 'Iceberg' do
     pod 'Drawsana' # https://github.com/Asana/Drawsana
     pod 'SwiftGen', '~> 6.0'
     pod 'KDCalendar', '~> 1.6.5'
+    pod 'PKHUD', '~> 5.0'
 end
 
 target 'IcebergTests' do

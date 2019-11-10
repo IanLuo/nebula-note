@@ -110,6 +110,7 @@
 "document.edit.remote_editing_arrived_keep_this_one" = "Keep this one";
 "document.edit.remote_editing_arrived_keep_remote.one" = "Keep remote one";
 
+"document.edit.create.failed" = "Failed to create document";
 // sync
 "sync.confirm.useiCloud" = "Do you want use iCloud to store, your documents. If so, you will be able to access the contents from any device with your iCloud account, and they will be kept safe if you remove the app, or even lose your device.";
 "sync.alert.status.on.title" = "Using iCloud storage";
@@ -240,3 +241,31 @@
 "activity.document.createDocument.title" = "Create new document";
 "activity.document.createDocument.description" = "Create an empty new document";
 "activity.document.createDocument.phrase" = "New Document";
+
+"activity.document.CaptureTextActivity.title" = "Capture Text";
+"activity.document.CaptureTextActivity.description" = "Capture some ideas with words";
+"activity.document.CaptureTextActivity.phrase" = "Capture text";
+
+"activity.document.captureImageLibraryActivity.title" = "Capture Image";
+"activity.document.captureImageLibraryActivity.description" = "Capture idea with image";
+"activity.document.captureImageLibraryActivity.phrase" = "Capture Image";
+
+"activity.document.captureAudioActivity.title" = "Capture Voice";
+"activity.document.captureAudioActivity.description" = "Capture idea with voice";
+"activity.document.captureAudioActivity.phrase" = "Capture Voice";
+
+"activity.document.captureVideoActivity.title" = "Capture Video";
+"activity.document.captureVideoActivity.description" = "Capture idea with video";
+"activity.document.captureVideoActivity.phrase" = "Capture Videoc";
+
+"activity.document.captureSketchActivity.title" = "Capture with Sketch";
+"activity.document.captureSketchActivity.description" = "Cappture idea with drawing something";
+"activity.document.captureSketchActivity.phrase" = "Capture with Sketch";
+
+"activity.document.captureLinkActivity.title" = "Capture Link";
+"activity.document.captureLinkActivity.description" = "Capture idea by input a link";
+"activity.document.captureLinkActivity.phrase" = "Capture link";
+
+"activity.document.captureLocationActivity.title" = "Capture Location";
+"activity.document.captureLocationActivity.description" = "Capture the location you are at";
+"activity.document.captureLocationActivity.phrase" = "Capture Location";

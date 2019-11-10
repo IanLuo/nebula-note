@@ -51,10 +51,14 @@ public class BrowserFolderViewModel {
     public struct Output {
         public let documents: BehaviorRelay<[BrowserDocumentSection]> = BehaviorRelay(value: [])
         public let createdDocument: PublishSubject<URL> = PublishSubject()
+        public let createDocumentFailed: PublishSubject<String> = PublishSubject()
     }
     
+    private var _documentRelativePath: String
+    public var url: URL {
+        return URL.documentBaseURL.appendingPathComponent(self._documentRelativePath)
+    }
     public let title: BehaviorRelay<String>
-    public let url: BehaviorRelay<URL>
     public weak var coordinator: BrowserCoordinator? { didSet { self._setupObservers() }}
     public let mode: Mode
     public let isRoot: Bool
@@ -65,7 +69,7 @@ public class BrowserFolderViewModel {
     public let output: Output = Output()
     
     public init(url: URL, mode: Mode) {
-        self.url = BehaviorRelay(value: url)
+        self._documentRelativePath = url.documentRelativePath
         self.mode = mode
         self.isRoot = url.levelsToRoot == 0
         self.title = BehaviorRelay(value: self.isRoot ? "" : url.packageName)
@@ -79,7 +83,7 @@ public class BrowserFolderViewModel {
     
     public func createChildDocument(title: String) -> Observable<URL> {
         return Observable.create { observer -> Disposable in
-            self.coordinator?.dependency.documentManager.add(title: title, below: self.url.value) { [weak self] url in
+            self.coordinator?.dependency.documentManager.add(title: title, below: self.url) { [weak self] url in
                 if let url = url {
                     let sections = self?.output.documents.value
                     if var secion = sections?.first {
@@ -91,6 +95,8 @@ public class BrowserFolderViewModel {
                         observer.onNext(url)
                         observer.onCompleted()
                     }
+                } else {
+                    self?.output.createDocumentFailed.onNext(title + " failed to create")
                 }
             }
             
@@ -99,7 +105,7 @@ public class BrowserFolderViewModel {
     }
     
     public func reload() {
-        self._loadFolderData(url: self.url.value)
+        self._loadFolderData(url: self.url)
             .subscribe(onNext: { [weak self] in
                 self?.output.documents.accept([BrowserDocumentSection(items: $0)])
             })
@@ -157,16 +163,18 @@ public class BrowserFolderViewModel {
         
         /// observe disable, but not observe enable, because enabled will send iCloudAvailabilityChangedEvent when iCloud files are ready
         eventObserver?.registerForEvent(on: self, eventType: iCloudDisabledEvent.self, queue: nil, action: { [weak self] (event: iCloudDisabledEvent) in
-            self?.reload()
+            guard let strongSelf = self else { return }
+            strongSelf.reload()
         })
         
         eventObserver?.registerForEvent(on: self, eventType: iCloudAvailabilityChangedEvent.self, queue: nil, action: { [weak self] (event: iCloudAvailabilityChangedEvent) in
-            self?.reload()
+            guard let strongSelf = self else { return }
+            strongSelf.reload()
         })
         
         eventObserver?.registerForEvent(on: self, eventType: AddDocumentEvent.self, queue: nil, action: { [weak self] (event: AddDocumentEvent) -> Void in
             // if new document is in current folder, reload
-            if event.url.convertoFolderURL == self?.url.value.convertoFolderURL {
+            if event.url.convertoFolderURL == self?.url.convertoFolderURL {
                 self?.reload()
             } else if let items = self?.output.documents.value.first?.items {
                 // if new document is in current folder's items, reload current folder, because the folder enter indicator might need update

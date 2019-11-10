@@ -14,6 +14,62 @@ public enum L10n {
 
   public enum Activity {
     public enum Document {
+      public enum CaptureTextActivity {
+        /// Capture some ideas with words
+        public static let description = L10n.tr("Localizable", "activity.document.CaptureTextActivity.description")
+        /// Capture text
+        public static let phrase = L10n.tr("Localizable", "activity.document.CaptureTextActivity.phrase")
+        /// Capture Text
+        public static let title = L10n.tr("Localizable", "activity.document.CaptureTextActivity.title")
+      }
+      public enum CaptureAudioActivity {
+        /// Capture idea with voice
+        public static let description = L10n.tr("Localizable", "activity.document.captureAudioActivity.description")
+        /// Capture Voice
+        public static let phrase = L10n.tr("Localizable", "activity.document.captureAudioActivity.phrase")
+        /// Capture Voice
+        public static let title = L10n.tr("Localizable", "activity.document.captureAudioActivity.title")
+      }
+      public enum CaptureImageLibraryActivity {
+        /// Capture idea with image
+        public static let description = L10n.tr("Localizable", "activity.document.captureImageLibraryActivity.description")
+        /// Capture Image
+        public static let phrase = L10n.tr("Localizable", "activity.document.captureImageLibraryActivity.phrase")
+        /// Capture Image
+        public static let title = L10n.tr("Localizable", "activity.document.captureImageLibraryActivity.title")
+      }
+      public enum CaptureLinkActivity {
+        /// Capture idea by input a link
+        public static let description = L10n.tr("Localizable", "activity.document.captureLinkActivity.description")
+        /// Capture link
+        public static let phrase = L10n.tr("Localizable", "activity.document.captureLinkActivity.phrase")
+        /// Capture Link
+        public static let title = L10n.tr("Localizable", "activity.document.captureLinkActivity.title")
+      }
+      public enum CaptureLocationActivity {
+        /// Capture the location you are at
+        public static let description = L10n.tr("Localizable", "activity.document.captureLocationActivity.description")
+        /// Capture Location
+        public static let phrase = L10n.tr("Localizable", "activity.document.captureLocationActivity.phrase")
+        /// Capture Location
+        public static let title = L10n.tr("Localizable", "activity.document.captureLocationActivity.title")
+      }
+      public enum CaptureSketchActivity {
+        /// Cappture idea with drawing something
+        public static let description = L10n.tr("Localizable", "activity.document.captureSketchActivity.description")
+        /// Capture with Sketch
+        public static let phrase = L10n.tr("Localizable", "activity.document.captureSketchActivity.phrase")
+        /// Capture with Sketch
+        public static let title = L10n.tr("Localizable", "activity.document.captureSketchActivity.title")
+      }
+      public enum CaptureVideoActivity {
+        /// Capture idea with video
+        public static let description = L10n.tr("Localizable", "activity.document.captureVideoActivity.description")
+        /// Capture Videoc
+        public static let phrase = L10n.tr("Localizable", "activity.document.captureVideoActivity.phrase")
+        /// Capture Video
+        public static let title = L10n.tr("Localizable", "activity.document.captureVideoActivity.title")
+      }
       public enum CreateDocument {
         /// Create an empty new document
         public static let description = L10n.tr("Localizable", "activity.document.createDocument.description")
@@ -315,6 +371,10 @@ public enum L10n {
           /// Paragraph actions
           public static let title = L10n.tr("Localizable", "document.edit.action.paragraph.title")
         }
+      }
+      public enum Create {
+        /// Failed to create document
+        public static let failed = L10n.tr("Localizable", "document.edit.create.failed")
       }
       public enum Date {
         /// All day

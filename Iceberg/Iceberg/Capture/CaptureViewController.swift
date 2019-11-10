@@ -101,6 +101,13 @@ public class CaptureViewController: UIViewController, TransitionProtocol {
         self.coordinator?.stop()
         self.delegate?.didCancel()
     }
+    
+    fileprivate func addActivity(for kind: Attachment.Kind) {
+        // add activity
+        let activity = Document.createCaptureActivity(kind: kind)
+        self.userActivity = activity
+        activity.becomeCurrent()
+    }
 }
 
 extension CaptureViewController: UIGestureRecognizerDelegate {
@@ -111,7 +118,9 @@ extension CaptureViewController: UIGestureRecognizerDelegate {
 
 extension CaptureViewController: UITableViewDelegate, UITableViewDataSource {
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.delegate?.didSelect(attachmentKind: Attachment.Kind.allCases[indexPath.row])
+        let kind = Attachment.Kind.allCases[indexPath.row]
+        self.delegate?.didSelect(attachmentKind: kind)
+        self.addActivity(for: kind)
     }
     
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

@@ -13,7 +13,7 @@ import Interface
 
 public class AttachmentLinkViewController: AttachmentViewController, AttachmentViewModelDelegate {
     public var defaultTitle: String?
-    public var defaultURL: String?
+    public var defaultURL: String? = "https://"
     
     public override func viewDidLoad() {
         super.viewDidLoad()

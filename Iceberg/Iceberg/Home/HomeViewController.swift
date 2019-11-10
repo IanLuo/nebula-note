@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import Business
 import Interface
+import RxSwift
 
 public protocol HomeViewControllerDelegate: class {
     func didShowMasterView()
@@ -38,12 +39,21 @@ public class HomeViewController: UIViewController {
     private lazy var pan = UIPanGestureRecognizer(target: self, action: #selector(didPan(gesture:)))
     private lazy var tap = UITapGestureRecognizer(target: self, action: #selector(didTap(gesture:)))
     
-    private let moveIndicator: UIView = {
-        let view = UIView()
-        view.sizeAnchor(width: 10, height: 50)
-        view.roundConer(radius: 5)
+    private let disposeBag = DisposeBag()
+    
+    private lazy var moveIndicator: UIButton = {
+        let button = UIButton()
+        button.sizeAnchor(width: 20, height: 50)
+        button.roundConer(radius: 5)
+        button.rx.tap.subscribe(onNext: {
+            if self.isShowingMaster {
+                self.showDetailView()
+            } else {
+                self.showMasterView()
+            }
+        }).disposed(by: self.disposeBag)
 
-        return view
+        return button
     }()
     
     public override func viewDidLoad() {
@@ -58,7 +68,7 @@ public class HomeViewController: UIViewController {
         
         self.interface { [weak self] (me, theme) in
             me.setNeedsStatusBarAppearanceUpdate()
-            self?.moveIndicator.backgroundColor = theme.color.background2
+            self?.moveIndicator.backgroundColor = theme.color.spotlight
         }
     }
     
@@ -86,7 +96,7 @@ public class HomeViewController: UIViewController {
         self.view.addSubview(self.masterViewController.view)
         self._setupFrames()
         
-        self.view.addSubview(self.moveIndicator)
+        self.view.insertSubview(self.moveIndicator, at: 0)
         self.moveIndicator.centerAnchors(position: .centerY, to: self.view)
         self.moveIndicator.centerXAnchor.constraint(equalTo: self.masterViewController.view.rightAnchor).isActive = true
     }

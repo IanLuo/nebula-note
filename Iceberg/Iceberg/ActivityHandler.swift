@@ -10,6 +10,7 @@ import Foundation
 import Business
 import RxSwift
 import Interface
+import PKHUD
 
 public class ActivityHandler {
     private let disposeBag = DisposeBag()
@@ -28,12 +29,43 @@ public class ActivityHandler {
                                                            dependency: top.dependency,
                                                            usage: EditorCoordinator.Usage.editor(url, 0))
                             editor.start(from: top)
+                        } else if url == nil {
+                            application.topCoordinator?.viewController?.showAlert(title: "Faild to create document", message: "")
                         }
                     }
                 }
             }).disposed(by: self.disposeBag)
             return true
+        case captureTextActivity:
+            self.handleCapture(application: application, kind: Attachment.Kind.text)
+            return true
+        case captureImageActivity:
+            self.handleCapture(application: application, kind: Attachment.Kind.image)
+            return true
+        case captureLocationActivity:
+            self.handleCapture(application: application, kind: Attachment.Kind.location)
+            return true
+        case captureLinkActivity:
+            self.handleCapture(application: application, kind: Attachment.Kind.link)
+            return true
+        case captureAudioActivity:
+            self.handleCapture(application: application, kind: Attachment.Kind.audio)
+            return true
+        case captureVideoActivity:
+            self.handleCapture(application: application, kind: Attachment.Kind.video)
+            return true
+        case captureSketchActivity:
+            self.handleCapture(application: application, kind: Attachment.Kind.sketch)
+            return true
         default: return false
         }
+    }
+    
+    private func handleCapture(application: Application, kind: Attachment.Kind) {
+        application.topCoordinator?.showAttachmentPicker(kind: kind, complete: { [unowned application] attachmentId in
+            application.dependency.captureService.save(key: attachmentId) {
+                HUD.flash(HUDContentType.success, delay: 1)
+            }
+        }, cancel: {})
     }
 }
