@@ -25,6 +25,7 @@ end
 
 target 'Interface' do
     pod 'SwiftyBeaver'
+    pod 'PKHUD', '~> 5.0'
 end
 
 target 'CaptureIdeaExtension' do

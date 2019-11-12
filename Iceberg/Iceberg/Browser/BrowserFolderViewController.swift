@@ -12,6 +12,7 @@ import RxSwift
 import RxCocoa
 import RxDataSources
 import Interface
+import Business
 
 public class BrowserFolderViewController: UIViewController {
     
@@ -172,12 +173,6 @@ public class BrowserFolderViewController: UIViewController {
         self.present.subscribe(onNext: { [weak self] viewController in
             self?.present(viewController, animated: true)
         }).disposed(by: self.disposeBag)
-        
-        self.viewModel
-            .output
-            .createDocumentFailed
-            .subscribe(onNext: { [unowned self] in self.showAlert(title: $0, message: "")  })
-            .disposed(by: self.disposeBag)
     }
     
     private func enterChild(url: URL) {

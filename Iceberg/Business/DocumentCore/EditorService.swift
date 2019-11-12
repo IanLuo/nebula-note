@@ -201,7 +201,9 @@ public class EditorService {
     }
     
     public func open(completion:((String?) -> Void)? = nil) {
+        log.info("open file: \(self._url)")
         guard let document = self._document else {
+            log.error("can't initialize document with url: \(self._url)")
             completion?(nil)
             return
         }
@@ -219,11 +221,13 @@ public class EditorService {
                     
                     if isOpenSuccessfully {
                         DispatchQueue.main.async {
+                            log.info("open document success(\(strongSelf._url))")
                              strongSelf._editorController.string = document.string // 触发解析
                             completion?(document.string)
                         }
                     } else {
                         DispatchQueue.main.async {
+                            log.error("fail to open document with url: \(strongSelf._url)")
                             completion?(nil)
                         }
                     }

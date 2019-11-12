@@ -8,11 +8,16 @@
 
 import Foundation
 import UIKit
+import PKHUD
 
 extension UIViewController {
     public func showAlert(title: String, message: String) {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         self.present(alertController, animated: true, completion: nil)
+    }
+    
+    public func toastError(title: String, subTitle: String? = nil) {
+        HUD.flash(HUDContentType.labeledError(title: title, subtitle: subTitle), delay: 1.5)
     }
 }

@@ -156,26 +156,38 @@ public class DocumentEditViewController: UIViewController {
     private var _lastState: UIDocument.State?
     @objc private func _documentStateChanged(_ notification: NSNotification) {
         if let document = notification.object as? UIDocument {
-            if document.documentState == .closed {
-                
-            } else if document.documentState == .editingDisabled {
-                print("document state is: editingDisabled")
-            } else if document.documentState == .inConflict {
-                print("document state is: inConflict")
-                do { try self.viewModel.handleConflict(url: document.fileURL) }
-                catch {
-                    log.error("failed to handle conflict: \(error)")
-                }
-            } else if document.documentState == .normal {
+            if document.documentState == .normal {
                 if self._lastState == .editingDisabled { // recovered from editDisabled, that means other process has modified it, revert content
                     self.viewModel.revertContent() // load content from disk
                 }
                 log.info("document state is: normal")
-            } else if document.documentState == .progressAvailable {
+            }
+            
+            if document.documentState.contains(.closed) {
+                log.info("document is closed")
+            }
+            
+            if document.documentState.contains(.editingDisabled) {
+                log.info("document state is: editingDisabled")
+            }
+            
+            if document.documentState.contains(.inConflict) {
+                log.info("document has conflict inConflict")
+                
+                do { try self.viewModel.handleConflict(url: document.fileURL) }
+                catch {
+                    log.error("failed to handle conflict: \(error)")
+                }
+            }
+            
+            if document.documentState.contains(.progressAvailable) {
                 log.info("document state is: progressAvailable")
-            } else if document.documentState == .savingError {
+            }
+            
+            if document.documentState.contains(.savingError) {
                 log.info("document state is: savingError")
             }
+            
             log.info("document state is: \(document.documentState)")
             
             self._lastState = document.documentState
@@ -248,10 +260,6 @@ extension DocumentEditViewController: DocumentEditViewModelDelegate {
             self.textView.selectedRange = NSRange(location: 0, length: 0)
             self.textView.becomeFirstResponder()
         }
-    }
-    
-    public func documentStatesChange(state: UIDocument.State) {
-        
     }
     
     public func updateHeadingInfo(heading: HeadingToken?) {

@@ -78,6 +78,17 @@ public class BrowserViewController: UIViewController {
             nav.navigationBar.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.background1, size: .singlePoint), for: .default)
         }
         
+        NotificationCenter.default
+        .rx
+        .notification(UIDocument.stateChangedNotification)
+        .takeUntil(self.rx.deallocated)
+        .subscribe(onNext: { notification in
+            if case let document? = notification.object as? Document, document.documentState.contains(.savingError) {
+                self.toastError(title: "fail to save document", subTitle: document.fileURL.lastPathComponent)
+            }
+        })
+        .disposed(by: self.disposeBag)
+        
         // add activity
         let activity = Document.createDocumentActivity()
         self.userActivity = activity

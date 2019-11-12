@@ -11,7 +11,6 @@ import Business
 
 public protocol DocumentEditViewModelDelegate: class {
     func updateHeadingInfo(heading: HeadingToken?)
-    func documentStatesChange(state: UIDocument.State)
     func didReadyToEdit()
     func didEnterTokens(_ tokens: [Token])
 }
@@ -56,6 +55,7 @@ public class DocumentEditViewModel {
     }
     
     deinit {
+        self._editorService.close()
         self.removeObservers()
     }
     
@@ -351,11 +351,6 @@ public class DocumentEditViewModel {
 
 extension DocumentEditViewModel {
     fileprivate func addObservers() {
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(handleStatesChanges),
-                                               name: UIDocument.stateChangedNotification,
-                                               object: nil)
-        
         coordinator?.dependency.eventObserver.registerForEvent(on: self,
                                                                eventType: NewDocumentPackageDownloadedEvent.self,
                                                                queue: .main,
@@ -368,11 +363,5 @@ extension DocumentEditViewModel {
     
     fileprivate func removeObservers() {
         NotificationCenter.default.removeObserver(self)
-    }
-    
-    @objc func handleStatesChanges(notification: Notification) {
-        if let state = notification.object as? UIDocument.State {
-            self.delegate?.documentStatesChange(state: state)
-        }
     }
 }

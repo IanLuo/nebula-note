@@ -65,7 +65,7 @@ extension FilteredItemsViewController: UITableViewDataSource {
 extension FilteredItemsViewController: UITableViewDelegate {
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let cellModel = self.viewModel.data[indexPath.row]
-        self.viewModel.coordinator?.openDocument(url: cellModel.url, location: cellModel.heading.location)
+        self.viewModel.coordinator?.openDocument(url: cellModel.url, location: cellModel.heading.range.upperBound)
         
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
             tableView.deselectRow(at: indexPath, animated: true)

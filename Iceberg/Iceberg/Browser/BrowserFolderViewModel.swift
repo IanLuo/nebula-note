@@ -56,7 +56,9 @@ public class BrowserFolderViewModel {
     
     private var _documentRelativePath: String
     public var url: URL {
-        return URL.documentBaseURL.appendingPathComponent(self._documentRelativePath)
+        return self._documentRelativePath.count > 0
+            ? URL.documentBaseURL.appendingPathComponent(self._documentRelativePath)
+            : URL.documentBaseURL
     }
     public let title: BehaviorRelay<String>
     public weak var coordinator: BrowserCoordinator? { didSet { self._setupObservers() }}
@@ -96,7 +98,7 @@ public class BrowserFolderViewModel {
                         observer.onCompleted()
                     }
                 } else {
-                    self?.output.createDocumentFailed.onNext(title + " failed to create")
+                    self?.output.createDocumentFailed.onNext(title)
                 }
             }
             
