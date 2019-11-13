@@ -181,7 +181,7 @@ public class DocumentEditViewModel {
     
     public func moveParagraphToOtherDocument(url: URL, outline otherOutline: OutlineLocation, location: Int, textView: UITextView, completion: @escaping (DocumentContentCommandResult) -> Void) {
         self.coordinator?.dependency.editorContext.request(url: url).onReadyToUse = { [weak self] service in
-            service.start(complete: { isReady, service in
+            service.open(completion: { string in
                 guard let strongSelf = self else { return }
                 
                 guard let heading = strongSelf._editorService.heading(at: location) else { return }

@@ -23,22 +23,7 @@ public class EditorService {
     private var _queue: DispatchQueue!
     private let _url: URL
     
-    public var isReadyToUse: Bool = false {
-        didSet {
-            if isReadyToUse && isReadyToUse != oldValue {
-                onReadyToUse?(self)
-            }
-        }
-    }
-    
-    public var onReadyToUse: ((EditorService) -> Void)? {
-        didSet {
-            if isReadyToUse {
-                onReadyToUse?(self)
-            }
-        }
-    }
-    
+    // MARK: -
     internal init(url: URL, queue: DispatchQueue, eventObserver: EventObserver, parser: OutlineParser) {
         log.info("creating editor service with url: \(url)")
         self._url = url
@@ -55,12 +40,87 @@ public class EditorService {
                 self?.isReadyToUse = true
             }
         }
-        
-//        self._document?.didUpdateDocumentContentAction = { [weak self] in
-//            
-//        }
+    }
+    
+    deinit {
+        self._document?.close(completionHandler: nil)
     }
 
+    // MARK: - life cycle -
+    
+    public var isReadyToUse: Bool = false {
+        didSet {
+            if isReadyToUse && isReadyToUse != oldValue {
+                onReadyToUse?(self)
+            }
+        }
+    }
+    
+    public var onReadyToUse: ((EditorService) -> Void)? {
+        didSet {
+            if isReadyToUse {
+                onReadyToUse?(self)
+            }
+        }
+    }
+    
+    public func open(completion:((String?) -> Void)? = nil) {
+        log.info("open file: \(self._url)")
+        guard let document = self._document else {
+            log.error("can't initialize document with url: \(self._url)")
+            completion?(nil)
+            return
+        }
+        
+        self._queue.async { [weak self] in
+            // 如果文档已经打开，则直接返回
+            if document.documentState == .normal {
+                DispatchQueue.main.async {
+                    completion?(document.string)
+                }
+            } else {
+                // 打开文档，触发解析，然后返回
+                document.open { [unowned document] (isOpenSuccessfully: Bool) in
+                    guard let strongSelf = self else { return }
+                    
+                    if isOpenSuccessfully {
+                        DispatchQueue.main.async {
+                            log.info("open document success(\(strongSelf._url))")
+                             strongSelf._editorController.string = document.string // 触发解析
+                            completion?(document.string)
+                        }
+                    } else {
+                        DispatchQueue.main.async {
+                            log.error("fail to open document with url: \(strongSelf._url)")
+                            completion?(nil)
+                        }
+                    }
+                }
+            }
+        }
+    }
+        
+    private var isClosing: Bool = false
+    public func close(completion:((Bool) -> Void)? = nil) {
+        guard let document = self._document else {
+            completion?(false)
+            return
+        }
+        
+        guard self.isClosing == false else { return }
+        
+        self.isClosing = true
+        
+        self._queue.async {
+            document.close {
+                completion?($0)
+                self.isClosing = false
+            }
+        }
+    }
+    
+    // MARK: -
+    
     public var container: NSTextContainer {
         return _editorController.textContainer
     }
@@ -77,33 +137,6 @@ public class EditorService {
         return self._editorController.textStorage.allTokens
     }
 
-    public func start(complete: @escaping (Bool, EditorService) -> Void) {
-        guard let document = self._document else {
-            complete(false, self)
-            return
-        }
-        
-        _queue.async { [unowned self] in
-            if self._document?.documentState == UIDocument.State.normal {
-                complete(true, self)
-            } else {
-                self._document?.open {
-                    if $0 {
-                        self._editorController.string = document.string
-                        DispatchQueue.main.async {
-                            complete(true, self)
-                        }
-                    } else {
-                        DispatchQueue.main.async {
-                            complete(false, self)
-                        }
-                    }
-                    
-                }
-            }
-        }
-    }
-    
     public var documentState: UIDocument.State {
         return self._document?.documentState ?? .closed
     }
@@ -200,42 +233,6 @@ public class EditorService {
         }
     }
     
-    public func open(completion:((String?) -> Void)? = nil) {
-        log.info("open file: \(self._url)")
-        guard let document = self._document else {
-            log.error("can't initialize document with url: \(self._url)")
-            completion?(nil)
-            return
-        }
-        
-        self._queue.async { [weak self] in
-            // 如果文档已经打开，则直接返回
-            if document.documentState == .normal {
-                DispatchQueue.main.async {
-                    completion?(document.string)
-                }
-            } else {
-                // 打开文档，触发解析，然后返回
-                document.open { [unowned document] (isOpenSuccessfully: Bool) in
-                    guard let strongSelf = self else { return }
-                    
-                    if isOpenSuccessfully {
-                        DispatchQueue.main.async {
-                            log.info("open document success(\(strongSelf._url))")
-                             strongSelf._editorController.string = document.string // 触发解析
-                            completion?(document.string)
-                        }
-                    } else {
-                        DispatchQueue.main.async {
-                            log.error("fail to open document with url: \(strongSelf._url)")
-                            completion?(nil)
-                        }
-                    }
-                }
-            }
-        }
-    }
-    
     public func insert(content: String, headingLocation: Int) {
         guard let heading = self.heading(at: headingLocation) else { return }
         
@@ -243,20 +240,7 @@ public class EditorService {
         
         self._document?.updateContent(_editorController.string)
     }
-    
-    public func close(completion:((Bool) -> Void)? = nil) {
-        guard let document = self._document else {
-            completion?(false)
-            return
-        }
-        
-        self._queue.async {
-            document.close {
-                completion?($0)
-            }
-        }
-    }
-    
+
     public func rename(newTitle: String, completion: ((Error?) -> Void)? = nil) {
         guard let document = self._document else {
             completion?(EditorServiceError.fileIsNotReady)
@@ -330,9 +314,5 @@ extension EditorService: EditorControllerDelegate {
         self._eventObserver.emit(DocumentHeadingChangeEvent(url: self.fileURL,
                                                            oldHeadings: oldHeadings,
                                                            newHeadings: newHeadings))
-    }
-    
-    public func didTapLink(url: String, title: String, point: CGPoint) {
-        
     }
 }

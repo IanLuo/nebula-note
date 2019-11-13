@@ -20,4 +20,8 @@ extension UIViewController {
     public func toastError(title: String, subTitle: String? = nil) {
         HUD.flash(HUDContentType.labeledError(title: title, subtitle: subTitle), delay: 1.5)
     }
+    
+    public func toastSuccess() {
+        HUD.flash(HUDContentType.success)
+    }
 }

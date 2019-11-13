@@ -380,6 +380,10 @@ public enum L10n {
         /// All day
         public static let allDay = L10n.tr("Localizable", "document.edit.date.all-day")
       }
+      public enum Image {
+        /// Use as cover
+        public static let useAsCover = L10n.tr("Localizable", "document.edit.image.use-as-cover")
+      }
       public enum RemoteEditingArrivedKeepRemote {
         /// Keep remote one
         public static let one = L10n.tr("Localizable", "document.edit.remote_editing_arrived_keep_remote.one")

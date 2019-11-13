@@ -132,6 +132,14 @@ extension DocumentEditViewController: OutlineTextViewDelegate {
                     }
                 })
             }
+        } else if attachment.kind == .image || attachment.kind == .sketch {
+            actionsView.addAction(icon: nil, title: L10n.Document.Edit.Image.useAsCover) { viewController in
+                viewController.dismiss(animated: true) {
+                    self.viewModel.coordinator?.dependency.documentManager.setCover(UIImage(contentsOfFile: attachment.url.path), url: self.viewModel.url, completion: { [weak self] _ in
+                        self?.toastSuccess()
+                    })
+                }
+            }
         }
         
         actionsView.addAction(icon: nil, title: L10n.General.Button.Title.close) { viewController in

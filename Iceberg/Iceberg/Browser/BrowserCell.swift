@@ -488,7 +488,7 @@ public class BrowserCellWithSubFolder: BrowserCell {
         self._subFolderIndicatorView.allSidesAnchors(to: self.contentView, edgeInsets: .init(top: Layout.edgeInsets.top + 5,
                                                                                              left: Layout.edgeInsets.left,
                                                                                              bottom: -5,
-                                                                                             right: -Layout.edgeInsets.right))
+                                                                                             right: -(Layout.edgeInsets.right + 5)))
     }
     
     required init?(coder: NSCoder) {

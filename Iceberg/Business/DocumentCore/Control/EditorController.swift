@@ -12,7 +12,6 @@ import Foundation
 public protocol EditorControllerDelegate: class {
     func currentHeadingDidChange(heading: HeadingToken?)
     func headingChanged(newHeadings: [HeadingToken], oldHeadings:[HeadingToken])
-    func didTapLink(url: String, title: String, point: CGPoint)
 }
 
 public class EditorController: NSObject {
@@ -78,7 +77,7 @@ extension EditorController {
 
 extension EditorController: OutlineTextStorageDelegate {
     public func didUpdateCurrentTokens(_ tokens: [Token]) {
-        
+
     }
     
     public func didUpdateHeadings(newHeadings: [HeadingToken], oldHeadings: [HeadingToken]) {

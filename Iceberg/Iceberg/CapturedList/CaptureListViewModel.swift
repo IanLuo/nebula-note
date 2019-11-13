@@ -88,8 +88,8 @@ public class CaptureListViewModel {
         
         editorService.onReadyToUse = { service in
             
-            service.start { isOpen, service in
-                guard isOpen else {
+            service.open { string in
+                guard string != nil else {
                     self.delegate?.didFail(error: "Can not open file")
                     return
                 }

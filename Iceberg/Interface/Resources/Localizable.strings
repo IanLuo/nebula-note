@@ -111,6 +111,8 @@
 "document.edit.remote_editing_arrived_keep_remote.one" = "Keep remote one";
 
 "document.edit.create.failed" = "Failed to create document";
+
+"document.edit.image.use-as-cover" = "Use as cover";
 // sync
 "sync.confirm.useiCloud" = "Do you want use iCloud to store, your documents. If so, you will be able to access the contents from any device with your iCloud account, and they will be kept safe if you remove the app, or even lose your device.";
 "sync.alert.status.on.title" = "Using iCloud storage";
