@@ -444,7 +444,6 @@ private class TabView: UITableViewHeaderFooterView {
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
         
-        self.backgroundView = UIView()
         self.backgroundColor = InterfaceTheme.Color.background1
         self.contentView.backgroundColor = InterfaceTheme.Color.background1
         self.contentView.addSubview(self.titleButton)

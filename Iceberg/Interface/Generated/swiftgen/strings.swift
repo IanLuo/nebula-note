@@ -225,8 +225,10 @@ public enum L10n {
       /// Perform Actions
       public static let title = L10n.tr("Localizable", "browser.actions.title")
       public enum Delete {
-        /// Are you sure you want to delete this document and it's all child documents?
-        public static let confirm = L10n.tr("Localizable", "browser.actions.delete.confirm")
+        /// Are you sure you want to delete '%@' and it's all child documents?
+        public static func confirm(_ p1: String) -> String {
+          return L10n.tr("Localizable", "browser.actions.delete.confirm", p1)
+        }
       }
     }
     public enum Outline {
@@ -523,8 +525,8 @@ public enum L10n {
   }
 
   public enum Setting {
-    /// Store in iCloud
-    public static let storeIniCloud = L10n.tr("Localizable", "setting.storeIniCloud")
+    /// Store location
+    public static let storeLocation = L10n.tr("Localizable", "setting.storeLocation")
     /// Settings
     public static let title = L10n.tr("Localizable", "setting.title")
     public enum Alert {
@@ -580,6 +582,12 @@ public enum L10n {
     public enum Store {
       /// Store
       public static let title = L10n.tr("Localizable", "setting.store.title")
+    }
+    public enum StoreLocation {
+      /// On iCloud
+      public static let iCloud = L10n.tr("Localizable", "setting.storeLocation.iCloud")
+      /// On device
+      public static let onDevice = L10n.tr("Localizable", "setting.storeLocation.onDevice")
     }
   }
 

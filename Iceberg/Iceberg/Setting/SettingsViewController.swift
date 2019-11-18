@@ -19,7 +19,7 @@ public class SettingsViewController: UITableViewController {
     public var viewModel: SettingsViewModel!
     
     @IBOutlet var isSyncEnabledLabel: UILabel!
-    @IBOutlet var isSyncEnabledSwitch: UISwitch!
+    @IBOutlet var storeLocationButton: UIButton!
     
     @IBOutlet var interfaceStyleLabel: UILabel!
     @IBOutlet var interfaceStyleButton: UIButton!
@@ -53,9 +53,9 @@ public class SettingsViewController: UITableViewController {
         self._setupUI()
         self._setupObserver()
         
-        self.isSyncEnabledLabel.text = L10n.Setting.storeIniCloud
+        self.isSyncEnabledLabel.text = L10n.Setting.storeLocation
         self.landingTabTitleLabel.text = L10n.Setting.LandingTab.title
-        self.isSyncEnabledSwitch.isOn = self.viewModel.isSyncEnabled
+        self.storeLocationButton.setTitle(self.viewModel.isSyncEnabled ? L10n.Setting.StoreLocation.iCloud : L10n.Setting.StoreLocation.onDevice, for: .normal)
         self.chooseLandingTabButton.setTitle(LandingTab.allCases[self.viewModel.currentLandigTabIndex].name, for: .normal)
         
         self.interfaceStyleLabel.text = L10n.Setting.InterfaceStyle.title
@@ -82,7 +82,7 @@ public class SettingsViewController: UITableViewController {
             me.setNeedsStatusBarAppearanceUpdate()
             self?.view.backgroundColor = theme.color.background1
             self?.isSyncEnabledLabel.textColor = theme.color.interactive
-            self?.isSyncEnabledSwitch.onTintColor = theme.color.spotlight
+            self?.storeLocationButton.setTitleColor(theme.color.spotlight, for: .normal)
             
             self?.interfaceStyleLabel.textColor = theme.color.interactive
             self?.interfaceStyleButton.setTitleColor(theme.color.spotlight, for: .normal)
@@ -116,37 +116,55 @@ public class SettingsViewController: UITableViewController {
     }
     
     private func _setupObserver() {
-        self.isSyncEnabledSwitch.addTarget(self, action: #selector(_iCloudSwitchTapped), for: .touchUpInside)
+        self.storeLocationButton.addTarget(self, action: #selector(_storeLocationButtonTapped), for: .touchUpInside)
         self.interfaceStyleButton.addTarget(self, action: #selector(_interfaceStyleButtonTapped), for: .touchUpInside)
         self.chooseLandingTabButton.addTarget(self, action: #selector(_showLandingTabNamesSelector), for: .touchUpInside)
         self.planningFinishButton.addTarget(self, action: #selector(_planningManageFinish), for: .touchUpInside)
         self.planningUnfinishButton.addTarget(self, action: #selector(_planningManageUnfinish), for: .touchUpInside)
     }
     
-    @objc private func _iCloudSwitchTapped(_ switchButton: UISwitch) {
-        switchButton.isEnabled = false
-        switchButton.showProcessingAnimation()
-        self.showLoading()
-        self.viewModel.setSyncEnabled(switchButton.isOn, completion: { [weak self] result in
-            self?.hideLoading { [weak self] in
-                switchButton.hideProcessingAnimation()
-                switchButton.isEnabled = true
+    @objc private func _storeLocationButtonTapped(_ button: UIButton) {
+        let titles = [L10n.Setting.StoreLocation.iCloud, L10n.Setting.StoreLocation.onDevice]
+        let selector = SelectorViewController()
+        
+        titles.forEach {
+            selector.addItem(title: $0)
+        }
+        
+        selector.currentTitle = button.titleLabel?.text
+        selector.onCancel = { $0.dismiss(animated: true) }
+        
+        selector.onSelection = { index, viewController in
+            
+            viewController.dismiss(animated: true) {
                 
-                switch result {
-                case .failure(let error):
-                    switchButton.isOn = !switchButton.isOn
-                    
-                    if case let error = error as? SyncError, error == .iCloudIsNotAvailable {
-                        self?.showAlert(title: L10n.Setting.Alert.IcloudIsNotEnabled.title,
-                                        message: L10n.Setting.Alert.IcloudIsNotEnabled.msg)
-                    } else {
-                        self?.showAlert(title: L10n.Setting.Alert.failToStoreIniCloud, message: "\(error)")
+                button.showProcessingAnimation()
+                
+                self.showLoading()
+                self.viewModel.setSyncEnabled(index == 0, completion: { [weak self] result in
+                    self?.hideLoading { [weak self] in
+                        button.hideProcessingAnimation()
+                        
+                        switch result {
+                        case .failure(let error):
+                            
+                            if case let error = error as? SyncError, error == .iCloudIsNotAvailable {
+                                self?.showAlert(title: L10n.Setting.Alert.IcloudIsNotEnabled.title,
+                                                message: L10n.Setting.Alert.IcloudIsNotEnabled.msg)
+                            } else {
+                                self?.showAlert(title: L10n.Setting.Alert.failToStoreIniCloud, message: "\(error)")
+                            }
+                            
+                        case .success:
+                            button.setTitle(titles[index], for: .normal)
+                        }
                     }
-                    
-                default: break
-                }
+                })
             }
-        })
+            
+        }
+        
+        self.present(selector, animated: true)
     }
     
     /// user interface style

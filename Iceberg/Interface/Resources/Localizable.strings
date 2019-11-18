@@ -131,7 +131,9 @@
 "setting.general.title" = "General";
 
 "setting.store.title" = "Store";
-"setting.storeIniCloud" = "Store in iCloud";
+"setting.storeLocation" = "Store location";
+"setting.storeLocation.iCloud" = "On iCloud";
+"setting.storeLocation.onDevice" = "On device";
 "setting.alert.icloudIsNotEnabled.title" = "iCloud is not enabled";
 "setting.alert.icloudIsNotEnabled.msg" = "Please login your iCloud account";
 "setting.alert.failToStoreIniCloud" = "Fail to configure sync";
@@ -167,7 +169,7 @@
 "browser.actions.duplicate" = "Duplicate";
 "browser.actions.cover" = "Edit Cover";
 "browser.actions.delete" = "Delete";
-"browser.actions.delete.confirm" = "Are you sure you want to delete this document and it's all child documents?";
+"browser.actions.delete.confirm" = "Are you sure you want to delete '%@' and it's all child documents?";
 "browser.actions.rename" = "Rename";
 "browser.outline.beginingOfDocument" = "Document begining";
 "browser.outline.endOfDocument" = "Document ending";

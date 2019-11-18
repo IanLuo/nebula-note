@@ -143,4 +143,8 @@ public class Document: UIDocument {
             }
         })
     }
+    
+    public override func handleError(_ error: Error, userInteractionPermitted: Bool) {
+        super.handleError(error, userInteractionPermitted: userInteractionPermitted)
+    }
 }

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14810.12" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="154-Ln-0Qk">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="154-Ln-0Qk">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14766.15"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15508"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -22,7 +22,7 @@
                                         <rect key="frame" x="0.0" y="18" width="414" height="66"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Tz6-ZQ-q35" id="HYw-5m-1OC">
-                                            <rect key="frame" x="0.0" y="0.0" width="382.5" height="66"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="383" height="66"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TBm-Y5-r12">
@@ -32,7 +32,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dnp-Uh-dnX">
-                                                    <rect key="frame" x="336.5" y="18" width="46" height="30"/>
+                                                    <rect key="frame" x="337" y="18" width="46" height="30"/>
                                                     <state key="normal" title="Button"/>
                                                 </button>
                                             </subviews>
@@ -50,7 +50,7 @@
                                         <rect key="frame" x="0.0" y="84" width="414" height="66"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="B1z-3X-jgm" id="pe9-2f-s6d">
-                                            <rect key="frame" x="0.0" y="0.0" width="382.5" height="66"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="383" height="66"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hwa-SH-USc">
@@ -60,7 +60,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="l4B-cf-DeA">
-                                                    <rect key="frame" x="328.5" y="18" width="46" height="30"/>
+                                                    <rect key="frame" x="329" y="18" width="46" height="30"/>
                                                     <state key="normal" title="Button"/>
                                                 </button>
                                             </subviews>
@@ -83,7 +83,7 @@
                                         <rect key="frame" x="0.0" y="206" width="414" height="66"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="TqO-bd-jFD" id="ofX-gi-OVh">
-                                            <rect key="frame" x="0.0" y="0.0" width="382.5" height="66"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="383" height="66"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KT5-2h-RLv">
@@ -93,7 +93,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="r7c-PG-lBA">
-                                                    <rect key="frame" x="328.5" y="18" width="46" height="30"/>
+                                                    <rect key="frame" x="329" y="18" width="46" height="30"/>
                                                     <state key="normal" title="Button"/>
                                                 </button>
                                             </subviews>
@@ -112,7 +112,7 @@
                                         <rect key="frame" x="0.0" y="272" width="414" height="66"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="vtL-O5-hIN" id="i2Y-9M-hde">
-                                            <rect key="frame" x="0.0" y="0.0" width="382.5" height="66"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="383" height="66"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qXa-H5-t0T">
@@ -122,7 +122,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zYU-ai-oMe">
-                                                    <rect key="frame" x="328.5" y="18" width="46" height="30"/>
+                                                    <rect key="frame" x="329" y="18" width="46" height="30"/>
                                                     <state key="normal" title="Button"/>
                                                 </button>
                                             </subviews>
@@ -154,15 +154,16 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9nL-VW-Zhq">
-                                                    <rect key="frame" x="345" y="17.5" width="51" height="31"/>
-                                                </switch>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6PB-6g-Gsu">
+                                                    <rect key="frame" x="340" y="18" width="46" height="30"/>
+                                                    <state key="normal" title="Button"/>
+                                                </button>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <constraints>
                                                 <constraint firstItem="vnz-sc-s7C" firstAttribute="leading" secondItem="hoe-RY-6gh" secondAttribute="leadingMargin" id="2PR-ai-umG"/>
-                                                <constraint firstItem="9nL-VW-Zhq" firstAttribute="centerY" secondItem="hoe-RY-6gh" secondAttribute="centerY" id="UNm-fb-yiC"/>
-                                                <constraint firstItem="9nL-VW-Zhq" firstAttribute="trailing" secondItem="hoe-RY-6gh" secondAttribute="trailingMargin" id="iUS-Rh-uDn"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="6PB-6g-Gsu" secondAttribute="trailing" constant="8" id="Exs-BE-8Zr"/>
+                                                <constraint firstItem="6PB-6g-Gsu" firstAttribute="centerY" secondItem="hoe-RY-6gh" secondAttribute="centerY" id="J0t-ry-I5V"/>
                                                 <constraint firstItem="vnz-sc-s7C" firstAttribute="centerY" secondItem="hoe-RY-6gh" secondAttribute="centerY" id="jmB-mJ-bl5"/>
                                             </constraints>
                                         </tableViewCellContentView>
@@ -182,13 +183,13 @@
                         <outlet property="interfaceStyleButton" destination="l4B-cf-DeA" id="qCC-oL-NY0"/>
                         <outlet property="interfaceStyleLabel" destination="Hwa-SH-USc" id="F7P-kE-A22"/>
                         <outlet property="isSyncEnabledLabel" destination="vnz-sc-s7C" id="pXr-EJ-FXP"/>
-                        <outlet property="isSyncEnabledSwitch" destination="9nL-VW-Zhq" id="gMC-Sw-gff"/>
                         <outlet property="landingTabRow" destination="Tz6-ZQ-q35" id="dZN-6E-Pou"/>
                         <outlet property="landingTabTitleLabel" destination="TBm-Y5-r12" id="3kP-8J-UHL"/>
                         <outlet property="planningFinishButton" destination="r7c-PG-lBA" id="Ru6-Aa-24T"/>
                         <outlet property="planningFinishLabel" destination="KT5-2h-RLv" id="BhW-s8-5Do"/>
                         <outlet property="planningUnfinishButton" destination="zYU-ai-oMe" id="H6E-CK-DDM"/>
                         <outlet property="planningUnfinishLabel" destination="qXa-H5-t0T" id="C4x-wn-QpP"/>
+                        <outlet property="storeLocationButton" destination="6PB-6g-Gsu" id="W2t-oz-LD1"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="KSb-ob-k3i" userLabel="First Responder" sceneMemberID="firstResponder"/>

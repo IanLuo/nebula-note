@@ -215,9 +215,9 @@ public class BrowserCell: UITableViewCell {
         view.addSubview(actionButton)
         view.addSubview(enterButton)
         actionButton.sideAnchor(for: [.left, .top, .right], to: view, edgeInset: 0)
-        actionButton.sizeAnchor(width: 44)
+        actionButton.sizeAnchor(width: 49)
         actionButton.columnAnchor(view: enterButton)
-        enterButton.sideAnchor(for: [.left, .bottom, .right], to: view, edgeInset: 0)
+        enterButton.sideAnchor(for: [.left, .bottom, .right], to: view, edgeInsets: .init(top: 0, left: 0, bottom: -5, right: -5))
         enterButton.sizeAnchor(width: 44, height: 44)
         
         return view
@@ -260,7 +260,7 @@ public class BrowserCell: UITableViewCell {
             guard let cellModel = self.cellModel else { return }
             
             let confirmViewController = ConfirmViewController()
-            confirmViewController.contentText = L10n.Browser.Actions.Delete.confirm
+            confirmViewController.contentText = L10n.Browser.Actions.Delete.confirm(cellModel.url.packageName)
             confirmViewController.confirmAction = {
                 $0.dismiss(animated: true, completion: {
                     viewController.dismiss(animated: true, completion: {
@@ -473,7 +473,7 @@ public class BrowserCellWithSubFolder: BrowserCell {
         view.roundConer(radius: 10)
         view.layer.borderWidth = 1
         view.interface { (me, interface) in
-            me.layer.borderColor = interface.color.background3.cgColor
+            me.layer.borderColor = interface.color.background2.cgColor
             me.backgroundColor = interface.color.background1
         }
         
@@ -488,7 +488,7 @@ public class BrowserCellWithSubFolder: BrowserCell {
         self._subFolderIndicatorView.allSidesAnchors(to: self.contentView, edgeInsets: .init(top: Layout.edgeInsets.top + 5,
                                                                                              left: Layout.edgeInsets.left,
                                                                                              bottom: -5,
-                                                                                             right: -(Layout.edgeInsets.right + 5)))
+                                                                                             right: -(Layout.edgeInsets.right)))
     }
     
     required init?(coder: NSCoder) {

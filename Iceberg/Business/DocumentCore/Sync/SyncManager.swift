@@ -222,7 +222,7 @@ public class SyncManager: NSObject {
                         // use the documents folder related path, of all contents inside documents file, combine to iCloud base folder, to get a destination of move to iCloud action destination url
                         let destination = icloudDocumentRoot.appendingPathComponent(path)
                         
-                        if FileManager.default.fileExists(atPath: destination.absoluteString) {
+                        if FileManager.default.fileExists(atPath: destination.path, isDirectory: &isDir) {
                             log.info("there's an old file existed, replace it")
                             try FileManager.default.removeItem(at: destination)
                         }
@@ -245,7 +245,7 @@ public class SyncManager: NSObject {
                     for path in try self._allPaths(in: URL.localAttachmentURL) {
                         let destination = icloudAttachmentRoot.appendingPathComponent(path)
                         
-                        if FileManager.default.fileExists(atPath: destination.absoluteString) {
+                        if FileManager.default.fileExists(atPath: destination.path, isDirectory: &isDir) {
                             log.info("there's an old file existed, replace it")
                             try FileManager.default.removeItem(at: destination)
                         }
@@ -316,7 +316,7 @@ public class SyncManager: NSObject {
                     for path in try self._allPaths(in: icloudDocumentRoot) {
                         let destination = URL.localDocumentBaseURL.appendingPathComponent(path)
 
-                        if FileManager.default.fileExists(atPath: destination.absoluteString) {
+                        if FileManager.default.fileExists(atPath: destination.path, isDirectory: &isDir) {
                             log.info("there's an old file existed, replace it")
                             try FileManager.default.removeItem(at: destination)
                         }
@@ -336,7 +336,7 @@ public class SyncManager: NSObject {
                     for path in try self._allPaths(in: icloudAttachmentRoot) {
                         let destination = URL.localAttachmentURL.appendingPathComponent(path)
 
-                        if FileManager.default.fileExists(atPath: destination.absoluteString) {
+                        if FileManager.default.fileExists(atPath: destination.path, isDirectory: &isDir) {
                             log.info("there's an old file existed, replace it")
                             try FileManager.default.removeItem(at: destination)
                         }
