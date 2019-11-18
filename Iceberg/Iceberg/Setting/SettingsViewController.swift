@@ -133,6 +133,7 @@ public class SettingsViewController: UITableViewController {
         
         selector.currentTitle = button.titleLabel?.text
         selector.onCancel = { $0.dismiss(animated: true) }
+        selector.title = L10n.Setting.storeLocation
         
         selector.onSelection = { index, viewController in
             
