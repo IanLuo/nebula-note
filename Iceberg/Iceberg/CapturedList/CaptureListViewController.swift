@@ -295,6 +295,10 @@ extension CaptureListViewController: UITableViewDataSource {
 }
 
 extension CaptureListViewController: EmptyContentPlaceHolderProtocol {
+    public var text: String {
+        return "All ideas handled"
+    }
+    
     public var image: UIImage {
         return Asset.Assets.zoom.image
     }

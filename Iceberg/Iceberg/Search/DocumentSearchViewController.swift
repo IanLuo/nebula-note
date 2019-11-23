@@ -178,6 +178,10 @@ extension DocumentSearchViewController: UITableViewDataSource, UITableViewDelega
 }
 
 extension DocumentSearchViewController: EmptyContentPlaceHolderProtocol {
+    public var text: String {
+        return self.searchInputView.textField.text == nil ? "" : "No result"
+    }
+    
     public var image: UIImage {
         return Asset.Assets.zoom.image
     }

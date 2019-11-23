@@ -190,6 +190,10 @@ extension AgendaViewController: AgendaViewModelDelegate {
 }
 
 extension AgendaViewController: EmptyContentPlaceHolderProtocol {
+    public var text: String {
+        return "Great!, all job is done"
+    }
+    
     public var viewToShowImage: UIView {
         return self.tableView
     }

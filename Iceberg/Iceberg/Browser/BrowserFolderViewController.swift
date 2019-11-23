@@ -188,6 +188,10 @@ public class BrowserFolderViewController: UIViewController {
 }
 
 extension BrowserFolderViewController: EmptyContentPlaceHolderProtocol {
+    public var text: String {
+        return "Folder is empty"
+    }
+    
     public var image: UIImage {
         return Asset.Assets.zoom.image
     }
