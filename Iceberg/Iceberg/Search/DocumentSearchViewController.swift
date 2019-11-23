@@ -179,7 +179,7 @@ extension DocumentSearchViewController: UITableViewDataSource, UITableViewDelega
 
 extension DocumentSearchViewController: EmptyContentPlaceHolderProtocol {
     public var text: String {
-        return self.searchInputView.textField.text == nil ? "" : "No result"
+        return self.searchInputView.textField.text?.count == 0 ? "" : "No result"
     }
     
     public var image: UIImage {
@@ -217,6 +217,8 @@ private class SearchInputView: UIView, UITextFieldDelegate {
         super.init(frame: .zero)
         
         self.setupUI()
+        
+        self.textField.addTarget(self, action: #selector(textChanged), for: UIControl.Event.editingChanged)
     }
     
     public required init?(coder aDecoder: NSCoder) {
@@ -327,15 +329,11 @@ private class SearchInputView: UIView, UITextFieldDelegate {
         self.startEditButton.isEnabled = true
     }
     
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        
-        let newString = textField.text == nil ? string : (textField.text! as NSString).replacingCharacters(in: range, with: string)
-        
-        if newString.nsstring.length > 0 {
-            self.delegate?.didChangeQuery(string: newString)
+    @objc func textChanged() {
+        if let text = self.textField.text, text.count > 0 {
+            self.delegate?.didChangeQuery(string: text)
         } else {
             self.delegate?.didClearQuery()
         }
-        return true
     }
 }

@@ -38,7 +38,7 @@ private class EmptyContentView: UIView {
         self.imageView.centerAnchors(position: [.centerX, .centerY], to: self)
         
         self.textLabel.translatesAutoresizingMaskIntoConstraints = false
-        self.imageView.columnAnchor(view: self.textLabel, space: 20)
+        self.imageView.columnAnchor(view: self.textLabel, space: 10)
         self.textLabel.sideAnchor(for: [.left, .right], to: self, edgeInset: 100)
     }
     

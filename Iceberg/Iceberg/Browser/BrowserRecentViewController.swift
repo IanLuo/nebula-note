@@ -71,6 +71,14 @@ public class BrowserRecentViewController: UIViewController {
             .drive(self.collectionView.rx.items(dataSource: dataSource))
             .disposed(by: self.disposeBag)
         
+        self.viewModel
+            .output
+            .recentDocuments
+            .subscribe(onNext: { [weak self] sections in
+                self?.showEmptyContentImage(sections.first?.items.count == 0)
+            })
+            .disposed(by: self.disposeBag)
+        
         self.collectionView
             .rx
             .modelSelected(BrowserCellModel.self)
@@ -170,5 +178,19 @@ private class RecentFileCell: UICollectionViewCell {
         self.coverView.allSidesAnchors(to: self.contentView, edgeInset: 0)
         self.titleLabel.sideAnchor(for: [.left, .right], to: self.contentView, edgeInset: 5)
         self.titleLabel.sideAnchor(for: [.top, .bottom], to: self.contentView, edgeInset: 2)
+    }
+}
+
+extension BrowserRecentViewController: EmptyContentPlaceHolderProtocol {
+    public var image: UIImage {
+        return Asset.Assets.add.image
+    }
+    
+    public var text: String {
+        return "no recent document"
+    }
+    
+    public var viewToShowImage: UIView {
+        return self.collectionView
     }
 }

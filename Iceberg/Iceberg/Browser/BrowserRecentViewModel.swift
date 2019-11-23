@@ -8,6 +8,7 @@
 
 import Foundation
 import RxSwift
+import RxCocoa
 import RxDataSources
 import Business
 
@@ -30,7 +31,7 @@ extension RecentDocumentSection: AnimatableSectionModelType {
 
 public class BrowserRecentViewModel {
     public struct Output {
-        public let recentDocuments: BehaviorSubject<[RecentDocumentSection]> = BehaviorSubject(value: [])
+        public let recentDocuments: BehaviorRelay<[RecentDocumentSection]> = BehaviorRelay(value: [])
     }
     
     public weak var coordinator: BrowserCoordinator? {
@@ -86,6 +87,6 @@ public class BrowserRecentViewModel {
             .recentFilesManager
             .recentFiles.map { BrowserCellModel(url: $0.url) } ?? []
         
-        self.output.recentDocuments.onNext([RecentDocumentSection(items: section)])
+        self.output.recentDocuments.accept([RecentDocumentSection(items: section)])
     }
 }
