@@ -155,6 +155,9 @@
 "setting.editor.title" = "Editor";
 "setting.editor.unfoldAllWhenOpen" = "Unfold all entries when open";
 
+"setting.export.title" = "Export";
+"setting.export.showIndex" = "Show index";
+
 //search
 "search.title" = "Search";
 

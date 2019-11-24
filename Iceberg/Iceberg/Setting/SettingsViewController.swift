@@ -36,6 +36,9 @@ public class SettingsViewController: UITableViewController {
     @IBOutlet var editorUnfoldLabel: UILabel!
     @IBOutlet var editorUnfoldSwitch: UISwitch!
     
+    @IBOutlet var exportShowIndexLabel: UILabel!
+    @IBOutlet var exportShowIndexSwitch: UISwitch!
+    
     public override init(style: UITableView.Style) {
         super.init(style: style)
         
@@ -56,6 +59,7 @@ public class SettingsViewController: UITableViewController {
         self._setupUI()
         self._setupObserver()
         
+        // initial status
         self.isSyncEnabledLabel.text = L10n.Setting.storeLocation
         self.landingTabTitleLabel.text = L10n.Setting.LandingTab.title
         self.storeLocationButton.setTitle(self.viewModel.isSyncEnabled ? L10n.Setting.StoreLocation.iCloud : L10n.Setting.StoreLocation.onDevice, for: .normal)
@@ -71,6 +75,9 @@ public class SettingsViewController: UITableViewController {
         
         self.editorUnfoldLabel.text = L10n.Setting.Editor.unfoldAllWhenOpen
         self.editorUnfoldSwitch.isOn = self.viewModel.unfoldWhenOpen
+        
+        self.exportShowIndexLabel.text = L10n.Setting.Export.showIndex
+        self.exportShowIndexSwitch.isOn = self.viewModel.exportShowIndex
     }
     
     private func _setupUI() {
@@ -104,6 +111,9 @@ public class SettingsViewController: UITableViewController {
             
             self?.editorUnfoldLabel.textColor = theme.color.interactive
             self?.editorUnfoldSwitch.onTintColor = theme.color.spotlight
+            
+            self?.exportShowIndexLabel.textColor = theme.color.interactive
+            self?.exportShowIndexSwitch.onTintColor = theme.color.spotlight
         }
     }
     
@@ -117,6 +127,7 @@ public class SettingsViewController: UITableViewController {
         case 1: return L10n.Setting.Planning.title
         case 2: return L10n.Setting.Store.title
         case 3: return L10n.Setting.Editor.title
+            case 4: return L10n.Setting.Export.title
         default: return nil
         }
     }
@@ -258,6 +269,9 @@ public class SettingsViewController: UITableViewController {
         self.viewModel.setUnfoldWhenOpen(sender.isOn)
     }
     
+    @IBAction func exportShowIndex(_ sender: UISwitch) {
+        self.viewModel.setExportShowIndex(sender.isOn) {}
+    }
     private func _planningManage(isFinish: Bool) {
         let plannings = self.viewModel.getPlanning(isForFinished: isFinish)
         

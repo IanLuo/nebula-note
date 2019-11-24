@@ -65,7 +65,7 @@ public class HomeCoordinator: Coordinator {
         
         dependency.documentManager.getFileLocationComplete { [weak self] _ in
             guard let s = self else { return }
-            s.homeViewController.showChildViewController(tabs[s.dependency.settingAccessor.landingTabIndex])
+            s.homeViewController.showChildViewController(tabs[SettingsAccessor.Item.landingTabIndex.get(Int.self) ?? 3])
         }
     }
     

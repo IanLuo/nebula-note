@@ -32,6 +32,23 @@ public enum SettingsError: Error {
         }
     }
     
+    public enum Item: String {
+        case finishedPlannings
+        case unfinishedPlannings
+        case landingTabIndex
+        case interfaceStyle
+        case unfoldAllEntriesWhenOpen
+        case exportShowIndex
+        
+        public func set(_ value: Any, completion: @escaping () -> Void) {
+            Constants.store.set(value: value, key: self.rawValue, completion: completion)
+        }
+        
+        public func get<T>(_ t: T.Type) -> T? {
+            return Constants.store.get(key: self.rawValue, type: T.self)
+        }
+    }
+    
     private static let instance = SettingsAccessor()
     private override init() {}
     @objc public static var shared: SettingsAccessor { return instance }
@@ -66,26 +83,6 @@ public enum SettingsError: Error {
         } else {
             return InterfaceStyle(rawValue: Constants.store.get(key: Constants.Keys.interfaceStyle, type: String.self) ?? InterfaceStyle.light.rawValue) ?? InterfaceStyle.light
         }
-    }
-    
-    public func setInterfaceStyle(_ style: InterfaceStyle, completion: @escaping () -> Void) {
-        Constants.store.set(value: style.rawValue, key: Constants.Keys.interfaceStyle, completion: completion)
-    }
-    
-    public func setLandingTabIndex(_ index: Int, completion: @escaping () -> Void) {
-        Constants.store.set(value: index, key: Constants.Keys.landingTabIndex, completion: completion)
-    }
-    
-    public var landingTabIndex: Int {
-        return Constants.store.get(key: Constants.Keys.landingTabIndex, type: Int.self) ?? 0
-    }
-    
-    public var unfoldAllEntriesWhenOpen: Bool {
-        return Constants.store.get(key: Constants.Keys.unfoldAllEntriesWhenOpen, type: Bool.self) ?? false
-    }
-    
-    public func setUnfoldAllEntriesWhenOpen(_ unfold: Bool, completion: @escaping () -> Void) {
-        Constants.store.set(value: unfold, key: Constants.Keys.unfoldAllEntriesWhenOpen, completion: completion)
     }
     
     public var customizedUnfinishedPlannings: [String]? {

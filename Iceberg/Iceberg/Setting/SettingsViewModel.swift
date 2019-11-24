@@ -37,9 +37,9 @@ public class SettingsViewModel {
     }
     
     public func setInterfaceStyle(_ newStyle: SettingsAccessor.InterfaceStyle) {
-        self.coordinator?.dependency.settingAccessor.setInterfaceStyle(newStyle, completion: { [weak self] in
+        SettingsAccessor.Item.interfaceStyle.set(newStyle.rawValue) { [weak self] in
             self?.delegate?.didSetInterfaceStyle(newStyle: newStyle)
-        })
+        }
     }
 
     public func getPlanning(isForFinished: Bool) -> [String] {
@@ -57,23 +57,31 @@ public class SettingsViewModel {
     }
     
     public func setLandingTabIndex(_ index: Int) {
-        self.coordinator?.dependency.settingAccessor.setLandingTabIndex(index) { [weak self] in
+        SettingsAccessor.Item.landingTabIndex.set(index) { [weak self] in
             self?.delegate?.didSetLandingTabIndex(index: index)
         }
     }
     
     public var unfoldWhenOpen: Bool {
-        return self.coordinator?.dependency.settingAccessor.unfoldAllEntriesWhenOpen ?? false
+        SettingsAccessor.Item.unfoldAllEntriesWhenOpen.get(Bool.self) ?? false
     }
     
     public func setUnfoldWhenOpen(_ unfold: Bool) {
-        self.coordinator?.dependency.settingAccessor.setUnfoldAllEntriesWhenOpen(unfold, completion: { [weak self] in
+        SettingsAccessor.Item.unfoldAllEntriesWhenOpen.set(unfold) { [weak self] in
             self?.delegate?.didUpdateUnfoldWhenOpen(unfold: unfold)
-        })
+        }
     }
     
     public var currentLandigTabIndex: Int {
-        return self.coordinator?.dependency.settingAccessor.landingTabIndex ?? 0
+        return SettingsAccessor.Item.landingTabIndex.get(Int.self) ?? 0
+    }
+    
+    public var exportShowIndex: Bool {
+        return SettingsAccessor.Item.exportShowIndex.get(Bool.self) ?? true
+    }
+    
+    public func setExportShowIndex(_ showIndex: Bool, completion: @escaping () -> Void) {
+        SettingsAccessor.Item.exportShowIndex.set(showIndex, completion: completion)
     }
     
     public func addPlanning(_ planning: String, isForFinished: Bool, completion: @escaping () -> Void) {

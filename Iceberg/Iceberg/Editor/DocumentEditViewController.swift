@@ -240,7 +240,7 @@ extension DocumentEditViewController: DocumentEditViewModelDelegate {
             self.allowScrollContentWhenKeyboardDisapearTemporaily()
             self._scrollTo(location: self.viewModel.onLoadingLocation)
         } else {
-            if self.viewModel.coordinator?.dependency.settingAccessor.unfoldAllEntriesWhenOpen == false {
+            if SettingsAccessor.Item.unfoldAllEntriesWhenOpen.get(Bool.self) == false {
                 self.viewModel.foldAll()
             }
         }

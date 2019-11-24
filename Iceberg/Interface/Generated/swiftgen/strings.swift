@@ -545,6 +545,12 @@ public enum L10n {
       /// Unfold all entries when open
       public static let unfoldAllWhenOpen = L10n.tr("Localizable", "setting.editor.unfoldAllWhenOpen")
     }
+    public enum Export {
+      /// Show index
+      public static let showIndex = L10n.tr("Localizable", "setting.export.showIndex")
+      /// Export
+      public static let title = L10n.tr("Localizable", "setting.export.title")
+    }
     public enum General {
       /// General
       public static let title = L10n.tr("Localizable", "setting.general.title")

@@ -208,6 +208,42 @@
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
+                            <tableViewSection headerTitle="Export" id="Uid-TP-Q5K">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="66" id="0cN-dq-w2j" userLabel="icloud">
+                                        <rect key="frame" x="0.0" y="638" width="414" height="66"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="0cN-dq-w2j" id="09n-FW-led">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="66"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Na4-t8-FPr">
+                                                    <rect key="frame" x="20" y="22.5" width="42" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pbA-Do-osX">
+                                                    <rect key="frame" x="345" y="17.5" width="51" height="31"/>
+                                                    <connections>
+                                                        <action selector="editorUnfoldWhenOpen:" destination="154-Ln-0Qk" eventType="valueChanged" id="kjb-Ya-XdG"/>
+                                                        <action selector="exportShowIndex:" destination="154-Ln-0Qk" eventType="valueChanged" id="obT-Ey-0UA"/>
+                                                    </connections>
+                                                </switch>
+                                            </subviews>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <constraints>
+                                                <constraint firstItem="pbA-Do-osX" firstAttribute="centerY" secondItem="09n-FW-led" secondAttribute="centerY" id="Y2y-Zr-gb1"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="pbA-Do-osX" secondAttribute="trailing" id="aOu-hS-GRF"/>
+                                                <constraint firstItem="Na4-t8-FPr" firstAttribute="leading" secondItem="09n-FW-led" secondAttribute="leadingMargin" id="hWR-nS-Oz6"/>
+                                                <constraint firstItem="Na4-t8-FPr" firstAttribute="centerY" secondItem="09n-FW-led" secondAttribute="centerY" id="iSg-6r-ljN"/>
+                                                <constraint firstItem="pbA-Do-osX" firstAttribute="centerY" secondItem="09n-FW-led" secondAttribute="centerY" id="wz6-wS-McP"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
                         </sections>
                         <connections>
                             <outlet property="dataSource" destination="154-Ln-0Qk" id="zaO-Ir-xmn"/>
@@ -219,6 +255,8 @@
                         <outlet property="chooseLandingTabButton" destination="dnp-Uh-dnX" id="PRC-gg-q7c"/>
                         <outlet property="editorUnfoldLabel" destination="OsI-x5-0UW" id="2RW-4C-8Gi"/>
                         <outlet property="editorUnfoldSwitch" destination="l13-3P-OHb" id="YBM-ft-n6T"/>
+                        <outlet property="exportShowIndexLabel" destination="Na4-t8-FPr" id="NDp-Ty-Boq"/>
+                        <outlet property="exportShowIndexSwitch" destination="pbA-Do-osX" id="1lo-ai-U9E"/>
                         <outlet property="interfaceStyleButton" destination="l4B-cf-DeA" id="qCC-oL-NY0"/>
                         <outlet property="interfaceStyleLabel" destination="Hwa-SH-USc" id="F7P-kE-A22"/>
                         <outlet property="isSyncEnabledLabel" destination="vnz-sc-s7C" id="pXr-EJ-FXP"/>

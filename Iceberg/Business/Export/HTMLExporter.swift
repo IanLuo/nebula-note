@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Interface
 
 public struct HTMLExporter: Exportable {
     public var url: URL
@@ -72,6 +73,13 @@ public struct HTMLExporter: Exportable {
                 completion(.string(result))
             }
         }
+    }
+}
+ 
+extension HTMLExporter {
+    fileprivate func styleString(for style: InterfaceTheme) -> String {
+        let style = ""
+        return style
     }
 }
 
