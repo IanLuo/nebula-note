@@ -539,6 +539,12 @@ public enum L10n {
         public static let title = L10n.tr("Localizable", "setting.alert.icloudIsNotEnabled.title")
       }
     }
+    public enum Editor {
+      /// Editor
+      public static let title = L10n.tr("Localizable", "setting.editor.title")
+      /// Unfold all entries when open
+      public static let unfoldAllWhenOpen = L10n.tr("Localizable", "setting.editor.unfoldAllWhenOpen")
+    }
     public enum General {
       /// General
       public static let title = L10n.tr("Localizable", "setting.general.title")

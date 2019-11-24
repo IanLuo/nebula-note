@@ -141,11 +141,11 @@
                             </tableViewSection>
                             <tableViewSection headerTitle="Storage" id="ppu-p9-XPX">
                                 <cells>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="66" id="Wmc-9k-DFD" userLabel="icloud">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" rowHeight="66" id="Wmc-9k-DFD" userLabel="icloud">
                                         <rect key="frame" x="0.0" y="394" width="414" height="66"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Wmc-9k-DFD" id="hoe-RY-6gh">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="66"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="383" height="66"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vnz-sc-s7C">
@@ -154,17 +154,54 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6PB-6g-Gsu">
-                                                    <rect key="frame" x="340" y="18" width="46" height="30"/>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1Db-LB-6Mb">
+                                                    <rect key="frame" x="329" y="18" width="46" height="30"/>
                                                     <state key="normal" title="Button"/>
                                                 </button>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <constraints>
                                                 <constraint firstItem="vnz-sc-s7C" firstAttribute="leading" secondItem="hoe-RY-6gh" secondAttribute="leadingMargin" id="2PR-ai-umG"/>
-                                                <constraint firstAttribute="trailingMargin" secondItem="6PB-6g-Gsu" secondAttribute="trailing" constant="8" id="Exs-BE-8Zr"/>
-                                                <constraint firstItem="6PB-6g-Gsu" firstAttribute="centerY" secondItem="hoe-RY-6gh" secondAttribute="centerY" id="J0t-ry-I5V"/>
+                                                <constraint firstItem="1Db-LB-6Mb" firstAttribute="centerY" secondItem="hoe-RY-6gh" secondAttribute="centerY" id="94w-Kl-IMT"/>
+                                                <constraint firstItem="1Db-LB-6Mb" firstAttribute="trailing" secondItem="hoe-RY-6gh" secondAttribute="trailingMargin" id="9LZ-mT-gTN"/>
+                                                <constraint firstItem="1Db-LB-6Mb" firstAttribute="centerY" secondItem="hoe-RY-6gh" secondAttribute="centerY" id="BCe-s4-Gty"/>
                                                 <constraint firstItem="vnz-sc-s7C" firstAttribute="centerY" secondItem="hoe-RY-6gh" secondAttribute="centerY" id="jmB-mJ-bl5"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="1Db-LB-6Mb" secondAttribute="trailing" id="lWG-0q-9W5"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                            <tableViewSection headerTitle="Editor" id="SUc-wx-WNb">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="66" id="7MJ-Ks-LaK" userLabel="icloud">
+                                        <rect key="frame" x="0.0" y="516" width="414" height="66"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="7MJ-Ks-LaK" id="VNY-Vv-3xj">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="66"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OsI-x5-0UW">
+                                                    <rect key="frame" x="20" y="22.5" width="42" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="l13-3P-OHb">
+                                                    <rect key="frame" x="345" y="18" width="51" height="31"/>
+                                                    <connections>
+                                                        <action selector="editorUnfoldWhenOpen:" destination="154-Ln-0Qk" eventType="valueChanged" id="mIv-Kg-nsh"/>
+                                                    </connections>
+                                                </switch>
+                                            </subviews>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <constraints>
+                                                <constraint firstAttribute="trailingMargin" secondItem="l13-3P-OHb" secondAttribute="trailing" id="1Ty-D0-OMu"/>
+                                                <constraint firstItem="OsI-x5-0UW" firstAttribute="centerY" secondItem="VNY-Vv-3xj" secondAttribute="centerY" id="M9L-HD-BKG"/>
+                                                <constraint firstItem="l13-3P-OHb" firstAttribute="centerY" secondItem="VNY-Vv-3xj" secondAttribute="centerY" id="Qn5-9o-9fv"/>
+                                                <constraint firstItem="l13-3P-OHb" firstAttribute="centerY" secondItem="VNY-Vv-3xj" secondAttribute="centerY" id="h2X-tD-JJx"/>
+                                                <constraint firstItem="OsI-x5-0UW" firstAttribute="leading" secondItem="VNY-Vv-3xj" secondAttribute="leadingMargin" id="sgJ-l5-4sE"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -180,6 +217,8 @@
                     <navigationItem key="navigationItem" title="Root View Controller" id="L8t-J5-i8u"/>
                     <connections>
                         <outlet property="chooseLandingTabButton" destination="dnp-Uh-dnX" id="PRC-gg-q7c"/>
+                        <outlet property="editorUnfoldLabel" destination="OsI-x5-0UW" id="2RW-4C-8Gi"/>
+                        <outlet property="editorUnfoldSwitch" destination="l13-3P-OHb" id="YBM-ft-n6T"/>
                         <outlet property="interfaceStyleButton" destination="l4B-cf-DeA" id="qCC-oL-NY0"/>
                         <outlet property="interfaceStyleLabel" destination="Hwa-SH-USc" id="F7P-kE-A22"/>
                         <outlet property="isSyncEnabledLabel" destination="vnz-sc-s7C" id="pXr-EJ-FXP"/>
@@ -189,7 +228,7 @@
                         <outlet property="planningFinishLabel" destination="KT5-2h-RLv" id="BhW-s8-5Do"/>
                         <outlet property="planningUnfinishButton" destination="zYU-ai-oMe" id="H6E-CK-DDM"/>
                         <outlet property="planningUnfinishLabel" destination="qXa-H5-t0T" id="C4x-wn-QpP"/>
-                        <outlet property="storeLocationButton" destination="6PB-6g-Gsu" id="W2t-oz-LD1"/>
+                        <outlet property="storeLocationButton" destination="1Db-LB-6Mb" id="5mU-1d-Lzo"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="KSb-ob-k3i" userLabel="First Responder" sceneMemberID="firstResponder"/>

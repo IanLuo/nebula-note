@@ -240,7 +240,9 @@ extension DocumentEditViewController: DocumentEditViewModelDelegate {
             self.allowScrollContentWhenKeyboardDisapearTemporaily()
             self._scrollTo(location: self.viewModel.onLoadingLocation)
         } else {
-            self.viewModel.foldAll()
+            if self.viewModel.coordinator?.dependency.settingAccessor.unfoldAllEntriesWhenOpen == false {
+                self.viewModel.foldAll()
+            }
         }
         
         // 打开文件时， 添加到最近使用的文件

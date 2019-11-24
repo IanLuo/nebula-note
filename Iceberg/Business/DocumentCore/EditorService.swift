@@ -186,6 +186,12 @@ public class EditorService {
         return _document?.fileURL ?? self._url
     }
     
+    public var deepestEntryLevel: Int {
+        self._editorController.textStorage.headingTokens.max { heading1, heading2 in
+            return heading1.level > heading2.level
+        }?.level ?? 0
+    }
+    
     public func tokens(at location: Int) -> [Token] {
         return self._editorController.textStorage.token(at: location)
     }

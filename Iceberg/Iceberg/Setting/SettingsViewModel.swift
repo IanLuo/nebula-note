@@ -15,6 +15,7 @@ public protocol SettingsViewModelDelegate: class {
     func didUpdateUnfinishedPlanning()
     func didSetLandingTabIndex(index: Int)
     func didSetInterfaceStyle(newStyle: SettingsAccessor.InterfaceStyle)
+    func didUpdateUnfoldWhenOpen(unfold: Bool)
 }
 
 public class SettingsViewModel {
@@ -59,6 +60,16 @@ public class SettingsViewModel {
         self.coordinator?.dependency.settingAccessor.setLandingTabIndex(index) { [weak self] in
             self?.delegate?.didSetLandingTabIndex(index: index)
         }
+    }
+    
+    public var unfoldWhenOpen: Bool {
+        return self.coordinator?.dependency.settingAccessor.unfoldAllEntriesWhenOpen ?? false
+    }
+    
+    public func setUnfoldWhenOpen(_ unfold: Bool) {
+        self.coordinator?.dependency.settingAccessor.setUnfoldAllEntriesWhenOpen(unfold, completion: { [weak self] in
+            self?.delegate?.didUpdateUnfoldWhenOpen(unfold: unfold)
+        })
     }
     
     public var currentLandigTabIndex: Int {

@@ -28,6 +28,7 @@ public enum SettingsError: Error {
             static let unfinishedPlannings = "unfinishedPlannings"
             static let landingTabIndex = "landingTabIndex"
             static let interfaceStyle = "interfaceStyle"
+            static let unfoldAllEntriesWhenOpen = "unfoldAllEntriesWhenOpen"
         }
     }
     
@@ -77,6 +78,14 @@ public enum SettingsError: Error {
     
     public var landingTabIndex: Int {
         return Constants.store.get(key: Constants.Keys.landingTabIndex, type: Int.self) ?? 0
+    }
+    
+    public var unfoldAllEntriesWhenOpen: Bool {
+        return Constants.store.get(key: Constants.Keys.unfoldAllEntriesWhenOpen, type: Bool.self) ?? false
+    }
+    
+    public func setUnfoldAllEntriesWhenOpen(_ unfold: Bool, completion: @escaping () -> Void) {
+        Constants.store.set(value: unfold, key: Constants.Keys.unfoldAllEntriesWhenOpen, completion: completion)
     }
     
     public var customizedUnfinishedPlannings: [String]? {

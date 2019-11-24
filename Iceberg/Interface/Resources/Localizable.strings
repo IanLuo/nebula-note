@@ -152,6 +152,9 @@
 "setting.planning.unfinish.title" = "Unfinish";
 "setting.planning.finish.title" = "Finish";
 
+"setting.editor.title" = "Editor";
+"setting.editor.unfoldAllWhenOpen" = "Unfold all entries when open";
+
 //search
 "search.title" = "Search";
 

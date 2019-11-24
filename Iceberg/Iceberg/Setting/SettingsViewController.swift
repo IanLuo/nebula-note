@@ -33,6 +33,9 @@ public class SettingsViewController: UITableViewController {
     @IBOutlet var planningUnfinishLabel: UILabel!
     @IBOutlet var planningUnfinishButton: UIButton!
     
+    @IBOutlet var editorUnfoldLabel: UILabel!
+    @IBOutlet var editorUnfoldSwitch: UISwitch!
+    
     public override init(style: UITableView.Style) {
         super.init(style: style)
         
@@ -65,6 +68,9 @@ public class SettingsViewController: UITableViewController {
         self.planningFinishButton.setTitle(self.viewModel.getPlanning(isForFinished: true).joined(separator: ","), for: .normal)
         self.planningUnfinishLabel.text = L10n.Setting.Planning.Unfinish.title
         self.planningUnfinishButton.setTitle(self.viewModel.getPlanning(isForFinished: false).joined(separator: ","), for: .normal)
+        
+        self.editorUnfoldLabel.text = L10n.Setting.Editor.unfoldAllWhenOpen
+        self.editorUnfoldSwitch.isOn = self.viewModel.unfoldWhenOpen
     }
     
     private func _setupUI() {
@@ -95,6 +101,9 @@ public class SettingsViewController: UITableViewController {
             self?.planningFinishButton.setTitleColor(theme.color.spotlight, for: .normal)
             self?.planningUnfinishLabel.textColor = theme.color.interactive
             self?.planningUnfinishButton.setTitleColor(theme.color.spotlight, for: .normal)
+            
+            self?.editorUnfoldLabel.textColor = theme.color.interactive
+            self?.editorUnfoldSwitch.onTintColor = theme.color.spotlight
         }
     }
     
@@ -107,6 +116,7 @@ public class SettingsViewController: UITableViewController {
         case 0: return L10n.Setting.General.title
         case 1: return L10n.Setting.Planning.title
         case 2: return L10n.Setting.Store.title
+        case 3: return L10n.Setting.Editor.title
         default: return nil
         }
     }
@@ -244,6 +254,10 @@ public class SettingsViewController: UITableViewController {
         self._planningManage(isFinish: false)
     }
     
+    @IBAction func editorUnfoldWhenOpen(_ sender: UISwitch) {
+        self.viewModel.setUnfoldWhenOpen(sender.isOn)
+    }
+    
     private func _planningManage(isFinish: Bool) {
         let plannings = self.viewModel.getPlanning(isForFinished: isFinish)
         
@@ -349,6 +363,10 @@ public class SettingsViewController: UITableViewController {
 }
 
 extension SettingsViewController: SettingsViewModelDelegate {
+    public func didUpdateUnfoldWhenOpen(unfold: Bool) {
+        
+    }
+    
     public func didSetInterfaceStyle(newStyle: SettingsAccessor.InterfaceStyle) {
         self.setupTheme()
     }
