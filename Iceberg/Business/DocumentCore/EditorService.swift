@@ -43,6 +43,7 @@ public class EditorService {
     }
     
     deinit {
+        log.info("deiniting editor service with url: \(self._url)")
         self._document?.close(completionHandler: nil)
     }
 
@@ -74,6 +75,7 @@ public class EditorService {
         
         self._queue.async { [weak self] in
             // 如果文档已经打开，则直接返回
+            log.info("file already open, do nothing")
             if document.documentState == .normal {
                 DispatchQueue.main.async {
                     completion?(document.string)
@@ -268,6 +270,13 @@ public class EditorService {
                     completion?(success)
                 }
             }
+        }
+    }
+    
+    // for some case need to continue call function on service, use this one
+    public func save(completion: @escaping (EditorService, Bool) -> Void) {
+        self.save { result in
+            completion(self, result)
         }
     }
     
