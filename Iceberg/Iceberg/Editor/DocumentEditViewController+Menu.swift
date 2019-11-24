@@ -29,23 +29,23 @@ extension DocumentEditViewController {
         let actionsController = ActionsViewController()
         
         actionsController.title = L10n.Document.Menu.title
-        actionsController.addAction(icon: Asset.Assets.down.image, title: L10n.Document.Menu.foldAll) { viewController in
+        actionsController.addAction(icon: Asset.Assets.down.image, title: L10n.Document.Menu.foldAll) { [unowned self] viewController in
             viewController.dismiss(animated: true, completion: {
                 self.viewModel.foldAll()
                 self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
             })
         }
         
-        actionsController.addAction(icon: Asset.Assets.up.image, title: L10n.Document.Menu.unfoldAll) { viewController in
+        actionsController.addAction(icon: Asset.Assets.up.image, title: L10n.Document.Menu.unfoldAll) { [unowned self] viewController in
             viewController.dismiss(animated: true, completion: {
                 self.viewModel.unfoldAll()
                 self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
             })
         }
         
-        actionsController.addAction(icon: Asset.Assets.master.image, title: L10n.Document.Menu.outline) { viewController in
+        actionsController.addAction(icon: Asset.Assets.master.image, title: L10n.Document.Menu.outline) { [unowned self] viewController in
             viewController.dismiss(animated: true, completion: {
-                self.viewModel.coordinator?.showOutline(completion: { [unowned self] selection in
+                self.viewModel.coordinator?.showOutline(completion: { selection in
                     self.viewModel.unfoldAll()
                     self.allowScrollContentWhenKeyboardDisapearTemporaily()
                     
@@ -60,7 +60,7 @@ extension DocumentEditViewController {
                 self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
             })
             
-            viewController.setCancel(action: { viewController in
+            viewController.setCancel(action: { [unowned self] viewController in
                 viewController.dismiss(animated: true, completion: nil)
                 self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
             })
@@ -69,12 +69,12 @@ extension DocumentEditViewController {
         actionsController.addAction(icon: Asset.Assets.inspiration.image,
                                     title: L10n.Document.Menu.capture,
                                     style: .highlight) { viewController in
-                                        viewController.dismiss(animated: true) {
+                                        viewController.dismiss(animated: true) { [unowned self] in
                                             self.viewModel.coordinator?.showCaptureEntrance()
                                         }
         }
         
-        actionsController.setCancel { viewController in
+        actionsController.setCancel { [unowned self] viewController in
             viewController.dismiss(animated: true, completion: nil)
             self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
         }

@@ -30,6 +30,8 @@ public class EditorCoordinator: Coordinator {
     
     public var didSelectOutlineSelectionAction: ((OutlineLocation) -> Void)?
     
+    private let _url: URL
+    
     public init(stack: UINavigationController, dependency: Dependency, usage: Usage) {
         self.usage = usage
         
@@ -38,6 +40,7 @@ public class EditorCoordinator: Coordinator {
             let viewModel = DocumentEditViewModel(editorService: dependency.editorContext.request(url: url))
             viewModel.onLoadingLocation = location
             self._viewModel = viewModel
+            self._url = url
             super.init(stack: stack, dependency: dependency)
             let viewController = DocumentEditViewController(viewModel: viewModel)
             viewController.title = url.packageName
@@ -47,6 +50,7 @@ public class EditorCoordinator: Coordinator {
         case .outline(let url, let ignoredHeadingLocation):
             let viewModel = DocumentEditViewModel(editorService: dependency.editorContext.request(url: url))
             self._viewModel = viewModel
+            self._url = url
             super.init(stack: stack, dependency: dependency)
             let viewController = HeadingsOutlineViewController(viewModel: viewModel)
             viewController.ignoredHeadingLocation = ignoredHeadingLocation
@@ -55,6 +59,10 @@ public class EditorCoordinator: Coordinator {
             viewModel.coordinator = self
             self.viewController = viewController
         }
+    }
+    
+    deinit {
+        self.dependency.editorContext.end(with: self._url)
     }
     
     public func showOutline(ignoredHeadingLocation: Int? = nil, completion: @escaping (OutlineLocation) -> Void) {

@@ -47,9 +47,9 @@ public class DocumentEditViewModel {
     public init(editorService: EditorService) {
         self._editorService = editorService
         
-        editorService.onReadyToUse = { service in
+        editorService.onReadyToUse = { [weak self] service in
             service.open {
-                self.isReadyToEdit = $0 != nil
+                self?.isReadyToEdit = $0 != nil
             }
         }
     }
