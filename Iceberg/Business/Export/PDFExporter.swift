@@ -62,7 +62,7 @@ public class PDFExporter: Exportable {
         // 3. Assign paperRect and printableRect
         let page = CGRect(x: 0, y: 0, width: 595.2, height: 841.8) // A4, 72 dpi
         render.setValue(page, forKey: "paperRect")
-        render.setValue(page, forKey: "printableRect")
+        render.setValue(page.inset(by: UIEdgeInsets(top: 60, left: 50, bottom: 60, right: 50)), forKey: "printableRect")
         // 4. Create PDF context and draw
         let pdfData = NSMutableData()
         UIGraphicsBeginPDFContextToData(pdfData, .zero, nil)
