@@ -100,12 +100,12 @@ public class DocumentHeadingSearchResult {
 }
 
 public class DocumentSearchHeadingUpdateEvent: Event {
-    public let oldHeadings: [DocumentHeadingSearchResult]
-    public let newHeadings: [DocumentHeadingSearchResult]
-    public init(oldHeadings: [DocumentHeadingSearchResult], newHeadings: [DocumentHeadingSearchResult]) {
-        self.oldHeadings = oldHeadings
-        self.newHeadings = newHeadings
-    }
+//    public let oldHeadings: [DocumentHeadingSearchResult]
+//    public let newHeadings: [DocumentHeadingSearchResult]
+//    public init(oldHeadings: [DocumentHeadingSearchResult], newHeadings: [DocumentHeadingSearchResult]) {
+//        self.oldHeadings = oldHeadings
+//        self.newHeadings = newHeadings
+//    }
 }
 
 public class TagAddedEvent: Event {
@@ -397,17 +397,17 @@ public class DocumentSearchManager {
     }
     
     private func _handleDocumentHeadingsChange(event: DocumentHeadingChangeEvent) {
-        let newHeadings = event.newHeadings.map { (headingToken: HeadingToken) -> DocumentHeadingSearchResult in
-            // 这里能收到 heading change 的 document 肯定是已经 open 了的，因为发 heading change 事件是在 OutlineTextStorage 文档解析完成的时候            
-            return DocumentHeadingSearchResult(dateAndTime: nil,
-                                               documentInfo: DocumentInfo(wrapperURL: event.url.wrapperURL),
-                                               dateAndTimeRange: nil,
-                                               heading: DocumentHeading(documentString: self._editorContext.request(url: event.url).string,
-                                                                        headingToken: headingToken,
-                                                                        url: event.url))
-        }
+//        let newHeadings = event.newHeadings.map { (headingToken: HeadingToken) -> DocumentHeadingSearchResult in
+//            // 这里能收到 heading change 的 document 肯定是已经 open 了的，因为发 heading change 事件是在 OutlineTextStorage 文档解析完成的时候            
+//            return DocumentHeadingSearchResult(dateAndTime: nil,
+//                                               documentInfo: DocumentInfo(wrapperURL: event.url.wrapperURL),
+//                                               dateAndTimeRange: nil,
+//                                               heading: DocumentHeading(documentString: self._editorContext.request(url: event.url).string,
+//                                                                        headingToken: headingToken,
+//                                                                        url: event.url))
+//        }
 
-        let documentSearchHeadingChangeEvent = DocumentSearchHeadingUpdateEvent(oldHeadings: [], newHeadings: newHeadings)
+        let documentSearchHeadingChangeEvent = DocumentSearchHeadingUpdateEvent()
         self._eventObserver.emit(documentSearchHeadingChangeEvent)
     }
 }

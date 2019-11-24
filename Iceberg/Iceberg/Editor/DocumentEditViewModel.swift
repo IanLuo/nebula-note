@@ -207,8 +207,8 @@ public class DocumentEditViewModel {
                         _ = service.toggleContentCommandComposer(composer: InsertTextCommandComposer(location: location, textToInsert: text)).perform()
                     }
                     
-                    service.save(completion: { [unowned service] _ in
-                        service.close(completion: { _ in
+                    service.save(completion: { [weak service] _ in
+                        service?.close(completion: { _ in
                             DispatchQueue.main.async {
                                 completion(result)
                             }
