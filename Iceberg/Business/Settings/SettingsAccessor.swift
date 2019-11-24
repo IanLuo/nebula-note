@@ -23,13 +23,6 @@ public enum SettingsError: Error {
     
     private struct Constants {
         static var store: KeyValueStore { return KeyValueStoreFactory.store(type: KeyValueStoreType.plist(PlistStoreType.custom("Settings"))) }
-        struct Keys {
-            static let finishedPlannings = "finishedPlannings"
-            static let unfinishedPlannings = "unfinishedPlannings"
-            static let landingTabIndex = "landingTabIndex"
-            static let interfaceStyle = "interfaceStyle"
-            static let unfoldAllEntriesWhenOpen = "unfoldAllEntriesWhenOpen"
-        }
     }
     
     public enum Item: String {
@@ -79,14 +72,14 @@ public enum SettingsError: Error {
     public var interfaceStyle: InterfaceStyle {
         // 支持 dark mode 的系统，默认值为自动，否则为 light
         if #available(iOS 13, *) {
-            return InterfaceStyle(rawValue: Constants.store.get(key: Constants.Keys.interfaceStyle, type: String.self) ?? InterfaceStyle.auto.rawValue) ?? InterfaceStyle.auto
+            return InterfaceStyle(rawValue: SettingsAccessor.Item.interfaceStyle.get(String.self) ?? InterfaceStyle.auto.rawValue) ?? InterfaceStyle.auto
         } else {
-            return InterfaceStyle(rawValue: Constants.store.get(key: Constants.Keys.interfaceStyle, type: String.self) ?? InterfaceStyle.light.rawValue) ?? InterfaceStyle.light
+            return InterfaceStyle(rawValue: SettingsAccessor.Item.interfaceStyle.get(String.self) ?? InterfaceStyle.light.rawValue) ?? InterfaceStyle.light
         }
     }
     
     public var customizedUnfinishedPlannings: [String]? {
-        if let plannings = Constants.store.get(key: Constants.Keys.unfinishedPlannings, type: [String].self) {
+        if let plannings = SettingsAccessor.Item.unfinishedPlannings.get([String].self) {
             return plannings.count > 0 ? plannings : nil
         } else {
             return nil
@@ -94,7 +87,7 @@ public enum SettingsError: Error {
     }
     
     public var customizedFinishedPlannings: [String]? {
-        if let plannings = Constants.store.get(key: Constants.Keys.finishedPlannings, type: [String].self) {
+        if let plannings = SettingsAccessor.Item.finishedPlannings.get([String].self) {
             return plannings.count > 0 ? plannings : nil
         } else {
             return nil
@@ -120,14 +113,14 @@ public enum SettingsError: Error {
     
     /// add new planning
     public func addPlanning(_ planning: String, isForFinished: Bool, completion: @escaping (Result<Void, Error>) -> Void) {
-        let key = isForFinished ? Constants.Keys.finishedPlannings : Constants.Keys.unfinishedPlannings
-        if var plannings = Constants.store.get(key: key, type: [String].self) {
+        let item = isForFinished ? SettingsAccessor.Item.finishedPlannings : SettingsAccessor.Item.unfinishedPlannings
+        if var plannings = item.get([String].self) {
             plannings.append(planning)
-            Constants.store.set(value: plannings, key: key) {
+            item.set(plannings) {
                 completion(.success(()))
             }
         } else {
-            Constants.store.set(value: [planning], key: key) {
+            item.set([planning]) {
                 completion(.success(()))
             }
         }
@@ -135,12 +128,12 @@ public enum SettingsError: Error {
     
     /// remove specified planning if there's on in the setting's configuration
     public func removePlanning(_ planning: String, completion: @escaping (Result<Void, Error>) -> Void) {
-        let removePlanningAction: (String) -> Bool = { key in
-            if var plannings = Constants.store.get(key: key, type: [String].self) {
+        let removePlanningAction: (SettingsAccessor.Item) -> Bool = { item in
+            if var plannings = item.get([String].self) {
                 for (index, p) in plannings.enumerated() {
                     if p == planning {
                         plannings.remove(at: index)
-                        Constants.store.set(value: plannings, key: key) {
+                        item.set(plannings) {
                             completion(.success(()))
                         }
                         return true // planning found and removed, return true, so there's no need for another remove action for another planning list
@@ -153,8 +146,8 @@ public enum SettingsError: Error {
             return false
         }
         
-        if !removePlanningAction(Constants.Keys.finishedPlannings) {
-            _ = removePlanningAction(Constants.Keys.unfinishedPlannings)
+        if !removePlanningAction(SettingsAccessor.Item.finishedPlannings) {
+            _ = removePlanningAction(SettingsAccessor.Item.unfinishedPlannings)
         }
     }    
 }
