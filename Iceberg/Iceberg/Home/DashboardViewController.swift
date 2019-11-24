@@ -50,6 +50,7 @@ public class DashboardViewController: UIViewController {
         super.viewDidLoad()
         
         self.interface { me, theme in
+            let me = me as! DashboardViewController
             me.setNeedsStatusBarAppearanceUpdate()
             me.view.backgroundColor = theme.color.background1
             me.navigationController?.navigationBar.setBackgroundImage(UIImage.create(with: theme.color.background1, size: .singlePoint), for: .default)
@@ -444,8 +445,11 @@ private class TabView: UITableViewHeaderFooterView {
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
         
-        self.backgroundColor = InterfaceTheme.Color.background1
-        self.contentView.backgroundColor = InterfaceTheme.Color.background1
+        self.interface { (me, theme) in
+            let tabView = me as! TabView
+            tabView.contentView.backgroundColor = InterfaceTheme.Color.background1
+            tabView.backgroundColor = InterfaceTheme.Color.background1
+        }
         self.contentView.addSubview(self.titleButton)
         self.contentView.addSubview(self.iconView)
         
