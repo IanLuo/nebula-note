@@ -52,7 +52,7 @@ public class TimeSelectViewController: UIViewController {
     
     private func _enableTimeView(_ enabled: Bool) {
         self._timePickerContainer.constraint(for: .height)?.constant = enabled ? 0 : 120
-        self._timePickerContainer.isHidden = enabled
+//        self._timePickerContainer.isHidden = enabled
         self.delegate?.didEnableSelectTime(!enabled)
         
         if enabled {
