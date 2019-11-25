@@ -489,18 +489,14 @@ public class BrowserCellWithSubFolder: BrowserCell {
                                                                                              left: Layout.edgeInsets.left,
                                                                                              bottom: -5,
                                                                                              right: -(Layout.edgeInsets.right)))
+        
+        if let rightConstraint = self.container.constraint(for: Position.right) {
+            self.removeConstraint(rightConstraint)
+            self.container.sideAnchor(for: Position.right, to: self.contentView, edgeInset: Layout.edgeInsets.right + 5)
+        }
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    override public func configure(cellModel: BrowserCellModel) {
-        super.configure(cellModel: cellModel)
-        
-        if let rightConstraint = self.container.constraint(for: Position.right) {
-            self.removeConstraint(rightConstraint)
-            self.container.sideAnchor(for: Position.right, to: self, edgeInset: Layout.edgeInsets.right + 5)
-        }
     }
 }

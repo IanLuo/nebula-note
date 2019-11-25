@@ -189,8 +189,8 @@ private class CaptureCell: UITableViewCell {
         self.contentView.addSubview(self.iconView)
         self.contentView.addSubview(self.titleLabel)
         
-        self.iconView.sideAnchor(for: .left, to: self.contentView, edgeInset:  Layout.edgeInsets.left)
-        self.iconView.size(width: 30, height: 30)
+        self.iconView.sideAnchor(for: .left, to: self.contentView, edgeInset:  Layout.innerViewEdgeInsets.left)
+        self.iconView.sizeAnchor(width: 18, height: 18)
         self.iconView.centerAnchors(position: .centerY, to: self.contentView)
         self.iconView.rowAnchor(view: self.titleLabel, space: 20)
         self.titleLabel.sideAnchor(for: .top, to: self.contentView, edgeInset: 20)

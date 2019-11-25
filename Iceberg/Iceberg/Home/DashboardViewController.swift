@@ -453,12 +453,12 @@ private class TabView: UITableViewHeaderFooterView {
         self.contentView.addSubview(self.titleButton)
         self.contentView.addSubview(self.iconView)
         
-        self.iconView.sideAnchor(for: .left, to: self.contentView, edgeInsets: .init(top: 0, left: Layout.edgeInsets.left, bottom: 0, right: 0))
+        self.iconView.sideAnchor(for: .left, to: self.contentView, edgeInsets: .init(top: 0, left: Layout.innerViewEdgeInsets.left, bottom: 0, right: 0))
         self.iconView.centerAnchors(position: .centerY, to: self.contentView)
         self.iconView.sizeAnchor(width: 20, height: 20)
         
         self.titleButton.allSidesAnchors(to: self.contentView, edgeInset: 0)
-        self.titleButton.contentEdgeInsets = UIEdgeInsets(top: 20, left: 50, bottom: 20, right: 0)
+        self.titleButton.contentEdgeInsets = UIEdgeInsets(top: 20, left: Layout.innerViewEdgeInsets.left + 20 + 20, bottom: 20, right: 0)
     }
     
     required init?(coder aDecoder: NSCoder) {
