@@ -174,7 +174,6 @@ public class AgendaViewModel {
                 let allData = results.map { AgendaCellModel(searchResult: $0) }
                 
                 self?.dateOrderedData = [:]
-                let today = Date().dayEnd
                 
                 // filter data for each date
                 self?.dates.forEach { date in
@@ -188,8 +187,8 @@ public class AgendaViewModel {
                             if dateAndTime.isSchedule || dateAndTime.isDue {
                                 if dateAndTime.date.dayEnd <= date.dayEnd {
                                     return true
-                                } else if dateAndTime.date.dayEnd.timeIntervalSince1970 > today.timeIntervalSince1970 {
-                                    return dateAndTime.date.daysFrom(today) <= 3
+                                } else if dateAndTime.date.dayEnd.timeIntervalSince1970 > date.timeIntervalSince1970 {
+                                    return dateAndTime.date.daysFrom(date) <= 3
                                 } else {
                                     return dateAndTime.date.dayEnd.isSameDay(date.dayEnd)
                                 }
