@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import Business
 
-extension DocumentEditViewController: UITextViewDelegate {
+extension DocumentEditorViewController: UITextViewDelegate {
     public func textViewDidChange(_ textView: UITextView) {
         self.viewModel.didUpdate()
     }
@@ -62,7 +62,7 @@ extension DocumentEditViewController: UITextViewDelegate {
     }
 }
 
-extension DocumentEditViewController {
+extension DocumentEditorViewController {
     private func _handleLineBreak(_ textView: UITextView) -> Bool {
         // 如果在 heading 中，换行不在当前位置，而在 heading 之后
         guard let currentPosition = textView.selectedTextRange?.start else { return true }

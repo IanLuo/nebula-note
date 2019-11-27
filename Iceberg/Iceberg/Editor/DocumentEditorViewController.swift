@@ -11,11 +11,7 @@ import UIKit
 import Business
 import Interface
 
-public protocol DocumentEditViewControllerDelegate: class {
-
-}
-
-public class DocumentEditViewController: UIViewController {
+public class DocumentEditorViewController: UIViewController {
     public let textView: OutlineTextView
     internal let viewModel: DocumentEditViewModel
     
@@ -26,8 +22,6 @@ public class DocumentEditViewController: UIViewController {
         indicator.color = InterfaceTheme.Color.interactive
         return indicator
     }()
-    
-    public weak var delegate: DocumentEditViewControllerDelegate?
     
     internal var _lastLocation: Int?
     internal var _isAdjustingSelectRange: Bool = false
@@ -203,7 +197,7 @@ public class DocumentEditViewController: UIViewController {
     }
 }
 
-extension DocumentEditViewController: DocumentEditViewModelDelegate {
+extension DocumentEditorViewController: DocumentEditViewModelDelegate {
     public func didEnterTokens(_ tokens: [Token]) {
         self.viewModel.currentTokens = tokens
         

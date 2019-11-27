@@ -13,7 +13,7 @@ import Interface
 import CoreLocation
 import MapKit
 
-extension DocumentEditViewController: OutlineTextViewDelegate {
+extension DocumentEditorViewController: OutlineTextViewDelegate {
     public func didTapOnAttachment(textView: UITextView, characterIndex: Int, type: String, value: String, point: CGPoint) {
         self.viewModel.coordinator?.dependency.attachmentManager.attachment(with: value, completion: { [weak self] attachment in
             self?._showAttachmentView(attachment: attachment)

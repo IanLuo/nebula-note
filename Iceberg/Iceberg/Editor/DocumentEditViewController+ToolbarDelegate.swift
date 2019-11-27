@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import Business
 
-extension DocumentEditViewController: DocumentEditToolbarDelegate {
+extension DocumentEditorViewController: DocumentEditToolbarDelegate {
     private func commandCompletionActionMoveCursorMapTheLengthOfStringChange(_ oldSelectedRange: NSRange) -> (DocumentContentCommandResult) -> Void {
         return { result in
             self.textView.selectedRange = oldSelectedRange.offset(result.delta)

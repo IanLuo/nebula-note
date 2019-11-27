@@ -42,9 +42,8 @@ public class EditorCoordinator: Coordinator {
             self._viewModel = viewModel
             self._url = url
             super.init(stack: stack, dependency: dependency)
-            let viewController = DocumentEditViewController(viewModel: viewModel)
+            let viewController = DocumentEditorViewController(viewModel: viewModel)
             viewController.title = url.packageName
-            viewController.delegate = self
             viewModel.coordinator = self
             self.viewController = viewController
         case .outline(let url, let ignoredHeadingLocation):
@@ -150,10 +149,6 @@ extension EditorCoordinator: SearchCoordinatorDelegate {
         documentInfoViewController.didCloseAction = completion
         self.viewController?.present(documentInfoViewController, animated: true, completion: nil)
     }
-}
-
-extension EditorCoordinator: DocumentEditViewControllerDelegate {
-
 }
 
 extension EditorCoordinator: HeadingsOutlineViewControllerDelegate {

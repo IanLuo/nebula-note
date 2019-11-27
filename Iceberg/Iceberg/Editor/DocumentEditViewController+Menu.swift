@@ -11,7 +11,7 @@ import UIKit
 import Business
 import Interface
 
-extension DocumentEditViewController {
+extension DocumentEditorViewController {
     @objc public func cancel(_ button: UIView) {
         self.viewModel.close { _ in }
         self.dismiss(animated: true, completion: nil)

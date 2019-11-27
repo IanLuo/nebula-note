@@ -94,7 +94,7 @@
 		E41EC83022C4BFE3009ACFA4 /* TxtExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41EC82F22C4BFE3009ACFA4 /* TxtExporter.swift */; };
 		E41F86C3218EF4BF006C4CDB /* AttachmentCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F86C2218EF4BF006C4CDB /* AttachmentCoordinator.swift */; };
 		E41F86C5218EF4E1006C4CDB /* AgendaCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F86C4218EF4E1006C4CDB /* AgendaCoordinator.swift */; };
-		E41FA5752191569C001D8C63 /* DocumentEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41FA5742191569C001D8C63 /* DocumentEditViewController.swift */; };
+		E41FA5752191569C001D8C63 /* DocumentEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41FA5742191569C001D8C63 /* DocumentEditorViewController.swift */; };
 		E42574C32294DEF3008993BC /* InterfaceTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = E42574C22294DEF3008993BC /* InterfaceTheme.swift */; };
 		E428B89A23439F560026AC1F /* BrowserRecentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E428B89923439F560026AC1F /* BrowserRecentViewModel.swift */; };
 		E428B89C2343A5900026AC1F /* BrowserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E428B89B2343A5900026AC1F /* BrowserViewController.swift */; };
@@ -368,7 +368,7 @@
 		E41F86DB219009DD006C4CDB /* Attachment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Attachment.swift; sourceTree = "<group>"; };
 		E41F86DD21902BA1006C4CDB /* AttachmentManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentManager.swift; sourceTree = "<group>"; };
 		E41F870321902DB3006C4CDB /* KeyValueStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyValueStore.swift; sourceTree = "<group>"; };
-		E41FA5742191569C001D8C63 /* DocumentEditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentEditViewController.swift; sourceTree = "<group>"; };
+		E41FA5742191569C001D8C63 /* DocumentEditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentEditorViewController.swift; sourceTree = "<group>"; };
 		E42574C22294DEF3008993BC /* InterfaceTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterfaceTheme.swift; sourceTree = "<group>"; };
 		E428B89923439F560026AC1F /* BrowserRecentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserRecentViewModel.swift; sourceTree = "<group>"; };
 		E428B89B2343A5900026AC1F /* BrowserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserViewController.swift; sourceTree = "<group>"; };
@@ -1173,7 +1173,7 @@
 			isa = PBXGroup;
 			children = (
 				E4EA857621D3B0AC00DD92F9 /* EditorCoordinator.swift */,
-				E41FA5742191569C001D8C63 /* DocumentEditViewController.swift */,
+				E41FA5742191569C001D8C63 /* DocumentEditorViewController.swift */,
 				E4144EA622854B5800CB12FF /* DocumentEditViewController+UserInteraction.swift */,
 				E4144EA22285492E00CB12FF /* DocumentEditViewController+Input.swift */,
 				E465F8812242269000FA6E83 /* DocumentEditViewController+ToolbarDelegate.swift */,
@@ -1901,7 +1901,7 @@
 				E4F42989229F9C4F004700E0 /* ListViewController.swift in Sources */,
 				E4B1BED923424E9D00683E10 /* BrowserCellModel.swift in Sources */,
 				E4EFA45F222F684B00611FF5 /* CaptureViewController.swift in Sources */,
-				E41FA5752191569C001D8C63 /* DocumentEditViewController.swift in Sources */,
+				E41FA5752191569C001D8C63 /* DocumentEditorViewController.swift in Sources */,
 				E4773BAA21F7507E000F8F3F /* SearchTabelCellModel.swift in Sources */,
 				E462DB9A223D259F00BF7AB4 /* DateSelectViewController.swift in Sources */,
 				E49F3E4C21B91885003F468D /* SettingsViewModel.swift in Sources */,
