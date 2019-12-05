@@ -102,9 +102,9 @@ public class BrowserCell: UITableViewCell {
                                                    bottom: -10,
                                                    right: 0))
         self.iconView.ratioAnchor(2.0 / 3)
-        self.iconView.sizeAnchor(width: 50)
+        self.iconView.sizeAnchor(height: 100)
         
-        self.iconView.rowAnchor(view: self.titleLabel, space: 10)
+        self.iconView.rowAnchor(view: self.titleLabel, space: 10, alignment: .top)
         self.titleLabel.sideAnchor(for: [.top],
                                    to: self.container,
                                    edgeInsets: .init(top: 10,
@@ -112,7 +112,7 @@ public class BrowserCell: UITableViewCell {
                                                      bottom: -10,
                                                      right: 0))
         
-        self.titleLabel.rowAnchor(view: self.actionsContainerView, space: 10)
+        self.titleLabel.rowAnchor(view: self.actionsContainerView, space: 10, alignment: .top)
         self.actionsContainerView.sideAnchor(for: [.top, .bottom, .right],
                                              to: self.container,
                                              edgeInsets: .init(top: 10,
@@ -120,9 +120,8 @@ public class BrowserCell: UITableViewCell {
                                                                bottom: 0,
                                                                right: 0))
         
-        self.iconView.rowAnchor(view: self.lastModifiedDateLabel, space: 10)
-        self.titleLabel.columnAnchor(view: self.lastModifiedDateLabel, space: 8)
-        self.lastModifiedDateLabel.sideAnchor(for: [.bottom], to: self.container, edgeInset: 10)
+        self.iconView.rowAnchor(view: self.lastModifiedDateLabel, space: 10, alignment: .bottom)
+        self.titleLabel.columnAnchor(view: self.lastModifiedDateLabel, space: 8, alignment: .leading)
         self.lastModifiedDateLabel.sizeAnchor(height: 14)
     }
     
@@ -486,12 +485,12 @@ public class BrowserCellWithSubFolder: BrowserCell {
         self.contentView.insertSubview(self._subFolderIndicatorView, at: 0)
         
         self._subFolderIndicatorView.allSidesAnchors(to: self.contentView, edgeInsets: .init(top: Layout.edgeInsets.top + 5,
-                                                                                             left: Layout.edgeInsets.left,
-                                                                                             bottom: -5,
+                                                                                             left: Layout.edgeInsets.left + 5,
+                                                                                             bottom: 5,
                                                                                              right: -(Layout.edgeInsets.right)))
         
         if let rightConstraint = self.container.constraint(for: Position.right) {
-            self.removeConstraint(rightConstraint)
+            self.contentView.removeConstraint(rightConstraint)
             self.container.sideAnchor(for: Position.right, to: self.contentView, edgeInset: Layout.edgeInsets.right + 5)
         }
     }

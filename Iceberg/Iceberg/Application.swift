@@ -36,12 +36,12 @@ public class Application: Coordinator {
         
         let eventObserver = EventObserver()
         let editorContext = EditorContext(eventObserver: eventObserver)
-        let syncManager = SyncManager(eventObserver: eventObserver)
+        let syncManager = iCloudDocumentManager(eventObserver: eventObserver)
         
         // if the user turn off iCloud from settings, this sign must be set here
-        if syncManager.updateCurrentiCloudAccountStatus() == .closed {
-            if SyncManager.status == .on {
-                SyncManager.status = .off
+        if syncManager.refreshCurrentiCloudAccountStatus() == .closed {
+            if iCloudDocumentManager.status == .on {
+                iCloudDocumentManager.status = .off
                 self._didTheUserTurnOffiCloudFromSettings = true
             }
         }
@@ -52,16 +52,14 @@ public class Application: Coordinator {
         
         super.init(stack: navigationController,
                    dependency: Dependency(documentManager: documentManager,
-                                          documentSearchManager: DocumentSearchManager(eventObserver: eventObserver,
-                                                                                       editorContext: editorContext),
+                                          documentSearchManager: DocumentSearchManager(eventObserver: eventObserver, editorContext: editorContext),
                                           editorContext: editorContext,
                                           textTrimmer: OutlineTextTrimmer(parser: OutlineParser()),
                                           eventObserver: eventObserver,
                                           settingAccessor: SettingsAccessor.shared,
                                           syncManager: syncManager,
                                           attachmentManager: attachmentManager,
-                                          urlHandlerManager: URLHandlerManager(documentManager: documentManager,
-                                                                               eventObserver: eventObserver),
+                                          urlHandlerManager: URLHandlerManager(documentManager: documentManager, eventObserver: eventObserver),
                                           shareExtensionHandler: ShareExtensionDataHandler(),
                                           captureService: CaptureService(attachmentManager: attachmentManager),
                                           exportManager: ExportManager(editorContext: editorContext),
@@ -139,17 +137,17 @@ public class Application: Coordinator {
     }
     
     private func _setupiCloud() {
-        if SyncManager.status == .off {
+        if iCloudDocumentManager.status == .off {
             // 用户已关闭 iCloud，忽略
             self.isFileReadyToAccess.accept(true)
             return
         }
         
-        let status = self.dependency.syncManager.updateCurrentiCloudAccountStatus()
+        let status = self.dependency.syncManager.refreshCurrentiCloudAccountStatus()
         
         switch status {
         case .changed:
-            if SyncManager.status == .on {
+            if iCloudDocumentManager.status == .on {
                 self.dependency.syncManager.geticloudContainerURL(completion: { [unowned self] url in
                     // 开始同步 iCloud 文件
                     self.dependency.syncManager.startMonitoringiCloudFileUpdateIfNeeded()
@@ -166,21 +164,21 @@ public class Application: Coordinator {
                 self.stack.showAlert(title: L10n.Sync.Alert.Account.Closed.title, message: L10n.Sync.Alert.Account.Closed.msg)
                 
                 // mark iCloud off
-                SyncManager.status = .off
+                iCloudDocumentManager.status = .off
                 
                 self.dependency.eventObserver.emit(iCloudAvailabilityChangedEvent(isEnabled: false))
                 
                 self.isFileReadyToAccess.accept(true)
             }
         case .open:
-            if SyncManager.status == .unknown {
+            if iCloudDocumentManager.status == .unknown {
                 let confirmViewController = ConfirmViewController()
                 confirmViewController.contentText = L10n.Sync.Confirm.useiCloud
                 
                 confirmViewController.confirmAction = { viewController in
                     viewController.dismiss(animated: true, completion: {
                         self.dependency.syncManager.geticloudContainerURL(completion: { [unowned self] url in
-                            SyncManager.status = .on
+                            iCloudDocumentManager.status = .on
                             // 开始同步 iCloud 文件
                             self.dependency.syncManager.startMonitoringiCloudFileUpdateIfNeeded()
                             self.stack.showAlert(title: L10n.Sync.Alert.Status.On.title, message: L10n.Sync.Alert.Status.On.msg)
@@ -195,7 +193,7 @@ public class Application: Coordinator {
                 confirmViewController.cancelAction = { viewController in
                     viewController.dismiss(animated: true, completion: {
                         
-                        SyncManager.status = .off
+                        iCloudDocumentManager.status = .off
 
                         self.stack.showAlert(title: L10n.Sync.Alert.Status.Off.title, message: L10n.Sync.Alert.Status.Off.msg)
                         
@@ -206,7 +204,7 @@ public class Application: Coordinator {
                 }
                 
                 self.stack.present(confirmViewController, animated: true, completion: nil)
-            } else if SyncManager.status == .on {
+            } else if iCloudDocumentManager.status == .on {
                 
                 self.dependency.syncManager.geticloudContainerURL(completion: { [unowned self] url in
                     // 开始同步 iCloud 文件

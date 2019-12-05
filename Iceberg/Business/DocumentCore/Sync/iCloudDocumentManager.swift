@@ -15,7 +15,7 @@ public enum SyncError: Error {
     case iCloudIsNotAvailable
 }
 
-public class SyncManager: NSObject {
+public class iCloudDocumentManager: NSObject {
     public enum iCloudStatus: String {
         case unknown // on first launch
         case on
@@ -34,15 +34,15 @@ public class SyncManager: NSObject {
     }
     
     public static var iCloudDocumentRoot: URL? {
-        return SyncManager.iCloudRoot?.appendingPathComponent("Documents").appendingPathComponent("files")
+        return iCloudDocumentManager.iCloudRoot?.appendingPathComponent("Documents").appendingPathComponent("files")
     }
     
     public static var iCloudAttachmentRoot: URL? {
-        return SyncManager.iCloudRoot?.appendingPathComponent("Documents").appendingPathComponent("attachments")
+        return iCloudDocumentManager.iCloudRoot?.appendingPathComponent("Documents").appendingPathComponent("attachments")
     }
     
     public static var iCloudKeyValueStoreRoot: URL? {
-        return SyncManager.iCloudRoot?.appendingPathComponent("Documents").appendingPathComponent("keyValueStore")
+        return iCloudDocumentManager.iCloudRoot?.appendingPathComponent("Documents").appendingPathComponent("keyValueStore")
     }
     
     private let _eventObserver: EventObserver
@@ -83,7 +83,7 @@ public class SyncManager: NSObject {
 //          self.startMonitoringiCloudFileUpdateIfNeeded()
 //    }
     
-    public func updateCurrentiCloudAccountStatus() -> iCloudAccountStatus {
+    public func refreshCurrentiCloudAccountStatus() -> iCloudAccountStatus {
         let key = "ubiquityIdentityToken"
         let token = FileManager.default.ubiquityIdentityToken
         let savedTokenData = UserDefaults.standard.data(forKey: key)
@@ -110,13 +110,13 @@ public class SyncManager: NSObject {
     }
     
     public var iCloudAccountStatus: iCloudAccountStatus {
-        return updateCurrentiCloudAccountStatus()
+        return refreshCurrentiCloudAccountStatus()
     }
     
     public func geticloudContainerURL(completion: @escaping (URL?) -> Void) {
         DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
             let url = FileManager.default.url(forUbiquityContainerIdentifier: nil)
-            SyncManager.iCloudRoot = url
+            iCloudDocumentManager.iCloudRoot = url
             DispatchQueue.main.async {
                 completion(url)
             }
@@ -131,12 +131,13 @@ public class SyncManager: NSObject {
         self._metadataQuery.stop()
     }
     
+    /// turn on, move local to iCloud, otherwise, move iCloud to local
     public func swithiCloud(on willBeOn: Bool, completion: @escaping (Error?) -> Void) {
         // 1. get the iCloud folder url
         self.geticloudContainerURL { [weak self] url in
             guard let strongSelf = self else { return }
             
-            SyncManager.iCloudRoot = url
+            iCloudDocumentManager.iCloudRoot = url
             
             guard strongSelf.iCloudAccountStatus != .closed else {
                 completion(SyncError.iCloudIsNotAvailable)
@@ -145,7 +146,7 @@ public class SyncManager: NSObject {
             
             // 2. move file from/to iCloud folder
             if willBeOn {
-                switch SyncManager.status {
+                switch iCloudDocumentManager.status {
                 case .unknown: fallthrough
                 case .off:
                     strongSelf.moveLocalFilesToIcloud { [weak strongSelf] error in
@@ -156,7 +157,7 @@ public class SyncManager: NSObject {
                         } else {
                             completion(nil)
                             strongSelf?._eventObserver.emit(iCloudOpeningStatusChangedEvent(isiCloudEnabled: true))
-                            SyncManager.status = .on
+                            iCloudDocumentManager.status = .on
                             strongSelf?.startMonitoringiCloudFileUpdateIfNeeded()
                         }
                     }
@@ -164,7 +165,7 @@ public class SyncManager: NSObject {
                     completion(nil)
                 }
             } else {
-                switch SyncManager.status {
+                switch iCloudDocumentManager.status {
                 case .off:
                     completion(nil)
                 case .unknown: fallthrough
@@ -177,7 +178,7 @@ public class SyncManager: NSObject {
                         } else {
                             completion(nil)
                             strongSelf?._eventObserver.emit(iCloudOpeningStatusChangedEvent(isiCloudEnabled: false))
-                            SyncManager.status = .off
+                            iCloudDocumentManager.status = .off
                             strongSelf?.stopMonitoringiCloudFildUpdateIfNeeded()
                         }
                     }
@@ -199,9 +200,9 @@ public class SyncManager: NSObject {
     public func moveLocalFilesToIcloud(completion: @escaping (Error?) -> Void) {
 
         // if there's no root folders for documents, attachment, and key value store folder, means sync is not enabled, ignore
-        guard let icloudDocumentRoot = SyncManager.iCloudDocumentRoot,
-            let icloudAttachmentRoot = SyncManager.iCloudAttachmentRoot,
-        let icloudKeyValueStoreRoot = SyncManager.iCloudKeyValueStoreRoot else {
+        guard let icloudDocumentRoot = iCloudDocumentManager.iCloudDocumentRoot,
+            let icloudAttachmentRoot = iCloudDocumentManager.iCloudAttachmentRoot,
+        let icloudKeyValueStoreRoot = iCloudDocumentManager.iCloudKeyValueStoreRoot else {
             completion(SyncError.syncIsNotEnabled)
             return
         }
@@ -217,7 +218,7 @@ public class SyncManager: NSObject {
                 log.info("start moving from local to iCloud(\(icloudDocumentRoot))...")
                 // move local documents folder to icloud document folder, and keep the files in it's place in local
                 if FileManager.default.fileExists(atPath: URL.localDocumentBaseURL.path, isDirectory: &isDir) {
-                    for path in try self._allPaths(in: URL.localDocumentBaseURL) {
+                    for path in try self.allPaths(in: URL.localDocumentBaseURL) {
                         
                         // use the documents folder related path, of all contents inside documents file, combine to iCloud base folder, to get a destination of move to iCloud action destination url
                         let destination = icloudDocumentRoot.appendingPathComponent(path)
@@ -242,7 +243,7 @@ public class SyncManager: NSObject {
                 log.info("start moving from local to iCloud(\(icloudAttachmentRoot))...")
                 // move local attachments to iCloud attachment folder
                 if FileManager.default.fileExists(atPath: URL.localAttachmentURL.path, isDirectory: &isDir) {
-                    for path in try self._allPaths(in: URL.localAttachmentURL) {
+                    for path in try self.allPaths(in: URL.localAttachmentURL) {
                         let destination = icloudAttachmentRoot.appendingPathComponent(path)
                         
                         if FileManager.default.fileExists(atPath: destination.path, isDirectory: &isDir) {
@@ -263,7 +264,7 @@ public class SyncManager: NSObject {
                 log.info("start moving from local to iCloud(\(icloudKeyValueStoreRoot))...")
                 // move local key values store files to iCloud key value store folder
                 if FileManager.default.fileExists(atPath: URL.localKeyValueStoreURL.path, isDirectory: &isDir) {
-                    for path in try self._allPaths(in: URL.localKeyValueStoreURL) {
+                    for path in try self.allPaths(in: URL.localKeyValueStoreURL) {
                         var isDir: ObjCBool = ObjCBool(false)
                         let destination = icloudKeyValueStoreRoot.appendingPathComponent(path)
                         
@@ -297,9 +298,9 @@ public class SyncManager: NSObject {
     public func moveiCloudFilesToLocal(completion: @escaping (Error?) -> Void) {
         
         // if there's no root folders for documents, attachment, and key value store folder, means sync is not enabled, ignore
-        guard let icloudDocumentRoot = SyncManager.iCloudDocumentRoot,
-            let icloudAttachmentRoot = SyncManager.iCloudAttachmentRoot,
-            let icloudKeyValueStoreRoot = SyncManager.iCloudKeyValueStoreRoot else {
+        guard let icloudDocumentRoot = iCloudDocumentManager.iCloudDocumentRoot,
+            let icloudAttachmentRoot = iCloudDocumentManager.iCloudAttachmentRoot,
+            let icloudKeyValueStoreRoot = iCloudDocumentManager.iCloudKeyValueStoreRoot else {
                 completion(SyncError.syncIsNotEnabled)
                 return
         }
@@ -313,7 +314,7 @@ public class SyncManager: NSObject {
                 
                 log.info("start moving from iCloud(\(icloudDocumentRoot)) to local...")
                 if FileManager.default.fileExists(atPath: icloudDocumentRoot.path, isDirectory: &isDir) {
-                    for path in try self._allPaths(in: icloudDocumentRoot) {
+                    for path in try self.allPaths(in: icloudDocumentRoot) {
                         let destination = URL.localDocumentBaseURL.appendingPathComponent(path)
 
                         if FileManager.default.fileExists(atPath: destination.path, isDirectory: &isDir) {
@@ -333,7 +334,7 @@ public class SyncManager: NSObject {
                 
                 log.info("start moving from iCloud(\(icloudAttachmentRoot)) to local...")
                 if FileManager.default.fileExists(atPath: icloudAttachmentRoot.path, isDirectory: &isDir) {
-                    for path in try self._allPaths(in: icloudAttachmentRoot) {
+                    for path in try self.allPaths(in: icloudAttachmentRoot) {
                         let destination = URL.localAttachmentURL.appendingPathComponent(path)
 
                         if FileManager.default.fileExists(atPath: destination.path, isDirectory: &isDir) {
@@ -353,7 +354,7 @@ public class SyncManager: NSObject {
                 
                 log.info("start moving from iCloud(\(icloudKeyValueStoreRoot)) to local...")
                 if FileManager.default.fileExists(atPath: icloudKeyValueStoreRoot.path, isDirectory: &isDir) {
-                    for path in try self._allPaths(in: icloudKeyValueStoreRoot) {
+                    for path in try self.allPaths(in: icloudKeyValueStoreRoot) {
                         let destination = URL.localKeyValueStoreURL.appendingPathComponent(path)
                         // create intermiea folder if needed
                         try self._createIntermiaFoldersIfNeeded(url: destination)
@@ -392,7 +393,7 @@ public class SyncManager: NSObject {
     }
     
     /// find all file paths under the specifiled url (which is a folder)
-    private func _allPaths(in folder: URL) throws -> [String] {
+    public func allPaths(in folder: URL) throws -> [String] {
         let folder = folder.resolvingSymlinksInPath()
         var urls: [String] = []
         let keys: [URLResourceKey] = [.isPackageKey, .isDirectoryKey]
@@ -439,7 +440,7 @@ extension String {
     }
 }
 
-extension SyncManager: NSMetadataQueryDelegate {
+extension iCloudDocumentManager: NSMetadataQueryDelegate {
    
     @objc private func _metadataQueryDidUpdate(_ notification: Notification) {
         self._metadataQuery.disableUpdates()

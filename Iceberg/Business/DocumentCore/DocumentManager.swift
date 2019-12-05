@@ -13,7 +13,7 @@ public struct DocumentManager {
     public static let coverKey: String = "cover.jpg"
     public static let logsKey: String = "logs.log"
     
-    public init(editorContext: EditorContext, eventObserver: EventObserver, syncManager: SyncManager) {
+    public init(editorContext: EditorContext, eventObserver: EventObserver, syncManager: iCloudDocumentManager) {
         self._editorContext = editorContext
         self._eventObserver = eventObserver
         self._syncManager = syncManager
@@ -22,14 +22,14 @@ public struct DocumentManager {
     
     private let _editorContext: EditorContext
     private let _eventObserver: EventObserver
-    private let _syncManager: SyncManager
+    private let _syncManager: iCloudDocumentManager
     
     public var recentFiles: [RecentDocumentInfo] {
         return self._editorContext.recentFilesManager.recentFiles
     }
     
     public func getFileLocationComplete(_ completion: @escaping (URL?) -> Void) {
-        if SyncManager.status == .on {
+        if iCloudDocumentManager.status == .on {
             self._syncManager.geticloudContainerURL {
                 completion($0)
             }
@@ -161,6 +161,7 @@ public struct DocumentManager {
         }
     }
     
+    /// 删除首先是修改文件名，改为 .Deleteg开头，加上原文件名。
     public func delete(url: URL, completion: ((Error?) -> Void)? = nil) {
         let fm = FileManager.default
         let subFolder = url.convertoFolderURL
@@ -170,7 +171,7 @@ public struct DocumentManager {
             // 关闭文件夹下的文件
             self._editorContext.closeIfOpen(dir: subFolder) {
                 // 先删除子文件中的文件
-                subFolder.delete(queue: self._editorContext._editingQueue) { error in
+                subFolder.rename(queue: self._editorContext._editingQueue, url: SyncCoordinator.Prefix.deleted.createURL(for: subFolder)) { error in
                     if let error = error {
                         DispatchQueue.main.async {
                             completion?(error)
@@ -180,7 +181,7 @@ public struct DocumentManager {
                         
                         // 然后在删除此文件
                         self._editorContext.closeIfOpen(url: url, complete: {
-                            url.delete(queue: self._editorContext._editingQueue) { error in
+                            url.rename(queue: self._editorContext._editingQueue, url: SyncCoordinator.Prefix.deleted.createURL(for: url)) { error in
                                 DispatchQueue.main.async {
                                     // 执行回调
                                     completion?(error)
@@ -197,7 +198,7 @@ public struct DocumentManager {
         // 如果没有子文件夹，直接删除
         } else {
             self._editorContext.closeIfOpen(url: url) {
-                url.delete(queue: self._editorContext._editingQueue) { error in
+                url.rename(queue: self._editorContext._editingQueue, url: SyncCoordinator.Prefix.deleted.createURL(for: url)) { error in
                     DispatchQueue.main.async {
                         // 执行回调
                         completion?(error)

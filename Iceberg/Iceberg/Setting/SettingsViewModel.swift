@@ -29,7 +29,7 @@ public class SettingsViewModel {
     
     public var isSyncEnabled: Bool {
         return self.coordinator?.dependency.syncManager.iCloudAccountStatus != .closed
-            && SyncManager.status == .on
+            && iCloudDocumentManager.status == .on
     }
     
     public var interfaceStyle: SettingsAccessor.InterfaceStyle {
@@ -108,7 +108,7 @@ public class SettingsViewModel {
                 if let error = error {
                     completion(.failure(error))
                 } else {
-                    SyncManager.status = enable ? .on : .off
+                    iCloudDocumentManager.status = enable ? .on : .off
                     completion(.success(()))
                     self?.delegate?.didSetIsSyncEnabled(enable)
                     

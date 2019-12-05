@@ -66,7 +66,7 @@ public class BrowserViewController: UIViewController {
         nav.pushViewController(self.browserFolderViewController, animated: false)
         self.view.addSubview(nav.view)
         nav.view.sideAnchor(for: [.left, .bottom, .right], to: self.view, edgeInset: 0)
-        self.recentViewController.view.columnAnchor(view: nav.view, space: 20)
+        self.recentViewController.view.columnAnchor(view: nav.view, space: 20, alignment: .centerX)
         self.addChild(nav)
         nav.didMove(toParent: self)
         

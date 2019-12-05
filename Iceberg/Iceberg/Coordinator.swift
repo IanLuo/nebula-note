@@ -18,7 +18,7 @@ public struct Dependency {
     let textTrimmer: OutlineTextTrimmer
     let eventObserver: EventObserver
     let settingAccessor: SettingsAccessor
-    let syncManager: SyncManager
+    let syncManager: iCloudDocumentManager
     let attachmentManager: AttachmentManager
     let urlHandlerManager: URLHandlerManager
     let shareExtensionHandler: ShareExtensionDataHandler

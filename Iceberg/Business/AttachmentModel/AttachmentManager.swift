@@ -107,7 +107,7 @@ public enum AttachmentError: Error {
         
         self.attachment(with: key, completion: { attachment in
             let url = attachment.wrapperURL
-            attachment.wrapperURL.delete(queue: DispatchQueue.main, completion: { error in
+            attachment.wrapperURL.rename(queue: DispatchQueue.main, url: SyncCoordinator.Prefix.deleted.createURL(for: url), completion: { error in
                 if let error = error {
                     failure(error)
                 } else {

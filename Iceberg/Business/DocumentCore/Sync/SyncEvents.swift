@@ -59,3 +59,12 @@ public class NewDocumentAddedFromiCloudEvent: Event {
     }
 }
 
+public class LocalDocumentRemoveEvent: Event {
+    public let url: URL
+    public init(url: URL) {
+        self.url = url
+    }
+}
+
+public class NewFilesAvailableEvent: Event{}
+

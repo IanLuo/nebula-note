@@ -41,25 +41,29 @@ extension URL {
         return URL.directory(location: URLLocation.document, relativePath: "keyValueStore")
     }
     
+    public static var localRootURL: URL {
+        return URLLocation.document.url
+    }
+    
     public static var documentBaseURL: URL {
-        if SyncManager.status == .on {
-            return SyncManager.iCloudDocumentRoot!
+        if iCloudDocumentManager.status == .on {
+            return iCloudDocumentManager.iCloudDocumentRoot!
         } else {
             return URL.localDocumentBaseURL
         }
     }
     
     public static var attachmentURL: URL {
-        if SyncManager.status == .on {
-            return SyncManager.iCloudAttachmentRoot!
+        if iCloudDocumentManager.status == .on {
+            return iCloudDocumentManager.iCloudAttachmentRoot!
         } else {
             return URL.localAttachmentURL
         }
     }
     
     public static var keyValueStoreURL: URL {
-        if SyncManager.status == .on {
-            return SyncManager.iCloudKeyValueStoreRoot!
+        if iCloudDocumentManager.status == .on {
+            return iCloudDocumentManager.iCloudKeyValueStoreRoot!
         } else {
             return URL.localKeyValueStoreURL
         }
@@ -144,6 +148,39 @@ extension URL {
 }
 
 extension URL {
+    public var allPackagesInside: [URL] {
+        let fileManager = FileManager.default
+        
+        var isDir = ObjCBool(true)
+        guard fileManager.fileExists(atPath: self.path, isDirectory: &isDir) else { return [] }
+        
+        var urls: [URL] = []
+        let properties: Set<URLResourceKey> = [.contentModificationDateKey, .isHiddenKey, .isPackageKey, .creationDateKey, .isDirectoryKey]
+        let enumerator = fileManager.enumerator(at: self, includingPropertiesForKeys: Array(properties),
+                               options: [], errorHandler: nil)
+        
+        while let url = enumerator?.nextObject() as? URL {
+            do {
+                let resources = try url.resourceValues(forKeys: properties)
+                
+                if resources.isDirectory == true || resources.isPackage == true {
+                    if url.pathExtension == Document.fileExtension || url.pathExtension == AttachmentDocument.fileExtension {
+                        urls.append(url)
+                        enumerator?.skipDescendants()
+                    }
+                } else if resources.isHidden == false {
+                    urls.append(url)
+                }
+            } catch {
+                log.error(error)
+            }
+        }
+        
+        return urls
+    }
+}
+
+extension URL {
     public static func directory(location: URLLocation) -> URL {
         return location.url
     }
@@ -200,7 +237,7 @@ extension String {
 }
 
 extension URL {
-    /// 一个文件，可以包含子文件，方法是，创建一个以该文件同名的文件夹(不包含 icelane 后缀)，放在同一目录
+    /// 一个文件，可以包含子文件，方法是，创建一个以该文件同名的文件夹(不包含 ice 后缀)，放在同一目录
     /// 将当前文件的 URL 转为当前文件子文件夹的 URL
     public var convertoFolderURL: URL {
         return URL(string: self.deletingPathExtension().deletingLastSplashIfThereIs + DocumentConstants.documentDirSuffix + "/")!
@@ -242,7 +279,7 @@ extension URL {
                                                               options: [.skipsHiddenFiles])) ?? []).count == 0
     }
         
-    public var packageName: String {        
+    public var packageName: String {
         return self.wrapperURL.deletingPathExtension().lastPathComponent.replacingOccurrences(of: "/", with: "").unescaped
     }
     
@@ -258,6 +295,16 @@ extension URL {
         return url
     }
     
+    public var relativePath: String {
+        let path = self.resolvingSymlinksInPath().path
+        let rootPath = URL.localRootURL.resolvingSymlinksInPath().path
+        if path == rootPath {
+            return ""
+        } else {
+            return path.replacingOccurrences(of: rootPath, with: "", options: [], range: nil).removingPercentEncoding!
+        }
+    }
+    
     public var documentRelativePath: String {
         let path = self.resolvingSymlinksInPath().path
         let rootPath = URL.documentBaseURL.resolvingSymlinksInPath().path
@@ -271,12 +318,6 @@ extension URL {
     
     public var levelsToRoot: Int {
         return self.documentRelativePath.components(separatedBy: "/").filter { $0.count > 0 }.count
-    }
-    
-    public var attachmentRelativePath: String {
-        let path = self.resolvingSymlinksInPath().path
-        let separator = URL.attachmentURL.resolvingSymlinksInPath().path + "/" // 在末尾加上斜线，在替换的时候，相对路径开始则不会有斜线
-        return path.components(separatedBy: separator).last!
     }
     
     public var coverURL: URL {

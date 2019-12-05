@@ -532,12 +532,11 @@ private class SubtabCell: UITableViewCell {
         self.iconView.centerAnchors(position: .centerY, to: self.contentView)
         self.iconView.sizeAnchor(width: 15, height: 15)
         self.iconView.rowAnchor(view: self.titleLabel, space: 20)
-        self.titleLabel.sideAnchor(for: [.top, .bottom], to: self.contentView, edgeInsets: .init(top: 15, left: 0, bottom: -15, right: 0))
         
         self.titleLabel.rowAnchor(view: self.subtitleLabel, space: 3)
-        self.subtitleLabel.sideAnchor(for: [.top, .bottom], to: self.contentView, edgeInsets: .init(top: 0, left: 0, bottom: 0, right: 0))
         
         self.subtitleLabel.rowAnchor(view: self.detailIconView, space: 3)
+        self.subtitleLabel.setContentHuggingPriority(UILayoutPriority.defaultHigh, for: NSLayoutConstraint.Axis.horizontal)
         self.detailIconView.sideAnchor(for: .right, to: self.contentView, edgeInset: Layout.edgeInsets.right)
         self.detailIconView.sizeAnchor(width: 10, height: 10)
     }

@@ -206,6 +206,14 @@ public class BrowserFolderViewModel {
                                         action: { [weak self] (event: DocumentRemovedFromiCloudEvent) in
                                             self?.reload()
         })
+        
+        /// this event is sent by SyncCoordinator
+        eventObserver?.registerForEvent(on: self,
+                                        eventType: NewFilesAvailableEvent.self,
+                                        queue: OperationQueue.main,
+                                        action: { [weak self] (event: NewFilesAvailableEvent) in
+                                            self?.reload()
+        })
     }
 }
 

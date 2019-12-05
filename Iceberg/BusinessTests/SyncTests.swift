@@ -17,7 +17,7 @@ class SyncTests: XCTestCase {
     }
     
     func testMoveLocalFilesToiCloud() {
-        let syncManager = SyncManager(eventObserver: EventObserver())
+        let syncManager = iCloudDocumentManager(eventObserver: EventObserver())
         
         let ex = self.expectation(description: "")
         
@@ -37,7 +37,7 @@ class SyncTests: XCTestCase {
     }
     
     func testMoveiCloudFilesToLocal() {
-        let syncManager = SyncManager(eventObserver: EventObserver())
+        let syncManager = iCloudDocumentManager(eventObserver: EventObserver())
         
         let ex = self.expectation(description: "")
         
