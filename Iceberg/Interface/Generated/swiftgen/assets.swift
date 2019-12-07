@@ -45,6 +45,7 @@ public enum Asset {
     public static let link = ImageAsset(name: "link")
     public static let list = ImageAsset(name: "list")
     public static let location = ImageAsset(name: "location")
+    public static let markerPen = ImageAsset(name: "marker-pen")
     public static let master = ImageAsset(name: "master")
     public static let minus1 = ImageAsset(name: "minus-1")
     public static let minus = ImageAsset(name: "minus")

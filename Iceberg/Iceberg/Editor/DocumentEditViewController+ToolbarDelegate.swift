@@ -113,9 +113,9 @@ extension DocumentEditorViewController: DocumentEditToolbarDelegate {
                     let result = self.viewModel.performAction(EditAction.textMark(OutlineParser.MarkType.strikethrough, self.textView.selectedRange),
                                                  textView: self.textView)
                     commandCompletionActionMoveCursorForTextMark(oldSelectedRange)(result)
-                case .code:
+                case .highlight:
                     let oldSelectedRange = self.textView.selectedRange
-                    let result = self.viewModel.performAction(EditAction.textMark(OutlineParser.MarkType.code, self.textView.selectedRange),
+                    let result = self.viewModel.performAction(EditAction.textMark(OutlineParser.MarkType.highlight, self.textView.selectedRange),
                                                  textView: self.textView)
                     commandCompletionActionMoveCursorForTextMark(oldSelectedRange)(result)
                 case .verbatim:

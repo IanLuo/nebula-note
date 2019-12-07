@@ -140,14 +140,11 @@ public class AgendaTableCell: UITableViewCell {
         self._actionButton.isHidden = true // 现在不需要显示 action
         
         self.documentNameLabel.sideAnchor(for: [.left, .top, .right], to: self.infoView, edgeInsets: .init(top: 20, left: 20, bottom: 0, right: -20))
-//        self.documentNameLabel.sizeAnchor(height: 20)
         
         self._dateAndTimeLabel.sideAnchor(for: [.right, .top, .right], to: self.infoView, edgeInsets: .init(top: 20, left: 20, bottom: 0, right: -20))
-//        self._dateAndTimeLabel.sizeAnchor(height: 20)
         
         self.documentNameLabel.columnAnchor(view: self.headingTextLabel, space: 10)
         self.headingTextLabel.sideAnchor(for: [.left, .right], to: self.infoView, edgeInsets: .init(top: 0, left: 20, bottom: 0, right: -20))
-//        self.headingTextLabel.sizeAnchor(height: 20)
         
         self.headingTextLabel.columnAnchor(view: self.tagsView, space: 10)
         self.tagsView.sideAnchor(for: [.left, .right, .bottom], to: self.infoView, edgeInsets: .init(top: 0, left: 20, bottom: -10, right: -20))
@@ -183,11 +180,13 @@ public class AgendaTableCell: UITableViewCell {
         
         if let tags = cellModel.tags {
             self.tagsView.constraint(for: Position.height)?.constant = 20
-            self.tagsView.isHidden = false
-            self.tagsLabel.text = tags.joined(separator: " ")
+            self.tagsIcon.isHidden = false
+            self.tagsLabel.isHidden = false
+            self.tagsLabel.text = tags.joined(separator: ", ")
         } else {
             self.tagsView.constraint(for: Position.height)?.constant = 0
-            self.tagsView.isHidden = true
+            self.tagsIcon.isHidden = true
+            self.tagsLabel.isHidden = true
         }
         
         self._dateAndTimeLabel.isHidden = cellModel.dateAndTime == nil

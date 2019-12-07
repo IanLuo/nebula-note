@@ -74,9 +74,9 @@ public class EditorService {
         }
         
         self._queue.async { [weak self] in
-            // 如果文档已经打开，则直接返回
-            log.info("file already open, do nothing")
             if document.documentState == .normal {
+                // 如果文档已经打开，则直接返回
+                log.info("file already open, do nothing")
                 DispatchQueue.main.async {
                     completion?(document.string)
                 }

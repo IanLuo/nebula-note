@@ -149,7 +149,7 @@ public struct OutlineThemeStyle: OutlineThemeConfigProtocol {
                                            strikethrought: TextStyle(font: theme.font.body, color: theme.color.interactive,
                                                                      otherAttributes: [NSAttributedString.Key.strikethroughStyle: 1]),
                                            verbatim: TextStyle(font: theme.font.body, color: theme.color.interactive),
-                                           code: TextStyle(font: theme.font.footnote, color: theme.color.interactive))
+                                           code: TextStyle(font: theme.font.body, color: theme.color.interactive))
      /// 目前没有使用 button color, 因为 button 显示有问题
        self.dateAndTimeStyle = DateAndTimeStyle(normal: ButtonStyle(buttonColor: theme.color.background3,
                                                                      textStyle: TextStyle(font: theme.font.footnote,

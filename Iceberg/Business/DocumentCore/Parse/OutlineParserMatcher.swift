@@ -15,8 +15,8 @@ extension OutlineParser {
         case italic
         case underscore
         case strikethrough
-        case code
-        case verbatim
+        case highlight
+        case verbatim // unused
         
         public var mark: String {
             switch self {
@@ -24,7 +24,7 @@ extension OutlineParser {
             case .italic: return OutlineParser.Values.TextMark.italic
             case .underscore: return OutlineParser.Values.TextMark.underscore
             case .strikethrough: return OutlineParser.Values.TextMark.strikthought
-            case .code: return OutlineParser.Values.TextMark.code
+            case .highlight: return OutlineParser.Values.TextMark.highlight
             case .verbatim: return OutlineParser.Values.TextMark.verbatim
             }
         }
@@ -278,7 +278,7 @@ extension OutlineParser {
             public static let italic = "/"
             public static let underscore = "_"
             public static let strikthought = "+"
-            public static let code = "~"
+            public static let highlight = "~"
             public static let verbatim = "="
         }
         

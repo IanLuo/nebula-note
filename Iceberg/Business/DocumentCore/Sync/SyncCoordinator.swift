@@ -214,7 +214,7 @@ public class SyncCoordinator {
         for (index, remoteFileRelativePath) in remoteSyncManager.remoteFileRelativePaths.reversed().enumerated() {
 
             for localFile in localFiles {
-                if remoteFileRelativePath == localFile.relativePath {
+                if remoteFileRelativePath == localFile.containerRelativePath {
                     remoteRelativePaths.remove(at: count - index - 1)
                     
                     guard let remoteURL = remoteSyncManager.urlForRelativePath(remoteFileRelativePath) else { continue }
@@ -237,18 +237,18 @@ public class SyncCoordinator {
     public func findRelativeFilePathsToSyncUp(remoteSyncManager: SyncManagerProtocol, localFiles: [URL]) -> [String] {
         var relativefilePathsToCopyFromLocalToRemote: [String] = []
         
-        var localRelativePaths = localFiles.map { $0.relativePath.removingPercentEncoding! }
+        var localRelativePaths = localFiles.map { $0.containerRelativePath.removingPercentEncoding! }
         let count = localRelativePaths.count
         
         for (index, localFile) in localFiles.reversed().enumerated() {
 
-            let localRelativeFilePath = localFile.relativePath.removingPercentEncoding!
+            let localRelativeFilePath = localFile.containerRelativePath.removingPercentEncoding!
             
             for remoteFileRelativePath in remoteSyncManager.remoteFileRelativePaths {
                 
                 guard let remoteFile = remoteSyncManager.urlForRelativePath(remoteFileRelativePath) else { continue }
                 
-                if remoteFileRelativePath == localFile.relativePath {
+                if remoteFileRelativePath == localFile.containerRelativePath {
                     
                     localRelativePaths.remove(at: count - index - 1) // remove matched local path
                     

@@ -134,6 +134,10 @@ public class RecentFilesManager {
     
     /// 最近使用文件
     public func addRecentFile(url: URL, lastLocation: Int, date: Date = Date(), completion: @escaping () -> Void) {
+        
+        // ignore files from trash
+        guard !url.packageName.hasPrefix(SyncCoordinator.Prefix.deleted.rawValue) else { return }
+        
         let recentDocumentInfo = RecentDocumentInfo(lastRequestTime: date, location: lastLocation, wrapperURL: url)
         let jsonEncoder = JSONEncoder()
         do {

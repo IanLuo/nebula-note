@@ -23,7 +23,7 @@ public enum URLLocation {
         case .cache:
             return URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true)[0])
         case .temporary:
-            return URL(fileURLWithPath: NSTemporaryDirectory()).resolvingSymlinksInPath()
+            return URL(fileURLWithPath: NSTemporaryDirectory())
         }
     }
 }
@@ -295,7 +295,7 @@ extension URL {
         return url
     }
     
-    public var relativePath: String {
+    public var containerRelativePath: String {
         let path = self.resolvingSymlinksInPath().path
         let rootPath = URL.localRootURL.resolvingSymlinksInPath().path
         if path == rootPath {

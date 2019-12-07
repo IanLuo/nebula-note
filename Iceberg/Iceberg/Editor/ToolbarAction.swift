@@ -35,7 +35,7 @@ public enum NormalAction: ToolbarActionProtocol, DocumentActon {
     case underscore
     case strikethrough
     /// inline code
-    case code
+    case highlight
     case verbatim
     case checkbox
     case list
@@ -77,8 +77,8 @@ public enum NormalAction: ToolbarActionProtocol, DocumentActon {
             return Asset.Assets.underline.image
         case .strikethrough:
             return Asset.Assets.strikethrough.image
-        case .code:
-            return Asset.Assets.code.image
+        case .highlight:
+            return Asset.Assets.markerPen.image
         case .verbatim:
             return Asset.Assets.code.image
         case .checkbox:

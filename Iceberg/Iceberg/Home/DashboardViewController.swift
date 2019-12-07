@@ -35,6 +35,16 @@ public class DashboardViewController: UIViewController {
         return button
     }()
     
+    private let trashButton: RoundButton = {
+        let button = RoundButton()
+        
+        button.interface({ (me, theme) in
+            (me as? RoundButton)?.setIcon(Asset.Assets.trash.image.fill(color: theme.color.interactive), for: .normal)
+            (me as? RoundButton)?.setBackgroundColor(theme.color.background2, for: .normal)
+        })
+        return button
+    }()
+    
     public init(viewModel: DashboardViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -58,6 +68,7 @@ public class DashboardViewController: UIViewController {
         
         self.view.addSubview(self.tableView)
         self.view.addSubview(self.settingsButton)
+        self.view.addSubview(self.trashButton)
         
         self.tableView.allSidesAnchors(to: self.view, edgeInset: 0)
         
@@ -66,6 +77,13 @@ public class DashboardViewController: UIViewController {
         
         self.settingsButton.tapped { [unowned self] _ in
             self.viewModel.coordinator?.showSettings()
+        }
+        
+        self.trashButton.sizeAnchor(width: 60)
+        self.trashButton.sideAnchor(for: [.right, .bottom], to: self.view, edgeInsets: .init(top: 0, left: 0, bottom: -Layout.edgeInsets.bottom, right: -Layout.edgeInsets.right), considerSafeArea: true)
+        
+        self.trashButton.tapped { [unowned self] _ in
+            self.viewModel.coordinator?.showTrash()
         }
     }
     

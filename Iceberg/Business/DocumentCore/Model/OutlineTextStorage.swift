@@ -58,13 +58,13 @@ public class OutlineTextStorage: TextStorage {
     /// 当前的解析范围，需要进行解析的字符串范围，用于对 item，索引 等缓存数据进行重新组织
     public var currentParseRange: NSRange?
     // MARK: - Selection highlight
-        {
-            didSet {
-                if let _ = oldValue {
-                    self.addAttribute(NSAttributedString.Key.backgroundColor, value: InterfaceTheme.Color.background1, range: NSRange(location: 0, length: self.string.nsstring.length))
-                }
-            }
-        }
+//        {
+//            didSet {
+//                if let _ = oldValue {
+//                    self.addAttribute(NSAttributedString.Key.backgroundColor, value: InterfaceTheme.Color.background1, range: NSRange(location: 0, length: self.string.nsstring.length))
+//                }
+//            }
+//        }
     
     // return the references of saved heading token
     public var headingTokens: [HeadingToken] {
@@ -374,7 +374,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
                         textStorage.addAttributes(OutlineTheme.textMarkStyle.strikethrought.attributes, range: contentRange)
                     case OutlineParser.Key.Element.TextMark.code:
                         var attributes = OutlineTheme.textMarkStyle.code.attributes
-                        attributes[OutlineAttribute.button] = InterfaceTheme.Color.background3
+                        attributes[NSAttributedString.Key.backgroundColor] = InterfaceTheme.Color.background3
                         textStorage.addAttributes(attributes, range: contentRange)
                     case OutlineParser.Key.Element.TextMark.underscore:
                         textStorage.addAttributes(OutlineTheme.textMarkStyle.underscore.attributes, range: contentRange)

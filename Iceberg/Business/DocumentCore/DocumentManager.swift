@@ -17,7 +17,7 @@ public struct DocumentManager {
         self._editorContext = editorContext
         self._eventObserver = eventObserver
         self._syncManager = syncManager
-        URL.documentBaseURL.createDirectoryIfNeeded(completion: nil)
+//        URL.documentBaseURL.createDirectoryIfNeeded(completion: nil)
     }
     
     private let _editorContext: EditorContext

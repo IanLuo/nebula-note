@@ -110,10 +110,18 @@ public class Application: Coordinator {
         // 通知完成初始化
         self.dependency.eventObserver.emit(AppStartedEvent())
         
-        homeCoord.start(from: self, animated: animated)
+        dependency.documentManager.getFileLocationComplete { [weak self] url in
+            guard let url = url else { return }
+            guard let s = self else { return }
+            
+            log.info("using \(url) as root")
+            
+            homeCoord.start(from: self, animated: animated)
+            
+            // UI complete loading
+            s.uiStackReady.accept(true)
+        }
         
-        // UI complete loading
-        self.uiStackReady.accept(true)
     }
     
     private var _isHandlingSharedIdeas: Bool = false

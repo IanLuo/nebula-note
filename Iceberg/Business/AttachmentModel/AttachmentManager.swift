@@ -19,7 +19,7 @@ public enum AttachmentError: Error {
 @objc public class AttachmentManager: NSObject {
     public override init() {
         // 确保附件文件夹存在
-        URL.attachmentURL.createDirectoryIfNeeded(completion: nil)
+//        URL.attachmentURL.createDirectoryIfNeeded(completion: nil)
     }
     
     /// 当附件创建的时候，生成附件的 key

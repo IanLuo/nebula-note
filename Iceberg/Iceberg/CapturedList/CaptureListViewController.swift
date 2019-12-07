@@ -118,7 +118,7 @@ public class CaptureListViewController: UIViewController {
         self.view.addSubview(self.tableView)
         
         self.filterSegmentedControl.sideAnchor(for: [.left, .top, .right], to: self.view, edgeInset: 30, considerSafeArea: true)
-        self.filterSegmentedControl.columnAnchor(view: self.tableView, space: 10)
+        self.filterSegmentedControl.columnAnchor(view: self.tableView, space: 10, alignment: .centerX)
         self.tableView.sideAnchor(for: [.left, .bottom, .right], to: self.view, edgeInset: 0, considerSafeArea: true)
         
         if self.viewModel.coordinator?.isModal ?? false {

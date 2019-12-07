@@ -639,6 +639,21 @@ public enum L10n {
       public static let useiCloud = L10n.tr("Localizable", "sync.confirm.useiCloud")
     }
   }
+
+  public enum Trash {
+    /// Delete
+    public static let delete = L10n.tr("Localizable", "trash.delete")
+    /// Put Back the file
+    public static let recover = L10n.tr("Localizable", "trash.recover")
+    /// Delete All
+    public static let removeAll = L10n.tr("Localizable", "trash.removeAll")
+    /// Trash
+    public static let title = L10n.tr("Localizable", "trash.title")
+    public enum Delete {
+      /// File will be deleted and won't be able to recover
+      public static let warning = L10n.tr("Localizable", "trash.delete.warning")
+    }
+  }
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:enable nesting type_body_length type_name

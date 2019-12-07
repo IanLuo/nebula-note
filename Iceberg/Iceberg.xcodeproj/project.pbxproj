@@ -173,6 +173,11 @@
 		E4A46A2B21B4109C00FBDA04 /* DocumentSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A2A21B4109C00FBDA04 /* DocumentSearchViewController.swift */; };
 		E4A46A2D21B410BE00FBDA04 /* DocumentSearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A2C21B410BE00FBDA04 /* DocumentSearchViewModel.swift */; };
 		E4A46A3E21B6605C00FBDA04 /* DocumentBrowserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A3D21B6605C00FBDA04 /* DocumentBrowserTests.swift */; };
+		E4A85B92239BAC1B00A41EFD /* TrashCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A85B91239BAC1B00A41EFD /* TrashCoordinator.swift */; };
+		E4A85B94239BAC3200A41EFD /* TrashViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A85B93239BAC3200A41EFD /* TrashViewController.swift */; };
+		E4A85B96239BAC4D00A41EFD /* TrashViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A85B95239BAC4D00A41EFD /* TrashViewModel.swift */; };
+		E4A85B98239BB3AF00A41EFD /* TrashCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A85B97239BB3AF00A41EFD /* TrashCell.swift */; };
+		E4A85B9A239BEECD00A41EFD /* ViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A85B99239BEECD00A41EFD /* ViewModelProtocol.swift */; };
 		E4AB056522068C7D00F98BEB /* FilteredItemsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4AB056422068C7D00F98BEB /* FilteredItemsViewController.swift */; };
 		E4AE275322D1E42600315CE6 /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4AE275222D1E42600315CE6 /* LoadingViewController.swift */; };
 		E4B19AB021C5363A00ED3463 /* SettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B19AAF21C5363A00ED3463 /* SettingsTests.swift */; };
@@ -487,6 +492,11 @@
 		E4A46A3321B4F36800FBDA04 /* DocumentEditTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentEditTests.swift; sourceTree = "<group>"; };
 		E4A46A3D21B6605C00FBDA04 /* DocumentBrowserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentBrowserTests.swift; sourceTree = "<group>"; };
 		E4A46A3F21B6891700FBDA04 /* DocumentSearchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentSearchTests.swift; sourceTree = "<group>"; };
+		E4A85B91239BAC1B00A41EFD /* TrashCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrashCoordinator.swift; sourceTree = "<group>"; };
+		E4A85B93239BAC3200A41EFD /* TrashViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrashViewController.swift; sourceTree = "<group>"; };
+		E4A85B95239BAC4D00A41EFD /* TrashViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrashViewModel.swift; sourceTree = "<group>"; };
+		E4A85B97239BB3AF00A41EFD /* TrashCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrashCell.swift; sourceTree = "<group>"; };
+		E4A85B99239BEECD00A41EFD /* ViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelProtocol.swift; sourceTree = "<group>"; };
 		E4AB056422068C7D00F98BEB /* FilteredItemsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilteredItemsViewController.swift; sourceTree = "<group>"; };
 		E4AE275222D1E42600315CE6 /* LoadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingViewController.swift; sourceTree = "<group>"; };
 		E4B19AAD21C5010100ED3463 /* SettingsAccessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsAccessor.swift; sourceTree = "<group>"; };
@@ -957,6 +967,7 @@
 		E43427F82121BF5B00EC6DC3 /* Iceberg */ = {
 			isa = PBXGroup;
 			children = (
+				E4A85B90239BAC0800A41EFD /* Trash */,
 				E4C1933E2248A0CA00EF4C95 /* Iceberg.entitlements */,
 				E4EFA45B222F680200611FF5 /* Capture */,
 				E41CB16021D8896900EF0A3C /* Home */,
@@ -971,6 +982,7 @@
 				E4CBCD1E2370695500A0FFDB /* ActivityHandler.swift */,
 				E44825A2219722C300C17568 /* Application.swift */,
 				E4F885E9226D5BE700748868 /* Coordinator.swift */,
+				E4A85B99239BEECD00A41EFD /* ViewModelProtocol.swift */,
 				E43428022121BF5F00EC6DC3 /* LaunchScreen.storyboard */,
 				E43428052121BF5F00EC6DC3 /* Info.plist */,
 				E46BEC5922BB6A1600EE7DAA /* Assets.xcassets */,
@@ -1195,6 +1207,17 @@
 				E472FF9B2270A630004C8495 /* Info */,
 			);
 			path = Editor;
+			sourceTree = "<group>";
+		};
+		E4A85B90239BAC0800A41EFD /* Trash */ = {
+			isa = PBXGroup;
+			children = (
+				E4A85B91239BAC1B00A41EFD /* TrashCoordinator.swift */,
+				E4A85B93239BAC3200A41EFD /* TrashViewController.swift */,
+				E4A85B95239BAC4D00A41EFD /* TrashViewModel.swift */,
+				E4A85B97239BB3AF00A41EFD /* TrashCell.swift */,
+			);
+			path = Trash;
 			sourceTree = "<group>";
 		};
 		E4B1BED32342304200683E10 /* Builder */ = {
@@ -1918,6 +1941,7 @@
 				E49F3E4C21B91885003F468D /* SettingsViewModel.swift in Sources */,
 				E41B893821E3497D009C5AD7 /* LocationAttachmentView.swift in Sources */,
 				E41B893921E3497D009C5AD7 /* AttachmentView.swift in Sources */,
+				E4A85B9A239BEECD00A41EFD /* ViewModelProtocol.swift in Sources */,
 				E41CB15B21D87CDD00EF0A3C /* SearchCoordinator.swift in Sources */,
 				E41B893421E3497D009C5AD7 /* LinkAttachmentView.swift in Sources */,
 				E42A87FD21CFC9B300151C90 /* AttachmentTextViewController.swift in Sources */,
@@ -1951,13 +1975,17 @@
 				E42A87FF21CFCAC500151C90 /* AttachmentViewModel.swift in Sources */,
 				E4AB056522068C7D00F98BEB /* FilteredItemsViewController.swift in Sources */,
 				E465F8802241FF6800FA6E83 /* TextViewCommand.swift in Sources */,
+				E4A85B92239BAC1B00A41EFD /* TrashCoordinator.swift in Sources */,
 				E4CBCD1D236D914400A0FFDB /* EditAction.swift in Sources */,
+				E4A85B96239BAC4D00A41EFD /* TrashViewModel.swift in Sources */,
 				E49F3E4821B9183F003F468D /* SettingsCoordinator.swift in Sources */,
 				E498AAFF21BBE9B900D2A8EA /* CaptureListViewController.swift in Sources */,
 				E41CB16421D8899200EF0A3C /* HomeViewController.swift in Sources */,
 				E41CB15D21D8844000EF0A3C /* CaptureListCoordinator.swift in Sources */,
 				E4EA857721D3B0AC00DD92F9 /* EditorCoordinator.swift in Sources */,
 				E41A538621D4C577002B11E9 /* AgendaTableCell.swift in Sources */,
+				E4A85B98239BB3AF00A41EFD /* TrashCell.swift in Sources */,
+				E4A85B94239BAC3200A41EFD /* TrashViewController.swift in Sources */,
 				E498AB0121BBEBB300D2A8EA /* CaptureListViewModel.swift in Sources */,
 				E41B893321E3497D009C5AD7 /* TextAttachmentView.swift in Sources */,
 				E41B893521E3497D009C5AD7 /* AudioAttachmentView.swift in Sources */,
@@ -2387,7 +2415,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Iceberg/Iceberg.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 26RSSM9Q9P;
 				INFOPLIST_FILE = Iceberg/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
@@ -2412,7 +2440,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Iceberg/Iceberg.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 26RSSM9Q9P;
 				INFOPLIST_FILE = Iceberg/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;

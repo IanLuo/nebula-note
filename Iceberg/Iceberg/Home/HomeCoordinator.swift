@@ -63,10 +63,7 @@ public class HomeCoordinator: Coordinator {
                                               DashboardViewController.TabType.search(tabs[2], 2),
                                               DashboardViewController.TabType.documents(tabs[3], 3)])
         
-        dependency.documentManager.getFileLocationComplete { [weak self] _ in
-            guard let s = self else { return }
-            s.homeViewController.showChildViewController(tabs[SettingsAccessor.Item.landingTabIndex.get(Int.self) ?? 3])
-        }
+        self.homeViewController.showChildViewController(tabs[SettingsAccessor.Item.landingTabIndex.get(Int.self) ?? 3])
     }
     
     private var tempCoordinator: Coordinator?
@@ -93,6 +90,12 @@ public class HomeCoordinator: Coordinator {
         let navigationController = Coordinator.createDefaultNavigationControlller()
         let settingsCoordinator = SettingsCoordinator(stack: navigationController, dependency: self.dependency)
         settingsCoordinator.start(from: self)
+    }
+    
+    public func showTrash() {
+        let navigationController = Coordinator.createDefaultNavigationControlller()
+        let trashCoordinator = TrashCoordinator(stack: navigationController, dependency: self.dependency)
+        trashCoordinator.start(from: self)
     }
     
     public func getAllTags() -> [String] {

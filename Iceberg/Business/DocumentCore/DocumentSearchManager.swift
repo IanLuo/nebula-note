@@ -126,6 +126,7 @@ public class DocumentSearchManager {
     private let _headingSearchOperationQueue: OperationQueue
     private let _contentSearchOperationQueue: OperationQueue
     private let _headingChangeObservingQueue: OperationQueue
+    private let _trashSearchOperationQueue: OperationQueue
     
     private let _eventObserver: EventObserver
     private let _editorContext: EditorContext
@@ -134,6 +135,7 @@ public class DocumentSearchManager {
         self._headingSearchOperationQueue = OperationQueue()
         self._contentSearchOperationQueue = OperationQueue()
         self._headingChangeObservingQueue = OperationQueue()
+        self._trashSearchOperationQueue = OperationQueue()
         
         self._headingSearchOperationQueue.underlyingQueue = DispatchQueue.global(qos: DispatchQoS.QoSClass.userInteractive)
         self._contentSearchOperationQueue.underlyingQueue = DispatchQueue.global(qos: DispatchQoS.QoSClass.userInteractive)
@@ -147,6 +149,32 @@ public class DocumentSearchManager {
                                             action: { [weak self] (event: DocumentHeadingChangeEvent) -> Void in
                                                 self?._handleDocumentHeadingsChange(event: event)
         })
+    }
+    
+    // MARK: - deleted -
+    public func searchTrash(completion: @escaping ([URL]) -> Void) {
+        
+        var result: [URL] = []
+        
+        let operation = BlockOperation {
+            guard let enumerator = FileManager.default.enumerator(at: URL.documentBaseURL,
+                                                                  includingPropertiesForKeys: nil,
+                                                                  options: [],
+                                                                  errorHandler: nil) else { return }
+            
+            for file in enumerator {
+                if let url = file as? URL, url.pathExtension == Document.fileExtension,
+                    url.packageName.hasPrefix(SyncCoordinator.Prefix.deleted.rawValue) {
+                    result.append(url)
+                }
+            }
+        }
+        
+        operation.completionBlock = {
+            completion(result)
+        }
+        
+        self._trashSearchOperationQueue.addOperation(operation)
     }
     
     // MARK: -

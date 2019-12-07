@@ -279,3 +279,10 @@
 "activity.document.captureLocationActivity.title" = "Capture Location";
 "activity.document.captureLocationActivity.description" = "Capture the location you are at";
 "activity.document.captureLocationActivity.phrase" = "Capture Location";
+
+// trash
+"trash.title" = "Trash";
+"trash.removeAll" = "Delete All";
+"trash.delete" = "Delete";
+"trash.recover" = "Put Back the file";
+"trash.delete.warning" = "File will be deleted and won't be able to recover";
