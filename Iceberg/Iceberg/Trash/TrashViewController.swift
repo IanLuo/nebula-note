@@ -98,6 +98,8 @@ public class TrashViewController: UIViewController, UITableViewDelegate {
     }
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        
         let actions = ActionsViewController()
         
         actions.title = viewModel.fileName(at: indexPath.row)

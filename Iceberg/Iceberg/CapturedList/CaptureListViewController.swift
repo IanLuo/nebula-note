@@ -35,7 +35,8 @@ public class CaptureListViewController: UIViewController {
         seg.selectedSegmentIndex = 0
 
         seg.interface { (view, theme) in
-            view.tintColor = theme.color.interactive
+            let seg = view as! UISegmentedControl
+            seg.tintColor = theme.color.interactive
         }
         
         seg.addTarget(self, action: #selector(filterIdeas), for: UIControl.Event.valueChanged)
