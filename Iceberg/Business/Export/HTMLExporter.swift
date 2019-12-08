@@ -78,9 +78,13 @@ public struct HTMLExporter: Exportable {
     var style: String {
         return """
         <style>
-        body {background-color: \(InterfaceTheme.Color.background1.hex);}
-        h   {color: \(InterfaceTheme.Color.interactive.hex);}
-        p    {color: \(InterfaceTheme.Color.descriptive.hex);}
+        body { background-color: \(InterfaceTheme.Color.background1.hex); color: \(InterfaceTheme.Color.descriptive.hex);}
+        h1   {color: \(InterfaceTheme.Color.interactive.hex);}
+        h2   {color: \(InterfaceTheme.Color.interactive.hex);}
+        h3   {color: \(InterfaceTheme.Color.interactive.hex);}
+        h4   {color: \(InterfaceTheme.Color.interactive.hex);}
+        h5   {color: \(InterfaceTheme.Color.interactive.hex);}
+        h6   {color: \(InterfaceTheme.Color.interactive.hex);}
         </style>
 """
     }
@@ -146,7 +150,7 @@ extension Token {
             let value = string.nsstring.substring(with: valueRange)
             
             if type == Attachment.Kind.image.rawValue, let url = AttachmentManager.attachmentFileURL(key: value) {
-                return "<img src=\"\(url.absoluteString)\" style=\"max-width:600px;width:100%\"/>"
+                return "<br><img src=\"\(url.absoluteString)\" style=\"max-width:600px;width:100%\"/>"
             } else {
                 return "#\(type):\(value)#"
             }

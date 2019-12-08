@@ -120,6 +120,7 @@ public class Application: Coordinator {
             
             // UI complete loading
             s.uiStackReady.accept(true)
+            
         }
         
     }
@@ -145,12 +146,6 @@ public class Application: Coordinator {
     }
     
     private func _setupiCloud() {
-        if iCloudDocumentManager.status == .off {
-            // 用户已关闭 iCloud，忽略
-            self.isFileReadyToAccess.accept(true)
-            return
-        }
-        
         let status = self.dependency.syncManager.refreshCurrentiCloudAccountStatus()
         
         switch status {
@@ -170,14 +165,14 @@ public class Application: Coordinator {
         case .closed:
             if self._didTheUserTurnOffiCloudFromSettings {
                 self.stack.showAlert(title: L10n.Sync.Alert.Account.Closed.title, message: L10n.Sync.Alert.Account.Closed.msg)
-                
-                // mark iCloud off
-                iCloudDocumentManager.status = .off
-                
-                self.dependency.eventObserver.emit(iCloudAvailabilityChangedEvent(isEnabled: false))
-                
-                self.isFileReadyToAccess.accept(true)
             }
+            
+            // mark iCloud off
+            iCloudDocumentManager.status = .off
+            
+            self.dependency.eventObserver.emit(iCloudAvailabilityChangedEvent(isEnabled: false))
+            
+            self.isFileReadyToAccess.accept(true)
         case .open:
             if iCloudDocumentManager.status == .unknown {
                 let confirmViewController = ConfirmViewController()
