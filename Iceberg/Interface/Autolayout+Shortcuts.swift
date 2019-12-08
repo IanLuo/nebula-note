@@ -105,7 +105,7 @@ extension UIView {
         right.identifier = Position.right.identifier(for: self)
         right.isActive = true
         
-        var constraint: NSLayoutConstraint!
+        var constraint: NSLayoutConstraint?
         if alignment.contains(.centerY) {
             constraint = view.centerYAnchor.constraint(equalTo: self.centerYAnchor)
         } else if alignment.contains(.top) {
@@ -116,11 +116,10 @@ extension UIView {
             constraint = view.firstBaselineAnchor.constraint(equalTo: self.firstBaselineAnchor)
         } else if alignment.contains(.bottomBaseline) {
             constraint = view.lastBaselineAnchor.constraint(equalTo: self.lastBaselineAnchor)
-        } else {
-            fatalError("must specify a valid alignment")
         }
-        constraint.identifier = alignment.identifier(for: view)
-        constraint.isActive = true
+        
+        constraint?.identifier = alignment.identifier(for: view)
+        constraint?.isActive = true
         
         if let widthRatio = widthRatio {
             self.widthDependencyAnchor(view: view, widthRatio: widthRatio)
@@ -134,7 +133,7 @@ extension UIView {
         bottom.identifier = Position.bottom.identifier(for: self)
         bottom.isActive = true
         
-        var constraint: NSLayoutConstraint!
+        var constraint: NSLayoutConstraint?
         if alignment.contains(.centerX) {
             constraint = view.centerXAnchor.constraint(equalTo: self.centerXAnchor)
         } else if alignment.contains(.left) {
@@ -145,11 +144,10 @@ extension UIView {
             constraint = view.trailingAnchor.constraint(equalTo: self.trailingAnchor)
         } else if alignment.contains(.leading) {
             constraint = view.leadingAnchor.constraint(equalTo: self.leadingAnchor)
-        } else {
-            fatalError("must specify a valid alignment")
         }
-        constraint.identifier = alignment.identifier(for: view)
-        constraint.isActive = true
+        
+        constraint?.identifier = alignment.identifier(for: view)
+        constraint?.isActive = true
                 
         if let heightRatio = heightRatio {
             self.heightDependencyAnchor(view: view, heightRatio: heightRatio)
@@ -219,6 +217,30 @@ extension UIView {
             } else {
                 let bottom = self.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: edgeInsets.bottom)
                 bottom.identifier = Position.bottom.identifier(for: self)
+                bottom.isActive = true
+            }
+        }
+        
+        if position.contains(Position.leading) {
+            if #available(iOS 11, *), considerSafeArea {
+                let bottom = self.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: edgeInsets.left)
+                bottom.identifier = Position.leading.identifier(for: self)
+                bottom.isActive = true
+            } else {
+                let bottom = self.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: edgeInsets.left)
+                bottom.identifier = Position.leading.identifier(for: self)
+                bottom.isActive = true
+            }
+        }
+        
+        if position.contains(Position.traling) {
+            if #available(iOS 11, *), considerSafeArea {
+                let bottom = self.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: edgeInsets.right)
+                bottom.identifier = Position.traling.identifier(for: self)
+                bottom.isActive = true
+            } else {
+                let bottom = self.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: edgeInsets.right)
+                bottom.identifier = Position.traling.identifier(for: self)
                 bottom.isActive = true
             }
         }

@@ -58,7 +58,7 @@ public class DocumentInfoViewController: TransitionViewController {
         self.contentView.sizeAnchor(width: 240)
         
         self.contentView.addSubview(self._backButton)
-        self._backButton.sideAnchor(for: [.right, .top], to: self.contentView, edgeInsets: UIEdgeInsets(top: 0, left: 0, bottom: 0, right: -Layout.edgeInsets.right), considerSafeArea: true)
+        self._backButton.sideAnchor(for: [.traling, .top], to: self.contentView, edgeInsets: UIEdgeInsets(top: 0, left: 0, bottom: 0, right: -Layout.edgeInsets.right), considerSafeArea: true)
         self._backButton.sizeAnchor(width: 44)
         
         let exportViewController = ExportSelectViewController(exporterManager: self._viewModel.coordinator!.dependency.exportManager)
@@ -69,7 +69,7 @@ public class DocumentInfoViewController: TransitionViewController {
         self.contentView.addSubview(exportViewController.view)
         self.contentView.addSubview(basicInfoViewController.view)
         
-        self._backButton.columnAnchor(view: basicInfoViewController.view, space: 30)
+        self._backButton.columnAnchor(view: basicInfoViewController.view, space: 30, alignment: [])
         
         basicInfoViewController.view.sideAnchor(for: [.left, .right], to: self.contentView, edgeInset: 0)
         

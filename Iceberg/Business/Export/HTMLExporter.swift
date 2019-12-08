@@ -56,7 +56,7 @@ public struct HTMLExporter: Exportable {
                 for token in service.allTokens.reversed() { // 从尾部开始替换，否则会导致 range 错误
                     var tokenString = token.render(string: string ?? "")
                     
-                    if let _ = token as? HeadingToken {
+                    if let _ = token as? HeadingToken, SettingsAccessor.Item.exportShowIndex.get(Bool.self) == true {
                         if let indexs = headingIndexs.last {
                             let index = indexs.map { "\($0)" }.joined(separator: ".") + " "
                             tokenString.insert(contentsOf: index, at: tokenString.index(tokenString.startIndex, offsetBy: 4))
@@ -67,11 +67,54 @@ public struct HTMLExporter: Exportable {
                     result = result.nsstring.replacingCharacters(in: token.range, with: tokenString)
                 }
                 
-                result.insert(contentsOf: "<html><meta charset=\"utf-8\"/>", at: result.startIndex)
+                result.insert(contentsOf: "<!DOCTYPE html><html><meta charset=\"utf-8\"/><head>\(self.style)</head>", at: result.startIndex)
                 result.append("</html>")
                 
                 completion(.string(result))
             }
+        }
+    }
+    
+    var style: String {
+        return """
+        <style>
+        body {background-color: \(InterfaceTheme.Color.background1.hex);}
+        h   {color: \(InterfaceTheme.Color.interactive.hex);}
+        p    {color: \(InterfaceTheme.Color.descriptive.hex);}
+        </style>
+"""
+    }
+}
+
+extension UIColor {
+    var hex: String {
+        var red: CGFloat = 0
+        var green: CGFloat = 0
+        var blue: CGFloat = 0
+        var alpha: CGFloat = 0
+        
+        let multiplier = CGFloat(255.999999)
+        
+        guard self.getRed(&red, green: &green, blue: &blue, alpha: &alpha) else {
+            return "#ffffff"
+        }
+        
+        if alpha == 1.0 {
+            return String(
+                format: "#%02lX%02lX%02lX",
+                Int(red * multiplier),
+                Int(green * multiplier),
+                Int(blue * multiplier)
+            )
+        }
+        else {
+            return String(
+                format: "#%02lX%02lX%02lX%02lX",
+                Int(red * multiplier),
+                Int(green * multiplier),
+                Int(blue * multiplier),
+                Int(alpha * multiplier)
+            )
         }
     }
 }
