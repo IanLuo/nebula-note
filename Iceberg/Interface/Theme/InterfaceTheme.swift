@@ -63,7 +63,11 @@ public struct Layout {
     @objc public var color: InterfaceThemeColorProtocol = LightInterfaceColor()
     @objc public var font: InterfaceThemeFontProtocol = DefaultInterfaceFont()
     @objc public var statusBarStyle: UIStatusBarStyle {
-        return .default
+        if #available(iOS 13.0, *) {
+            return .darkContent
+        } else {
+            return .lightContent
+        }
     }
 }
 

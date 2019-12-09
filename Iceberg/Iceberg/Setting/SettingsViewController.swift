@@ -117,9 +117,9 @@ public class SettingsViewController: UITableViewController {
         }
     }
     
-    public override var preferredStatusBarStyle: UIStatusBarStyle {
-        return InterfaceTheme.statusBarStyle
-    }
+//    public override var preferredStatusBarStyle: UIStatusBarStyle {
+//        return InterfaceTheme.statusBarStyle
+//    }
     
     public override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch section {

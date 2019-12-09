@@ -87,9 +87,9 @@ public class DashboardViewController: UIViewController {
         }
     }
     
-    public override var preferredStatusBarStyle: UIStatusBarStyle {
-        return InterfaceTheme.statusBarStyle
-    }
+//    public override var preferredStatusBarStyle: UIStatusBarStyle {
+//        return InterfaceTheme.statusBarStyle
+//    }
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView()

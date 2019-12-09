@@ -101,9 +101,9 @@ public class Application: Coordinator {
         self.handleSharedIdeas()
         
         // 设置主题, set up the theme when the settings file is ready
-        startComplete.subscribe(onNext: {
+        uiStackReady.subscribe(onNext: { [weak self] in
             if $0 {
-                UIViewController().setupTheme()
+                self?.viewController?.navigationController?.setupTheme()
             }
         }).disposed(by: self.disposeBag)
 
@@ -251,6 +251,10 @@ extension UINavigationController {
 }
 
 extension UINavigationController {
+    open override var childForStatusBarStyle: UIViewController? {
+        topViewController
+    }
+    
     open override var preferredStatusBarStyle: UIStatusBarStyle {
         return InterfaceTheme.statusBarStyle
     }
