@@ -440,6 +440,23 @@ extension URL {
     }
 }
 
+extension URL {
+    /// if the url existed, add number to the end
+    public var uniqueURL: URL {
+        var newURL = self
+        var incrementaor: Int = 1
+        let copyOfNewURL = newURL
+        // 如果对应的文件名已经存在，则在文件名后添加数字，并以此增大
+        while FileManager.default.fileExists(atPath: newURL.path) {
+            let name = copyOfNewURL.deletingPathExtension().lastPathComponent + "\(incrementaor)"
+            newURL = copyOfNewURL.deletingPathExtension().deletingLastPathComponent().appendingPathComponent(name).appendingPathExtension(Document.fileExtension)
+            incrementaor += 1
+        }
+        
+        return newURL
+    }
+}
+
 
 extension String {
 //    public func substring(_ range: NSRange) -> String {

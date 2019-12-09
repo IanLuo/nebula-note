@@ -116,16 +116,8 @@ public struct DocumentManager {
         let newURL: URL = URL.documentBaseURL.appendingPathComponent(title).appendingPathExtension(Document.fileExtension)
         
         let addDocumentAction: (URL) -> Void = { newURL in
-            var newURL = newURL
-            var incrementaor: Int = 1
-            let copyOfNewURL = newURL
-            // 如果对应的文件名已经存在，则在文件名后添加数字，并以此增大
-            while FileManager.default.fileExists(atPath: newURL.path) {
-                let name = copyOfNewURL.deletingPathExtension().lastPathComponent + "\(incrementaor)"
-                newURL = copyOfNewURL.deletingPathExtension().deletingLastPathComponent().appendingPathComponent(name).appendingPathExtension(Document.fileExtension)
-                incrementaor += 1
-            }
-            
+            let newURL = newURL.uniqueURL
+
             self._editorContext._editingQueue.async {
                 let document = Document.init(fileURL: newURL)
                 document.updateContent(content ?? "") // 新文档的内容为空字符串
@@ -171,7 +163,7 @@ public struct DocumentManager {
             // 关闭文件夹下的文件
             self._editorContext.closeIfOpen(dir: subFolder) {
                 // 先删除子文件中的文件
-                subFolder.rename(queue: self._editorContext._editingQueue, url: SyncCoordinator.Prefix.deleted.createURL(for: subFolder)) { error in
+                subFolder.rename(queue: self._editorContext._editingQueue, url: SyncCoordinator.Prefix.deleted.createURL(for: subFolder).uniqueURL) { error in
                     if let error = error {
                         DispatchQueue.main.async {
                             completion?(error)
@@ -181,7 +173,7 @@ public struct DocumentManager {
                         
                         // 然后在删除此文件
                         self._editorContext.closeIfOpen(url: url, complete: {
-                            url.rename(queue: self._editorContext._editingQueue, url: SyncCoordinator.Prefix.deleted.createURL(for: url)) { error in
+                            url.rename(queue: self._editorContext._editingQueue, url: SyncCoordinator.Prefix.deleted.createURL(for: url).uniqueURL) { error in
                                 DispatchQueue.main.async {
                                     // 执行回调
                                     completion?(error)
@@ -198,7 +190,7 @@ public struct DocumentManager {
         // 如果没有子文件夹，直接删除
         } else {
             self._editorContext.closeIfOpen(url: url) {
-                url.rename(queue: self._editorContext._editingQueue, url: SyncCoordinator.Prefix.deleted.createURL(for: url)) { error in
+                url.rename(queue: self._editorContext._editingQueue, url: SyncCoordinator.Prefix.deleted.createURL(for: url).uniqueURL) { error in
                     DispatchQueue.main.async {
                         // 执行回调
                         completion?(error)
@@ -257,14 +249,15 @@ public struct DocumentManager {
         
         if let below = below {
             self._createFolderIfNeeded(url: below) { folderURL in
-                let newURL = folderURL.appendingPathComponent(to).appendingPathExtension(Document.fileExtension)
-                
+                var newURL = folderURL.appendingPathComponent(to).appendingPathExtension(Document.fileExtension)
+                newURL = newURL.uniqueURL
                 renameAction(newURL)
             }
         } else {
             var newURL = newURL.deletingLastPathComponent()
             newURL = newURL.appendingPathComponent(to).appendingPathExtension(Document.fileExtension)
             
+            newURL = newURL.uniqueURL
             renameAction(newURL)
         }
     }
