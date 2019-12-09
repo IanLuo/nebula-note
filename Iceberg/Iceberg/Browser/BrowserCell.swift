@@ -31,7 +31,7 @@ public class BrowserCell: UITableViewCell {
         }
         
         imageView.roundConer(radius: Layout.cornerRadius)
-        imageView.contentMode = .scaleAspectFill
+        imageView.contentMode = .center
         return imageView
     }()
     
@@ -243,7 +243,7 @@ public class BrowserCell: UITableViewCell {
     }
     
     private func _createNewDocumentActionItem(for actionsViewController: ActionsViewController) {
-        actionsViewController.addActionAutoDismiss(icon: Asset.Assets.add.image, title: L10n.Browser.Action.new) {
+        actionsViewController.addActionAutoDismiss(icon: Asset.Assets.add.image, title: L10n.Browser.Actions.newSub) {
             guard let cellModel = self.cellModel else { return }
             cellModel.createChildDocument(title: L10n.Browser.Title.untitled)
                 .subscribe(onNext: { url in

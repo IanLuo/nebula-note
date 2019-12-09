@@ -134,7 +134,7 @@ private class RecentFileCell: UICollectionViewCell {
     
     let coverView: UIImageView = {
         let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFill
+        imageView.contentMode = .center
         imageView.clipsToBounds = true
         return imageView
     }()
@@ -183,7 +183,7 @@ private class RecentFileCell: UICollectionViewCell {
 
 extension BrowserRecentViewController: EmptyContentPlaceHolderProtocol {
     public var image: UIImage {
-        return Asset.Assets.add.image
+        return Asset.Assets.emptyCup.image.fill(color: InterfaceTheme.Color.secondaryDescriptive)
     }
     
     public var text: String {

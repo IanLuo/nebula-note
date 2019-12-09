@@ -199,7 +199,7 @@ extension AgendaViewController: EmptyContentPlaceHolderProtocol {
     }
     
     public var image: UIImage {
-        return Asset.Assets.link.image
+        return Asset.Assets.emptyCup.image.fill(color: InterfaceTheme.Color.secondaryDescriptive)
     }
 }
 

@@ -22,7 +22,7 @@ public class BrowserCellModel {
     public var shouldShowChooseHeadingIndicator: Bool = false
     public var updateDate: Date
     public lazy var cover: UIImage? = {
-        return UIImage(contentsOfFile: self.url.coverURL.path)?.resize(upto: CGSize(width: 120, height: 120))
+        return UIImage(contentsOfFile: self.url.coverURL.path)?.resize(upto: CGSize(width: 100, height: 100)) ?? Asset.Assets.emptyCup.image.fill(color: InterfaceTheme.Color.secondaryDescriptive).resize(upto: CGSize(width: 30, height: 30))
     }()
     
     public weak var coordinator: BrowserCoordinator?

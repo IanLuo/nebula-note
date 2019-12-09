@@ -104,9 +104,9 @@ public class DocumentEditorViewController: UIViewController {
         }
     }
     
-//    public override var preferredStatusBarStyle: UIStatusBarStyle {
-//        return InterfaceTheme.statusBarStyle
-//    }
+    public override var preferredStatusBarStyle: UIStatusBarStyle {
+        return InterfaceTheme.statusBarStyle
+    }
     
     private func createActionButton(icon: UIImage?) -> RoundButton {
         let button = RoundButton()

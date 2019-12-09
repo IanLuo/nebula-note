@@ -302,7 +302,7 @@ extension CaptureListViewController: EmptyContentPlaceHolderProtocol {
     }
     
     public var image: UIImage {
-        return Asset.Assets.zoom.image
+        return Asset.Assets.emptyCup.image.fill(color: InterfaceTheme.Color.secondaryDescriptive)
     }
     
     public var viewToShowImage: UIView {
