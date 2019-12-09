@@ -56,13 +56,14 @@ public class PDFExporter: Exportable {
     private func _createPDF(string: String) -> URL {
         let html = string
         let fmt = UIMarkupTextPrintFormatter(markupText: html)
+        
         // 2. Assign print formatter to UIPrintPageRenderer
         let render = UIPrintPageRenderer()
         render.addPrintFormatter(fmt, startingAtPageAt: 0)
         // 3. Assign paperRect and printableRect
         let page = CGRect(x: 0, y: 0, width: 595.2, height: 841.8) // A4, 72 dpi
         render.setValue(page, forKey: "paperRect")
-        render.setValue(page.inset(by: UIEdgeInsets(top: 60, left: 50, bottom: 60, right: 50)), forKey: "printableRect")
+        render.setValue(page.inset(by: UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)), forKey: "printableRect")
         // 4. Create PDF context and draw
         let pdfData = NSMutableData()
         UIGraphicsBeginPDFContextToData(pdfData, .zero, nil)

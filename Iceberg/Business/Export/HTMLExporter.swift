@@ -78,7 +78,7 @@ public struct HTMLExporter: Exportable {
     var style: String {
         return """
         <style>
-        body { background-color: \(InterfaceTheme.Color.background1.hex); color: \(InterfaceTheme.Color.descriptive.hex);}
+        body { background-color: \(InterfaceTheme.Color.background1.hex); color: \(InterfaceTheme.Color.descriptive.hex); padding-left: 30px; padding-right: 30px; padding-top: 120px; padding-bottom: 120px;}
         h1   {color: \(InterfaceTheme.Color.interactive.hex);}
         h2   {color: \(InterfaceTheme.Color.interactive.hex);}
         h3   {color: \(InterfaceTheme.Color.interactive.hex);}

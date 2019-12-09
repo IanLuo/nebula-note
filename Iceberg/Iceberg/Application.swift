@@ -103,7 +103,7 @@ public class Application: Coordinator {
         // 设置主题, set up the theme when the settings file is ready
         uiStackReady.subscribe(onNext: { [weak self] in
             if $0 {
-                self?.viewController?.navigationController?.setupTheme()
+                self?.window?.rootViewController?.setupTheme()
             }
         }).disposed(by: self.disposeBag)
 
