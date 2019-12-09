@@ -26,6 +26,18 @@ platform :ios do
     )
   end
 
+  lane :upload do
+    
+  end
+
+  lane :metadata do
+    
+  end
+
+  lane :scrrend_shot do
+
+  end
+
   lane :test do
     scan(
       workspace: 'Iceberg.xcworkspace',
