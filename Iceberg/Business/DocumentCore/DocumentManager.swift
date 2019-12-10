@@ -71,13 +71,15 @@ public struct DocumentManager {
     
     public func setCover(_ image: UIImage?, url: URL, completion: @escaping (URL) -> Void) {
         let service = self._editorContext.request(url: url)
-        service.open { [service] _ in
-            service.cover = image?.resize(upto: CGSize(width: 1024, height: 1024))
-            
-            service.save(completion: { _ in
-                completion(url)
-                self._eventObserver.emit(ChangeDocumentCoverEvent(url: url, image: image))
-            })
+        service.onReadyToUse = { s in
+            s.open { [weak service] _ in
+                service?.cover = image?.resize(upto: CGSize(width: 1024, height: 1024))
+                
+                service?.save(completion: { _ in
+                    completion(url)
+                    self._eventObserver.emit(ChangeDocumentCoverEvent(url: url, image: image))
+                })
+            }
         }
     }
     
