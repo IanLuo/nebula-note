@@ -21,6 +21,26 @@ or alternatively using `brew cask install fastlane`
 fastlane ios create_app
 ```
 
+### ios beta
+```
+fastlane ios beta
+```
+
+### ios upload
+```
+fastlane ios upload
+```
+
+### ios metadata
+```
+fastlane ios metadata
+```
+
+### ios scrrend_shot
+```
+fastlane ios scrrend_shot
+```
+
 ### ios test
 ```
 fastlane ios test

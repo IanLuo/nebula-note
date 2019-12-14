@@ -2,7 +2,7 @@ platform :ios, '9.0'
 
 use_frameworks!
 
-target 'Iceberg' do
+target 'Icetea' do
     pod 'RxSwift'
     pod 'RxCocoa'
     pod 'RxDataSources'
@@ -14,7 +14,7 @@ target 'Iceberg' do
     pod 'PKHUD', '~> 5.0'
 end
 
-target 'IcebergTests' do
+target 'IceteaTests' do
     pod 'RxSwift'
     pod 'RxCocoa'
 end

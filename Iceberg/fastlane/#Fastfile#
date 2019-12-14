@@ -33,7 +33,8 @@ platform :ios do
     sigh
     build_app(
       scheme: "Icetea",
-      workspace: "Icetea.xcworkspace"
+      workspace: "Icetea.xcworkspace",
+      
 )
     upload_to_testflight
   end

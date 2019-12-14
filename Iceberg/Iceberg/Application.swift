@@ -84,6 +84,11 @@ public class Application: Coordinator {
         self.dependency.eventObserver.registerForEvent(on: self, eventType: iCloudEnabledEvent.self, queue: nil) { [weak self] (event: iCloudEnabledEvent) -> Void in
             self?._setupiCloud()
         }
+        
+        // 通知完成初始化
+        self.startComplete.subscribe(onNext: { [weak self] _ in
+            self?.dependency.eventObserver.emit(AppStartedEvent())
+        }).disposed(by: self.disposeBag)
     }
     
     deinit {
@@ -93,10 +98,7 @@ public class Application: Coordinator {
     public override func start(from: Coordinator?, animated: Bool) {
         let homeCoord = HomeCoordinator(stack: self.stack,
                                         dependency: self.dependency)
-        
-        // 设置 iCloud
-        self._setupiCloud()
-        
+                
         // 导入 extension 收集的 idea
         self.handleSharedIdeas()
         
@@ -106,23 +108,22 @@ public class Application: Coordinator {
                 self?.window?.rootViewController?.setupTheme()
             }
         }).disposed(by: self.disposeBag)
-
-        // 通知完成初始化
-        self.dependency.eventObserver.emit(AppStartedEvent())
         
         dependency.documentManager.getFileLocationComplete { [weak self] url in
             guard let url = url else { return }
             guard let s = self else { return }
             
             log.info("using \(url) as root")
-            
-            homeCoord.start(from: self, animated: animated)
-            
+
             // UI complete loading
             s.uiStackReady.accept(true)
             
         }
         
+        homeCoord.start(from: self, animated: animated)
+        
+        // 设置 iCloud
+        self._setupiCloud()
     }
     
     private var _isHandlingSharedIdeas: Bool = false

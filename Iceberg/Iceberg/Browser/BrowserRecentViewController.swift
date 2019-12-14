@@ -183,7 +183,7 @@ private class RecentFileCell: UICollectionViewCell {
 
 extension BrowserRecentViewController: EmptyContentPlaceHolderProtocol {
     public var image: UIImage {
-        return Asset.Assets.emptyCup.image.fill(color: InterfaceTheme.Color.secondaryDescriptive)
+        return Asset.Assets.emptyCup.image.fill(color: InterfaceTheme.Color.secondaryDescriptive).resize(upto: CGSize(width: 15, height: 15))
     }
     
     public var text: String {

@@ -8,10 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		0A606A2E4ED3462C64375D03 /* Pods_CaptureIdeaExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38881950D776CA36CB0BEED1 /* Pods_CaptureIdeaExtension.framework */; };
+		111283428A6174A4DB2586DE /* Pods_IceteaTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B3D5B27779D291E802FD98B /* Pods_IceteaTests.framework */; };
 		27750F4B73713847366B4121 /* Pods_CaptureActionExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80D35D4405E5FF60F37D5C21 /* Pods_CaptureActionExtension.framework */; };
+		4A61F578C54B198F9D7CF507 /* Pods_Icetea.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85840848007E4068AD0AE849 /* Pods_Icetea.framework */; };
 		4C458BEB751059812B9E1017 /* Pods_Business.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16249794A457196CF93AC9F8 /* Pods_Business.framework */; };
-		8EB6486B41D1682B45A8309A /* Pods_IcebergTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E2A9BE499C23AB391EC19B0 /* Pods_IcebergTests.framework */; };
-		B39490D41DA7ABDF54007D65 /* Pods_Iceberg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA2AFBAEE3338563A1DC848D /* Pods_Iceberg.framework */; };
 		E40F6E82223B78AE00FFF53F /* Interface.h in Headers */ = {isa = PBXBuildFile; fileRef = E40F6E80223B78AE00FFF53F /* Interface.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E40F6E85223B78AE00FFF53F /* Interface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E40F6E7E223B78AE00FFF53F /* Interface.framework */; };
 		E40F6E86223B78AE00FFF53F /* Interface.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E40F6E7E223B78AE00FFF53F /* Interface.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -279,6 +279,41 @@
 			remoteGlobalIDString = E440F1832309378E00E0EF02;
 			remoteInfo = CaptureActionExtension;
 		};
+		E4B2D470239FDC7200E168D0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E43427EE2121BF5B00EC6DC3 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E41CB19A21D88D9300EF0A3C;
+			remoteInfo = Business;
+		};
+		E4B2D472239FDC7600E168D0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E43427EE2121BF5B00EC6DC3 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E41CB19A21D88D9300EF0A3C;
+			remoteInfo = Business;
+		};
+		E4B2D474239FDC7B00E168D0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E43427EE2121BF5B00EC6DC3 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E40F6E7D223B78AE00FFF53F;
+			remoteInfo = Interface;
+		};
+		E4B2D476239FDC7F00E168D0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E43427EE2121BF5B00EC6DC3 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E40F6E7D223B78AE00FFF53F;
+			remoteInfo = Interface;
+		};
+		E4B2D478239FDD6A00E168D0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E43427EE2121BF5B00EC6DC3 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E40F6E7D223B78AE00FFF53F;
+			remoteInfo = Interface;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -312,17 +347,21 @@
 		06D728128324C34CAC2A4580 /* Pods_DocumentCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DocumentCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0DF41938D05D4EBBC62B26FB /* Pods-CaptureActionExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CaptureActionExtension.release.xcconfig"; path = "Pods/Target Support Files/Pods-CaptureActionExtension/Pods-CaptureActionExtension.release.xcconfig"; sourceTree = "<group>"; };
 		16249794A457196CF93AC9F8 /* Pods_Business.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Business.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		326DEC400F050AE8998B4BD0 /* Pods-IceteaTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IceteaTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-IceteaTests/Pods-IceteaTests.release.xcconfig"; sourceTree = "<group>"; };
 		38881950D776CA36CB0BEED1 /* Pods_CaptureIdeaExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CaptureIdeaExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		4E2A9BE499C23AB391EC19B0 /* Pods_IcebergTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_IcebergTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4B3D5B27779D291E802FD98B /* Pods_IceteaTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_IceteaTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		58F6ADB9E7BCAC752C4FE4C6 /* Pods_Storage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Storage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		66920F60EDF553A0B97C7619 /* Pods-Storage.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Storage.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Storage/Pods-Storage.debug.xcconfig"; sourceTree = "<group>"; };
 		66B5D4AC5AD67507B5534E6A /* Pods-IcelandTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IcelandTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-IcelandTests/Pods-IcelandTests.debug.xcconfig"; sourceTree = "<group>"; };
 		68A57AB9C3D21DEC0783843F /* Pods-Storage.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Storage.release.xcconfig"; path = "Pods/Target Support Files/Pods-Storage/Pods-Storage.release.xcconfig"; sourceTree = "<group>"; };
+		6D0BC62A26F538E9ED29BD21 /* Pods-IceteaTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IceteaTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-IceteaTests/Pods-IceteaTests.debug.xcconfig"; sourceTree = "<group>"; };
 		6F09C95A99055449AA521BE4 /* Pods-DocumentCore.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DocumentCore.release.xcconfig"; path = "Pods/Target Support Files/Pods-DocumentCore/Pods-DocumentCore.release.xcconfig"; sourceTree = "<group>"; };
 		719879CCE4BDF3C38E58B969 /* Pods-Iceland.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Iceland.release.xcconfig"; path = "Pods/Target Support Files/Pods-Iceland/Pods-Iceland.release.xcconfig"; sourceTree = "<group>"; };
 		7AD86DEC929199B246F94293 /* Pods_Interface.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Interface.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7E4BB1C3ED3527EBAD2492DD /* Pods-IcebergTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IcebergTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-IcebergTests/Pods-IcebergTests.debug.xcconfig"; sourceTree = "<group>"; };
 		80D35D4405E5FF60F37D5C21 /* Pods_CaptureActionExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CaptureActionExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		85840848007E4068AD0AE849 /* Pods_Icetea.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Icetea.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8911F35B42A61B2AFEEBC915 /* Pods-Icetea.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Icetea.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Icetea/Pods-Icetea.debug.xcconfig"; sourceTree = "<group>"; };
 		9A30CB7915F2899C7899D697 /* Pods-CaptureIdeaExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CaptureIdeaExtension.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CaptureIdeaExtension/Pods-CaptureIdeaExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		A8E4EC2FC1088F978E881464 /* Pods-Iceland.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Iceland.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Iceland/Pods-Iceland.debug.xcconfig"; sourceTree = "<group>"; };
 		AA6BE9F0E63F15EB98E44990 /* Pods-IcelandTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IcelandTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-IcelandTests/Pods-IcelandTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -334,7 +373,6 @@
 		C80EF354BD1139FC981DDF22 /* Pods-CaptureActionExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CaptureActionExtension.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CaptureActionExtension/Pods-CaptureActionExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		D009710A21317A905D2FBAC1 /* Pods-Business.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Business.release.xcconfig"; path = "Pods/Target Support Files/Pods-Business/Pods-Business.release.xcconfig"; sourceTree = "<group>"; };
 		D267DFB610A7457216445E5A /* Pods-IcebergTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IcebergTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-IcebergTests/Pods-IcebergTests.release.xcconfig"; sourceTree = "<group>"; };
-		DA2AFBAEE3338563A1DC848D /* Pods_Iceberg.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Iceberg.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E40F6E7E223B78AE00FFF53F /* Interface.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Interface.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E40F6E80223B78AE00FFF53F /* Interface.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Interface.h; sourceTree = "<group>"; };
 		E40F6E81223B78AE00FFF53F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -385,15 +423,15 @@
 		E42A7F8622DC679A0038A4DD /* PDFExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFExporter.swift; sourceTree = "<group>"; };
 		E42A87FC21CFC9B300151C90 /* AttachmentTextViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentTextViewController.swift; sourceTree = "<group>"; };
 		E42A87FE21CFCAC500151C90 /* AttachmentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentViewModel.swift; sourceTree = "<group>"; };
-		E43427F62121BF5B00EC6DC3 /* Iceberg.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Iceberg.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E43427F62121BF5B00EC6DC3 /* Icetea.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Icetea.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E43427F92121BF5B00EC6DC3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E43428002121BF5F00EC6DC3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E43428032121BF5F00EC6DC3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E43428052121BF5F00EC6DC3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		E434280A2121BF5F00EC6DC3 /* IcebergTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IcebergTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E434280A2121BF5F00EC6DC3 /* IceteaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IceteaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E434280E2121BF5F00EC6DC3 /* IcelandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IcelandTests.swift; sourceTree = "<group>"; };
 		E43428102121BF6000EC6DC3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		E43428152121BF6000EC6DC3 /* IcebergUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IcebergUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E43428152121BF6000EC6DC3 /* IceteaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IceteaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E43428192121BF6000EC6DC3 /* IcelandUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IcelandUITests.swift; sourceTree = "<group>"; };
 		E434281B2121BF6000EC6DC3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E4357B4921A995DA006DDD72 /* CaptureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureTests.swift; sourceTree = "<group>"; };
@@ -557,6 +595,7 @@
 		E68A1109AE2343C161D810A1 /* Pods-Business.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Business.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Business/Pods-Business.debug.xcconfig"; sourceTree = "<group>"; };
 		EE7066485686E586B5DADB73 /* Pods-Interface.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Interface.release.xcconfig"; path = "Pods/Target Support Files/Pods-Interface/Pods-Interface.release.xcconfig"; sourceTree = "<group>"; };
 		FDCA0585533F2DF37A968E3E /* Pods-Interface.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Interface.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Interface/Pods-Interface.debug.xcconfig"; sourceTree = "<group>"; };
+		FF63CD4AF8B8FF008E67A1D0 /* Pods-Icetea.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Icetea.release.xcconfig"; path = "Pods/Target Support Files/Pods-Icetea/Pods-Icetea.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -591,7 +630,7 @@
 				E40F6E85223B78AE00FFF53F /* Interface.framework in Frameworks */,
 				E4686E4322915A190004D950 /* CloudKit.framework in Frameworks */,
 				E41CB1B021D88D9400EF0A3C /* Business.framework in Frameworks */,
-				B39490D41DA7ABDF54007D65 /* Pods_Iceberg.framework in Frameworks */,
+				4A61F578C54B198F9D7CF507 /* Pods_Icetea.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -599,7 +638,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8EB6486B41D1682B45A8309A /* Pods_IcebergTests.framework in Frameworks */,
+				111283428A6174A4DB2586DE /* Pods_IceteaTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -639,9 +678,9 @@
 				16249794A457196CF93AC9F8 /* Pods_Business.framework */,
 				7AD86DEC929199B246F94293 /* Pods_Interface.framework */,
 				38881950D776CA36CB0BEED1 /* Pods_CaptureIdeaExtension.framework */,
-				DA2AFBAEE3338563A1DC848D /* Pods_Iceberg.framework */,
-				4E2A9BE499C23AB391EC19B0 /* Pods_IcebergTests.framework */,
 				80D35D4405E5FF60F37D5C21 /* Pods_CaptureActionExtension.framework */,
+				85840848007E4068AD0AE849 /* Pods_Icetea.framework */,
+				4B3D5B27779D291E802FD98B /* Pods_IceteaTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -669,6 +708,10 @@
 				D267DFB610A7457216445E5A /* Pods-IcebergTests.release.xcconfig */,
 				C80EF354BD1139FC981DDF22 /* Pods-CaptureActionExtension.debug.xcconfig */,
 				0DF41938D05D4EBBC62B26FB /* Pods-CaptureActionExtension.release.xcconfig */,
+				8911F35B42A61B2AFEEBC915 /* Pods-Icetea.debug.xcconfig */,
+				FF63CD4AF8B8FF008E67A1D0 /* Pods-Icetea.release.xcconfig */,
+				6D0BC62A26F538E9ED29BD21 /* Pods-IceteaTests.debug.xcconfig */,
+				326DEC400F050AE8998B4BD0 /* Pods-IceteaTests.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -952,9 +995,9 @@
 		E43427F72121BF5B00EC6DC3 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E43427F62121BF5B00EC6DC3 /* Iceberg.app */,
-				E434280A2121BF5F00EC6DC3 /* IcebergTests.xctest */,
-				E43428152121BF6000EC6DC3 /* IcebergUITests.xctest */,
+				E43427F62121BF5B00EC6DC3 /* Icetea.app */,
+				E434280A2121BF5F00EC6DC3 /* IceteaTests.xctest */,
+				E43428152121BF6000EC6DC3 /* IceteaUITests.xctest */,
 				E41CB19B21D88D9300EF0A3C /* Business.framework */,
 				E41CB1A321D88D9400EF0A3C /* BusinessTests.xctest */,
 				E40F6E7E223B78AE00FFF53F /* Interface.framework */,
@@ -1346,6 +1389,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				E4B2D479239FDD6A00E168D0 /* PBXTargetDependency */,
 			);
 			name = Business;
 			productName = Business;
@@ -1371,9 +1415,9 @@
 			productReference = E41CB1A321D88D9400EF0A3C /* BusinessTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		E43427F52121BF5B00EC6DC3 /* Iceberg */ = {
+		E43427F52121BF5B00EC6DC3 /* Icetea */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E434281E2121BF6000EC6DC3 /* Build configuration list for PBXNativeTarget "Iceberg" */;
+			buildConfigurationList = E434281E2121BF6000EC6DC3 /* Build configuration list for PBXNativeTarget "Icetea" */;
 			buildPhases = (
 				2321C1BB856E335423F37C5B /* [CP] Check Pods Manifest.lock */,
 				E465E4A2222392380014673D /* ShellScript */,
@@ -1392,14 +1436,14 @@
 				E43D4F4622C0BFAF00B2322B /* PBXTargetDependency */,
 				E440F18E2309378E00E0EF02 /* PBXTargetDependency */,
 			);
-			name = Iceberg;
+			name = Icetea;
 			productName = Iceland;
-			productReference = E43427F62121BF5B00EC6DC3 /* Iceberg.app */;
+			productReference = E43427F62121BF5B00EC6DC3 /* Icetea.app */;
 			productType = "com.apple.product-type.application";
 		};
-		E43428092121BF5F00EC6DC3 /* IcebergTests */ = {
+		E43428092121BF5F00EC6DC3 /* IceteaTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E43428212121BF6000EC6DC3 /* Build configuration list for PBXNativeTarget "IcebergTests" */;
+			buildConfigurationList = E43428212121BF6000EC6DC3 /* Build configuration list for PBXNativeTarget "IceteaTests" */;
 			buildPhases = (
 				A379F6F5A85BFA01E78EA04A /* [CP] Check Pods Manifest.lock */,
 				E43428062121BF5F00EC6DC3 /* Sources */,
@@ -1412,14 +1456,14 @@
 			dependencies = (
 				E434280C2121BF5F00EC6DC3 /* PBXTargetDependency */,
 			);
-			name = IcebergTests;
+			name = IceteaTests;
 			productName = IcelandTests;
-			productReference = E434280A2121BF5F00EC6DC3 /* IcebergTests.xctest */;
+			productReference = E434280A2121BF5F00EC6DC3 /* IceteaTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		E43428142121BF6000EC6DC3 /* IcebergUITests */ = {
+		E43428142121BF6000EC6DC3 /* IceteaUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E43428242121BF6000EC6DC3 /* Build configuration list for PBXNativeTarget "IcebergUITests" */;
+			buildConfigurationList = E43428242121BF6000EC6DC3 /* Build configuration list for PBXNativeTarget "IceteaUITests" */;
 			buildPhases = (
 				E43428112121BF6000EC6DC3 /* Sources */,
 				E43428122121BF6000EC6DC3 /* Frameworks */,
@@ -1430,9 +1474,9 @@
 			dependencies = (
 				E43428172121BF6000EC6DC3 /* PBXTargetDependency */,
 			);
-			name = IcebergUITests;
+			name = IceteaUITests;
 			productName = IcelandUITests;
-			productReference = E43428152121BF6000EC6DC3 /* IcebergUITests.xctest */;
+			productReference = E43428152121BF6000EC6DC3 /* IceteaUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 		E43D4F3C22C0BFAF00B2322B /* CaptureIdeaExtension */ = {
@@ -1447,6 +1491,8 @@
 			buildRules = (
 			);
 			dependencies = (
+				E4B2D477239FDC7F00E168D0 /* PBXTargetDependency */,
+				E4B2D471239FDC7200E168D0 /* PBXTargetDependency */,
 			);
 			name = CaptureIdeaExtension;
 			productName = CaptureIdeaExtension;
@@ -1465,6 +1511,8 @@
 			buildRules = (
 			);
 			dependencies = (
+				E4B2D475239FDC7B00E168D0 /* PBXTargetDependency */,
+				E4B2D473239FDC7600E168D0 /* PBXTargetDependency */,
 			);
 			name = CaptureActionExtension;
 			productName = CaptureActionExtension;
@@ -1527,7 +1575,7 @@
 					};
 				};
 			};
-			buildConfigurationList = E43427F12121BF5B00EC6DC3 /* Build configuration list for PBXProject "Iceberg" */;
+			buildConfigurationList = E43427F12121BF5B00EC6DC3 /* Build configuration list for PBXProject "Icetea" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -1540,9 +1588,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				E43427F52121BF5B00EC6DC3 /* Iceberg */,
-				E43428092121BF5F00EC6DC3 /* IcebergTests */,
-				E43428142121BF6000EC6DC3 /* IcebergUITests */,
+				E43427F52121BF5B00EC6DC3 /* Icetea */,
+				E43428092121BF5F00EC6DC3 /* IceteaTests */,
+				E43428142121BF6000EC6DC3 /* IceteaUITests */,
 				E41CB19A21D88D9300EF0A3C /* Business */,
 				E41CB1A221D88D9400EF0A3C /* BusinessTests */,
 				E40F6E7D223B78AE00FFF53F /* Interface */,
@@ -1656,7 +1704,7 @@
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Iceberg-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-Icetea-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1669,15 +1717,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-IcebergTests/Pods-IcebergTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-IceteaTests/Pods-IceteaTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-IcebergTests/Pods-IcebergTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-IceteaTests/Pods-IceteaTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-IcebergTests/Pods-IcebergTests-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-IceteaTests/Pods-IceteaTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		63394FCFE959CE24700FDAD4 /* [CP] Check Pods Manifest.lock */ = {
@@ -1726,15 +1774,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Iceberg/Pods-Iceberg-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-Icetea/Pods-Icetea-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Iceberg/Pods-Iceberg-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-Icetea/Pods-Icetea-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Iceberg/Pods-Iceberg-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Icetea/Pods-Icetea-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		A379F6F5A85BFA01E78EA04A /* [CP] Check Pods Manifest.lock */ = {
@@ -1748,7 +1796,7 @@
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-IcebergTests-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-IceteaTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -2053,7 +2101,7 @@
 		};
 		E41CB1A821D88D9400EF0A3C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = E43427F52121BF5B00EC6DC3 /* Iceberg */;
+			target = E43427F52121BF5B00EC6DC3 /* Icetea */;
 			targetProxy = E41CB1A721D88D9400EF0A3C /* PBXContainerItemProxy */;
 		};
 		E41CB1AF21D88D9400EF0A3C /* PBXTargetDependency */ = {
@@ -2063,12 +2111,12 @@
 		};
 		E434280C2121BF5F00EC6DC3 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = E43427F52121BF5B00EC6DC3 /* Iceberg */;
+			target = E43427F52121BF5B00EC6DC3 /* Icetea */;
 			targetProxy = E434280B2121BF5F00EC6DC3 /* PBXContainerItemProxy */;
 		};
 		E43428172121BF6000EC6DC3 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = E43427F52121BF5B00EC6DC3 /* Iceberg */;
+			target = E43427F52121BF5B00EC6DC3 /* Icetea */;
 			targetProxy = E43428162121BF6000EC6DC3 /* PBXContainerItemProxy */;
 		};
 		E43D4F4622C0BFAF00B2322B /* PBXTargetDependency */ = {
@@ -2080,6 +2128,31 @@
 			isa = PBXTargetDependency;
 			target = E440F1832309378E00E0EF02 /* CaptureActionExtension */;
 			targetProxy = E440F18D2309378E00E0EF02 /* PBXContainerItemProxy */;
+		};
+		E4B2D471239FDC7200E168D0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E41CB19A21D88D9300EF0A3C /* Business */;
+			targetProxy = E4B2D470239FDC7200E168D0 /* PBXContainerItemProxy */;
+		};
+		E4B2D473239FDC7600E168D0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E41CB19A21D88D9300EF0A3C /* Business */;
+			targetProxy = E4B2D472239FDC7600E168D0 /* PBXContainerItemProxy */;
+		};
+		E4B2D475239FDC7B00E168D0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E40F6E7D223B78AE00FFF53F /* Interface */;
+			targetProxy = E4B2D474239FDC7B00E168D0 /* PBXContainerItemProxy */;
+		};
+		E4B2D477239FDC7F00E168D0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E40F6E7D223B78AE00FFF53F /* Interface */;
+			targetProxy = E4B2D476239FDC7F00E168D0 /* PBXContainerItemProxy */;
+		};
+		E4B2D479239FDD6A00E168D0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E40F6E7D223B78AE00FFF53F /* Interface */;
+			targetProxy = E4B2D478239FDD6A00E168D0 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -2110,11 +2183,11 @@
 				CLANG_USE_OPTIMIZATION_PROFILE = NO;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 10;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 26RSSM9Q9P;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 10;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = Interface/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -2142,11 +2215,11 @@
 				CLANG_USE_OPTIMIZATION_PROFILE = NO;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 10;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 26RSSM9Q9P;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 10;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = Interface/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -2175,11 +2248,11 @@
 				CLANG_USE_OPTIMIZATION_PROFILE = NO;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 10;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 26RSSM9Q9P;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 10;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = Business/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -2216,11 +2289,11 @@
 				CLANG_USE_OPTIMIZATION_PROFILE = NO;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 10;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 26RSSM9Q9P;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 10;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = Business/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -2267,7 +2340,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Iceberg.app/Iceberg";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Icetea.app/Icetea";
 			};
 			name = Debug;
 		};
@@ -2289,7 +2362,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Iceberg.app/Iceberg";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Icetea.app/Icetea";
 			};
 			name = Release;
 		};
@@ -2409,13 +2482,13 @@
 		};
 		E434281F2121BF6000EC6DC3 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BABBC619608E9C9C56A6F829 /* Pods-Iceberg.debug.xcconfig */;
+			baseConfigurationReference = 8911F35B42A61B2AFEEBC915 /* Pods-Icetea.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Iceberg/Iceberg.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = 26RSSM9Q9P;
 				INFOPLIST_FILE = Iceberg/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
@@ -2423,8 +2496,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.wod.Iceberg;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.wod.icetea;
+				PRODUCT_NAME = Icetea;
 				SWIFT_ENABLE_BATCH_MODE = NO;
 				SWIFT_INSTALL_OBJC_HEADER = NO;
 				SWIFT_VERSION = 4.2;
@@ -2434,13 +2507,13 @@
 		};
 		E43428202121BF6000EC6DC3 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AC6E926D923F4F4262911E58 /* Pods-Iceberg.release.xcconfig */;
+			baseConfigurationReference = FF63CD4AF8B8FF008E67A1D0 /* Pods-Icetea.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Iceberg/Iceberg.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = 26RSSM9Q9P;
 				INFOPLIST_FILE = Iceberg/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
@@ -2448,8 +2521,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.wod.Iceberg;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.wod.icetea;
+				PRODUCT_NAME = Icetea;
 				SWIFT_ENABLE_BATCH_MODE = NO;
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -2458,7 +2531,7 @@
 		};
 		E43428222121BF6000EC6DC3 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7E4BB1C3ED3527EBAD2492DD /* Pods-IcebergTests.debug.xcconfig */;
+			baseConfigurationReference = 6D0BC62A26F538E9ED29BD21 /* Pods-IceteaTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -2474,13 +2547,13 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Iceberg.app/Iceberg";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Icetea.app/Icetea";
 			};
 			name = Debug;
 		};
 		E43428232121BF6000EC6DC3 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D267DFB610A7457216445E5A /* Pods-IcebergTests.release.xcconfig */;
+			baseConfigurationReference = 326DEC400F050AE8998B4BD0 /* Pods-IceteaTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -2496,7 +2569,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Iceberg.app/Iceberg";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Icetea.app/Icetea";
 			};
 			name = Release;
 		};
@@ -2555,7 +2628,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.wod.Iceberg.CaptureIdeaExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = com.wod.icetea.CaptureIdeaExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.2;
@@ -2578,7 +2651,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.wod.Iceberg.CaptureIdeaExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = com.wod.icetea.CaptureIdeaExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.2;
@@ -2601,7 +2674,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.wod.Iceberg.CaptureActionExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = com.wod.icetea.CaptureActionExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.2;
@@ -2624,7 +2697,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.wod.Iceberg.CaptureActionExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = com.wod.icetea.CaptureActionExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.2;
@@ -2662,7 +2735,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E43427F12121BF5B00EC6DC3 /* Build configuration list for PBXProject "Iceberg" */ = {
+		E43427F12121BF5B00EC6DC3 /* Build configuration list for PBXProject "Icetea" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E434281C2121BF6000EC6DC3 /* Debug */,
@@ -2671,7 +2744,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E434281E2121BF6000EC6DC3 /* Build configuration list for PBXNativeTarget "Iceberg" */ = {
+		E434281E2121BF6000EC6DC3 /* Build configuration list for PBXNativeTarget "Icetea" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E434281F2121BF6000EC6DC3 /* Debug */,
@@ -2680,7 +2753,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E43428212121BF6000EC6DC3 /* Build configuration list for PBXNativeTarget "IcebergTests" */ = {
+		E43428212121BF6000EC6DC3 /* Build configuration list for PBXNativeTarget "IceteaTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E43428222121BF6000EC6DC3 /* Debug */,
@@ -2689,7 +2762,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E43428242121BF6000EC6DC3 /* Build configuration list for PBXNativeTarget "IcebergUITests" */ = {
+		E43428242121BF6000EC6DC3 /* Build configuration list for PBXNativeTarget "IceteaUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E43428252121BF6000EC6DC3 /* Debug */,

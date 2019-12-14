@@ -34,7 +34,7 @@ public struct DocumentManager {
                 completion($0)
             }
         } else {
-            completion(URL.localDocumentBaseURL)
+            completion(URL.localRootURL)
         }
     }
     

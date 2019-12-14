@@ -18,7 +18,7 @@
                BlueprintIdentifier = "E43D4F3C22C0BFAF00B2322B"
                BuildableName = "CaptureIdeaExtension.appex"
                BlueprintName = "CaptureIdeaExtension"
-               ReferencedContainer = "container:Iceberg.xcodeproj">
+               ReferencedContainer = "container:Icetea.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -30,9 +30,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "E43427F52121BF5B00EC6DC3"
-               BuildableName = "Iceberg.app"
-               BlueprintName = "Iceberg"
-               ReferencedContainer = "container:Iceberg.xcodeproj">
+               BuildableName = "Icetea.app"
+               BlueprintName = "Icetea"
+               ReferencedContainer = "container:Icetea.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -66,9 +66,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E43427F52121BF5B00EC6DC3"
-            BuildableName = "Iceberg.app"
-            BlueprintName = "Iceberg"
-            ReferencedContainer = "container:Iceberg.xcodeproj">
+            BuildableName = "Icetea.app"
+            BlueprintName = "Icetea"
+            ReferencedContainer = "container:Icetea.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </LaunchAction>
@@ -84,9 +84,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E43427F52121BF5B00EC6DC3"
-            BuildableName = "Iceberg.app"
-            BlueprintName = "Iceberg"
-            ReferencedContainer = "container:Iceberg.xcodeproj">
+            BuildableName = "Icetea.app"
+            BlueprintName = "Icetea"
+            ReferencedContainer = "container:Icetea.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
