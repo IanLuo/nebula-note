@@ -119,10 +119,9 @@ public class BrowserCellModel {
                 .rename(url: url,
                         to: fileName,
                         below: to,
-                        completion: { [weak self] newURL in
+                        completion: { newURL in
                             observer.onNext((url, newURL))
                             observer.onCompleted()
-                            self?.coordinator?.dependency.eventObserver.emit(AddDocumentEvent(url: newURL))
                 },
                         failure: { error in
                             log.error(error)

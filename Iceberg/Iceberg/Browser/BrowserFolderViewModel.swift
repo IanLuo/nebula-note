@@ -186,6 +186,14 @@ public class BrowserFolderViewModel {
             }
         })
         
+        eventObserver?.registerForEvent(on: self, eventType: DeleteDocumentEvent.self, queue: nil, action: { [weak self] (event: DeleteDocumentEvent) -> Void in
+            self?.reload()
+        })
+        
+        eventObserver?.registerForEvent(on: self, eventType: RenameDocumentEvent.self, queue: nil, action: { [weak self] (event: RenameDocumentEvent) -> Void in
+            self?.reload()
+        })
+        
         eventObserver?.registerForEvent(on: self,
                                         eventType: iCloudOpeningStatusChangedEvent.self,
                                         queue: OperationQueue.main,

@@ -48,7 +48,9 @@ public class BrowserRecentViewModel {
         })
         
         self.coordinator?.dependency.eventObserver.registerForEvent(on: self, eventType: DeleteDocumentEvent.self, queue: .main, action: { [weak self] (event: DeleteDocumentEvent) in
-            self?.loadData()
+            self?.coordinator?.dependency.editorContext.recentFilesManager.removeRecentFile(url: event.url, completion: {
+                self?.loadData()
+            })
         })
         
         self.coordinator?.dependency.eventObserver.registerForEvent(on: self, eventType: OpenDocumentEvent.self, queue: .main, action: { [weak self] (event: OpenDocumentEvent) in

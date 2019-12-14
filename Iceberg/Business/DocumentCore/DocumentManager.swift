@@ -173,7 +173,7 @@ public struct DocumentManager {
                     } else {
                         self._eventObserver.emit(DeleteDocumentEvent(url: subFolder))
                         
-                        // 然后在删除此文件
+                        // 然后再删除此文件
                         self._editorContext.closeIfOpen(url: url, complete: {
                             url.rename(queue: self._editorContext._editingQueue, url: SyncCoordinator.Prefix.deleted.createURL(for: url).uniqueURL) { error in
                                 DispatchQueue.main.async {
