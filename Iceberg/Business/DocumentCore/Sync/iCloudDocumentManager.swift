@@ -399,7 +399,7 @@ public class iCloudDocumentManager: NSObject {
         let keys: [URLResourceKey] = [.isPackageKey, .isDirectoryKey]
         let enumerator = FileManager.default.enumerator(at: folder,
                                        includingPropertiesForKeys: keys,
-                                       options: [.skipsHiddenFiles, .skipsPackageDescendants], errorHandler: nil)
+                                       options: [.skipsPackageDescendants], errorHandler: nil)
         
         while let url = enumerator?.nextObject() as? URL {
             log.info("found url: \(url)")
