@@ -394,7 +394,7 @@ public class iCloudDocumentManager: NSObject {
     
     /// find all file paths under the specifiled url (which is a folder)
     public func allPaths(in folder: URL) throws -> [String] {
-//        let folder = folder.resolvingSymlinksInPath()
+        let folder = folder.resolvingSymlinksInPath()
         var urls: [String] = []
         let keys: [URLResourceKey] = [.isPackageKey, .isDirectoryKey]
         let enumerator = FileManager.default.enumerator(at: folder,
@@ -404,7 +404,7 @@ public class iCloudDocumentManager: NSObject {
         while let url = enumerator?.nextObject() as? URL {
             log.info("found url: \(url)")
             // if the url is a symbolic link, resove it
-//            let url = url.resolvingSymlinksInPath()
+            let url = url.resolvingSymlinksInPath()
             // get the file resource properties, including 'isPackageKey' and 'isDirectoryKey'
             let resouece = try url.resourceValues(forKeys: Set(keys))
             // if the url is a directory, and the path extension is document's extension, which means a wrapped document, skip the contents, and add the url to return
