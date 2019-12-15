@@ -33,8 +33,13 @@ platform :ios do
     sigh
     build_app(
       scheme: "Icetea",
-      workspace: "Icetea.xcworkspace"
-)
+      workspace: "Icetea.xcworkspace",
+      export_options: "./ExportOptions.plist",
+    )
+    upload_testflight
+  end
+
+  lane :upload_testflight do
     upload_to_testflight
   end
 
