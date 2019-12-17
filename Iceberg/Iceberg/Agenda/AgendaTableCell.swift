@@ -252,7 +252,7 @@ extension DateAndTimeType {
                     color = InterfaceTheme.Color.unfinished
                 } else {
                     text = L10n.Agenda.startInDaysWithPlaceHolder("\(daysFromToday)")
-                    color = InterfaceTheme.Color.unfinished
+                    color = InterfaceTheme.Color.finished
                 }
             }
         } else if self.isDue {
@@ -275,7 +275,7 @@ extension DateAndTimeType {
                     color = InterfaceTheme.Color.unfinished
                 } else {
                     text = L10n.Agenda.willOverduInDaysWithPlaceHolder("\(daysAfterToday)")
-                    color = InterfaceTheme.Color.warning
+                    color = InterfaceTheme.Color.finished
                 }
             }
         } else {

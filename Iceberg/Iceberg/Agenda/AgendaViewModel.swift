@@ -258,7 +258,7 @@ extension Array where Element == AgendaCellModel {
                 case let (nil, nil, cm1d?, cm2d?): return cm1d < cm2d
                 case (nil, nil, _?, nil): return true
                 case (nil, nil, nil, _?): return false
-                    
+                case (_, _, nil, nil): return false
                 default: return true
                 }
         }

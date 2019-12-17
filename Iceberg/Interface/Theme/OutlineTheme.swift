@@ -32,9 +32,9 @@ public class OutlineThemeSelector {
     }
     
     public static func dateAndTimeStyle(datesFromToday: Int) -> ButtonStyle {
-        if datesFromToday > 3 {
+        if datesFromToday > 1 {
             return OutlineThemeSelector.shared.currentTheme.dateAndTimeStyle.normal
-        } else if datesFromToday <= 3 && datesFromToday >= 0 {
+        } else if datesFromToday <= 1 && datesFromToday >= 0 {
             return OutlineThemeSelector.shared.currentTheme.dateAndTimeStyle.soon
         } else {
             return OutlineThemeSelector.shared.currentTheme.dateAndTimeStyle.overtime
