@@ -128,6 +128,10 @@ public protocol OutlineThemeConfigProtocol {
 
 public struct OutlineThemeStyle: OutlineThemeConfigProtocol {
     public init(theme: InterfaceThemeProtocol) {
+        let blockParagraph = NSMutableParagraphStyle()
+        blockParagraph.headIndent = 20
+        blockParagraph.firstLineHeadIndent = 20
+        
         self.seperatorStyle = theme.color.secondaryDescriptive
         self.headingStyle = TextStyle(font: theme.font.title, color: theme.color.interactive)
         self.orderdedListStyle = TextStyle(font: theme.font.title, color: theme.color.secondaryDescriptive)
@@ -137,10 +141,12 @@ public struct OutlineThemeStyle: OutlineThemeConfigProtocol {
         self.markStyle = TextStyle(font: theme.font.footnote, color: theme.color.secondaryDescriptive)
         self.paragraphStyle = TextStyle(font: theme.font.body, color: theme.color.descriptive)
         self.codeBlockStyle = CodeBlockStyle(textStyle: TextStyle(font: theme.font.body,
-                                                                  color: theme.color.interactive),
+                                                                  color: theme.color.interactive,
+                                                                  otherAttributes: [NSAttributedString.Key.paragraphStyle: blockParagraph]),
                                              backgroundColor: theme.color.background2)
         self.quoteBlockStyle = QuoteBlockStyle(textStyle: TextStyle(font: theme.font.body,
-                                                                    color: theme.color.descriptive),
+                                                                    color: theme.color.descriptive,
+                                                                    otherAttributes: [NSAttributedString.Key.paragraphStyle: blockParagraph]),
                                                backgroundColor: theme.color.background2)
         self.textMarkStyle = TextMarkStyle(bold: TextStyle(font: theme.font.title, color: theme.color.interactive),
                                            italic: TextStyle(font: theme.font.italic, color: theme.color.interactive),

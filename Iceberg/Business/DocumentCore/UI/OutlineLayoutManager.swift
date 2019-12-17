@@ -103,7 +103,7 @@ public class OutlineLayoutManager: NSLayoutManager {
             context.saveGState()
             context.translateBy(x: origin.x, y: origin.y)
             InterfaceTheme.Color.spotlight.setFill()
-            let lineRect = CGRect(x: rect.origin.x, y: rect.origin.y, width: 10, height: rect.height)
+            let lineRect = CGRect(x: rect.origin.x, y: rect.origin.y, width: 3, height: rect.height)
             let lineRectPath = UIBezierPath(roundedRect: lineRect, cornerRadius: 0)
             lineRectPath.fill()
             context.restoreGState()

@@ -2,4 +2,6 @@ Iceberg/Build
 Iceberg/Index
 Iceberg/Pods
 Iceberg/Generated/*
+*.ipa
+Icetea.app.dSYM.zip
 Gemfile

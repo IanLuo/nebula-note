@@ -29,7 +29,7 @@ public class TextAttachmentView: UIView, AttachmentViewProtocol {
     public func setup(attachment: Attachment) {
         self.addSubview(self.label)
         
-        self.label.allSidesAnchors(to: self, edgeInsets: .init(top: 0, left: 30, bottom: 0, right: -30))
+        self.label.allSidesAnchors(to: self, edgeInsets: .init(top: 0, left: 0, bottom: 0, right: 0))
         
         self.attachment = attachment
         

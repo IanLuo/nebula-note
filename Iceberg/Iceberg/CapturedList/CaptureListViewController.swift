@@ -29,7 +29,8 @@ public class CaptureListViewController: UIViewController {
             Asset.Assets.imageLibrary.image,
             Asset.Assets.location.image,
             Asset.Assets.audio.image,
-            Asset.Assets.video.image
+            Asset.Assets.video.image,
+            Asset.Assets.sketch.image.resize(upto: CGSize(width: 15, height: 15))
             ])
         
         seg.selectedSegmentIndex = 0
@@ -50,6 +51,7 @@ public class CaptureListViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(CaptureTableCell.self, forCellReuseIdentifier: CaptureTableCell.reuseIdentifier)
+        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 80, right: 0)
         
         tableView.interface { (me, theme) in
             me.backgroundColor = theme.color.background1
@@ -150,6 +152,8 @@ public class CaptureListViewController: UIViewController {
             self.viewModel.currentFilteredAttachmentKind = .audio
         case 6: // video
             self.viewModel.currentFilteredAttachmentKind = .video
+        case 7: // sketch
+            self.viewModel.currentFilteredAttachmentKind = .sketch
         default: return // ignore
         }
         

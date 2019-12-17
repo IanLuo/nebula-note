@@ -643,6 +643,9 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 
                 textStorage.addAttributes(OutlineTheme.markStyle.attributes, range: token.tokenRange)
                 
+                if let contentRange = token.beginToken?.contentRange {
+                    textStorage.addAttributes(OutlineTheme.quoteBlockStyle.attributes, range: contentRange)
+                }
             }
         }
     }
