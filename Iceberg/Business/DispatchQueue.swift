@@ -13,7 +13,7 @@ extension DispatchQueue {
         if Thread.isMainThread {
             block()
         } else {
-            DispatchQueue.runOnMainQueueSafely {
+            DispatchQueue.main.async {
                 block()
             }
         }
