@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Interface
 
 public class PDFExporter: Exportable {
     public var url: URL
@@ -61,14 +62,23 @@ public class PDFExporter: Exportable {
         let render = UIPrintPageRenderer()
         render.addPrintFormatter(fmt, startingAtPageAt: 0)
         // 3. Assign paperRect and printableRect
-        let page = CGRect(x: 0, y: 0, width: 595.2, height: 841.8) // A4, 72 dpi
+        let pageBounds = CGRect(x: 0, y: 0, width: 595, height: 841) // A4, 72 dpi
+        let page = pageBounds//CGRect(x: 0, y: 0, width: 595.2, height: 841.8) // A4, 72 dpi
         render.setValue(page, forKey: "paperRect")
-        render.setValue(page.inset(by: UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)), forKey: "printableRect")
+        render.setValue(page, forKey: "printableRect")
         // 4. Create PDF context and draw
         let pdfData = NSMutableData()
-        UIGraphicsBeginPDFContextToData(pdfData, .zero, nil)
+        UIGraphicsBeginPDFContextToData(pdfData, pageBounds, nil)
+        let context = UIGraphicsGetCurrentContext()!
+        
         for i in 0..<render.numberOfPages {
             UIGraphicsBeginPDFPage();
+            
+            let backCoverView = UIView(frame: pageBounds)
+            backCoverView.backgroundColor = InterfaceTheme.Color.background1
+            backCoverView.layer.render(in: context)
+            context.clear(pageBounds)
+
             render.drawPage(at: i, in: UIGraphicsGetPDFContextBounds())
         }
         UIGraphicsEndPDFContext();
