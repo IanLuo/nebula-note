@@ -30,7 +30,7 @@ public class RenderAttachment: NSTextAttachment {
         self._manager.attachment(with: value, completion: { [weak self] attachment in
             self?._attachment = attachment
             self?.url = attachment.url
-            DispatchQueue.main.async {
+            DispatchQueue.runOnMainQueueSafely {
                 switch attachment.kind {
                 case .sketch:
                     fallthrough // 使用 image 同样的渲染方法

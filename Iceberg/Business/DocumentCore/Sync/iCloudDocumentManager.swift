@@ -117,7 +117,7 @@ public class iCloudDocumentManager: NSObject {
         DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
             let url = FileManager.default.url(forUbiquityContainerIdentifier: nil)
             iCloudDocumentManager.iCloudRoot = url
-            DispatchQueue.main.async {
+            DispatchQueue.runOnMainQueueSafely {
                 completion(url)
             }
         }

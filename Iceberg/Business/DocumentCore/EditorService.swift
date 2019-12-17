@@ -35,7 +35,7 @@ public class EditorService {
         
         queue.async { [weak self] in
             let document = Document(fileURL: url)
-            DispatchQueue.main.async {
+            DispatchQueue.runOnMainQueueSafely {
                 self?._document = document
                 self?.isReadyToUse = true
             }
@@ -77,7 +77,7 @@ public class EditorService {
             if document.documentState == .normal {
                 // 如果文档已经打开，则直接返回
                 log.info("file already open, do nothing")
-                DispatchQueue.main.async {
+                DispatchQueue.runOnMainQueueSafely {
                     completion?(document.string)
                 }
             } else {
@@ -86,13 +86,13 @@ public class EditorService {
                     guard let strongSelf = self else { return }
                     
                     if isOpenSuccessfully {
-                        DispatchQueue.main.async {
+                        DispatchQueue.runOnMainQueueSafely {
                             log.info("open document success(\(strongSelf._url))")
                              strongSelf._editorController.string = document.string // 触发解析
                             completion?(document.string)
                         }
                     } else {
-                        DispatchQueue.main.async {
+                        DispatchQueue.runOnMainQueueSafely {
                             log.error("fail to open document with url: \(strongSelf._url)")
                             completion?(nil)
                         }
@@ -266,7 +266,7 @@ public class EditorService {
             document.updateContent(self._editorController.string)
             document.save(to: document.fileURL, for: UIDocument.SaveOperation.forOverwriting) { success in
                 
-                DispatchQueue.main.async {
+                DispatchQueue.runOnMainQueueSafely {
                     completion?(success)
                 }
             }
@@ -308,7 +308,7 @@ public class EditorService {
                                         matchedRanges.append(range)
             }
             
-            DispatchQueue.main.async {
+            DispatchQueue.runOnMainQueueSafely {
                 found(matchedRanges)
             }
         }

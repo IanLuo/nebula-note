@@ -88,11 +88,11 @@ public struct ExportManager {
                             
                             do {
                                 try exportedContent.write(to: tempFileURL, atomically: true, encoding: .utf8)
-                                DispatchQueue.main.async {
+                                DispatchQueue.runOnMainQueueSafely {
                                     completion(tempFileURL)
                                 }
                             } catch {
-                                DispatchQueue.main.async {
+                                DispatchQueue.runOnMainQueueSafely {
                                     failure(error)
                                 }
                         }

@@ -12,6 +12,7 @@ target 'Icetea' do
     pod 'SwiftGen', '~> 6.0'
     pod 'KDCalendar', '~> 1.6.5'
     pod 'PKHUD', '~> 5.0'
+    pod 'SwiftyStoreKit'
 end
 
 target 'IceteaTests' do

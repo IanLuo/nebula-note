@@ -111,14 +111,14 @@ public class CaptureListViewModel {
                 
                 self.currentIndex = nil // 移除当前选中的
                 
-                DispatchQueue.main.async {
+                DispatchQueue.runOnMainQueueSafely {
                     self.delete(index: index)
                     self.delegate?.didCompleteRefile(index: index)
                 }
                 
                     service.save { _ in
                         service.close { _ in
-                            DispatchQueue.main.async {
+                            DispatchQueue.runOnMainQueueSafely {
                                 completion()
                             }
                     }
@@ -150,12 +150,12 @@ public class CaptureListViewModel {
                     
                     self?.data = attachments
                     
-                    DispatchQueue.main.async {
+                    DispatchQueue.runOnMainQueueSafely {
                         self?.loadFilterdData(kind: self?.currentFilteredAttachmentKind)
                         self?.delegate?.didLoadData()
                     }
                     }, failure: { [weak self] error in
-                        DispatchQueue.main.async {
+                        DispatchQueue.runOnMainQueueSafely {
                             self?.delegate?.didFail(error: "Can not open file")
                         }
                 })

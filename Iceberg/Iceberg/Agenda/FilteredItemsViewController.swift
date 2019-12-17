@@ -75,7 +75,7 @@ extension FilteredItemsViewController: UITableViewDelegate {
 
 extension FilteredItemsViewController: AgendaViewModelDelegate {
     public func didCompleteLoadAllData() {
-        DispatchQueue.main.async {
+        DispatchQueue.runOnMainQueueSafely {
             self.view.hideProcessingAnimation()
             self.tableView.reloadData()
         }

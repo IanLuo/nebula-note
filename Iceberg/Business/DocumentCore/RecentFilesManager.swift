@@ -84,10 +84,6 @@ public class RecentFilesManager {
             } else if documentInfo.url.deletingLastPathComponent().path.contains(oldSubfolderPath) { // 子文件
                 let openDate = self.recentFile(url: documentInfo.url.documentRelativePath, plist: plist)?.lastRequestTime ?? Date()
                 self.removeRecentFile(url: documentInfo.url) {
-                    // 替换已修改的父文件目录
-                    let newPath = documentInfo.url.deletingLastPathComponent().path.replacingOccurrences(of: oldSubfolderPath,
-                                                                           with: event.newUrl.convertoFolderURL.documentRelativePath)
-                    
                     self.addRecentFile(url: event.newUrl, lastLocation: 0, date: openDate) { [weak self] in
                         self?.clearFilesDoesNotExists({})
                         self?.eventObserver.emit(RecentDocumentRenamedEvent(renameDocumentEvent: event))
@@ -111,7 +107,7 @@ public class RecentFilesManager {
         
         plist.remove(key: url.documentRelativePath) {
             self.clearFilesDoesNotExists {
-                DispatchQueue.main.async {
+                DispatchQueue.runOnMainQueueSafely {
                     completion()
                 }
             }

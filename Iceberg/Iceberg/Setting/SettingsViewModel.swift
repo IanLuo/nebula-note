@@ -104,7 +104,7 @@ public class SettingsViewModel {
     
     public func setSyncEnabled(_ enable: Bool, completion: @escaping (Result<Void, Error>) -> Void) {
         self.coordinator?.dependency.syncManager.swithiCloud(on: enable) { [weak self] error in
-            DispatchQueue.main.async {
+            DispatchQueue.runOnMainQueueSafely {
                 if let error = error {
                     completion(.failure(error))
                 } else {

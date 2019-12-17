@@ -200,7 +200,7 @@ public class RecorderView: UIView {
     
     public var status: Status = .initing {
         didSet {
-            DispatchQueue.main.async {
+            DispatchQueue.runOnMainQueueSafely {
                 self.updateUI()
             }
         }

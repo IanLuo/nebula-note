@@ -124,7 +124,7 @@ public struct DocumentManager {
                 let document = Document.init(fileURL: newURL)
                 document.updateContent(content ?? "") // 新文档的内容为空字符串
                 document.save(to: newURL, for: UIDocument.SaveOperation.forCreating) { [document] success in
-                    DispatchQueue.main.async {
+                    DispatchQueue.runOnMainQueueSafely {
                         if success {
                             completion?(newURL)
                             self._eventObserver.emit(AddDocumentEvent(url: newURL))
@@ -167,7 +167,7 @@ public struct DocumentManager {
                 // 先删除子文件中的文件
                 subFolder.rename(queue: self._editorContext._editingQueue, url: SyncCoordinator.Prefix.deleted.createURL(for: subFolder).uniqueURL) { error in
                     if let error = error {
-                        DispatchQueue.main.async {
+                        DispatchQueue.runOnMainQueueSafely {
                             completion?(error)
                         }
                     } else {
@@ -176,7 +176,7 @@ public struct DocumentManager {
                         // 然后再删除此文件
                         self._editorContext.closeIfOpen(url: url, complete: {
                             url.rename(queue: self._editorContext._editingQueue, url: SyncCoordinator.Prefix.deleted.createURL(for: url).uniqueURL) { error in
-                                DispatchQueue.main.async {
+                                DispatchQueue.runOnMainQueueSafely {
                                     // 执行回调
                                     completion?(error)
                                     // 如果没有失败，则通知外部，此文件已删除
@@ -193,7 +193,7 @@ public struct DocumentManager {
         } else {
             self._editorContext.closeIfOpen(url: url) {
                 url.rename(queue: self._editorContext._editingQueue, url: SyncCoordinator.Prefix.deleted.createURL(for: url).uniqueURL) { error in
-                    DispatchQueue.main.async {
+                    DispatchQueue.runOnMainQueueSafely {
                         // 执行回调
                         completion?(error)
                         if error == nil {
@@ -217,7 +217,7 @@ public struct DocumentManager {
             
             url.rename(queue: self._editorContext._editingQueue, url: newURL) { error in
                 if let error = error {
-                    DispatchQueue.main.async {
+                    DispatchQueue.runOnMainQueueSafely {
                         failure(error)
                     }
                 } else {
@@ -227,12 +227,12 @@ public struct DocumentManager {
                     if FileManager.default.fileExists(atPath: subdocumentFolder.path, isDirectory: &isDir) {
                         subdocumentFolder.rename(queue: self._editorContext._editingQueue, url: newURL.convertoFolderURL) { error in
                             if let error = error {
-                                DispatchQueue.main.async {
+                                DispatchQueue.runOnMainQueueSafely {
                                     failure(error)
                                 }
                             } else {
                                 // 通知文件名更改
-                                DispatchQueue.main.async {
+                                DispatchQueue.runOnMainQueueSafely {
                                     completion(newURL)
                                     self._eventObserver.emit(RenameDocumentEvent(oldUrl: url, newUrl: newURL))
                                 }
@@ -240,7 +240,7 @@ public struct DocumentManager {
                         }
                     } else {
                         // 通知文件名更改
-                        DispatchQueue.main.async {
+                        DispatchQueue.runOnMainQueueSafely {
                             completion(newURL)
                             self._eventObserver.emit(RenameDocumentEvent(oldUrl: url, newUrl: newURL))
                         }
@@ -266,7 +266,7 @@ public struct DocumentManager {
     
     public func duplicate(url: URL, copyExt: String, complete: @escaping (URL) -> Void, failure: @escaping (Error) -> Void) {
         url.duplicate(queue: self._editorContext._editingQueue, copyExt: copyExt) { url, error in
-            DispatchQueue.main.async {
+            DispatchQueue.runOnMainQueueSafely {
                 if error == nil {
                     complete(url!)
                     self._eventObserver.emit(AddDocumentEvent(url: url!))

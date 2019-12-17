@@ -95,7 +95,7 @@ public class EditorContext {
                 dispatchGroup.enter()
                 if key.contains(relatePath) {
                     if service.documentState != .closed {
-                        DispatchQueue.main.async {
+                        DispatchQueue.runOnMainQueueSafely {
                             service.close { _ in
                                 queue.async {
                                     self._removeCachedService(with: service.fileURL)

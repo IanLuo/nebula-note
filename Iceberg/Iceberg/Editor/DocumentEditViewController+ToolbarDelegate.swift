@@ -50,7 +50,7 @@ extension DocumentEditorViewController: DocumentEditToolbarDelegate {
                     let result = self.viewModel.performAction(EditAction.addAttachment(currentLocation,
                                                                           attachmentId, attachmentAction.AttachmentKind.rawValue),
                                                  textView: self.textView)
-                    DispatchQueue.main.async {
+                    DispatchQueue.runOnMainQueueSafely {
                         self.textView.selectedRange = oldSelection.offset(result.delta)
                         self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                     }

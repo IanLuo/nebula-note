@@ -190,7 +190,7 @@ public class DocumentEditViewModel {
                     ? strongSelf._editorService.string.nsstring.substring(with: heading.paragraphWithSubRange) + "\n"
                     : strongSelf._editorService.string.nsstring.substring(with: heading.paragraphWithSubRange)
                 
-                DispatchQueue.main.async {
+                DispatchQueue.runOnMainQueueSafely {
                     // 1. 删除当前的段落
                     let result = strongSelf.performCommandComposer(EditAction.removeParagraph(location).commandComposer, textView: textView)
                     
@@ -209,7 +209,7 @@ public class DocumentEditViewModel {
                     
                     service.save(completion: { service, _ in
                         service.close(completion: { _ in
-                            DispatchQueue.main.async {
+                            DispatchQueue.runOnMainQueueSafely {
                                 completion(result)
                             }
                             

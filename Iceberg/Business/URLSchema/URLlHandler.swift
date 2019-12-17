@@ -78,7 +78,7 @@ public struct URLSchemeHandler: URLHandler {
                         do {
                             try String(contentsOf: fileURL, encoding: .utf8).write(to: tempFileURL, atomically: true, encoding: .utf8)
                             
-                            DispatchQueue.main.async {
+                            DispatchQueue.runOnMainQueueSafely {
                                 importManager.importFile(url: tempFileURL, completion: { result in
                                     // TODO:
                                 })
