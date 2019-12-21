@@ -64,7 +64,8 @@ public class Application: Coordinator {
                                           captureService: CaptureService(attachmentManager: attachmentManager),
                                           exportManager: ExportManager(editorContext: editorContext),
                                           globalCaptureEntryWindow: _entranceWindow,
-                                          activityHandler: ActivityHandler()))
+                                          activityHandler: ActivityHandler(),
+                                          purchaseManagerBuilder: { return PurchaseManager() }))
         
         self.window?.rootViewController = self.stack
         

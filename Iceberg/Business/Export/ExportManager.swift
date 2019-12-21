@@ -28,6 +28,7 @@ public enum ExportType: CaseIterable {
     case txt
     case markdown
     case pdf
+    case jpg
     
     public var fileExtension: String {
         switch self {
@@ -36,6 +37,7 @@ public enum ExportType: CaseIterable {
         case .txt: return ".txt"
         case .markdown: return ".md"
         case .pdf: return ".pdf"
+        case .jpg: return ".jgp"
         }
     }
     
@@ -46,6 +48,7 @@ public enum ExportType: CaseIterable {
         case .txt: return "TXT"
         case .markdown: return "Mark Down"
         case .pdf: return "PDF"
+        case .jpg: return "Image"
         }
     }
     
@@ -55,6 +58,7 @@ public enum ExportType: CaseIterable {
         case .html: return HTMLExporter(editorContext: exportManager._editorContext, url: url)
         case .txt: return TxtExporter(editorContext: exportManager._editorContext, url: url)
         case .pdf: return PDFExporter(editorContext: exportManager._editorContext, url: url)
+        case .jpg: return JPGExporter(editorContext: exportManager._editorContext, url: url)
         default: return OrgExporter(url: url)
         }
     }
@@ -66,7 +70,7 @@ public struct ExportManager {
         self._editorContext = editorContext
     }
     
-    public let exportMethods: [ExportType] = [.html, .txt, .pdf]
+    public let exportMethods: [ExportType] = [.html, .txt, .pdf, .jpg]
     
     public func export(url: URL,
                        type: ExportType, 

@@ -193,6 +193,8 @@
 		E4B802022200437A00AD5AD8 /* TextStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = E4BFD47021F711A2003C048C /* TextStorage.m */; };
 		E4B802042201704E00AD5AD8 /* TextStorage.h in Headers */ = {isa = PBXBuildFile; fileRef = E4BFD45521F71184003C048C /* TextStorage.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E4C268EB22436C90006FC68A /* SyncEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C268EA22436C90006FC68A /* SyncEvents.swift */; };
+		E4C7137F23ABCE8200DC38BE /* PurchaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C7137D23ABC9F400DC38BE /* PurchaseManager.swift */; };
+		E4C7138123ADCD0A00DC38BE /* JPGExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C7138023ADCD0A00DC38BE /* JPGExporter.swift */; };
 		E4C7FB8521BA916D006E3CD8 /* AgendaCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C7FB8421BA916D006E3CD8 /* AgendaCellModel.swift */; };
 		E4C932D52244B55100E3A176 /* AttachmentDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C932D42244B55100E3A176 /* AttachmentDocument.swift */; };
 		E4CBCD1B236D80F500A0FFDB /* CreateDocumentActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4CBCD1A236D80F500A0FFDB /* CreateDocumentActivity.swift */; };
@@ -559,6 +561,8 @@
 		E4C1933E2248A0CA00EF4C95 /* Iceberg.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Iceberg.entitlements; sourceTree = "<group>"; };
 		E4C268EA22436C90006FC68A /* SyncEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncEvents.swift; sourceTree = "<group>"; };
 		E4C46FE221EB311900F6374F /* ModalFormViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModalFormViewController.swift; sourceTree = "<group>"; };
+		E4C7137D23ABC9F400DC38BE /* PurchaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseManager.swift; sourceTree = "<group>"; };
+		E4C7138023ADCD0A00DC38BE /* JPGExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JPGExporter.swift; sourceTree = "<group>"; };
 		E4C7FB8421BA916D006E3CD8 /* AgendaCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgendaCellModel.swift; sourceTree = "<group>"; };
 		E4C932D42244B55100E3A176 /* AttachmentDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentDocument.swift; sourceTree = "<group>"; };
 		E4CBCD1A236D80F500A0FFDB /* CreateDocumentActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateDocumentActivity.swift; sourceTree = "<group>"; };
@@ -883,6 +887,7 @@
 				E41CB19D21D88D9300EF0A3C /* Business.h */,
 				E41CB19E21D88D9300EF0A3C /* Info.plist */,
 				E41CB1C821D88E2200EF0A3C /* Log.swift */,
+				E4C7137D23ABC9F400DC38BE /* PurchaseManager.swift */,
 				E47A9A5121F1F7690050ABC9 /* DateHelper.swift */,
 				E44683FC2289B5AD005D5B73 /* ExtensionProperty.swift */,
 				E44E60F421E9F2C0005AC25F /* Location.swift */,
@@ -1213,6 +1218,7 @@
 				E47FA90122702717005AD0BA /* OrgExporter.swift */,
 				E41EC82F22C4BFE3009ACFA4 /* TxtExporter.swift */,
 				E42A7F8622DC679A0038A4DD /* PDFExporter.swift */,
+				E4C7138023ADCD0A00DC38BE /* JPGExporter.swift */,
 			);
 			path = Export;
 			sourceTree = "<group>";
@@ -1934,6 +1940,7 @@
 				E41EC83022C4BFE3009ACFA4 /* TxtExporter.swift in Sources */,
 				E41B892C21E34297009C5AD7 /* AudioPlayer.swift in Sources */,
 				E4D31DEE227DA633001F5272 /* URLHandlerManager.swift in Sources */,
+				E4C7137F23ABCE8200DC38BE /* PurchaseManager.swift in Sources */,
 				E4D31DEC227D39A4001F5272 /* URLlHandler.swift in Sources */,
 				E41CB1C921D88E2300EF0A3C /* Log.swift in Sources */,
 				E47FA8FD227025D6005AD0BA /* ImportManager.swift in Sources */,
@@ -1952,6 +1959,7 @@
 				E42A7F8722DC679A0038A4DD /* PDFExporter.swift in Sources */,
 				E45DCF8A22AB6649007F34DB /* String+Conenience.swift in Sources */,
 				E46DE4DE23A921EE008A24CA /* DispatchQueue.swift in Sources */,
+				E4C7138123ADCD0A00DC38BE /* JPGExporter.swift in Sources */,
 				E43E7877222AD0C70007EE4F /* DocumentContentCommands.swift in Sources */,
 				E41CB1C621D88DFD00EF0A3C /* Attachment.swift in Sources */,
 				E414A664227493D000748964 /* OrgImporter.swift in Sources */,

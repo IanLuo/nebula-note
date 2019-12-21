@@ -10,6 +10,7 @@ import Foundation
 import RxSwift
 import RxCocoa
 import SwiftyStoreKit
+import Business
 
 public class MembershipViewModel: ViewModelProtocol {
     struct Output {
@@ -20,9 +21,16 @@ public class MembershipViewModel: ViewModelProtocol {
     
     public typealias CoordinatorType = MembershipCoordinator
     
+    private var purchaseManager: PurchaseManager!
+    
     required public init() {}
     
-    public func purchase(item: String) {
+    public convenience init(purchaseManager: PurchaseManager, coordinator: MembershipCoordinator) {
+        self.init(coordinator: coordinator)
+        self.purchaseManager = purchaseManager
+    }
+    
+    public func purchase(product: String) {
         
     }
     

@@ -26,6 +26,7 @@ public struct Dependency {
     let exportManager: ExportManager
     weak var globalCaptureEntryWindow: CaptureGlobalEntranceWindow?
     let activityHandler: ActivityHandler
+    let purchaseManagerBuilder: () -> PurchaseManager
 }
 
 public class Coordinator {

@@ -12,7 +12,6 @@ target 'Icetea' do
     pod 'SwiftGen', '~> 6.0'
     pod 'KDCalendar', '~> 1.6.5'
     pod 'PKHUD', '~> 5.0'
-    pod 'SwiftyStoreKit'
 end
 
 target 'IceteaTests' do
@@ -21,7 +20,10 @@ target 'IceteaTests' do
 end
 
 target 'Business' do
-    pod 'SwiftyBeaver'
+  pod 'RxSwift'
+  pod 'RxCocoa'
+  pod 'SwiftyBeaver'
+  pod 'SwiftyStoreKit'
 end
 
 target 'Interface' do
