@@ -31,6 +31,7 @@ public class JPGExporter: Exportable {
             case .string(let htmlString):
                 self.keeper = self
                 let webView = UIWebView(frame: UIScreen.main.bounds)
+                webView.alpha = 0.1
                 webView.delegate = self.tempDelegate
                 UIApplication.shared.keyWindow?.addSubview(webView)
                 webView.loadHTMLString(htmlString, baseURL: nil)
