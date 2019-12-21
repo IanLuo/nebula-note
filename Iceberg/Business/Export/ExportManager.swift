@@ -37,7 +37,7 @@ public enum ExportType: CaseIterable {
         case .txt: return ".txt"
         case .markdown: return ".md"
         case .pdf: return ".pdf"
-        case .jpg: return ".jgp"
+        case .jpg: return ".jpg"
         }
     }
     
@@ -48,7 +48,7 @@ public enum ExportType: CaseIterable {
         case .txt: return "TXT"
         case .markdown: return "Mark Down"
         case .pdf: return "PDF"
-        case .jpg: return "Image"
+        case .jpg: return "JPG"
         }
     }
     

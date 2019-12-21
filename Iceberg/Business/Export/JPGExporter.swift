@@ -32,11 +32,11 @@ public class JPGExporter: Exportable {
                 self.keeper = self
                 let webView = UIWebView(frame: UIScreen.main.bounds)
                 webView.alpha = 0.1
+//                webView.scalesPageToFit = true
                 webView.delegate = self.tempDelegate
                 UIApplication.shared.keyWindow?.addSubview(webView)
                 webView.loadHTMLString(htmlString, baseURL: nil)
                 self.tempDelegate.didLoaded = {
-                    webView.setNeedsDisplay()
                     completion(.file(self._createImage(view: webView, htmlString: htmlString)))
                     webView.removeFromSuperview()
                     self.keeper = nil
@@ -78,9 +78,7 @@ public class JPGExporter: Exportable {
         UIGraphicsBeginImageContextWithOptions(size, true, 0)
         
         for i in 0..<render.numberOfPages {
-            UIGraphicsBeginPDFPage();
-            
-            render.drawPage(at: i, in: UIGraphicsGetPDFContextBounds())
+            render.drawPage(at: i, in: CGRect(x: 0, y: size.height * CGFloat(i), width: size.width, height: size.height))
         }
         
         image = UIGraphicsGetImageFromCurrentImageContext()

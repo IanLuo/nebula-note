@@ -139,7 +139,8 @@ extension Token {
         } else if let unorderedList = self as? UnorderdListToken {
             return "<li>\(string.nsstring.substring(with: unorderedList.range).nsstring.replacingCharacters(in: unorderedList.prefix.offset(-unorderedList.range.location), with: ""))</li>"
         } else if let checkbox = self as? CheckboxToken {
-            return "<a>[\(string.nsstring.substring(with: checkbox.range(for: "status")!))] </a>"
+            let checkStatusString = string.nsstring.substring(with: checkbox.range(for: "checkbox")!) == OutlineParser.Values.Checkbox.checked ? "checked" : ""
+            return "<br><input type=\"checkbox\" \(checkStatusString)>"
         } else if let quoteBlock = self as? BlockBeginToken, quoteBlock.blockType == .quote {
             return "<q>\(string.nsstring.substring(with: quoteBlock.contentRange!))</q>"
         } else if let attachmentToken = self as? AttachmentToken {
@@ -151,8 +152,16 @@ extension Token {
             
             if type == Attachment.Kind.image.rawValue, let url = AttachmentManager.attachmentFileURL(key: value) {
                 return "<br><img src=\"\(url.absoluteString)\" style=\"max-width:600px;width:100%\"/>"
+            } else if type == Attachment.Kind.sketch.rawValue, let url = AttachmentManager.attachmentFileURL(key: value) {
+                return "<br><img src=\"\(url.absoluteString)\" style=\"max-width:600px;width:100%\"/>"
             } else {
                 return "#\(type):\(value)#"
+            }
+        } else if let textMark = self as? TextMarkToken {
+            switch textMark.name {
+            case OutlineParser.Key.Element.TextMark.bold:
+                return "" // todo:
+            default: return ""
             }
         } else {
             return string.nsstring.substring(with: self.range)
