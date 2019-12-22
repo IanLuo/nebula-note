@@ -149,13 +149,13 @@ public struct OutlineThemeStyle: OutlineThemeConfigProtocol {
                                                                     otherAttributes: [NSAttributedString.Key.paragraphStyle: blockParagraph]),
                                                backgroundColor: theme.color.background2)
         self.textMarkStyle = TextMarkStyle(bold: TextStyle(font: theme.font.title, color: theme.color.interactive),
-                                           italic: TextStyle(font: theme.font.italic, color: theme.color.interactive),
-                                           underscore: TextStyle(font: theme.font.body, color: theme.color.interactive,
+                                           italic: TextStyle(font: theme.font.italic, color: theme.color.descriptive),
+                                           underscore: TextStyle(font: theme.font.body, color: theme.color.descriptive,
                                                                  otherAttributes: [NSAttributedString.Key.underlineStyle: 1]),
-                                           strikethrought: TextStyle(font: theme.font.body, color: theme.color.interactive,
+                                           strikethrought: TextStyle(font: theme.font.body, color: theme.color.descriptive,
                                                                      otherAttributes: [NSAttributedString.Key.strikethroughStyle: 1]),
-                                           verbatim: TextStyle(font: theme.font.body, color: theme.color.interactive),
-                                           code: TextStyle(font: theme.font.body, color: theme.color.interactive))
+                                           verbatim: TextStyle(font: theme.font.body, color: theme.color.descriptive),
+                                           highlight: TextStyle(font: theme.font.body, color: theme.color.spotlitTitle))
      /// 目前没有使用 button color, 因为 button 显示有问题
        self.dateAndTimeStyle = DateAndTimeStyle(normal: ButtonStyle(buttonColor: theme.color.background3,
                                                                      textStyle: TextStyle(font: theme.font.footnote,
@@ -255,7 +255,7 @@ public struct TextMarkStyle {
     public let underscore: TextStyle
     public let strikethrought: TextStyle
     public let verbatim: TextStyle
-    public let code: TextStyle
+    public let highlight: TextStyle
 }
 
 public struct TextStyle {

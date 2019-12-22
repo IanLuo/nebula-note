@@ -279,14 +279,15 @@ public class OutlineParser {
              (Key.Element.TextMark.underscore, Matcher.Element.TextMark.underscore),
              (Key.Element.TextMark.strikeThough, Matcher.Element.TextMark.strikthrough),
              (Key.Element.TextMark.verbatim, Matcher.Element.TextMark.verbatim),
-             (Key.Element.TextMark.code, Matcher.Element.TextMark.code)]
+             (Key.Element.TextMark.highlight, Matcher.Element.TextMark.highlight)]
                 .reduce([]) { (old: [[String: NSRange]], new: (String, NSRegularExpression?)) -> [[String: NSRange]] in
                     let (key, matcher) = new;
                     var result = old
                     if let matcher = matcher {
                         let r = matcher.matches(in: str, options: [], range: totalRange)
                             .map { (result: NSTextCheckingResult) -> [String: NSRange] in
-                                [key: result.range(at: 1)]
+                                [key: result.range(at: 1),
+                                 Key.Element.TextMark.content: result.range(at: 2)]
                         }
                         
                         result.append(contentsOf: r)

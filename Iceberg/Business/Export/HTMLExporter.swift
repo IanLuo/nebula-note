@@ -85,6 +85,10 @@ public struct HTMLExporter: Exportable {
         h4   {color: \(InterfaceTheme.Color.interactive.hex);}
         h5   {color: \(InterfaceTheme.Color.interactive.hex);}
         h6   {color: \(InterfaceTheme.Color.interactive.hex);}
+        mark {
+          background-color: \(InterfaceTheme.Color.spotlight.hex);
+          color: \(InterfaceTheme.Color.spotlitTitle.hex);
+        }
         </style>
 """
     }
@@ -157,11 +161,20 @@ extension Token {
             } else {
                 return "#\(type):\(value)#"
             }
-        } else if let textMark = self as? TextMarkToken {
+        } else if let textMark = self as? TextMarkToken, let contentRange = textMark.range(for: OutlineParser.Key.Element.TextMark.content) {
+            let content = string.nsstring.substring(with: contentRange)
             switch textMark.name {
             case OutlineParser.Key.Element.TextMark.bold:
-                return "" // todo:
-            default: return ""
+                return "<b>\(content)</b>"
+            case OutlineParser.Key.Element.TextMark.italic:
+                return "<i>\(content)</i>"
+            case OutlineParser.Key.Element.TextMark.strikeThough:
+                return "<span style=\"text-decoration: line-through;\">\(content)</span>"
+            case OutlineParser.Key.Element.TextMark.underscore:
+                return "<span style=\"text-decoration: underline;\">\(content)</span>"
+            case OutlineParser.Key.Element.TextMark.highlight:
+                return "<mark>\(content)</mark>"
+            default: return string.nsstring.substring(with: self.range)
             }
         } else {
             return string.nsstring.substring(with: self.range)

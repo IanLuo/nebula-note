@@ -102,7 +102,7 @@ extension OutlineParser {
                 public static var underscore = try! NSRegularExpression(pattern: RegexPattern.Element.TextMark.underscore, options: [])
                 public static var strikthrough = try! NSRegularExpression(pattern: RegexPattern.Element.TextMark.strikeThough, options: [])
                 public static var verbatim = try! NSRegularExpression(pattern: RegexPattern.Element.TextMark.verbatim, options: [])
-                public static var code = try! NSRegularExpression(pattern: RegexPattern.Element.TextMark.code, options: [])
+                public static var highlight = try! NSRegularExpression(pattern: RegexPattern.Element.TextMark.highlight, options: [])
             }
             
             public static var link = try! NSRegularExpression(pattern: RegexPattern.Element.link, options: [])
@@ -174,7 +174,7 @@ extension OutlineParser {
                 public static let underscore = "underscore"
                 public static let strikeThough = "strikeThough"
                 public static let verbatim = "verbatim"
-                public static let code = "code"
+                public static let highlight = "highlight"
             }
             
             public struct Quote {
@@ -260,7 +260,7 @@ extension OutlineParser {
                 public static let underscore =      "\(pre)(\\_([^\(ignoredCharacters)\\_]*)\\_)\(post)"
                 public static let strikeThough =    "\(pre)(\\+([^\(ignoredCharacters)\\+]*)\\+)\(post)"
                 public static let verbatim =        "\(pre)(\\=([^\(ignoredCharacters)\\=]*)\\=)\(post)"
-                public static let code =            "\(pre)(\\~([^\(ignoredCharacters)\\~]*)\\~)\(post)"
+                public static let highlight =            "\(pre)(\\~([^\(ignoredCharacters)\\~]*)\\~)\(post)"
             }
             
             public static let link = "\\[\\[(\(Values.Link.patternAll)\\:.*)\\]\\[(.*)\\]\\]"

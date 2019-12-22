@@ -356,12 +356,15 @@ extension OutlineTextStorage: OutlineParserDelegate {
         for dict in markRanges {
             for (key, range) in dict {
                 
+                // ignore when key is content, this part is looking for different font style key
+                guard key != OutlineParser.Key.Element.TextMark.content else { continue }
+
                 self._addMarkTokenAttributes(range: range)
                 
                 let textMarkToken: TextMarkToken = TextMarkToken(range: range, name: key, data: dict)
                 
                 textMarkToken.decorationAttributesAction = { textStorage, token in
-                    let contentRange = token.range.tail(range.length - 1).head(range.length - 2)
+                    let contentRange = token.range(for: OutlineParser.Key.Element.TextMark.content) ?? token.range
                     textStorage.addAttributes(OutlineTheme.markStyle.attributes, range: token.range.head(1))
                     textStorage.addAttributes(OutlineTheme.markStyle.attributes, range: token.range.tail(1))
                     
@@ -372,9 +375,9 @@ extension OutlineTextStorage: OutlineParserDelegate {
                         textStorage.addAttributes(OutlineTheme.textMarkStyle.italic.attributes, range: contentRange)
                     case OutlineParser.Key.Element.TextMark.strikeThough:
                         textStorage.addAttributes(OutlineTheme.textMarkStyle.strikethrought.attributes, range: contentRange)
-                    case OutlineParser.Key.Element.TextMark.code:
-                        var attributes = OutlineTheme.textMarkStyle.code.attributes
-                        attributes[NSAttributedString.Key.backgroundColor] = InterfaceTheme.Color.background3
+                    case OutlineParser.Key.Element.TextMark.highlight:
+                        var attributes = OutlineTheme.textMarkStyle.highlight.attributes
+                        attributes[NSAttributedString.Key.backgroundColor] = InterfaceTheme.Color.spotlight
                         textStorage.addAttributes(attributes, range: contentRange)
                     case OutlineParser.Key.Element.TextMark.underscore:
                         textStorage.addAttributes(OutlineTheme.textMarkStyle.underscore.attributes, range: contentRange)
