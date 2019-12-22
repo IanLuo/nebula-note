@@ -78,7 +78,7 @@ public class JPGExporter: Exportable {
         UIGraphicsBeginImageContextWithOptions(size, true, 0)
         
         for i in 0..<render.numberOfPages {
-            render.drawPage(at: i, in: CGRect(x: 0, y: size.height * CGFloat(i), width: size.width, height: size.height))
+            render.drawPage(at: i, in: UIGraphicsGetPDFContextBounds())
         }
         
         image = UIGraphicsGetImageFromCurrentImageContext()
