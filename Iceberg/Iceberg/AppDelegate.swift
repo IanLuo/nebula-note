@@ -8,6 +8,7 @@
 
 import UIKit
 import SwiftyBeaver
+import RxSwift
 
 internal let log = SwiftyBeaver.self
 
@@ -17,6 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     let console = ConsoleDestination()
     var application: Application!
+    let disposeBag = DisposeBag()
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
@@ -33,6 +35,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.makeKeyAndVisible()
         
         self.application?.start(from: nil, animated: false)
+        
+        self.application.dependency.purchaseManagerBuilder().loadProducts().subscribe(onNext: {
+            log.info($0)
+        }).disposed(by: self.disposeBag)
                         
         return true
     }

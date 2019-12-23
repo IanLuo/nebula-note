@@ -112,12 +112,13 @@ public class Application: Coordinator {
         
         dependency.documentManager.getFileLocationComplete { [weak self] url in
             guard let url = url else { return }
-            guard let s = self else { return }
+            guard let strongSelf = self else { return }
             
             log.info("using \(url) as root")
 
             // UI complete loading
-            s.uiStackReady.accept(true)
+            strongSelf.uiStackReady.accept(true)
+            strongSelf.dependency.eventObserver.emit(UIStackReadyEvent())
             
         }
         

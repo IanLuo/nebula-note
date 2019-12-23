@@ -42,6 +42,8 @@ public class BrowserRecentViewModel {
     
     public let output: Output = Output()
     
+    private let disposeBag = DisposeBag()
+    
     private func setupObservers() {
         self.coordinator?.dependency.eventObserver.registerForEvent(on: self, eventType: UpdateDocumentEvent.self, queue: .main, action: { [weak self] (event: UpdateDocumentEvent) in
             self?.loadData()
@@ -74,6 +76,10 @@ public class BrowserRecentViewModel {
         })
         
         self.coordinator?.dependency.eventObserver.registerForEvent(on: self, eventType: NewRecentFilesListDownloadedEvent.self, queue: .main, action: { [weak self] (event: NewRecentFilesListDownloadedEvent) in
+            self?.loadData()
+        })
+        
+        self.coordinator?.dependency.eventObserver.registerForEvent(on: self, eventType: UIStackReadyEvent.self, queue: .main, action: { [weak self] (event: UIStackReadyEvent) in
             self?.loadData()
         })
     }

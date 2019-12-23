@@ -14,6 +14,7 @@ public class Event: NSObject {
 // MARK: - App Events
 public class AppStartedEvent: Event {}
 
+public class UIStackReadyEvent: Event {}
 
 // MARK: - Editor events
 

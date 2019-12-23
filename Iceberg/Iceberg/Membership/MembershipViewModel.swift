@@ -12,6 +12,18 @@ import RxCocoa
 import SwiftyStoreKit
 import Business
 
+public enum Product {
+    case monthly
+    case yearly
+    
+    var productKey: String {
+        switch self {
+        case .monthly: return ""
+        case .yearly: return ""
+        }
+    }
+}
+
 public class MembershipViewModel: ViewModelProtocol {
     struct Output {
         let items: BehaviorRelay<[String]> = BehaviorRelay(value: [])
