@@ -20,7 +20,7 @@ public class AgendaCellModel {
     public let heading: DocumentHeading
     public let level: Int
     public let isFinished: Bool?
-    public var date: Date?
+    public var currentDate: Date?
     
     public init(searchResult: DocumentHeadingSearchResult) {
         self.level = searchResult.heading.level
@@ -32,6 +32,7 @@ public class AgendaCellModel {
         self.headingText = searchResult.heading.text.trimmingCharacters(in: CharacterSet.whitespaces)
         self.planning = searchResult.heading.planning
         self.tags = searchResult.heading.tags
+        self.currentDate = Date().dayEnd // default to today
         
         if let planning = searchResult.heading.planning {
             self.isFinished = SettingsAccessor.shared.finishedPlanning.contains(planning)

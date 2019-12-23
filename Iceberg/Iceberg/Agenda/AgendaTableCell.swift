@@ -190,8 +190,8 @@ public class AgendaTableCell: UITableViewCell {
         }
         
         self._dateAndTimeLabel.isHidden = cellModel.dateAndTime == nil
-        if let today = cellModel.date {
-            self._dateAndTimeLabel.attributedText = cellModel.dateAndTime?.agendaLabel(today: today)
+        if let currentDate = cellModel.currentDate {
+            self._dateAndTimeLabel.attributedText = cellModel.dateAndTime?.agendaLabel(today: currentDate)
         }
         
         self.layoutIfNeeded()
