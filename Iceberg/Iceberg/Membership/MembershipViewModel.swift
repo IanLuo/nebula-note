@@ -88,8 +88,11 @@ public class MembershipViewModel: ViewModelProtocol {
                                description: product?.localizedDescription,
                                price: product?.localizedPrice,
                                expireDate: expireDate)
-        }.bind(to: self.output.monthlyProduct)
-            .disposed(by: self.disposeBag)
+        }.subscribe(onNext: { [weak self] in
+            self?.output.monthlyProduct.accept($0)
+        }, onError: { [weak self] in
+            self?.output.errorOccurs.onNext($0)
+        }).disposed(by: self.disposeBag)
         
         Observable.combineLatest(self.purchaseManager.loadProduct(productId: PurchaseManager.ProductType.yearlyMembership.key),
                                  self.purchaseManager.validate(productId: PurchaseManager.ProductType.yearlyMembership.key))
@@ -100,8 +103,11 @@ public class MembershipViewModel: ViewModelProtocol {
                                description: product?.localizedDescription,
                                price: product?.localizedPrice,
                                expireDate: expireDate)
-        }.bind(to: self.output.yearlyProduct)
-            .disposed(by: self.disposeBag)
+        }.subscribe(onNext: { [weak self] in
+            self?.output.monthlyProduct.accept($0)
+        }, onError: { [weak self] in
+            self?.output.errorOccurs.onNext($0)
+        }).disposed(by: self.disposeBag)
     }
     
     public func restore() -> Observable<[Purchase]> {
