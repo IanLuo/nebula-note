@@ -32,6 +32,7 @@ public enum SettingsError: Error {
         case interfaceStyle
         case unfoldAllEntriesWhenOpen
         case exportShowIndex
+        case currentSubscription
         
         public func set(_ value: Any, completion: @escaping () -> Void) {
             Constants.store.set(value: value, key: self.rawValue, completion: completion)

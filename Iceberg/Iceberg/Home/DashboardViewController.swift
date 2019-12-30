@@ -10,6 +10,8 @@ import Foundation
 import UIKit
 import Business
 import Interface
+import RxSwift
+import RxCocoa
 
 public protocol DashboardViewControllerDelegate: class {
     func didSelectTab(at index: Int, viewController: UIViewController)
@@ -24,6 +26,7 @@ public protocol DashboardViewControllerDelegate: class {
 public class DashboardViewController: UIViewController {
     public weak var delegate: DashboardViewControllerDelegate?
     private let viewModel: DashboardViewModel
+    private let disposeBag = DisposeBag()
     
     private let settingsButton: RoundButton = {
         let button = RoundButton()
@@ -42,6 +45,12 @@ public class DashboardViewController: UIViewController {
             (me as? RoundButton)?.setIcon(Asset.Assets.trash.image.fill(color: theme.color.interactive), for: .normal)
             (me as? RoundButton)?.setBackgroundColor(theme.color.background2, for: .normal)
         })
+        return button
+    }()
+    
+    private let freeAmountButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("1/2", for: .normal)
         return button
     }()
     
@@ -69,22 +78,31 @@ public class DashboardViewController: UIViewController {
         self.view.addSubview(self.tableView)
         self.view.addSubview(self.settingsButton)
         self.view.addSubview(self.trashButton)
+        self.view.addSubview(self.freeAmountButton)
         
         self.tableView.allSidesAnchors(to: self.view, edgeInset: 0)
         
         self.settingsButton.sizeAnchor(width: 60)
         self.settingsButton.sideAnchor(for: [.left, .bottom], to: self.view, edgeInsets: .init(top: 0, left: Layout.edgeInsets.left, bottom: -Layout.edgeInsets.bottom, right: 0), considerSafeArea: true)
         
-        self.settingsButton.tapped { [unowned self] _ in
-            self.viewModel.coordinator?.showSettings()
-        }
-        
         self.trashButton.sizeAnchor(width: 60)
         self.trashButton.sideAnchor(for: [.right, .bottom], to: self.view, edgeInsets: .init(top: 0, left: 0, bottom: -Layout.edgeInsets.bottom, right: -Layout.edgeInsets.right), considerSafeArea: true)
+        
+        self.freeAmountButton.bottomAnchor.constraint(equalTo: self.settingsButton.topAnchor, constant: -10).isActive = true
+        self.freeAmountButton.sideAnchor(for: [.left, .right], to: self.view, edgeInset: 20)
+        self.freeAmountButton.sizeAnchor(height: 44)
         
         self.trashButton.tapped { [unowned self] _ in
             self.viewModel.coordinator?.showTrash()
         }
+        
+        self.settingsButton.tapped { [unowned self] _ in
+            self.viewModel.coordinator?.showSettings()
+        }
+        
+        self.freeAmountButton.rx.tap.subscribe(onNext: { [unowned self] _ in
+            self.viewModel.coordinator?.showMembershipView()
+        }).disposed(by: self.disposeBag)
     }
     
 //    public override var preferredStatusBarStyle: UIStatusBarStyle {

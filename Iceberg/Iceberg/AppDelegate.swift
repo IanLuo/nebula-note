@@ -36,10 +36,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         self.application?.start(from: nil, animated: false)
         
-        self.application.dependency.purchaseManagerBuilder().loadProducts().subscribe(onNext: {
-            log.info($0)
-        }).disposed(by: self.disposeBag)
-                        
+        self.application.dependency.purchaseManager.initTransactions()
+                                
         return true
     }
     

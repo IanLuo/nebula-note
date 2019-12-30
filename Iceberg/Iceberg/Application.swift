@@ -21,7 +21,7 @@ public class Application: Coordinator {
     
     public let isFileReadyToAccess: BehaviorRelay<Bool> = BehaviorRelay(value: false)
     public let uiStackReady: BehaviorRelay<Bool> = BehaviorRelay(value: false)
-    public lazy var startComplete: Observable<Bool> =  Observable.combineLatest(isFileReadyToAccess, uiStackReady).map { isFileReady, isUIReady in
+    public lazy var startComplete: Observable<Bool> = Observable.combineLatest(isFileReadyToAccess, uiStackReady).map { isFileReady, isUIReady in
         return isFileReady && isUIReady
     }
 
@@ -45,9 +45,11 @@ public class Application: Coordinator {
                 self._didTheUserTurnOffiCloudFromSettings = true
             }
         }
+        
         let documentManager = DocumentManager(editorContext: editorContext,
                                               eventObserver: eventObserver,
                                               syncManager: syncManager)
+        
         let attachmentManager = AttachmentManager()
         
         super.init(stack: navigationController,
@@ -65,7 +67,7 @@ public class Application: Coordinator {
                                           exportManager: ExportManager(editorContext: editorContext),
                                           globalCaptureEntryWindow: _entranceWindow,
                                           activityHandler: ActivityHandler(),
-                                          purchaseManagerBuilder: { return PurchaseManager() }))
+                                          purchaseManager: PurchaseManager()))
         
         self.window?.rootViewController = self.stack
         
@@ -119,7 +121,6 @@ public class Application: Coordinator {
             // UI complete loading
             strongSelf.uiStackReady.accept(true)
             strongSelf.dependency.eventObserver.emit(UIStackReadyEvent())
-            
         }
         
         homeCoord.start(from: self, animated: animated)

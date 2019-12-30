@@ -98,6 +98,12 @@ public class HomeCoordinator: Coordinator {
         trashCoordinator.start(from: self)
     }
     
+    public func showMembershipView() {
+        let navigationController = Coordinator.createDefaultNavigationControlller()
+        let membershipCoordinator = MembershipCoordinator(stack: navigationController, dependency: self.dependency)
+        membershipCoordinator.start(from: self)
+    }
+    
     public func getAllTags() -> [String] {
         return self._viewModel.allTags
     }

@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import Interface
 
 public class JPGExporter: Exportable {
     public var url: URL
@@ -76,6 +77,10 @@ public class JPGExporter: Exportable {
         var image: UIImage?
         
         UIGraphicsBeginImageContextWithOptions(size, true, 0)
+        
+        let context = UIGraphicsGetCurrentContext()
+        context?.setFillColor(InterfaceTheme.Color.background1.cgColor)
+        context?.fill(CGRect(origin: .zero, size: size))
         
         for i in 0..<render.numberOfPages {
             render.drawPage(at: i, in: UIGraphicsGetPDFContextBounds())
