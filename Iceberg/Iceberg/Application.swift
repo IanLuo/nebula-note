@@ -34,40 +34,19 @@ public class Application: Coordinator {
 
         let navigationController = Coordinator.createDefaultNavigationControlller()
         
-        let eventObserver = EventObserver()
-        let editorContext = EditorContext(eventObserver: eventObserver)
-        let syncManager = iCloudDocumentManager(eventObserver: eventObserver)
+        let dependency = Dependency()
+        dependency.globalCaptureEntryWindow = self._entranceWindow
+        
+        super.init(stack: navigationController, dependency: dependency)
+        
         
         // if the user turn off iCloud from settings, this sign must be set here
-        if syncManager.refreshCurrentiCloudAccountStatus() == .closed {
+        if self.dependency.syncManager.refreshCurrentiCloudAccountStatus() == .closed {
             if iCloudDocumentManager.status == .on {
                 iCloudDocumentManager.status = .off
                 self._didTheUserTurnOffiCloudFromSettings = true
             }
         }
-        
-        let documentManager = DocumentManager(editorContext: editorContext,
-                                              eventObserver: eventObserver,
-                                              syncManager: syncManager)
-        
-        let attachmentManager = AttachmentManager()
-        
-        super.init(stack: navigationController,
-                   dependency: Dependency(documentManager: documentManager,
-                                          documentSearchManager: DocumentSearchManager(eventObserver: eventObserver, editorContext: editorContext),
-                                          editorContext: editorContext,
-                                          textTrimmer: OutlineTextTrimmer(parser: OutlineParser()),
-                                          eventObserver: eventObserver,
-                                          settingAccessor: SettingsAccessor.shared,
-                                          syncManager: syncManager,
-                                          attachmentManager: attachmentManager,
-                                          urlHandlerManager: URLHandlerManager(documentManager: documentManager, eventObserver: eventObserver),
-                                          shareExtensionHandler: ShareExtensionDataHandler(),
-                                          captureService: CaptureService(attachmentManager: attachmentManager),
-                                          exportManager: ExportManager(editorContext: editorContext),
-                                          globalCaptureEntryWindow: _entranceWindow,
-                                          activityHandler: ActivityHandler(),
-                                          purchaseManager: PurchaseManager()))
         
         self.window?.rootViewController = self.stack
         

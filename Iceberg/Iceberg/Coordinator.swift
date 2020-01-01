@@ -11,22 +11,22 @@ import UIKit
 import Business
 import PKHUD
 
-public struct Dependency {
-    let documentManager: DocumentManager
-    let documentSearchManager: DocumentSearchManager
-    let editorContext: EditorContext
-    let textTrimmer: OutlineTextTrimmer
-    let eventObserver: EventObserver
-    let settingAccessor: SettingsAccessor
-    let syncManager: iCloudDocumentManager
-    let attachmentManager: AttachmentManager
-    let urlHandlerManager: URLHandlerManager
-    let shareExtensionHandler: ShareExtensionDataHandler
-    let captureService: CaptureService
-    let exportManager: ExportManager
+public class Dependency {
+    lazy var documentManager: DocumentManager = { DocumentManager(editorContext: editorContext, eventObserver: eventObserver, syncManager: syncManager) }()
+    lazy var documentSearchManager: DocumentSearchManager = { DocumentSearchManager(eventObserver: eventObserver, editorContext: editorContext) }()
+    lazy var editorContext: EditorContext = { EditorContext(eventObserver: eventObserver) }()
+    lazy var textTrimmer: OutlineTextTrimmer = { OutlineTextTrimmer(parser: OutlineParser()) }()
+    lazy var eventObserver: EventObserver = { EventObserver() }()
+    lazy var settingAccessor: SettingsAccessor = { SettingsAccessor.shared }()
+    lazy var syncManager: iCloudDocumentManager = { iCloudDocumentManager(eventObserver: eventObserver) }()
+    lazy var attachmentManager: AttachmentManager = { AttachmentManager() }()
+    lazy var urlHandlerManager: URLHandlerManager = { URLHandlerManager(documentManager: documentManager, eventObserver: eventObserver) }()
+    lazy var shareExtensionHandler: ShareExtensionDataHandler = { ShareExtensionDataHandler() }()
+    lazy var captureService: CaptureService = { CaptureService(attachmentManager: attachmentManager) }()
+    lazy var exportManager: ExportManager = { ExportManager(editorContext: editorContext) }()
     weak var globalCaptureEntryWindow: CaptureGlobalEntranceWindow?
-    let activityHandler: ActivityHandler
-    let purchaseManager: PurchaseManager
+    lazy var activityHandler: ActivityHandler = { ActivityHandler() }()
+    lazy var purchaseManager: PurchaseManager = { PurchaseManager() }()
 }
 
 public class Coordinator {
@@ -46,7 +46,7 @@ public class Coordinator {
     
     public weak var parent: Coordinator?
     
-    public let dependency: Dependency
+    public var dependency: Dependency
     
     public var onMovingOut: (() -> Void)?
     
