@@ -42,7 +42,7 @@ public class iCloudDocumentManager: NSObject {
     }
     
     public static var iCloudKeyValueStoreRoot: URL? {
-        return iCloudDocumentManager.iCloudRoot?.appendingPathComponent("Documents").appendingPathComponent("keyValueStore")
+        return iCloudDocumentManager.iCloudRoot?.appendingPathComponent("keyValueStore")
     }
     
     private let _eventObserver: EventObserver
