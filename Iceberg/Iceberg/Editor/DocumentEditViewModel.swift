@@ -15,7 +15,13 @@ public protocol DocumentEditViewModelDelegate: class {
     func didEnterTokens(_ tokens: [Token])
 }
 
-public class DocumentEditViewModel {
+public class DocumentEditViewModel: ViewModelProtocol {
+    public required init() {}
+    
+    public var context: ViewModelContext<EditorCoordinator>!
+    
+    public typealias CoordinatorType = EditorCoordinator
+    
     public weak var delegate: DocumentEditViewModelDelegate? {
         didSet {
             if self.isReadyToEdit {
@@ -26,13 +32,7 @@ public class DocumentEditViewModel {
     
     public var onLoadingLocation: Int = 0 // 打开文档的时候默认的位置
     
-    public weak var coordinator: EditorCoordinator? {
-        didSet {
-            self.addObservers()
-        }
-    }
-    
-    private let _editorService: EditorService
+    private var _editorService: EditorService!
     
     public var currentTokens: [Token] = []
     
@@ -44,7 +44,9 @@ public class DocumentEditViewModel {
         }
     }
     
-    public init(editorService: EditorService) {
+    public convenience init(editorService: EditorService, coordinator: EditorCoordinator) {
+        self.init(coordinator: coordinator)
+        
         self._editorService = editorService
         
         editorService.onReadyToUse = { [weak self] service in
@@ -52,6 +54,8 @@ public class DocumentEditViewModel {
                 self?.isReadyToEdit = $0 != nil
             }
         }
+        
+        self.addObservers()
     }
     
     deinit {
@@ -180,7 +184,7 @@ public class DocumentEditViewModel {
     }
     
     public func moveParagraphToOtherDocument(url: URL, outline otherOutline: OutlineLocation, location: Int, textView: UITextView, completion: @escaping (DocumentContentCommandResult) -> Void) {
-        self.coordinator?.dependency.editorContext.request(url: url).onReadyToUse = { [weak self] service in
+        self.dependency.editorContext.request(url: url).onReadyToUse = { [weak self] service in
             service.open(completion: { string in
                 guard let strongSelf = self else { return }
                 
@@ -214,8 +218,8 @@ public class DocumentEditViewModel {
                             }
                             
                             // add to file to recent changed file
-                            self?.coordinator?.dependency.editorContext.recentFilesManager.addRecentFile(url: url, lastLocation: 0, completion: {
-                                self?.coordinator?.dependency.eventObserver.emit(OpenDocumentEvent(url: url))
+                            self?.dependency.editorContext.recentFilesManager.addRecentFile(url: url, lastLocation: 0, completion: {
+                                self?.dependency.eventObserver.emit(OpenDocumentEvent(url: url))
                             })
                         })
                     })
@@ -351,7 +355,7 @@ public class DocumentEditViewModel {
 
 extension DocumentEditViewModel {
     fileprivate func addObservers() {
-        coordinator?.dependency.eventObserver.registerForEvent(on: self,
+        self.dependency.eventObserver.registerForEvent(on: self,
                                                                eventType: NewDocumentPackageDownloadedEvent.self,
                                                                queue: .main,
                                                                action: { [weak self] (event: NewDocumentPackageDownloadedEvent) in

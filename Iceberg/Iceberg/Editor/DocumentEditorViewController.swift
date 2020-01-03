@@ -100,7 +100,7 @@ public class DocumentEditorViewController: UIViewController {
         
         self.textView.endEditing(true)
         if self.presentingViewController == nil {
-            self.viewModel.coordinator?.removeFromParent()
+            self.viewModel.context.coordinator?.removeFromParent()
         }
     }
     
@@ -240,9 +240,9 @@ extension DocumentEditorViewController: DocumentEditViewModelDelegate {
         }
         
         // 打开文件时， 添加到最近使用的文件
-        self.viewModel.coordinator?.dependency.editorContext.recentFilesManager.addRecentFile(url: self.viewModel.url, lastLocation: 0) { [weak self] in
+        self.viewModel.dependency.editorContext.recentFilesManager.addRecentFile(url: self.viewModel.url, lastLocation: 0) { [weak self] in
             guard let strongSelf = self else { return }
-            strongSelf.viewModel.coordinator?.dependency.eventObserver.emit(OpenDocumentEvent(url: strongSelf.viewModel.url))
+            strongSelf.viewModel.dependency.eventObserver.emit(OpenDocumentEvent(url: strongSelf.viewModel.url))
         }
     }
     
