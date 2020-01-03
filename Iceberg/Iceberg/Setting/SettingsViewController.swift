@@ -133,7 +133,7 @@ public class SettingsViewController: UITableViewController {
     }
     
     @objc private func _cancel() {
-        self.viewModel.coordinator?.stop()
+        self.viewModel.context.coordinator?.stop()
     }
     
     private func _setupObserver() {
@@ -193,7 +193,7 @@ public class SettingsViewController: UITableViewController {
     @objc private func _interfaceStyleButtonTapped(_ button: UIButton) {
         let selector = SelectorViewController()
         selector.title = L10n.Setting.InterfaceStyle.title
-        let dependency = self.viewModel.coordinator?.dependency
+        let dependency = self.viewModel.dependency
         
         selector.fromView = button.superview
         
@@ -212,22 +212,22 @@ public class SettingsViewController: UITableViewController {
         
         selector.onCancel = { viewController in
             viewController.dismiss(animated: true)
-            dependency?.globalCaptureEntryWindow?.show()
+            dependency.globalCaptureEntryWindow?.show()
         }
         
         selector.onSelection = { index, viewController in
             viewController.dismiss(animated: true)
             self.viewModel.setInterfaceStyle(styles[index])
-            dependency?.globalCaptureEntryWindow?.show()
+            dependency.globalCaptureEntryWindow?.show()
             self.interfaceStyleButton.setTitle(styles[index].localizedTitle, for: .normal)
         }
         
         self.present(selector, animated: true)
-        dependency?.globalCaptureEntryWindow?.hide()
+        dependency.globalCaptureEntryWindow?.hide()
     }
     
     @objc private func _showLandingTabNamesSelector() {
-        let dependency = self.viewModel.coordinator?.dependency
+        let dependency = self.viewModel.dependency
         
         let selector = SelectorViewController()
         let tabs = LandingTab.allCases
@@ -241,20 +241,20 @@ public class SettingsViewController: UITableViewController {
         
         selector.onCancel = { viewController in
             viewController.dismiss(animated: true, completion: nil)
-            dependency?.globalCaptureEntryWindow?.show()
+            dependency.globalCaptureEntryWindow?.show()
         }
         
         selector.onSelection = { index, viewController in
             viewController.dismiss(animated: true, completion: nil)
             self.viewModel.setLandingTabIndex(index)
             self.chooseLandingTabButton.setTitle(tabs[index].name, for: .normal)
-            dependency?.globalCaptureEntryWindow?.show()
+            dependency.globalCaptureEntryWindow?.show()
         }
         
         selector.currentTitle = tabs[self.viewModel.currentLandigTabIndex].name
         
         self.present(selector, animated: true, completion: nil)
-        dependency?.globalCaptureEntryWindow?.hide()
+        dependency.globalCaptureEntryWindow?.hide()
     }
     
     @objc func _planningManageFinish() {
@@ -298,14 +298,22 @@ public class SettingsViewController: UITableViewController {
             }
         }
         
-        actionsViewController.setCancel { viewController in
+        actionsViewController.setCancel { [unowned self] viewController in
             viewController.dismiss(animated: true, completion: nil)
-            self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
+            self.viewModel.showGlobalCaptureEntry()
         }
         
         let addTitle = isFinish ? L10n.Setting.Planning.Finish.add :  L10n.Setting.Planning.Unfinish.add
-        actionsViewController.addAction(icon: Asset.Assets.add.image.fill(color: InterfaceTheme.Color.spotlight), title: addTitle, style: .highlight) { viewController in
+
+        let icon = self.viewModel.isMember ? Asset.Assets.add.image.fill(color: InterfaceTheme.Color.spotlight) : Asset.Assets.proLabel.image
+        actionsViewController.addAction(icon: icon, title: addTitle, style: .highlight) { [unowned self] viewController in
             viewController.dismiss(animated: true, completion: {
+                
+                if !self.viewModel.isMember {
+                    self.viewModel.context.coordinator?.showMembership()
+                    return
+                }
+                
                 let formViewController = ModalFormViewController()
                 
                 formViewController.addTextFied(title: addTitle, placeHoder: "", defaultValue: nil)
@@ -322,13 +330,13 @@ public class SettingsViewController: UITableViewController {
                 
                 formViewController.title = addTitle
                 
-                formViewController.onCancel = { viewController in
+                formViewController.onCancel = { [unowned self] viewController in
                     viewController.dismiss(animated: true, completion: nil)
-                    self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
+                    self.viewModel.dependency.globalCaptureEntryWindow?.show()
                 }
                 
-                formViewController.onSaveValue = { data, viewController in
-                    self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
+                formViewController.onSaveValue = { [unowned self] data, viewController in
+                    self.viewModel.dependency.globalCaptureEntryWindow?.show()
                     
                     if let newPlanning = data[addTitle] as? String {
                         self.viewModel.addPlanning(newPlanning, isForFinished: isFinish, completion: {
@@ -339,7 +347,7 @@ public class SettingsViewController: UITableViewController {
                                 
                                 buttonToUpdate?.setTitle(strongSelf.viewModel.getPlanning(isForFinished: isFinish).joined(separator: ","), for: .normal)
                                 
-                                strongSelf.viewModel.coordinator?.dependency.editorContext.reloadParser() // 因为解析器的常亮以改变，需要重载解析器
+                                strongSelf.viewModel.dependency.editorContext.reloadParser() // 因为解析器的常亮以改变，需要重载解析器
                             })
                         })
                     }
@@ -350,7 +358,7 @@ public class SettingsViewController: UITableViewController {
         }
         
         self.present(actionsViewController, animated: true, completion: nil)
-        self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.hide()
+        self.viewModel.dependency.globalCaptureEntryWindow?.hide()
     }
     
     enum LandingTab: CaseIterable {

@@ -20,9 +20,9 @@ extension DocumentEditorViewController {
     
     @objc public func showInfo() {
         self.viewModel.context.coordinator?.showDocumentInfo(viewModel: self.viewModel) { [weak self] in
-            self?.viewModel.context.coordinator?.dependency.globalCaptureEntryWindow?.show()
+            self?.viewModel.showGlobalCaptureEntry()
         }
-        self.viewModel.dependency.globalCaptureEntryWindow?.hide()
+        self.viewModel.hideGlobalCaptureEntry()
     }
     
     @objc public func showMenu() {
@@ -32,14 +32,14 @@ extension DocumentEditorViewController {
         actionsController.addAction(icon: Asset.Assets.down.image, title: L10n.Document.Menu.foldAll) { [unowned self] viewController in
             viewController.dismiss(animated: true, completion: {
                 self.viewModel.foldAll()
-                self.viewModel.dependency.globalCaptureEntryWindow?.show()
+                self.viewModel.showGlobalCaptureEntry()
             })
         }
         
         actionsController.addAction(icon: Asset.Assets.up.image, title: L10n.Document.Menu.unfoldAll) { [unowned self] viewController in
             viewController.dismiss(animated: true, completion: {
                 self.viewModel.unfoldAll()
-                self.viewModel.dependency.globalCaptureEntryWindow?.show()
+                self.viewModel.showGlobalCaptureEntry()
             })
         }
         
@@ -57,12 +57,12 @@ extension DocumentEditorViewController {
                     }
                     
                 })
-                self.viewModel.dependency.globalCaptureEntryWindow?.show()
+                self.viewModel.showGlobalCaptureEntry()
             })
             
             viewController.setCancel(action: { [unowned self] viewController in
                 viewController.dismiss(animated: true, completion: nil)
-                self.viewModel.dependency.globalCaptureEntryWindow?.show()
+                self.viewModel.showGlobalCaptureEntry()
             })
         }
         
@@ -76,14 +76,14 @@ extension DocumentEditorViewController {
         
         actionsController.setCancel { [unowned self] viewController in
             viewController.dismiss(animated: true, completion: nil)
-            self.viewModel.dependency.globalCaptureEntryWindow?.show()
+            self.viewModel.showGlobalCaptureEntry()
         }
         
         self.textView.resignFirstResponder() // 隐藏键盘
         
         self.present(actionsController, animated: true, completion: nil)
         
-        self.viewModel.dependency.globalCaptureEntryWindow?.hide()
+        self.viewModel.hideGlobalCaptureEntry()
     }
     
     public func showDateAndTimeCreator(location: Int) {
@@ -93,12 +93,12 @@ extension DocumentEditorViewController {
             let result = self.viewModel.performAction(EditAction.updateDateAndTime(location, newDateAndTime), textView: self.textView)
             self.textView.selectedRange = oldSelectedRange.offset(result.delta)
             self.viewModel.dependency.eventObserver.emit(DateAndTimeChangedEvent(oldDateAndTime: nil,
-                                                                                              newDateAndTime: newDateAndTime))
+                                                                                 newDateAndTime: newDateAndTime))
         }
         
         let handleDeleteDateAndTime: () -> Void = {
             self.viewModel.dependency.eventObserver.emit(DateAndTimeChangedEvent(oldDateAndTime: nil,
-                                                                                              newDateAndTime: nil))
+                                                                                 newDateAndTime: nil))
         }
         
         let actionsViewController = ActionsViewController()
@@ -109,9 +109,9 @@ extension DocumentEditorViewController {
                     handleNewDateAndTime(newDateAndTime)
                 }, delete: { [weak self] in
                     handleDeleteDateAndTime()
-                    self?.viewModel.context.coordinator?.dependency.globalCaptureEntryWindow?.show()
+                    self?.viewModel.showGlobalCaptureEntry()
                 }, cancel: { [weak self] in
-                    self?.viewModel.context.coordinator?.dependency.globalCaptureEntryWindow?.show()
+                    self?.viewModel.showGlobalCaptureEntry()
                 })
             })
         })
@@ -123,9 +123,9 @@ extension DocumentEditorViewController {
                     handleNewDateAndTime(newDateAndTime)
                 }, delete: { [weak self] in
                     handleDeleteDateAndTime()
-                    self?.viewModel.context.coordinator?.dependency.globalCaptureEntryWindow?.show()
+                    self?.viewModel.showGlobalCaptureEntry()
                 }, cancel: { [weak self] in
-                    self?.viewModel.context.coordinator?.dependency.globalCaptureEntryWindow?.show()
+                    self?.viewModel.showGlobalCaptureEntry()
                 })
             })
         })
@@ -136,20 +136,20 @@ extension DocumentEditorViewController {
                     handleNewDateAndTime(newDateAndTime)
                 }, delete: { [weak self] in
                     handleDeleteDateAndTime()
-                    self?.viewModel.dependency.globalCaptureEntryWindow?.show()
+                    self?.viewModel.showGlobalCaptureEntry()
                 }, cancel: { [weak self] in
-                    self?.viewModel.dependency.globalCaptureEntryWindow?.show()
+                    self?.viewModel.showGlobalCaptureEntry()
                 })
             })
         })
         
         actionsViewController.setCancel { viewController in
             viewController.dismiss(animated: true, completion: nil)
-            self.viewModel.dependency.globalCaptureEntryWindow?.show()
+            self.viewModel.showGlobalCaptureEntry()
         }
         
         self.present(actionsViewController, animated: true, completion: nil)
-        self.viewModel.dependency.globalCaptureEntryWindow?.hide()
+        self.viewModel.hideGlobalCaptureEntry()
     }
     
     public func showPriorityEditor(location: Int, current: String?) {
@@ -161,7 +161,7 @@ extension DocumentEditorViewController {
         for priority in priorities {
             actionsController.addAction(icon: nil, title: priority) { viewController in
                 viewController.dismiss(animated: true, completion: {
-                    self.viewModel.dependency.globalCaptureEntryWindow?.show()
+                    self.viewModel.showGlobalCaptureEntry()
                     let oldSelectedRange = self.textView.selectedRange
                     let result = self.viewModel.performAction(EditAction.changePriority(priority, location), textView: self.textView)
                     self.textView.selectedRange = oldSelectedRange.offset(result.delta)
@@ -172,7 +172,7 @@ extension DocumentEditorViewController {
         if current != nil {
             actionsController.addAction(icon: nil, title: L10n.Document.Priority.remove, style: .warning) { (viewController) in
                 viewController.dismiss(animated: true, completion: {
-                    self.viewModel.dependency.globalCaptureEntryWindow?.show()
+                    self.viewModel.showGlobalCaptureEntry()
                     let oldSelectedRange = self.textView.selectedRange
                     let result = self.viewModel.performAction(EditAction.changePriority(nil, location), textView: self.textView)
                     self.textView.selectedRange = oldSelectedRange.offset(result.delta)
@@ -182,11 +182,11 @@ extension DocumentEditorViewController {
         
         actionsController.setCancel { viewController in
             viewController.dismiss(animated: true, completion: nil)
-            self.viewModel.dependency.globalCaptureEntryWindow?.show()
+            self.viewModel.showGlobalCaptureEntry()
         }
         
         self.present(actionsController, animated: true, completion: nil)
-        self.viewModel.dependency.globalCaptureEntryWindow?.hide()
+        self.viewModel.hideGlobalCaptureEntry()
     }
     
     // 编辑和选择标签
@@ -214,7 +214,7 @@ extension DocumentEditorViewController {
         
         actionsViewController.setCancel {
             $0.dismiss(animated: true, completion: nil)
-            self.viewModel.dependency.globalCaptureEntryWindow?.show()
+            self.viewModel.showGlobalCaptureEntry()
         }
         
         // 选择一个已经存在的标签
@@ -230,12 +230,12 @@ extension DocumentEditorViewController {
                 }
                 
                 selector.onCancel = {
-                    self.viewModel.dependency.globalCaptureEntryWindow?.show()
+                    self.viewModel.showGlobalCaptureEntry()
                     $0.dismiss(animated: true, completion: nil)
                 }
                 
                 selector.onSelection = { index, viewController in
-                    self.viewModel.dependency.globalCaptureEntryWindow?.show()
+                    self.viewModel.showGlobalCaptureEntry()
                     viewController.dismiss(animated: true, completion: {
                         let oldSelectedRange = self.textView.selectedRange
                         let newTag = viewController.items[index].title
@@ -269,7 +269,7 @@ extension DocumentEditorViewController {
                     return [:]
                 }
                 formController.onSaveValue = { values, viewController in
-                    self.viewModel.dependency.globalCaptureEntryWindow?.show()
+                    self.viewModel.showGlobalCaptureEntry()
                     if let newTagName = values[L10n.Document.Edit.Tag.add] as? String {
                         viewController.dismiss(animated: true, completion: {
                             let oldSelectedRange = self.textView.selectedRange
@@ -286,7 +286,7 @@ extension DocumentEditorViewController {
                 
                 formController.onCancel = {
                     $0.dismiss(animated: true, completion: nil)
-                    self.viewModel.dependency.globalCaptureEntryWindow?.show()
+                    self.viewModel.showGlobalCaptureEntry()
                 }
                 
                 self.present(formController, animated: true, completion: nil)
@@ -294,7 +294,7 @@ extension DocumentEditorViewController {
         }
         
         self.present(actionsViewController, animated: true, completion: nil)
-        self.viewModel.dependency.globalCaptureEntryWindow?.hide()
+        self.viewModel.hideGlobalCaptureEntry()
     }
     
     public func showCapturedItemList(location: Int) {
@@ -324,7 +324,7 @@ extension DocumentEditorViewController {
                 self.textView.selectedRange = oldSelectedRange.offset(result.delta)
                 
                 viewController.dismiss(animated: true, completion: nil)
-                self.viewModel.dependency.globalCaptureEntryWindow?.show()
+                self.viewModel.showGlobalCaptureEntry()
             }
         }
         
@@ -338,17 +338,17 @@ extension DocumentEditorViewController {
                                             self.textView.selectedRange = oldSelectedRange.offset(result.delta)
                                             
                                             viewController.dismiss(animated: true, completion: nil)
-                                            self.viewModel.dependency.globalCaptureEntryWindow?.show()
+                                            self.viewModel.showGlobalCaptureEntry()
             }
         }
         
         actionsController.setCancel { viewController in
             viewController.dismiss(animated: true)
-            self.viewModel.dependency.globalCaptureEntryWindow?.show()
+            self.viewModel.showGlobalCaptureEntry()
         }
         
         self.present(actionsController, animated: true)
-        self.viewModel.dependency.globalCaptureEntryWindow?.hide()
+        self.viewModel.hideGlobalCaptureEntry()
     }
     
     /// 在 heading 里面点击 heading 按钮
@@ -358,7 +358,7 @@ extension DocumentEditorViewController {
         
         actionsController.addAction(icon: nil, title: L10n.Document.Heading.toParagraphContent) { viewController in
             viewController.dismiss(animated: true, completion: {
-                self.viewModel.dependency.globalCaptureEntryWindow?.show()
+                self.viewModel.showGlobalCaptureEntry()
                 let lastSelectedRange = self.textView.selectedRange
                 let result = self.viewModel.performAction(EditAction.convertHeadingToParagraph(location), textView: self.textView)
                 self.textView.selectedRange = lastSelectedRange.offset(result.delta)
@@ -367,11 +367,11 @@ extension DocumentEditorViewController {
         
         actionsController.setCancel { viewController in
             viewController.dismiss(animated: true, completion: nil)
-            self.viewModel.dependency.globalCaptureEntryWindow?.show()
+            self.viewModel.showGlobalCaptureEntry()
         }
         
         self.present(actionsController, animated: true, completion: nil)
-        self.viewModel.dependency.globalCaptureEntryWindow?.hide()
+        self.viewModel.hideGlobalCaptureEntry()
     }
     
     public func showParagraphActions(at location: Int) {
@@ -383,14 +383,14 @@ extension DocumentEditorViewController {
         let icon = isFolded ? Asset.Assets.up.image : Asset.Assets.down.image
         actionsController.addAction(icon: icon, title: foldTitle) { viewController in
             viewController.dismiss(animated: true, completion: {
-                self.viewModel.dependency.globalCaptureEntryWindow?.show()
+                self.viewModel.showGlobalCaptureEntry()
                 self.viewModel.foldOrUnfold(location: location)
             })
         }
         
         actionsController.addAction(icon: nil, title: L10n.Document.Heading.moveTo) { viewController in
             viewController.dismiss(animated: true, completion: {
-                self.viewModel.dependency.globalCaptureEntryWindow?.show()
+                self.viewModel.showGlobalCaptureEntry()
                 self.viewModel.context.coordinator?.showOutline(ignoredHeadingLocation: location, completion: { [unowned self] outlineLocation in
                     let oldLocation = self.textView.selectedRange.location
                     
@@ -413,37 +413,45 @@ extension DocumentEditorViewController {
             })
         }
         
-        actionsController.addAction(icon: nil, title: L10n.Document.Heading.moveToAnotherDocument) { viewController in
-            viewController.dismiss(animated: true, completion: {
-                let oldLocation = self.textView.selectedRange.location
-                self.viewModel.context.coordinator?.showDocumentHeadingPicker(completion: { [unowned self] url, outlineLocation in
-                    self.viewModel.dependency.globalCaptureEntryWindow?.show()
-                    self.viewModel.moveParagraphToOtherDocument(url: url, outline: outlineLocation, location: location, textView: self.textView, completion: { [unowned self] result in
-                        
-                        guard result.content != nil else { return }
-                        
-                        var location: Int!
-                        switch outlineLocation {
-                        case .heading(let heading):
-                            location = heading.location
-                        case .position(let _location):
-                            location = _location
-                        }
-                        
-                        let changedLength = oldLocation > location ? -result.content!.count : 0 // 如果新的位置的 heading 在原来 heading 的前面，新的位置的 heading需要减掉移走的文字的长度
-                        self.textView.selectedRange = NSRange(location: oldLocation + changedLength, length: 0)
+        if self.viewModel.isMember {
+            actionsController.addAction(icon: nil, title: L10n.Document.Heading.moveToAnotherDocument) { viewController in
+                viewController.dismiss(animated: true, completion: {
+                    let oldLocation = self.textView.selectedRange.location
+                    self.viewModel.context.coordinator?.showDocumentHeadingPicker(completion: { [unowned self] url, outlineLocation in
+                        self.viewModel.showGlobalCaptureEntry()
+                        self.viewModel.moveParagraphToOtherDocument(url: url, outline: outlineLocation, location: location, textView: self.textView, completion: { [unowned self] result in
+                            
+                            guard result.content != nil else { return }
+                            
+                            var location: Int!
+                            switch outlineLocation {
+                            case .heading(let heading):
+                                location = heading.location
+                            case .position(let _location):
+                                location = _location
+                            }
+                            
+                            let changedLength = oldLocation > location ? -result.content!.count : 0 // 如果新的位置的 heading 在原来 heading 的前面，新的位置的 heading需要减掉移走的文字的长度
+                            self.textView.selectedRange = NSRange(location: oldLocation + changedLength, length: 0)
+                        })
                     })
                 })
-            })
+            }
+        } else {
+            actionsController.addAction(icon: Asset.Assets.proLabel.image, title: L10n.Document.Heading.moveToAnotherDocument) { [unowned self] viewController in
+                viewController.dismiss(animated: true, completion: {
+                    self.viewModel.context.coordinator?.showMembership()
+                })
+            }
         }
         
         actionsController.setCancel { viewController in
             viewController.dismiss(animated: true, completion: nil)
-            self.viewModel.dependency.globalCaptureEntryWindow?.show()
+            self.viewModel.showGlobalCaptureEntry()
         }
         
         self.present(actionsController, animated: true, completion: nil)
-        self.viewModel.dependency.globalCaptureEntryWindow?.hide()
+        self.viewModel.hideGlobalCaptureEntry()
     }
     
     // 在其他非空行的位置点击 heading 按钮
@@ -452,7 +460,7 @@ extension DocumentEditorViewController {
         
         actionsController.addAction(icon: nil, title: L10n.Document.Heading.toHeading) { viewController in
             viewController.dismiss(animated: true, completion: {
-                self.viewModel.dependency.globalCaptureEntryWindow?.show()
+                self.viewModel.showGlobalCaptureEntry()
                 let lastSelectedRange = self.textView.selectedRange
                 let result = self.viewModel.performAction(EditAction.convertToHeading(location), textView: self.textView)
                 self.textView.selectedRange = lastSelectedRange.offset(result.delta)
@@ -461,10 +469,10 @@ extension DocumentEditorViewController {
         
         actionsController.setCancel { viewController in
             viewController.dismiss(animated: true, completion: nil)
-            self.viewModel.dependency.globalCaptureEntryWindow?.show()
+            self.viewModel.showGlobalCaptureEntry()
         }
         
         self.present(actionsController, animated: true, completion: nil)
-        self.viewModel.dependency.globalCaptureEntryWindow?.show()
+        self.viewModel.showGlobalCaptureEntry()
     }
 }
