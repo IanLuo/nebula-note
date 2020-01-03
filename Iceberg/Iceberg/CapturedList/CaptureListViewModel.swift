@@ -17,32 +17,23 @@ public protocol CaptureListViewModelDelegate: class {
     func didStartRefile(at index: Int)
 }
 
-public class CaptureListViewModel {
+public class CaptureListViewModel: ViewModelProtocol {
+    public required init() {}
+    
+    public var context: ViewModelContext<CaptureListCoordinator>!
+    
+    public typealias CoordinatorType = CaptureListCoordinator
+    
     public enum Mode {
         case pick
         case manage
     }
     
-    public let mode: Mode
+    public var mode: Mode = .pick
 
     public weak var delegate: CaptureListViewModelDelegate?
-    public weak var coordinator: CaptureListCoordinator? {
-        didSet {
-            coordinator?.dependency.eventObserver.registerForEvent(on: self, eventType: NewCaptureAddedEvent.self, queue: .main, action: { [weak self] (event: NewCaptureAddedEvent) in
-                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1) {
-                    self?.loadAllCapturedData()
-                }
-            })
-            
-            coordinator?.dependency.eventObserver.registerForEvent(on: self, eventType: NewCaptureListDownloadedEvent.self, queue: .main, action: { [weak self] (event: NewCaptureListDownloadedEvent) in
-                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1) {
-                    self?.loadAllCapturedData()
-                }
-            })
-        }
-    }
     
-    private let service: CaptureServiceProtocol
+    private var service: CaptureServiceProtocol!
     
     private var data: [Attachment] = []
     
@@ -54,13 +45,26 @@ public class CaptureListViewModel {
     
     public var currentFilteredAttachmentKind: Attachment.Kind?
     
-    public init(service: CaptureServiceProtocol, mode: Mode) {
+    public convenience init(service: CaptureServiceProtocol, mode: Mode, coordinator: CaptureListCoordinator) {
+        self.init(coordinator: coordinator)
         self.service = service
         self.mode = mode
+        
+        self.dependency.eventObserver.registerForEvent(on: self, eventType: NewCaptureAddedEvent.self, queue: .main, action: { [weak self] (event: NewCaptureAddedEvent) in
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1) {
+                self?.loadAllCapturedData()
+            }
+        })
+        
+        self.dependency.eventObserver.registerForEvent(on: self, eventType: NewCaptureListDownloadedEvent.self, queue: .main, action: { [weak self] (event: NewCaptureListDownloadedEvent) in
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1) {
+                self?.loadAllCapturedData()
+            }
+        })
     }
     
     deinit {
-        coordinator?.dependency.eventObserver.unregister(for: self, eventType: nil)
+        self.dependency.eventObserver.unregister(for: self, eventType: nil)
     }
 
     public var currentCapture: Attachment? {
@@ -194,8 +198,8 @@ public class CaptureListViewModel {
     
     public func chooseRefileLocation(index: Int, completion: @escaping () -> Void, canceled: @escaping () -> Void) {
         self.currentIndex = index
-        self.coordinator?.showDocumentHeadingSelector(completion: { [unowned self] url, outlineLocation in
-            guard let service = self.coordinator?.dependency.editorContext.request(url: url) else {
+        self.context.coordinator?.showDocumentHeadingSelector(completion: { [unowned self] url, outlineLocation in
+            guard let service = self.context.coordinator?.dependency.editorContext.request(url: url) else {
                 return
             }
             
@@ -204,9 +208,9 @@ public class CaptureListViewModel {
     }
     
     public func selectAttachment(index: Int) {
-        if let coordinator = self.coordinator {
-            self.coordinator?.onSelectAction?(self.data[index])
-            self.coordinator?.delegate?.didSelectAttachment(attachment: self.data[index], coordinator: coordinator)
+        if let coordinator = self.context.coordinator {
+            self.context.coordinator?.onSelectAction?(self.data[index])
+            self.context.coordinator?.delegate?.didSelectAttachment(attachment: self.data[index], coordinator: coordinator)
         }
     }
 }

@@ -11,19 +11,20 @@ import RxSwift
 import RxCocoa
 import SwiftyStoreKit
 import Business
+import Interface
 
 public struct Product {
     let type: PurchaseManager.ProductType
-    var name: String?
-    var description: String?
+    var name: String
+    var description: String
     var price: String?
     var expireDate: Date?
 }
 
 public class MembershipViewModel: ViewModelProtocol {
     public struct Output {
-        let monthlyProduct: BehaviorRelay<Product> = BehaviorRelay(value: Product(type: .monthlyMembership))
-        let yearlyProduct: BehaviorRelay<Product> = BehaviorRelay(value: Product(type: .yearlyMembership))
+        let monthlyProduct: BehaviorRelay<Product> = BehaviorRelay(value: Product(type: .monthlyMembership, name: L10n.Membership.Monthly.title, description: L10n.Membership.Monthly.description))
+        let yearlyProduct: BehaviorRelay<Product> = BehaviorRelay(value: Product(type: .yearlyMembership, name: L10n.Membership.Yearly.title, description: L10n.Membership.Yearly.description))
         let errorOccurs: PublishSubject<Error> = PublishSubject()
     }
     
@@ -83,10 +84,10 @@ public class MembershipViewModel: ViewModelProtocol {
                                  self.purchaseManager.validate(productId: PurchaseManager.ProductType.monthlyMembership.key))
             .skipWhile { $0.0 == nil }
             .map { product, expireDate in
-                return Product(type: PurchaseManager.ProductType.yearlyMembership,
-                               name: product?.localizedTitle,
-                               description: product?.localizedDescription,
-                               price: product?.localizedPrice,
+                return Product(type: PurchaseManager.ProductType.monthlyMembership,
+                               name: product!.localizedTitle,
+                               description: product!.localizedDescription,
+                               price: product!.localizedPrice,
                                expireDate: expireDate)
         }.subscribe(onNext: { [weak self] in
             self?.output.monthlyProduct.accept($0)
@@ -98,13 +99,13 @@ public class MembershipViewModel: ViewModelProtocol {
                                  self.purchaseManager.validate(productId: PurchaseManager.ProductType.yearlyMembership.key))
             .skipWhile { $0.0 == nil }
             .map { product, expireDate in
-                return Product(type: PurchaseManager.ProductType.monthlyMembership,
-                               name: product?.localizedTitle,
-                               description: product?.localizedDescription,
-                               price: product?.localizedPrice,
+                return Product(type: PurchaseManager.ProductType.yearlyMembership,
+                               name: product!.localizedTitle,
+                               description: product!.localizedDescription,
+                               price: product!.localizedPrice,
                                expireDate: expireDate)
         }.subscribe(onNext: { [weak self] in
-            self?.output.monthlyProduct.accept($0)
+            self?.output.yearlyProduct.accept($0)
         }, onError: { [weak self] in
             self?.output.errorOccurs.onNext($0)
         }).disposed(by: self.disposeBag)

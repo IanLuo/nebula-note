@@ -29,7 +29,8 @@ public class MembershipViewController: UIViewController {
     }()
     
     let titleLabel: UILabel = {
-        let label = UILabel()
+        let label = LabelStyle.description.create()
+        label.numberOfLines = 0
         return label
     }()
     
@@ -56,7 +57,7 @@ public class MembershipViewController: UIViewController {
     }
     
     private func setupUI() {
-        self.title = "Membership"
+        self.title = L10n.Membership.title
         
         self.view.addSubview(self.scrollView)
         self.scrollView.addSubview(self.contentView)
@@ -96,6 +97,8 @@ public class MembershipViewController: UIViewController {
             self.dismiss(animated: true)
         }).disposed(by:self.disposeBag)
         self.navigationItem.leftBarButtonItem = cancelBarButtonItem
+        
+        self.titleLabel.text = L10n.Membership.letter
     }
     
     private func bind() {
@@ -238,7 +241,7 @@ class ProductDescriptionView: UIView {
         self.descriptionLabel.text = product.description
         
         if let expireDate = product.expireDate, expireDate > Date() {
-            self.orderButton.setTitle("already bought", for: .normal)
+            self.orderButton.setTitle("\(L10n.Membership.ordered) (\(expireDate.shortDateString))", for: .normal)
             self.orderButton.isEnabled = false
         } else {
             self.orderButton.setTitle(product.price, for: .normal)

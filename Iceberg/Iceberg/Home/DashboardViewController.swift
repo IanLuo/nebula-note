@@ -48,7 +48,7 @@ public class DashboardViewController: UIViewController {
         return button
     }()
     
-    private let freeAmountButton: UIButton = {
+    private let membershipButton: UIButton = {
         let button = UIButton()
         button.setTitle("1/2", for: .normal)
         return button
@@ -78,7 +78,7 @@ public class DashboardViewController: UIViewController {
         self.view.addSubview(self.tableView)
         self.view.addSubview(self.settingsButton)
         self.view.addSubview(self.trashButton)
-        self.view.addSubview(self.freeAmountButton)
+        self.view.addSubview(self.membershipButton)
         
         self.tableView.allSidesAnchors(to: self.view, edgeInset: 0)
         
@@ -88,9 +88,9 @@ public class DashboardViewController: UIViewController {
         self.trashButton.sizeAnchor(width: 60)
         self.trashButton.sideAnchor(for: [.right, .bottom], to: self.view, edgeInsets: .init(top: 0, left: 0, bottom: -Layout.edgeInsets.bottom, right: -Layout.edgeInsets.right), considerSafeArea: true)
         
-        self.freeAmountButton.bottomAnchor.constraint(equalTo: self.settingsButton.topAnchor, constant: -10).isActive = true
-        self.freeAmountButton.sideAnchor(for: [.left, .right], to: self.view, edgeInset: 20)
-        self.freeAmountButton.sizeAnchor(height: 44)
+        self.membershipButton.bottomAnchor.constraint(equalTo: self.settingsButton.topAnchor, constant: -10).isActive = true
+        self.membershipButton.sideAnchor(for: [.left, .right], to: self.view, edgeInset: 20)
+        self.membershipButton.sizeAnchor(height: 44)
         
         self.trashButton.tapped { [unowned self] _ in
             self.viewModel.coordinator?.showTrash()
@@ -100,14 +100,19 @@ public class DashboardViewController: UIViewController {
             self.viewModel.coordinator?.showSettings()
         }
         
-        self.freeAmountButton.rx.tap.subscribe(onNext: { [unowned self] _ in
+        self.membershipButton.rx.tap.subscribe(onNext: { [unowned self] _ in
             self.viewModel.coordinator?.showMembershipView()
         }).disposed(by: self.disposeBag)
+        
+        self.viewModel
+            .coordinator?
+            .dependency
+            .purchaseManager
+            .isMember
+            .subscribe(onNext: { [weak self] isMember in
+                self?.membershipButton.isHidden = isMember
+        }).disposed(by: self.disposeBag)
     }
-    
-//    public override var preferredStatusBarStyle: UIStatusBarStyle {
-//        return InterfaceTheme.statusBarStyle
-//    }
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView()

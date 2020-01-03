@@ -8,6 +8,7 @@
 
 import Foundation
 import RxSwift
+import RxCocoa
 import StoreKit
 import SwiftyStoreKit
 
@@ -26,7 +27,25 @@ public struct PurchaseManager {
         }
     }
     
+    private let _disposeBag: DisposeBag = DisposeBag()
+    
     public init() {}
+    
+    public func initialize() {
+        self.findExpireDate().subscribe(onNext: { date in
+            if let date = date {
+                self.isMember.accept(date.compare(Date()) == .orderedDescending)
+                log.info("init complete, user is member")
+            } else {
+                self.isMember.accept(false)
+                log.info("init complete, user is not member")
+            }
+            
+            self.isMember.accept(false)
+        }).disposed(by: self._disposeBag)
+        
+        self.initTransactions()
+    }
     
     public func restore() -> Observable<[Purchase]> {
         return Observable.create { observer -> Disposable in
@@ -58,10 +77,18 @@ public struct PurchaseManager {
         }
     }
     
+    public let isMember: BehaviorRelay<Bool> = BehaviorRelay(value: false)
+        
     public func validate(productId: String) -> Observable<Date?> {
         return Observable.create { observer -> Disposable in
             
-            let validator = AppleReceiptValidator(service: AppleReceiptValidator.VerifyReceiptURLType.sandbox, sharedSecret: "7dc6efbf319f46f5834b39b19110d3ee")
+            var validatServiceType = AppleReceiptValidator.VerifyReceiptURLType.production
+            
+            #if DEBUG
+            validatServiceType = AppleReceiptValidator.VerifyReceiptURLType.sandbox
+            #endif
+            
+            let validator = AppleReceiptValidator(service: validatServiceType, sharedSecret: "7dc6efbf319f46f5834b39b19110d3ee")
             SwiftyStoreKit.verifyReceipt(using: validator) { result in
                 switch result {
                 case .error(error: let error):
@@ -139,34 +166,7 @@ public struct PurchaseManager {
             return Disposables.create()
         }
     }
-    
-    public func save(reception: SKPaymentTransaction) {
-        // TOOD:
-    }
-    
-    public func loadExpireDate() -> Date? {
-        // TODO:
-        return nil
-    }
-    
-    public func initialize() {
-        // see notes below for the meaning of Atomic / Non-Atomic
-        SwiftyStoreKit.completeTransactions(atomically: true) { purchases in
-            for purchase in purchases {
-                switch purchase.transaction.transactionState {
-                case .purchased, .restored:
-                    if purchase.needsFinishTransaction {
-                        // Deliver content from server, then:
-                        SwiftyStoreKit.finishTransaction(purchase.transaction)
-                    }
-                    // Unlock content
-                case .failed, .purchasing, .deferred:
-                    break // do nothing
-                }
-            }
-        }
-    }
-    
+        
     public func initTransactions() {
         // see notes below for the meaning of Atomic / Non-Atomic
         SwiftyStoreKit.completeTransactions(atomically: true) { purchases in
@@ -177,7 +177,7 @@ public struct PurchaseManager {
                         // Deliver content from server, then:
                         SwiftyStoreKit.finishTransaction(purchase.transaction)
                     }
-                // Unlock content
+                    // Unlock content
                 case .failed, .purchasing, .deferred:
                     break // do nothing
                 }

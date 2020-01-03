@@ -62,6 +62,7 @@ public enum Asset {
     public static let planning = ImageAsset(name: "planning")
     public static let play = ImageAsset(name: "play")
     public static let priority = ImageAsset(name: "priority")
+    public static let proLabel = ImageAsset(name: "pro_label")
     public static let quote = ImageAsset(name: "quote")
     public static let record = ImageAsset(name: "record")
     public static let redo = ImageAsset(name: "redo")

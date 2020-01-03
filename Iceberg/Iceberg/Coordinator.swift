@@ -224,6 +224,12 @@ extension Coordinator {
         
         self.viewController?.present(dateAndTimeSelectViewController, animated: true, completion: nil)
     }
+    
+    public func showMembership() {
+        let nav = Coordinator.createDefaultNavigationControlller()
+        let membershipCoordinator = MembershipCoordinator(stack: nav, dependency: self.dependency)
+        membershipCoordinator.start(from: self)
+    }
 }
 
 extension Coordinator {

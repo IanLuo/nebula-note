@@ -514,6 +514,27 @@ public enum L10n {
     public static let title = L10n.tr("Localizable", "location.title")
   }
 
+  public enum Membership {
+    /// Dear customer, if you feel enjoy using Icetea, please consider join our membership, to use more advanced functions, and help to bring Icetea to more platforms and become better, Icetea will become more strong, powerful, and useful to you.
+    public static let letter = L10n.tr("Localizable", "membership.letter")
+    /// Ordered
+    public static let ordered = L10n.tr("Localizable", "membership.ordered")
+    /// Membershipt
+    public static let title = L10n.tr("Localizable", "membership.title")
+    public enum Monthly {
+      /// (1 extra week) unlimited function access
+      public static let description = L10n.tr("Localizable", "membership.monthly.description")
+      /// Order membership monthly
+      public static let title = L10n.tr("Localizable", "membership.monthly.title")
+    }
+    public enum Yearly {
+      /// (1 extra month) unlimited function access
+      public static let description = L10n.tr("Localizable", "membership.yearly.description")
+      /// Order membership yearly
+      public static let title = L10n.tr("Localizable", "membership.yearly.title")
+    }
+  }
+
   public enum Search {
     /// Search
     public static let title = L10n.tr("Localizable", "search.title")

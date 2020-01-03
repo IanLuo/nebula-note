@@ -286,3 +286,12 @@
 "trash.delete" = "Delete";
 "trash.recover" = "Put Back the file";
 "trash.delete.warning" = "File will be deleted and won't be able to recover";
+
+// membership
+"membership.title" = "Membershipt";
+"membership.letter" = "Dear customer, if you feel enjoy using Icetea, please consider join our membership, to use more advanced functions, and help to bring Icetea to more platforms and become better, Icetea will become more strong, powerful, and useful to you.";
+"membership.monthly.title" = "Order membership monthly";
+"membership.monthly.description" = "(1 extra week) unlimited function access";
+"membership.yearly.title" = "Order membership yearly";
+"membership.yearly.description" = "(1 extra month) unlimited function access";
+"membership.ordered" = "Ordered";

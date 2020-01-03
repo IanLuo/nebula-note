@@ -36,7 +36,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         self.application?.start(from: nil, animated: false)
         
-        self.application.dependency.purchaseManager.initTransactions()
+        self.application.dependency.purchaseManager.initialize()
                                 
         return true
     }
