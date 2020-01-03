@@ -41,7 +41,6 @@ public struct PurchaseManager {
                 log.info("init complete, user is not member")
             }
             
-            self.isMember.accept(false)
         }).disposed(by: self._disposeBag)
         
         self.initTransactions()

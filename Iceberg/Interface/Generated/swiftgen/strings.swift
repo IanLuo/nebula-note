@@ -418,9 +418,9 @@ public enum L10n {
     public enum Heading {
       /// Fold this paragaph
       public static let fold = L10n.tr("Localizable", "document.heading.fold")
-      /// Move to ..
+      /// Move paragraph
       public static let moveTo = L10n.tr("Localizable", "document.heading.moveTo")
-      /// Move to other document ..
+      /// Move to another document
       public static let moveToAnotherDocument = L10n.tr("Localizable", "document.heading.moveToAnotherDocument")
       /// Heading
       public static let title = L10n.tr("Localizable", "document.heading.title")
@@ -519,7 +519,7 @@ public enum L10n {
     public static let letter = L10n.tr("Localizable", "membership.letter")
     /// Ordered
     public static let ordered = L10n.tr("Localizable", "membership.ordered")
-    /// Membershipt
+    /// Membership
     public static let title = L10n.tr("Localizable", "membership.title")
     public enum Monthly {
       /// (1 extra week) unlimited function access
