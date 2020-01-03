@@ -116,7 +116,6 @@ public class CaptureListViewModel: ViewModelProtocol {
                 self.currentIndex = nil // 移除当前选中的
                 
                 DispatchQueue.runOnMainQueueSafely {
-                    self.delete(index: index)
                     self.delegate?.didCompleteRefile(index: index)
                 }
                 

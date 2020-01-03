@@ -56,7 +56,7 @@ public struct HTMLExporter: Exportable {
                 for token in service.allTokens.reversed() { // 从尾部开始替换，否则会导致 range 错误
                     var tokenString = token.render(string: string ?? "")
                     
-                    if let _ = token as? HeadingToken, SettingsAccessor.Item.exportShowIndex.get(Bool.self) == true {
+                    if let _ = token as? HeadingToken, SettingsAccessor.Item.exportShowIndex.get(Bool.self) ?? true {
                         if let indexs = headingIndexs.last {
                             let index = indexs.map { "\($0)" }.joined(separator: ".") + " "
                             tokenString.insert(contentsOf: index, at: tokenString.index(tokenString.startIndex, offsetBy: 4))

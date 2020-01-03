@@ -283,6 +283,10 @@ public enum L10n {
       /// Action
       public static let title = L10n.tr("Localizable", "captureList.action.title")
     }
+    public enum Confirm {
+      /// Refile done, do you want to delete this idea?
+      public static let delete = L10n.tr("Localizable", "captureList.confirm.delete")
+    }
   }
 
   public enum CaptureText {
@@ -522,13 +526,13 @@ public enum L10n {
     /// Membership
     public static let title = L10n.tr("Localizable", "membership.title")
     public enum Monthly {
-      /// (1 extra week) unlimited function access
+      /// (1 bonus week) unlimited function access
       public static let description = L10n.tr("Localizable", "membership.monthly.description")
       /// Order membership monthly
       public static let title = L10n.tr("Localizable", "membership.monthly.title")
     }
     public enum Yearly {
-      /// (1 extra month) unlimited function access
+      /// (1 bonus month) unlimited function access
       public static let description = L10n.tr("Localizable", "membership.yearly.description")
       /// Order membership yearly
       public static let title = L10n.tr("Localizable", "membership.yearly.title")

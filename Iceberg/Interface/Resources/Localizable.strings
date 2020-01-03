@@ -215,6 +215,7 @@
 "captureList.action.refile" = "Refile";
 "captureList.action.title" = "Action";
 "captureList.action.deleteConfirm" = "Are your sure de delete this idea?";
+"captureList.confirm.delete" = "Refile done, do you want to delete this idea?";
 
 //location
 "location.title" = "Add a location";
@@ -291,7 +292,7 @@
 "membership.title" = "Membership";
 "membership.letter" = "Dear customer, if you feel enjoy using Icetea, please consider join our membership, to use more advanced functions, and help to bring Icetea to more platforms and become better, Icetea will become more strong, powerful, and useful to you.";
 "membership.monthly.title" = "Order membership monthly";
-"membership.monthly.description" = "(1 extra week) unlimited function access";
+"membership.monthly.description" = "(1 bonus week) unlimited function access";
 "membership.yearly.title" = "Order membership yearly";
-"membership.yearly.description" = "(1 extra month) unlimited function access";
+"membership.yearly.description" = "(1 bonus month) unlimited function access";
 "membership.ordered" = "Ordered";

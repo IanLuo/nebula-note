@@ -347,7 +347,18 @@ extension CaptureListViewController: CaptureListViewModelDelegate {
         if let cell = self.tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? CaptureTableCell {
             cell.hideProcessingAnimation()
         }
+        
         self.showEmptyContentImage(self.viewModel.currentFilterdCellModels.count == 0)
+        
+        let confirmViewController = ConfirmViewController(contentText: L10n.CaptureList.Confirm.delete, onConfirm: { [weak self] viewController in
+            viewController.dismiss(animated: true) {
+                self?.viewModel.delete(index: index)
+            }
+        }) { viewController in
+            viewController.dismiss(animated: true)
+        }
+        
+        self.present(confirmViewController, animated: true)
     }
     
     public func didLoadData() {
