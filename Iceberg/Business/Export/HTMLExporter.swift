@@ -89,6 +89,25 @@ public struct HTMLExporter: Exportable {
           background-color: \(InterfaceTheme.Color.spotlight.hex);
           color: \(InterfaceTheme.Color.spotlitTitle.hex);
         }
+        .quote {
+          position: relative;
+          left: 7px;
+          background: \(InterfaceTheme.Color.background2.hex);
+          box-shadow: -2px 0 0 \(InterfaceTheme.Color.spotlight.hex),
+                      -4px 0 0 \(InterfaceTheme.Color.spotlight.hex),
+                      -7px 0 0 \(InterfaceTheme.Color.spotlight.hex);
+        }
+        blockquote {
+          background: white;
+          padding: 20px 30px 20px 30px;
+          margin: 50px auto;
+          width: 90%;
+        }
+        .wrapper {
+          margin: 0 auto;
+          width: 90%;
+          padding-bottom: 50px;
+        }
         </style>
 """
     }
@@ -146,7 +165,7 @@ extension Token {
             let checkStatusString = string.nsstring.substring(with: checkbox.range(for: "checkbox")!) == OutlineParser.Values.Checkbox.checked ? "checked" : ""
             return "<br><input type=\"checkbox\" \(checkStatusString)>"
         } else if let quoteBlock = self as? BlockBeginToken, quoteBlock.blockType == .quote {
-            return "<q>\(string.nsstring.substring(with: quoteBlock.contentRange!))</q>"
+            return "<br><div class=\"wrapper\"><blockquote class=\"quote\"><p>\(string.nsstring.substring(with: quoteBlock.contentRange!))</p></blockquote></div>"
         } else if let attachmentToken = self as? AttachmentToken {
             guard let typeRange = attachmentToken.range(for: OutlineParser.Key.Element.Attachment.type) else { return ""}
             guard let valueRange = attachmentToken.range(for: OutlineParser.Key.Element.Attachment.value) else { return ""}
