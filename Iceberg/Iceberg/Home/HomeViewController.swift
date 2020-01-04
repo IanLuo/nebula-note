@@ -68,7 +68,7 @@ public class HomeViewController: UIViewController {
         
         self.interface { [weak self] (me, theme) in
             me.setNeedsStatusBarAppearanceUpdate()
-            self?.moveIndicator.backgroundColor = theme.color.spotlight
+            self?.moveIndicator.backgroundColor = theme.color.spotlight.withAlphaComponent(0.7)
         }
     }
     

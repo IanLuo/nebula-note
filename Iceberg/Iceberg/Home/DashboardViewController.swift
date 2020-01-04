@@ -50,7 +50,17 @@ public class DashboardViewController: UIViewController {
     
     private let membershipButton: UIButton = {
         let button = UIButton()
-        button.setTitle("1/2", for: .normal)
+        
+        button.interface { (me, theme) in
+            let button = me as! UIButton
+            button.setBackgroundImage(UIImage.create(with: theme.color.background2, size: .singlePoint), for: .normal)
+            button.titleLabel?.font = theme.font.footnote
+            button.contentEdgeInsets = UIEdgeInsets(top: 5, left: 15, bottom: 5, right: 15)
+            button.setTitleColor(theme.color.interactive, for: .normal)
+        }
+        
+        button.roundConer(radius: 8)
+        button.setTitle(L10n.Membership.title, for: .normal)
         return button
     }()
     
@@ -88,9 +98,9 @@ public class DashboardViewController: UIViewController {
         self.trashButton.sizeAnchor(width: 60)
         self.trashButton.sideAnchor(for: [.right, .bottom], to: self.view, edgeInsets: .init(top: 0, left: 0, bottom: -Layout.edgeInsets.bottom, right: -Layout.edgeInsets.right), considerSafeArea: true)
         
-        self.membershipButton.bottomAnchor.constraint(equalTo: self.settingsButton.topAnchor, constant: -10).isActive = true
-        self.membershipButton.sideAnchor(for: [.left, .right], to: self.view, edgeInset: 20)
-        self.membershipButton.sizeAnchor(height: 44)
+        self.membershipButton.bottomAnchor.constraint(equalTo: self.settingsButton.topAnchor, constant: -20).isActive = true
+        self.membershipButton.sideAnchor(for: .left, to: self.view, edgeInset: Layout.edgeInsets.left)
+        self.membershipButton.sizeAnchor(height: 30)
         
         self.trashButton.tapped { [unowned self] _ in
             self.viewModel.coordinator?.showTrash()

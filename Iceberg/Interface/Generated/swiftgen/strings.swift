@@ -523,7 +523,7 @@ public enum L10n {
     public static let letter = L10n.tr("Localizable", "membership.letter")
     /// Ordered
     public static let ordered = L10n.tr("Localizable", "membership.ordered")
-    /// Membership
+    /// Join membership
     public static let title = L10n.tr("Localizable", "membership.title")
     public enum Function {
       /// Advanced attachments, including Location, Audio and Video
