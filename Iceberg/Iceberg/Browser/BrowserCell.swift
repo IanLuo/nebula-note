@@ -243,14 +243,23 @@ public class BrowserCell: UITableViewCell {
     }
     
     private func _createNewDocumentActionItem(for actionsViewController: ActionsViewController) {
-        actionsViewController.addActionAutoDismiss(icon: Asset.Assets.add.image, title: L10n.Browser.Actions.newSub) {
-            guard let cellModel = self.cellModel else { return }
-            cellModel.createChildDocument(title: L10n.Browser.Title.untitled)
-                .subscribe(onNext: { url in
-                    self.onCreateSubDocument.onNext(url)
-                }).disposed(by: self.disposeBag)
-            
-            cellModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
+        if (self.cellModel?.coordinator?.dependency.purchaseManager.isMember.value ?? true) || (self.cellModel?.url.levelsToRoot ?? 0) < 1 {
+            actionsViewController.addActionAutoDismiss(icon: Asset.Assets.add.image, title: L10n.Browser.Actions.newSub) {
+                guard let cellModel = self.cellModel else { return }
+                cellModel.createChildDocument(title: L10n.Browser.Title.untitled)
+                    .subscribe(onNext: { url in
+                        self.onCreateSubDocument.onNext(url)
+                    }).disposed(by: self.disposeBag)
+                
+                cellModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
+            }
+        } else {
+            actionsViewController.addActionAutoDismiss(icon: Asset.Assets.proLabel.image, title: L10n.Browser.Actions.newSub) {
+                guard let cellModel = self.cellModel else { return }
+                cellModel.coordinator?.showMembership()
+                
+                cellModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
+            }
         }
     }
     

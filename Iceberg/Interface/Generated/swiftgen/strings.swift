@@ -525,6 +525,18 @@ public enum L10n {
     public static let ordered = L10n.tr("Localizable", "membership.ordered")
     /// Membership
     public static let title = L10n.tr("Localizable", "membership.title")
+    public enum Function {
+      /// Advanced attachments, including Location, Audio and Video
+      public static let advancedAttachments = L10n.tr("Localizable", "membership.function.advancedAttachments")
+      /// Custom paragraph status
+      public static let customStatus = L10n.tr("Localizable", "membership.function.customStatus")
+      /// Move paragraph to other document
+      public static let moveToOtherDocument = L10n.tr("Localizable", "membership.function.moveToOtherDocument")
+      /// Refile from capturelist
+      public static let refile = L10n.tr("Localizable", "membership.function.refile")
+      /// Unlimited level of sub documents
+      public static let unlimitedLevelOfSubDocuments = L10n.tr("Localizable", "membership.function.unlimitedLevelOfSubDocuments")
+    }
     public enum Monthly {
       /// (1 bonus week) unlimited function access
       public static let description = L10n.tr("Localizable", "membership.monthly.description")

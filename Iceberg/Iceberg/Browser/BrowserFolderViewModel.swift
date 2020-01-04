@@ -30,7 +30,11 @@ extension BrowserDocumentSection: AnimatableSectionModelType {
     public typealias Identity = String
 }
 
-public class BrowserFolderViewModel {
+public class BrowserFolderViewModel: ViewModelProtocol {
+    public var context: ViewModelContext<BrowserCoordinator>!
+    
+    public typealias CoordinatorType = BrowserCoordinator
+    
     public enum Mode {
         case chooser
         case browser
@@ -54,43 +58,50 @@ public class BrowserFolderViewModel {
         public let createDocumentFailed: PublishSubject<String> = PublishSubject()
     }
     
-    private var _documentRelativePath: String
+    private var _documentRelativePath: String = ""
     public var url: URL {
         return self._documentRelativePath.count > 0
             ? URL.documentBaseURL.appendingPathComponent(self._documentRelativePath)
             : URL.documentBaseURL
     }
-    public let title: BehaviorRelay<String>
-    public weak var coordinator: BrowserCoordinator? { didSet { self._setupObservers() }}
-    public let mode: Mode
-    public let isRoot: Bool
+    public var title: BehaviorRelay<String>!
+    public var mode: Mode = .browser
+    public var isRoot: Bool!
+    public var levelsToRoot: Int!
     
     private let disposeBag = DisposeBag()
     
     public let input: Input = Input()
     public let output: Output = Output()
     
-    public init(url: URL, mode: Mode) {
+    public required init() {}
+    
+    public convenience init(url: URL, mode: Mode, coordinator: BrowserCoordinator) {
+        self.init(coordinator: coordinator)
+        
         self._documentRelativePath = url.documentRelativePath
         self.mode = mode
         self.isRoot = url.levelsToRoot == 0
+        self.levelsToRoot = url.levelsToRoot
         self.title = BehaviorRelay(value: self.isRoot ? "" : url.packageName)
         
         self.bind()
+        
+        self._setupObservers()
     }
     
     deinit {
-        self.coordinator?.dependency.eventObserver.unregister(for: self, eventType: nil)
+        self.dependency.eventObserver.unregister(for: self, eventType: nil)
     }
     
     public func createChildDocument(title: String) -> Observable<URL> {
         return Observable.create { observer -> Disposable in
-            self.coordinator?.dependency.documentManager.add(title: title, below: self.url) { [weak self] url in
+            self.dependency.documentManager.add(title: title, below: self.url) { [weak self] url in
                 if let url = url {
                     let sections = self?.output.documents.value
                     if var secion = sections?.first {
                         let cellModel = BrowserCellModel(url: url)
-                        cellModel.coordinator = self?.coordinator
+                        cellModel.coordinator = self?.context.coordinator
                         secion.items.append(cellModel)
                         secion.items.sort(by: { $0.updateDate.timeIntervalSince1970 > $1.updateDate.timeIntervalSince1970 })
                         self?.output.documents.accept([secion]) // trigger reload table
@@ -128,13 +139,13 @@ public class BrowserFolderViewModel {
             var cellModels: [BrowserCellModel] = []
             
             do {
-                let urls = try self.coordinator?.dependency.documentManager.query(in: url.convertoFolderURL)
+                let urls = try self.dependency.documentManager.query(in: url.convertoFolderURL)
                 
-                urls?.forEach {
+                urls.forEach {
                     let cellModel = BrowserCellModel(url: $0)
                     cellModel.shouldShowActions = self.mode.showActions
                     cellModel.shouldShowChooseHeadingIndicator = self.mode.showChooseIndicator
-                    cellModel.coordinator = self.coordinator
+                    cellModel.coordinator = self.context.coordinator
                     cellModels.append(cellModel)
                 }
             } catch {
@@ -161,20 +172,20 @@ public class BrowserFolderViewModel {
     
     private func _setupObservers() {
         
-        let eventObserver = self.coordinator?.dependency.eventObserver
+        let eventObserver = self.dependency.eventObserver
         
         /// observe disable, but not observe enable, because enabled will send iCloudAvailabilityChangedEvent when iCloud files are ready
-        eventObserver?.registerForEvent(on: self, eventType: iCloudDisabledEvent.self, queue: nil, action: { [weak self] (event: iCloudDisabledEvent) in
+        eventObserver.registerForEvent(on: self, eventType: iCloudDisabledEvent.self, queue: nil, action: { [weak self] (event: iCloudDisabledEvent) in
             guard let strongSelf = self else { return }
             strongSelf.reload()
         })
         
-        eventObserver?.registerForEvent(on: self, eventType: iCloudAvailabilityChangedEvent.self, queue: nil, action: { [weak self] (event: iCloudAvailabilityChangedEvent) in
+        eventObserver.registerForEvent(on: self, eventType: iCloudAvailabilityChangedEvent.self, queue: nil, action: { [weak self] (event: iCloudAvailabilityChangedEvent) in
             guard let strongSelf = self else { return }
             strongSelf.reload()
         })
         
-        eventObserver?.registerForEvent(on: self, eventType: AddDocumentEvent.self, queue: nil, action: { [weak self] (event: AddDocumentEvent) -> Void in
+        eventObserver.registerForEvent(on: self, eventType: AddDocumentEvent.self, queue: nil, action: { [weak self] (event: AddDocumentEvent) -> Void in
             // if new document is in current folder, reload
             if event.url.convertoFolderURL == self?.url.convertoFolderURL {
                 self?.reload()
@@ -186,29 +197,29 @@ public class BrowserFolderViewModel {
             }
         })
         
-        eventObserver?.registerForEvent(on: self, eventType: DeleteDocumentEvent.self, queue: nil, action: { [weak self] (event: DeleteDocumentEvent) -> Void in
+        eventObserver.registerForEvent(on: self, eventType: DeleteDocumentEvent.self, queue: nil, action: { [weak self] (event: DeleteDocumentEvent) -> Void in
             self?.reload()
         })
         
-        eventObserver?.registerForEvent(on: self, eventType: RenameDocumentEvent.self, queue: nil, action: { [weak self] (event: RenameDocumentEvent) -> Void in
+        eventObserver.registerForEvent(on: self, eventType: RenameDocumentEvent.self, queue: nil, action: { [weak self] (event: RenameDocumentEvent) -> Void in
             self?.reload()
         })
         
-        eventObserver?.registerForEvent(on: self,
+        eventObserver.registerForEvent(on: self,
                                         eventType: iCloudOpeningStatusChangedEvent.self,
                                         queue: OperationQueue.main,
                                         action: { [weak self] (event: iCloudOpeningStatusChangedEvent) in
                                             self?.reload()
         })
         
-        eventObserver?.registerForEvent(on: self,
+        eventObserver.registerForEvent(on: self,
                                         eventType: NewDocumentPackageDownloadedEvent.self,
                                         queue: OperationQueue.main,
                                         action: { [weak self] (event: NewDocumentPackageDownloadedEvent) in
                                             self?.reload()
         })
         
-        eventObserver?.registerForEvent(on: self,
+        eventObserver.registerForEvent(on: self,
                                         eventType: DocumentRemovedFromiCloudEvent.self,
                                         queue: OperationQueue.main,
                                         action: { [weak self] (event: DocumentRemovedFromiCloudEvent) in
@@ -216,7 +227,7 @@ public class BrowserFolderViewModel {
         })
         
         /// this event is sent by SyncCoordinator
-        eventObserver?.registerForEvent(on: self,
+        eventObserver.registerForEvent(on: self,
                                         eventType: NewFilesAvailableEvent.self,
                                         queue: OperationQueue.main,
                                         action: { [weak self] (event: NewFilesAvailableEvent) in

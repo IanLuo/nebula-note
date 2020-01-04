@@ -40,7 +40,10 @@ public class BrowserCoordinator: Coordinator {
     private let disposeBag = DisposeBag()
     
     public init(stack: UINavigationController, dependency: Dependency, usage: Usage) {
-        let browserFolderViewModel = BrowserFolderViewModel(url: URL.documentBaseURL, mode: usage.browserFolderMode)
+        self.usage = usage
+        super.init(stack: stack, dependency: dependency)
+        
+        let browserFolderViewModel = BrowserFolderViewModel(url: URL.documentBaseURL, mode: usage.browserFolderMode, coordinator: self)
         let browserFolderViewController = BrowserFolderViewController(viewModel: browserFolderViewModel)
         
         let browseRecentViewModel = BrowserRecentViewModel()
@@ -49,10 +52,6 @@ public class BrowserCoordinator: Coordinator {
         let browseViewController = BrowserViewController(recentViewController: browseRecentViewController,
                                                          browserFolderViewController: browserFolderViewController)
         
-        self.usage = usage
-        super.init(stack: stack, dependency: dependency)
-        
-        browserFolderViewModel.coordinator = self
         browseRecentViewModel.coordinator = self
         
         self.viewController = browseViewController

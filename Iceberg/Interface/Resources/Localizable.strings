@@ -296,3 +296,9 @@
 "membership.yearly.title" = "Order membership yearly";
 "membership.yearly.description" = "(1 bonus month) unlimited function access";
 "membership.ordered" = "Ordered";
+
+"membership.function.refile" = "Refile from capturelist";
+"membership.function.moveToOtherDocument" = "Move paragraph to other document";
+"membership.function.advancedAttachments" = "Advanced attachments, including Location, Audio and Video";
+"membership.function.customStatus" = "Custom paragraph status";
+"membership.function.unlimitedLevelOfSubDocuments" = "Unlimited level of sub documents";

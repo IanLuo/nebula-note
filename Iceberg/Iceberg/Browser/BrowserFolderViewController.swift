@@ -176,8 +176,7 @@ public class BrowserFolderViewController: UIViewController {
     }
     
     private func enterChild(url: URL) {
-        let viewModel = BrowserFolderViewModel(url: url, mode: self.viewModel.mode)
-        viewModel.coordinator = self.viewModel.coordinator
+        let viewModel = BrowserFolderViewModel(url: url, mode: self.viewModel.mode, coordinator: self.viewModel.context.coordinator!)
         let viewController = BrowserFolderViewController(viewModel: viewModel)
         
         // pass selection to parent

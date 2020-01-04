@@ -45,7 +45,7 @@ public extension ViewModelProtocol {
 public struct ViewModelContext<CoordinatorType: Coordinator> {
     public weak var coordinator: CoordinatorType?
     
-    public var dependency: Dependency? {
-        return self.coordinator?.dependency
+    public var dependency: Dependency {
+        return self.coordinator!.dependency
     }
 }
