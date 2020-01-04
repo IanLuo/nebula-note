@@ -204,9 +204,13 @@ public class DocumentEditViewModel: ViewModelProtocol {
                         _ = service.toggleContentCommandComposer(composer: AppendAsChildHeadingCommandComposer(text: text, to: location)).perform() // 移到另一个文件，不需要支持 undo
                     case .position(let location):
                         if location == 0 {
-                            text = text + "\n"
+                            if !text.hasSuffix("\n") {
+                                text = text + "\n"
+                            }
                         } else if location == service.string.count {
-                            text = "\n" + text
+                            if !strongSelf._editorService.string.hasSuffix("\n") {
+                                text = "\n" + text
+                            }
                         }
                         _ = service.toggleContentCommandComposer(composer: InsertTextCommandComposer(location: location, textToInsert: text)).perform()
                     }
