@@ -137,6 +137,14 @@ public struct PurchaseManager {
                         }
                     }
                     
+                    // if one validate finds unexpire date, then it's a member
+                    if let date = expireDate {
+                        if date.compare(Date()) == .orderedDescending {
+                            self.isMember.accept(true)
+                            log.info("init complete, user is member")
+                        }
+                    }
+                    
                     observer.onNext(expireDate)
                     observer.onCompleted()
                 }
