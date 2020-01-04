@@ -35,6 +35,13 @@ public struct Attachment: Codable {
     /// 附件的类型
     public enum Kind: String, CaseIterable {
         case text, link, image, sketch, audio, video, location
+        
+        public var isMemberFunction: Bool {
+            switch self {
+            case .audio, .video, .location: return true
+            default: return false
+            }
+        }
     }
     
     /// 序列化的 key

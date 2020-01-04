@@ -290,6 +290,13 @@ extension Coordinator: CaptureCoordinatorDelegate {
     public func didSelect(attachmentKind: Attachment.Kind, coordinator: CaptureCoordinator) {
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now()) {
             coordinator.stop {
+                
+                if attachmentKind.isMemberFunction && !self.dependency.purchaseManager.isMember.value {
+                    self.topCoordinator?.showMembership()
+                    self.dependency.globalCaptureEntryWindow?.show()
+                    return
+                }
+                
                 self.showAttachmentPicker(kind: attachmentKind, complete: { [weak self] attachmentId in
                     self?.dependency.globalCaptureEntryWindow?.show()
                     coordinator.addAttachment(attachmentId: attachmentId) {

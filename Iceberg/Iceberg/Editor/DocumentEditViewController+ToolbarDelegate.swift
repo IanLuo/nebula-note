@@ -36,7 +36,17 @@ extension DocumentEditorViewController: DocumentEditToolbarDelegate {
         self.textView.selectedRange = result.range!
     }
     
+    public func isMember() -> Bool {
+        return self.viewModel.isMember
+    }
+    
     public func didTriggerAction(_ action: ToolbarActionProtocol) {
+        
+        if (action.isMemberFunction && !self.viewModel.isMember) {
+            self.viewModel.context.coordinator?.showMembership()
+            return
+        }
+        
         let currentLocation = self.textView.selectedRange.location
         
         if let textViewAction = action as? TextViewAction {

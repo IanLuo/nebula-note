@@ -13,6 +13,11 @@ import Business
 
 public protocol ToolbarActionProtocol {
     var icon: UIImage { get }
+    var isMemberFunction: Bool { get }
+}
+
+public extension ToolbarActionProtocol {
+    var isMemberFunction: Bool { return false }
 }
 
 public protocol DocumentActon {}
@@ -134,6 +139,13 @@ public enum AttachmentAction: ToolbarActionProtocol, DocumentActon {
         case .sketch: return Asset.Assets.sketch.image
         case .location: return Asset.Assets.location.image
         case .link: return Asset.Assets.link.image
+        }
+    }
+    
+    public var isMemberFunction: Bool {
+        switch self {
+        case .video, .location, .audio: return true
+        default: return false
         }
     }
 }

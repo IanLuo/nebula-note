@@ -13,6 +13,7 @@ import Business
 
 public protocol DocumentEditToolbarDelegate: class {
     func didTriggerAction(_ action: ToolbarActionProtocol)
+    func isMember() -> Bool
 }
 
 public class InputToolbar: UIView {
@@ -117,7 +118,9 @@ extension InputToolbar: UICollectionViewDelegate, UICollectionViewDataSource, UI
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ActionButtonCell.reuseIdentifier, for: indexPath) as! ActionButtonCell
         
-        cell.iconView.image = self._actions[indexPath.section][indexPath.row].icon.withRenderingMode(.alwaysTemplate)
+        let action = self._actions[indexPath.section][indexPath.row]
+        cell.iconView.image = action.icon.withRenderingMode(.alwaysTemplate)
+        cell.memberFunctionImageView.isHidden = (self.delegate?.isMember() ?? false ) || !action.isMemberFunction
 
         return cell
     }
@@ -177,12 +180,22 @@ private class ActionButtonCell: UICollectionViewCell {
         return imageView
     }()
     
+    public let memberFunctionImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+        return imageView
+    }()
+    
     public override init(frame: CGRect) {
         super.init(frame: frame)
         
         self.contentView.addSubview(self.iconView)
         self.iconView.centerAnchors(position: [.centerX, .centerY], to: self.contentView)
         self.iconView.sizeAnchor(width: 18, height: 18)
+        
+        self.contentView.addSubview(self.memberFunctionImageView)
+        self.memberFunctionImageView.sideAnchor(for: [.left, .bottom, .right], to: self.contentView, edgeInset: 5)
+        self.memberFunctionImageView.image = Asset.Assets.proLabel.image
         
         self.interface { (me, theme) in
             let me = me as! UICollectionViewCell

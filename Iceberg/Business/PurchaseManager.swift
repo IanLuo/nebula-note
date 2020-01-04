@@ -34,13 +34,23 @@ public struct PurchaseManager {
     public func initialize() {
         self.findExpireDate().subscribe(onNext: { date in
             if let date = date {
-                self.isMember.accept(date.compare(Date()) == .orderedDescending)
-                log.info("init complete, user is member")
+                if date.compare(Date()) == .orderedDescending {
+                    self.isMember.accept(true)
+                    log.info("init complete, user is member")
+                } else {
+                    self.isMember.accept(false)
+                    log.info("init complete, user is not member")
+                }
             } else {
                 self.isMember.accept(false)
                 log.info("init complete, user is not member")
             }
             
+            #if DEBUG
+            if CommandLine.arguments.contains("IGNORE_MEMBERSHIP_CHECK") {
+                self.isMember.accept(true)
+            }
+            #endif
         }).disposed(by: self._disposeBag)
         
         self.initTransactions()
@@ -79,7 +89,17 @@ public struct PurchaseManager {
     public let isMember: BehaviorRelay<Bool> = BehaviorRelay(value: false)
         
     public func validate(productId: String) -> Observable<Date?> {
+        
         return Observable.create { observer -> Disposable in
+            
+            if let cachedExpireDate = self._cachedExpireDate {
+                observer.onNext(cachedExpireDate)
+                
+                if cachedExpireDate.compare(Date()) == .orderedDescending {
+                    observer.onCompleted()
+                    return Disposables.create()
+                }
+            }
             
             var validatServiceType = AppleReceiptValidator.VerifyReceiptURLType.production
             
@@ -103,10 +123,18 @@ public struct PurchaseManager {
                     switch purchaseResult {
                     case .expired(expiryDate: let _expireDate, items: _):
                         expireDate = _expireDate
+                        
+                        self._clearCachedExpire()
                     case .notPurchased:
                         expireDate = nil
+                        
+                        self._clearCachedExpire()
                     case .purchased(expiryDate: let _expireDate, items: _):
                         expireDate = _expireDate
+                        
+                        if let expireDate = expireDate {
+                            self._cacheExpireDate(expireDate)
+                        }
                     }
                     
                     observer.onNext(expireDate)
@@ -121,6 +149,8 @@ public struct PurchaseManager {
         return Observable.create { observer -> Disposable in
             
             SwiftyStoreKit.purchaseProduct(productId, quantity: 1, atomically: false) { result in
+                self._clearCachedExpire()
+                
                 switch result {
                 case .success(let product):
                     if product.needsFinishTransaction {
@@ -182,5 +212,24 @@ public struct PurchaseManager {
                 }
             }
         }
+    }
+    
+    private let _keyCachedExpireDate = "cachedExpireDate"
+    private var _cachedExpireDate: Date? {
+        if let timeInterval = UserDefaults.standard.value(forKey: _keyCachedExpireDate) as? Double {
+            return Date(timeIntervalSince1970: timeInterval)
+        } else {
+            return nil
+        }
+    }
+    
+    private func _cacheExpireDate(_ date: Date) {
+        UserDefaults.standard.set(date.timeIntervalSince1970, forKey: _keyCachedExpireDate)
+        UserDefaults.standard.synchronize()
+    }
+    
+    private func _clearCachedExpire() {
+        UserDefaults.standard.set(nil, forKey: _keyCachedExpireDate)
+        UserDefaults.standard.synchronize()
     }
 }
