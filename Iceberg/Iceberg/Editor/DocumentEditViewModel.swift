@@ -136,11 +136,7 @@ public class DocumentEditViewModel: ViewModelProtocol {
     }
     
     public func foldedRange(at location: Int) -> NSRange? {
-        if let contentRange = self._editorService.heading(at: location)?.contentRange {
-            return self._editorService.foldedRange(at: contentRange.location)
-        } else {
-            return nil
-        }
+        return self._editorService.foldedRange(at: location)
     }
     
     public func save(completion: @escaping () -> Void) {

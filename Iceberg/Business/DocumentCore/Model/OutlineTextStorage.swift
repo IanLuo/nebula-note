@@ -1033,7 +1033,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
         guard location < self.string.nsstring.length else { return nil }
         
         var folded: NSRange = NSRange(location: 0, length: 0)
-        if let value = self.attribute(OutlineAttribute.tempHidden, at: location, effectiveRange: &folded) as? NSNumber,
+        if let value = self.attribute(OutlineAttribute.tempHidden, at: location, longestEffectiveRange: &folded, in: NSRange(location: 0, length: self.length)) as? NSNumber,
             value == OutlineAttribute.hiddenValueFolded {
             return folded
         } else {
