@@ -254,9 +254,13 @@ public class DocumentEditViewModel: ViewModelProtocol {
             }
             
             if toLocation == 0 {
-                text = text + "\n"
+                if !text.hasSuffix("\n") {
+                    text = text + "\n"
+                }
             } else if toLocation == self._editorService.string.count {
-                text = "\n" + text
+                if !self._editorService.string.hasSuffix("\n") {
+                    text = "\n" + text
+                }
             }
             
             return self.performCommandComposer(InsertTextCommandComposer(location: toLocation, textToInsert: text), textView: textView)
