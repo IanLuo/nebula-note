@@ -21,6 +21,26 @@ public struct Product {
     var expireDate: Date?
 }
 
+public enum MemberFunctions: CaseIterable {
+    case customizedStatus
+    case unlimitedLevelSubDocument
+    case advancedAttachments
+    case refile
+    case moveToOtherDocument
+    case andMoreToCome
+    
+    public var name: String {
+        switch self {
+        case .customizedStatus: return L10n.Membership.Function.customStatus
+        case .unlimitedLevelSubDocument: return L10n.Membership.Function.unlimitedLevelOfSubDocuments
+        case .advancedAttachments: return L10n.Membership.Function.advancedAttachments
+        case .refile: return L10n.Membership.Function.refile
+        case .moveToOtherDocument: return L10n.Membership.Function.moveToOtherDocument
+        case .andMoreToCome: return L10n.Membership.Function.andMoreToCome
+        }
+    }
+}
+
 public class MembershipViewModel: ViewModelProtocol {
     public struct Output {
         let monthlyProduct: BehaviorRelay<Product> = BehaviorRelay(value: Product(type: .monthlyMembership, name: L10n.Membership.Monthly.title, description: L10n.Membership.Monthly.description))

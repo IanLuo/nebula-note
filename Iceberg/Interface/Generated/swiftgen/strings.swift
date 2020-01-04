@@ -519,7 +519,7 @@ public enum L10n {
   }
 
   public enum Membership {
-    /// Dear customer, if you feel enjoy using Icetea, please consider join our membership, to use more advanced functions, and help to bring Icetea to more platforms and become better, Icetea will become more strong, powerful, and useful to you.
+    /// Dear user, if you feel enjoy using Icetea, please consider join our membership, to use more advanced functions, and help to bring Icetea to more platforms and become better, Icetea will become more strong, more powerful, and more useful to you.
     public static let letter = L10n.tr("Localizable", "membership.letter")
     /// Ordered
     public static let ordered = L10n.tr("Localizable", "membership.ordered")
@@ -528,12 +528,16 @@ public enum L10n {
     public enum Function {
       /// Advanced attachments, including Location, Audio and Video
       public static let advancedAttachments = L10n.tr("Localizable", "membership.function.advancedAttachments")
+      /// And more to come
+      public static let andMoreToCome = L10n.tr("Localizable", "membership.function.andMoreToCome")
       /// Custom paragraph status
       public static let customStatus = L10n.tr("Localizable", "membership.function.customStatus")
       /// Move paragraph to other document
       public static let moveToOtherDocument = L10n.tr("Localizable", "membership.function.moveToOtherDocument")
       /// Refile from capturelist
       public static let refile = L10n.tr("Localizable", "membership.function.refile")
+      /// As a member, you will be able to access advanced features as follow:
+      public static let title = L10n.tr("Localizable", "membership.function.title")
       /// Unlimited level of sub documents
       public static let unlimitedLevelOfSubDocuments = L10n.tr("Localizable", "membership.function.unlimitedLevelOfSubDocuments")
     }

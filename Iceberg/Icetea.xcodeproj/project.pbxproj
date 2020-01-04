@@ -156,6 +156,7 @@
 		E4773BA821F7505E000F8F3F /* SearchTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4773BA721F7505E000F8F3F /* SearchTableCell.swift */; };
 		E4773BAA21F7507E000F8F3F /* SearchTabelCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4773BA921F7507E000F8F3F /* SearchTabelCellModel.swift */; };
 		E47829FD222E683B0054513E /* InputToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = E47829FC222E683B0054513E /* InputToolbar.swift */; };
+		E479512123C09B76000CFDE3 /* Paragraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = E479512023C09B76000CFDE3 /* Paragraph.swift */; };
 		E47A9A5221F1F7690050ABC9 /* DateHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E47A9A5121F1F7690050ABC9 /* DateHelper.swift */; };
 		E47FA8FB227025B8005AD0BA /* ExportManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E47FA8FA227025B8005AD0BA /* ExportManager.swift */; };
 		E47FA8FD227025D6005AD0BA /* ImportManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E47FA8FC227025D6005AD0BA /* ImportManager.swift */; };
@@ -509,6 +510,7 @@
 		E4773BA921F7507E000F8F3F /* SearchTabelCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTabelCellModel.swift; sourceTree = "<group>"; };
 		E4773BAB21F9A203000F8F3F /* CoverPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverPickerViewController.swift; sourceTree = "<group>"; };
 		E47829FC222E683B0054513E /* InputToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputToolbar.swift; sourceTree = "<group>"; };
+		E479512023C09B76000CFDE3 /* Paragraph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Paragraph.swift; sourceTree = "<group>"; };
 		E47A9A5121F1F7690050ABC9 /* DateHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateHelper.swift; sourceTree = "<group>"; };
 		E47FA8FA227025B8005AD0BA /* ExportManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportManager.swift; sourceTree = "<group>"; };
 		E47FA8FC227025D6005AD0BA /* ImportManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportManager.swift; sourceTree = "<group>"; };
@@ -743,6 +745,7 @@
 				E4A46A1D21AE6CF400FBDA04 /* Image+Generation.swift */,
 				E4B1BED32342304200683E10 /* Builder */,
 				E4CC0C5821EEF92900058E5D /* Size.swift */,
+				E479512023C09B76000CFDE3 /* Paragraph.swift */,
 				E4BC264121F56DB900B0F2B9 /* Rect.swift */,
 				E4F3029D21D750ED00BDE178 /* Autolayout+Shortcuts.swift */,
 				E4BC264321F587BC00B0F2B9 /* FrameLayout+Shortcuts.swift */,
@@ -1891,6 +1894,7 @@
 				E40F6EA3223B7A7200FFF53F /* ModalFormViewController.swift in Sources */,
 				E40F6EAB223B7ABF00FFF53F /* OutlineTheme.swift in Sources */,
 				E40F6E9E223B7A6800FFF53F /* Rotation.swift in Sources */,
+				E479512123C09B76000CFDE3 /* Paragraph.swift in Sources */,
 				E40F6EA2223B7A7200FFF53F /* SelectorViewController.swift in Sources */,
 				E40F6E9F223B7A6D00FFF53F /* RoundButton.swift in Sources */,
 				E40F6EAD223B7B7300FFF53F /* Rect.swift in Sources */,

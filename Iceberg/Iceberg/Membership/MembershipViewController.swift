@@ -11,6 +11,7 @@ import UIKit
 import RxSwift
 import RxCocoa
 import Interface
+import Business
 
 public class MembershipViewController: UIViewController {
     private var viewModel: MembershipViewModel!
@@ -30,7 +31,27 @@ public class MembershipViewController: UIViewController {
     
     let titleLabel: UILabel = {
         let label = LabelStyle.description.create()
+        
+        label.interface { (me, theme) in
+            let label = me as! UILabel
+            label.textColor = theme.color.descriptive
+            label.font = theme.font.body
+        }
+
         label.numberOfLines = 0
+        return label
+    }()
+    
+    let functionDescription: UILabel = {
+        let label = UILabel()
+        label.numberOfLines = 0
+        
+        label.interface { (me, theme) in
+            let label = me as! UILabel
+            label.textColor = theme.color.descriptive
+            label.font = theme.font.body
+        }
+        
         return label
     }()
     
@@ -66,6 +87,7 @@ public class MembershipViewController: UIViewController {
         self.contentView.addSubview(self.monthlyProductView)
         self.contentView.addSubview(self.yearlyProductView)
         self.contentView.addSubview(self.restoreButton)
+        self.contentView.addSubview(self.functionDescription)
         
         self.scrollView.allSidesAnchors(to: self.view, edgeInset: 0)
         self.contentView.allSidesAnchors(to: self.scrollView, edgeInset: 0)
@@ -75,18 +97,21 @@ public class MembershipViewController: UIViewController {
         self.titleImageView.sideAnchor(for: [.left, .top, .right], to: self.contentView, edgeInset: 0)
         self.titleImageView.sizeAnchor(height: 50)
         
-        self.titleImageView.columnAnchor(view: self.titleLabel, space: 20, alignment: .centerX)
-        self.titleLabel.sideAnchor(for: .left, to: self.contentView, edgeInset: 20)
+        self.titleImageView.columnAnchor(view: self.titleLabel, space: Layout.innerViewEdgeInsets.left, alignment: .centerX)
+        self.titleLabel.sideAnchor(for: .left, to: self.contentView, edgeInset: Layout.innerViewEdgeInsets.left)
         
-        self.titleLabel.columnAnchor(view: self.monthlyProductView, space: 40, alignment: .centerX)
-        self.monthlyProductView.sideAnchor(for: .left, to: self.contentView, edgeInset: 20)
+        self.titleLabel.columnAnchor(view: self.monthlyProductView, space: Layout.innerViewEdgeInsets.left, alignment: .centerX)
+        self.monthlyProductView.sideAnchor(for: .left, to: self.contentView, edgeInset: Layout.innerViewEdgeInsets.left)
         
-        self.monthlyProductView.columnAnchor(view: self.yearlyProductView, space: 30, alignment: .centerX)
-        self.yearlyProductView.sideAnchor(for: .left, to: self.contentView, edgeInset: 20)
+        self.monthlyProductView.columnAnchor(view: self.yearlyProductView, space: Layout.innerViewEdgeInsets.left, alignment: .centerX)
+        self.yearlyProductView.sideAnchor(for: .left, to: self.contentView, edgeInset: Layout.innerViewEdgeInsets.left)
         
-        self.yearlyProductView.columnAnchor(view: self.restoreButton, space: 40, alignment: .centerX)
-        self.restoreButton.sideAnchor(for: [.left, .bottom], to: self.contentView, edgeInset: 40)
-        self.restoreButton.sizeAnchor(height: 44)
+        self.yearlyProductView.columnAnchor(view: self.restoreButton, space: Layout.innerViewEdgeInsets.left, alignment: .centerX)
+        self.restoreButton.sideAnchor(for: .left, to: self.contentView, edgeInset: Layout.innerViewEdgeInsets.left)
+        self.restoreButton.sizeAnchor(height: 60)
+        
+        self.restoreButton.columnAnchor(view: self.functionDescription, space: 40, alignment: .centerX)
+        self.functionDescription.sideAnchor(for: [.left, .bottom], to: self.contentView, edgeInsets: .init(top: 0, left: Layout.innerViewEdgeInsets.left, bottom: -80, right: 0))
         
         self.interface { (me, theme) in
             me.view.backgroundColor = theme.color.background1
@@ -98,7 +123,18 @@ public class MembershipViewController: UIViewController {
         }).disposed(by:self.disposeBag)
         self.navigationItem.leftBarButtonItem = cancelBarButtonItem
         
-        self.titleLabel.text = L10n.Membership.letter
+        self.titleLabel.attributedText = NSAttributedString(string: L10n.Membership.letter, attributes: [NSAttributedString.Key.paragraphStyle : NSParagraphStyle.descriptive])
+        
+        let aString = NSMutableAttributedString(string: L10n.Membership.Function.title + "\n\n")
+        let titleLength = aString.length
+        for `case` in MemberFunctions.allCases {
+            aString.append(NSAttributedString(string: "🥃 ", attributes: [NSAttributedString.Key.foregroundColor : InterfaceTheme.Color.spotlight]))
+            aString.append(NSAttributedString(string: `case`.name + "\n", attributes: [NSAttributedString.Key.foregroundColor : InterfaceTheme.Color.descriptive]))
+        }
+        
+        aString.addAttributes([NSAttributedString.Key.paragraphStyle : NSParagraphStyle.bulletDescriptive], range: NSRange(location: titleLength, length: aString.length - titleLength))
+        
+        self.functionDescription.attributedText = aString
     }
     
     private func bind() {
@@ -226,21 +262,21 @@ class ProductDescriptionView: UIView {
         self.addSubview(self.orderButton)
         self.addSubview(self.descriptionLabel)
         
-        self.titleLabel.sideAnchor(for: [.left, .top, .right], to: self, edgeInset: 20)
+        self.titleLabel.sideAnchor(for: [.left, .top, .right], to: self, edgeInset: 0)
         self.titleLabel.columnAnchor(view: self.orderButton, space: 10, alignment: .centerX)
         
-        self.orderButton.sideAnchor(for: [.left, .right], to: self, edgeInset: 20)
+        self.orderButton.sideAnchor(for: [.left, .right], to: self, edgeInset: 0)
         self.orderButton.columnAnchor(view: self.descriptionLabel, space: 10, alignment: .centerX)
         self.orderButton.sizeAnchor(height: 60)
         
-        self.descriptionLabel.sideAnchor(for: [.left, .right, .bottom], to: self, edgeInset: 20)
+        self.descriptionLabel.sideAnchor(for: [.left, .right, .bottom], to: self, edgeInset: 0)
     }
     
     public func update(product: Product) {
         self.titleLabel.text = product.name
         self.descriptionLabel.text = product.description
         
-        if let expireDate = product.expireDate, expireDate > Date() {
+        if let expireDate = product.expireDate, expireDate.compare(Date()) == .orderedDescending  {
             self.orderButton.setTitle("\(L10n.Membership.ordered) (\(expireDate.shortDateString))", for: .normal)
             self.orderButton.isEnabled = false
         } else {
