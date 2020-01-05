@@ -84,15 +84,15 @@ public class BrowserCell: UITableViewCell {
         self.container.addSubview(self.actionsContainerView)
         self.container.addSubview(self.lastModifiedDateLabel)
         
-        self.interface { (me, theme) in
+        self.interface { [weak self] (me, theme) in
             let cell = me as! BrowserCell
             cell.backgroundColor = theme.color.background1
             cell.titleLabel.textColor = theme.color.interactive
             cell.titleLabel.font = theme.font.title
             cell.contentView.backgroundColor = theme.color.background1
-            self.container.backgroundColor = theme.color.background2
-            self.lastModifiedDateLabel.textColor = theme.color.descriptive
-            self.lastModifiedDateLabel.font = theme.font.footnote
+            self?.container.backgroundColor = theme.color.background2
+            self?.lastModifiedDateLabel.textColor = theme.color.descriptive
+            self?.lastModifiedDateLabel.font = theme.font.footnote
         }
         
         self.iconView.sideAnchor(for: [.left, .top, .bottom],
@@ -162,13 +162,14 @@ public class BrowserCell: UITableViewCell {
         actionButton.isHidden = self.cellModel?.shouldShowActions == false
         actionButton.interface { (me, theme) in
             if let button = me as? RoundButton {
-                actionButton.setIcon(Asset.Assets.more.image.fill(color: theme.color.descriptive), for: .normal)
-                actionButton.setBackgroundColor(theme.color.background2, for: .normal)
+                button.setIcon(Asset.Assets.more.image.fill(color: theme.color.descriptive), for: .normal)
+                button.setBackgroundColor(theme.color.background2, for: .normal)
             }
         }
-        actionButton.tapped { _ in
-            self.cellModel?.coordinator?.dependency.globalCaptureEntryWindow?.hide()
-            self.onPresentingModalViewController.onNext(self.actionViewController)
+        actionButton.tapped { [weak self] _ in
+            guard let strongSelf = self else { return }
+            strongSelf.cellModel?.coordinator?.dependency.globalCaptureEntryWindow?.hide()
+            strongSelf.onPresentingModalViewController.onNext(strongSelf.actionViewController)
         }
         
         view.addSubview(actionButton)
@@ -190,24 +191,25 @@ public class BrowserCell: UITableViewCell {
                 actionButton.setBackgroundColor(theme.color.background2, for: .normal)
             }
         }
-        actionButton.tapped { _ in
-            self.onPresentingModalViewController.onNext(self.actionViewController)
-            self.cellModel?.coordinator?.dependency.globalCaptureEntryWindow?.hide()
+        actionButton.tapped { [weak self] _ in
+           guard let strongSelf = self else { return }
+            strongSelf.onPresentingModalViewController.onNext(strongSelf.actionViewController)
+            strongSelf.cellModel?.coordinator?.dependency.globalCaptureEntryWindow?.hide()
         }
         
         let enterButton = UIButton()
         enterButton.interface { (me, theme) in
             if let button = me as? UIButton {
-                enterButton.setBackgroundImage(UIImage.create(with: theme.color.background3, size: .singlePoint), for: .normal)
-                enterButton.setImage(Asset.Assets.next.image.fill(color: theme.color.interactive), for: .normal)
+                button.setBackgroundImage(UIImage.create(with: theme.color.background3, size: .singlePoint), for: .normal)
+                button.setImage(Asset.Assets.next.image.fill(color: theme.color.interactive), for: .normal)
             }
         }
         
         enterButton.roundConer(radius: 10)
         
-        enterButton.rx.tap.subscribe(onNext: {
-            if let cellModel = self.cellModel {
-                self.onEnter.onNext(cellModel.url)
+        enterButton.rx.tap.subscribe(onNext: { [weak self] in
+            if let cellModel = self?.cellModel {
+                self?.onEnter.onNext(cellModel.url)
             }
         }).disposed(by: self.disposeBag)
         
@@ -234,9 +236,9 @@ public class BrowserCell: UITableViewCell {
         self._createExportActionItem(for: actionsViewController)
         self._createDeleteActionItem(for: actionsViewController)
         
-        actionsViewController.setCancel { viewController in
+        actionsViewController.setCancel { [weak self] viewController in
             viewController.dismiss(animated: true, completion: nil)
-            self.cellModel?.coordinator?.dependency.globalCaptureEntryWindow?.show()
+            self?.cellModel?.coordinator?.dependency.globalCaptureEntryWindow?.show()
         }
         
         return actionsViewController
@@ -244,18 +246,19 @@ public class BrowserCell: UITableViewCell {
     
     private func _createNewDocumentActionItem(for actionsViewController: ActionsViewController) {
         if (self.cellModel?.coordinator?.dependency.purchaseManager.isMember.value ?? true) || (self.cellModel?.url.levelsToRoot ?? 0) < 2 {
-            actionsViewController.addActionAutoDismiss(icon: Asset.Assets.add.image, title: L10n.Browser.Actions.newSub) {
-                guard let cellModel = self.cellModel else { return }
+            actionsViewController.addActionAutoDismiss(icon: Asset.Assets.add.image, title: L10n.Browser.Actions.newSub) { [weak self] in
+                guard let strongSelf = self else { return }
+                guard let cellModel = strongSelf.cellModel else { return }
                 cellModel.createChildDocument(title: L10n.Browser.Title.untitled)
                     .subscribe(onNext: { url in
-                        self.onCreateSubDocument.onNext(url)
-                    }).disposed(by: self.disposeBag)
+                        strongSelf.onCreateSubDocument.onNext(url)
+                    }).disposed(by: strongSelf.disposeBag)
                 
                 cellModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
             }
         } else {
-            actionsViewController.addActionAutoDismiss(icon: Asset.Assets.proLabel.image, title: L10n.Browser.Actions.newSub) {
-                guard let cellModel = self.cellModel else { return }
+            actionsViewController.addActionAutoDismiss(icon: Asset.Assets.proLabel.image, title: L10n.Browser.Actions.newSub) { [weak self] in
+                guard let cellModel = self?.cellModel else { return }
                 cellModel.coordinator?.showMembership()
                 
                 cellModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
@@ -264,8 +267,9 @@ public class BrowserCell: UITableViewCell {
     }
     
     private func _createDeleteActionItem(for actionsViewController: ActionsViewController) {
-        actionsViewController.addAction(icon: Asset.Assets.trash.image, title: L10n.Browser.Actions.delete, style: .warning) { viewController in
-            guard let cellModel = self.cellModel else { return }
+        actionsViewController.addAction(icon: Asset.Assets.trash.image, title: L10n.Browser.Actions.delete, style: .warning) { [weak self] viewController in
+            guard let strongSelf = self else { return }
+            guard let cellModel = strongSelf.cellModel else { return }
             
             let confirmViewController = ConfirmViewController()
             confirmViewController.contentText = L10n.Browser.Actions.Delete.confirm(cellModel.url.packageName)
@@ -275,8 +279,8 @@ public class BrowserCell: UITableViewCell {
                         cellModel
                             .deleteDocument()
                             .subscribe(onNext: { url in
-                                self.onDeleteDocument.onNext(url)
-                            }).disposed(by: self.disposeBag)
+                                strongSelf.onDeleteDocument.onNext(url)
+                            }).disposed(by: strongSelf.disposeBag)
                     })
                     cellModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                 })
@@ -295,8 +299,8 @@ public class BrowserCell: UITableViewCell {
         guard let cellModel = self.cellModel else { return }
         
         actionsViewController.addActionAutoDismiss(icon: nil, title: L10n.Browser.Actions.duplicate) {
-            cellModel.duplicate().subscribe(onNext: { url in
-                self.onDuplicateDocument.onNext(url)
+            cellModel.duplicate().subscribe(onNext: { [weak self] url in
+                self?.onDuplicateDocument.onNext(url)
             }).disposed(by: self.disposeBag)
         }
     }
@@ -306,9 +310,11 @@ public class BrowserCell: UITableViewCell {
         
         actionsViewController.addAction(icon: nil, title: L10n.Browser.Action.MoveTo.title) { viewController in
             
-            cellModel.loadAllFiles(completion: { [unowned self] files in
+            cellModel.loadAllFiles(completion: { files in
                 
-                viewController.dismiss(animated: true, completion: {
+                viewController.dismiss(animated: true, completion: {  [weak self] in
+                    guard let strongSelf = self else { return }
+                    
                     let selector = SelectorViewController()
                     selector.title = L10n.Browser.Action.MoveTo.msg
                     selector.fromView = self
@@ -333,22 +339,23 @@ public class BrowserCell: UITableViewCell {
                     
                     selector.onSelection = { index, viewController in
                         viewController.dismiss(animated: true, completion: {
+                            
                             cellModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                             
                             if index == 0 {
                                 cellModel.move(to: URL.documentBaseURL).subscribe(onNext: { fromURL, toURL in
-                                    self.onMoveDocument.onNext((fromURL, toURL))
-                                }).disposed(by: self.disposeBag)
+                                    strongSelf.onMoveDocument.onNext((fromURL, toURL))
+                                }).disposed(by: strongSelf.disposeBag)
                             } else {
                                 let under = files[index - 1]
                                 cellModel.move(to: under).subscribe(onNext: { fromURL, toURL in
-                                    self.onMoveDocument.onNext((fromURL, toURL))
-                                }).disposed(by: self.disposeBag)
+                                    strongSelf.onMoveDocument.onNext((fromURL, toURL))
+                                }).disposed(by: strongSelf.disposeBag)
                             }
                         })
                     }
                     
-                    self.onPresentingModalViewController.onNext(selector)
+                    strongSelf.onPresentingModalViewController.onNext(selector)
                 })
             })
         }
@@ -362,12 +369,13 @@ public class BrowserCell: UITableViewCell {
             let title = L10n.Browser.Action.Rename.newName
             renameFormViewController.title = title
             renameFormViewController.addTextFied(title: title, placeHoder: "", defaultValue: cellModel.url.packageName) // 不需要显示 placeholder, default value 有值
-            renameFormViewController.onSaveValueAutoDismissed = { formValue in
+            renameFormViewController.onSaveValueAutoDismissed = { [weak self] formValue in
+                guard let strongSelf = self else { return }
                 if let newName = formValue[title] as? String {
                     cellModel.rename(to: newName)
                         .subscribe(onNext: { fromURL, toURL in
-                            self.onRenameDocument.onNext(toURL)
-                        }).disposed(by: self.disposeBag)
+                            strongSelf.onRenameDocument.onNext(toURL)
+                        }).disposed(by: strongSelf.disposeBag)
                 }
             }
             
@@ -386,8 +394,9 @@ public class BrowserCell: UITableViewCell {
                 return [:]
             }
             
-            renameFormViewController.onCancel = { viewController in
-                guard let cellModel = self.cellModel else { return }
+            renameFormViewController.onCancel = { [weak self] viewController in
+                guard let strongSelf = self else { return }
+                guard let cellModel = strongSelf.cellModel else { return }
                 viewController.dismiss(animated: true, completion: nil)
                 cellModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
             }
@@ -399,14 +408,14 @@ public class BrowserCell: UITableViewCell {
     private func _createEditCoverActionItem(for  actionsViewController: ActionsViewController) {
         guard let cellModel = self.cellModel else { return }
         
-        actionsViewController.addActionAutoDismiss(icon: nil, title: L10n.Browser.Actions.cover) {
+        actionsViewController.addActionAutoDismiss(icon: nil, title: L10n.Browser.Actions.cover) { [weak self] in
             let coverPicker = CoverPickerViewController()
             coverPicker.onSelecedCover = { cover in
-                cellModel
-                    .updateCover(cover: cover)
+                guard let strongSelf = self else { return }
+                cellModel.updateCover(cover: cover)
                     .subscribe(onNext: { url in
-                        self.onChangeCover.onNext(url)
-                    }).disposed(by: self.disposeBag)
+                        strongSelf.onChangeCover.onNext(url)
+                    }).disposed(by: strongSelf.disposeBag)
                 
                 cellModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
             }
@@ -415,14 +424,14 @@ public class BrowserCell: UITableViewCell {
                 cellModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
             }
             
-            self.onPresentingModalViewController.onNext(coverPicker)
+            self?.onPresentingModalViewController.onNext(coverPicker)
         }
     }
     
     private func _createExportActionItem(for actionsViewController: ActionsViewController) {
         guard let cellModel = self.cellModel else { return }
         
-        actionsViewController.addActionAutoDismiss(icon: nil, title: L10n.Document.Export.title) {
+        actionsViewController.addActionAutoDismiss(icon: nil, title: L10n.Document.Export.title) { [weak self] in
             guard let exportManager = cellModel.coordinator?.dependency.exportManager else { return }
             
             let selector = SelectorViewController()
@@ -431,13 +440,14 @@ public class BrowserCell: UITableViewCell {
                 selector.addItem(title: item.title)
             }
             
-            selector.onSelection = { index, viewController in
+            selector.onSelection = { [weak self] index, viewController in
+                guard let strongSelf = self else { return }
                 viewController.dismiss(animated: true, completion: {
                     cellModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                     exportManager.export(url: cellModel.url, type:exportManager.exportMethods[index], completion: { url in
                         
                         let shareViewController = exportManager.createPreviewController(url: url)
-                        self.onPresentingModalViewController.onNext(shareViewController)
+                        strongSelf.onPresentingModalViewController.onNext(shareViewController)
                     }, failure: { error in
                         // TODO: show error
                     })
@@ -449,7 +459,7 @@ public class BrowserCell: UITableViewCell {
                 cellModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
             }
             
-            self.onPresentingModalViewController.onNext(selector)
+            self?.onPresentingModalViewController.onNext(selector)
         }
     }
 }

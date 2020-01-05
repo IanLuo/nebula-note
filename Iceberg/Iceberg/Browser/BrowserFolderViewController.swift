@@ -88,7 +88,7 @@ public class BrowserFolderViewController: UIViewController {
         self.viewModel.title.asDriver(onErrorJustReturn: "").drive(self.rx.title).disposed(by: self.disposeBag)
 
         //bind table view
-        let dataSource = RxTableViewSectionedReloadDataSource<BrowserDocumentSection>(configureCell: { (dataSource, tableView, indexPath, cellModel) -> UITableViewCell in
+        let dataSource = RxTableViewSectionedReloadDataSource<BrowserDocumentSection>(configureCell: { [unowned self] (dataSource, tableView, indexPath, cellModel) -> UITableViewCell in
             var cell = tableView.dequeueReusableCell(withIdentifier: BrowserCell.reuseIdentifier, for: indexPath) as! BrowserCell
             
             if cellModel.hasSubDocuments {
@@ -101,7 +101,7 @@ public class BrowserFolderViewController: UIViewController {
                 .observeOn(MainScheduler())
                 .bind(to: self.present)
                 .disposed(by: cell.reuseDisposeBag)
-            
+
             cell.onMoveDocument.bind(to: self.tableCellMoved).disposed(by: cell.reuseDisposeBag)
             cell.onCreateSubDocument.do(onNext: { _ in self.enterChild(url: cellModel.url)}).bind(to: self.tableCellInserted).disposed(by: cell.reuseDisposeBag)
             cell.onChangeCover.bind(to: self.tableCellUpdate).disposed(by: cell.reuseDisposeBag)
@@ -180,7 +180,7 @@ public class BrowserFolderViewController: UIViewController {
         let viewController = BrowserFolderViewController(viewModel: viewModel)
         
         // pass selection to parent
-        viewController.output.onSelectDocument.bind(to: self.output.onSelectDocument).disposed(by: self.disposeBag)
+        viewController.output.onSelectDocument.bind(to: self.output.onSelectDocument).disposed(by: viewController.disposeBag)
         
         self.navigationController?.pushViewController(viewController, animated: true)
     }
@@ -188,7 +188,7 @@ public class BrowserFolderViewController: UIViewController {
 
 extension BrowserFolderViewController: EmptyContentPlaceHolderProtocol {
     public var text: String {
-        return "Folder is empty"
+        return L10n.Browser.empty
     }
     
     public var image: UIImage {

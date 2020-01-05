@@ -179,6 +179,7 @@
 "browser.actions.rename" = "Rename";
 "browser.outline.beginingOfDocument" = "Document begining";
 "browser.outline.endOfDocument" = "Document ending";
+"browser.empty" = "Folder is empty";
 
 // agenda
 "agenda.title" = "Agenda";

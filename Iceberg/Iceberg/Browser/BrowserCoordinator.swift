@@ -46,18 +46,16 @@ public class BrowserCoordinator: Coordinator {
         let browserFolderViewModel = BrowserFolderViewModel(url: URL.documentBaseURL, mode: usage.browserFolderMode, coordinator: self)
         let browserFolderViewController = BrowserFolderViewController(viewModel: browserFolderViewModel)
         
-        let browseRecentViewModel = BrowserRecentViewModel()
+        let browseRecentViewModel = BrowserRecentViewModel(coordinator: self)
         let browseRecentViewController = BrowserRecentViewController(viewModel: browseRecentViewModel)
         
         let browseViewController = BrowserViewController(recentViewController: browseRecentViewController,
                                                          browserFolderViewController: browserFolderViewController)
-        
-        browseRecentViewModel.coordinator = self
-        
+                
         self.viewController = browseViewController
         
         // binding
-        browserFolderViewController.output.onSelectDocument.subscribe(onNext: { url in
+        browserFolderViewController.output.onSelectDocument.subscribe(onNext: { [unowned self] url in
             switch self.usage {
             case .browseDocument:
                 self.delegate?.didSelectDocument(url: url, coordinator: self)
@@ -67,12 +65,12 @@ public class BrowserCoordinator: Coordinator {
             }
         }).disposed(by: self.disposeBag)
         
-        browseViewController.output.canceld.subscribe(onNext: {
+        browseViewController.output.canceld.subscribe(onNext: { [unowned self] in
             self.delegate?.didCancel(coordinator: self)
             self.didCancelAction?()
         }).disposed(by: self.disposeBag)
         
-        browseRecentViewController.output.choosenDocument.subscribe(onNext: { url in
+        browseRecentViewController.output.choosenDocument.subscribe(onNext: { [unowned self] url in
             switch self.usage {
             case .browseDocument:
                 self.delegate?.didSelectDocument(url: url, coordinator: self)

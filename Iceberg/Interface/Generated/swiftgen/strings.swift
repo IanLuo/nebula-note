@@ -191,6 +191,8 @@ public enum L10n {
   }
 
   public enum Browser {
+    /// Folder is empty
+    public static let empty = L10n.tr("Localizable", "browser.empty")
     /// Documents
     public static let title = L10n.tr("Localizable", "browser.title")
     public enum Action {

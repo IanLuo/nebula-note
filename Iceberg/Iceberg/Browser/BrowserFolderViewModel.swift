@@ -236,3 +236,8 @@ public class BrowserFolderViewModel: ViewModelProtocol {
     }
 }
 
+extension BrowserFolderViewModel: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        return "\(self.url)"
+    }
+}
