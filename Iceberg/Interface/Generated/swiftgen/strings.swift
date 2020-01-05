@@ -521,7 +521,7 @@ public enum L10n {
   }
 
   public enum Membership {
-    /// Dear user, if you feel enjoy using Icetea, please consider join our membership, to use more advanced functions, and help to bring Icetea to more platforms and become better, Icetea will become more strong, more powerful, and more useful to you.
+    /// Dear user, if you feel enjoy using Icetea note, please consider join our membership, to use more advanced functions, and help to let Icetea note becomes more strong, more powerful, and more useful for you.
     public static let letter = L10n.tr("Localizable", "membership.letter")
     /// Ordered
     public static let ordered = L10n.tr("Localizable", "membership.ordered")

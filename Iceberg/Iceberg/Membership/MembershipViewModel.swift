@@ -27,8 +27,8 @@ public enum MemberFunctions: CaseIterable {
     case advancedAttachments
     case refile
     case moveToOtherDocument
-    case andMoreToCome
     case removeExportWaterprint
+    case andMoreToCome
     
     public var name: String {
         switch self {
