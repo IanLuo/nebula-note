@@ -21,7 +21,7 @@ public struct HTMLExporter: Exportable {
         self.url = url
     }
     
-    public func export(completion: @escaping (ExportResult) -> Void) {
+    public func export(isMember: Bool, completion: @escaping (ExportResult) -> Void) {
         let service = self._editorContext.request(url: self.url)
         
         var headingIndexs: [[Int]] = []
@@ -67,24 +67,37 @@ public struct HTMLExporter: Exportable {
                     result = result.nsstring.replacingCharacters(in: token.range, with: tokenString)
                 }
                 
-                result.insert(contentsOf: "<!DOCTYPE html><html><meta charset=\"utf-8\"/><head>\(self.style)</head>", at: result.startIndex)
-                result.append("</html>")
+                result.insert(contentsOf: "<!DOCTYPE html><html><meta charset=\"utf-8\"/><head>\(self.style)</head><body><article>", at: result.startIndex)
+                result.append("</article>")
+                if !isMember {
+                    result.append(self.footer)
+                }
+                result.append("</body></html>")
                 
                 completion(.string(result))
             }
         }
     }
     
+    var footer: String {
+        """
+        <div class=\"footer\">
+        <span style=\"vertical-align: middle;\">Create with Icetea</span> <img style=\"width:50px;height:50px\" src='\(URL(fileURLWithPath: Bundle(for: InterfaceTheme.self).path(forResource: "icetea", ofType: "png") ?? "").absoluteString)'></img>
+        </div>
+        """
+    }
+    
     var style: String {
         return """
         <style>
-        body { background-color: \(InterfaceTheme.Color.background1.hex); color: \(InterfaceTheme.Color.descriptive.hex); padding-left: 30px; padding-right: 30px; padding-top: 120px; padding-bottom: 120px;}
+        body { background-color: \(InterfaceTheme.Color.background1.hex); color: \(InterfaceTheme.Color.descriptive.hex); padding-left: 30px; padding-right: 30px; padding-top: 120px; padding-bottom: 120px;height:100%; min-height:100%;}
         h1   {color: \(InterfaceTheme.Color.interactive.hex);}
         h2   {color: \(InterfaceTheme.Color.interactive.hex);}
         h3   {color: \(InterfaceTheme.Color.interactive.hex);}
         h4   {color: \(InterfaceTheme.Color.interactive.hex);}
         h5   {color: \(InterfaceTheme.Color.interactive.hex);}
         h6   {color: \(InterfaceTheme.Color.interactive.hex);}
+
         mark {
           background-color: \(InterfaceTheme.Color.spotlight.hex);
           color: \(InterfaceTheme.Color.spotlitTitle.hex);
@@ -107,6 +120,16 @@ public struct HTMLExporter: Exportable {
           margin: 0 auto;
           width: 90%;
           padding-bottom: 50px;
+        }
+        .footer {
+            text-align: right;
+            clear: both;
+            position: relative;
+            height: 50px;
+            margin-top: 100px;
+        }
+        .footer > * {
+          vertical-align: middle;
         }
         </style>
 """

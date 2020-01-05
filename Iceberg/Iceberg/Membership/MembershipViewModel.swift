@@ -28,6 +28,7 @@ public enum MemberFunctions: CaseIterable {
     case refile
     case moveToOtherDocument
     case andMoreToCome
+    case removeExportWaterprint
     
     public var name: String {
         switch self {
@@ -37,6 +38,7 @@ public enum MemberFunctions: CaseIterable {
         case .refile: return L10n.Membership.Function.refile
         case .moveToOtherDocument: return L10n.Membership.Function.moveToOtherDocument
         case .andMoreToCome: return L10n.Membership.Function.andMoreToCome
+        case .removeExportWaterprint: return L10n.Membership.Function.removeExportWaterprint
         }
     }
 }

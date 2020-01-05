@@ -14,7 +14,7 @@ public protocol Exportable {
     var url: URL { get }
     var fileExtension: String { get }
     
-    func export(completion: @escaping (ExportResult) -> Void)
+    func export(isMember: Bool, completion: @escaping (ExportResult) -> Void)
 }
 
 public enum ExportResult {
@@ -72,7 +72,8 @@ public struct ExportManager {
     
     public let exportMethods: [ExportType] = [.html, .txt, .pdf, .jpg]
     
-    public func export(url: URL,
+    public func export(isMember: Bool,
+                       url: URL,
                        type: ExportType, 
                        completion: @escaping (URL) -> Void,
                        failure: @escaping (Error) -> Void) {
@@ -84,7 +85,7 @@ public struct ExportManager {
             if let error = error {
                 failure(error)
             } else {
-                exportable.export { exportedResult in
+                exportable.export(isMember: isMember) { exportedResult in
                     switch exportedResult {
                     case .string(let exportedContent):
                             let fileName = exportable.url.deletingPathExtension().lastPathComponent

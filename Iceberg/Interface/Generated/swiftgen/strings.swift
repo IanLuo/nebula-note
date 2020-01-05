@@ -538,6 +538,8 @@ public enum L10n {
       public static let moveToOtherDocument = L10n.tr("Localizable", "membership.function.moveToOtherDocument")
       /// Refile from capturelist
       public static let refile = L10n.tr("Localizable", "membership.function.refile")
+      /// Remove export waterprint
+      public static let removeExportWaterprint = L10n.tr("Localizable", "membership.function.removeExportWaterprint")
       /// As a member, you will be able to access advanced features as follow:
       public static let title = L10n.tr("Localizable", "membership.function.title")
       /// Unlimited level of sub documents

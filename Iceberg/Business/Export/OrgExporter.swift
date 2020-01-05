@@ -9,7 +9,7 @@
 import Foundation
 
 public struct OrgExporter: Exportable {
-    public func export(completion: @escaping (ExportResult) -> Void) {
+    public func export(isMember: Bool, completion: @escaping (ExportResult) -> Void) {
         let doc = Document(fileURL: self.url)
         
         doc.open { [weak doc] result in

@@ -20,7 +20,7 @@ public struct TxtExporter: Exportable {
         self.url = url
     }
     
-    public func export(completion: @escaping (ExportResult) -> Void) {
+    public func export(isMember: Bool, completion: @escaping (ExportResult) -> Void) {
         let service = self._editorContext.request(url: self.url)
         var headingIndexs: [[Int]] = []
         service.onReadyToUse = { service in

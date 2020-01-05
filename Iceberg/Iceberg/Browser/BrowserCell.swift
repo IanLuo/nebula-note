@@ -444,7 +444,7 @@ public class BrowserCell: UITableViewCell {
                 guard let strongSelf = self else { return }
                 viewController.dismiss(animated: true, completion: {
                     cellModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
-                    exportManager.export(url: cellModel.url, type:exportManager.exportMethods[index], completion: { url in
+                    exportManager.export(isMember: cellModel.coordinator?.dependency.purchaseManager.isMember.value ?? false, url: cellModel.url, type:exportManager.exportMethods[index], completion: { url in
                         
                         let shareViewController = exportManager.createPreviewController(url: url)
                         strongSelf.onPresentingModalViewController.onNext(shareViewController)

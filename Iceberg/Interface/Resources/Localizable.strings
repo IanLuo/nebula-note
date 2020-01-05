@@ -291,7 +291,7 @@
 
 // membership
 "membership.title" = "Join membership";
-"membership.letter" = "Dear user, if you feel enjoy using Icetea, please consider join our membership, to use more advanced functions, and help to bring Icetea to more platforms and become better, Icetea will become more strong, more powerful, and more useful to you.";
+"membership.letter" = "Dear user, if you feel enjoy using Icetea note, please consider join our membership, to use more advanced functions, and help to let Icetea note becomes more strong, more powerful, and more useful for you.";
 "membership.monthly.title" = "Order membership monthly";
 "membership.monthly.description" = "(1 bonus week) unlimited function access";
 "membership.yearly.title" = "Order membership yearly";
@@ -304,4 +304,5 @@
 "membership.function.advancedAttachments" = "Advanced attachments, including Location, Audio and Video";
 "membership.function.customStatus" = "Custom paragraph status";
 "membership.function.unlimitedLevelOfSubDocuments" = "Unlimited level of sub documents";
+"membership.function.removeExportWaterprint" = "Remove export waterprint";
 "membership.function.andMoreToCome" = "And more to come";

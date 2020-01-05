@@ -25,9 +25,9 @@ public class JPGExporter: Exportable {
     let tempDelegate = TempWebViewDelegate()
     var keeper: Any?
     
-    public func export(completion: @escaping (ExportResult) -> Void) {
+    public func export(isMember: Bool, completion: @escaping (ExportResult) -> Void) {
         let htmlExporter = HTMLExporter(editorContext: self._editorContext, url: self.url)
-        htmlExporter.export { exportContent in
+        htmlExporter.export(isMember: isMember) { exportContent in
             switch exportContent {
             case .string(let htmlString):
                 self.keeper = self
