@@ -67,6 +67,8 @@ public struct HTMLExporter: Exportable {
                     result = result.nsstring.replacingCharacters(in: token.range, with: tokenString)
                 }
                 
+                result = result.replacingOccurrences(of: "\n", with: "<br>").replacingOccurrences(of: "\t", with: "&ensp;&ensp;&ensp;&ensp;")
+                
                 result.insert(contentsOf: "<!DOCTYPE html><html><meta charset=\"utf-8\"/><head>\(self.style)</head><body><article>", at: result.startIndex)
                 result.append("</article>")
                 if !isMember {
