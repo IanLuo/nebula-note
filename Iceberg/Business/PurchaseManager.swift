@@ -32,26 +32,34 @@ public struct PurchaseManager {
     public init() {}
     
     public func initialize() {
-        self.findExpireDate().subscribe(onNext: { date in
-            if let date = date {
-                if date.compare(Date()) == .orderedDescending {
-                    self.isMember.accept(true)
-                    log.info("init complete, user is member")
+        
+        // if user purchased, first use cached expire date to check if member is valid, then perform online check, update local expire date
+        if let expireDate = self._cachedExpireDate {
+            self.isMember.accept(expireDate.compare(Date()) == .orderedDescending)
+            
+            self.findExpireDate().subscribe(onNext: { date in
+                if let date = date {
+                    if date.compare(Date()) == .orderedDescending {
+                        self.isMember.accept(true)
+                        log.info("init complete, user is member")
+                    } else {
+                        self.isMember.accept(false)
+                        log.info("init complete, user is not member")
+                    }
                 } else {
                     self.isMember.accept(false)
                     log.info("init complete, user is not member")
                 }
-            } else {
-                self.isMember.accept(false)
-                log.info("init complete, user is not member")
-            }
-            
-            #if DEBUG
-            if CommandLine.arguments.contains("IGNORE_MEMBERSHIP_CHECK") {
-                self.isMember.accept(true)
-            }
-            #endif
-        }).disposed(by: self._disposeBag)
+                
+                #if DEBUG
+                if CommandLine.arguments.contains("IGNORE_MEMBERSHIP_CHECK") {
+                    self.isMember.accept(true)
+                }
+                #endif
+            }).disposed(by: self._disposeBag)
+        } else {
+            self.isMember.accept(false)
+        }
         
         self.initTransactions()
     }
@@ -92,15 +100,6 @@ public struct PurchaseManager {
         
         return Observable.create { observer -> Disposable in
             
-            if let cachedExpireDate = self._cachedExpireDate {
-                observer.onNext(cachedExpireDate)
-                
-                if cachedExpireDate.compare(Date()) == .orderedDescending {
-                    observer.onCompleted()
-                    return Disposables.create()
-                }
-            }
-            
             var validatServiceType = AppleReceiptValidator.VerifyReceiptURLType.production
             
             #if DEBUG
@@ -132,6 +131,7 @@ public struct PurchaseManager {
                     case .purchased(expiryDate: let _expireDate, items: _):
                         expireDate = _expireDate
                         
+                        // save cached expire date to local
                         if let expireDate = expireDate {
                             self._cacheExpireDate(expireDate)
                         }
