@@ -19,12 +19,6 @@ public class Application: Coordinator {
     fileprivate var _didTheUserTurnOffiCloudFromSettings: Bool = false
     private let disposeBag = DisposeBag()
     
-    public let isFileReadyToAccess: BehaviorRelay<Bool> = BehaviorRelay(value: false)
-    public let uiStackReady: BehaviorRelay<Bool> = BehaviorRelay(value: false)
-    public lazy var startComplete: Observable<Bool> = Observable.combineLatest(isFileReadyToAccess, uiStackReady).map { isFileReady, isUIReady in
-        return isFileReady && isUIReady
-    }
-
     public init(window: UIWindow) {
         self.window = window
         
@@ -68,7 +62,7 @@ public class Application: Coordinator {
         }
         
         // 通知完成初始化
-        self.startComplete.subscribe(onNext: { [weak self] _ in
+        self.dependency.appContext.startComplete.subscribe(onNext: { [weak self] _ in
             self?.dependency.eventObserver.emit(AppStartedEvent())
         }).disposed(by: self.disposeBag)
     }
@@ -85,7 +79,7 @@ public class Application: Coordinator {
         self.handleSharedIdeas()
         
         // 设置主题, set up the theme when the settings file is ready
-        uiStackReady.subscribe(onNext: { [weak self] in
+        self.dependency.appContext.uiStackReady.subscribe(onNext: { [weak self] in
             if $0 {
                 self?.window?.rootViewController?.setupTheme()
             }
@@ -98,7 +92,7 @@ public class Application: Coordinator {
             log.info("using \(url) as root")
 
             // UI complete loading
-            strongSelf.uiStackReady.accept(true)
+            strongSelf.dependency.appContext.uiStackReady.accept(true)
             strongSelf.dependency.eventObserver.emit(UIStackReadyEvent())
         }
         
@@ -142,7 +136,7 @@ public class Application: Coordinator {
                     
                     self.dependency.eventObserver.emit(iCloudAvailabilityChangedEvent(isEnabled: true))
                     
-                    self.isFileReadyToAccess.accept(true)
+                    self.dependency.appContext.isFileReadyToAccess.accept(true)
                 })
             }
         case .closed:
@@ -155,7 +149,7 @@ public class Application: Coordinator {
             
             self.dependency.eventObserver.emit(iCloudAvailabilityChangedEvent(isEnabled: false))
             
-            self.isFileReadyToAccess.accept(true)
+            self.dependency.appContext.isFileReadyToAccess.accept(true)
         case .open:
             if iCloudDocumentManager.status == .unknown {
                 let confirmViewController = ConfirmViewController()
@@ -171,7 +165,7 @@ public class Application: Coordinator {
                             
                             self.dependency.eventObserver.emit(iCloudAvailabilityChangedEvent(isEnabled: true))
                             
-                            self.isFileReadyToAccess.accept(true)
+                            self.dependency.appContext.isFileReadyToAccess.accept(true)
                         })
                     })
                 }
@@ -185,7 +179,7 @@ public class Application: Coordinator {
                         
                         self.dependency.eventObserver.emit(iCloudAvailabilityChangedEvent(isEnabled: false))
                         
-                        self.isFileReadyToAccess.accept(true)
+                        self.dependency.appContext.isFileReadyToAccess.accept(true)
                     })
                 }
                 
@@ -197,7 +191,7 @@ public class Application: Coordinator {
                     self.dependency.syncManager.startMonitoringiCloudFileUpdateIfNeeded()
                     self.dependency.eventObserver.emit(iCloudAvailabilityChangedEvent(isEnabled: true))
                     
-                    self.isFileReadyToAccess.accept(true)
+                    self.dependency.appContext.isFileReadyToAccess.accept(true)
                 })
             }
         }

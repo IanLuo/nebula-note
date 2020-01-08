@@ -73,7 +73,7 @@ public class SettingsViewModel: ViewModelProtocol {
     }
     
     public var currentLandigTabIndex: Int {
-        return SettingsAccessor.Item.landingTabIndex.get(Int.self) ?? 0
+        return SettingsAccessor.Item.landingTabIndex.get(Int.self) ?? 3
     }
     
     public var exportShowIndex: Bool {

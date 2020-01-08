@@ -11,6 +11,7 @@ import Foundation
 import UIKit
 import Business
 import Interface
+import RxSwift
 
 public class HomeCoordinator: Coordinator {
     private let homeViewController: HomeViewController
@@ -18,6 +19,8 @@ public class HomeCoordinator: Coordinator {
     private let _dashboardViewController: DashboardViewController
     
     private let _viewModel: DashboardViewModel
+    
+    private let disposeBag = DisposeBag()
     
     public override init(stack: UINavigationController, dependency: Dependency) {
         let viewModel = DashboardViewModel(documentSearchManager: dependency.documentSearchManager)
@@ -63,7 +66,9 @@ public class HomeCoordinator: Coordinator {
                                               DashboardViewController.TabType.search(tabs[2], 2),
                                               DashboardViewController.TabType.documents(tabs[3], 3)])
         
-        self.homeViewController.showChildViewController(tabs[SettingsAccessor.Item.landingTabIndex.get(Int.self) ?? 3])
+        self.dependency.appContext.isFileReadyToAccess.subscribe(onNext: { [weak self] _ in
+            self?.homeViewController.showChildViewController(tabs[SettingsAccessor.Item.landingTabIndex.get(Int.self) ?? 3])
+        }).disposed(by: self.disposeBag)
     }
     
     private var tempCoordinator: Coordinator?

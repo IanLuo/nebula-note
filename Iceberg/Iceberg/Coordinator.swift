@@ -10,8 +10,19 @@ import Foundation
 import UIKit
 import Business
 import PKHUD
+import RxSwift
+import RxCocoa
+
+public struct AppContext {
+    public let isFileReadyToAccess: BehaviorRelay<Bool> = BehaviorRelay(value: false)
+    public let uiStackReady: BehaviorRelay<Bool> = BehaviorRelay(value: false)
+    public lazy var startComplete: Observable<Bool> = Observable.combineLatest(isFileReadyToAccess, uiStackReady).map { isFileReady, isUIReady in
+        return isFileReady && isUIReady
+    }
+}
 
 public class Dependency {
+    lazy var appContext: AppContext = { AppContext() }()
     lazy var documentManager: DocumentManager = { DocumentManager(editorContext: editorContext, eventObserver: eventObserver, syncManager: syncManager) }()
     lazy var documentSearchManager: DocumentSearchManager = { DocumentSearchManager(eventObserver: eventObserver, editorContext: editorContext) }()
     lazy var editorContext: EditorContext = { EditorContext(eventObserver: eventObserver) }()

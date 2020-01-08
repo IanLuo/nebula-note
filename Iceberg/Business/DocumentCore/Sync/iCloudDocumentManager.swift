@@ -38,7 +38,7 @@ public class iCloudDocumentManager: NSObject {
     }
     
     public static var iCloudAttachmentRoot: URL? {
-        return iCloudDocumentManager.iCloudRoot?.appendingPathComponent("Documents").appendingPathComponent("attachments")
+        return iCloudDocumentManager.iCloudRoot?.appendingPathComponent("attachments")
     }
     
     public static var iCloudKeyValueStoreRoot: URL? {
