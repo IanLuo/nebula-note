@@ -8,6 +8,10 @@
 
 import Foundation
 
+public enum DocumentError: Error {
+    case failedToCreateDocument
+}
+
 public struct DocumentManager {
     public static let contentKey: String = "content.org"
     public static let coverKey: String = "cover.jpg"

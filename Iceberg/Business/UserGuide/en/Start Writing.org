@@ -1,0 +1,44 @@
+* Start Writing
+Icetea note use *Markdown* like syntax，supports rich text marks, list, checkbox, quote block, code block, multiple types of attachments.
+** Paragraph
+Text under a heading belong to a paragraph.
+It's a good habit to put contents into paragraphs, because paragraph have tags, status, priority, schedule agenda against it, you can move paragraph around as a whole, and you can also fold a paragraph etc.
+
+Text above any heading is free text, it's totally ok to use free text.
+The content of Icetea note is text based, you can drag file around in *files* folder.
+** Folding
+If there's any character under a heading, you can fold it and only show the heading.
+** Attachments
+Supports picture, audio, video, link, location, sketch as attachments.
+* Capture inspirations
+We put inspirations as attachments in Icetea, you can capture those ideas at anytime, in any form, manage them later, and use them when needed.
+** Capture, check them later
+While using Icetea note，a *capture* button is alwasy accessable at your current view, when you are editing, it's in the actions button, in other view its at bottom right corner.
+Inspiration ideas are categorized on kept in the *captured ideas*.
+** Share to Icetea note
+When using any other app that have a share button, can share to Icetea, and the item shared can be find in the *Captured ideas* in Icetea note.
+* Arrange agenda
+On any paragraph, by adding *Status* or *Date and time*, will make this paragraph managed by agenda, will be shown on the *Agenda* view, and mutiple shortcuts below *Agenda* tab at left.
+** Status
+There are two different kinds of status, *Finished* and *Unfinished*.
+Each kind of status can have different names, to indicate the current status that paragraph is in. for example, *TODO* is the system provide status, which belongs to *Unfinished * kind, and *Done* and *CANCELD* are two *Finished* status, indicate the status is finished.
+** Date and time
+There are three different type of date and times.
+1. Specific date
+Only on the specific day, that paragraph will be shown on agenda.
+2. Start date
+When near to start date, agenda will show that paragraph, and if it's status is not finished, it will stay on the agenda.
+3. Due date
+Like start date, it will show when the due day is near, and will stay on agenda, if the status is not finished.
+** Priority
+Priority will affect the position on agenda list, higher position, will be shown before lower priority items.
+* Orgnize contents
+** Sub document
+Every document can have unlimited levels of sub documents, you can use this to orgnize you documents in categories, and you can also move document arrount, if you want to modify the position of you documents.
+** Tags
+Inside document, you can use *Tags* to categorize paragarphs. Every paragraph can be assigned to multiple tags, and sub paragraph will automatically contain its parent paragraph's tags.
+** Move
+- Documents can be moved to other documents.
+- Paragraphs and be move to other paragraphs as sub paragraphs, *in* or *bettween* documents.
+** Save to iCloud
+You can save your files locally, or save to iCloud, this is the recommanded approch of Apple, which ca take advantage the system features, to make you content more safe, and convenient.

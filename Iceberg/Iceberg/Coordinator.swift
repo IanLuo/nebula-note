@@ -38,6 +38,7 @@ public class Dependency {
     weak var globalCaptureEntryWindow: CaptureGlobalEntranceWindow?
     lazy var activityHandler: ActivityHandler = { ActivityHandler() }()
     lazy var purchaseManager: PurchaseManager = { PurchaseManager() }()
+    lazy var userGuideService: UserGuideService = { UserGuideService() }()
 }
 
 public class Coordinator {

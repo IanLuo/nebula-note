@@ -63,7 +63,20 @@ public class Application: Coordinator {
         
         // 通知完成初始化
         self.dependency.appContext.startComplete.subscribe(onNext: { [weak self] _ in
-            self?.dependency.eventObserver.emit(AppStartedEvent())
+            guard let strongSelf = self else { return }
+            
+            strongSelf.dependency.eventObserver.emit(AppStartedEvent())
+            
+            if SettingsAccessor.Item.isFirstLaunchApp.get(Bool.self) ?? true {
+                strongSelf.dependency
+                    .userGuideService
+                    .createGuideDocument(documentManager: strongSelf.dependency.documentManager)
+                    .subscribe(onNext: { urls in
+                        SettingsAccessor.Item.isFirstLaunchApp.set(false, completion: {})
+                    })
+                    .disposed(by: strongSelf.disposeBag)
+            }
+            
         }).disposed(by: self.disposeBag)
     }
     
