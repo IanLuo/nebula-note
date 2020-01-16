@@ -1,0 +1,308 @@
+/* 
+  Localizable.strings
+  Iceland
+
+  Created by ian luo on 2019/1/1.
+  Copyright © 2019 wod. All rights reserved.
+*/
+
+"general.button.title.save" = "Save";
+"general.button.title.open" = "Open";
+"general.button.title.cancel" = "Cancel";
+"general.button.title.delete" = "Delete";
+"general.button.title.close" = "Close";
+"general.loading.title" = "Loading...";
+
+"selector.empty" = "No item";
+
+"document.browser.delete.confirm" = "Delete this file?";
+
+"attachment.kind.image" = "Image";
+"attachment.kind.audio" = "Audio";
+"attachment.kind.video" = "Video";
+"attachment.kind.link" = "Link";
+"attachment.kind.sketch" = "Sketch";
+"attachment.kind.location" = "Location";
+"attachment.kind.text" = "Text";
+"attachment.kind.all" = "All";
+
+// edit document
+"document.dateAndTime.title" = "Date and time";
+"document.dateAndTime.update" = "Update date and time";
+"document.dateAndTime.schedule"= "Schedule";
+"document.dateAndTime.due" = "Due";
+
+"document.priority.title" = "Priority";
+"document.priority.remove" = "Remove priority";
+
+"document.planning.title" = "Status";
+
+"document.heading.title" = "Heading";
+"document.heading.toParagraphContent" = "Convert to content";
+"document.heading.toHeading" = "Convert to heading";
+"document.heading.unfold" = "Unfold this paragraph";
+"document.heading.fold" = "Fold this paragaph";
+"document.heading.moveTo" = "Move paragraph";
+"document.heading.moveToAnotherDocument" = "Move to another document";
+
+// outline
+"document.outlet.noHeading" = "No heading";
+
+// export
+"document.export.title" = "Export";
+"document.export.org" = "Org mode";
+"document.export.html" = "HTML";
+"document.export.md" = "Mark Down";
+"document.export.msg" = "Choose a file format";
+
+// document info
+"document.info.editDate" = "Edit date";
+"document.info.createDate" = "Create date";
+"document.info.wordCount" = "Word count";
+"document.info.paragraphCount" = "Paragraph count";
+"document.info.characterCount" = "Character count";
+
+"document.link.open" = "Open link in browser";
+"document.link.edit" = "Edit link";
+
+"document.menu.title" = "Menu";
+"document.menu.foldAll" = "Fold all";
+"document.menu.unfoldAll" = "Unfold all";
+"document.menu.outline" = "Show outline";
+"document.menu.capture" = "Capture an idea";
+
+
+"document.edit.date.all-day" = "All day";
+
+"document.edit.action.attachment" = "Attachment";
+"document.edit.action.schedule" = "Schedule";
+"document.edit.action.due" = "Due";
+"document.edit.action.planning" = "Status";
+"document.edit.action.tag" = "Tag";
+"document.edit.action.move-up" = "Move up";
+"document.edit.action.move-down" = "Move down";
+"document.edit.action.separator" = "Separator";
+"document.edit.action.increase-indent" = "Tab right";
+"document.edit.action.decrease-indent" = "Tab left";
+"document.edit.action.mark.bold" = "Bold";
+"document.edit.action.mark.italic" = "Italic";
+"document.edit.action.mark.underscore" = "Underscore";
+"document.edit.action.mark.strikthrough" = "Strikthrough";
+"document.edit.action.mark.code" = "Code";
+"document.edit.action.mark.verbatim" = "Verbatim";
+"document.edit.action.undo" = "Undo";
+"document.edit.action.redo" = "Redo";
+"document.edit.action.arrow-left" = "Arrow left";
+"document.edit.action.arrow-right" = "Arrow right";
+"document.edit.action.arrow-up" = "Arrow up";
+"document.edit.action.arrow-down" = "Arrow down";
+"document.edit.action.quote-block" = "Quote block";
+"document.edit.action.paragraph.title" = "Paragraph actions";
+"document.edit.action.code-block" = "Code block";
+"document.edit.tag.title" = "Edit tag";
+"document.edit.tag.add" = "Add new tag";
+"document.edit.tag.choose" = "Choose";
+"document.edit.tag.place-holder" = "New tag name";
+"document.edit.tag.validation" = "Don't use special characters in tag";
+
+"document.edit.remote_editing_arrived_title" = "Another device modified this document";
+"document.edit.remote_editing_arrived_message" = "Which version do you want to keep?";
+"document.edit.remote_editing_arrived_keep_this_one" = "Keep this one";
+"document.edit.remote_editing_arrived_keep_remote.one" = "Keep remote one";
+
+"document.edit.create.failed" = "Failed to create document";
+
+"document.edit.image.use-as-cover" = "Use as cover";
+// sync
+"sync.confirm.useiCloud" = "Do you want use iCloud to store, your documents. If so, you will be able to access the contents from any device with your iCloud account, and they will be kept safe if you remove the app, or even lose your device.";
+"sync.alert.status.on.title" = "Using iCloud storage";
+"sync.alert.status.on.msg" = "Now everything is stored using iCloud, you can access them on all of your devices";
+"sync.alert.status.off.title" = "Not using iCloud storage";
+"sync.alert.status.off.msg" = "Now everything is stored locally on your iPhone, you can turn on iCloud later in the configuration";
+"sync.alert.account.changed.title" = "iCloud account changed";
+"sync.alert.account.changed.msg" = "You have login another iCloud account, your document is now access from that account's storage";
+"sync.alert.account.closed.title" = "iCloud account closed";
+"sync.alert.account.closed.msg" = "You have turned off iCloud on this app, your documents are stored on the iCloud stoage safely, if you want to access them, please turn iCloud on";
+
+
+// setting
+"setting.title" = "Settings";
+
+"setting.general.title" = "General";
+
+"setting.store.title" = "Store";
+"setting.storeLocation" = "Store location";
+"setting.storeLocation.iCloud" = "On iCloud";
+"setting.storeLocation.onDevice" = "On device";
+"setting.alert.icloudIsNotEnabled.title" = "iCloud is not enabled";
+"setting.alert.icloudIsNotEnabled.msg" = "Please login your iCloud account";
+"setting.alert.failToStoreIniCloud" = "Fail to configure sync";
+
+"setting.interfaceStyle.title" = "Interface style";
+"setting.interfaceStyle.dark" = "Dark";
+"setting.interfaceStyle.light" = "Light";
+"setting.interfaceStyle.auto" = "Auto";
+
+"setting.landingTab.title" = "Choose landing tab";
+
+"setting.planning.title" = "Customized status";
+"setting.planning.unfinish.add" = "New Unfinish status";
+"setting.planning.finish.add" = "New Finish status";
+"setting.planning.add.error.nameTaken" = "Status name is taken, Use a different one";
+"setting.planning.unfinish.title" = "Unfinish";
+"setting.planning.finish.title" = "Finish";
+
+"setting.editor.title" = "Editor";
+"setting.editor.unfoldAllWhenOpen" = "Unfold all entries when open";
+
+"setting.export.title" = "Export";
+"setting.export.showIndex" = "Show index";
+
+//search
+"search.title" = "Search";
+
+// browser
+"browser.title" = "Documents";
+"browser.action.moveTo.title" = "Move to";
+"browser.action.moveTo.msg" = "Choose a parent";
+"browser.action.rename.newName" = "New name";
+"browser.action.rename.warning.nameIsTaken" = "Name is taken";
+"browser.action.new" = "Create New Document";
+"browser.title.untitled" = "Untitled";
+"browser.title.copyExt" = "Copy";
+"browser.actions.title" = "Perform Actions";
+"browser.actions.newSub" = "New Sub Document";
+"browser.actions.duplicate" = "Duplicate";
+"browser.actions.cover" = "Edit Cover";
+"browser.actions.delete" = "Delete";
+"browser.actions.delete.confirm" = "Are you sure you want to delete '%@' and it's all child documents?";
+"browser.actions.rename" = "Rename";
+"browser.outline.beginingOfDocument" = "Document begining";
+"browser.outline.endOfDocument" = "Document ending";
+"browser.empty" = "Folder is empty";
+
+// agenda
+"agenda.title" = "Agenda";
+"agenda.startToday" = "Start today";
+"agenda.startInDaysWithPlaceHolder" = "Start in %@ days";
+"agenda.startTomorrowWithPlaceHolder" = "Start tomorrow";
+"agenda.startDaysAgoWithPlaceHodler" = "Started %@ days ago";
+"agenda.startYesterdayWithPlaceHodlerYesterday" = "Started yesterday";
+"agenda.dueToday" = "Due today";
+"agenda.overdueDaysWihtPlaceHolder" = "Overdue %@ days";
+"agenda.overdueYesterdayWihtPlaceHolder" = "Due yesterday";
+"agenda.willOverduInDaysWithPlaceHolder" = "Will due in %@ days";
+"agenda.willOverduTomorrowWithPlaceHolder" = "Will due tomorrow";
+"agenda.today" = "Today";
+"agenda.daysBefore" = "%@ days ago";
+"agenda.daysAfter" = "in %@ days";
+"agenda.tomorrow" = "Tomorrow";
+"agenda.yesterday" = "Yesterday";
+"agenda.sub.tags" = "Tags";
+"agenda.sub.planning" = "Status";
+"agenda.sub.overdue" = "Overdue";
+"agenda.sub.scheduled" = "Scheduled";
+"agenda.sub.overdueSoon" = "Overdue soon";
+"agenda.sub.startSoon" = "Start soon";
+"agenda.sub.noTag" = "No tag";
+
+// capture list
+"captureList.title" = "Captured ideas";
+"captureList.action.openLocation" = "Open location";
+"captureList.action.openLink" = "Open link";
+"captureList.action.delete" = "Delete idea";
+"captureList.action.copyToDocument" = "Copy to document";
+"captureList.action.moveToDocument" = "Move to document";
+"captureList.action.refile" = "Refile";
+"captureList.action.title" = "Action";
+"captureList.action.deleteConfirm" = "Are your sure de delete this idea?";
+"captureList.confirm.delete" = "Refile done, do you want to delete this idea?";
+
+//location
+"location.title" = "Add a location";
+"location.current" = "Current location";
+
+// image picker
+"imagePicker.add" = "Add image";
+"imagePicker.camera" = "Camera";
+"imagePicker.library" = "Photo library";
+
+// capture text
+"captureText.title" = "Add text";
+"captureText.text.title" = "text";
+
+// capture link
+"captureLink.title" = "Add link";
+"captureLink.title.title" = "Title";
+"captureLink.title.placeholder" = "The tile of the link";
+"captureLink.url.title" = "URL";
+"captureLink.url.placeholder" = "The link address";
+
+// audio
+"audio.player.play" = "Play";
+"audio.player.pause" = "Pause";
+"audio.player.stop" = "Stop";
+"audio.player.continue" = "Continue";
+"audio.recorder.start" = "Start record";
+"audio.recorder.pause" = "Pause record";
+"audio.recorder.continue" = "Continue recording";
+"audio.recorder.stop" = "Stop";
+"audio.recorder.restart" = "Restart record";
+
+// Activity
+"activity.document.createDocument.title" = "Create new document";
+"activity.document.createDocument.description" = "Create an empty new document";
+"activity.document.createDocument.phrase" = "New Document";
+
+"activity.document.CaptureTextActivity.title" = "Capture Text";
+"activity.document.CaptureTextActivity.description" = "Capture some ideas with words";
+"activity.document.CaptureTextActivity.phrase" = "Capture text";
+
+"activity.document.captureImageLibraryActivity.title" = "Capture Image";
+"activity.document.captureImageLibraryActivity.description" = "Capture idea with image";
+"activity.document.captureImageLibraryActivity.phrase" = "Capture Image";
+
+"activity.document.captureAudioActivity.title" = "Capture Voice";
+"activity.document.captureAudioActivity.description" = "Capture idea with voice";
+"activity.document.captureAudioActivity.phrase" = "Capture Voice";
+
+"activity.document.captureVideoActivity.title" = "Capture Video";
+"activity.document.captureVideoActivity.description" = "Capture idea with video";
+"activity.document.captureVideoActivity.phrase" = "Capture Videoc";
+
+"activity.document.captureSketchActivity.title" = "Capture with Sketch";
+"activity.document.captureSketchActivity.description" = "Cappture idea with drawing something";
+"activity.document.captureSketchActivity.phrase" = "Capture with Sketch";
+
+"activity.document.captureLinkActivity.title" = "Capture Link";
+"activity.document.captureLinkActivity.description" = "Capture idea by input a link";
+"activity.document.captureLinkActivity.phrase" = "Capture link";
+
+"activity.document.captureLocationActivity.title" = "Capture Location";
+"activity.document.captureLocationActivity.description" = "Capture the location you are at";
+"activity.document.captureLocationActivity.phrase" = "Capture Location";
+
+// trash
+"trash.title" = "Trash";
+"trash.removeAll" = "Delete All";
+"trash.delete" = "Delete";
+"trash.recover" = "Put Back the file";
+"trash.delete.warning" = "File will be deleted and won't be able to recover";
+
+// membership
+"membership.title" = "Join membership";
+"membership.letter" = "Dear user, if you feel enjoy using Icetea note, please consider join our membership, to use more advanced functions, and help to let Icetea note becomes more strong, more powerful, and more useful for you.";
+"membership.monthly.title" = "Order membership monthly";
+"membership.monthly.description" = "(1 bonus week) unlimited function access";
+"membership.yearly.title" = "Order membership yearly";
+"membership.yearly.description" = "(1 bonus month) unlimited function access";
+"membership.ordered" = "Ordered";
+
+"membership.function.title" = "As a member, you will be able to access advanced features as follow:";
+"membership.function.refile" = "Refile from capturelist";
+"membership.function.moveToOtherDocument" = "Move paragraph to other document";
+"membership.function.advancedAttachments" = "Advanced attachments, including Location, Audio and Video";
+"membership.function.customStatus" = "Custom paragraph status";
+"membership.function.unlimitedLevelOfSubDocuments" = "Unlimited level of sub documents";
+"membership.function.removeExportWaterprint" = "Remove export waterprint";
+"membership.function.andMoreToCome" = "And more to come";

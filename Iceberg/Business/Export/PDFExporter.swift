@@ -8,6 +8,7 @@
 
 import Foundation
 import Interface
+import WebKit
 
 public class PDFExporter: Exportable {
     public var url: URL
@@ -30,8 +31,8 @@ public class PDFExporter: Exportable {
             switch exportContent {
             case .string(let htmlString):
                 self.keeper = self
-                let webView = UIWebView(frame: CGRect(origin: .zero, size: CGSize(width: 10, height: 10)))
-                webView.delegate = self.tempDelegate
+                let webView = WKWebView(frame: CGRect(origin: .zero, size: CGSize(width: 10, height: 10)))
+                webView.navigationDelegate = self.tempDelegate
                 webView.loadHTMLString(htmlString, baseURL: nil)
                 UIApplication.shared.keyWindow?.addSubview(webView)
                 self.tempDelegate.didLoaded = {
@@ -43,13 +44,16 @@ public class PDFExporter: Exportable {
         }
     }
     
-    class TempWebViewDelegate: NSObject, UIWebViewDelegate {
+    class TempWebViewDelegate: NSObject, WKNavigationDelegate {
         var didLoaded: (() -> Void)?
-        func webViewDidFinishLoad(_ webView: UIWebView) {
-            didLoaded?()
+        
+        func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+            if !webView.isLoading {
+                self.didLoaded?()
+            }
         }
         
-        func webView(_ webView: UIWebView, didFailLoadWithError error: Error) {
+        func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
             log.error(error)
         }
     }

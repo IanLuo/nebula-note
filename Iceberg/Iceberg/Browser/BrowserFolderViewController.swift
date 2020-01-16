@@ -82,6 +82,13 @@ public class BrowserFolderViewController: UIViewController {
         
         self.viewModel.reload()
     }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        // make sure it's refreshed
+        self.viewModel.reload()
+    }
         
     private func _setupObserver() {
         // bind title from foldler name

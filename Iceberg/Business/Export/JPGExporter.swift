@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import Interface
+import WebKit
 
 public class JPGExporter: Exportable {
     public var url: URL
@@ -31,10 +32,9 @@ public class JPGExporter: Exportable {
             switch exportContent {
             case .string(let htmlString):
                 self.keeper = self
-                let webView = UIWebView(frame: UIScreen.main.bounds)
+                let webView = WKWebView(frame: UIScreen.main.bounds)
                 webView.alpha = 0.1
-//                webView.scalesPageToFit = true
-                webView.delegate = self.tempDelegate
+                webView.navigationDelegate = self.tempDelegate
                 UIApplication.shared.keyWindow?.addSubview(webView)
                 webView.loadHTMLString(htmlString, baseURL: nil)
                 self.tempDelegate.didLoaded = {
@@ -47,20 +47,21 @@ public class JPGExporter: Exportable {
         }
     }
     
-    class TempWebViewDelegate: NSObject, UIWebViewDelegate {
+    class TempWebViewDelegate: NSObject, WKNavigationDelegate {
         var didLoaded: (() -> Void)?
-        func webViewDidFinishLoad(_ webView: UIWebView) {
+        
+        func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
             if !webView.isLoading {
                 self.didLoaded?()
             }
         }
         
-        func webView(_ webView: UIWebView, didFailLoadWithError error: Error) {
+        func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
             log.error(error)
         }
     }
     
-    private func _createImage(view: UIWebView, htmlString: String) -> URL {
+    private func _createImage(view: WKWebView, htmlString: String) -> URL {
         let html = htmlString
         let fmt = UIMarkupTextPrintFormatter(markupText: html)
         let size = view.scrollView.contentSize

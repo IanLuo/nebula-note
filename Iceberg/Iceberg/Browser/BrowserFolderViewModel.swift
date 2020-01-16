@@ -30,7 +30,7 @@ extension BrowserDocumentSection: AnimatableSectionModelType {
     public typealias Identity = String
 }
 
-public class BrowserFolderViewModel: ViewModelProtocol {
+public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
     public var context: ViewModelContext<BrowserCoordinator>!
     
     public typealias CoordinatorType = BrowserCoordinator
@@ -74,7 +74,7 @@ public class BrowserFolderViewModel: ViewModelProtocol {
     public let input: Input = Input()
     public let output: Output = Output()
     
-    public required init() {}
+    override public required init() {}
     
     public convenience init(url: URL, mode: Mode, coordinator: BrowserCoordinator) {
         self.init(coordinator: coordinator)
@@ -233,11 +233,20 @@ public class BrowserFolderViewModel: ViewModelProtocol {
                                         action: { [weak self] (event: NewFilesAvailableEvent) in
                                             self?.reload()
         })
+        
+        NotificationCenter.default
+            .rx
+            .notification(UIApplication.didBecomeActiveNotification)
+            .takeUntil(self.rx.deallocated)
+            .subscribe(onNext: { _ in
+                self.reload()
+            })
+            .disposed(by: self.disposeBag)
     }
 }
 
-extension BrowserFolderViewModel: CustomDebugStringConvertible {
-    public var debugDescription: String {
+extension BrowserFolderViewModel {
+    override public var debugDescription: String {
         return "\(self.url)"
     }
 }
