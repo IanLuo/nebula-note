@@ -187,7 +187,7 @@ public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
         
         eventObserver.registerForEvent(on: self, eventType: AddDocumentEvent.self, queue: nil, action: { [weak self] (event: AddDocumentEvent) -> Void in
             // if new document is in current folder, reload
-            if event.url.convertoFolderURL == self?.url.convertoFolderURL {
+            if event.url.deletingLastPathComponent() == self?.url {
                 self?.reload()
             } else if let items = self?.output.documents.value.first?.items {
                 // if new document is in current folder's items, reload current folder, because the folder enter indicator might need update

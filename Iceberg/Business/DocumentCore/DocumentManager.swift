@@ -128,16 +128,17 @@ public struct DocumentManager {
                 let document = Document.init(fileURL: newURL)
                 document.updateContent(content ?? "") // 新文档的内容为空字符串
                 document.save(to: newURL, for: UIDocument.SaveOperation.forCreating) { [document] success in
-                    DispatchQueue.runOnMainQueueSafely {
-                        if success {
-                            completion?(newURL)
-                            self._eventObserver.emit(AddDocumentEvent(url: newURL))
-                        } else {
-                            completion?(nil)
+                    document.close(completionHandler: { _ in
+                        DispatchQueue.runOnMainQueueSafely {
+                            if success {
+                                completion?(newURL)
+                                self._eventObserver.emit(AddDocumentEvent(url: newURL))
+                            } else {
+                                completion?(nil)
+                            }
                         }
-                    }
+                    })
                     
-                    document.close(completionHandler: nil)
                 }
             }
         }

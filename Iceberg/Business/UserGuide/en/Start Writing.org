@@ -1,11 +1,14 @@
-* Start Writing
+* TODO Start Writing
 Icetea note use *Markdown* like syntax，supports rich text marks, list, checkbox, quote block, code block, multiple types of attachments.
+#date#
 ** Paragraph
 Text under a heading belong to a paragraph.
 It's a good habit to put contents into paragraphs, because paragraph have tags, status, priority, schedule agenda against it, you can move paragraph around as a whole, and you can also fold a paragraph etc.
 
 Text above any heading is free text, it's totally ok to use free text.
 The content of Icetea note is text based, you can drag file around in *files* folder.
+
+Use *Heading* button to create a new title, which is one of the most used button, the icon of title button is a *Capital H*.
 ** Folding
 If there's any character under a heading, you can fold it and only show the heading.
 ** Attachments

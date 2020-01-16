@@ -8,6 +8,7 @@
 
 import Foundation
 import RxSwift
+import Interface
 
 public struct UserGuideService {
     public init() {}
@@ -26,7 +27,7 @@ public struct UserGuideService {
     
     private func createDocument(documentManager: DocumentManager, title: String, content: String) -> Observable<URL> {
         return Observable.create { observer in
-            
+            let content = content.replacingOccurrences(of: "#date#", with: DateAndTimeType(date: Date(), includeTime: false, isSchedule: true).markString)
             documentManager.add(title: title, below: nil, content: content) { url in
                 if let url = url {
                     observer.onNext(url)
