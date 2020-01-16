@@ -205,6 +205,7 @@
 "agenda.sub.overdueSoon" = "将要过期";
 "agenda.sub.startSoon" = "将要开始";
 "agenda.sub.noTag" = "无标签";
+"agenda.sub.today" = "今天";
 
 // capture list
 "captureList.title" = "灵感管理";

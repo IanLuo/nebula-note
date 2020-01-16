@@ -141,6 +141,8 @@ public enum L10n {
       public static let startSoon = L10n.tr("Localizable", "agenda.sub.startSoon")
       /// Tags
       public static let tags = L10n.tr("Localizable", "agenda.sub.tags")
+      /// Today
+      public static let today = L10n.tr("Localizable", "agenda.sub.today")
     }
   }
 

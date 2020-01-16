@@ -154,6 +154,9 @@ public class AgendaViewModel {
             case .finished(let results):
                 self.data = results.map { AgendaCellModel(searchResult: $0) }.sortedByPriority
                 self.delegate?.didCompleteLoadAllData()
+            case .today(let results):
+                self.data = results.map { AgendaCellModel(searchResult: $0) }.sortedByPriority
+                self.delegate?.didCompleteLoadAllData()
             }
         }
     }

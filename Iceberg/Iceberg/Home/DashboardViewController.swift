@@ -21,6 +21,7 @@ public protocol DashboardViewControllerDelegate: class {
     func showHeadingsOverdue(headings: [DocumentHeadingSearchResult], from subTabType: DashboardViewController.SubtabType)
     func showHeadingsScheduleSoon(headings: [DocumentHeadingSearchResult], from subTabType: DashboardViewController.SubtabType)
     func showHeadingsOverdueSoon(headings: [DocumentHeadingSearchResult], from subTabType: DashboardViewController.SubtabType)
+    func showHeadingsToday(headings: [DocumentHeadingSearchResult], from subTabType: DashboardViewController.SubtabType)
 }
 
 public class DashboardViewController: UIViewController {
@@ -208,6 +209,8 @@ public class DashboardViewController: UIViewController {
             self.viewModel.coordinator?.showHeadingsScheduled(headings: self.viewModel.scheduled, from: self.tabs[tab].sub[subtab].type)
         case .scheduledSoon:
             self.viewModel.coordinator?.showHeadingsScheduleSoon(headings: self.viewModel.startSoon, from: self.tabs[tab].sub[subtab].type)
+        case .today:
+            self.viewModel.coordinator?.showHeadingsScheduleSoon(headings: self.viewModel.today, from: self.tabs[tab].sub[subtab].type)
         default: break
         }
     }
@@ -248,6 +251,7 @@ public class DashboardViewController: UIViewController {
         case withoutTag(Int)
         case finished
         case archived
+        case today(Int)
         
         public var index: Int {
             switch self {
@@ -260,6 +264,7 @@ public class DashboardViewController: UIViewController {
             case .withoutTag: return 6
             case .finished: return 7
             case .archived: return 8
+            case .today: return 9
             }
         }
         
@@ -290,6 +295,7 @@ public class DashboardViewController: UIViewController {
             case .overdueSoon: return L10n.Agenda.Sub.overdueSoon
             case .scheduledSoon: return L10n.Agenda.Sub.startSoon
             case .withoutTag: return L10n.Agenda.Sub.noTag
+            case .today: return L10n.Agenda.Sub.today
             default: return ""
             }
         }
@@ -303,6 +309,7 @@ public class DashboardViewController: UIViewController {
             case .scheduled(let count): return "\(count)"
             case .scheduledSoon(let count): return "\(count)"
             case .withoutTag(let count): return "\(count)"
+            case .today(let count): return "\(count)"
             default: return ""
             }
         }
@@ -432,6 +439,10 @@ extension DashboardViewController: DashboardViewModelDelegate {
 
         if self.viewModel.allTags.count > 0 {
             self.tabs[0].sub.append(Subtab(type: DashboardViewController.SubtabType.tags(Array(Set(self.viewModel.allTags)))))
+        }
+        
+        if self.viewModel.today.count > 0 {
+            self.tabs[0].sub.append(Subtab(type: DashboardViewController.SubtabType.today(self.viewModel.today.count)))
         }
         
         self.tableView.reloadSections([0], with: UITableView.RowAnimation.none)

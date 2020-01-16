@@ -42,6 +42,8 @@ public class DashboardViewModel {
     
     public var overdueSoon: [DocumentHeadingSearchResult] = []
     
+    public var today: [DocumentHeadingSearchResult] = []
+    
     private var _isHeadingsNeedsReload: Bool = true
     
     private let _headingChangeObservingQueue: OperationQueue = {
@@ -131,6 +133,7 @@ public class DashboardViewModel {
         self.startSoon = []
         self.overdue = []
         self.overdueSoon = []
+        self.today = []
         
         let dispatchGroup = DispatchGroup()
         
@@ -146,7 +149,9 @@ public class DashboardViewModel {
                 if let dateAndTime = result.dateAndTime {
                     let daysFromToday = dateAndTime.date.daysFrom(today) // date from the date to today
                     
-                    if dateAndTime.isDue {
+                    if dateAndTime.date.isToday() {
+                        self?.today.append(result)
+                    } else if dateAndTime.isDue {
                         if daysFromToday < 0 {
                             self?.overdue.append(result)
                         } else if daysFromToday <= 3 {
