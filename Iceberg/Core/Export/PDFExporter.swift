@@ -31,9 +31,12 @@ public class PDFExporter: Exportable {
             switch exportContent {
             case .string(let htmlString):
                 self.keeper = self
+                
+                let fileURL = URL.file(directory: URL.directory(location: URLLocation.temporary), name: "exportHTML", extension: "html")
+                try? htmlString.write(to: fileURL, atomically: false, encoding: .utf8)
                 let webView = WKWebView(frame: CGRect(origin: .zero, size: CGSize(width: 10, height: 10)))
                 webView.navigationDelegate = self.tempDelegate
-                webView.loadHTMLString(htmlString, baseURL: nil)
+                webView.loadFileURL(fileURL, allowingReadAccessTo: URL.directory(location: URLLocation.temporary))
                 UIApplication.shared.keyWindow?.addSubview(webView)
                 self.tempDelegate.didLoaded = {
                     completion(.file(self._createPDF(string: htmlString)))

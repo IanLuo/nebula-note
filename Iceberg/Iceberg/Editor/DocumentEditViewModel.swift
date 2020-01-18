@@ -8,6 +8,7 @@
 
 import Foundation
 import Core
+import RxSwift
 
 public protocol DocumentEditViewModelDelegate: class {
     func updateHeadingInfo(heading: HeadingToken?)
@@ -62,6 +63,8 @@ public class DocumentEditViewModel: ViewModelProtocol {
         self._editorService.close()
         self.removeObservers()
     }
+    
+    private let disposeBag = DisposeBag()
     
     public var url: URL {
         return self._editorService.fileURL
@@ -120,6 +123,14 @@ public class DocumentEditViewModel: ViewModelProtocol {
     
     public func isParagraphFolded(at location: Int) -> Bool {
         return self._editorService.isHeadingFolded(at: location)
+    }
+    
+    public var isReadingModel: Bool {
+        get { return self._editorService.isReadingMode }
+        set {
+            self._editorService.isReadingMode = newValue
+            self.revertContent()
+        }
     }
     
     public func hiddenRange(at location: Int) -> NSRange? {
@@ -367,6 +378,10 @@ extension DocumentEditViewModel {
                 
             }
         })
+        
+        self.dependency.appContext.isReadingMode.subscribe(onNext: {[weak self] isReadingMode in
+            self?.isReadingModel = isReadingMode
+        }).disposed(by: self.disposeBag)
     }
     
     fileprivate func removeObservers() {

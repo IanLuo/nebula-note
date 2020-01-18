@@ -70,7 +70,8 @@
 "document.menu.unfoldAll" = "展开所有段落";
 "document.menu.outline" = "显示大纲";
 "document.menu.capture" = "采集灵感";
-
+"document.menu.enableReadingMode" = "进入阅读模式";
+"document.menu.enableEditingMode" = "进入编辑模式";
 
 "document.edit.date.all-day" = "全天";
 
@@ -298,6 +299,7 @@
 "membership.yearly.title" = "按年订阅会员";
 "membership.yearly.description" = "(赠送一个月) 无限制使用所有高级功能";
 "membership.ordered" = "已订阅";
+"membership.restore" = "恢复购买";
 
 "membership.function.title" = "作为会员，可以使用高级功能：";
 "membership.function.refile" = "从灵感管理直接移动到文档";

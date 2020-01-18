@@ -127,6 +127,11 @@ public class EditorService {
         return _editorController.textContainer
     }
     
+    public var isReadingMode: Bool {
+        get { return _editorController.textStorage.isReadingMode }
+        set { _editorController.textStorage.isReadingMode = newValue }
+    }
+    
     public func markAsContentUpdated() {
         self._document?.updateContent(_editorController.string)
     }

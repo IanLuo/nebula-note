@@ -198,7 +198,7 @@ public class MembershipViewController: UIViewController {
     private func loadData() {
         self.viewModel.loadProducts()
         
-        self.restoreButton.setTitle("Restore Purchase", for: .normal)
+        self.restoreButton.setTitle(L10n.Membership.restore, for: .normal)
         
         self.monthlyProductView.orderButton.showProcessingAnimation()
         self.yearlyProductView.orderButton.showProcessingAnimation()

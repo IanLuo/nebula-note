@@ -128,7 +128,7 @@ public struct HTMLExporter: Exportable {
             clear: both;
             position: relative;
             height: 50px;
-            margin-top: 100px;
+            margin-top: 0px;
         }
         .footer > * {
           vertical-align: middle;
@@ -199,9 +199,13 @@ extension Token {
             let value = string.nsstring.substring(with: valueRange)
             
             if type == Attachment.Kind.image.rawValue, let url = AttachmentManager.attachmentFileURL(key: value) {
-                return "<br><img src=\"\(url.absoluteString)\" style=\"max-width:600px;width:100%\"/>"
+                let tempURL = URL.directory(location: URLLocation.temporary).appendingPathComponent(url.lastPathComponent)
+                try? Data(contentsOf: url).write(to: tempURL)
+                return "<br><img src=\"\(tempURL.absoluteString)\" style=\"max-width:600px;width:100%\"/>"
             } else if type == Attachment.Kind.sketch.rawValue, let url = AttachmentManager.attachmentFileURL(key: value) {
-                return "<br><img src=\"\(url.absoluteString)\" style=\"max-width:600px;width:100%\"/>"
+                let tempURL = URL.directory(location: URLLocation.temporary).appendingPathComponent(url.lastPathComponent)
+                try? Data(contentsOf: url).write(to: tempURL)
+                return "<br><img src=\"\(tempURL.absoluteString)\" style=\"max-width:600px;width:100%\"/>"
             } else {
                 return "#\(type):\(value)#"
             }

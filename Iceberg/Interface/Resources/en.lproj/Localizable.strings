@@ -70,7 +70,8 @@
 "document.menu.unfoldAll" = "Unfold all";
 "document.menu.outline" = "Show outline";
 "document.menu.capture" = "Capture an idea";
-
+"document.menu.enableReadingMode" = "Reading mode";
+"document.menu.enableEditingMode" = "Editing mode";
 
 "document.edit.date.all-day" = "All day";
 
@@ -298,6 +299,7 @@
 "membership.yearly.title" = "Order membership yearly";
 "membership.yearly.description" = "(1 bonus month) unlimited function access";
 "membership.ordered" = "Ordered";
+"membership.restore" = "Restore purchase";
 
 "membership.function.title" = "As a member, you will be able to access advanced features as follow:";
 "membership.function.refile" = "Refile from capturelist";

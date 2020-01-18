@@ -460,6 +460,10 @@ public enum L10n {
     public enum Menu {
       /// Capture an idea
       public static let capture = L10n.tr("Localizable", "document.menu.capture")
+      /// Editing mode
+      public static let enableEditingMode = L10n.tr("Localizable", "document.menu.enableEditingMode")
+      /// Reading mode
+      public static let enableReadingMode = L10n.tr("Localizable", "document.menu.enableReadingMode")
       /// Fold all
       public static let foldAll = L10n.tr("Localizable", "document.menu.foldAll")
       /// Show outline
@@ -527,6 +531,8 @@ public enum L10n {
     public static let letter = L10n.tr("Localizable", "membership.letter")
     /// Ordered
     public static let ordered = L10n.tr("Localizable", "membership.ordered")
+    /// Restore purchase
+    public static let restore = L10n.tr("Localizable", "membership.restore")
     /// Join membership
     public static let title = L10n.tr("Localizable", "membership.title")
     public enum Function {

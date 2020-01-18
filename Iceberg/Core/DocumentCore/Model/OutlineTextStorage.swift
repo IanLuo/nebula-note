@@ -23,6 +23,8 @@ public protocol OutlineTextStorageDataSource: class {
 public class OutlineTextStorage: TextStorage {
     public var parser: OutlineParser!
     
+    public var isReadingMode: Bool = false
+    
     private var _attachmentManager: AttachmentManager!
     
     public convenience init(attachmentManager: AttachmentManager) {
@@ -365,8 +367,13 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 
                 textMarkToken.decorationAttributesAction = { textStorage, token in
                     let contentRange = token.range(for: OutlineParser.Key.Element.TextMark.content) ?? token.range
-                    textStorage.addAttributes(OutlineTheme.markStyle.attributes, range: token.range.head(1))
-                    textStorage.addAttributes(OutlineTheme.markStyle.attributes, range: token.range.tail(1))
+                    if textStorage.isReadingMode {
+                        textStorage.addAttribute(OutlineAttribute.hidden, value: 1, range: token.range.head(1))
+                        textStorage.addAttribute(OutlineAttribute.hidden, value: 1, range: token.range.tail(1))
+                    } else {
+                        textStorage.addAttributes(OutlineTheme.markStyle.attributes, range: token.range.head(1))
+                        textStorage.addAttributes(OutlineTheme.markStyle.attributes, range: token.range.tail(1))
+                    }
                     
                     switch key {
                     case OutlineParser.Key.Element.TextMark.bold:
@@ -583,14 +590,22 @@ extension OutlineTextStorage: OutlineParserDelegate {
             self._tempParsingTokenResult.append(token)
             
             token.decorationAttributesAction = { textStorage, token in
+                
                 guard let token = token as? BlockBeginToken else { return }
                 textStorage.addAttributes(OutlineTheme.markStyle.attributes, range: token.tokenRange)
+                
+                if textStorage.isReadingMode {
+                    textStorage.addAttribute(NSAttributedString.Key.foregroundColor, value: OutlineTheme.codeBlockStyle.backgroundColor, range: token.tokenRange)
+                } else {
+                    textStorage.addAttributes(OutlineTheme.markStyle.attributes, range: token.tokenRange)
+                }
+                
+                textStorage.addAttributes([OutlineAttribute.Block.code: OutlineTheme.codeBlockStyle.backgroundColor], range: token.range)
                 
                 if let contentRange = token.contentRange {
                     self.addAttributes(OutlineTheme.codeBlockStyle.attributes, range: contentRange)
                 }
                 
-                textStorage.addAttributes([OutlineAttribute.Block.code: OutlineTheme.codeBlockStyle.backgroundColor], range: token.range)
             }
             
         }
@@ -604,9 +619,13 @@ extension OutlineTextStorage: OutlineParserDelegate {
             self._tempParsingTokenResult.append(token)
             
             token.decorationAttributesAction = { textStorage, token in
-                guard let range = token.range(for: OutlineParser.Key.Node.codeBlockEnd) else { return }
                 
-                textStorage.addAttributes(OutlineTheme.markStyle.attributes, range: range)
+                if textStorage.isReadingMode {
+                    textStorage.addAttribute(NSAttributedString.Key.foregroundColor, value: OutlineTheme.codeBlockStyle.backgroundColor, range: token.tokenRange)
+                } else {
+                    textStorage.addAttributes(OutlineTheme.markStyle.attributes, range: token.tokenRange)
+                }
+                
             }
             
         }
@@ -621,12 +640,16 @@ extension OutlineTextStorage: OutlineParserDelegate {
             
             token.decorationAttributesAction = { textStorage, token in
                 guard let token = token as? BlockBeginToken else { return }
-                
+                                
                 if let contentRange = token.contentRange {
                     self.addAttributes(OutlineTheme.quoteBlockStyle.attributes, range: contentRange)
                 }
                 
-                textStorage.addAttributes(OutlineTheme.markStyle.attributes, range: token.tokenRange)
+                if textStorage.isReadingMode {
+                    textStorage.addAttribute(NSAttributedString.Key.foregroundColor, value: OutlineTheme.quoteBlockStyle.backgroundColor, range: token.tokenRange)
+                } else {
+                    textStorage.addAttributes(OutlineTheme.markStyle.attributes, range: token.tokenRange)
+                }
                 
                 textStorage.addAttributes([OutlineAttribute.Block.quote: OutlineTheme.quoteBlockStyle.backgroundColor], range: token.range)
             }
@@ -644,7 +667,12 @@ extension OutlineTextStorage: OutlineParserDelegate {
             token.decorationAttributesAction = { textStorage, token in
                 guard let token = token as? BlockEndToken else { return }
                 
-                textStorage.addAttributes(OutlineTheme.markStyle.attributes, range: token.tokenRange)
+                if textStorage.isReadingMode {
+                    textStorage.addAttribute(NSAttributedString.Key.foregroundColor, value: OutlineTheme.quoteBlockStyle.backgroundColor, range: token.tokenRange)
+                } else {
+                    textStorage.addAttributes(OutlineTheme.markStyle.attributes, range: token.tokenRange)
+                }
+                
                 
                 if let contentRange = token.beginToken?.contentRange {
                     textStorage.addAttributes(OutlineTheme.quoteBlockStyle.attributes, range: contentRange)
@@ -662,42 +690,69 @@ extension OutlineTextStorage: OutlineParserDelegate {
             self._ignoreTextMarkRanges.append(token.levelRange)
             
             token.decorationAttributesAction = { textStorage, token in
-                guard let headingRange = token.range(for: OutlineParser.Key.Node.heading) else { return }
-                textStorage.addAttributes(OutlineTheme.headingStyle(level: token.range(for: OutlineParser.Key.Element.Heading.level)?.length ?? 1).attributes, range: headingRange)
-                
-                textStorage.addAttribute(OutlineAttribute.Heading.content, value: 1, range: headingRange)
-                
-                if let levelRange = token.range(for: OutlineParser.Key.Element.Heading.level) {
-                    textStorage.addAttribute(OutlineAttribute.Heading.level, value: 1, range: levelRange)
+                if textStorage.isReadingMode {
+                    guard let headingRange = token.range(for: OutlineParser.Key.Node.heading) else { return }
+                    textStorage.addAttributes(OutlineTheme.headingStyle(level: token.range(for: OutlineParser.Key.Element.Heading.level)?.length ?? 1).attributes, range: headingRange)
+
+                    textStorage.addAttribute(OutlineAttribute.Heading.content, value: 1, range: headingRange)
+                    
+                    if let levelRange = token.range(for: OutlineParser.Key.Element.Heading.level) {
+                        textStorage.addAttribute(OutlineAttribute.Heading.level, value: 1, range: levelRange)
+                    }
+                    
+                    if let tagsRange = token.range(for: OutlineParser.Key.Element.Heading.tags) {
+                        textStorage.addAttribute(OutlineAttribute.hidden, value: 1, range: tagsRange)
+                    }
+                    
+                    if let priorityRange = token.range(for: OutlineParser.Key.Element.Heading.priority) {
+                        textStorage.addAttribute(OutlineAttribute.hidden, value: 1, range: priorityRange)
+                    }
+                    
+                    if let planningRange = token.range(for: OutlineParser.Key.Element.Heading.planning) {
+                        textStorage.addAttribute(OutlineAttribute.hidden, value: 1, range: planningRange)
+                    }
+                    
+                    
+                    textStorage.addHeadingFoldingStatus(heading: token as! HeadingToken)
+                } else {
+                    guard let headingRange = token.range(for: OutlineParser.Key.Node.heading) else { return }
+                    textStorage.addAttributes(OutlineTheme.headingStyle(level: token.range(for: OutlineParser.Key.Element.Heading.level)?.length ?? 1).attributes, range: headingRange)
+                    
+                    textStorage.addAttribute(OutlineAttribute.Heading.content, value: 1, range: headingRange)
+                    
+                    if let levelRange = token.range(for: OutlineParser.Key.Element.Heading.level) {
+                        textStorage.addAttribute(OutlineAttribute.Heading.level, value: 1, range: levelRange)
+                    }
+                    
+                    if let tagsRange = token.range(for: OutlineParser.Key.Element.Heading.tags) {
+                        textStorage.addAttribute(OutlineAttribute.Heading.tags, value: textStorage.string.nsstring.substring(with: tagsRange).components(separatedBy: ":").filter { $0.count > 0 }, range: tagsRange)
+                        textStorage._addButtonAttributes(range: tagsRange, color: OutlineTheme.tagStyle.buttonColor)
+                        textStorage.addAttributes(OutlineTheme.tagStyle.textStyle.attributes, range: tagsRange)
+                    }
+                    
+                    if let priorityRange = token.range(for: OutlineParser.Key.Element.Heading.priority) {
+                        let priorityText = textStorage.string.nsstring.substring(with: priorityRange)
+                        textStorage.addAttribute(OutlineAttribute.Heading.priority, value: priorityText, range: priorityRange)
+                        let priorityStyle = OutlineTheme.priorityStyle(priorityText)
+                        textStorage._addButtonAttributes(range: priorityRange, color: priorityStyle.buttonColor)
+                        textStorage.addAttributes(priorityStyle.textStyle.attributes, range: priorityRange)
+                    }
+                    
+                    if let planningRange = token.range(for: OutlineParser.Key.Element.Heading.planning) {
+                        
+                        let planningString = textStorage.string.nsstring.substring(with: planningRange)
+                        
+                        textStorage.addAttributes([OutlineAttribute.Heading.planning: planningString], range: planningRange)
+                        
+                        let planningStyle = OutlineTheme.planningStyle(isFinished: SettingsAccessor.shared.finishedPlanning.contains(planningString))
+                        textStorage._addButtonAttributes(range: planningRange, color: planningStyle.buttonColor)
+                        
+                        textStorage.addAttributes(planningStyle.textStyle.attributes, range: planningRange)
+                    }
+                    
+                    textStorage.addHeadingFoldingStatus(heading: token as! HeadingToken)
                 }
                 
-                if let tagsRange = token.range(for: OutlineParser.Key.Element.Heading.tags) {
-                    textStorage.addAttribute(OutlineAttribute.Heading.tags, value: textStorage.string.nsstring.substring(with: tagsRange).components(separatedBy: ":").filter { $0.count > 0 }, range: tagsRange)
-                    textStorage._addButtonAttributes(range: tagsRange, color: OutlineTheme.tagStyle.buttonColor)
-                    textStorage.addAttributes(OutlineTheme.tagStyle.textStyle.attributes, range: tagsRange)
-                }
-                
-                if let priorityRange = token.range(for: OutlineParser.Key.Element.Heading.priority) {
-                    let priorityText = textStorage.string.nsstring.substring(with: priorityRange)
-                    textStorage.addAttribute(OutlineAttribute.Heading.priority, value: priorityText, range: priorityRange)
-                    let priorityStyle = OutlineTheme.priorityStyle(priorityText)
-                    textStorage._addButtonAttributes(range: priorityRange, color: priorityStyle.buttonColor)
-                    textStorage.addAttributes(priorityStyle.textStyle.attributes, range: priorityRange)
-                }
-                
-                if let planningRange = token.range(for: OutlineParser.Key.Element.Heading.planning) {
-                    
-                    let planningString = textStorage.string.nsstring.substring(with: planningRange)
-                    
-                    textStorage.addAttributes([OutlineAttribute.Heading.planning: planningString], range: planningRange)
-                    
-                    let planningStyle = OutlineTheme.planningStyle(isFinished: SettingsAccessor.shared.finishedPlanning.contains(planningString))
-                    textStorage._addButtonAttributes(range: planningRange, color: planningStyle.buttonColor)
-                    
-                    textStorage.addAttributes(planningStyle.textStyle.attributes, range: planningRange)
-                }
-                
-                textStorage.addHeadingFoldingStatus(heading: token as! HeadingToken)
             }
             
         }

@@ -19,6 +19,7 @@ public struct AppContext {
     public lazy var startComplete: Observable<Bool> = Observable.combineLatest(isFileReadyToAccess, uiStackReady).map { isFileReady, isUIReady in
         return isFileReady && isUIReady
     }
+    public let isReadingMode: BehaviorRelay<Bool> = BehaviorRelay(value: false)
 }
 
 public class Dependency {
