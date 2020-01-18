@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import Business
+import Core
 
 public struct SearchTabelCellModel {
     public let fileName: String

@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import Business
+import Core
 
 public protocol SettingsViewModelDelegate: class {
     func didSetIsSyncEnabled(_ enabled: Bool)

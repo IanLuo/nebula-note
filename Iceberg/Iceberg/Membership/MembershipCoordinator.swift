@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-import Business
+import Core
 
 public class MembershipCoordinator: Coordinator {
     public override init(stack: UINavigationController, dependency: Dependency) {

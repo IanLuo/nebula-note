@@ -12,7 +12,7 @@ import RxSwift
 import RxCocoa
 import RxDataSources
 import Interface
-import Business
+import Core
 
 public class BrowserFolderViewController: UIViewController {
     
@@ -163,7 +163,7 @@ public class BrowserFolderViewController: UIViewController {
         
         self.viewModel
             .output
-            .createdDocument
+            .onCreatededDocument
             .subscribe(onNext: { [unowned self] url in
                 if let indexPath = self.viewModel.indexPath(for: url) {
                     self.tableView.scrollToRow(at: indexPath, at: .middle, animated: true)

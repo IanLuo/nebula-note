@@ -8,7 +8,7 @@
 
 import Foundation
 import RxSwift
-import Business
+import Core
 import RxCocoa
 import RxDataSources
 
@@ -54,8 +54,8 @@ public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
     
     public struct Output {
         public let documents: BehaviorRelay<[BrowserDocumentSection]> = BehaviorRelay(value: [])
-        public let createdDocument: PublishSubject<URL> = PublishSubject()
-        public let createDocumentFailed: PublishSubject<String> = PublishSubject()
+        public let onCreatededDocument: PublishSubject<URL> = PublishSubject()
+        public let onCreatingDocumentFailed: PublishSubject<String> = PublishSubject()
     }
     
     private var _documentRelativePath: String = ""
@@ -109,7 +109,7 @@ public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
                         observer.onCompleted()
                     }
                 } else {
-                    self?.output.createDocumentFailed.onNext(title)
+                    self?.output.onCreatingDocumentFailed.onNext(title)
                 }
             }
             
@@ -166,8 +166,19 @@ public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
             .addDocument
             .asObserver()
             .flatMap { [unowned self] in self.createChildDocument(title: $0) }
-            .subscribe(onNext: { [unowned self] in self.output.createdDocument.onNext($0)})
+            .subscribe(onNext: { [unowned self] in self.output.onCreatededDocument.onNext($0)})
             .disposed(by: self.disposeBag)
+    }
+    
+    /// convenienct variable to access table data for rxDataSource
+    private var _tableDocuments: [BrowserCellModel] {
+        get {
+            return self.output.documents.value.first?.items ?? []
+        }
+        
+        set {
+            self.output.documents.accept([BrowserDocumentSection(items: newValue)])
+        }
     }
     
     private func _setupObservers() {
@@ -242,6 +253,38 @@ public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
                 self.reload()
             })
             .disposed(by: self.disposeBag)
+        
+        // add new cell for downloading document
+        self.dependency.syncManager.onDownloadingUpdates.subscribe(onNext: { [weak self] downloadingItemMap in
+            guard let strongSelf = self else { return }
+            
+            let urlsBelongsToCurrentFolder = downloadingItemMap.keys.filter { $0.deletingLastPathComponent() == strongSelf.url }
+            
+            for uploadDownloadingURL in urlsBelongsToCurrentFolder {
+                for case let downloadingCellModel in strongSelf._tableDocuments.filter({ $0.downloadingProcess != 100 }) where downloadingCellModel.url == uploadDownloadingURL {
+                    downloadingCellModel.downloadingProcess = downloadingItemMap[uploadDownloadingURL] ?? 1
+                    continue
+                }
+                
+                var documents = strongSelf._tableDocuments
+                documents.append(BrowserCellModel(url: uploadDownloadingURL, isDownloading: true))
+            }
+        }).disposed(by: self.disposeBag)
+        
+        self.dependency.syncManager.onDownloadingCompletes.subscribe(onNext: { [weak self] url in
+            guard let strongSelf = self else { return }
+            
+            var documents = strongSelf._tableDocuments
+            
+            for (index, document) in documents.enumerated() {
+                if document.url == url {
+                    documents.remove(at: index)
+                    strongSelf._tableDocuments = documents
+                    return
+                }
+            }
+            
+        }).disposed(by: self.disposeBag)
     }
 }
 

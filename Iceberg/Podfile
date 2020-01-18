@@ -19,7 +19,7 @@ target 'IceteaTests' do
     pod 'RxCocoa'
 end
 
-target 'Business' do
+target 'Core' do
   pod 'RxSwift'
   pod 'RxCocoa'
   pod 'SwiftyBeaver'

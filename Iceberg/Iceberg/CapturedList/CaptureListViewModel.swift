@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import Business
+import Core
 
 public protocol CaptureListViewModelDelegate: class {
     func didLoadData()

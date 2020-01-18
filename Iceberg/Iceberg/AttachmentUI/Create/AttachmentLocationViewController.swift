@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import CoreLocation
 import MapKit
-import Business
+import Core
 import Interface
 
 public class AttachmentLocationViewController: AttachmentViewController, AttachmentViewModelDelegate, MKMapViewDelegate {

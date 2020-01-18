@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit.UIImage
-import Business
+import Core
 
 public protocol AttachmentCoordinatorDelegate: class {
     func didSaveAttachment(key: String)

@@ -10,7 +10,7 @@ import Foundation
 import RxSwift
 import RxCocoa
 import SwiftyStoreKit
-import Business
+import Core
 import Interface
 
 public struct Product {

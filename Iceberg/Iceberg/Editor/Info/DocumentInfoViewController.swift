@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 import Interface
-import Business
+import Core
 
 public class DocumentInfoViewController: TransitionViewController {
     public var contentView: UIView = {

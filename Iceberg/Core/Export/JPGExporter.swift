@@ -38,9 +38,12 @@ public class JPGExporter: Exportable {
                 UIApplication.shared.keyWindow?.addSubview(webView)
                 webView.loadHTMLString(htmlString, baseURL: nil)
                 self.tempDelegate.didLoaded = {
-                    completion(.file(self._createImage(view: webView, htmlString: htmlString)))
-                    webView.removeFromSuperview()
-                    self.keeper = nil
+                    webView.evaluateJavaScript("document.documentElement.scrollHeight") { (height, error) in
+                        guard let height = height as? CGFloat else { return }
+                        completion(.file(self._createImage(size: CGSize(width: webView.bounds.width, height: height), htmlString: htmlString)))
+                        webView.removeFromSuperview()
+                        self.keeper = nil
+                    }
                 }
             default: break
             }
@@ -61,11 +64,10 @@ public class JPGExporter: Exportable {
         }
     }
     
-    private func _createImage(view: WKWebView, htmlString: String) -> URL {
+    private func _createImage(size: CGSize, htmlString: String) -> URL {
         let html = htmlString
         let fmt = UIMarkupTextPrintFormatter(markupText: html)
-        let size = view.scrollView.contentSize
-        
+                
         // 2. Assign print formatter to UIPrintPageRenderer
         let render = UIPrintPageRenderer()
         render.addPrintFormatter(fmt, startingAtPageAt: 0)
@@ -91,7 +93,7 @@ public class JPGExporter: Exportable {
         
         UIGraphicsEndImageContext()
         
-        // 5. Save PDF file
+        // 5. Save file
         let outputURL = URL.file(directory: URL.directory(location: URLLocation.temporary), name: self.url.packageName, extension: self.fileExtension)
         if let image = image {
             do {

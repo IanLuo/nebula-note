@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "TextStorage.h"
 #import <UIKit/UIKit.h>
-#import <Business/Business-Swift.h>
+#import <Core/Core-Swift.h>
 #import <Interface/Interface-Swift.h>
 
 static NSTextAttachment *foldingAttachment;

@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import Business
+import Core
 
 public protocol DashboardViewModelDelegate: class {
     func didCompleteLoadFilteredData()

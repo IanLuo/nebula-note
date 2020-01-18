@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import Business
+import Core
 
 public protocol DocumentEditViewModelDelegate: class {
     func updateHeadingInfo(heading: HeadingToken?)

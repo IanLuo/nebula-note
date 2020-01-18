@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-import Business
+import Core
 
 public class ImageAttachmentView: UIView, AttachmentViewProtocol {
     public var attachment: Attachment!

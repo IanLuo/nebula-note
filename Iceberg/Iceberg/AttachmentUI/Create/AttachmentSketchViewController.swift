@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 import Drawsana
-import Business
+import Core
 import Interface
 
 public class AttachmentSketchViewController: AttachmentViewController, AttachmentViewModelDelegate {

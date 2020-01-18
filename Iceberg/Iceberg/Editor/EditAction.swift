@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import Business
+import Core
 
 public enum EditAction {
     case toggleCheckboxStatus(Int, String)

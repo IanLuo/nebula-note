@@ -11,7 +11,7 @@ import UIKit
 import RxSwift
 import RxCocoa
 import Interface
-import Business
+import Core
 
 public class MembershipViewController: UIViewController {
     private var viewModel: MembershipViewModel!

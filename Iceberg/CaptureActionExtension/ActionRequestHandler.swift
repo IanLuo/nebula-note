@@ -8,7 +8,7 @@
 
 import UIKit
 import MobileCoreServices
-import Business
+import Core
 
 class ActionRequestHandler: NSObject, NSExtensionRequestHandling {
 

@@ -344,7 +344,7 @@ extension OutlineParser {
                 public static let keyURL: String = "link"
             }
             
-            public static func serialize(attachment: Business.Attachment) -> String {
+            public static func serialize(attachment: Core.Attachment) -> String {
                 switch attachment.kind {
                 case .text:
                     do { return try String(contentsOf: attachment.url) }
@@ -367,7 +367,7 @@ extension OutlineParser {
             }
             
             public static func serialize(kind: String , value: String) -> String {
-                if kind == Business.Attachment.Kind.link.rawValue {
+                if kind == Core.Attachment.Kind.link.rawValue {
                     let url = AttachmentManager.textAttachmentURL(with: value)
                     do {
                         if let linkData = try JSONSerialization.jsonObject(with: Data(contentsOf: url), options: []) as? [String: String] {
@@ -380,7 +380,7 @@ extension OutlineParser {
                     } catch {
                         return "fail to find attachment text: \(url), \nerror: \(error)"
                     }
-                } else if kind == Business.Attachment.Kind.text.rawValue {
+                } else if kind == Core.Attachment.Kind.text.rawValue {
                     let url = AttachmentManager.textAttachmentURL(with: value)
                     return (try? String(contentsOf: url)) ?? "fail to find attachment text: \(url)"
                 } else {

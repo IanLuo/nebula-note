@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-import Business
+import Core
 
 public protocol AttachmentViewProtocol {
     func setup(attachment: Attachment)

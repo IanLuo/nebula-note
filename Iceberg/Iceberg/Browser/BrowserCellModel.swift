@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import RxSwift
 import Interface
-import Business
+import Core
 import RxDataSources
 
 public class BrowserCellModel {
@@ -21,18 +21,24 @@ public class BrowserCellModel {
     public var shouldShowActions: Bool = true
     public var shouldShowChooseHeadingIndicator: Bool = false
     public var updateDate: Date
+    public var downloadingProcess: Int = 100
+    
     public lazy var cover: UIImage? = {
         return UIImage(contentsOfFile: self.url.coverURL.path)?.resize(upto: CGSize(width: 100, height: 100)) ?? Asset.Assets.emptyCup.image.fill(color: InterfaceTheme.Color.secondaryDescriptive).resize(upto: CGSize(width: 30, height: 30))
     }()
     
     public weak var coordinator: BrowserCoordinator?
     
-    public init(url: URL) {
+    public init(url: URL, isDownloading: Bool = false) {
         self.url = url
         self.parent = url.parentDocumentURL
         self.levelFromRoot = url.documentRelativePath.components(separatedBy: "/").filter { $0.count > 0 }.count
         let attriutes = try? FileManager.default.attributesOfItem(atPath: url.path)
         self.updateDate = (attriutes?[FileAttributeKey.modificationDate] as? Date) ?? Date.distantPast
+        
+        if isDownloading {
+            downloadingProcess = 0
+        }
     }
     
     /// check if there's sub files, any delete empty folder if there is any empty child file folder

@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-import Business
+import Core
 import RxSwift
 
 public protocol BrowserCoordinatorDelegate: class {

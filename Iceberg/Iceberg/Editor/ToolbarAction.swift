@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 import Interface
-import Business
+import Core
 
 public protocol ToolbarActionProtocol {
     var icon: UIImage { get }

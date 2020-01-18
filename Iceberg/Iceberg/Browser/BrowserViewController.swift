@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import Interface
 import RxSwift
-import Business
+import Core
 
 public class BrowserViewController: UIViewController {
     
