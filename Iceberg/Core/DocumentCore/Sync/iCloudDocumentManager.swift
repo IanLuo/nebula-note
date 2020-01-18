@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import RxSwift
 
 // https://developer.apple.com/library/archive/documentation/DataManagement/Conceptual/DocumentBasedAppPGiOS/ResolveVersionConflicts/ResolveVersionConflicts.html
 
@@ -44,6 +45,9 @@ public class iCloudDocumentManager: NSObject {
     public static var iCloudKeyValueStoreRoot: URL? {
         return iCloudDocumentManager.iCloudRoot?.appendingPathComponent("keyValueStore")
     }
+    
+    public let onDownloadingUpdates: BehaviorSubject<[URL: Int]> = BehaviorSubject(value: [:])
+    public let onDownloadingCompletes: PublishSubject<URL> = PublishSubject()
     
     private let _eventObserver: EventObserver
     private lazy var _metadataQuery: NSMetadataQuery = {
@@ -446,6 +450,7 @@ extension iCloudDocumentManager: NSMetadataQueryDelegate {
         self._metadataQuery.disableUpdates()
         
         let handleItemsAction: ([NSMetadataItem]) -> Void = { items in
+            
             for item in items {
                 guard let url = item.url else { continue }
                 
@@ -544,9 +549,17 @@ extension iCloudDocumentManager: NSMetadataQueryDelegate {
             let downloadSize = item.downloadingSize {
             log.info("downloading \(url) (\(downloadPercent)%), (\(downloadSize))")
             
+            var downloadingItems: [URL: Int] = try! self.onDownloadingUpdates.value()
+
             if item.downloadPercentage == 100 {
                 handleDocumentDownloadCompletion()
+                downloadingItems[url] = nil
+                self.onDownloadingCompletes.onNext(url)
+            } else {
+                downloadingItems[url] = downloadPercent
             }
+            
+            self.onDownloadingUpdates.onNext(downloadingItems)
         }
         
         if let isDownloaded = item.isDownloaded, isDownloaded == true,
