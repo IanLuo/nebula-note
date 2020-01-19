@@ -41,7 +41,6 @@ public struct ShareExtensionDataHandler {
             let sharedItem = self.loadAllUnHandledShareIdeas()
             
             let completeHandleSharedItems: () -> Void = {
-                self.clearAllSharedIdeas()
                 completion(sharedItem.count)
             }
             
@@ -67,6 +66,13 @@ public struct ShareExtensionDataHandler {
                     
                     attachmentManager.insert(content: content, kind: kind, description: "shared idea", complete: { key in
                         captureService.save(key: key, completion: {
+                            
+                            do {
+                                try FileManager.default.removeItem(at: url)
+                            } catch {
+                                log.error(error)
+                            }
+                            
                             handleSaveItem(remains)
                         })
                     }) { error in

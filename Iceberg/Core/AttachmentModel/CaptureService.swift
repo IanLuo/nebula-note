@@ -56,16 +56,19 @@ public struct CaptureService: CaptureServiceProtocol {
         plist.remove(key: key) {}
     }
     
-    /// 从 capture 中找到对应的 attahcment 并返回
-    public func loadAll(completion: @escaping ([Attachment]) -> Void, failure: @escaping (Error) -> Void) {
+    public func loadAllAttachmentNames() -> [String] {
         let plist = KeyValueStoreFactory.store(type: .plist(.custom(CaptureService.plistFileName)))
-        
+        return plist.allKeys()
+    }
+    
+    /// 从 capture 中找到对应的 attahcment 并返回
+    public func loadAll(completion: @escaping ([Attachment]) -> Void, failure: @escaping (Error) -> Void) {        
         var attachments: [Attachment] = []
         
         let group = DispatchGroup()
         
         DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
-            plist.allKeys().forEach {
+            self.loadAllAttachmentNames().forEach {
                 group.enter()
                 self._attachmentManager.attachment(with: $0, completion: {
                     attachments.append($0)

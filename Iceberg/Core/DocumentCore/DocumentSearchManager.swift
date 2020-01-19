@@ -128,10 +128,7 @@ public class DocumentSearchManager {
     private let _headingChangeObservingQueue: OperationQueue
     private let _trashSearchOperationQueue: OperationQueue
     
-    private let _eventObserver: EventObserver
-    private let _editorContext: EditorContext
-    
-    public init(eventObserver: EventObserver, editorContext: EditorContext) {
+    public init() {
         self._headingSearchOperationQueue = OperationQueue()
         self._contentSearchOperationQueue = OperationQueue()
         self._headingChangeObservingQueue = OperationQueue()
@@ -140,15 +137,6 @@ public class DocumentSearchManager {
         self._headingSearchOperationQueue.underlyingQueue = DispatchQueue.global(qos: DispatchQoS.QoSClass.userInteractive)
         self._contentSearchOperationQueue.underlyingQueue = DispatchQueue.global(qos: DispatchQoS.QoSClass.userInteractive)
         self._headingChangeObservingQueue.underlyingQueue = DispatchQueue.global(qos: DispatchQoS.QoSClass.background)
-        
-        self._editorContext = editorContext
-        self._eventObserver = eventObserver
-        self._eventObserver.registerForEvent(on: self,
-                                            eventType: DocumentHeadingChangeEvent.self,
-                                            queue: self._headingChangeObservingQueue,
-                                            action: { [weak self] (event: DocumentHeadingChangeEvent) -> Void in
-                                                self?._handleDocumentHeadingsChange(event: event)
-        })
     }
     
     // MARK: - deleted -
@@ -185,12 +173,15 @@ public class DocumentSearchManager {
     /// - parameter complete: 所有文件搜索完成后调用
     /// - parameter failed: 有错误产生的时候调用
     public func search(contain: String,
+                       cancelOthers: Bool = true,
                        completion: @escaping ([DocumentTextSearchResult]) -> Void,
                        failed: ((Error) -> Void)?) {
-
-        guard contain.count > 0 else { return }
         
-        self._contentSearchOperationQueue.cancelAllOperations()
+        guard contain.count > 0 else {  return }
+        
+        if cancelOthers {
+            self._contentSearchOperationQueue.cancelAllOperations()
+        }
         let operation = BlockOperation()
         
         operation.addExecutionBlock {
@@ -422,21 +413,6 @@ public class DocumentSearchManager {
         }
         
         return result
-    }
-    
-    private func _handleDocumentHeadingsChange(event: DocumentHeadingChangeEvent) {
-//        let newHeadings = event.newHeadings.map { (headingToken: HeadingToken) -> DocumentHeadingSearchResult in
-//            // 这里能收到 heading change 的 document 肯定是已经 open 了的，因为发 heading change 事件是在 OutlineTextStorage 文档解析完成的时候            
-//            return DocumentHeadingSearchResult(dateAndTime: nil,
-//                                               documentInfo: DocumentInfo(wrapperURL: event.url.wrapperURL),
-//                                               dateAndTimeRange: nil,
-//                                               heading: DocumentHeading(documentString: self._editorContext.request(url: event.url).string,
-//                                                                        headingToken: headingToken,
-//                                                                        url: event.url))
-//        }
-
-        let documentSearchHeadingChangeEvent = DocumentSearchHeadingUpdateEvent()
-        self._eventObserver.emit(documentSearchHeadingChangeEvent)
     }
 }
 

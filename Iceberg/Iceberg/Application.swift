@@ -62,8 +62,9 @@ public class Application: Coordinator {
         }
         
         // 通知完成初始化
-        self.dependency.appContext.startComplete.subscribe(onNext: { [weak self] _ in
+        self.dependency.appContext.startComplete.subscribe(onNext: { [weak self] isComplete in
             guard let strongSelf = self else { return }
+            guard isComplete else { return }
             
             strongSelf.dependency.eventObserver.emit(AppStartedEvent())
             
@@ -76,6 +77,8 @@ public class Application: Coordinator {
                     })
                     .disposed(by: strongSelf.disposeBag)
             }
+            
+            strongSelf.dependency.attachmentManager.scanNotUsingAttachments()
             
         }).disposed(by: self.disposeBag)
     }

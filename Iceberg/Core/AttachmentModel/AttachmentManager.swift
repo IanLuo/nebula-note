@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import RxSwift
 
 public enum AttachmentError: Error {
     case noSuchAttachment(String)
@@ -176,6 +177,82 @@ public enum AttachmentError: Error {
         } else {
             getContentAndCloseDocument(document)
         }
+    }
+    
+    public func scanNotUsingAttachments() {
+        let searchManager = DocumentSearchManager()
+        let captureService = CaptureService(attachmentManager: self)
+        
+        var unReferencedAttachments: [URL] = []
+        
+        let dipatchGroup = DispatchGroup()
+        
+        var flag = 0
+        let queue = DispatchQueue(label: "", qos: DispatchQoS.background)
+        for url in self.allAttachments {
+            dipatchGroup.enter()
+            flag += 1
+            queue.async {
+                if self.isAttachmentInCaptureList(url: url, captureService: captureService) {
+                    dipatchGroup.leave()
+                    flag -= 1
+                } else {
+                    self.findReference(for: url, documentSearchManager: searchManager) { refs in
+                        if let refs = refs, refs.count == 0 {
+                            unReferencedAttachments.append(url)
+                        }
+                        dipatchGroup.leave()
+                        flag -= 1
+                    }
+                }
+            }
+        }
+        
+        dipatchGroup.notify(queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.background)) {
+            log.info("found \(unReferencedAttachments.count) attachments that is not used at any place: \n \(unReferencedAttachments)")
+            
+            for url in unReferencedAttachments {
+                do {
+                    try FileManager.default.removeItem(at: url)
+                } catch {
+                    log.error("fail to delete attachment when clearing un-referenced attachment: \(url)")
+                }
+            }
+        }
+        
+    }
+    
+    public func isAttachmentInCaptureList(url: URL, captureService: CaptureService) -> Bool {
+        let name = url.deletingPathExtension().lastPathComponent
+        
+        return captureService.loadAllAttachmentNames().contains(where: { $0 == name })
+    }
+    
+    public func findReference(for attachment: URL, documentSearchManager: DocumentSearchManager, completion: @escaping ([URL]?) -> Void) {
+        let name = attachment.deletingPathExtension().lastPathComponent
+        
+        documentSearchManager.search(contain: name, cancelOthers: false, completion: { results in
+            let urls = results.map { $0.documentInfo.url }
+            completion(urls)
+        }) { error in
+            log.error(error)
+            completion(nil)
+        }
+    }
+    
+    public var allAttachments: [URL] {
+        var attachments: [URL] = []
+        let options: FileManager.DirectoryEnumerationOptions = [.skipsHiddenFiles]
+        let enumerator = FileManager.default.enumerator(at: URL.attachmentURL, includingPropertiesForKeys: nil, options: options, errorHandler: nil)
+        
+        while let url = enumerator?.nextObject() as? URL {
+            if url.pathExtension == AttachmentDocument.fileExtension {
+                enumerator?.skipDescendants()
+                attachments.append(url)
+            }
+        }
+        
+        return attachments
     }
     
     public static func wrappterURL(key: String) -> URL {
