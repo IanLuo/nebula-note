@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import Core
 import Interface
+import RxSwift
 
 public class DocumentEditorViewController: UIViewController {
     public let textView: OutlineTextView
@@ -25,6 +26,7 @@ public class DocumentEditorViewController: UIViewController {
     
     internal var _lastLocation: Int?
     internal var _isAdjustingSelectRange: Bool = false
+    private let disposeBag = DisposeBag()
     
     public init(viewModel: DocumentEditViewModel) {
         self.viewModel = viewModel
@@ -44,6 +46,7 @@ public class DocumentEditorViewController: UIViewController {
         self.modalPresentationStyle = .fullScreen
         
         NotificationCenter.default.addObserver(self, selector: #selector(_documentStateChanged(_:)), name: UIDocument.stateChangedNotification, object: nil)
+        
     }
     
     deinit {
@@ -93,6 +96,12 @@ public class DocumentEditorViewController: UIViewController {
         let notificationCenter = NotificationCenter.default
         notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillHideNotification, object: nil)
         notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
+        
+        self.viewModel.dependency.appContext.isReadingMode.subscribe(onNext: { [weak self] isReadingMode in
+            self?.textView.isEditable = !isReadingMode
+            self?.textView.inputAccessoryView?.isHidden = isReadingMode
+        }).disposed(by: self.disposeBag)
+
     }
     
     public override func viewDidDisappear(_ animated: Bool) {

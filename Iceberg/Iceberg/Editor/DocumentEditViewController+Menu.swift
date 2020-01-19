@@ -69,9 +69,7 @@ extension DocumentEditorViewController {
         let modeTitle = viewModel.isReadingModel ? L10n.Document.Menu.enableEditingMode : L10n.Document.Menu.enableReadingMode
         actionsController.addAction(icon: nil, title: modeTitle) { [unowned self] viewController in
             viewController.dismiss(animated: true, completion: {
-                self.viewModel.isReadingModel = !self.viewModel.isReadingModel
-                self.textView.isEditable = !self.viewModel.isReadingModel
-                self.textView.inputAccessoryView?.isHidden = self.viewModel.isReadingModel
+                self.viewModel.dependency.appContext.isReadingMode.accept(!self.viewModel.isReadingModel) // trigger global status change
             })
         }
         
