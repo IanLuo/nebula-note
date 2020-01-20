@@ -78,8 +78,6 @@ public class Application: Coordinator {
                     .disposed(by: strongSelf.disposeBag)
             }
             
-            strongSelf.dependency.attachmentManager.scanNotUsingAttachments()
-            
         }).disposed(by: self.disposeBag)
     }
     
