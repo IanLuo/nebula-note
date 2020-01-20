@@ -225,6 +225,8 @@ extension DocumentEditorViewController: DocumentEditViewModelDelegate {
                     }
                 } else if lastToken is HeadingToken {
                     self.inputbar.mode = .heading
+                } else {
+                    self.inputbar.mode = .paragraph
                 }
             } else {
                 self.inputbar.mode = .paragraph
