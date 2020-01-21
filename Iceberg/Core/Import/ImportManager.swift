@@ -47,8 +47,6 @@ public struct ImportManager {
         guard let type = ImportType(rawValue: url.pathExtension) else {
             completion(Result.failure(ImportError.wrongTypeOfFile));
             log.error("can't import file, unsupported file extension: \(url.pathExtension)")
-            
-            try? FileManager.default.removeItem(at: url)
             return
         }
         
