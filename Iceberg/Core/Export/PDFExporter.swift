@@ -39,7 +39,7 @@ public class PDFExporter: Exportable {
                 webView.loadFileURL(fileURL, allowingReadAccessTo: URL.directory(location: URLLocation.temporary))
                 UIApplication.shared.keyWindow?.addSubview(webView)
                 self.tempDelegate.didLoaded = {
-                    completion(.file(self._createPDF(string: htmlString)))
+                    completion(.file(self._createPDF(string: htmlString, printFormater: webView.viewPrintFormatter())))
                     self.keeper = nil
                 }
             default: break
@@ -61,13 +61,13 @@ public class PDFExporter: Exportable {
         }
     }
     
-    private func _createPDF(string: String) -> URL {
+    private func _createPDF(string: String, printFormater: UIPrintFormatter) -> URL {
         let html = string
         let fmt = UIMarkupTextPrintFormatter(markupText: html)
         
         // 2. Assign print formatter to UIPrintPageRenderer
         let render = UIPrintPageRenderer()
-        render.addPrintFormatter(fmt, startingAtPageAt: 0)
+        render.addPrintFormatter(printFormater, startingAtPageAt: 0)
         // 3. Assign paperRect and printableRect
         let pageBounds = CGRect(x: 0, y: 0, width: 595, height: 841) // A4, 72 dpi
         let page = pageBounds//CGRect(x: 0, y: 0, width: 595.2, height: 841.8) // A4, 72 dpi
