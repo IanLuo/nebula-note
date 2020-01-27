@@ -7,7 +7,8 @@
 //
 
 import Foundation
-import Business
+import Core
+import RxSwift
 
 public protocol DocumentEditViewModelDelegate: class {
     func updateHeadingInfo(heading: HeadingToken?)
@@ -15,7 +16,13 @@ public protocol DocumentEditViewModelDelegate: class {
     func didEnterTokens(_ tokens: [Token])
 }
 
-public class DocumentEditViewModel {
+public class DocumentEditViewModel: ViewModelProtocol {
+    public required init() {}
+    
+    public var context: ViewModelContext<EditorCoordinator>!
+    
+    public typealias CoordinatorType = EditorCoordinator
+    
     public weak var delegate: DocumentEditViewModelDelegate? {
         didSet {
             if self.isReadyToEdit {
@@ -26,13 +33,7 @@ public class DocumentEditViewModel {
     
     public var onLoadingLocation: Int = 0 // 打开文档的时候默认的位置
     
-    public weak var coordinator: EditorCoordinator? {
-        didSet {
-            self.addObservers()
-        }
-    }
-    
-    private let _editorService: EditorService
+    private var _editorService: EditorService!
     
     public var currentTokens: [Token] = []
     
@@ -44,7 +45,9 @@ public class DocumentEditViewModel {
         }
     }
     
-    public init(editorService: EditorService) {
+    public convenience init(editorService: EditorService, coordinator: EditorCoordinator) {
+        self.init(coordinator: coordinator)
+        
         self._editorService = editorService
         
         editorService.onReadyToUse = { [weak self] service in
@@ -52,12 +55,16 @@ public class DocumentEditViewModel {
                 self?.isReadyToEdit = $0 != nil
             }
         }
+        
+        self.addObservers()
     }
     
     deinit {
         self._editorService.close()
         self.removeObservers()
     }
+    
+    private let disposeBag = DisposeBag()
     
     public var url: URL {
         return self._editorService.fileURL
@@ -118,6 +125,14 @@ public class DocumentEditViewModel {
         return self._editorService.isHeadingFolded(at: location)
     }
     
+    public var isReadingModel: Bool {
+        get { return self._editorService.isReadingMode }
+        set {
+            self._editorService.isReadingMode = newValue
+            self.revertContent()
+        }
+    }
+    
     public func hiddenRange(at location: Int) -> NSRange? {
         return self._editorService.hiddenRange(location: location)
     }
@@ -132,11 +147,7 @@ public class DocumentEditViewModel {
     }
     
     public func foldedRange(at location: Int) -> NSRange? {
-        if let contentRange = self._editorService.heading(at: location)?.contentRange {
-            return self._editorService.foldedRange(at: contentRange.location)
-        } else {
-            return nil
-        }
+        return self._editorService.foldedRange(at: location)
     }
     
     public func save(completion: @escaping () -> Void) {
@@ -180,7 +191,7 @@ public class DocumentEditViewModel {
     }
     
     public func moveParagraphToOtherDocument(url: URL, outline otherOutline: OutlineLocation, location: Int, textView: UITextView, completion: @escaping (DocumentContentCommandResult) -> Void) {
-        self.coordinator?.dependency.editorContext.request(url: url).onReadyToUse = { [weak self] service in
+        self.dependency.editorContext.request(url: url).onReadyToUse = { [weak self] service in
             service.open(completion: { string in
                 guard let strongSelf = self else { return }
                 
@@ -190,7 +201,7 @@ public class DocumentEditViewModel {
                     ? strongSelf._editorService.string.nsstring.substring(with: heading.paragraphWithSubRange) + "\n"
                     : strongSelf._editorService.string.nsstring.substring(with: heading.paragraphWithSubRange)
                 
-                DispatchQueue.main.async {
+                DispatchQueue.runOnMainQueueSafely {
                     // 1. 删除当前的段落
                     let result = strongSelf.performCommandComposer(EditAction.removeParagraph(location).commandComposer, textView: textView)
                     
@@ -200,22 +211,26 @@ public class DocumentEditViewModel {
                         _ = service.toggleContentCommandComposer(composer: AppendAsChildHeadingCommandComposer(text: text, to: location)).perform() // 移到另一个文件，不需要支持 undo
                     case .position(let location):
                         if location == 0 {
-                            text = text + "\n"
+                            if !text.hasSuffix("\n") {
+                                text = text + "\n"
+                            }
                         } else if location == service.string.count {
-                            text = "\n" + text
+                            if !strongSelf._editorService.string.hasSuffix("\n") {
+                                text = "\n" + text
+                            }
                         }
                         _ = service.toggleContentCommandComposer(composer: InsertTextCommandComposer(location: location, textToInsert: text)).perform()
                     }
                     
                     service.save(completion: { service, _ in
                         service.close(completion: { _ in
-                            DispatchQueue.main.async {
+                            DispatchQueue.runOnMainQueueSafely {
                                 completion(result)
                             }
                             
                             // add to file to recent changed file
-                            self?.coordinator?.dependency.editorContext.recentFilesManager.addRecentFile(url: url, lastLocation: 0, completion: {
-                                self?.coordinator?.dependency.eventObserver.emit(OpenDocumentEvent(url: url))
+                            self?.dependency.editorContext.recentFilesManager.addRecentFile(url: url, lastLocation: 0, completion: {
+                                self?.dependency.eventObserver.emit(OpenDocumentEvent(url: url))
                             })
                         })
                     })
@@ -250,9 +265,13 @@ public class DocumentEditViewModel {
             }
             
             if toLocation == 0 {
-                text = text + "\n"
+                if !text.hasSuffix("\n") {
+                    text = text + "\n"
+                }
             } else if toLocation == self._editorService.string.count {
-                text = "\n" + text
+                if !self._editorService.string.hasSuffix("\n") {
+                    text = "\n" + text
+                }
             }
             
             return self.performCommandComposer(InsertTextCommandComposer(location: toLocation, textToInsert: text), textView: textView)
@@ -351,7 +370,7 @@ public class DocumentEditViewModel {
 
 extension DocumentEditViewModel {
     fileprivate func addObservers() {
-        coordinator?.dependency.eventObserver.registerForEvent(on: self,
+        self.dependency.eventObserver.registerForEvent(on: self,
                                                                eventType: NewDocumentPackageDownloadedEvent.self,
                                                                queue: .main,
                                                                action: { [weak self] (event: NewDocumentPackageDownloadedEvent) in
@@ -359,6 +378,10 @@ extension DocumentEditViewModel {
                 
             }
         })
+        
+        self.dependency.appContext.isReadingMode.subscribe(onNext: {[weak self] isReadingMode in
+            self?.isReadingModel = isReadingMode
+        }).disposed(by: self.disposeBag)
     }
     
     fileprivate func removeObservers() {

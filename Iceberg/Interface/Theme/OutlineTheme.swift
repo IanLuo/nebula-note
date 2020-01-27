@@ -32,9 +32,9 @@ public class OutlineThemeSelector {
     }
     
     public static func dateAndTimeStyle(datesFromToday: Int) -> ButtonStyle {
-        if datesFromToday > 3 {
+        if datesFromToday > 1 {
             return OutlineThemeSelector.shared.currentTheme.dateAndTimeStyle.normal
-        } else if datesFromToday <= 3 && datesFromToday >= 0 {
+        } else if datesFromToday <= 1 && datesFromToday >= 0 {
             return OutlineThemeSelector.shared.currentTheme.dateAndTimeStyle.soon
         } else {
             return OutlineThemeSelector.shared.currentTheme.dateAndTimeStyle.overtime
@@ -128,6 +128,10 @@ public protocol OutlineThemeConfigProtocol {
 
 public struct OutlineThemeStyle: OutlineThemeConfigProtocol {
     public init(theme: InterfaceThemeProtocol) {
+        let blockParagraph = NSMutableParagraphStyle()
+        blockParagraph.headIndent = 20
+        blockParagraph.firstLineHeadIndent = 20
+        
         self.seperatorStyle = theme.color.secondaryDescriptive
         self.headingStyle = TextStyle(font: theme.font.title, color: theme.color.interactive)
         self.orderdedListStyle = TextStyle(font: theme.font.title, color: theme.color.secondaryDescriptive)
@@ -137,19 +141,21 @@ public struct OutlineThemeStyle: OutlineThemeConfigProtocol {
         self.markStyle = TextStyle(font: theme.font.footnote, color: theme.color.secondaryDescriptive)
         self.paragraphStyle = TextStyle(font: theme.font.body, color: theme.color.descriptive)
         self.codeBlockStyle = CodeBlockStyle(textStyle: TextStyle(font: theme.font.body,
-                                                                  color: theme.color.interactive),
+                                                                  color: theme.color.interactive,
+                                                                  otherAttributes: [NSAttributedString.Key.paragraphStyle: blockParagraph]),
                                              backgroundColor: theme.color.background2)
         self.quoteBlockStyle = QuoteBlockStyle(textStyle: TextStyle(font: theme.font.body,
-                                                                    color: theme.color.descriptive),
+                                                                    color: theme.color.descriptive,
+                                                                    otherAttributes: [NSAttributedString.Key.paragraphStyle: blockParagraph]),
                                                backgroundColor: theme.color.background2)
         self.textMarkStyle = TextMarkStyle(bold: TextStyle(font: theme.font.title, color: theme.color.interactive),
-                                           italic: TextStyle(font: theme.font.italic, color: theme.color.interactive),
-                                           underscore: TextStyle(font: theme.font.body, color: theme.color.interactive,
+                                           italic: TextStyle(font: theme.font.italic, color: theme.color.descriptive),
+                                           underscore: TextStyle(font: theme.font.body, color: theme.color.descriptive,
                                                                  otherAttributes: [NSAttributedString.Key.underlineStyle: 1]),
-                                           strikethrought: TextStyle(font: theme.font.body, color: theme.color.interactive,
+                                           strikethrought: TextStyle(font: theme.font.body, color: theme.color.descriptive,
                                                                      otherAttributes: [NSAttributedString.Key.strikethroughStyle: 1]),
-                                           verbatim: TextStyle(font: theme.font.body, color: theme.color.interactive),
-                                           code: TextStyle(font: theme.font.body, color: theme.color.interactive))
+                                           verbatim: TextStyle(font: theme.font.body, color: theme.color.descriptive),
+                                           highlight: TextStyle(font: theme.font.body, color: theme.color.spotlitTitle))
      /// 目前没有使用 button color, 因为 button 显示有问题
        self.dateAndTimeStyle = DateAndTimeStyle(normal: ButtonStyle(buttonColor: theme.color.background3,
                                                                      textStyle: TextStyle(font: theme.font.footnote,
@@ -249,7 +255,7 @@ public struct TextMarkStyle {
     public let underscore: TextStyle
     public let strikethrought: TextStyle
     public let verbatim: TextStyle
-    public let code: TextStyle
+    public let highlight: TextStyle
 }
 
 public struct TextStyle {

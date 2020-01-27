@@ -1,4 +1,4 @@
-# This file contains the fastlane.tools configuration
+# This file contains the fastlane.tools configuration 
 # You can find the documentation at https://docs.fastlane.tools
 #
 # For a list of all available actions, check out
@@ -29,14 +29,21 @@ platform :ios do
 
   lane :beta do
     increment_build_number
-    cert
-    sigh
-    build_app(
+    cert(development: false)
+    sigh(app_identifier: "com.wod.icetea", development: false)
+    sigh(app_identifier: "com.wod.icetea.CaptureIdeaExtension", development: false)
+    sigh(app_identifier: "com.wod.icetea.CaptureActionExtension", development: false)
+    build
+    upload_testflight
+  end
+
+  lane :build do
+    gym(
       scheme: "Icetea",
       workspace: "Icetea.xcworkspace",
-      export_options: "./ExportOptions.plist",
+      clean: true,
+      export_method: "app-store",
     )
-    upload_testflight
   end
 
   lane :upload_testflight do

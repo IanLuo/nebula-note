@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-import Business
+import Core
 import Interface
 
 public protocol AgendaTableCellDelegate: class {
@@ -190,8 +190,8 @@ public class AgendaTableCell: UITableViewCell {
         }
         
         self._dateAndTimeLabel.isHidden = cellModel.dateAndTime == nil
-        if let today = cellModel.date {
-            self._dateAndTimeLabel.attributedText = cellModel.dateAndTime?.agendaLabel(today: today)
+        if let currentDate = cellModel.currentDate {
+            self._dateAndTimeLabel.attributedText = cellModel.dateAndTime?.agendaLabel(today: currentDate)
         }
         
         self.layoutIfNeeded()
@@ -252,7 +252,7 @@ extension DateAndTimeType {
                     color = InterfaceTheme.Color.unfinished
                 } else {
                     text = L10n.Agenda.startInDaysWithPlaceHolder("\(daysFromToday)")
-                    color = InterfaceTheme.Color.unfinished
+                    color = InterfaceTheme.Color.finished
                 }
             }
         } else if self.isDue {
@@ -275,7 +275,7 @@ extension DateAndTimeType {
                     color = InterfaceTheme.Color.unfinished
                 } else {
                     text = L10n.Agenda.willOverduInDaysWithPlaceHolder("\(daysAfterToday)")
-                    color = InterfaceTheme.Color.warning
+                    color = InterfaceTheme.Color.finished
                 }
             }
         } else {

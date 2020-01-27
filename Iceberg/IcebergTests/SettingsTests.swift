@@ -9,7 +9,7 @@
 import Foundation
 import XCTest
 @testable import Iceberg
-import Business
+import Core
 
 public class SettingsTests: XCTestCase {
     func testUnfinishedCustomizedPlannings() {

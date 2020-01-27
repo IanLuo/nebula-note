@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-import Business
+import Core
 import Interface
 
 public protocol EditorCoordinatorSelectHeadingDelegate: class {
@@ -26,36 +26,33 @@ public class EditorCoordinator: Coordinator {
     
     private let usage: Usage
     
-    private let _viewModel: DocumentEditViewModel
+    private var _viewModel: DocumentEditViewModel!
     
     public var didSelectOutlineSelectionAction: ((OutlineLocation) -> Void)?
     
-    private let _url: URL
+    private var _url: URL!
     
     public init(stack: UINavigationController, dependency: Dependency, usage: Usage) {
         self.usage = usage
+        super.init(stack: stack, dependency: dependency)
         
         switch usage {
         case .editor(let url, let location):
-            let viewModel = DocumentEditViewModel(editorService: dependency.editorContext.request(url: url))
+            let viewModel = DocumentEditViewModel(editorService: dependency.editorContext.request(url: url), coordinator: self)
             viewModel.onLoadingLocation = location
             self._viewModel = viewModel
             self._url = url
-            super.init(stack: stack, dependency: dependency)
             let viewController = DocumentEditorViewController(viewModel: viewModel)
             viewController.title = url.packageName
-            viewModel.coordinator = self
             self.viewController = viewController
         case .outline(let url, let ignoredHeadingLocation):
-            let viewModel = DocumentEditViewModel(editorService: dependency.editorContext.request(url: url))
+            let viewModel = DocumentEditViewModel(editorService: dependency.editorContext.request(url: url), coordinator: self)
             self._viewModel = viewModel
             self._url = url
-            super.init(stack: stack, dependency: dependency)
             let viewController = HeadingsOutlineViewController(viewModel: viewModel)
             viewController.ignoredHeadingLocation = ignoredHeadingLocation
             viewController.outlineDelegate = self
             viewController.title = url.packageName
-            viewModel.coordinator = self
             self.viewController = viewController
         }
     }

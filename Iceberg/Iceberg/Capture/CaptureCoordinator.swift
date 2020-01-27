@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-import Business
+import Core
 
 public protocol CaptureCoordinatorDelegate: class {
     func didSelect(attachmentKind: Attachment.Kind, coordinator: CaptureCoordinator)

@@ -8,7 +8,7 @@
 
 import Foundation
 import XCTest
-@testable import Business
+@testable import Core
 
 class TestDelegate: OutlineParserDelegate {
     func didStartParsing(text: String) {}

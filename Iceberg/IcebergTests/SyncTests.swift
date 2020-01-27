@@ -9,7 +9,7 @@
 import Foundation
 @testable import Iceberg
 import XCTest
-@testable import Business
+@testable import Core
 
 class SyncTests: XCTestCase {
     func testFindFilesToSyncUp() {

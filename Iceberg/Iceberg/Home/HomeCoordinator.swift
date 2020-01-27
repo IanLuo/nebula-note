@@ -9,8 +9,9 @@
 
 import Foundation
 import UIKit
-import Business
+import Core
 import Interface
+import RxSwift
 
 public class HomeCoordinator: Coordinator {
     private let homeViewController: HomeViewController
@@ -18,6 +19,8 @@ public class HomeCoordinator: Coordinator {
     private let _dashboardViewController: DashboardViewController
     
     private let _viewModel: DashboardViewModel
+    
+    private let disposeBag = DisposeBag()
     
     public override init(stack: UINavigationController, dependency: Dependency) {
         let viewModel = DashboardViewModel(documentSearchManager: dependency.documentSearchManager)
@@ -63,7 +66,9 @@ public class HomeCoordinator: Coordinator {
                                               DashboardViewController.TabType.search(tabs[2], 2),
                                               DashboardViewController.TabType.documents(tabs[3], 3)])
         
-        self.homeViewController.showChildViewController(tabs[SettingsAccessor.Item.landingTabIndex.get(Int.self) ?? 3])
+        self.dependency.appContext.isFileReadyToAccess.subscribe(onNext: { [weak self] _ in
+            self?.homeViewController.showChildViewController(tabs[SettingsAccessor.Item.landingTabIndex.get(Int.self) ?? 3])
+        }).disposed(by: self.disposeBag)
     }
     
     private var tempCoordinator: Coordinator?
@@ -96,6 +101,12 @@ public class HomeCoordinator: Coordinator {
         let navigationController = Coordinator.createDefaultNavigationControlller()
         let trashCoordinator = TrashCoordinator(stack: navigationController, dependency: self.dependency)
         trashCoordinator.start(from: self)
+    }
+    
+    public func showMembershipView() {
+        let navigationController = Coordinator.createDefaultNavigationControlller()
+        let membershipCoordinator = MembershipCoordinator(stack: navigationController, dependency: self.dependency)
+        membershipCoordinator.start(from: self)
     }
     
     public func getAllTags() -> [String] {
@@ -133,6 +144,12 @@ extension HomeCoordinator: HomeViewControllerDelegate {
 }
 
 extension HomeCoordinator: DashboardViewControllerDelegate {
+    public func showHeadingsToday(headings: [DocumentHeadingSearchResult], from subTabType: DashboardViewController.SubtabType) {
+        let agendaCoordinator = AgendaCoordinator(filterType: .today(headings), stack: self.stack, dependency: self.dependency)
+        agendaCoordinator.viewController?.title = subTabType.title
+        self.showTempCoordinator(agendaCoordinator)
+    }
+    
     public func showHeadingsScheduled(headings: [DocumentHeadingSearchResult], from subTabType: DashboardViewController.SubtabType) {
         let agendaCoordinator = AgendaCoordinator(filterType: .scheduled(headings), stack: self.stack, dependency: self.dependency)
         agendaCoordinator.viewController?.title = subTabType.title

@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-import Business
+import Core
 
 extension DocumentEditorViewController: UITextViewDelegate {
     public func textViewDidChange(_ textView: UITextView) {

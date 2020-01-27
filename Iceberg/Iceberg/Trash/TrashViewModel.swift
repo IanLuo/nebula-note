@@ -10,7 +10,7 @@ import Foundation
 import RxSwift
 import RxCocoa
 import RxDataSources
-import Business
+import Core
 
 public struct TrashSection {
     public var items: [TrashCellModel]

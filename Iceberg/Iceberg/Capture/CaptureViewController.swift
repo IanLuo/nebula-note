@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-import Business
+import Core
 import Interface
 
 public protocol CaptureViewControllerDelegate: class {
@@ -133,6 +133,11 @@ extension CaptureViewController: UITableViewDelegate, UITableViewDataSource {
         let attachmentKind = Attachment.Kind.allCases[indexPath.row]
         cell.iconView.image = attachmentKind.icon
         cell.titleLabel.text = attachmentKind.rawValue
+        
+        if let coordinator = self.coordinator {
+            cell.memberFunctionIconView.isHidden = coordinator.dependency.purchaseManager.isMember.value || !attachmentKind.isMemberFunction
+        }
+        
         return cell
     }
 }
@@ -171,6 +176,12 @@ private class CaptureCell: UITableViewCell {
         return label
     }()
     
+    internal let memberFunctionIconView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+        return imageView
+    }()
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
@@ -188,6 +199,7 @@ private class CaptureCell: UITableViewCell {
         
         self.contentView.addSubview(self.iconView)
         self.contentView.addSubview(self.titleLabel)
+        self.contentView.addSubview(self.memberFunctionIconView)
         
         self.iconView.sideAnchor(for: .left, to: self.contentView, edgeInset:  Layout.innerViewEdgeInsets.left)
         self.iconView.sizeAnchor(width: 18, height: 18)
@@ -195,6 +207,11 @@ private class CaptureCell: UITableViewCell {
         self.iconView.rowAnchor(view: self.titleLabel, space: 20)
         self.titleLabel.sideAnchor(for: .top, to: self.contentView, edgeInset: 20)
         self.titleLabel.centerAnchors(position: .centerY, to: self.contentView)
+
+        self.memberFunctionIconView.sideAnchor(for: .right, to: self.contentView, edgeInset: 10)
+        self.memberFunctionIconView.centerAnchors(position: .centerY, to: self.contentView)
+        
+        self.memberFunctionIconView.image = Asset.Assets.proLabel.image
     }
     
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {

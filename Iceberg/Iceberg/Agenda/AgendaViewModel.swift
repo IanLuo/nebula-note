@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import Business
+import Core
 import RxSwift
 import RxCocoa
 
@@ -154,6 +154,9 @@ public class AgendaViewModel {
             case .finished(let results):
                 self.data = results.map { AgendaCellModel(searchResult: $0) }.sortedByPriority
                 self.delegate?.didCompleteLoadAllData()
+            case .today(let results):
+                self.data = results.map { AgendaCellModel(searchResult: $0) }.sortedByPriority
+                self.delegate?.didCompleteLoadAllData()
             }
         }
     }
@@ -200,7 +203,7 @@ public class AgendaViewModel {
                     }
                     
                     self?.dateOrderedData[date] = mappedCellModels._trim()._sort()
-                    DispatchQueue.main.async {
+                    DispatchQueue.runOnMainQueueSafely {
                         self?.delegate?.didCompleteLoadAllData()
                     }
                 }
@@ -258,8 +261,7 @@ extension Array where Element == AgendaCellModel {
                 case let (nil, nil, cm1d?, cm2d?): return cm1d < cm2d
                 case (nil, nil, _?, nil): return true
                 case (nil, nil, nil, _?): return false
-                    
-                default: return true
+                case (nil, nil, nil, nil): return false
                 }
         }
     }

@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-import Business
+import Core
 
 public protocol SearchCoordinatorDelegate: class {
     func didSelectDocument(url: URL, location: Int, searchCoordinator: SearchCoordinator)

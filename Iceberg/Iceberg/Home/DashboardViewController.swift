@@ -8,8 +8,10 @@
 
 import Foundation
 import UIKit
-import Business
+import Core
 import Interface
+import RxSwift
+import RxCocoa
 
 public protocol DashboardViewControllerDelegate: class {
     func didSelectTab(at index: Int, viewController: UIViewController)
@@ -19,11 +21,13 @@ public protocol DashboardViewControllerDelegate: class {
     func showHeadingsOverdue(headings: [DocumentHeadingSearchResult], from subTabType: DashboardViewController.SubtabType)
     func showHeadingsScheduleSoon(headings: [DocumentHeadingSearchResult], from subTabType: DashboardViewController.SubtabType)
     func showHeadingsOverdueSoon(headings: [DocumentHeadingSearchResult], from subTabType: DashboardViewController.SubtabType)
+    func showHeadingsToday(headings: [DocumentHeadingSearchResult], from subTabType: DashboardViewController.SubtabType)
 }
 
 public class DashboardViewController: UIViewController {
     public weak var delegate: DashboardViewControllerDelegate?
     private let viewModel: DashboardViewModel
+    private let disposeBag = DisposeBag()
     
     private let settingsButton: RoundButton = {
         let button = RoundButton()
@@ -42,6 +46,22 @@ public class DashboardViewController: UIViewController {
             (me as? RoundButton)?.setIcon(Asset.Assets.trash.image.fill(color: theme.color.interactive), for: .normal)
             (me as? RoundButton)?.setBackgroundColor(theme.color.background2, for: .normal)
         })
+        return button
+    }()
+    
+    private let membershipButton: UIButton = {
+        let button = UIButton()
+        
+        button.interface { (me, theme) in
+            let button = me as! UIButton
+            button.setBackgroundImage(UIImage.create(with: theme.color.background2, size: .singlePoint), for: .normal)
+            button.titleLabel?.font = theme.font.footnote
+            button.contentEdgeInsets = UIEdgeInsets(top: 5, left: 15, bottom: 5, right: 15)
+            button.setTitleColor(theme.color.interactive, for: .normal)
+        }
+        
+        button.roundConer(radius: 8)
+        button.setTitle(L10n.Membership.title, for: .normal)
         return button
     }()
     
@@ -69,27 +89,41 @@ public class DashboardViewController: UIViewController {
         self.view.addSubview(self.tableView)
         self.view.addSubview(self.settingsButton)
         self.view.addSubview(self.trashButton)
+        self.view.addSubview(self.membershipButton)
         
         self.tableView.allSidesAnchors(to: self.view, edgeInset: 0)
         
         self.settingsButton.sizeAnchor(width: 60)
         self.settingsButton.sideAnchor(for: [.left, .bottom], to: self.view, edgeInsets: .init(top: 0, left: Layout.edgeInsets.left, bottom: -Layout.edgeInsets.bottom, right: 0), considerSafeArea: true)
         
-        self.settingsButton.tapped { [unowned self] _ in
-            self.viewModel.coordinator?.showSettings()
-        }
-        
         self.trashButton.sizeAnchor(width: 60)
         self.trashButton.sideAnchor(for: [.right, .bottom], to: self.view, edgeInsets: .init(top: 0, left: 0, bottom: -Layout.edgeInsets.bottom, right: -Layout.edgeInsets.right), considerSafeArea: true)
+        
+        self.membershipButton.bottomAnchor.constraint(equalTo: self.settingsButton.topAnchor, constant: -20).isActive = true
+        self.membershipButton.sideAnchor(for: .left, to: self.view, edgeInset: Layout.edgeInsets.left)
+        self.membershipButton.sizeAnchor(height: 30)
         
         self.trashButton.tapped { [unowned self] _ in
             self.viewModel.coordinator?.showTrash()
         }
+        
+        self.settingsButton.tapped { [unowned self] _ in
+            self.viewModel.coordinator?.showSettings()
+        }
+        
+        self.membershipButton.rx.tap.subscribe(onNext: { [unowned self] _ in
+            self.viewModel.coordinator?.showMembershipView()
+        }).disposed(by: self.disposeBag)
+        
+        self.viewModel
+            .coordinator?
+            .dependency
+            .purchaseManager
+            .isMember
+            .subscribe(onNext: { [weak self] isMember in
+                self?.membershipButton.isHidden = isMember
+        }).disposed(by: self.disposeBag)
     }
-    
-//    public override var preferredStatusBarStyle: UIStatusBarStyle {
-//        return InterfaceTheme.statusBarStyle
-//    }
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
@@ -175,6 +209,8 @@ public class DashboardViewController: UIViewController {
             self.viewModel.coordinator?.showHeadingsScheduled(headings: self.viewModel.scheduled, from: self.tabs[tab].sub[subtab].type)
         case .scheduledSoon:
             self.viewModel.coordinator?.showHeadingsScheduleSoon(headings: self.viewModel.startSoon, from: self.tabs[tab].sub[subtab].type)
+        case .today:
+            self.viewModel.coordinator?.showHeadingsScheduleSoon(headings: self.viewModel.today, from: self.tabs[tab].sub[subtab].type)
         default: break
         }
     }
@@ -215,6 +251,7 @@ public class DashboardViewController: UIViewController {
         case withoutTag(Int)
         case finished
         case archived
+        case today(Int)
         
         public var index: Int {
             switch self {
@@ -227,6 +264,7 @@ public class DashboardViewController: UIViewController {
             case .withoutTag: return 6
             case .finished: return 7
             case .archived: return 8
+            case .today: return 9
             }
         }
         
@@ -257,6 +295,7 @@ public class DashboardViewController: UIViewController {
             case .overdueSoon: return L10n.Agenda.Sub.overdueSoon
             case .scheduledSoon: return L10n.Agenda.Sub.startSoon
             case .withoutTag: return L10n.Agenda.Sub.noTag
+            case .today: return L10n.Agenda.Sub.today
             default: return ""
             }
         }
@@ -270,6 +309,7 @@ public class DashboardViewController: UIViewController {
             case .scheduled(let count): return "\(count)"
             case .scheduledSoon(let count): return "\(count)"
             case .withoutTag(let count): return "\(count)"
+            case .today(let count): return "\(count)"
             default: return ""
             }
         }
@@ -399,6 +439,10 @@ extension DashboardViewController: DashboardViewModelDelegate {
 
         if self.viewModel.allTags.count > 0 {
             self.tabs[0].sub.append(Subtab(type: DashboardViewController.SubtabType.tags(Array(Set(self.viewModel.allTags)))))
+        }
+        
+        if self.viewModel.today.count > 0 {
+            self.tabs[0].sub.append(Subtab(type: DashboardViewController.SubtabType.today(self.viewModel.today.count)))
         }
         
         self.tableView.reloadSections([0], with: UITableView.RowAnimation.none)

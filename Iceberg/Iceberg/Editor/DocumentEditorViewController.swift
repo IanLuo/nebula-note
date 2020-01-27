@@ -8,8 +8,9 @@
 
 import Foundation
 import UIKit
-import Business
+import Core
 import Interface
+import RxSwift
 
 public class DocumentEditorViewController: UIViewController {
     public let textView: OutlineTextView
@@ -25,6 +26,7 @@ public class DocumentEditorViewController: UIViewController {
     
     internal var _lastLocation: Int?
     internal var _isAdjustingSelectRange: Bool = false
+    private let disposeBag = DisposeBag()
     
     public init(viewModel: DocumentEditViewModel) {
         self.viewModel = viewModel
@@ -44,6 +46,7 @@ public class DocumentEditorViewController: UIViewController {
         self.modalPresentationStyle = .fullScreen
         
         NotificationCenter.default.addObserver(self, selector: #selector(_documentStateChanged(_:)), name: UIDocument.stateChangedNotification, object: nil)
+        
     }
     
     deinit {
@@ -93,6 +96,12 @@ public class DocumentEditorViewController: UIViewController {
         let notificationCenter = NotificationCenter.default
         notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillHideNotification, object: nil)
         notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
+        
+        self.viewModel.dependency.appContext.isReadingMode.subscribe(onNext: { [weak self] isReadingMode in
+            self?.textView.isEditable = !isReadingMode
+            self?.textView.inputAccessoryView?.isHidden = isReadingMode
+        }).disposed(by: self.disposeBag)
+
     }
     
     public override func viewDidDisappear(_ animated: Bool) {
@@ -100,7 +109,7 @@ public class DocumentEditorViewController: UIViewController {
         
         self.textView.endEditing(true)
         if self.presentingViewController == nil {
-            self.viewModel.coordinator?.removeFromParent()
+            self.viewModel.context.coordinator?.removeFromParent()
         }
     }
     
@@ -216,6 +225,8 @@ extension DocumentEditorViewController: DocumentEditViewModelDelegate {
                     }
                 } else if lastToken is HeadingToken {
                     self.inputbar.mode = .heading
+                } else {
+                    self.inputbar.mode = .paragraph
                 }
             } else {
                 self.inputbar.mode = .paragraph
@@ -234,15 +245,15 @@ extension DocumentEditorViewController: DocumentEditViewModelDelegate {
             self.allowScrollContentWhenKeyboardDisapearTemporaily()
             self._scrollTo(location: self.viewModel.onLoadingLocation)
         } else {
-            if SettingsAccessor.Item.unfoldAllEntriesWhenOpen.get(Bool.self) == false {
+            if !(SettingsAccessor.Item.unfoldAllEntriesWhenOpen.get(Bool.self) ?? false) {
                 self.viewModel.foldAll()
             }
         }
         
         // 打开文件时， 添加到最近使用的文件
-        self.viewModel.coordinator?.dependency.editorContext.recentFilesManager.addRecentFile(url: self.viewModel.url, lastLocation: 0) { [weak self] in
+        self.viewModel.dependency.editorContext.recentFilesManager.addRecentFile(url: self.viewModel.url, lastLocation: 0) { [weak self] in
             guard let strongSelf = self else { return }
-            strongSelf.viewModel.coordinator?.dependency.eventObserver.emit(OpenDocumentEvent(url: strongSelf.viewModel.url))
+            strongSelf.viewModel.dependency.eventObserver.emit(OpenDocumentEvent(url: strongSelf.viewModel.url))
         }
     }
     

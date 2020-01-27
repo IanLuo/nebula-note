@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import Business
+import Core
 
 public class CaptureTableCellModel {
     private let attachment: Attachment

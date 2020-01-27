@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-import Business
+import Core
 import Interface
 
 public class AttachmentAudioViewController: AttachmentViewController, AttachmentViewModelDelegate {
@@ -200,7 +200,7 @@ public class RecorderView: UIView {
     
     public var status: Status = .initing {
         didSet {
-            DispatchQueue.main.async {
+            DispatchQueue.runOnMainQueueSafely {
                 self.updateUI()
             }
         }

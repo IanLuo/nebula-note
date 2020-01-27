@@ -1,7 +1,7 @@
 strings:
     publicAccess: true
     inputs: 
-        - Interface/Resources/Localizable.strings
+        - Interface/Resources/en.lproj/Localizable.strings
     outputs:
         - templateName: structured-swift4
           output: Interface/Generated/swiftgen/strings.swift

@@ -141,6 +141,8 @@ public enum L10n {
       public static let startSoon = L10n.tr("Localizable", "agenda.sub.startSoon")
       /// Tags
       public static let tags = L10n.tr("Localizable", "agenda.sub.tags")
+      /// Today
+      public static let today = L10n.tr("Localizable", "agenda.sub.today")
     }
   }
 
@@ -191,6 +193,8 @@ public enum L10n {
   }
 
   public enum Browser {
+    /// Folder is empty
+    public static let empty = L10n.tr("Localizable", "browser.empty")
     /// Documents
     public static let title = L10n.tr("Localizable", "browser.title")
     public enum Action {
@@ -282,6 +286,10 @@ public enum L10n {
       public static let refile = L10n.tr("Localizable", "captureList.action.refile")
       /// Action
       public static let title = L10n.tr("Localizable", "captureList.action.title")
+    }
+    public enum Confirm {
+      /// Refile done, do you want to delete this idea?
+      public static let delete = L10n.tr("Localizable", "captureList.confirm.delete")
     }
   }
 
@@ -418,9 +426,9 @@ public enum L10n {
     public enum Heading {
       /// Fold this paragaph
       public static let fold = L10n.tr("Localizable", "document.heading.fold")
-      /// Move to ..
+      /// Move paragraph
       public static let moveTo = L10n.tr("Localizable", "document.heading.moveTo")
-      /// Move to other document ..
+      /// Move to another document
       public static let moveToAnotherDocument = L10n.tr("Localizable", "document.heading.moveToAnotherDocument")
       /// Heading
       public static let title = L10n.tr("Localizable", "document.heading.title")
@@ -452,6 +460,10 @@ public enum L10n {
     public enum Menu {
       /// Capture an idea
       public static let capture = L10n.tr("Localizable", "document.menu.capture")
+      /// Editing mode
+      public static let enableEditingMode = L10n.tr("Localizable", "document.menu.enableEditingMode")
+      /// Reading mode
+      public static let enableReadingMode = L10n.tr("Localizable", "document.menu.enableReadingMode")
       /// Fold all
       public static let foldAll = L10n.tr("Localizable", "document.menu.foldAll")
       /// Show outline
@@ -512,6 +524,47 @@ public enum L10n {
     public static let current = L10n.tr("Localizable", "location.current")
     /// Add a location
     public static let title = L10n.tr("Localizable", "location.title")
+  }
+
+  public enum Membership {
+    /// Dear user, if you feel enjoy using Icetea note, please consider join our membership, to use more advanced functions, and help to let Icetea note becomes more strong, more powerful, and more useful for you.
+    public static let letter = L10n.tr("Localizable", "membership.letter")
+    /// Ordered
+    public static let ordered = L10n.tr("Localizable", "membership.ordered")
+    /// Restore purchase
+    public static let restore = L10n.tr("Localizable", "membership.restore")
+    /// Join membership
+    public static let title = L10n.tr("Localizable", "membership.title")
+    public enum Function {
+      /// Advanced attachments, including Location, Audio and Video
+      public static let advancedAttachments = L10n.tr("Localizable", "membership.function.advancedAttachments")
+      /// And more to come
+      public static let andMoreToCome = L10n.tr("Localizable", "membership.function.andMoreToCome")
+      /// Custom paragraph status
+      public static let customStatus = L10n.tr("Localizable", "membership.function.customStatus")
+      /// Move paragraph to other document
+      public static let moveToOtherDocument = L10n.tr("Localizable", "membership.function.moveToOtherDocument")
+      /// Refile from capturelist
+      public static let refile = L10n.tr("Localizable", "membership.function.refile")
+      /// Remove export waterprint
+      public static let removeExportWaterprint = L10n.tr("Localizable", "membership.function.removeExportWaterprint")
+      /// As a member, you will be able to access advanced features as follow:
+      public static let title = L10n.tr("Localizable", "membership.function.title")
+      /// Unlimited level of sub documents
+      public static let unlimitedLevelOfSubDocuments = L10n.tr("Localizable", "membership.function.unlimitedLevelOfSubDocuments")
+    }
+    public enum Monthly {
+      /// (1 bonus week) unlimited function access
+      public static let description = L10n.tr("Localizable", "membership.monthly.description")
+      /// Order membership monthly
+      public static let title = L10n.tr("Localizable", "membership.monthly.title")
+    }
+    public enum Yearly {
+      /// (1 bonus month) unlimited function access
+      public static let description = L10n.tr("Localizable", "membership.yearly.description")
+      /// Order membership yearly
+      public static let title = L10n.tr("Localizable", "membership.yearly.title")
+    }
   }
 
   public enum Search {

@@ -8,24 +8,38 @@
 
 import Foundation
 import UIKit
-import Business
+import Core
 import PKHUD
+import RxSwift
+import RxCocoa
 
-public struct Dependency {
-    let documentManager: DocumentManager
-    let documentSearchManager: DocumentSearchManager
-    let editorContext: EditorContext
-    let textTrimmer: OutlineTextTrimmer
-    let eventObserver: EventObserver
-    let settingAccessor: SettingsAccessor
-    let syncManager: iCloudDocumentManager
-    let attachmentManager: AttachmentManager
-    let urlHandlerManager: URLHandlerManager
-    let shareExtensionHandler: ShareExtensionDataHandler
-    let captureService: CaptureService
-    let exportManager: ExportManager
+public struct AppContext {
+    public let isFileReadyToAccess: BehaviorRelay<Bool> = BehaviorRelay(value: false)
+    public let uiStackReady: BehaviorRelay<Bool> = BehaviorRelay(value: false)
+    public lazy var startComplete: Observable<Bool> = Observable.combineLatest(isFileReadyToAccess, uiStackReady).map { isFileReady, isUIReady in
+        return isFileReady && isUIReady
+    }
+    public let isReadingMode: BehaviorRelay<Bool> = BehaviorRelay(value: false)
+}
+
+public class Dependency {
+    lazy var appContext: AppContext = { AppContext() }()
+    lazy var documentManager: DocumentManager = { DocumentManager(editorContext: editorContext, eventObserver: eventObserver, syncManager: syncManager) }()
+    lazy var documentSearchManager: DocumentSearchManager = { DocumentSearchManager() }()
+    lazy var editorContext: EditorContext = { EditorContext(eventObserver: eventObserver) }()
+    lazy var textTrimmer: OutlineTextTrimmer = { OutlineTextTrimmer(parser: OutlineParser()) }()
+    lazy var eventObserver: EventObserver = { EventObserver() }()
+    lazy var settingAccessor: SettingsAccessor = { SettingsAccessor.shared }()
+    lazy var syncManager: iCloudDocumentManager = { iCloudDocumentManager(eventObserver: eventObserver) }()
+    lazy var attachmentManager: AttachmentManager = { AttachmentManager() }()
+    lazy var urlHandlerManager: URLHandlerManager = { URLHandlerManager(documentManager: documentManager, eventObserver: eventObserver) }()
+    lazy var shareExtensionHandler: ShareExtensionDataHandler = { ShareExtensionDataHandler() }()
+    lazy var captureService: CaptureService = { CaptureService(attachmentManager: attachmentManager) }()
+    lazy var exportManager: ExportManager = { ExportManager(editorContext: editorContext) }()
     weak var globalCaptureEntryWindow: CaptureGlobalEntranceWindow?
-    let activityHandler: ActivityHandler
+    lazy var activityHandler: ActivityHandler = { ActivityHandler() }()
+    lazy var purchaseManager: PurchaseManager = { PurchaseManager() }()
+    lazy var userGuideService: UserGuideService = { UserGuideService() }()
 }
 
 public class Coordinator {
@@ -45,7 +59,7 @@ public class Coordinator {
     
     public weak var parent: Coordinator?
     
-    public let dependency: Dependency
+    public var dependency: Dependency
     
     public var onMovingOut: (() -> Void)?
     
@@ -223,6 +237,12 @@ extension Coordinator {
         
         self.viewController?.present(dateAndTimeSelectViewController, animated: true, completion: nil)
     }
+    
+    public func showMembership() {
+        let nav = Coordinator.createDefaultNavigationControlller()
+        let membershipCoordinator = MembershipCoordinator(stack: nav, dependency: self.dependency)
+        membershipCoordinator.start(from: self)
+    }
 }
 
 extension Coordinator {
@@ -283,6 +303,13 @@ extension Coordinator: CaptureCoordinatorDelegate {
     public func didSelect(attachmentKind: Attachment.Kind, coordinator: CaptureCoordinator) {
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now()) {
             coordinator.stop {
+                
+                if attachmentKind.isMemberFunction && !self.dependency.purchaseManager.isMember.value {
+                    self.topCoordinator?.showMembership()
+                    self.dependency.globalCaptureEntryWindow?.show()
+                    return
+                }
+                
                 self.showAttachmentPicker(kind: attachmentKind, complete: { [weak self] attachmentId in
                     self?.dependency.globalCaptureEntryWindow?.show()
                     coordinator.addAttachment(attachmentId: attachmentId) {

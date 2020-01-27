@@ -8,7 +8,7 @@
 
 import Foundation
 import RxSwift
-import Business
+import Core
 import RxCocoa
 import RxDataSources
 
@@ -30,7 +30,11 @@ extension BrowserDocumentSection: AnimatableSectionModelType {
     public typealias Identity = String
 }
 
-public class BrowserFolderViewModel {
+public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
+    public var context: ViewModelContext<BrowserCoordinator>!
+    
+    public typealias CoordinatorType = BrowserCoordinator
+    
     public enum Mode {
         case chooser
         case browser
@@ -50,47 +54,54 @@ public class BrowserFolderViewModel {
     
     public struct Output {
         public let documents: BehaviorRelay<[BrowserDocumentSection]> = BehaviorRelay(value: [])
-        public let createdDocument: PublishSubject<URL> = PublishSubject()
-        public let createDocumentFailed: PublishSubject<String> = PublishSubject()
+        public let onCreatededDocument: PublishSubject<URL> = PublishSubject()
+        public let onCreatingDocumentFailed: PublishSubject<String> = PublishSubject()
     }
     
-    private var _documentRelativePath: String
+    private var _documentRelativePath: String = ""
     public var url: URL {
         return self._documentRelativePath.count > 0
             ? URL.documentBaseURL.appendingPathComponent(self._documentRelativePath)
             : URL.documentBaseURL
     }
-    public let title: BehaviorRelay<String>
-    public weak var coordinator: BrowserCoordinator? { didSet { self._setupObservers() }}
-    public let mode: Mode
-    public let isRoot: Bool
+    public var title: BehaviorRelay<String>!
+    public var mode: Mode = .browser
+    public var isRoot: Bool!
+    public var levelsToRoot: Int!
     
     private let disposeBag = DisposeBag()
     
     public let input: Input = Input()
     public let output: Output = Output()
     
-    public init(url: URL, mode: Mode) {
+    override public required init() {}
+    
+    public convenience init(url: URL, mode: Mode, coordinator: BrowserCoordinator) {
+        self.init(coordinator: coordinator)
+        
         self._documentRelativePath = url.documentRelativePath
         self.mode = mode
         self.isRoot = url.levelsToRoot == 0
+        self.levelsToRoot = url.levelsToRoot
         self.title = BehaviorRelay(value: self.isRoot ? "" : url.packageName)
         
         self.bind()
+        
+        self._setupObservers()
     }
     
     deinit {
-        self.coordinator?.dependency.eventObserver.unregister(for: self, eventType: nil)
+        self.dependency.eventObserver.unregister(for: self, eventType: nil)
     }
     
     public func createChildDocument(title: String) -> Observable<URL> {
         return Observable.create { observer -> Disposable in
-            self.coordinator?.dependency.documentManager.add(title: title, below: self.url) { [weak self] url in
+            self.dependency.documentManager.add(title: title, below: self.url) { [weak self] url in
                 if let url = url {
                     let sections = self?.output.documents.value
                     if var secion = sections?.first {
                         let cellModel = BrowserCellModel(url: url)
-                        cellModel.coordinator = self?.coordinator
+                        cellModel.coordinator = self?.context.coordinator
                         secion.items.append(cellModel)
                         secion.items.sort(by: { $0.updateDate.timeIntervalSince1970 > $1.updateDate.timeIntervalSince1970 })
                         self?.output.documents.accept([secion]) // trigger reload table
@@ -98,7 +109,7 @@ public class BrowserFolderViewModel {
                         observer.onCompleted()
                     }
                 } else {
-                    self?.output.createDocumentFailed.onNext(title)
+                    self?.output.onCreatingDocumentFailed.onNext(title)
                 }
             }
             
@@ -128,13 +139,13 @@ public class BrowserFolderViewModel {
             var cellModels: [BrowserCellModel] = []
             
             do {
-                let urls = try self.coordinator?.dependency.documentManager.query(in: url.convertoFolderURL)
+                let urls = try self.dependency.documentManager.query(in: url.convertoFolderURL)
                 
-                urls?.forEach {
+                urls.forEach {
                     let cellModel = BrowserCellModel(url: $0)
                     cellModel.shouldShowActions = self.mode.showActions
                     cellModel.shouldShowChooseHeadingIndicator = self.mode.showChooseIndicator
-                    cellModel.coordinator = self.coordinator
+                    cellModel.coordinator = self.context.coordinator
                     cellModels.append(cellModel)
                 }
             } catch {
@@ -155,28 +166,39 @@ public class BrowserFolderViewModel {
             .addDocument
             .asObserver()
             .flatMap { [unowned self] in self.createChildDocument(title: $0) }
-            .subscribe(onNext: { [unowned self] in self.output.createdDocument.onNext($0)})
+            .subscribe(onNext: { [unowned self] in self.output.onCreatededDocument.onNext($0)})
             .disposed(by: self.disposeBag)
+    }
+    
+    /// convenienct variable to access table data for rxDataSource
+    private var _tableDocuments: [BrowserCellModel] {
+        get {
+            return self.output.documents.value.first?.items ?? []
+        }
+        
+        set {
+            self.output.documents.accept([BrowserDocumentSection(items: newValue)])
+        }
     }
     
     private func _setupObservers() {
         
-        let eventObserver = self.coordinator?.dependency.eventObserver
+        let eventObserver = self.dependency.eventObserver
         
         /// observe disable, but not observe enable, because enabled will send iCloudAvailabilityChangedEvent when iCloud files are ready
-        eventObserver?.registerForEvent(on: self, eventType: iCloudDisabledEvent.self, queue: nil, action: { [weak self] (event: iCloudDisabledEvent) in
+        eventObserver.registerForEvent(on: self, eventType: iCloudDisabledEvent.self, queue: nil, action: { [weak self] (event: iCloudDisabledEvent) in
             guard let strongSelf = self else { return }
             strongSelf.reload()
         })
         
-        eventObserver?.registerForEvent(on: self, eventType: iCloudAvailabilityChangedEvent.self, queue: nil, action: { [weak self] (event: iCloudAvailabilityChangedEvent) in
+        eventObserver.registerForEvent(on: self, eventType: iCloudAvailabilityChangedEvent.self, queue: nil, action: { [weak self] (event: iCloudAvailabilityChangedEvent) in
             guard let strongSelf = self else { return }
             strongSelf.reload()
         })
         
-        eventObserver?.registerForEvent(on: self, eventType: AddDocumentEvent.self, queue: nil, action: { [weak self] (event: AddDocumentEvent) -> Void in
+        eventObserver.registerForEvent(on: self, eventType: AddDocumentEvent.self, queue: nil, action: { [weak self] (event: AddDocumentEvent) -> Void in
             // if new document is in current folder, reload
-            if event.url.convertoFolderURL == self?.url.convertoFolderURL {
+            if event.url.deletingLastPathComponent() == self?.url {
                 self?.reload()
             } else if let items = self?.output.documents.value.first?.items {
                 // if new document is in current folder's items, reload current folder, because the folder enter indicator might need update
@@ -186,29 +208,29 @@ public class BrowserFolderViewModel {
             }
         })
         
-        eventObserver?.registerForEvent(on: self, eventType: DeleteDocumentEvent.self, queue: nil, action: { [weak self] (event: DeleteDocumentEvent) -> Void in
+        eventObserver.registerForEvent(on: self, eventType: DeleteDocumentEvent.self, queue: nil, action: { [weak self] (event: DeleteDocumentEvent) -> Void in
             self?.reload()
         })
         
-        eventObserver?.registerForEvent(on: self, eventType: RenameDocumentEvent.self, queue: nil, action: { [weak self] (event: RenameDocumentEvent) -> Void in
+        eventObserver.registerForEvent(on: self, eventType: RenameDocumentEvent.self, queue: nil, action: { [weak self] (event: RenameDocumentEvent) -> Void in
             self?.reload()
         })
         
-        eventObserver?.registerForEvent(on: self,
+        eventObserver.registerForEvent(on: self,
                                         eventType: iCloudOpeningStatusChangedEvent.self,
                                         queue: OperationQueue.main,
                                         action: { [weak self] (event: iCloudOpeningStatusChangedEvent) in
                                             self?.reload()
         })
         
-        eventObserver?.registerForEvent(on: self,
+        eventObserver.registerForEvent(on: self,
                                         eventType: NewDocumentPackageDownloadedEvent.self,
                                         queue: OperationQueue.main,
                                         action: { [weak self] (event: NewDocumentPackageDownloadedEvent) in
                                             self?.reload()
         })
         
-        eventObserver?.registerForEvent(on: self,
+        eventObserver.registerForEvent(on: self,
                                         eventType: DocumentRemovedFromiCloudEvent.self,
                                         queue: OperationQueue.main,
                                         action: { [weak self] (event: DocumentRemovedFromiCloudEvent) in
@@ -216,12 +238,58 @@ public class BrowserFolderViewModel {
         })
         
         /// this event is sent by SyncCoordinator
-        eventObserver?.registerForEvent(on: self,
+        eventObserver.registerForEvent(on: self,
                                         eventType: NewFilesAvailableEvent.self,
                                         queue: OperationQueue.main,
                                         action: { [weak self] (event: NewFilesAvailableEvent) in
                                             self?.reload()
         })
+        
+        NotificationCenter.default
+            .rx
+            .notification(UIApplication.didBecomeActiveNotification)
+            .takeUntil(self.rx.deallocated)
+            .subscribe(onNext: { _ in
+                self.reload()
+            })
+            .disposed(by: self.disposeBag)
+        
+        // add new cell for downloading document
+        self.dependency.syncManager.onDownloadingUpdates.subscribe(onNext: { [weak self] downloadingItemMap in
+            guard let strongSelf = self else { return }
+            
+            let urlsBelongsToCurrentFolder = downloadingItemMap.keys.filter { $0.deletingLastPathComponent() == strongSelf.url }
+            
+            for uploadDownloadingURL in urlsBelongsToCurrentFolder {
+                for case let downloadingCellModel in strongSelf._tableDocuments.filter({ $0.downloadingProcess != 100 }) where downloadingCellModel.url == uploadDownloadingURL {
+                    downloadingCellModel.downloadingProcess = downloadingItemMap[uploadDownloadingURL] ?? 1
+                    continue
+                }
+                
+                var documents = strongSelf._tableDocuments
+                documents.append(BrowserCellModel(url: uploadDownloadingURL, isDownloading: true))
+            }
+        }).disposed(by: self.disposeBag)
+        
+        self.dependency.syncManager.onDownloadingCompletes.subscribe(onNext: { [weak self] url in
+            guard let strongSelf = self else { return }
+            
+            var documents = strongSelf._tableDocuments
+            
+            for (index, document) in documents.enumerated() {
+                if document.url == url {
+                    documents.remove(at: index)
+                    strongSelf._tableDocuments = documents
+                    return
+                }
+            }
+            
+        }).disposed(by: self.disposeBag)
     }
 }
 
+extension BrowserFolderViewModel {
+    override public var debugDescription: String {
+        return "\(self.url)"
+    }
+}

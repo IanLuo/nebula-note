@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import Business
+import Core
 
 public protocol AttachmentViewModelDelegate: class {
     func didSaveAttachment(key: String)

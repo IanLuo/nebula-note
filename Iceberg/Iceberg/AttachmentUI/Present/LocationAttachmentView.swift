@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-import Business
+import Core
 import MapKit
 
 public class LocationAttachmentView: UIView, AttachmentViewProtocol {

@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 import MobileCoreServices
-import Business
+import Core
 
 public class AttachmentVideoViewController: AttachmentViewController, AttachmentViewModelDelegate {
     

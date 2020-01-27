@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-import Business
+import Core
 import MapKit
 import Interface
 
@@ -29,12 +29,13 @@ public class CaptureListViewController: UIViewController {
             Asset.Assets.imageLibrary.image,
             Asset.Assets.location.image,
             Asset.Assets.audio.image,
-            Asset.Assets.video.image
+            Asset.Assets.video.image,
+            Asset.Assets.sketch.image.resize(upto: CGSize(width: 15, height: 15))
             ])
         
         seg.selectedSegmentIndex = 0
-
         seg.interface { (view, theme) in
+            seg.tintColor = theme.color.interactive
             let seg = view as! UISegmentedControl
             seg.setTitleTextAttributes([NSAttributedString.Key.foregroundColor : theme.color.interactive], for: UIControl.State.normal)
             seg.setTitleTextAttributes([NSAttributedString.Key.foregroundColor : theme.color.spotlight], for: UIControl.State.selected)
@@ -50,6 +51,7 @@ public class CaptureListViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(CaptureTableCell.self, forCellReuseIdentifier: CaptureTableCell.reuseIdentifier)
+        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 80, right: 0)
         
         tableView.interface { (me, theme) in
             me.backgroundColor = theme.color.background1
@@ -99,14 +101,14 @@ public class CaptureListViewController: UIViewController {
     }
     
     deinit {
-        self.viewModel.coordinator?.dependency.eventObserver.unregister(for: self, eventType: nil)
+        self.viewModel.dependency.eventObserver.unregister(for: self, eventType: nil)
     }
     
     private func _setupObservers() {
-        self.viewModel.coordinator?.dependency.eventObserver.registerForEvent(on: self,
-                                                                              eventType: NewCaptureAddedEvent.self,
-                                                                              queue: OperationQueue.main,
-                                                                              action: { [weak self] (event: NewCaptureAddedEvent) -> Void in
+        self.viewModel.dependency.eventObserver.registerForEvent(on: self,
+                                                                 eventType: NewCaptureAddedEvent.self,
+                                                                 queue: OperationQueue.main,
+                                                                 action: { [weak self] (event: NewCaptureAddedEvent) -> Void in
             self?.tableView.reloadData()
         })
     }
@@ -123,13 +125,13 @@ public class CaptureListViewController: UIViewController {
         self.filterSegmentedControl.columnAnchor(view: self.tableView, space: 10, alignment: .centerX)
         self.tableView.sideAnchor(for: [.left, .bottom, .right], to: self.view, edgeInset: 0, considerSafeArea: true)
         
-        if self.viewModel.coordinator?.isModal ?? false {
+        if self.viewModel.context.coordinator?.isModal ?? false {
             self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: Asset.Assets.cross.image, style: .plain, target: self, action: #selector(cancel))
         }
     }
     
     @objc private func cancel() {
-        self.viewModel.coordinator?.stop()
+        self.viewModel.context.coordinator?.stop()
     }
     
     @objc private func filterIdeas() {
@@ -150,6 +152,8 @@ public class CaptureListViewController: UIViewController {
             self.viewModel.currentFilteredAttachmentKind = .audio
         case 6: // video
             self.viewModel.currentFilteredAttachmentKind = .video
+        case 7: // sketch
+            self.viewModel.currentFilteredAttachmentKind = .sketch
         default: return // ignore
         }
         
@@ -173,7 +177,7 @@ extension CaptureListViewController: CaptureTableCellDelegate {
         let actionsViewController = self.createActionsViewController(cellModel: cellModel)
         
         self.present(actionsViewController, animated: true, completion: nil)
-        self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.hide()
+        self.viewModel.hideGlobalCaptureEntry()
     }
     
     public func didTapActionsWithLink(attachment: Attachment, link: String?) {
@@ -186,12 +190,12 @@ extension CaptureListViewController: CaptureTableCellDelegate {
                 if let url = URL(string: link ?? "") {
                     UIApplication.shared.open(url, options: [:], completionHandler: nil)
                 }
-                self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
+                self.viewModel.showGlobalCaptureEntry()
             })
         }
         
         self.present(actionsViewController, animated: true, completion: nil)
-        self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.hide()
+        self.viewModel.hideGlobalCaptureEntry()
     }
     
     public func didTapActionsWithLocation(attachment: Attachment, location: CLLocationCoordinate2D) {
@@ -203,13 +207,13 @@ extension CaptureListViewController: CaptureTableCellDelegate {
             viewController.dismiss(animated: true, completion: {
                 let mapItem = MKMapItem(placemark: MKPlacemark(coordinate: location, addressDictionary:nil))
                 mapItem.openInMaps(launchOptions: [:])
-                self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
+                self.viewModel.showGlobalCaptureEntry()
             })
         }
         
         
         self.present(actionsViewController, animated: true, completion: nil)
-        self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.hide()
+        self.viewModel.hideGlobalCaptureEntry()
     }
     
     // 创建菜单
@@ -220,15 +224,24 @@ extension CaptureListViewController: CaptureTableCellDelegate {
         switch self.viewModel.mode {
             // 在 capture list 中显示的菜单，至少包含 refile 和 delete 操作
         case .manage:
-            actionsViewController.addAction(icon: nil, title: L10n.CaptureList.Action.refile) { viewController in
-                viewController.dismiss(animated: true, completion: {
-                    guard let index = self.viewModel.index(for: cellModel) else { return }
-                    self.viewModel.chooseRefileLocation(index: index, completion: {
-                        self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
-                    }, canceled: {
-                        self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
+            if self.viewModel.isMember {
+                actionsViewController.addAction(icon: nil, title: L10n.CaptureList.Action.refile) { viewController in
+                    viewController.dismiss(animated: true, completion: {
+                        guard let index = self.viewModel.index(for: cellModel) else { return }
+                        self.viewModel.chooseRefileLocation(index: index, completion: {
+                            self.viewModel.showGlobalCaptureEntry()
+                        }, canceled: {
+                            self.viewModel.showGlobalCaptureEntry()
+                        })
                     })
-                })
+                }
+            } else {
+                actionsViewController.addAction(icon: Asset.Assets.proLabel.image, title: L10n.CaptureList.Action.refile) { viewController in
+                    viewController.dismiss(animated: true, completion: {
+                        self.viewModel.context.coordinator?.showMembership()
+                        self.viewModel.showGlobalCaptureEntry()
+                    })
+                }
             }
             
             actionsViewController.addAction(icon: nil, title: L10n.CaptureList.Action.delete, style: .warning) { viewController in
@@ -243,7 +256,7 @@ extension CaptureListViewController: CaptureTableCellDelegate {
                         vc.dismiss(animated: true) {
                             guard let index = self.viewModel.index(for: cellModel) else { return }
                             self.viewModel.delete(index: index)
-                            self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
+                            self.viewModel.showGlobalCaptureEntry()
                         }
                     }
                     
@@ -255,7 +268,7 @@ extension CaptureListViewController: CaptureTableCellDelegate {
                 viewController.dismiss(animated: true, completion: {
                     guard let index = self.viewModel.index(for: cellModel) else { return }
                     self.viewModel.selectAttachment(index: index)
-                    self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
+                    self.viewModel.showGlobalCaptureEntry()
                 })
             }
             
@@ -264,15 +277,15 @@ extension CaptureListViewController: CaptureTableCellDelegate {
                     guard let index = self.viewModel.index(for: cellModel) else { return }
                     self.viewModel.selectAttachment(index: index)
                     self.viewModel.delete(index: index)
-                    self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
+                    self.viewModel.showGlobalCaptureEntry()
                 })
             }
         }
         
         actionsViewController.setCancel { viewController in
             viewController.dismiss(animated: true, completion: nil)
-            self.viewModel.coordinator?.onCancelAction?()
-            self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
+            self.viewModel.context.coordinator?.onCancelAction?()
+            self.viewModel.showGlobalCaptureEntry()
         }
         
         return actionsViewController
@@ -334,7 +347,18 @@ extension CaptureListViewController: CaptureListViewModelDelegate {
         if let cell = self.tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? CaptureTableCell {
             cell.hideProcessingAnimation()
         }
+        
         self.showEmptyContentImage(self.viewModel.currentFilterdCellModels.count == 0)
+        
+        let confirmViewController = ConfirmViewController(contentText: L10n.CaptureList.Confirm.delete, onConfirm: { [weak self] viewController in
+            viewController.dismiss(animated: true) {
+                self?.viewModel.delete(index: index)
+            }
+        }) { viewController in
+            viewController.dismiss(animated: true)
+        }
+        
+        self.present(confirmViewController, animated: true)
     }
     
     public func didLoadData() {

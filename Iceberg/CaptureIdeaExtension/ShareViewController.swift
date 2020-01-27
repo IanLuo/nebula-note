@@ -8,7 +8,7 @@
 
 import UIKit
 import Social
-import Business
+import Core
 
 class ShareViewController: SLComposeServiceViewController {
     

@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-import Business
+import Core
 
 /// 用户的活动中心
 /// 每天的任务安排显示在此处
@@ -22,6 +22,7 @@ public class AgendaCoordinator: Coordinator {
         case scheduled([DocumentHeadingSearchResult])
         case dueSoon([DocumentHeadingSearchResult])
         case startSoon([DocumentHeadingSearchResult])
+        case today([DocumentHeadingSearchResult])
     }
     
     public override init(stack: UINavigationController, dependency: Dependency) {

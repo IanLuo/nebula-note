@@ -11,8 +11,14 @@ import Foundation
 public protocol ViewModelProtocol {
     associatedtype CoordinatorType: Coordinator
     var context: ViewModelContext<CoordinatorType>! { get set }
+    var dependency: Dependency { get }
     init(coordinator: CoordinatorType)
     init()
+    func didSetupContext()
+}
+
+extension ViewModelProtocol {
+    public func didSetupContext() {}
 }
 
 public extension ViewModelProtocol {
@@ -28,12 +34,23 @@ public extension ViewModelProtocol {
         self.context.coordinator?.dependency.globalCaptureEntryWindow?.show()
     }
     
+    var isMember: Bool {
+        return self.context.dependency.purchaseManager.isMember.value
+    }
+    
+    var dependency: Dependency {
+        return self.context.dependency
+    }
+    
     init(coordinator: CoordinatorType) {
         self.init()
-        self.context = ViewModelContext(coordinator: coordinator)
+        self.context = ViewModelContext(coordinator: coordinator, dependency: coordinator.dependency)
+        self.didSetupContext()
     }
 }
 
 public struct ViewModelContext<CoordinatorType: Coordinator> {
     public weak var coordinator: CoordinatorType?
+    
+    public var dependency: Dependency
 }

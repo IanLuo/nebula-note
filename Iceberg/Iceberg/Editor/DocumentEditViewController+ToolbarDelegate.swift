@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-import Business
+import Core
 
 extension DocumentEditorViewController: DocumentEditToolbarDelegate {
     private func commandCompletionActionMoveCursorMapTheLengthOfStringChange(_ oldSelectedRange: NSRange) -> (DocumentContentCommandResult) -> Void {
@@ -36,7 +36,17 @@ extension DocumentEditorViewController: DocumentEditToolbarDelegate {
         self.textView.selectedRange = result.range!
     }
     
+    public func isMember() -> Bool {
+        return self.viewModel.isMember
+    }
+    
     public func didTriggerAction(_ action: ToolbarActionProtocol) {
+        
+        if (action.isMemberFunction && !self.viewModel.isMember) {
+            self.viewModel.context.coordinator?.showMembership()
+            return
+        }
+        
         let currentLocation = self.textView.selectedRange.location
         
         if let textViewAction = action as? TextViewAction {
@@ -44,18 +54,18 @@ extension DocumentEditorViewController: DocumentEditToolbarDelegate {
         } else if let documentAction = action as? DocumentActon {
             // attachment
             if let attachmentAction = documentAction as? AttachmentAction {
-                self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.hide()
-                self.viewModel.coordinator?.showAttachmentPicker(kind: attachmentAction.AttachmentKind, complete: { [unowned self] attachmentId in
+                self.viewModel.dependency.globalCaptureEntryWindow?.hide()
+                self.viewModel.context.coordinator?.showAttachmentPicker(kind: attachmentAction.AttachmentKind, complete: { [unowned self] attachmentId in
                     let oldSelection = self.textView.selectedRange
                     let result = self.viewModel.performAction(EditAction.addAttachment(currentLocation,
                                                                           attachmentId, attachmentAction.AttachmentKind.rawValue),
                                                  textView: self.textView)
-                    DispatchQueue.main.async {
+                    DispatchQueue.runOnMainQueueSafely {
                         self.textView.selectedRange = oldSelection.offset(result.delta)
-                        self.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
+                        self.viewModel.dependency.globalCaptureEntryWindow?.show()
                     }
                 }, cancel: { [weak self] in
-                    self?.viewModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
+                    self?.viewModel.dependency.globalCaptureEntryWindow?.show()
                 })
             }
             

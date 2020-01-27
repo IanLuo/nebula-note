@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-import Business
+import Core
 import AVKit
 
 public class VideoAttachmentView: UIView, AttachmentViewProtocol {

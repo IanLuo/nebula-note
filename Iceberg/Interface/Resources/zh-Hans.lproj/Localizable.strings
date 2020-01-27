@@ -1,0 +1,311 @@
+/* 
+  Localizable.strings
+  Iceland
+
+  Created by ian luo on 2019/1/1.
+  Copyright © 2019 wod. All rights reserved.
+*/
+
+"general.button.title.save" = "保存";
+"general.button.title.open" = "打开";
+"general.button.title.cancel" = "取消";
+"general.button.title.delete" = "删除";
+"general.button.title.close" = "关闭";
+"general.loading.title" = "加载中...";
+
+"selector.empty" = "没有内容";
+
+"document.browser.delete.confirm" = "删除这个文档？";
+
+"attachment.kind.image" = "图片";
+"attachment.kind.audio" = "录音";
+"attachment.kind.video" = "视频";
+"attachment.kind.link" = "链接";
+"attachment.kind.sketch" = "涂鸦";
+"attachment.kind.location" = "位置";
+"attachment.kind.text" = "文字";
+"attachment.kind.all" = "全部";
+
+// edit document
+"document.dateAndTime.title" = "日期和时间";
+"document.dateAndTime.update" = "更新日期和时间";
+"document.dateAndTime.schedule"= "开始日期";
+"document.dateAndTime.due" = "截止日期";
+
+"document.priority.title" = "优先级";
+"document.priority.remove" = "删除优先级";
+
+"document.planning.title" = "状态";
+
+"document.heading.title" = "标题";
+"document.heading.toParagraphContent" = "转为正文";
+"document.heading.toHeading" = "转为标题";
+"document.heading.unfold" = "展开这个段落";
+"document.heading.fold" = "折叠这个段落";
+"document.heading.moveTo" = "移动段落";
+"document.heading.moveToAnotherDocument" = "移动段落到其他文档内";
+
+// outline
+"document.outlet.noHeading" = "没有段落";
+
+// export
+"document.export.title" = "导出";
+"document.export.org" = "Org mode";
+"document.export.html" = "HTML";
+"document.export.md" = "Mark Down";
+"document.export.msg" = "Choose a file format";
+
+// document info
+"document.info.editDate" = "编辑日期";
+"document.info.createDate" = "新建日期";
+"document.info.wordCount" = "文字总数";
+"document.info.paragraphCount" = "段落总数";
+"document.info.characterCount" = "字符总数";
+
+"document.link.open" = "在浏览器中打开链接";
+"document.link.edit" = "编辑链接";
+
+"document.menu.title" = "目录";
+"document.menu.foldAll" = "折叠所有段落";
+"document.menu.unfoldAll" = "展开所有段落";
+"document.menu.outline" = "显示大纲";
+"document.menu.capture" = "采集灵感";
+"document.menu.enableReadingMode" = "进入阅读模式";
+"document.menu.enableEditingMode" = "进入编辑模式";
+
+"document.edit.date.all-day" = "全天";
+
+"document.edit.action.attachment" = "附件";
+"document.edit.action.schedule" = "开始日期";
+"document.edit.action.due" = "截止日期";
+"document.edit.action.planning" = "状态";
+"document.edit.action.tag" = "标签";
+"document.edit.action.move-up" = "上移";
+"document.edit.action.move-down" = "下移";
+"document.edit.action.separator" = "分隔符Separator";
+"document.edit.action.increase-indent" = "增加缩进";
+"document.edit.action.decrease-indent" = "减少缩进";
+"document.edit.action.mark.bold" = "粗体";
+"document.edit.action.mark.italic" = "斜体";
+"document.edit.action.mark.underscore" = "下划线Underscore";
+"document.edit.action.mark.strikthrough" = "删除线";
+"document.edit.action.mark.code" = "高亮";
+"document.edit.action.mark.verbatim" = "Verbatim";
+"document.edit.action.undo" = "取消";
+"document.edit.action.redo" = "重复";
+"document.edit.action.arrow-left" = "Arrow left";
+"document.edit.action.arrow-right" = "Arrow right";
+"document.edit.action.arrow-up" = "Arrow up";
+"document.edit.action.arrow-down" = "Arrow down";
+"document.edit.action.quote-block" = "Quote block";
+"document.edit.action.paragraph.title" = "Paragraph actions";
+"document.edit.action.code-block" = "Code block";
+"document.edit.tag.title" = "编辑标签";
+"document.edit.tag.add" = "新标签";
+"document.edit.tag.choose" = "选择标签";
+"document.edit.tag.place-holder" = "输入标签名";
+"document.edit.tag.validation" = "不要使用特殊字符";
+
+"document.edit.remote_editing_arrived_title" = "其他文档已修改";
+"document.edit.remote_editing_arrived_message" = "选择需要保存的版本";
+"document.edit.remote_editing_arrived_keep_this_one" = "保留当前版本";
+"document.edit.remote_editing_arrived_keep_remote.one" = "保存另一个版本";
+
+"document.edit.create.failed" = "创建文档失败";
+
+"document.edit.image.use-as-cover" = "用作封面";
+// sync
+"sync.confirm.useiCloud" = "是否使用 iCloud 保存文档？使用 iCloud 保存文档，可以在多台设备上共享内容，就算设备丢失，或者重新安装 app，也不会丢失编写的内容。";
+"sync.alert.status.on.title" = "正在使用 iCloud 保存文档";
+"sync.alert.status.on.msg" = "现在所有的文档都安全的保存在 iCloud 上，可以通过 iCloud 账号进行共享和同步";
+"sync.alert.status.off.title" = "iCloud 已关闭";
+"sync.alert.status.off.msg" = "目前所有文档保存在当前的设备上。如果需要开启同步，请在设置中选择存储位置为 iCloud";
+"sync.alert.account.changed.title" = "iCloud 账号已变更";
+"sync.alert.account.changed.msg" = "你已登录另一个 iCloud 账号，文档已经切换为新的账号的内容";
+"sync.alert.account.closed.title" = "iCloud 已关闭";
+"sync.alert.account.closed.msg" = "你已经关闭 iCloud 同步，因此你在 iCloud 中的内容无法打开。目前显示的是当前设备的内容。如果需要打开 iCloud 文档，请在系统设置中打开 iCloud，并在设置中选择存储位置为 iCloud。";
+
+
+// setting
+"setting.title" = "设置";
+
+"setting.general.title" = "普通设置";
+
+"setting.store.title" = "存储";
+"setting.storeLocation" = "文档存储位置";
+"setting.storeLocation.iCloud" = "iCloud";
+"setting.storeLocation.onDevice" = "当前设备";
+"setting.alert.icloudIsNotEnabled.title" = "iCloud 已关闭";
+"setting.alert.icloudIsNotEnabled.msg" = "请登录 iCloud 账户，并打开 iCloud 共享";
+"setting.alert.failToStoreIniCloud" = "设置 iCloud 失败";
+
+"setting.interfaceStyle.title" = "界面风格";
+"setting.interfaceStyle.dark" = "深色";
+"setting.interfaceStyle.light" = "浅色";
+"setting.interfaceStyle.auto" = "自动选择";
+
+"setting.landingTab.title" = "选择开机默认界面";
+
+"setting.planning.title" = "自定义状态";
+"setting.planning.unfinish.add" = "新建未完成状态";
+"setting.planning.finish.add" = "新建已完成状态";
+"setting.planning.add.error.nameTaken" = "状态名已经被占用";
+"setting.planning.unfinish.title" = "未完成";
+"setting.planning.finish.title" = "已完成";
+
+"setting.editor.title" = "编辑器";
+"setting.editor.unfoldAllWhenOpen" = "打开文档时展开所有段落";
+
+"setting.export.title" = "导出";
+"setting.export.showIndex" = "显示序号";
+
+//search
+"search.title" = "搜索";
+
+// browser
+"browser.title" = "文档";
+"browser.action.moveTo.title" = "移动文档";
+"browser.action.moveTo.msg" = "选择一个位置";
+"browser.action.rename.newName" = "新名称";
+"browser.action.rename.warning.nameIsTaken" = "文档名被占用";
+"browser.action.new" = "创建新文档";
+"browser.title.untitled" = "未命名";
+"browser.title.copyExt" = "复制";
+"browser.actions.title" = "操作";
+"browser.actions.newSub" = "新建子文档";
+"browser.actions.duplicate" = "复制文档";
+"browser.actions.cover" = "选择封面";
+"browser.actions.delete" = "删除";
+"browser.actions.delete.confirm" = "确定将 '%@' 以及所有子文档移到废纸篓？";
+"browser.actions.rename" = "重命名";
+"browser.outline.beginingOfDocument" = "文档开始";
+"browser.outline.endOfDocument" = "文档结尾";
+"browser.empty" = "没有子文档";
+
+// agenda
+"agenda.title" = "日程表";
+"agenda.startToday" = "开始日期";
+"agenda.startInDaysWithPlaceHolder" = "%@ 天后开始";
+"agenda.startTomorrowWithPlaceHolder" = "明天开始";
+"agenda.startDaysAgoWithPlaceHodler" = "%@ 天前已开始";
+"agenda.startYesterdayWithPlaceHodlerYesterday" = "昨天已开始";
+"agenda.dueToday" = "今天截止";
+"agenda.overdueDaysWihtPlaceHolder" = "已过期 %@ 天";
+"agenda.overdueYesterdayWihtPlaceHolder" = "昨天已过期";
+"agenda.willOverduInDaysWithPlaceHolder" = "%@ 天后将过期";
+"agenda.willOverduTomorrowWithPlaceHolder" = "明天将过期";
+"agenda.today" = "今天";
+"agenda.daysBefore" = "%@ 天之前";
+"agenda.daysAfter" = "%@ 天之后";
+"agenda.tomorrow" = "明天";
+"agenda.yesterday" = "昨天";
+"agenda.sub.tags" = "标签";
+"agenda.sub.planning" = "状态";
+"agenda.sub.overdue" = "已过期";
+"agenda.sub.scheduled" = "已计划开始";
+"agenda.sub.overdueSoon" = "将要过期";
+"agenda.sub.startSoon" = "将要开始";
+"agenda.sub.noTag" = "无标签";
+"agenda.sub.today" = "今天";
+
+// capture list
+"captureList.title" = "灵感管理";
+"captureList.action.openLocation" = "打开位置";
+"captureList.action.openLink" = "打开链接";
+"captureList.action.delete" = "删除灵感";
+"captureList.action.copyToDocument" = "复制到文档";
+"captureList.action.moveToDocument" = "移动到文档";
+"captureList.action.refile" = "移动";
+"captureList.action.title" = "操作";
+"captureList.action.deleteConfirm" = "确定删除这个灵感？";
+"captureList.confirm.delete" = "移动完成，是否删除这个灵感？";
+
+//location
+"location.title" = "添加一个位置";
+"location.current" = "当前位置";
+
+// image picker
+"imagePicker.add" = "添加图片";
+"imagePicker.camera" = "相机";
+"imagePicker.library" = "相册";
+
+// capture text
+"captureText.title" = "添加文字";
+"captureText.text.title" = "文字";
+
+// capture link
+"captureLink.title" = "添加链接";
+"captureLink.title.title" = "标题";
+"captureLink.title.placeholder" = "链接标题";
+"captureLink.url.title" = "URL";
+"captureLink.url.placeholder" = "链接地址";
+
+// audio
+"audio.player.play" = "播放";
+"audio.player.pause" = "暂停";
+"audio.player.stop" = "停止";
+"audio.player.continue" = "继续";
+"audio.recorder.start" = "开始录音";
+"audio.recorder.pause" = "暂停录音";
+"audio.recorder.continue" = "继续录音";
+"audio.recorder.stop" = "停止";
+"audio.recorder.restart" = "重新开始录音";
+
+// Activity
+"activity.document.createDocument.title" = "创建一个新文档";
+"activity.document.createDocument.description" = "创建一个空白文档";
+"activity.document.createDocument.phrase" = "新文档";
+
+"activity.document.CaptureTextActivity.title" = "采集文字";
+"activity.document.CaptureTextActivity.description" = "采集文字灵感";
+"activity.document.CaptureTextActivity.phrase" = "采集文字";
+
+"activity.document.captureImageLibraryActivity.title" = "采集图片";
+"activity.document.captureImageLibraryActivity.description" = "采集图片灵感";
+"activity.document.captureImageLibraryActivity.phrase" = "采集图片";
+
+"activity.document.captureAudioActivity.title" = "采集录音";
+"activity.document.captureAudioActivity.description" = "采集录音灵感";
+"activity.document.captureAudioActivity.phrase" = "采集录音";
+
+"activity.document.captureVideoActivity.title" = "采集视频";
+"activity.document.captureVideoActivity.description" = "采集视频灵感";
+"activity.document.captureVideoActivity.phrase" = "采集视频";
+
+"activity.document.captureSketchActivity.title" = "采集涂鸦";
+"activity.document.captureSketchActivity.description" = "采集涂鸦灵感";
+"activity.document.captureSketchActivity.phrase" = "采集涂鸦";
+
+"activity.document.captureLinkActivity.title" = "采集链接";
+"activity.document.captureLinkActivity.description" = "采集链接灵感";
+"activity.document.captureLinkActivity.phrase" = "采集链接";
+
+"activity.document.captureLocationActivity.title" = "采集位置";
+"activity.document.captureLocationActivity.description" = "记录一个位置";
+"activity.document.captureLocationActivity.phrase" = "采集位置";
+
+// trash
+"trash.title" = "垃圾桶";
+"trash.removeAll" = "全部删除";
+"trash.delete" = "删除";
+"trash.recover" = "方位原处";
+"trash.delete.warning" = "清除的文件将不能再恢复！";
+
+// membership
+"membership.title" = "加入高级会员";
+"membership.letter" = "尊敬的用户，如果觉得使用冰红茶笔记的时候觉得满意的话，不妨考虑加入我们的会员服务，使用所有高级会员功能。有你的支持，我们将可以持对我们的产品进行改进，为各位带来更多更强大的新功能。";
+"membership.monthly.title" = "按月订阅会员";
+"membership.monthly.description" = "(赠送一星期) 无限制使用所有高级功能";
+"membership.yearly.title" = "按年订阅会员";
+"membership.yearly.description" = "(赠送一个月) 无限制使用所有高级功能";
+"membership.ordered" = "已订阅";
+"membership.restore" = "恢复购买";
+
+"membership.function.title" = "作为会员，可以使用高级功能：";
+"membership.function.refile" = "从灵感管理直接移动到文档";
+"membership.function.moveToOtherDocument" = "将段落移动到其他文档中";
+"membership.function.advancedAttachments" = "高级的附件，包含位置，录音和视频";
+"membership.function.customStatus" = "自定义段落的状态";
+"membership.function.unlimitedLevelOfSubDocuments" = "不限制子文件夹的层数";
+"membership.function.removeExportWaterprint" = "移除导出图片中的水印";
+"membership.function.andMoreToCome" = "更多功能持续开发中";

@@ -2,4 +2,13 @@ Iceberg/Build
 Iceberg/Index
 Iceberg/Pods
 Iceberg/Generated/*
+*.ipa
+*.cer
+*.p12
+*.mobileprovision
+Icetea.app.dSYM.zip
+Iceberg/Icetea.xcworkspace/xcuserdata/*
+Iceberg/fastlane/report.xml
+Iceberg/fastlane/README.md
+fastlane/report.xml
 Gemfile

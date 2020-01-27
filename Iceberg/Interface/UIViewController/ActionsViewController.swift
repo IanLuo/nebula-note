@@ -196,6 +196,7 @@ public class ActionsViewController: UIViewController, TransitionProtocol {
         self.actionsContainerView.sideAnchor(for: [.left, .top, .right], to: self.contentView, edgeInset: 0)
         self.actionsContainerView.addSubview(self.cancelButton)
         self.actionsContainerView.addSubview(self.titleLabel)
+        self.actionsContainerView.setContentCompressionResistancePriority(UILayoutPriority.required, for: NSLayoutConstraint.Axis.vertical)
         
         self.cancelButton.sideAnchor(for: [.right, .top, .bottom], to: self.actionsContainerView, edgeInsets: .init(top: 10, left: 0, bottom: -10, right: -Layout.edgeInsets.right + 7)) // make it align to the icon
         self.cancelButton.sizeAnchor(width: 30)
@@ -205,7 +206,7 @@ public class ActionsViewController: UIViewController, TransitionProtocol {
         self.actionsContainerView.columnAnchor(view: self.accessoryViewContainer)
         
         self.contentView.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 10, considerSafeArea: true)
-        self.contentView.topAnchor.constraint(greaterThanOrEqualTo: self.view.topAnchor, constant: 10).isActive = true
+        self.contentView.topAnchor.constraint(greaterThanOrEqualTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 50).isActive = true
         
         self.accessoryViewContainer.sideAnchor(for: [.left, .right], to: self.contentView, edgeInset: 0)
         self.accessoryViewContainer.columnAnchor(view: self.tableView)

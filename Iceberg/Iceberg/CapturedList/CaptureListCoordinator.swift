@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-import Business
+import Core
 import Interface
 
 public protocol CaptureListCoordinatorDelegate: class {
@@ -16,7 +16,7 @@ public protocol CaptureListCoordinatorDelegate: class {
 }
 
 public class CaptureListCoordinator: Coordinator {
-    let viewModel: CaptureListViewModel
+    var viewModel: CaptureListViewModel!
     
     public weak var delegate: CaptureListCoordinatorDelegate?
     
@@ -24,14 +24,13 @@ public class CaptureListCoordinator: Coordinator {
     public var onCancelAction: (() -> Void)?
     
     public init(stack: UINavigationController, dependency: Dependency, mode: CaptureListViewModel.Mode) {
-        self.viewModel = CaptureListViewModel(service: CaptureService(attachmentManager: dependency.attachmentManager), mode: mode)
-        let viewController = CaptureListViewController(viewModel: self.viewModel)
-        
         super.init(stack: stack, dependency: dependency)
         
+        self.viewModel = CaptureListViewModel(service: CaptureService(attachmentManager: dependency.attachmentManager), mode: mode, coordinator: self)
+        let viewController = CaptureListViewController(viewModel: self.viewModel)
+                
         viewController.delegate = self
         self.viewController = viewController
-        viewModel.coordinator = self
     }
     
     public func showDocumentHeadingSelector(completion: @escaping (URL, OutlineLocation) -> Void, canceled: @escaping () -> Void) {

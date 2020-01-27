@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import Business
+import Core
 import RxSwift
 import Interface
 import PKHUD
@@ -18,7 +18,7 @@ public class ActivityHandler {
     public func handle(by application: Application, activity userActivity: NSUserActivity) -> Bool {
         switch userActivity.activityType {
         case createDocumentActivityType:
-            application.startComplete.subscribe(onNext: { isComplete in
+            application.dependency.appContext.startComplete.subscribe(onNext: { isComplete in
                 guard isComplete else { return }
                 for case let homeCoordinator in application.children where homeCoordinator is HomeCoordinator {
                     let homeCoordinator = homeCoordinator as! HomeCoordinator

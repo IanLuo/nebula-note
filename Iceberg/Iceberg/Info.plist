@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
-	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<string>en_US</string>
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
@@ -103,21 +103,35 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>11</string>
+	<string>63</string>
 	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<true/>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>pick media</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>access your calendar</string>
 	<key>NSCameraUsageDescription</key>
 	<string>take photo</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>find your location</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>record</string>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string></string>
-	</array>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>access your photo library</string>
+	<key>NSUbiquitousContainers</key>
+	<dict>
+		<key>iCloud.com.wod.icetea</key>
+		<dict>
+			<key>NSUbiquitousContainerIsDocumentScopePublic</key>
+			<true/>
+			<key>NSUbiquitousContainerName</key>
+			<string>Icetea</string>
+			<key>NSUbiquitousContainerSupportedFolderLevels</key>
+			<string>Any</string>
+		</dict>
+	</dict>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
@@ -137,8 +151,6 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>UIUserInterfaceStyle</key>
-	<string>Dark</string>
 	<key>UTExportedTypeDeclarations</key>
 	<array>
 		<dict>
