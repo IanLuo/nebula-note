@@ -1,20 +1,21 @@
 PODS:
-  - Differentiator (3.1.0)
+  - Differentiator (4.0.1)
   - Drawsana (0.9.2)
   - Haptico (1.0.2)
   - KDCalendar (1.6.5)
-  - PKHUD (5.2.1)
-  - RxAtomic (4.4.0)
-  - RxCocoa (4.4.0):
-    - RxSwift (~> 4.0)
-  - RxDataSources (3.1.0):
-    - Differentiator (~> 3.0)
-    - RxCocoa (~> 4.0)
-    - RxSwift (~> 4.0)
-  - RxSwift (4.4.0):
-    - RxAtomic (~> 4.4)
-  - SwiftGen (6.0.2)
-  - SwiftyBeaver (1.6.1)
+  - PKHUD (5.3.0)
+  - RxCocoa (5.0.1):
+    - RxRelay (~> 5)
+    - RxSwift (~> 5)
+  - RxDataSources (4.0.1):
+    - Differentiator (~> 4.0)
+    - RxCocoa (~> 5.0)
+    - RxSwift (~> 5.0)
+  - RxRelay (5.0.1):
+    - RxSwift (~> 5)
+  - RxSwift (5.0.1)
+  - SwiftGen (6.1.0)
+  - SwiftyBeaver (1.8.4)
 
 DEPENDENCIES:
   - Drawsana
@@ -28,32 +29,32 @@ DEPENDENCIES:
   - SwiftyBeaver
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  https://mirrors.tuna.tsinghua.edu.cn/git/CocoaPods/Specs.git:
     - Differentiator
     - Drawsana
     - Haptico
     - KDCalendar
     - PKHUD
-    - RxAtomic
     - RxCocoa
     - RxDataSources
+    - RxRelay
     - RxSwift
     - SwiftGen
     - SwiftyBeaver
 
 SPEC CHECKSUMS:
-  Differentiator: be49ca3408f0ecfc761e4c7763d20c62be01b9ad
+  Differentiator: 886080237d9f87f322641dedbc5be257061b0602
   Drawsana: e6c738958804d69769b034019bc274fa58a56d10
   Haptico: ce38d1f993f3a0df9a6d7795a9dd2849648aa9d1
   KDCalendar: 15e74f37bd3d206bf7549c594fd08e0347c276f4
-  PKHUD: 4e6162c4c39ac367c6934e9855c6b4762ee16256
-  RxAtomic: eacf60db868c96bfd63320e28619fe29c179656f
-  RxCocoa: df63ebf7b9a70d6b4eeea407ed5dd4efc8979749
-  RxDataSources: a843bad90c29817f5923ec8163f4af2de084ceb3
-  RxSwift: 5976ecd04fc2fefd648827c23de5e11157faa973
-  SwiftGen: e5b047067aa84082826a0c4f1c4c2ddc95bcf74c
-  SwiftyBeaver: ccfcdf85a04d429f1633f668650b0ce8020bda3a
+  PKHUD: 98f3e4bc904b9c916f1c5bb6d765365b5357291b
+  RxCocoa: e741b9749968e8a143e2b787f1dfbff2b63d0a5c
+  RxDataSources: efee07fa4de48477eca0a4611e6d11e2da9c1114
+  RxRelay: 89d54507f4fd4d969e6ec1d4bd7f3673640b4640
+  RxSwift: e2dc62b366a3adf6a0be44ba9f405efd4c94e0c4
+  SwiftGen: f872ca75cbd17bf7103c17f13dcfa0d9a15667b0
+  SwiftyBeaver: f9a9aba96a6a6166e21682377804d728b0d20b95
 
-PODFILE CHECKSUM: 56aaf5bf970b0dd08e55f213e843ddc58e8f8202
+PODFILE CHECKSUM: 8ff2002c91daae8baee5807a176010dfed40f493
 
-COCOAPODS: 1.7.5
+COCOAPODS: 1.9.0.beta.2
