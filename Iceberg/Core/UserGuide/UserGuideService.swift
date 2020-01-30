@@ -10,6 +10,22 @@ import Foundation
 import RxSwift
 import Interface
 
+public enum HelpPage: String {
+    case allUserGuide = "https://forum.iceteanote.me/c/5"
+    case editor = "https://forum.iceteanote.me/t/12"
+    case capture = "https://forum.iceteanote.me/t/13"
+    case documentManagement = "https://forum.iceteanote.me/t/14"
+    case entrance = "https://forum.iceteanote.me/t/15"
+    case dateAndTime = "https://forum.iceteanote.me/t/16"
+    case agenda = "https://forum.iceteanote.me/t/17"
+    
+    public func open() {
+        if let url = URL(string: self.rawValue), UIApplication.shared.canOpenURL(url) {
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        }
+    }
+}
+
 public struct UserGuideService {
     public init() {}
     public func createGuideDocument(documentManager: DocumentManager) -> Observable<[URL]> {

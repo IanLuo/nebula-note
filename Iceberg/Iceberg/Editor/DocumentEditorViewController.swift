@@ -96,6 +96,7 @@ public class DocumentEditorViewController: UIViewController {
         let notificationCenter = NotificationCenter.default
         notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillHideNotification, object: nil)
         notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(_keyboardWillShow), name: UIResponder.keyboardDidShowNotification, object: nil)
         
         self.viewModel.dependency.appContext.isReadingMode.subscribe(onNext: { [weak self] isReadingMode in
             self?.textView.isEditable = !isReadingMode
@@ -127,6 +128,16 @@ public class DocumentEditorViewController: UIViewController {
     
     @objc private func _keyboardWillShow(_ notification: Notification) {
         
+        guard shouldShowHeadingGuide() else { return }
+        
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1) {
+            let headingButton = self.inputbar.button(at: 0, section: 0)
+            if let headingButton = headingButton {
+                let userGuideWindow = UserGuideWindow(frame: UIScreen.main.bounds, sourceView: headingButton)
+                userGuideWindow.setGuidText(L10n.Guide.Document.Edit.headingEntry)
+                UIApplication.shared.windows[UIApplication.shared.windows.count - 1].addSubview(userGuideWindow)
+            }
+        }
     }
     
     @objc private func _keyboardWillHide(_ notification: Notification) {
@@ -136,6 +147,22 @@ public class DocumentEditorViewController: UIViewController {
                                                       bottom: 0,
                                                       right: self.textView.contentInset.right)
         }, completion: nil)
+    }
+    
+    
+    private var _didShowUserGuide: Bool = false
+    private func shouldShowHeadingGuide() -> Bool {
+        guard _didShowUserGuide == false else { return false }
+        
+        _didShowUserGuide = true
+        
+        if self.textView.text.count == 0 && SettingsAccessor.Item.didShowUserGuide.get(Bool.self) == false {
+            SettingsAccessor.Item.didShowUserGuide.set(true, completion: {})
+            return true
+        } else {
+            SettingsAccessor.Item.didShowUserGuide.set(false, completion: {})
+            return false
+        }
     }
     
     @objc func adjustForKeyboard(notification: Notification) {

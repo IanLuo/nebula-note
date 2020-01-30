@@ -230,6 +230,7 @@
 		E4EFA4632230C42F00611FF5 /* CaptureGlobalEntrance.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EFA4622230C42F00611FF5 /* CaptureGlobalEntrance.swift */; };
 		E4F3029C21D74E8700BDE178 /* CaptureTableCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4F3029B21D74E8700BDE178 /* CaptureTableCellModel.swift */; };
 		E4F42989229F9C4F004700E0 /* ListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4F42988229F9C4F004700E0 /* ListViewController.swift */; };
+		E4F823F123E17D7A00ADADCB /* UserGuideView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4F823F023E17D7A00ADADCB /* UserGuideView.swift */; };
 		E4F885EA226D5BE700748868 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4F885E9226D5BE700748868 /* Coordinator.swift */; };
 		E4F9ECDF21FBF61B009A08CD /* RecentFilesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4F9ECDE21FBF61B009A08CD /* RecentFilesManager.swift */; };
 		E4F9ECE121FECE5C009A08CD /* PathManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4F9ECE021FECE5C009A08CD /* PathManager.swift */; };
@@ -621,6 +622,7 @@
 		E4F3029B21D74E8700BDE178 /* CaptureTableCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureTableCellModel.swift; sourceTree = "<group>"; };
 		E4F3029D21D750ED00BDE178 /* Autolayout+Shortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Autolayout+Shortcuts.swift"; sourceTree = "<group>"; };
 		E4F42988229F9C4F004700E0 /* ListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListViewController.swift; sourceTree = "<group>"; };
+		E4F823F023E17D7A00ADADCB /* UserGuideView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserGuideView.swift; sourceTree = "<group>"; };
 		E4F885E9226D5BE700748868 /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
 		E4F9ECDE21FBF61B009A08CD /* RecentFilesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentFilesManager.swift; sourceTree = "<group>"; };
 		E4F9ECE021FECE5C009A08CD /* PathManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathManager.swift; sourceTree = "<group>"; };
@@ -1053,6 +1055,7 @@
 		E43427F82121BF5B00EC6DC3 /* Iceberg */ = {
 			isa = PBXGroup;
 			children = (
+				E4F823EF23E17D6000ADADCB /* UserGuide */,
 				E46DE4D623A91291008A24CA /* Membership */,
 				E4A85B90239BAC0800A41EFD /* Trash */,
 				E4C1933E2248A0CA00EF4C95 /* Iceberg.entitlements */,
@@ -1424,6 +1427,14 @@
 				E4F3029B21D74E8700BDE178 /* CaptureTableCellModel.swift */,
 			);
 			path = CapturedList;
+			sourceTree = "<group>";
+		};
+		E4F823EF23E17D6000ADADCB /* UserGuide */ = {
+			isa = PBXGroup;
+			children = (
+				E4F823F023E17D7A00ADADCB /* UserGuideView.swift */,
+			);
+			path = UserGuide;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -2080,6 +2091,7 @@
 				E4729BA82204160200F22885 /* DashboardViewController.swift in Sources */,
 				E41B893221E3497D009C5AD7 /* ImageAttachmentView.swift in Sources */,
 				E4B1BED02340E34C00683E10 /* BrowserFolderViewModel.swift in Sources */,
+				E4F823F123E17D7A00ADADCB /* UserGuideView.swift in Sources */,
 				E4A46A2B21B4109C00FBDA04 /* DocumentSearchViewController.swift in Sources */,
 				E4A46A2D21B410BE00FBDA04 /* DocumentSearchViewModel.swift in Sources */,
 				E49F3E4421B8EDBD003F468D /* AgendaViewController.swift in Sources */,

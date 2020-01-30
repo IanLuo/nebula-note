@@ -19,6 +19,11 @@ extension DocumentEditorViewController: UITextViewDelegate {
         
     }
     
+    public func textViewDidBeginEditing(_ textView: UITextView) {
+        let location = textView.selectedRange.location
+        
+        self.viewModel.cursorLocationChanged(location)
+    }
     
     public func textViewDidChangeSelection(_ textView: UITextView) {
         let location = textView.selectedRange.location

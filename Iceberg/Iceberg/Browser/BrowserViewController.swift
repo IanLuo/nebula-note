@@ -93,5 +93,11 @@ public class BrowserViewController: UIViewController {
         let activity = Document.createDocumentActivity()
         self.userActivity = activity
         activity.becomeCurrent()
+        
+        let rightItem = UIBarButtonItem(title: L10n.General.help, style: .plain, target: nil, action: nil)
+        rightItem.rx.tap.subscribe(onNext: {
+            HelpPage.documentManagement.open()
+        }).disposed(by: self.disposeBag)
+        self.navigationItem.rightBarButtonItem = rightItem
     }
 }

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import RxSwift
 
 public struct DocumentHeading {
     public let level: Int
@@ -127,16 +128,40 @@ public class DocumentSearchManager {
     private let _contentSearchOperationQueue: OperationQueue
     private let _headingChangeObservingQueue: OperationQueue
     private let _trashSearchOperationQueue: OperationQueue
+    private let _documentSearchOperationQueue: OperationQueue
     
     public init() {
         self._headingSearchOperationQueue = OperationQueue()
         self._contentSearchOperationQueue = OperationQueue()
         self._headingChangeObservingQueue = OperationQueue()
         self._trashSearchOperationQueue = OperationQueue()
+        self._documentSearchOperationQueue = OperationQueue()
         
         self._headingSearchOperationQueue.underlyingQueue = DispatchQueue.global(qos: DispatchQoS.QoSClass.userInteractive)
         self._contentSearchOperationQueue.underlyingQueue = DispatchQueue.global(qos: DispatchQoS.QoSClass.userInteractive)
         self._headingChangeObservingQueue.underlyingQueue = DispatchQueue.global(qos: DispatchQoS.QoSClass.background)
+        self._trashSearchOperationQueue.underlyingQueue = DispatchQueue.global(qos: DispatchQoS.QoSClass.background)
+        self._documentSearchOperationQueue.underlyingQueue = DispatchQueue.global(qos: DispatchQoS.QoSClass.userInteractive)
+    }
+    
+    public func searchAttachment(string: String, completion: @escaping ([[String: NSRange]]) -> Void) {
+        self._documentSearchOperationQueue.addOperation {
+            let parseDelegate = ParseDelegate()
+            let parser = OutlineParser()
+            parser.delegate = parseDelegate
+            parser.includeParsee = [.attachment]
+            
+            parser.parse(str: string)
+            completion(parseDelegate.attachments)
+        }
+    }
+    
+    public func searchAttachmentInDocument(url: URL, completion: @escaping ([[String: NSRange]]) -> Void) {
+        do {
+            return searchAttachment(string: try String(contentsOf: url), completion: completion)
+        } catch {
+            log.error(error)
+        }
     }
     
     // MARK: - deleted -
@@ -420,11 +445,13 @@ public class DocumentSearchManager {
 class ParseDelegate: OutlineParserDelegate {
     var headings: [HeadingToken] = []
     var dateAndTimes: [NSRange] = []
+    var attachments: [[String: NSRange]] = []
     
     func didStartParsing(text: String) {
         // clear earlier found data
         self.headings = []
         self.dateAndTimes = []
+        self.attachments = []
     }
     
     func didFoundHeadings(text: String,
@@ -435,6 +462,10 @@ class ParseDelegate: OutlineParserDelegate {
     
     func didFoundDateAndTime(text: String, rangesData: [[String:NSRange]]) {
         self.dateAndTimes = rangesData.map { $0.values.first! }
+    }
+    
+    func didFoundAttachment(text: String, attachmentRanges: [[String : NSRange]]) {
+        self.attachments = attachmentRanges
     }
     
     // O(n) FIXME: 用二分查找提高效率

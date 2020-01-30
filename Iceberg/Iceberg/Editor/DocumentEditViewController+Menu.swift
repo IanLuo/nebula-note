@@ -150,6 +150,12 @@ extension DocumentEditorViewController {
             })
         })
         
+        actionsViewController.addAction(icon: nil, title: L10n.Document.Edit.Action.Help.dateAndTime, style: .highlight, action: { viewController in
+            viewController.dismiss(animated: true, completion: {
+                HelpPage.dateAndTime.open()
+            })
+        })
+        
         actionsViewController.setCancel { viewController in
             viewController.dismiss(animated: true, completion: nil)
             self.viewModel.showGlobalCaptureEntry()

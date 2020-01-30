@@ -100,6 +100,10 @@ public class InputToolbar: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    public func button(at row: Int, section: Int) -> UIView? {
+        return self._collectionView.cellForItem(at: IndexPath(row: row, section: section))
+    }
+    
     private func _setupUI() {
         self.addSubview(self._collectionView)
         self._collectionView.allSidesAnchors(to: self, edgeInset: 0)

@@ -1,5 +1,5 @@
 // swiftlint:disable all
-// Generated using SwiftGen, by O.Halligon — https://github.com/SwiftGen/SwiftGen
+// Generated using SwiftGen — https://github.com/SwiftGen/SwiftGen
 
 import Foundation
 
@@ -195,6 +195,8 @@ public enum L10n {
   public enum Browser {
     /// Folder is empty
     public static let empty = L10n.tr("Localizable", "browser.empty")
+    /// Document management help
+    public static let help = L10n.tr("Localizable", "browser.help")
     /// Documents
     public static let title = L10n.tr("Localizable", "browser.title")
     public enum Action {
@@ -363,6 +365,10 @@ public enum L10n {
         public static let tag = L10n.tr("Localizable", "document.edit.action.tag")
         /// Undo
         public static let undo = L10n.tr("Localizable", "document.edit.action.undo")
+        public enum Help {
+          /// Date and time help
+          public static let dateAndTime = L10n.tr("Localizable", "document.edit.action.help.dateAndTime")
+        }
         public enum Mark {
           /// Bold
           public static let bold = L10n.tr("Localizable", "document.edit.action.mark.bold")
@@ -439,6 +445,14 @@ public enum L10n {
       /// Unfold this paragraph
       public static let unfold = L10n.tr("Localizable", "document.heading.unfold")
     }
+    public enum Help {
+      /// Understand entrance
+      public static let entrance = L10n.tr("Localizable", "document.help.entrance")
+      /// More help topics
+      public static let more = L10n.tr("Localizable", "document.help.more")
+      /// Text editor help
+      public static let textEditor = L10n.tr("Localizable", "document.help.textEditor")
+    }
     public enum Info {
       /// Character count
       public static let characterCount = L10n.tr("Localizable", "document.info.characterCount")
@@ -490,6 +504,8 @@ public enum L10n {
   }
 
   public enum General {
+    /// Help
+    public static let help = L10n.tr("Localizable", "general.help")
     public enum Button {
       public enum Title {
         /// Cancel
@@ -507,6 +523,15 @@ public enum L10n {
     public enum Loading {
       /// Loading...
       public static let title = L10n.tr("Localizable", "general.loading.title")
+    }
+  }
+
+  public enum Guide {
+    public enum Document {
+      public enum Edit {
+        /// Tap on heading button to create an heading entry
+        public static let headingEntry = L10n.tr("Localizable", "guide.document.edit.headingEntry")
+      }
     }
   }
 
@@ -715,6 +740,7 @@ public enum L10n {
 
 extension L10n {
   private static func tr(_ table: String, _ key: String, _ args: CVarArg...) -> String {
+    // swiftlint:disable:next nslocalizedstring_key
     let format = NSLocalizedString(key, tableName: table, bundle: Bundle(for: BundleToken.self), comment: "")
     return String(format: format, locale: Locale.current, arguments: args)
   }

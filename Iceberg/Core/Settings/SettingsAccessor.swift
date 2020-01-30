@@ -34,6 +34,7 @@ public enum SettingsError: Error {
         case exportShowIndex
         case currentSubscription
         case isFirstLaunchApp
+        case didShowUserGuide
         
         public func set(_ value: Any, completion: @escaping () -> Void) {
             Constants.store.set(value: value, key: self.rawValue, completion: completion)

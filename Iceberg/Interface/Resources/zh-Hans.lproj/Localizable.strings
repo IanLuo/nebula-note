@@ -12,6 +12,7 @@
 "general.button.title.delete" = "删除";
 "general.button.title.close" = "关闭";
 "general.loading.title" = "加载中...";
+"general.help" = "帮助";
 
 "selector.empty" = "没有内容";
 
@@ -53,7 +54,7 @@
 "document.export.org" = "Org mode";
 "document.export.html" = "HTML";
 "document.export.md" = "Mark Down";
-"document.export.msg" = "Choose a file format";
+"document.export.msg" = "选择导出格式";
 
 // document info
 "document.info.editDate" = "编辑日期";
@@ -78,6 +79,7 @@
 "document.edit.action.attachment" = "附件";
 "document.edit.action.schedule" = "开始日期";
 "document.edit.action.due" = "截止日期";
+"document.edit.action.help.dateAndTime" = "日期帮助";
 "document.edit.action.planning" = "状态";
 "document.edit.action.tag" = "标签";
 "document.edit.action.move-up" = "上移";
@@ -105,6 +107,9 @@
 "document.edit.tag.choose" = "选择标签";
 "document.edit.tag.place-holder" = "输入标签名";
 "document.edit.tag.validation" = "不要使用特殊字符";
+"document.help.textEditor" = "编辑器使用帮助";
+"document.help.entrance" = "什么是标题入口";
+"document.help.more" = "更多帮助";
 
 "document.edit.remote_editing_arrived_title" = "其他文档已修改";
 "document.edit.remote_editing_arrived_message" = "选择需要保存的版本";
@@ -181,6 +186,7 @@
 "browser.outline.beginingOfDocument" = "文档开始";
 "browser.outline.endOfDocument" = "文档结尾";
 "browser.empty" = "没有子文档";
+"browser.help" = "文档管理帮助";
 
 // agenda
 "agenda.title" = "日程表";
@@ -309,3 +315,6 @@
 "membership.function.unlimitedLevelOfSubDocuments" = "不限制子文件夹的层数";
 "membership.function.removeExportWaterprint" = "移除导出图片中的水印";
 "membership.function.andMoreToCome" = "更多功能持续开发中";
+
+// user guide
+"guide.document.edit.headingEntry" = "点击标题按钮，创建一个标题";

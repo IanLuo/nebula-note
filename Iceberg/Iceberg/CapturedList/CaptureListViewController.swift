@@ -11,6 +11,7 @@ import UIKit
 import Core
 import MapKit
 import Interface
+import RxSwift
 
 public protocol CaptureListViewControllerDelegate: class {
     func didChooseAttachment(_ attachment: Attachment, viewController: UIViewController)
@@ -82,6 +83,8 @@ public class CaptureListViewController: UIViewController {
         fatalError()
     }
     
+    private let disposeBag = DisposeBag()
+    
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
@@ -128,6 +131,12 @@ public class CaptureListViewController: UIViewController {
         if self.viewModel.context.coordinator?.isModal ?? false {
             self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: Asset.Assets.cross.image, style: .plain, target: self, action: #selector(cancel))
         }
+        
+        let rightItem = UIBarButtonItem(title: L10n.General.help, style: .plain, target: nil, action: nil)
+        rightItem.rx.tap.subscribe(onNext: {
+            HelpPage.capture.open()
+        }).disposed(by: self.disposeBag)
+        self.navigationItem.rightBarButtonItem = rightItem
     }
     
     @objc private func cancel() {

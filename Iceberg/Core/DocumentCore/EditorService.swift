@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit.UIDocument
+import RxSwift
 
 // MARK: - Service -
 

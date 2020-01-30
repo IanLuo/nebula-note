@@ -55,6 +55,8 @@ public class AgendaViewController: UIViewController {
         fatalError()
     }
     
+    private let disposeBag = DisposeBag()
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -105,6 +107,12 @@ public class AgendaViewController: UIViewController {
         
         self.agendaDateSelectView.columnAnchor(view: self.tableView, space: 20)
         self.tableView.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 0)
+        
+        let rightItem = UIBarButtonItem(title: L10n.General.help, style: .plain, target: nil, action: nil)
+        rightItem.rx.tap.subscribe(onNext: {
+            HelpPage.agenda.open()
+        }).disposed(by: self.disposeBag)
+        self.navigationItem.rightBarButtonItem = rightItem
     }
     
     @objc private func cancel() {

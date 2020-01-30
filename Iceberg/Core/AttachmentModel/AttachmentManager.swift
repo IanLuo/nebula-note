@@ -108,7 +108,7 @@ public enum AttachmentError: Error {
         
         self.attachment(with: key, completion: { attachment in
             let url = attachment.wrapperURL
-            attachment.wrapperURL.rename(queue: DispatchQueue.main, url: SyncCoordinator.Prefix.deleted.createURL(for: url), completion: { error in
+            attachment.wrapperURL.delete(queue: DispatchQueue.main, completion: { error in
                 if let error = error {
                     failure(error)
                 } else {
@@ -117,6 +117,32 @@ public enum AttachmentError: Error {
                 }
             })
         }, failure: failure)
+    }
+    
+    public func delete(keys: [String], completion: @escaping () -> Void, failure: @escaping (Error) -> Void) {
+        var performDeleteAttachmentAction: (([String]) -> Void)!
+        
+        performDeleteAttachmentAction = { keys in
+            var keys = keys
+            if let first = keys.first {
+                keys.remove(at: 0)
+                
+                self.delete(key: first, completion: {
+                    performDeleteAttachmentAction(keys)
+                }) { error in
+                    log.error(error)
+                    performDeleteAttachmentAction(keys)
+                }
+            } else {
+                completion()
+            }
+        }
+        
+        if keys.count > 0 {
+            performDeleteAttachmentAction(keys)
+        } else {
+            completion()
+        }
     }
     
     public static func attachmentFileURL(key: String) -> URL? {

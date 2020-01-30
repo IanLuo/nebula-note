@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import RxSwift
+import Core
 import Interface
 
 public class BrowserCell: UITableViewCell {

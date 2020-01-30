@@ -27,6 +27,13 @@ public class DocumentInfoViewController: TransitionViewController {
         return button
     }()
     
+    private lazy var _helpButton: RoundButton = {
+        let button = RoundButton()
+        button.setIcon(Asset.Assets.right.image.fill(color: InterfaceTheme.Color.interactive), for: .normal)
+        button.setBackgroundColor(InterfaceTheme.Color.background2, for: .normal)
+        return button
+    }()
+    
     public var fromView: UIView?
     
     private let transitionDelegate: UIViewControllerTransitioningDelegate = FadeBackgroundTransition(animator: MoveInAnimtor(from: MoveInAnimtor.From.right))
@@ -48,6 +55,10 @@ public class DocumentInfoViewController: TransitionViewController {
             self?.cancel()
         }
         
+        self._helpButton.tapped { [weak self] _ in
+            self?.showHelpTopics()
+        }
+        
         self.setupUI()
     }
     
@@ -60,6 +71,10 @@ public class DocumentInfoViewController: TransitionViewController {
         self.contentView.addSubview(self._backButton)
         self._backButton.sideAnchor(for: [.traling, .top], to: self.contentView, edgeInsets: UIEdgeInsets(top: 0, left: 0, bottom: 0, right: -Layout.edgeInsets.right), considerSafeArea: true)
         self._backButton.sizeAnchor(width: 44)
+        
+        self.contentView.addSubview(self._helpButton)
+        self._helpButton.sideAnchor(for: [.leading, .top], to: self.contentView, edgeInsets: UIEdgeInsets(top: 0, left: Layout.edgeInsets.left, bottom: 0, right: 0), considerSafeArea: true)
+        self._helpButton.sizeAnchor(width: 44)
         
         let exportViewController = ExportSelectViewController(exporterManager: self._viewModel.dependency.exportManager)
         exportViewController.delegate = self
@@ -89,6 +104,32 @@ public class DocumentInfoViewController: TransitionViewController {
     @objc func cancel() {
         self.dismiss(animated: true, completion: nil)
         self.didCloseAction?()
+    }
+    
+    @objc func showHelpTopics() {
+        let actionsViewController = ActionsViewController()
+        
+        actionsViewController.title = L10n.General.help
+        
+        actionsViewController.addAction(icon: nil, title: L10n.Document.Help.textEditor) { viewController in
+            viewController.dismiss(animated: true) {
+                HelpPage.editor.open()
+            }
+        }
+        
+        actionsViewController.addAction(icon: nil, title: L10n.Document.Help.entrance) { viewController in
+            viewController.dismiss(animated: true) {
+                HelpPage.entrance.open()
+            }
+        }
+        
+        actionsViewController.addAction(icon: nil, title: L10n.Document.Help.more) { viewController in
+            viewController.dismiss(animated: true) {
+                HelpPage.allUserGuide.open()
+            }
+        }
+        
+        self.present(actionsViewController, animated: true)
     }
 }
 
