@@ -160,7 +160,6 @@ public class DocumentEditorViewController: UIViewController {
             SettingsAccessor.Item.didShowUserGuide.set(true, completion: {})
             return true
         } else {
-            SettingsAccessor.Item.didShowUserGuide.set(false, completion: {})
             return false
         }
     }
