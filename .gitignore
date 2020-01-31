@@ -2,10 +2,11 @@ Iceberg/Build
 Iceberg/Index
 Iceberg/Pods
 Iceberg/Generated/*
-*.ipa
-*.cer
-*.p12
-*.mobileprovision
+Iceberg/*.ipa
+Iceberg/*.certSigningRequest
+Iceberg/*.cer
+Iceberg/*.p12
+Iceberg/*.mobileprovision
 Icetea.app.dSYM.zip
 Iceberg/Icetea.xcworkspace/xcuserdata/*
 Iceberg/fastlane/report.xml

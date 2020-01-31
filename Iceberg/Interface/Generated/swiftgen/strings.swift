@@ -446,7 +446,7 @@ public enum L10n {
       public static let unfold = L10n.tr("Localizable", "document.heading.unfold")
     }
     public enum Help {
-      /// Understand entrance
+      /// Understand heading entrance
       public static let entrance = L10n.tr("Localizable", "document.help.entrance")
       /// More help topics
       public static let more = L10n.tr("Localizable", "document.help.more")

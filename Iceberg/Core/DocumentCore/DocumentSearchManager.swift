@@ -100,15 +100,6 @@ public class DocumentHeadingSearchResult {
     }
 }
 
-public class DocumentSearchHeadingUpdateEvent: Event {
-//    public let oldHeadings: [DocumentHeadingSearchResult]
-//    public let newHeadings: [DocumentHeadingSearchResult]
-//    public init(oldHeadings: [DocumentHeadingSearchResult], newHeadings: [DocumentHeadingSearchResult]) {
-//        self.oldHeadings = oldHeadings
-//        self.newHeadings = newHeadings
-//    }
-}
-
 public class TagAddedEvent: Event {
     public let tag: String
     public init(tag: String) {

@@ -219,8 +219,8 @@ public class AgendaViewModel {
         
     private func _setupObserver() {
         self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
-                                                                    eventType: DocumentSearchHeadingUpdateEvent.self,
-                                                                    queue: self._headingChangeObservingQueue) { [weak self] (event: DocumentSearchHeadingUpdateEvent) -> Void in
+                                                                    eventType: DocumentHeadingChangeEvent.self,
+                                                                    queue: self._headingChangeObservingQueue) { [weak self] (event: DocumentHeadingChangeEvent) -> Void in
                                                                         self?._shouldReloadData = true
         }
         

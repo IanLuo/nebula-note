@@ -55,8 +55,8 @@ public class DashboardViewModel {
     
     private func _setupHeadingChangeObserver() {
         self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
-                                                                    eventType: DocumentSearchHeadingUpdateEvent.self,
-                                                                    queue: self._headingChangeObservingQueue) { [weak self] (event: DocumentSearchHeadingUpdateEvent) -> Void in
+                                                                    eventType: DocumentHeadingChangeEvent.self,
+                                                                    queue: self._headingChangeObservingQueue) { [weak self] (event: DocumentHeadingChangeEvent) -> Void in
                                                                         self?._isHeadingsNeedsReload = true
         }
         

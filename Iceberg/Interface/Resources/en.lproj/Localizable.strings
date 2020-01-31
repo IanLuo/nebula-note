@@ -108,7 +108,7 @@
 "document.edit.tag.place-holder" = "New tag name";
 "document.edit.tag.validation" = "Don't use special characters in tag";
 "document.help.textEditor" = "Text editor help";
-"document.help.entrance" = "Understand entrance";
+"document.help.entrance" = "Understand heading entrance";
 "document.help.more" = "More help topics";
 
 "document.edit.remote_editing_arrived_title" = "Another device modified this document";

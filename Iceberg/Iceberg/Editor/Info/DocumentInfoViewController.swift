@@ -29,7 +29,7 @@ public class DocumentInfoViewController: TransitionViewController {
     
     private lazy var _helpButton: RoundButton = {
         let button = RoundButton()
-        button.setIcon(Asset.Assets.right.image.fill(color: InterfaceTheme.Color.interactive), for: .normal)
+        button.setIcon(Asset.Assets.infomation.image.fill(color: InterfaceTheme.Color.interactive), for: .normal)
         button.setBackgroundColor(InterfaceTheme.Color.background2, for: .normal)
         return button
     }()
