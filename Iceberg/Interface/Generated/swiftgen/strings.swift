@@ -384,7 +384,7 @@ public enum L10n {
           public static let verbatim = L10n.tr("Localizable", "document.edit.action.mark.verbatim")
         }
         public enum Paragraph {
-          /// Paragraph actions
+          /// Section actions
           public static let title = L10n.tr("Localizable", "document.edit.action.paragraph.title")
         }
       }
@@ -430,19 +430,19 @@ public enum L10n {
       public static let title = L10n.tr("Localizable", "document.export.title")
     }
     public enum Heading {
-      /// Fold this paragaph
+      /// Fold this section
       public static let fold = L10n.tr("Localizable", "document.heading.fold")
-      /// Move paragraph
+      /// Move section
       public static let moveTo = L10n.tr("Localizable", "document.heading.moveTo")
       /// Move to another document
       public static let moveToAnotherDocument = L10n.tr("Localizable", "document.heading.moveToAnotherDocument")
       /// Heading
       public static let title = L10n.tr("Localizable", "document.heading.title")
-      /// Convert to heading
+      /// Convert to section heading
       public static let toHeading = L10n.tr("Localizable", "document.heading.toHeading")
-      /// Convert to content
+      /// Convert to plain content
       public static let toParagraphContent = L10n.tr("Localizable", "document.heading.toParagraphContent")
-      /// Unfold this paragraph
+      /// Unfold this section
       public static let unfold = L10n.tr("Localizable", "document.heading.unfold")
     }
     public enum Help {
@@ -460,7 +460,7 @@ public enum L10n {
       public static let createDate = L10n.tr("Localizable", "document.info.createDate")
       /// Edit date
       public static let editDate = L10n.tr("Localizable", "document.info.editDate")
-      /// Paragraph count
+      /// Section count
       public static let paragraphCount = L10n.tr("Localizable", "document.info.paragraphCount")
       /// Word count
       public static let wordCount = L10n.tr("Localizable", "document.info.wordCount")
@@ -565,9 +565,9 @@ public enum L10n {
       public static let advancedAttachments = L10n.tr("Localizable", "membership.function.advancedAttachments")
       /// And more to come
       public static let andMoreToCome = L10n.tr("Localizable", "membership.function.andMoreToCome")
-      /// Custom paragraph status
+      /// Custom section status
       public static let customStatus = L10n.tr("Localizable", "membership.function.customStatus")
-      /// Move paragraph to other document
+      /// Move section to other document
       public static let moveToOtherDocument = L10n.tr("Localizable", "membership.function.moveToOtherDocument")
       /// Refile from capturelist
       public static let refile = L10n.tr("Localizable", "membership.function.refile")

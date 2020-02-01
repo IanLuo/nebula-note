@@ -39,11 +39,11 @@
 "document.planning.title" = "Status";
 
 "document.heading.title" = "Heading";
-"document.heading.toParagraphContent" = "Convert to content";
-"document.heading.toHeading" = "Convert to heading";
-"document.heading.unfold" = "Unfold this paragraph";
-"document.heading.fold" = "Fold this paragaph";
-"document.heading.moveTo" = "Move paragraph";
+"document.heading.toParagraphContent" = "Convert to plain content";
+"document.heading.toHeading" = "Convert to section heading";
+"document.heading.unfold" = "Unfold this section";
+"document.heading.fold" = "Fold this section";
+"document.heading.moveTo" = "Move section";
 "document.heading.moveToAnotherDocument" = "Move to another document";
 
 // outline
@@ -60,7 +60,7 @@
 "document.info.editDate" = "Edit date";
 "document.info.createDate" = "Create date";
 "document.info.wordCount" = "Word count";
-"document.info.paragraphCount" = "Paragraph count";
+"document.info.paragraphCount" = "Section count";
 "document.info.characterCount" = "Character count";
 
 "document.link.open" = "Open link in browser";
@@ -100,7 +100,7 @@
 "document.edit.action.arrow-up" = "Arrow up";
 "document.edit.action.arrow-down" = "Arrow down";
 "document.edit.action.quote-block" = "Quote block";
-"document.edit.action.paragraph.title" = "Paragraph actions";
+"document.edit.action.paragraph.title" = "Section actions";
 "document.edit.action.code-block" = "Code block";
 "document.edit.tag.title" = "Edit tag";
 "document.edit.tag.add" = "Add new tag";
@@ -309,9 +309,9 @@
 
 "membership.function.title" = "As a member, you will be able to access advanced features as follow:";
 "membership.function.refile" = "Refile from capturelist";
-"membership.function.moveToOtherDocument" = "Move paragraph to other document";
+"membership.function.moveToOtherDocument" = "Move section to other document";
 "membership.function.advancedAttachments" = "Advanced attachments, including Location, Audio and Video";
-"membership.function.customStatus" = "Custom paragraph status";
+"membership.function.customStatus" = "Custom section status";
 "membership.function.unlimitedLevelOfSubDocuments" = "Unlimited level of sub documents";
 "membership.function.removeExportWaterprint" = "Remove export waterprint";
 "membership.function.andMoreToCome" = "And more to come";

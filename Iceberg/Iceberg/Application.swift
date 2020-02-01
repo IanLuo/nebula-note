@@ -68,6 +68,7 @@ public class Application: Coordinator {
             
             strongSelf.dependency.eventObserver.emit(AppStartedEvent())
             
+            // when app start the first time, perform below actions
             if SettingsAccessor.Item.isFirstLaunchApp.get(Bool.self) ?? true {
                 strongSelf.dependency
                     .userGuideService
