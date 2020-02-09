@@ -86,9 +86,9 @@ public class AttachmentManagerCell: UICollectionViewCell {
                 let attachment = attachment!
                 switch attachment.kind {
                 case .video, .audio:
-                    self.titleLabel.text = "\(attachment.durationString) \n \(attachment.date.shortDateString)"
+                    self.titleLabel.text = "\(attachment.durationString) \n \(attachment.sizeString) \n \(attachment.date.shortDateString)"
                 default:
-                    self.titleLabel.text = attachment.date.shortDateString
+                    self.titleLabel.text = "\(attachment.sizeString) \n \(attachment.date.shortDateString)"
                 }
         }).disposed(by: self.disposeBag)
         

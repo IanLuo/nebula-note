@@ -107,9 +107,34 @@ public struct Attachment: Codable {
         default: return nil
         }
     }
-    
+        
     public var durationString: String {
         return convertDuration(self.duration ?? 0)
+    }
+    
+    public var size: UInt64 {
+        do {
+            let fileAttributes = try FileManager.default.attributesOfItem(atPath: self.url.path)
+            if let fileSize = fileAttributes[FileAttributeKey.size]  {
+                return (fileSize as! NSNumber).uint64Value
+            } else {
+                print("Failed to get a size attribute from path: \(self.url.path)")
+            }
+        } catch {
+            print("Failed to get file attributes for local path: \(self.url.path) with error: \(error)")
+        }
+        return 0
+    }
+    
+    public var sizeString: String {
+        var convertedValue: Double = Double(self.size)
+        var multiplyFactor = 0
+        let tokens = ["bytes", "KB", "MB", "GB", "TB", "PB",  "EB",  "ZB", "YB"]
+        while convertedValue > 1024 {
+            convertedValue /= 1024
+            multiplyFactor += 1
+        }
+        return String(format: "%4.2f %@", convertedValue, tokens[multiplyFactor])
     }
     
     private func convertDuration(_ duration: Double) -> String {
