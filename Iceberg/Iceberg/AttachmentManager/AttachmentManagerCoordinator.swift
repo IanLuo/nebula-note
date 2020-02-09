@@ -18,6 +18,4 @@ public class AttachmentManagerCoordinator: Coordinator {
         
         self.viewController = viewController
     }
-    
-    
 }
