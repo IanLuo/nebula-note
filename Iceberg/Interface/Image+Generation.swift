@@ -82,6 +82,24 @@ extension UIImage {
         UIGraphicsEndImageContext()
         return image!
     }
+    
+    public func addSubImage(_ image: UIImage) -> UIImage {
+        var newImage: UIImage!
+        
+        UIGraphicsBeginImageContextWithOptions(self.size, false, 0)
+        
+        self.draw(in: CGRect(origin: CGPoint.zero, size: size))
+
+        let x = (self.size.width - image.size.width) / 2
+        let y = (self.size.height - image.size.height) / 2
+        image.draw(in: CGRect(origin: CGPoint(x: x, y: y), size: image.size), blendMode: CGBlendMode.normal, alpha: 1)
+        
+        newImage = UIGraphicsGetImageFromCurrentImageContext()
+
+        UIGraphicsEndImageContext()
+        
+        return newImage
+    }
 }
 
 extension UIView {

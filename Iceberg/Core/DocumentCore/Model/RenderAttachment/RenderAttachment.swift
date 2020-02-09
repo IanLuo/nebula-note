@@ -9,6 +9,7 @@
 import Foundation
 import Interface
 import UIKit
+import RxSwift
 
 public class RenderAttachment: NSTextAttachment {
     public var type: String
@@ -21,6 +22,8 @@ public class RenderAttachment: NSTextAttachment {
     
     public var didLoadImage: (() -> Void)?
     
+    private let disposeBag = DisposeBag()
+    
     @objc required public init?(type: String, value: String, manager: AttachmentManager) {
         self._manager = manager
         self.type = type
@@ -28,14 +31,15 @@ public class RenderAttachment: NSTextAttachment {
         super.init(data: nil, ofType: nil)
         
         self._manager.attachment(with: value, completion: { [weak self] attachment in
-            self?._attachment = attachment
-            self?.url = attachment.url
-            DispatchQueue.runOnMainQueueSafely {
+            guard let strongSelf = self else { return }
+            
+            strongSelf._attachment = attachment
+            strongSelf.url = attachment.url
+            
+            attachment.thumbnail.observeOn(MainScheduler()).subscribe(onNext: { image in
                 switch attachment.kind {
-                case .sketch:
-                    fallthrough // 使用 image 同样的渲染方法
-                case .image:
-                    if let image = UIImage(contentsOfFile: attachment.url.path) {
+                case .sketch, .image, .video:
+                    if let image = image {
                         let image = image.resize(upto: CGSize(width: UIScreen.main.bounds.width * 0.7, height: UIScreen.main.bounds.width * 0.7))
                         let scale = UIScreen.main.scale / image.scale
                         self?.image = image
@@ -48,8 +52,30 @@ public class RenderAttachment: NSTextAttachment {
                     self?.image = AttachmentThumbnailView(bounds: self!.bounds, attachment: attachment).snapshot
                 }
                 
+            }, onCompleted: {
                 self?.didLoadImage?()
-            }
+            }).disposed(by: strongSelf.disposeBag)
+            
+//            DispatchQueue.runOnMainQueueSafely {
+//                switch attachment.kind {
+//                case .sketch:
+//                    fallthrough // 使用 image 同样的渲染方法
+//                case .image:
+//                    if let image = UIImage(contentsOfFile: attachment.url.path) {
+//                        let image = image.resize(upto: CGSize(width: UIScreen.main.bounds.width * 0.7, height: UIScreen.main.bounds.width * 0.7))
+//                        let scale = UIScreen.main.scale / image.scale
+//                        self?.image = image
+//                        self?.bounds = CGRect(origin: .zero, size: image.size.applying(CGAffineTransform(scaleX: 1/scale, y: 1/scale)))
+//                    } else {
+//                        // TODO: 使用找不到图片的 placehoder 图片
+//                    }
+//                default:
+//                    self?.bounds = CGRect(origin: .zero, size: .init(width: 200, height: 60))
+//                    self?.image = AttachmentThumbnailView(bounds: self!.bounds, attachment: attachment).snapshot
+//                }
+//
+//                self?.didLoadImage?()
+//            }
         }) { error in
             
         }
@@ -83,13 +109,9 @@ private class AttachmentThumbnailView: UIView {
     private func createImage(attachment: Attachment) {
         switch attachment.kind {
         case .audio:
-            self.title.text = "audio"
+            self.title.text = attachment.durationString
             self.icon.contentMode = .center
             self.icon.image = Asset.Assets.audio.image.fill(color: InterfaceTheme.Color.descriptive).fill(color: InterfaceTheme.Color.interactive)
-        case .video:
-            self.title.text = "video"
-            self.icon.contentMode = .center
-            self.icon.image = Asset.Assets.video.image.fill(color: InterfaceTheme.Color.descriptive).fill(color: InterfaceTheme.Color.interactive)
         case .location:
             self.title.text = "location"
             self.icon.contentMode = .center

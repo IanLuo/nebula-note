@@ -554,6 +554,8 @@ public enum L10n {
   public enum Membership {
     /// Dear user, if you feel enjoy using Icetea note, please consider join our membership, to use more advanced functions, and help to let Icetea note becomes more strong, more powerful, and more useful for you.
     public static let letter = L10n.tr("Localizable", "membership.letter")
+    /// More help
+    public static let moreHelp = L10n.tr("Localizable", "membership.moreHelp")
     /// Ordered
     public static let ordered = L10n.tr("Localizable", "membership.ordered")
     /// Restore purchase

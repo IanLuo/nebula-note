@@ -129,7 +129,7 @@ public class CaptureListViewController: UIViewController {
         self.tableView.sideAnchor(for: [.left, .bottom, .right], to: self.view, edgeInset: 0, considerSafeArea: true)
         
         if self.viewModel.context.coordinator?.isModal ?? false {
-            self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: Asset.Assets.cross.image, style: .plain, target: self, action: #selector(cancel))
+            self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: Asset.Assets.cross.image, style: .plain, target: self, action: #selector(cancel))
         }
         
         let rightItem = UIBarButtonItem(title: L10n.General.help, style: .plain, target: nil, action: nil)

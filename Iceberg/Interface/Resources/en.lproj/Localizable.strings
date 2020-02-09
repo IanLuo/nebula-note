@@ -315,6 +315,7 @@
 "membership.function.unlimitedLevelOfSubDocuments" = "Unlimited level of sub documents";
 "membership.function.removeExportWaterprint" = "Remove export waterprint";
 "membership.function.andMoreToCome" = "And more to come";
+"membership.moreHelp" = "More help";
 
 // user guide
 "guide.document.edit.headingEntry" = "Tap on heading button to create an heading entry";

@@ -7,6 +7,9 @@
 //
 
 import Foundation
+import AVFoundation
+import RxSwift
+import Interface
 
 /*
  1. 文本
@@ -94,6 +97,69 @@ public struct Attachment: Codable {
         try encoder.encode(date, forKey: .date)
         try encoder.encode(description, forKey: .description)
         try encoder.encode(key, forKey: .key)
+    }
+    
+    public var duration: Double? {
+        switch self.kind {
+        case .audio, .video:
+            let asset = AVURLAsset(url: self.url, options: nil)
+            return asset.duration.seconds
+        default: return nil
+        }
+    }
+    
+    public var durationString: String {
+        return convertDuration(self.duration ?? 0)
+    }
+    
+    private func convertDuration(_ duration: Double) -> String {
+        switch duration {
+        case ..<3600:
+            let m = Int(duration / 60)
+            let s = Int(duration.truncatingRemainder(dividingBy: 60))
+            return "\(m):\(s)"
+        case 3600...:
+            let h = Int(duration / 3600)
+            let m = Int((duration.truncatingRemainder(dividingBy: 3600) / 60))
+            let s = Int(duration.truncatingRemainder(dividingBy: 60))
+            return "\(h):\(m):\(s)"
+        default:
+            return "??:??"
+        }
+    }
+    
+    public var thumbnail: Observable<UIImage?> {
+        return Observable.create { (observer) -> Disposable in
+            
+            switch self.kind {
+            case .video:
+                let asset = AVAsset(url: self.url)
+                let assetImgGenerate = AVAssetImageGenerator(asset: asset)
+                assetImgGenerate.appliesPreferredTrackTransform = true
+                let time = CMTimeMakeWithSeconds(Float64(1), preferredTimescale: 100)
+                do {
+                    let img = try assetImgGenerate.copyCGImage(at: time, actualTime: nil)
+                    let thumbnail = UIImage(cgImage: img).resize(upto: CGSize(width: UIScreen.main.bounds.width * 0.7, height: UIScreen.main.bounds.width * 0.7))
+                    let topImage = Asset.Assets.video.image.fill(color: InterfaceTheme.Color.descriptive).fill(color: InterfaceTheme.Color.interactive)
+                    observer.onNext(thumbnail.addSubImage(topImage))
+                } catch {
+                    observer.onNext(Asset.Assets.video.image.fill(color: InterfaceTheme.Color.descriptive).fill(color: InterfaceTheme.Color.interactive))
+                }
+            case .image, .sketch:
+                let image = UIImage(contentsOfFile: self.url.path)?.resize(upto: CGSize(width: UIScreen.main.bounds.width * 0.7, height: UIScreen.main.bounds.width * 0.7))
+                observer.onNext(image)
+            case .location:
+                let image = Asset.Assets.location.image.fill(color: InterfaceTheme.Color.descriptive).fill(color: InterfaceTheme.Color.interactive)
+                observer.onNext(image)
+            case .audio:
+                let image = Asset.Assets.audio.image.fill(color: InterfaceTheme.Color.descriptive).fill(color: InterfaceTheme.Color.interactive)
+                observer.onNext(image)
+            default: observer.onNext(nil)
+            }
+            observer.onCompleted()
+            
+            return Disposables.create()
+        }
     }
 }
 

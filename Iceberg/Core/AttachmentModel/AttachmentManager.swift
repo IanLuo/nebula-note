@@ -119,8 +119,9 @@ public enum AttachmentError: Error {
         }, failure: failure)
     }
     
-    public func delete(keys: [String], completion: @escaping () -> Void, failure: @escaping (Error) -> Void) {
+    public func delete(keys: [String], completion: @escaping ([String]) -> Void, failure: @escaping (Error) -> Void) {
         var performDeleteAttachmentAction: (([String]) -> Void)!
+        var deletedKeys: [String] = []
         
         performDeleteAttachmentAction = { keys in
             var keys = keys
@@ -128,20 +129,21 @@ public enum AttachmentError: Error {
                 keys.remove(at: 0)
                 
                 self.delete(key: first, completion: {
+                    deletedKeys.append(first)
                     performDeleteAttachmentAction(keys)
                 }) { error in
                     log.error(error)
                     performDeleteAttachmentAction(keys)
                 }
             } else {
-                completion()
+                completion(deletedKeys)
             }
         }
         
         if keys.count > 0 {
             performDeleteAttachmentAction(keys)
         } else {
-            completion()
+            completion(deletedKeys)
         }
     }
     
@@ -283,6 +285,12 @@ public enum AttachmentError: Error {
     
     public static func wrappterURL(key: String) -> URL {
         return URL.attachmentURL.appendingPathComponent(key).appendingPathExtension(AttachmentDocument.fileExtension)
+    }
+    
+    public var allAttachmentsKeys: [String] {
+        self.allAttachments.map {
+            $0.deletingPathExtension().lastPathComponent
+        }
     }
 }
 
