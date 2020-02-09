@@ -191,6 +191,8 @@ extension Token {
             return "<br><input type=\"checkbox\" \(checkStatusString)>"
         } else if let quoteBlock = self as? BlockBeginToken, quoteBlock.blockType == .quote {
             return "<br><div class=\"wrapper\"><blockquote class=\"quote\"><p>\(string.nsstring.substring(with: quoteBlock.contentRange!))</p></blockquote></div>"
+        } else if let quoteBlock = self as? BlockBeginToken, quoteBlock.blockType == .sourceCode {
+            return "<br><div class=\"wrapper\"><blockquote class=\"quote\"><p>\(string.nsstring.substring(with: quoteBlock.contentRange!))</p></blockquote></div>"
         } else if let attachmentToken = self as? AttachmentToken {
             guard let typeRange = attachmentToken.range(for: OutlineParser.Key.Element.Attachment.type) else { return ""}
             guard let valueRange = attachmentToken.range(for: OutlineParser.Key.Element.Attachment.value) else { return ""}

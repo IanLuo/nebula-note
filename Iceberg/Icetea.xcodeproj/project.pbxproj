@@ -170,6 +170,7 @@
 		E47FA90222702717005AD0BA /* OrgExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E47FA90122702717005AD0BA /* OrgExporter.swift */; };
 		E4821DB122374C420063C0B2 /* WeakArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4821DB022374C420063C0B2 /* WeakArray.swift */; };
 		E48329A0224A2ED1008B60ED /* SyncTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E483299F224A2ED1008B60ED /* SyncTests.swift */; };
+		E495EB1623F0121B005CCEEA /* MarkdownExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E495EB1523F0121B005CCEEA /* MarkdownExporter.swift */; };
 		E498AAFF21BBE9B900D2A8EA /* CaptureListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E498AAFE21BBE9B800D2A8EA /* CaptureListViewController.swift */; };
 		E498AB0121BBEBB300D2A8EA /* CaptureListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E498AB0021BBEBB300D2A8EA /* CaptureListViewModel.swift */; };
 		E49F3E4421B8EDBD003F468D /* AgendaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49F3E4321B8EDBD003F468D /* AgendaViewController.swift */; };
@@ -543,6 +544,7 @@
 		E47FA90122702717005AD0BA /* OrgExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrgExporter.swift; sourceTree = "<group>"; };
 		E4821DB022374C420063C0B2 /* WeakArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeakArray.swift; sourceTree = "<group>"; };
 		E483299F224A2ED1008B60ED /* SyncTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncTests.swift; sourceTree = "<group>"; };
+		E495EB1523F0121B005CCEEA /* MarkdownExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownExporter.swift; sourceTree = "<group>"; };
 		E498AAFE21BBE9B800D2A8EA /* CaptureListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureListViewController.swift; sourceTree = "<group>"; };
 		E498AB0021BBEBB300D2A8EA /* CaptureListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureListViewModel.swift; sourceTree = "<group>"; };
 		E49F3E4321B8EDBD003F468D /* AgendaViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgendaViewController.swift; sourceTree = "<group>"; };
@@ -1299,6 +1301,7 @@
 				E41EC82F22C4BFE3009ACFA4 /* TxtExporter.swift */,
 				E42A7F8622DC679A0038A4DD /* PDFExporter.swift */,
 				E4C7138023ADCD0A00DC38BE /* JPGExporter.swift */,
+				E495EB1523F0121B005CCEEA /* MarkdownExporter.swift */,
 			);
 			path = Export;
 			sourceTree = "<group>";
@@ -2037,6 +2040,7 @@
 				E47FA900227026DB005AD0BA /* HTMLExporter.swift in Sources */,
 				E466D18D221E3E65007F140B /* RenderAttachment.swift in Sources */,
 				E40F6E94223B7A1000FFF53F /* Range.swift in Sources */,
+				E495EB1623F0121B005CCEEA /* MarkdownExporter.swift in Sources */,
 				E41CB1D621D8921B00EF0A3C /* SettingsAccessor.swift in Sources */,
 				E41CB1C721D88DFD00EF0A3C /* AttachmentManager.swift in Sources */,
 				E4F9ECDF21FBF61B009A08CD /* RecentFilesManager.swift in Sources */,
