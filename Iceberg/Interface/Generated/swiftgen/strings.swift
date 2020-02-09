@@ -649,6 +649,10 @@ public enum L10n {
       /// Choose landing tab
       public static let title = L10n.tr("Localizable", "setting.landingTab.title")
     }
+    public enum ManageAttachment {
+      /// Manage attachments
+      public static let title = L10n.tr("Localizable", "setting.manageAttachment.title")
+    }
     public enum Planning {
       /// Customized status
       public static let title = L10n.tr("Localizable", "setting.planning.title")

@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="154-Ln-0Qk">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="154-Ln-0Qk">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15508"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
         <!--Root View Controller-->
         <scene sceneID="tmE-Oo-8fN">
             <objects>
-                <tableViewController id="154-Ln-0Qk" customClass="SettingsViewController" customModule="Iceberg" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="oSf-i7-f1z">
+                <tableViewController id="154-Ln-0Qk" customClass="SettingsViewController" customModule="Icetea" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="oSf-i7-f1z">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
@@ -171,12 +171,34 @@
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" rowHeight="66" id="MNU-ev-ZG3" userLabel="attachment">
+                                        <rect key="frame" x="0.0" y="460" width="414" height="66"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="MNU-ev-ZG3" id="SFI-11-b1N">
+                                            <rect key="frame" x="0.0" y="0.0" width="383" height="66"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="W4R-zj-xyU">
+                                                    <rect key="frame" x="20" y="22.5" width="42" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <constraints>
+                                                <constraint firstItem="W4R-zj-xyU" firstAttribute="centerY" secondItem="SFI-11-b1N" secondAttribute="centerY" id="OAI-gi-XSN"/>
+                                                <constraint firstItem="W4R-zj-xyU" firstAttribute="leading" secondItem="SFI-11-b1N" secondAttribute="leadingMargin" id="bFI-c3-bJp"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </tableViewCell>
                                 </cells>
                             </tableViewSection>
                             <tableViewSection headerTitle="Editor" id="SUc-wx-WNb">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="66" id="7MJ-Ks-LaK" userLabel="icloud">
-                                        <rect key="frame" x="0.0" y="516" width="414" height="66"/>
+                                        <rect key="frame" x="0.0" y="582" width="414" height="66"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="7MJ-Ks-LaK" id="VNY-Vv-3xj">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="66"/>
@@ -189,7 +211,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="l13-3P-OHb">
-                                                    <rect key="frame" x="345" y="18" width="51" height="31"/>
+                                                    <rect key="frame" x="345" y="17.5" width="51" height="31"/>
                                                     <connections>
                                                         <action selector="editorUnfoldWhenOpen:" destination="154-Ln-0Qk" eventType="valueChanged" id="mIv-Kg-nsh"/>
                                                     </connections>
@@ -211,7 +233,7 @@
                             <tableViewSection headerTitle="Export" id="Uid-TP-Q5K">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="66" id="0cN-dq-w2j" userLabel="icloud">
-                                        <rect key="frame" x="0.0" y="638" width="414" height="66"/>
+                                        <rect key="frame" x="0.0" y="704" width="414" height="66"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="0cN-dq-w2j" id="09n-FW-led">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="66"/>
@@ -252,6 +274,7 @@
                     </tableView>
                     <navigationItem key="navigationItem" title="Root View Controller" id="L8t-J5-i8u"/>
                     <connections>
+                        <outlet property="attachmentManagerLabel" destination="W4R-zj-xyU" id="cU7-de-HN9"/>
                         <outlet property="chooseLandingTabButton" destination="dnp-Uh-dnX" id="PRC-gg-q7c"/>
                         <outlet property="editorUnfoldLabel" destination="OsI-x5-0UW" id="2RW-4C-8Gi"/>
                         <outlet property="editorUnfoldSwitch" destination="l13-3P-OHb" id="YBM-ft-n6T"/>

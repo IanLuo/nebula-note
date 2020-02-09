@@ -21,6 +21,9 @@ public class SettingsViewController: UITableViewController {
     @IBOutlet var isSyncEnabledLabel: UILabel!
     @IBOutlet var storeLocationButton: UIButton!
     
+    @IBOutlet weak var attachmentManagerLabel: UILabel!
+    
+    
     @IBOutlet var interfaceStyleLabel: UILabel!
     @IBOutlet var interfaceStyleButton: UIButton!
     
@@ -78,6 +81,8 @@ public class SettingsViewController: UITableViewController {
         
         self.exportShowIndexLabel.text = L10n.Setting.Export.showIndex
         self.exportShowIndexSwitch.isOn = self.viewModel.exportShowIndex
+        
+        self.attachmentManagerLabel.text = L10n.Setting.ManageAttachment.title
     }
     
     private func _setupUI() {
@@ -380,6 +385,16 @@ public class SettingsViewController: UITableViewController {
             case .search: return Asset.Assets.zoom.image.fill(color: InterfaceTheme.Color.interactive)
             case .browser: return Asset.Assets.document.image.fill(color: InterfaceTheme.Color.interactive)
             }
+        }
+    }
+    
+    public override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        
+        switch (indexPath.section, indexPath.row) {
+        case (2, 1):
+            self.viewModel.context.coordinator?.showAttachmentManager()
+        default: break
         }
     }
 }

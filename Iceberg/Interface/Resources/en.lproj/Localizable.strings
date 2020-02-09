@@ -164,6 +164,8 @@
 "setting.export.title" = "Export";
 "setting.export.showIndex" = "Show index";
 
+"setting.manageAttachment.title" = "Manage attachments";
+
 //search
 "search.title" = "Search";
 

@@ -164,6 +164,8 @@
 "setting.export.title" = "导出";
 "setting.export.showIndex" = "显示序号";
 
+"setting.manageAttachment.title" = "管理附件";
+
 //search
 "search.title" = "搜索";
 

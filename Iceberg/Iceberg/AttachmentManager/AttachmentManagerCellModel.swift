@@ -16,6 +16,8 @@ public class AttachmentManagerCellModel: IdentifiableType, Equatable {
     public var identity: String { return self.key }
     
     public typealias Identity = String
+    
+    private let disposeBag = DisposeBag()
         
     public static func == (lhs: AttachmentManagerCellModel, rhs: AttachmentManagerCellModel) -> Bool {
         return lhs.key == rhs.key
@@ -27,13 +29,21 @@ public class AttachmentManagerCellModel: IdentifiableType, Equatable {
 
     public init(key: String) {
         self.key = key
+        
+        self.attachment
+            .skipWhile { $0 == nil }
+            .flatMap { $0!.thumbnail }
+            .bind(to: self.image)
+            .disposed(by: self.disposeBag)
     }
     
     public func loadFromFile(attachmentManager: AttachmentManager) {
-        attachmentManager.attachment(with: self.key, completion: { [weak self] in
-            self?.attachment.accept($0)
-            }, failure: { error in
-                log.error(error)
-        })
+        if self.attachment.value == nil {
+            attachmentManager.attachment(with: self.key, completion: { [weak self] in
+                self?.attachment.accept($0)
+                }, failure: { error in
+                    log.error(error)
+            })
+        }
     }
 }

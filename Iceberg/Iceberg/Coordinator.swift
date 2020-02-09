@@ -243,6 +243,11 @@ extension Coordinator {
         let membershipCoordinator = MembershipCoordinator(stack: nav, dependency: self.dependency)
         membershipCoordinator.start(from: self)
     }
+    
+    public func showAttachmentManager() {
+        let attachmentManagerCoordinator = AttachmentManagerCoordinator(stack: self.stack, dependency: self.dependency)
+        attachmentManagerCoordinator.start(from: self)
+    }
 }
 
 extension Coordinator {
