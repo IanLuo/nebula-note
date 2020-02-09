@@ -190,7 +190,7 @@
 
 // agenda
 "agenda.title" = "日程表";
-"agenda.startToday" = "开始日期";
+"agenda.startToday" = "今天日期";
 "agenda.startInDaysWithPlaceHolder" = "%@ 天后开始";
 "agenda.startTomorrowWithPlaceHolder" = "明天开始";
 "agenda.startDaysAgoWithPlaceHodler" = "%@ 天前已开始";
@@ -294,12 +294,12 @@
 "trash.title" = "垃圾桶";
 "trash.removeAll" = "全部删除";
 "trash.delete" = "删除";
-"trash.recover" = "方位原处";
+"trash.recover" = "放回原处";
 "trash.delete.warning" = "清除的文件将不能再恢复！";
 
 // membership
-"membership.title" = "加入高级会员";
-"membership.letter" = "尊敬的用户，如果觉得使用冰红茶笔记的时候觉得满意的话，不妨考虑加入我们的会员服务，使用所有高级会员功能。有你的支持，我们将可以持对我们的产品进行改进，为各位带来更多更强大的新功能。";
+"membership.title" = "加入高级会员计划";
+"membership.letter" = "尊敬的用户，如果冰红茶笔记让你满意，不妨考虑加入我们的会员服务，使用所有高级会员功能。在你的支持下，我们将能够持对产品进行改进，带来更多更强大的新功能。";
 "membership.monthly.title" = "按月订阅会员";
 "membership.monthly.description" = "(赠送一星期) 无限制使用所有高级功能";
 "membership.yearly.title" = "按年订阅会员";
@@ -315,6 +315,7 @@
 "membership.function.unlimitedLevelOfSubDocuments" = "不限制子文件夹的层数";
 "membership.function.removeExportWaterprint" = "移除导出图片中的水印";
 "membership.function.andMoreToCome" = "更多功能持续开发中";
+"membership.moreHelp" = "更多帮助";
 
 // user guide
 "guide.document.edit.headingEntry" = "点击标题按钮，创建一个标题";

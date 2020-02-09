@@ -71,6 +71,24 @@ public class MembershipViewController: UIViewController {
         return button
     }()
     
+    lazy var moreHelpButton: UIButton = {
+        let button = UIButton()
+        
+        button.interface { (me, theme) in
+            let button = me as! UIButton
+            button.setTitleColor(theme.color.spotlight, for: .normal)
+            button.titleLabel?.font = theme.font.title
+        }
+        
+        button.setTitle(L10n.Membership.moreHelp, for: .normal)
+        
+        button.rx.tap.subscribe(onNext: {
+            HelpPage.membership.open()
+        }).disposed(by: self.disposeBag)
+        
+        return button
+    }()
+    
     public override func viewDidLoad() {
         self.setupUI()
         self.bind()
@@ -88,6 +106,7 @@ public class MembershipViewController: UIViewController {
         self.contentView.addSubview(self.yearlyProductView)
         self.contentView.addSubview(self.restoreButton)
         self.contentView.addSubview(self.functionDescription)
+        self.contentView.addSubview(self.moreHelpButton)
         
         self.scrollView.allSidesAnchors(to: self.view, edgeInset: 0)
         self.contentView.allSidesAnchors(to: self.scrollView, edgeInset: 0)
@@ -111,7 +130,10 @@ public class MembershipViewController: UIViewController {
         self.restoreButton.sizeAnchor(height: 60)
         
         self.restoreButton.columnAnchor(view: self.functionDescription, space: 40, alignment: .centerX)
-        self.functionDescription.sideAnchor(for: [.left, .bottom], to: self.contentView, edgeInsets: .init(top: 0, left: Layout.innerViewEdgeInsets.left, bottom: -80, right: 0))
+        self.functionDescription.sideAnchor(for: .left, to: self.contentView, edgeInsets: .init(top: 0, left: Layout.innerViewEdgeInsets.left, bottom: 0, right: 0))
+        
+        self.functionDescription.columnAnchor(view: self.moreHelpButton, space: 40, alignment: .leading)
+        self.moreHelpButton.sideAnchor(for: [.left, .bottom], to: self.contentView, edgeInsets: .init(top: 0, left: Layout.innerViewEdgeInsets.left, bottom: -80, right: 0))
         
         self.interface { (me, theme) in
             me.view.backgroundColor = theme.color.background1
