@@ -141,8 +141,11 @@ private class RecentFileCell: UICollectionViewCell {
     
     let titleLabel: UILabel = {
         let label = UILabel()
+        label.shadowOffset = CGSize(width: 1, height: 1)
+        
         label.interface({ (me, theme) in
             let label = me as! UILabel
+            label.shadowColor = theme.color.background1.withAlphaComponent(0.6)
             label.textColor = theme.color.interactive
             label.font = theme.font.footnote
         })
