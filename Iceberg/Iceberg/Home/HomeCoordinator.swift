@@ -92,19 +92,19 @@ public class HomeCoordinator: Coordinator {
     }
     
     public func showSettings() {
-        let navigationController = Coordinator.createDefaultNavigationControlller()
+        let navigationController = Coordinator.createDefaultNavigationControlller(transparentBar: false)
         let settingsCoordinator = SettingsCoordinator(stack: navigationController, dependency: self.dependency)
         settingsCoordinator.start(from: self)
     }
     
     public func showTrash() {
-        let navigationController = Coordinator.createDefaultNavigationControlller()
+        let navigationController = Coordinator.createDefaultNavigationControlller(transparentBar: false)
         let trashCoordinator = TrashCoordinator(stack: navigationController, dependency: self.dependency)
         trashCoordinator.start(from: self)
     }
     
     public func showMembershipView() {
-        let navigationController = Coordinator.createDefaultNavigationControlller()
+        let navigationController = Coordinator.createDefaultNavigationControlller(transparentBar: false)
         let membershipCoordinator = MembershipCoordinator(stack: navigationController, dependency: self.dependency)
         membershipCoordinator.start(from: self)
     }

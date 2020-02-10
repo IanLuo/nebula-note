@@ -49,7 +49,14 @@ public class AttachmentDocument: UIDocument {
             if let jsonData = wrapper.fileWrappers?[AttachmentDocument.jsonFile]?.regularFileContents {
                 let decoder = JSONDecoder()
                 decoder.dateDecodingStrategy = .secondsSince1970
+                
+                let keyOnPath = self.fileURL.deletingPathExtension().lastPathComponent
+                
                 self.attachment = try decoder.decode(Attachment.self, from: jsonData)
+                
+                if self.attachment?.key != keyOnPath {
+                    self.attachment?.key = keyOnPath
+                }
             }
         }
     }

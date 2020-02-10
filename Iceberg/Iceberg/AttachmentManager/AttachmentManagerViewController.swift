@@ -23,6 +23,9 @@ public class AttachmentManagerViewController: UIViewController, UICollectionView
     public convenience init(viewModel: AttachmentManagerViewModel) {
         self.init()
         self.viewModel = viewModel
+        if #available(iOS 13.0, *) {
+            self.isModalInPresentation = true
+        }
     }
     
     private lazy var collectionView: UICollectionView = {
@@ -45,6 +48,11 @@ public class AttachmentManagerViewController: UIViewController, UICollectionView
         self.view.addSubview(self.collectionView)
         
         self.collectionView.allSidesAnchors(to: self.view, edgeInset: 0)
+        
+        self.interface { [weak self] (me, theme) in
+            me.view.backgroundColor = theme.color.background1
+            self?.collectionView.backgroundColor = theme.color.background1
+        }
     }
     
     private func bind() {
@@ -52,6 +60,8 @@ public class AttachmentManagerViewController: UIViewController, UICollectionView
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AttachmentManagerCell.reuseIdentifier, for: indexPath) as! AttachmentManagerCell
             
             cell.configure(cellModel: cellModel)
+            
+            cell.shouldShowSelection = self.isSelectMode.value
             
             return cell
         })
@@ -65,9 +75,9 @@ public class AttachmentManagerViewController: UIViewController, UICollectionView
         
         self.isSelectMode.subscribe(onNext: { [weak self] isSelectMode in
             self?.updateRightBarButtonItems(isSelectMode: isSelectMode)
-//            self?.collectionView.allowsSelection = isSelectMode
             self?.collectionView.allowsMultipleSelection = isSelectMode
             self?.clearSelection()
+            self?.collectionView.reloadData()
         }).disposed(by: self.disposeBag)
     }
     
@@ -106,7 +116,15 @@ public class AttachmentManagerViewController: UIViewController, UICollectionView
             $0.row
         } ?? []
         
-        self.viewModel.delete(indexs: indexs)
+        let confirmController = ConfirmViewController(contentText: L10n.Setting.ManageAttachment.Delete.title, onConfirm: { [weak self] viewController in
+            viewController.dismiss(animated: true) {
+                self?.viewModel.delete(indexs: indexs)
+            }
+        }) { viewController in
+            viewController.dismiss(animated: true)
+        }
+        
+        self.present(confirmController, animated: true)
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {

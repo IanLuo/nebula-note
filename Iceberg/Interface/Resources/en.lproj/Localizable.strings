@@ -12,6 +12,7 @@
 "general.button.title.delete" = "Delete";
 "general.button.title.close" = "Close";
 "general.loading.title" = "Loading...";
+"general.button.ok" = "OK";
 "general.help" = "Help";
 
 "selector.empty" = "No item";
@@ -165,6 +166,7 @@
 "setting.export.showIndex" = "Show index";
 
 "setting.manageAttachment.title" = "Manage attachments";
+"setting.manageAttachment.delete.title" = "Delete selected attachments?";
 
 //search
 "search.title" = "Search";
@@ -300,7 +302,7 @@
 "trash.delete.warning" = "File will be deleted and won't be able to recover";
 
 // membership
-"membership.title" = "Join membership";
+"membership.title" = "Membership plan";
 "membership.letter" = "Dear user, if you feel enjoy using Icetea note, please consider join our membership, to use more advanced functions, and help to let Icetea note becomes more strong, more powerful, and more useful for you.";
 "membership.monthly.title" = "Order membership monthly";
 "membership.monthly.description" = "(1 bonus week) unlimited function access";

@@ -24,15 +24,22 @@ public class AttachmentManagerCell: UICollectionViewCell {
     
     let checkmarkImageView: UIImageView = {
         let imageView = UIImageView()
-        let image = Asset.Assets.checkMark.image.fill(color: InterfaceTheme.Color.spotlight)
-        imageView.image = image
+        imageView.contentMode = .center
         return imageView
     }()
+    
+    public var shouldShowSelection: Bool {
+        set { self.checkmarkImageView.isHidden = !newValue }
+        get { return !self.checkmarkImageView.isHidden }
+    }
     
     public let imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .center
         imageView.clipsToBounds = true
+        imageView.layer.borderColor = InterfaceTheme.Color.background2.cgColor
+        imageView.layer.borderWidth = 1
+        imageView.backgroundColor = InterfaceTheme.Color.background1
         return imageView
     }()
     
@@ -53,13 +60,15 @@ public class AttachmentManagerCell: UICollectionViewCell {
         
         self.imageView.allSidesAnchors(to: self.contentView, edgeInset: 0)
         
+        self.contentView.addSubview(self.titleLabel)
+        self.titleLabel.sideAnchor(for: [.left, .right, .bottom], to: self.contentView, edgeInset: 0)
+        
         self.contentView.addSubview(self.checkmarkImageView)
         self.checkmarkImageView.sideAnchor(for: [.left, .bottom], to: self.contentView, edgeInset: 12)
         self.checkmarkImageView.sizeAnchor(width: 30, height: 30)
+        self.checkmarkImageView.layer.cornerRadius = 15
+        self.checkmarkImageView.backgroundColor = UIColor.white
         self.checkmarkImageView.isHidden = true
-        
-        self.contentView.addSubview(self.titleLabel)
-        self.titleLabel.sideAnchor(for: [.left, .right, .bottom], to: self.contentView, edgeInset: 0)
     }
     
     required init?(coder: NSCoder) {
@@ -67,10 +76,9 @@ public class AttachmentManagerCell: UICollectionViewCell {
     }
     
     public override var isSelected: Bool {
-        get { return super.isSelected }
-        set {
-            super.isSelected = newValue
-            self.checkmarkImageView.isHidden = !newValue
+        didSet {
+            self.checkmarkImageView.image = isSelected ? Asset.Assets.checkMark.image.fill(color: InterfaceTheme.Color.spotlitTitle) : nil
+            self.checkmarkImageView.backgroundColor = isSelected ? InterfaceTheme.Color.spotlight : InterfaceTheme.Color.background1
         }
     }
     
@@ -99,6 +107,6 @@ public class AttachmentManagerCell: UICollectionViewCell {
     
     public override func prepareForReuse() {
         self.reuseDisposeBag = DisposeBag()
-        self.checkmarkImageView.isHidden = true
+        self.checkmarkImageView.image = nil
     }
 }

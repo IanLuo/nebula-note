@@ -57,7 +57,7 @@ public struct Attachment: Codable {
     }
     
     public var wrapperURL: URL {
-        return AttachmentManager.wrappterURL(key: self.key)
+        return AttachmentManager.wrappterURL(key: self.key.unescaped)
     }
     
     /// 附件创建的日期
@@ -114,14 +114,14 @@ public struct Attachment: Codable {
     
     public var size: UInt64 {
         do {
-            let fileAttributes = try FileManager.default.attributesOfItem(atPath: self.url.path)
+            let fileAttributes = try FileManager.default.attributesOfItem(atPath: self.wrapperURL.path)
             if let fileSize = fileAttributes[FileAttributeKey.size]  {
                 return (fileSize as! NSNumber).uint64Value
             } else {
-                print("Failed to get a size attribute from path: \(self.url.path)")
+                print("Failed to get a size attribute from path: \(self.wrapperURL.path)")
             }
         } catch {
-            print("Failed to get file attributes for local path: \(self.url.path) with error: \(error)")
+            print("Failed to get file attributes for local path: \(self.wrapperURL.path) with error: \(error)")
         }
         return 0
     }
@@ -179,7 +179,12 @@ public struct Attachment: Codable {
             case .audio:
                 let image = Asset.Assets.audio.image.fill(color: InterfaceTheme.Color.descriptive).fill(color: InterfaceTheme.Color.interactive)
                 observer.onNext(image)
-            default: observer.onNext(nil)
+            case .link:
+                let image = Asset.Assets.link.image.fill(color: InterfaceTheme.Color.descriptive).fill(color: InterfaceTheme.Color.interactive)
+                observer.onNext(image)
+            case .text:
+                let image = Asset.Assets.text.image.fill(color: InterfaceTheme.Color.descriptive).fill(color: InterfaceTheme.Color.interactive)
+                observer.onNext(image)
             }
             observer.onCompleted()
             

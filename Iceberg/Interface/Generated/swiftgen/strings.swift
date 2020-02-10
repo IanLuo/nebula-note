@@ -507,6 +507,8 @@ public enum L10n {
     /// Help
     public static let help = L10n.tr("Localizable", "general.help")
     public enum Button {
+      /// OK
+      public static let ok = L10n.tr("Localizable", "general.button.ok")
       public enum Title {
         /// Cancel
         public static let cancel = L10n.tr("Localizable", "general.button.title.cancel")
@@ -560,7 +562,7 @@ public enum L10n {
     public static let ordered = L10n.tr("Localizable", "membership.ordered")
     /// Restore purchase
     public static let restore = L10n.tr("Localizable", "membership.restore")
-    /// Join membership
+    /// Membership plan
     public static let title = L10n.tr("Localizable", "membership.title")
     public enum Function {
       /// Advanced attachments, including Location, Audio and Video
@@ -652,6 +654,10 @@ public enum L10n {
     public enum ManageAttachment {
       /// Manage attachments
       public static let title = L10n.tr("Localizable", "setting.manageAttachment.title")
+      public enum Delete {
+        /// Delete selected attachments?
+        public static let title = L10n.tr("Localizable", "setting.manageAttachment.delete.title")
+      }
     }
     public enum Planning {
       /// Customized status

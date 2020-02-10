@@ -111,6 +111,10 @@ public class DocumentInfoViewController: TransitionViewController {
         
         actionsViewController.title = L10n.General.help
         
+        actionsViewController.setCancel { viewController in
+            viewController.dismiss(animated: true)
+        }
+        
         actionsViewController.addAction(icon: nil, title: L10n.Document.Help.textEditor) { viewController in
             viewController.dismiss(animated: true) {
                 HelpPage.editor.open()

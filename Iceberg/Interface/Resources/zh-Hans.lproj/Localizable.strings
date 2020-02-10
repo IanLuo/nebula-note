@@ -12,6 +12,7 @@
 "general.button.title.delete" = "删除";
 "general.button.title.close" = "关闭";
 "general.loading.title" = "加载中...";
+"general.button.ok" = "确定";
 "general.help" = "帮助";
 
 "selector.empty" = "没有内容";
@@ -165,6 +166,7 @@
 "setting.export.showIndex" = "显示序号";
 
 "setting.manageAttachment.title" = "管理附件";
+"setting.manageAttachment.delete.title" = "确定删除选中的附件?";
 
 //search
 "search.title" = "搜索";
@@ -300,7 +302,7 @@
 "trash.delete.warning" = "清除的文件将不能再恢复！";
 
 // membership
-"membership.title" = "加入高级会员计划";
+"membership.title" = "会员计划";
 "membership.letter" = "尊敬的用户，如果冰红茶笔记让你满意，不妨考虑加入我们的会员服务，使用所有高级会员功能。在你的支持下，我们将能够持对产品进行改进，带来更多更强大的新功能。";
 "membership.monthly.title" = "按月订阅会员";
 "membership.monthly.description" = "(赠送一星期) 无限制使用所有高级功能";

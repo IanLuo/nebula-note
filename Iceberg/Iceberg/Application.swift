@@ -214,7 +214,7 @@ public class Application: Coordinator {
 }
 
 extension Coordinator {
-    public static func createDefaultNavigationControlller(root: UIViewController? = nil) -> UINavigationController {
+    public static func createDefaultNavigationControlller(root: UIViewController? = nil, transparentBar: Bool = true) -> UINavigationController {
         let navigationController = UINavigationController()
         
         if let root = root {
@@ -227,10 +227,13 @@ extension Coordinator {
             navigationController.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: theme.color.interactive]
             navigationController.navigationBar.backIndicatorImage = Asset.Assets.left.image.fill(color: theme.color.descriptive)
             navigationController.navigationBar.backIndicatorTransitionMaskImage = Asset.Assets.left.image
+            navigationController.navigationBar.barTintColor = theme.color.background1
         }
         
-        navigationController.navigationBar.shadowImage = UIImage()
-        navigationController.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        if transparentBar {
+            navigationController.navigationBar.shadowImage = UIImage()
+            navigationController.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        }
         
         return navigationController
     }

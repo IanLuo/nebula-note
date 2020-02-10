@@ -148,7 +148,7 @@ public enum AttachmentError: Error {
     }
     
     public static func attachmentFileURL(key: String) -> URL? {
-        let wrapperName = AttachmentManager.wrappterURL(key: key)
+        let wrapperName = AttachmentManager.wrappterURL(key: key.unescaped)
         let jsonFileURL = wrapperName.appendingPathComponent(AttachmentDocument.jsonFile)
         
         do {
@@ -167,10 +167,10 @@ public enum AttachmentError: Error {
     /// 已经添加的文档的附件，直接使用 key 来加载
     public func attachment(with key: String, completion: @escaping (Attachment) -> Void, failure: @escaping (Error) -> Void) {
         
-        let url = AttachmentManager.wrappterURL(key: key)
+        let url = AttachmentManager.wrappterURL(key: key.unescaped)
         var isDir = ObjCBool(true)
         
-        guard FileManager.default.fileExists(atPath: url.path, isDirectory: &isDir) == true else {
+        guard FileManager.default.fileExists(atPath: url.path.unescaped, isDirectory: &isDir) == true else {
             failure(AttachmentError.noSuchAttachment(key))
             return
         }

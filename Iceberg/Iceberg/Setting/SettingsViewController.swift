@@ -119,6 +119,8 @@ public class SettingsViewController: UITableViewController {
             
             self?.exportShowIndexLabel.textColor = theme.color.interactive
             self?.exportShowIndexSwitch.onTintColor = theme.color.spotlight
+            
+            self?.attachmentManagerLabel.textColor = theme.color.interactive
         }
     }
     
@@ -136,7 +138,7 @@ public class SettingsViewController: UITableViewController {
         default: return nil
         }
     }
-    
+        
     @objc private func _cancel() {
         self.viewModel.context.coordinator?.stop()
     }
@@ -392,6 +394,16 @@ public class SettingsViewController: UITableViewController {
         tableView.deselectRow(at: indexPath, animated: true)
         
         switch (indexPath.section, indexPath.row) {
+        case (0, 0):
+            self._showLandingTabNamesSelector()
+        case (0, 1):
+            self._interfaceStyleButtonTapped(self.interfaceStyleButton)
+        case (1, 0):
+            self._planningManageFinish()
+        case (1, 1):
+            self._planningManageUnfinish()
+        case (2, 0):
+            self._storeLocationButtonTapped(self.storeLocationButton)
         case (2, 1):
             self.viewModel.context.coordinator?.showAttachmentManager()
         default: break
