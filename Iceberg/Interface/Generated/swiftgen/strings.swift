@@ -609,6 +609,8 @@ public enum L10n {
   public enum Setting {
     /// Store location
     public static let storeLocation = L10n.tr("Localizable", "setting.storeLocation")
+    /// Syncing in progress
+    public static let syncingInProgress = L10n.tr("Localizable", "setting.syncingInProgress")
     /// Settings
     public static let title = L10n.tr("Localizable", "setting.title")
     public enum Alert {

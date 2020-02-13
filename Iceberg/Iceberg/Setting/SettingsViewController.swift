@@ -155,10 +155,20 @@ public class SettingsViewController: UITableViewController {
         let titles = [L10n.Setting.StoreLocation.iCloud, L10n.Setting.StoreLocation.onDevice]
         let selector = SelectorViewController()
         
-        titles.forEach {
-            selector.addItem(title: $0)
-        }
+        let isUsingiCloud = button.titleLabel?.text == L10n.Setting.StoreLocation.iCloud
+        let isSyncingInprogress = self.viewModel.dependency.syncManager.isThereAnyFileDownloading
+        let shouldDisableSelections = isUsingiCloud && isSyncingInprogress
         
+        titles.forEach {
+            var title = $0
+            
+            if title == L10n.Setting.StoreLocation.iCloud && shouldDisableSelections {
+                title = title + " (\(L10n.Setting.syncingInProgress))"
+            }
+            
+            selector.addItem(title: title, enabled: !shouldDisableSelections)
+        }
+
         selector.currentTitle = button.titleLabel?.text
         selector.onCancel = { $0.dismiss(animated: true) }
         selector.title = L10n.Setting.storeLocation

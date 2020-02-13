@@ -144,6 +144,7 @@
 "setting.alert.icloudIsNotEnabled.title" = "iCloud is not enabled";
 "setting.alert.icloudIsNotEnabled.msg" = "Please login your iCloud account";
 "setting.alert.failToStoreIniCloud" = "Fail to configure sync";
+"setting.syncingInProgress" = "Syncing in progress";
 
 "setting.interfaceStyle.title" = "Interface style";
 "setting.interfaceStyle.dark" = "Dark";

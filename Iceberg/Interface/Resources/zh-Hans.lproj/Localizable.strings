@@ -144,6 +144,7 @@
 "setting.alert.icloudIsNotEnabled.title" = "iCloud 已关闭";
 "setting.alert.icloudIsNotEnabled.msg" = "请登录 iCloud 账户，并打开 iCloud 共享";
 "setting.alert.failToStoreIniCloud" = "设置 iCloud 失败";
+"setting.syncingInProgress" = "同步中";
 
 "setting.interfaceStyle.title" = "界面风格";
 "setting.interfaceStyle.dark" = "深色";

@@ -49,6 +49,21 @@ public class iCloudDocumentManager: NSObject {
     public let onDownloadingUpdates: BehaviorSubject<[URL: Int]> = BehaviorSubject(value: [:])
     public let onDownloadingCompletes: PublishSubject<URL> = PublishSubject()
     
+    public var isThereAnyFileUploading: Bool {
+        return self.uploadingItemsCache.count > 0
+    }
+    
+    public var isThereAnyFileDownloading: Bool {
+        return self.downloadingItemsCache.count > 0
+    }
+    
+    public var isThereAnyFileSyncing: Bool {
+        return self.isThereAnyFileUploading || self.isThereAnyFileDownloading
+    }
+    
+    private var uploadingItemsCache: [URL: Any] = [:]
+    private var downloadingItemsCache: [URL: Any] = [:]
+    
     private let _eventObserver: EventObserver
     private lazy var _metadataQuery: NSMetadataQuery = {
         let query = NSMetadataQuery()
@@ -330,9 +345,13 @@ public class iCloudDocumentManager: NSObject {
 
                         try self._createIntermiaFoldersIfNeeded(url: destination)
                         
-                        try FileManager.default.setUbiquitous(false,
-                                                              itemAt: icloudDocumentRoot.appendingPathComponent(path),
-                                                              destinationURL: destination)
+//                        try FileManager.default.setUbiquitous(false,
+//                                                              itemAt: icloudDocumentRoot.appendingPathComponent(path),
+//                                                              destinationURL: destination)
+                        
+                        try FileManager.default.copyItem(at: icloudDocumentRoot.appendingPathComponent(path),
+                                                         to: destination)
+                        
                     }
                 }
                 
@@ -350,9 +369,11 @@ public class iCloudDocumentManager: NSObject {
                         
                         try self._createIntermiaFoldersIfNeeded(url: destination)
                         
-                        try FileManager.default.setUbiquitous(false,
-                                                              itemAt: icloudAttachmentRoot.appendingPathComponent(path),
-                                                              destinationURL: destination)
+//                        try FileManager.default.setUbiquitous(false,
+//                                                              itemAt: icloudAttachmentRoot.appendingPathComponent(path),
+//                                                              destinationURL: destination)
+                        try FileManager.default.copyItem(at: icloudAttachmentRoot.appendingPathComponent(path),
+                                                         to: destination)
                     }
                 }
                 
@@ -373,13 +394,19 @@ public class iCloudDocumentManager: NSObject {
                                                                   itemAt: mergedFileURL,
                                                                   destinationURL: destination)
                         } else {
-                            try FileManager.default.setUbiquitous(false,
-                                                                  itemAt: icloudKeyValueStoreRoot.appendingPathComponent(path),
-                                                                  destinationURL: destination)
+//                            try FileManager.default.setUbiquitous(false,
+//                                                                  itemAt: icloudKeyValueStoreRoot.appendingPathComponent(path),
+//                                                                  destinationURL: destination)
+                            
+                            try FileManager.default.copyItem(at: icloudKeyValueStoreRoot.appendingPathComponent(path), to: destination)
                         }
                         
                     }
                 }
+                
+                try FileManager.default.removeItem(at: icloudDocumentRoot)
+                try FileManager.default.removeItem(at: icloudAttachmentRoot)
+                try FileManager.default.removeItem(at: icloudKeyValueStoreRoot)
                 
                 completion(nil)
             } catch {
@@ -407,6 +434,13 @@ public class iCloudDocumentManager: NSObject {
         
         while let url = enumerator?.nextObject() as? URL {
             log.info("found url: \(url)")
+            
+            let name = url.lastPathComponent
+            
+            if name.hasPrefix(".") && !name.hasPrefix(SyncCoordinator.Prefix.deleted.rawValue) {
+                continue
+            }
+            
             // if the url is a symbolic link, resove it
             let url = url.resolvingSymlinksInPath()
             // get the file resource properties, including 'isPackageKey' and 'isDirectoryKey'
@@ -460,6 +494,16 @@ extension iCloudDocumentManager: NSMetadataQueryDelegate {
                     let uploadPercent = item.uploadPercentage,
                     let uploadSize = item.uploadingSize {
                     log.info("uploading \(url) (\(uploadPercent)%) (\(uploadSize))")
+                    
+                    // add to uploading cache
+                    if self.uploadingItemsCache[url] == nil {
+                        self.uploadingItemsCache[url] = url
+                    }
+                }
+                
+                if item.isUploaded == true && self.uploadingItemsCache[url] != nil {
+                    self.uploadingItemsCache[url] = nil
+                    log.info("uploading complete: \(url)")
                 }
                 
                 if let downloadingError = item.downloadingError {
@@ -478,7 +522,7 @@ extension iCloudDocumentManager: NSMetadataQueryDelegate {
         }
         
         if let removedItems = notification.userInfo?["kMDQueryUpdateRemovedItems"] as? [NSMetadataItem], removedItems.count > 0 {
-            log.info("found  \(removedItems.count) removed items")
+            log.info("found \(removedItems.count) removed items (\(removedItems.map { $0.url }))")
             
             for item in removedItems {
                 if let url = item.url {
@@ -501,11 +545,20 @@ extension iCloudDocumentManager: NSMetadataQueryDelegate {
     
     @objc private func _metadataQueryDidFinish(_ notification: Notification) {
         log.info("_metadataQueryDidFinish")
+
         for item in ((notification.object as? NSMetadataQuery)?.results) ?? [] {
-            
+        
             if let item = item as? NSMetadataItem {
                 self._tryToDownload(item: item)
+                
+                // check if there's any file need to add to cache
+                // 1. add to uploading cache
+                // 2. downloading cache is handled above '_tryToDownload(item:)'
+                if let url = item.url, item.isUploading == true {
+                    self.uploadingItemsCache[url] = url
+                }
             }
+            
         }
     }
     
@@ -526,6 +579,9 @@ extension iCloudDocumentManager: NSMetadataQueryDelegate {
         }
         
         let handleDocumentDownloadCompletion: () -> Void = {
+            
+            self.downloadingItemsCache[url] = nil
+            
             log.info("** complete downloading: \(item.fileName ?? "") size:(\(item.fileSize ?? 0)) **")
             if url.pathExtension == Document.fileExtension {
                 self._eventObserver.emit(NewDocumentPackageDownloadedEvent(url: url))
@@ -544,6 +600,10 @@ extension iCloudDocumentManager: NSMetadataQueryDelegate {
             }
         }
         
+        if item.isDownloaded == true && self.downloadingItemsCache[url] != nil {
+            handleDocumentDownloadCompletion()
+        }
+        
         if let isDownloading = item.isDownloading, isDownloading == true,
             let downloadPercent = item.downloadPercentage,
             let downloadSize = item.downloadingSize {
@@ -560,13 +620,17 @@ extension iCloudDocumentManager: NSMetadataQueryDelegate {
             }
             
             self.onDownloadingUpdates.onNext(downloadingItems)
+            
+            if self.downloadingItemsCache[url] == nil {
+                self.downloadingItemsCache[url] = url
+            }
         }
         
-        if let isDownloaded = item.isDownloaded, isDownloaded == true,
-            let isDownloading = item.isDownloading, isDownloading == true{
-            handleDocumentDownloadCompletion()
-        }
-        
+//        if let isDownloaded = item.isDownloaded, isDownloaded == true,
+//            let isDownloading = item.isDownloading, isDownloading == true{
+//            handleDocumentDownloadCompletion()
+//        }
+                
     }
 }
 

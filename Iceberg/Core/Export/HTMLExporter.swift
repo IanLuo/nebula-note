@@ -226,6 +226,8 @@ extension Token {
                 return "<mark>\(content)</mark>"
             default: return string.nsstring.substring(with: self.range)
             }
+        } else if self is SeparatorToken {
+            return "<hr>"
         } else {
             return string.nsstring.substring(with: self.range)
         }
