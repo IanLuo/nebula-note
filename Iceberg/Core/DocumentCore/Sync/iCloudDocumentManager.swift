@@ -345,10 +345,6 @@ public class iCloudDocumentManager: NSObject {
 
                         try self._createIntermiaFoldersIfNeeded(url: destination)
                         
-//                        try FileManager.default.setUbiquitous(false,
-//                                                              itemAt: icloudDocumentRoot.appendingPathComponent(path),
-//                                                              destinationURL: destination)
-                        
                         try FileManager.default.copyItem(at: icloudDocumentRoot.appendingPathComponent(path),
                                                          to: destination)
                         
@@ -369,9 +365,6 @@ public class iCloudDocumentManager: NSObject {
                         
                         try self._createIntermiaFoldersIfNeeded(url: destination)
                         
-//                        try FileManager.default.setUbiquitous(false,
-//                                                              itemAt: icloudAttachmentRoot.appendingPathComponent(path),
-//                                                              destinationURL: destination)
                         try FileManager.default.copyItem(at: icloudAttachmentRoot.appendingPathComponent(path),
                                                          to: destination)
                     }
@@ -394,9 +387,6 @@ public class iCloudDocumentManager: NSObject {
                                                                   itemAt: mergedFileURL,
                                                                   destinationURL: destination)
                         } else {
-//                            try FileManager.default.setUbiquitous(false,
-//                                                                  itemAt: icloudKeyValueStoreRoot.appendingPathComponent(path),
-//                                                                  destinationURL: destination)
                             
                             try FileManager.default.copyItem(at: icloudKeyValueStoreRoot.appendingPathComponent(path), to: destination)
                         }

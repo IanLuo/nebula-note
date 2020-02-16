@@ -19,6 +19,7 @@ public enum HelpPage: String {
     case dateAndTime = "https://forum.iceteanote.me/t/16"
     case agenda = "https://forum.iceteanote.me/t/17"
     case membership = "https://forum.iceteanote.me/t/19";
+    case syntax = "https://forum.iceteanote.me/t/18";
     
     public func open() {
         if let url = URL(string: self.rawValue), UIApplication.shared.canOpenURL(url) {

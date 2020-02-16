@@ -120,7 +120,7 @@ public struct Layout {
 
 public class InterfaceThemeSelector {
     private static let _instance: InterfaceThemeSelector =  {
-        return InterfaceThemeSelector(theme: LightInterfaceTheme())
+        return InterfaceThemeSelector(theme: DarkInterfaceTheme())
     }()
     
     private let _registerMap: NSMapTable<AnyObject, AnyObject> = NSMapTable.weakToStrongObjects()

@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 public class OutlineThemeSelector {
-    private static let _instance: OutlineThemeSelector = OutlineThemeSelector(theme: OutlineThemeStyle(theme: LightInterfaceTheme()))
+    private static let _instance: OutlineThemeSelector = OutlineThemeSelector(theme: OutlineThemeStyle(theme: DarkInterfaceTheme()))
     fileprivate var currentTheme: OutlineThemeConfigProtocol
     
     private init(theme: OutlineThemeConfigProtocol) {

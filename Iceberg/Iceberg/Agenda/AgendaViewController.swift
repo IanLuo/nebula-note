@@ -165,7 +165,12 @@ extension AgendaViewController: UITableViewDelegate {
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let data = self.viewModel.data[indexPath.row]
-        self.viewModel.coordinator?.openDocument(url: data.url, location: data.heading.range.upperBound)
+        
+        if let dateAndTimeRange = data.dateAndTimeRange {
+            self.viewModel.coordinator?.openDocument(url: data.url, location: dateAndTimeRange.upperBound)
+        } else {
+            self.viewModel.coordinator?.openDocument(url: data.url, location: data.heading.range.upperBound)
+        }
     }
 }
 

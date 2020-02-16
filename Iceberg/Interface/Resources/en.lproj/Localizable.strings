@@ -27,6 +27,7 @@
 "attachment.kind.location" = "Location";
 "attachment.kind.text" = "Text";
 "attachment.kind.all" = "All";
+"attachment.share" = "Export";
 
 // edit document
 "document.dateAndTime.title" = "Date and time";
@@ -111,6 +112,7 @@
 "document.help.textEditor" = "Text editor help";
 "document.help.entrance" = "Understand heading entrance";
 "document.help.more" = "More help topics";
+"document.help.markSyntax" = "Marks syntax help";
 
 "document.edit.remote_editing_arrived_title" = "Another device modified this document";
 "document.edit.remote_editing_arrived_message" = "Which version do you want to keep?";
@@ -130,7 +132,7 @@
 "sync.alert.account.changed.msg" = "You have login another iCloud account, your document is now access from that account's storage";
 "sync.alert.account.closed.title" = "iCloud account closed";
 "sync.alert.account.closed.msg" = "You have turned off iCloud on this app, your documents are stored on the iCloud stoage safely, if you want to access them, please turn iCloud on";
-
+"sync.alert.account.switchOff" = "After turning off iCloud, all you documents can only be accessed from this device. cloud backup, and documents on other devices, will all be deleted. You can switch back on later. Continue?";
 
 // setting
 "setting.title" = "Settings";

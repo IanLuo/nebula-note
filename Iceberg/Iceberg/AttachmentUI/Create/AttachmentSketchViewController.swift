@@ -43,7 +43,7 @@ public class AttachmentSketchViewController: AttachmentViewController, Attachmen
     private lazy var exitButton: UIButton = {
         let button = UIButton()
         button.addTarget(self, action: #selector(cancel), for: .touchUpInside)
-        button.setImage(Asset.Assets.cross.image.fill(color: InterfaceTheme.Color.interactive), for: .normal)
+        button.setImage(Asset.Assets.down.image.fill(color: InterfaceTheme.Color.interactive), for: .normal)
         return button
     }()
     
@@ -147,7 +147,7 @@ public class AttachmentSketchViewController: AttachmentViewController, Attachmen
         self.drawingView.sideAnchor(for: [.left, .right], to: self.view, edgeInset: 30)
         self.drawingView.ratioAnchor(1)
 
-        self.exitButton.columnAnchor(view: self.drawingView, space: 10)
+        self.exitButton.columnAnchor(view: self.drawingView, space: 10, alignment: .traling)
         
         self.view.addSubview(self.controlsView)
 

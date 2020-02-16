@@ -27,6 +27,7 @@
 "attachment.kind.location" = "位置";
 "attachment.kind.text" = "文字";
 "attachment.kind.all" = "全部";
+"attachment.share" = "导出";
 
 // edit document
 "document.dateAndTime.title" = "日期和时间";
@@ -111,6 +112,7 @@
 "document.help.textEditor" = "编辑器使用帮助";
 "document.help.entrance" = "什么是标题入口";
 "document.help.more" = "更多帮助";
+"document.help.markSyntax" = "标记使用帮助";
 
 "document.edit.remote_editing_arrived_title" = "其他文档已修改";
 "document.edit.remote_editing_arrived_message" = "选择需要保存的版本";
@@ -130,6 +132,7 @@
 "sync.alert.account.changed.msg" = "你已登录另一个 iCloud 账号，文档已经切换为新的账号的内容";
 "sync.alert.account.closed.title" = "iCloud 已关闭";
 "sync.alert.account.closed.msg" = "你已经关闭 iCloud 同步，因此你在 iCloud 中的内容无法打开。目前显示的是当前设备的内容。如果需要打开 iCloud 文档，请在系统设置中打开 iCloud，并在设置中选择存储位置为 iCloud。";
+"sync.alert.account.switchOff" = "关闭 iCloud 同步之后，你的所有文档将会只能从当前设备上访问，云端存档，以及其他设备上都将删除。你可以稍后重新打开。是否继续?";
 
 
 // setting

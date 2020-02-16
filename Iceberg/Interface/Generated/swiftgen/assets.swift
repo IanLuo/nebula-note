@@ -39,6 +39,7 @@ public enum Asset {
     public static let emptyCup = ImageAsset(name: "empty cup")
     public static let folded = ImageAsset(name: "folded")
     public static let heading = ImageAsset(name: "heading")
+    public static let icetea = ImageAsset(name: "icetea")
     public static let imageLibrary = ImageAsset(name: "image library")
     public static let infomation = ImageAsset(name: "infomation")
     public static let inspiration = ImageAsset(name: "inspiration")

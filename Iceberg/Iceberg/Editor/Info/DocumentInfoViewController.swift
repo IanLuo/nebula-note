@@ -121,6 +121,12 @@ public class DocumentInfoViewController: TransitionViewController {
             }
         }
         
+        actionsViewController.addAction(icon: nil, title: L10n.Document.Help.markSyntax) { viewController in
+            viewController.dismiss(animated: true) {
+                HelpPage.syntax.open()
+            }
+        }
+        
         actionsViewController.addAction(icon: nil, title: L10n.Document.Help.entrance) { viewController in
             viewController.dismiss(animated: true) {
                 HelpPage.entrance.open()

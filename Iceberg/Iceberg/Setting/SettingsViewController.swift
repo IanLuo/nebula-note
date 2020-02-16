@@ -175,8 +175,7 @@ public class SettingsViewController: UITableViewController {
         selector.fromView = button.superview
         selector.onSelection = { index, viewController in
             
-            viewController.dismiss(animated: true) {
-                
+            let doSwitchAction = {
                 button.showProcessingAnimation()
                 
                 self.showLoading()
@@ -199,6 +198,24 @@ public class SettingsViewController: UITableViewController {
                         }
                     }
                 })
+            }
+            
+            viewController.dismiss(animated: true) {
+                
+                if index == 1 {
+                    let confirm = ConfirmViewController(contentText: L10n.Sync.Alert.Account.switchOff, onConfirm: { viewController in
+                        viewController.dismiss(animated: true) {
+                            doSwitchAction()
+                        }
+                    }) { viewController in
+                        viewController.dismiss(animated: true)
+                    }
+                    
+                    self.present(confirm, animated: true)
+                } else {
+                    doSwitchAction()
+                }
+                
             }
             
         }

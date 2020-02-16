@@ -132,7 +132,7 @@ extension CaptureViewController: UITableViewDelegate, UITableViewDataSource {
         
         let attachmentKind = Attachment.Kind.allCases[indexPath.row]
         cell.iconView.image = attachmentKind.icon
-        cell.titleLabel.text = attachmentKind.rawValue
+        cell.titleLabel.text = attachmentKind.name
         
         if let coordinator = self.coordinator {
             cell.memberFunctionIconView.isHidden = coordinator.dependency.purchaseManager.isMember.value || !attachmentKind.isMemberFunction
@@ -152,6 +152,18 @@ extension Attachment.Kind {
         case .sketch: return Asset.Assets.sketch.image.fill(color: InterfaceTheme.Color.descriptive)
         case .text: return Asset.Assets.text.image.fill(color: InterfaceTheme.Color.descriptive)
         case .image: return Asset.Assets.imageLibrary.image.fill(color: InterfaceTheme.Color.descriptive)
+        }
+    }
+    
+    var name: String {
+        switch self {
+        case .audio: return L10n.Attachment.Kind.audio
+        case .video: return L10n.Attachment.Kind.video
+        case .link: return L10n.Attachment.Kind.link
+        case .location: return L10n.Attachment.Kind.location
+        case .sketch: return L10n.Attachment.Kind.sketch
+        case .text: return L10n.Attachment.Kind.text
+        case .image: return L10n.Attachment.Kind.image
         }
     }
 }

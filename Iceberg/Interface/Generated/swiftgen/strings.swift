@@ -147,6 +147,8 @@ public enum L10n {
   }
 
   public enum Attachment {
+    /// Export
+    public static let share = L10n.tr("Localizable", "attachment.share")
     public enum Kind {
       /// All
       public static let all = L10n.tr("Localizable", "attachment.kind.all")
@@ -448,6 +450,8 @@ public enum L10n {
     public enum Help {
       /// Understand heading entrance
       public static let entrance = L10n.tr("Localizable", "document.help.entrance")
+      /// Marks syntax help
+      public static let markSyntax = L10n.tr("Localizable", "document.help.markSyntax")
       /// More help topics
       public static let more = L10n.tr("Localizable", "document.help.more")
       /// Text editor help
@@ -698,6 +702,8 @@ public enum L10n {
   public enum Sync {
     public enum Alert {
       public enum Account {
+        /// After turning off iCloud, all you documents can only be accessed from this device. cloud backup, and documents on other devices, will all be deleted. You can switch back on later. Continue?
+        public static let switchOff = L10n.tr("Localizable", "sync.alert.account.switchOff")
         public enum Changed {
           /// You have login another iCloud account, your document is now access from that account's storage
           public static let msg = L10n.tr("Localizable", "sync.alert.account.changed.msg")
