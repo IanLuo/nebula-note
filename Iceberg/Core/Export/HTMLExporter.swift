@@ -84,7 +84,7 @@ public struct HTMLExporter: Exportable {
     var footer: String {
         """
         <div class=\"footer\">
-        <span style=\"vertical-align: middle;\">Create with Icetea</span> <img style=\"width:50px;height:50px\" src='\(URL(fileURLWithPath: Bundle(for: InterfaceTheme.self).path(forResource: "icetea", ofType: "png") ?? "").absoluteString)'></img>
+        <span style=\"vertical-align: middle;\">Create with Icetea</span> <img style=\"width:50px;height:50px\" src='https://forum.iceteanote.me/uploads/default/original/1X/cedd7a23e5d7c183f36e7cbf86a843e6966faeb0.png'")></img>
         </div>
         """
     }

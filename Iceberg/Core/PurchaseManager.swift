@@ -58,7 +58,11 @@ public struct PurchaseManager {
                 #endif
             }).disposed(by: self._disposeBag)
         } else {
+            #if DEBUG
+            self.isMember.accept(CommandLine.arguments.contains("IGNORE_MEMBERSHIP_CHECK"))
+            #else
             self.isMember.accept(false)
+            #endif
         }
         
         self.initTransactions()

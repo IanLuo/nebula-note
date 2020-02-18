@@ -306,28 +306,28 @@ public class RecorderView: UIView {
         
         // 单独显示的按钮
         self.recordButton.centerAnchors(position: [.centerX, .centerY], to: self)
-        self.recordButton.sizeAnchor(width: 80)
+        self.recordButton.setButtonRedius(40)
         self.stopPlayingButton.centerAnchors(position: [.centerX, .centerY], to: self)
-        self.stopPlayingButton.sizeAnchor(width: 80)
+        self.stopPlayingButton.setButtonRedius(40)
         self.pauseRecordingButton.centerAnchors(position: [.centerX, .centerY], to: self)
-        self.pauseRecordingButton.sizeAnchor(width: 80)
+        self.pauseRecordingButton.setButtonRedius(40)
         
         // 在一起显示的按钮
-        self.reRecordButton.sizeAnchor(width: 50)
+        self.reRecordButton.setButtonRedius(25)
         self.reRecordButton.centerAnchors(position: .centerY, to: self)
         self.reRecordButton.centerAnchors(position: .centerX, to: self, multiplier: 0.5)
 
-        self.playButton.sizeAnchor(width: 70)
+        self.playButton.setButtonRedius(35)
         self.playButton.centerAnchors(position: .centerY, to: self)
         self.playButton.centerAnchors(position: .centerX, to: self, multiplier: 1.5)
         
         // --
         
-        self.continueRecordingButton.sizeAnchor(width: 70)
+        self.continueRecordingButton.setButtonRedius(35)
         self.continueRecordingButton.centerAnchors(position: .centerY, to: self)
         self.continueRecordingButton.centerAnchors(position: .centerX, to: self, multiplier: 0.5)
         
-        self.stopRecordingButton.sizeAnchor(width: 50)
+        self.stopRecordingButton.setButtonRedius(25)
         self.stopRecordingButton.centerAnchors(position: .centerY, to: self)
         self.stopRecordingButton.centerAnchors(position: .centerX, to: self, multiplier: 1.5)
     }

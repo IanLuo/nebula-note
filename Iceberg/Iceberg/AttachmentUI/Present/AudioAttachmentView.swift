@@ -151,18 +151,18 @@ private class AudioPlayerView: UIView {
         self.addSubview(self.continueButton)
         
         self.playButton.centerAnchors(position: [.centerX, .centerY], to: self)
-        self.playButton.sizeAnchor(width: 60)
+        self.playButton.setButtonRedius(30)
         
         self.pauseButton.centerAnchors(position: [.centerX, .centerY], to: self)
-        self.pauseButton.sizeAnchor(width: 60)
+        self.pauseButton.setButtonRedius(30)
         
         self.continueButton.centerAnchors(position: [.centerX], to: self, multiplier: 0.5)
-        self.continueButton.sizeAnchor(width: 60)
         self.continueButton.centerAnchors(position: [.centerY], to: self)
+        self.continueButton.setButtonRedius(30)
         
         self.stopButton.centerAnchors(position: [.centerX], to: self, multiplier: 1.5)
-        self.stopButton.sizeAnchor(width: 60)
         self.stopButton.centerAnchors(position: [.centerY], to: self)
+        self.stopButton.setButtonRedius(30)
         
         self.updateUI(status: .ready)
     }

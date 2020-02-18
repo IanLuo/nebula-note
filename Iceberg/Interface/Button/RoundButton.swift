@@ -34,7 +34,7 @@ public class RoundButton: UIView {
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.font = InterfaceTheme.Font.subtitle
+        label.font = InterfaceTheme.Font.footnote
         label.textColor = InterfaceTheme.Color.descriptive
         label.textAlignment = .center
         return label
@@ -63,6 +63,10 @@ public class RoundButton: UIView {
         } else {
             self.button.layer.borderWidth = 0
         }
+    }
+    
+    public func setButtonRedius(_ radius: CGFloat) {
+        self.button.sizeAnchor(width: radius * 2, height: radius * 2)
     }
     
     public func setBackgroundColor(_ color: UIColor, for state: UIControl.State) {
@@ -130,13 +134,13 @@ public class RoundButton: UIView {
         switch self.style {
         case .verticle:
             self.button.sideAnchor(for: [.top, .left, .right], to: self, edgeInset: 0)
-            self.button.columnAnchor(view: self.titleLabel, space: 5)
+            self.button.columnAnchor(view: self.titleLabel, space: 5, alignment: .centerX)
             
             self.titleLabel.sideAnchor(for: .bottom, to: self, edgeInset: 0)
             self.titleLabel.centerAnchors(position: .centerX, to: self)
         case .horizontal:
             self.button.sideAnchor(for: [.top, .left, .bottom], to: self, edgeInset: 10)
-            self.button.rowAnchor(view: self.titleLabel, space: 15)
+            self.button.rowAnchor(view: self.titleLabel, space: 15, alignment: .centerY)
             
             self.titleLabel.sideAnchor(for: .right, to: self, edgeInset: 10)
             self.titleLabel.centerAnchors(position: .centerY, to: self)

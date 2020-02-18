@@ -27,12 +27,13 @@ public class DocumentEditorViewController: UIViewController {
     internal var _lastLocation: Int?
     internal var _isAdjustingSelectRange: Bool = false
     private let disposeBag = DisposeBag()
+    private let _contentEdgeInsect = UIEdgeInsets(top: 60, left: 0, bottom: 0, right: 0)
     
     public init(viewModel: DocumentEditViewModel) {
         self.viewModel = viewModel
         self.textView = OutlineTextView(frame: .zero,
                                         textContainer: viewModel.container)
-        self.textView.contentInset = UIEdgeInsets(top: 60, left: 10, bottom: 0, right: 10)
+        self.textView.contentInset = self._contentEdgeInsect
 
         super.init(nibName: nil, bundle: nil)
         
@@ -171,9 +172,9 @@ public class DocumentEditorViewController: UIViewController {
         let keyboardViewEndFrame = view.convert(keyboardScreenEndFrame, from: view.window)
 
         if notification.name == UIResponder.keyboardWillHideNotification {
-            self.textView.contentInset = .zero
+            self.textView.contentInset = self._contentEdgeInsect
         } else {
-            self.textView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardViewEndFrame.height - view.safeAreaInsets.bottom, right: 0)
+            self.textView.contentInset = UIEdgeInsets(top: self._contentEdgeInsect.top, left: self._contentEdgeInsect.left, bottom: keyboardViewEndFrame.height - view.safeAreaInsets.bottom, right: self._contentEdgeInsect.right)
         }
 
         self.textView.scrollIndicatorInsets = self.textView.contentInset

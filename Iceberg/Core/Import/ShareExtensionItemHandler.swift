@@ -156,7 +156,7 @@ public struct ShareExtensionItemHandler {
                 let tempURL = URL.file(directory: URL.directory(location: URLLocation.temporary), name: UUID().uuidString, extension: "txt")
                 do {
                     let linkData: [String: Codable] = [
-                        OutlineParser.Values.Attachment.Link.keyTitle: text,
+                        OutlineParser.Values.Attachment.Link.keyTitle: text.count > 0 ? text : url.absoluteString,
                         OutlineParser.Values.Attachment.Link.keyURL: url.absoluteString
                     ]
                     let jsonEncoder = JSONEncoder()
