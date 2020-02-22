@@ -451,8 +451,8 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 guard let typeRange = token.range(for: OutlineParser.Key.Element.Attachment.type) else { return }
                 guard let valueRange = token.range(for: OutlineParser.Key.Element.Attachment.value) else { return }
                 
-                let type = text.nsstring.substring(with: typeRange)
-                let value = text.nsstring.substring(with: valueRange)
+                let type = textStorage.string.nsstring.substring(with: typeRange)
+                let value = textStorage.string.nsstring.substring(with: valueRange)
                 
                 var attachment: RenderAttachment!
                 if let a = super.cachedAttachment(with: value) as? RenderAttachment {
@@ -915,8 +915,8 @@ extension OutlineTextStorage: OutlineParserDelegate {
     
     public func isHeadingFolded(heading: HeadingToken) -> Bool {
         if heading.contentRange != nil {
-            if let foldingAttribute = self.attribute(OutlineAttribute.showAttachment, at: heading.levelRange.location, effectiveRange: nil) as? String {
-                return foldingAttribute == OutlineAttribute.Heading.foldingFolded.rawValue
+            if let foldingTempAttachmentAttribute = self.attribute(OutlineAttribute.tempShowAttachment, at: heading.contentRange!.location, effectiveRange: nil) as? String {
+                return foldingTempAttachmentAttribute == OutlineAttribute.Heading.folded.rawValue
             } else {
                 return false
             }
@@ -1043,7 +1043,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
         let line1Start = (string as NSString).lineRange(for: NSRange(location: newRange.location, length: 0)).location
         let line2End = (string as NSString).lineRange(for: NSRange(location: max(newRange.location, newRange.upperBound - 1), length: 0)).upperBound
         
-        newRange = NSRange(location: line1Start, length: line2End - line1Start)
+        newRange = NSRange(location: line1Start, length: line2End - 1 - line1Start) // minus one, remove the last line break character
         
         // 如果范围在某个 item 内，并且小于这个 item 原来的范围，则扩大至这个 item 原来的范围
         for item in self.codeBlocks {

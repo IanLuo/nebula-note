@@ -142,12 +142,6 @@ extension DocumentEditorViewController: OutlineTextViewDelegate {
             }
         }
         
-        actionsView.addAction(icon: nil, title: L10n.General.Button.Title.close) { viewController in
-            viewController.dismiss(animated: true, completion: {
-                self.viewModel.dependency.globalCaptureEntryWindow?.show()
-            })
-        }
-        
         actionsView.addAction(icon: nil, title: L10n.Attachment.share) { viewController in
             viewController.dismiss(animated: true, completion: {
                 let exportManager = ExportManager(editorContext: self.viewModel.dependency.editorContext)
@@ -156,6 +150,13 @@ extension DocumentEditorViewController: OutlineTextViewDelegate {
             })
         }
         
+        actionsView.addAction(icon: nil, title: L10n.General.Button.Title.close) { viewController in
+            viewController.dismiss(animated: true, completion: {
+                self.viewModel.dependency.globalCaptureEntryWindow?.show()
+            })
+        }
+        
+
         actionsView.setCancel { viewController in
             viewController.dismiss(animated: true, completion: {
                 self.viewModel.dependency.globalCaptureEntryWindow?.show()

@@ -88,7 +88,9 @@ public class CheckboxToken: Token {}
 public class LinkToken: Token {}
 
 // MARK: - AttachmentToken
-public class AttachmentToken: Token {}
+public class AttachmentToken: Token {
+    
+}
 
 // MARK: - SeparatorToken
 public class SeparatorToken: Token {}

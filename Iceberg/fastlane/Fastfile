@@ -55,7 +55,12 @@ platform :ios do
   end
 
   lane :metadata do
-    
+    deliver(
+      submit_for_review: false,
+      automatic_release: false,
+      skip_screenshots: true,
+      skip_binary_upload: true
+    )
   end
 
   lane :scrrend_shot do
