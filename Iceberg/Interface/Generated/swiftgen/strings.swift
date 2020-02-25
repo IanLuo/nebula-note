@@ -432,6 +432,10 @@ public enum L10n {
       public static let title = L10n.tr("Localizable", "document.export.title")
     }
     public enum Heading {
+      /// Create next section entry
+      public static let addHeadingBelowIt = L10n.tr("Localizable", "document.heading.addHeadingBelowIt")
+      /// Create sub section entry
+      public static let addSubHeadingBelow = L10n.tr("Localizable", "document.heading.addSubHeadingBelow")
       /// Fold this section
       public static let fold = L10n.tr("Localizable", "document.heading.fold")
       /// Move section

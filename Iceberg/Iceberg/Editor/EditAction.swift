@@ -39,6 +39,8 @@ public enum EditAction {
     case addNewLineBelow(location: Int)
     case replaceText(NSRange, String)
     case removeParagraph(Int)
+    case addSameLevelHeadingAfterCurrentHeading(Int)
+    case addSubHeadingAfterCurrentHeading(Int)
     
     public var commandComposer: DocumentContentCommandComposer {
         switch self {
@@ -100,6 +102,10 @@ public enum EditAction {
             return ReplaceContentCommandComposer(range: range, textToReplace: textToReplace)
         case .removeParagraph(let location):
             return RemoveParagraphCommandComposer(location: location)
+        case .addSameLevelHeadingAfterCurrentHeading(let location):
+            return AddNewHeadingAfterCurrentHeadingWithSameLevelCommandComposer(location: location)
+        case .addSubHeadingAfterCurrentHeading(let location):
+            return AddNewSubHeadingAfterCurrentHeading(location: location)
         }
     }
 }

@@ -166,12 +166,17 @@ public class DocumentEditViewModel: ViewModelProtocol {
         return self._editorService.string.nsstring.substring(with: headingTextRange)
     }
     
-    public func documentHeading(at: Int) -> DocumentHeading {
-        return DocumentHeading(documentString: self._editorService.string, headingToken: self.headings[at], url: self._editorService.fileURL)
+    /// get the heading at the index of the heading array
+    public func documentHeading(at index: Int) -> DocumentHeading {
+        return DocumentHeading(documentString: self._editorService.string, headingToken: self.headings[index], url: self._editorService.fileURL)
     }
     
     public func tags(at location: Int) -> [String] {
         return self._editorService.heading(at: location)?.tagsArray(string: self._editorService.string) ?? []
+    }
+    
+    public func heading(at location: Int) -> HeadingToken? {
+        return self._editorService.heading(at: location)
     }
     
     public func priority(at location: Int) -> String? {

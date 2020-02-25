@@ -89,6 +89,54 @@ public class AddNewLineBelowCommandComposer: DocumentContentCommandComposer {
     }
 }
 
+public class AddNewHeadingAfterCurrentHeadingWithSameLevelCommandComposer: DocumentContentCommandComposer {
+    let location: Int
+    
+    public init(location: Int) { self.location = location }
+    
+    public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
+        let level = textStorage.heading(contains: self.location)?.level ?? 1
+        
+        return AddNewHeadingAfterCurrentHeadingCommandComposer(location: self.location, level: level).compose(textStorage: textStorage)
+    }
+}
+
+public class AddNewSubHeadingAfterCurrentHeading: DocumentContentCommandComposer {
+    let location: Int
+    
+    public init(location: Int) { self.location = location }
+    
+    public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
+        let level = (textStorage.heading(contains: self.location)?.level ?? 0) + 1
+        
+        return AddNewHeadingAfterCurrentHeadingCommandComposer(location: self.location, level: level).compose(textStorage: textStorage)
+    }
+}
+
+public class AddNewHeadingAfterCurrentHeadingCommandComposer: DocumentContentCommandComposer {
+    let location: Int
+    let level: Int
+    
+    public init(location: Int, level: Int) {
+        self.location = location
+        self.level = level
+    }
+    
+    public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
+        let sectionEnd = textStorage.heading(contains: self.location)?.paragraphRange.upperBound ?? self.location
+        
+        var textToReplace = "*" * self.level + " " + OutlineParser.Values.Character.linebreak
+        
+        if textStorage.substring(NSRange(location: sectionEnd - 1, length: 1)) != OutlineParser.Values.Character.linebreak {
+            textToReplace = OutlineParser.Values.Character.linebreak + textToReplace
+        }
+        
+        return ReplaceContentCommandComposer(range: NSRange(location: sectionEnd, length: 0),
+                                             textToReplace: textToReplace)
+            .compose(textStorage: textStorage)
+    }
+}
+
 // MARK: - RemoveParagraphCommandComposer
 public class RemoveParagraphCommandComposer: DocumentContentCommandComposer {
     let location: Int
