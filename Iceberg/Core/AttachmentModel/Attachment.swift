@@ -112,9 +112,21 @@ public struct Attachment: Codable {
         return convertDuration(self.duration ?? 0)
     }
     
+    public var linkInfo: (String, String)? {
+        do {
+            let jsonDecoder = JSONDecoder()
+            let data = try Data(contentsOf: self.url)
+            let dic = try jsonDecoder.decode(Dictionary<String, String>.self, from: data)
+            
+            return (dic["title"] ?? "", dic["link"] ?? "")
+        } catch {
+            return nil
+        }
+    }
+    
     public var size: UInt64 {
         do {
-            let fileAttributes = try FileManager.default.attributesOfItem(atPath: self.wrapperURL.path)
+            let fileAttributes = try FileManager.default.attributesOfItem(atPath: self.url.path)
             if let fileSize = fileAttributes[FileAttributeKey.size]  {
                 return (fileSize as! NSNumber).uint64Value
             } else {

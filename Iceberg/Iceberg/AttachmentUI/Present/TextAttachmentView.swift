@@ -40,6 +40,9 @@ public class TextAttachmentView: UIView, AttachmentViewProtocol {
         
         do {
             label.text = try String(contentsOf: attachment.url)
+            if label.text?.count == 0 {
+                label.text = "Empty"
+            }
         } catch {
             label.text = "\(error)"
         }

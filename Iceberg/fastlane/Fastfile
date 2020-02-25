@@ -58,7 +58,7 @@ platform :ios do
     deliver(
       submit_for_review: false,
       automatic_release: false,
-      skip_screenshots: true,
+      skip_screenshots: false,
       skip_binary_upload: true
     )
   end

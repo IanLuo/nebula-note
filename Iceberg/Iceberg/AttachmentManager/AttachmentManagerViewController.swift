@@ -167,6 +167,39 @@ public class AttachmentManagerViewController: UIViewController, UICollectionView
         
         actionsView.accessoryView = view
         actionsView.title = attachment.kind.rawValue
+        
+        actionsView.addAction(icon: nil, title: L10n.Attachment.share) { viewController in
+            viewController.dismiss(animated: true, completion: {
+                let exportManager = ExportManager(editorContext: self.viewModel.dependency.editorContext)
+                exportManager.share(from: self, url: attachment.url)
+                self.viewModel.dependency.globalCaptureEntryWindow?.show()
+            })
+        }
+        
+        if attachment.kind == .link {
+            let linkInfo = attachment.linkInfo
+            actionsView.addAction(icon: Asset.Assets.right.image.fill(color: InterfaceTheme.Color.descriptive), title: L10n.Document.Link.open) { viewController in
+                viewController.dismiss(animated: true, completion: {
+                    if let url = URL(string: linkInfo?.0 ?? "") {
+                        self.viewModel.dependency.globalCaptureEntryWindow?.show()
+                        UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                    }
+                })
+            }
+        } else if attachment.kind == .location {
+            actionsView.addAction(icon: nil, title: L10n.CaptureList.Action.openLocation) { viewController in
+                viewController.dismiss(animated: true, completion: {
+                    let jsonDecoder = JSONDecoder()
+                    do {
+                        let coord = try jsonDecoder.decode(CLLocationCoordinate2D.self, from: try Data(contentsOf: attachment.url))
+                        let mapItem = MKMapItem(placemark: MKPlacemark(coordinate: coord, addressDictionary:nil))
+                        mapItem.openInMaps(launchOptions: [:])
+                    } catch {
+                        log.error("\(error)")
+                    }
+                })
+            }
+        }
                 
         actionsView.addAction(icon: nil, title: L10n.General.Button.Title.close) { viewController in
             viewController.dismiss(animated: true, completion: {

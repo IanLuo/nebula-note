@@ -143,7 +143,7 @@
       <CommandLineArguments>
          <CommandLineArgument
             argument = "SHOW_EDITING_RANGE"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "IGNORE_MEMBERSHIP_CHECK"
@@ -151,11 +151,11 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "SHOW_ALL_TOKEN_RANGE"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "SHOW_PARSING_TOKEN_RANGE"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
       </CommandLineArguments>
    </LaunchAction>

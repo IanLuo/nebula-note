@@ -50,6 +50,9 @@ public class LinkAttachmentView: UIView, AttachmentViewProtocol {
                                                                    NSAttributedString.Key.underlineColor : InterfaceTheme.Color.interactive,
                                                                    NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.interactive])
             self.url = dic["link"]
+            if label.text?.count == 0 {
+                label.text = "Empty"
+            }
         } catch {
             label.text = "\(error)"
         }

@@ -20,7 +20,7 @@ public protocol HomeViewControllerDelegate: class {
 public class HomeViewController: UIViewController {
     internal var currentDetailViewController: UIViewController?
     
-    private let masterViewWidth: CGFloat = min(UIScreen.main.bounds.width, UIScreen.main.bounds.height) * 3 / 4
+    private let masterViewWidth: CGFloat = min(414, min(UIScreen.main.bounds.width, UIScreen.main.bounds.height)) * 3 / 4
     
     public var isShowingMaster: Bool = false {
         didSet {
