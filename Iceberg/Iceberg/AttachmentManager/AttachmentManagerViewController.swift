@@ -141,15 +141,11 @@ public class AttachmentManagerViewController: UIViewController, UICollectionView
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if self.viewModel.context.coordinator?.usage == .manage {
-            if !self.isSelectMode.value {
-                collectionView.deselectItem(at: indexPath, animated: false)
-                if let attachment = self.viewModel.attachment(at: indexPath.row) {
-                    self._showAttachmentView(attachment: attachment, index: indexPath.row)
-                }
+        if !self.isSelectMode.value {
+            collectionView.deselectItem(at: indexPath, animated: false)
+            if let attachment = self.viewModel.attachment(at: indexPath.row) {
+                self._showAttachmentView(attachment: attachment, index: indexPath.row)
             }
-        } else {
-            self.onSelectingAttachment.onNext(self.viewModel.attachment(at: indexPath.row))
         }
     }
         
@@ -185,12 +181,20 @@ public class AttachmentManagerViewController: UIViewController, UICollectionView
         actionsView.accessoryView = view
         actionsView.title = attachment.kind.rawValue
         
-        actionsView.addAction(icon: nil, title: L10n.Attachment.share) { viewController in
-            viewController.dismiss(animated: true, completion: {
-                let exportManager = ExportManager(editorContext: self.viewModel.dependency.editorContext)
-                exportManager.share(from: self, url: attachment.url)
-                self.viewModel.dependency.globalCaptureEntryWindow?.show()
-            })
+        if self.viewModel.context.coordinator?.usage == .manage {
+            actionsView.addAction(icon: nil, title: L10n.Attachment.share) { viewController in
+                viewController.dismiss(animated: true, completion: {
+                    let exportManager = ExportManager(editorContext: self.viewModel.dependency.editorContext)
+                    exportManager.share(from: self, url: attachment.url)
+                    self.viewModel.dependency.globalCaptureEntryWindow?.show()
+                })
+            }
+        } else {
+            actionsView.addAction(icon: nil, title: L10n.General.Button.Title.select) { viewController in
+                viewController.dismiss(animated: true, completion: {
+                    self.onSelectingAttachment.onNext(self.viewModel.attachment(at: index))
+                })
+            }
         }
         
         if attachment.kind == .link {
@@ -224,18 +228,20 @@ public class AttachmentManagerViewController: UIViewController, UICollectionView
             })
         }
         
-        actionsView.addAction(icon: nil, title: L10n.General.Button.Title.delete, style: .warning) { viewController in
-            viewController.dismiss(animated: true, completion: {
-                let confirm = ConfirmViewController(contentText: L10n.General.Button.Title.delete, onConfirm: { viewController in
-                    viewController.dismiss(animated: true) {
-                        self.viewModel.delete(indexs: [index])
+        if self.viewModel.context.coordinator?.usage == .manage {
+            actionsView.addAction(icon: nil, title: L10n.General.Button.Title.delete, style: .warning) { viewController in
+                viewController.dismiss(animated: true, completion: {
+                    let confirm = ConfirmViewController(contentText: L10n.General.Button.Title.delete, onConfirm: { viewController in
+                        viewController.dismiss(animated: true) {
+                            self.viewModel.delete(indexs: [index])
+                        }
+                    }) { viewController in
+                        viewController.dismiss(animated: true)
                     }
-                }) { viewController in
-                    viewController.dismiss(animated: true)
-                }
-                
-                self.present(confirm, animated: true)
-            })
+                    
+                    self.present(confirm, animated: true)
+                })
+            }
         }
         
         actionsView.setCancel { viewController in
