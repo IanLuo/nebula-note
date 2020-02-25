@@ -176,6 +176,8 @@ extension DocumentEditorViewController: DocumentEditToolbarDelegate {
                     self.showPriorityEditor(location: self.textView.selectedRange.location, current: self.viewModel.priority(at: self.textView.selectedRange.location))
                 case .captured:
                     self.showCapturedItemList(location: self.textView.selectedRange.location)
+                case .allAttachments:
+                    self.showAllAttachmentPicker(location: self.textView.selectedRange.location)
                 case .paragraph:
                     self.showParagraphActions(at: self.textView.selectedRange.location)
                 case .seperator:

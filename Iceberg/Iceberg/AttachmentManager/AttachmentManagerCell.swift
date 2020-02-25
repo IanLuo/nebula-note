@@ -64,9 +64,9 @@ public class AttachmentManagerCell: UICollectionViewCell {
         self.titleLabel.sideAnchor(for: [.left, .right, .bottom], to: self.contentView, edgeInset: 0)
         
         self.contentView.addSubview(self.checkmarkImageView)
-        self.checkmarkImageView.sideAnchor(for: [.left, .bottom], to: self.contentView, edgeInset: 12)
-        self.checkmarkImageView.sizeAnchor(width: 30, height: 30)
-        self.checkmarkImageView.layer.cornerRadius = 15
+        self.checkmarkImageView.sideAnchor(for: [.left, .top], to: self.contentView, edgeInset: 12)
+        self.checkmarkImageView.sizeAnchor(width: 20, height: 20)
+        self.checkmarkImageView.layer.cornerRadius = 10
         self.checkmarkImageView.backgroundColor = UIColor.white
         self.checkmarkImageView.isHidden = true
     }
@@ -77,7 +77,7 @@ public class AttachmentManagerCell: UICollectionViewCell {
     
     public override var isSelected: Bool {
         didSet {
-            self.checkmarkImageView.image = isSelected ? Asset.Assets.checkMark.image.fill(color: InterfaceTheme.Color.spotlitTitle) : nil
+            self.checkmarkImageView.image = isSelected ? Asset.Assets.checkMark.image.fill(color: InterfaceTheme.Color.spotlitTitle).resize(upto: CGSize(width: 15, height: 15)) : nil
             self.checkmarkImageView.backgroundColor = isSelected ? InterfaceTheme.Color.spotlight : InterfaceTheme.Color.background1
         }
     }

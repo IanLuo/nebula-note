@@ -19,6 +19,7 @@ public class AttachmentManagerViewController: UIViewController, UICollectionView
     private var viewModel: AttachmentManagerViewModel!
     private var isSelectMode: BehaviorRelay<Bool> = BehaviorRelay(value: false)
     private let disposeBag = DisposeBag()
+    let onSelectingAttachment: PublishSubject<Attachment?> = PublishSubject()
     
     public convenience init(viewModel: AttachmentManagerViewModel) {
         self.init()
@@ -52,6 +53,15 @@ public class AttachmentManagerViewController: UIViewController, UICollectionView
         self.interface { [weak self] (me, theme) in
             me.view.backgroundColor = theme.color.background1
             self?.collectionView.backgroundColor = theme.color.background1
+        }
+        
+        if self.viewModel.context.coordinator?.usage == .pick {
+            let closeButton = UIBarButtonItem(image: Asset.Assets.down.image, style: .plain, target: nil, action: nil)
+            closeButton.rx.tap.subscribe(onNext: { [weak self] in
+                self?.dismiss(animated: true)
+            }).disposed(by: self.disposeBag)
+            
+            self.navigationItem.leftBarButtonItem = closeButton
         }
     }
     
@@ -88,13 +98,15 @@ public class AttachmentManagerViewController: UIViewController, UICollectionView
     }
     
     private func updateRightBarButtonItems(isSelectMode: Bool) {
+        guard self.viewModel.context.coordinator?.usage == .manage else { return }
+        
         if isSelectMode {
-            let cancelButton = UIBarButtonItem(title: "Cancel", style: .plain, target: nil, action: nil)
+            let cancelButton = UIBarButtonItem(title: L10n.General.Button.Title.cancel, style: .plain, target: nil, action: nil)
             cancelButton.rx.tap.subscribe(onNext: { [weak self] in
                 self?.isSelectMode.accept(false)
             }).disposed(by: self.disposeBag)
             
-            let deleteButton = UIBarButtonItem(title: "Delete", style: .plain, target: nil, action: nil)
+            let deleteButton = UIBarButtonItem(title: L10n.General.Button.Title.delete, style: .plain, target: nil, action: nil)
             deleteButton.tintColor = InterfaceTheme.Color.warning
             deleteButton.rx.tap.subscribe(onNext: { [weak self] in
                 self?.deleteSelectedItems()
@@ -102,7 +114,7 @@ public class AttachmentManagerViewController: UIViewController, UICollectionView
             
             self.navigationItem.rightBarButtonItems = [deleteButton, cancelButton]
         } else {
-            let selectButton = UIBarButtonItem(title: "Select", style: .plain, target: nil, action: nil)
+            let selectButton = UIBarButtonItem(title: L10n.General.Button.Title.select, style: .plain, target: nil, action: nil)
             selectButton.rx.tap.subscribe(onNext: { [weak self] in
                 self?.isSelectMode.accept(true)
             }).disposed(by: self.disposeBag)
@@ -119,6 +131,7 @@ public class AttachmentManagerViewController: UIViewController, UICollectionView
         let confirmController = ConfirmViewController(contentText: L10n.Setting.ManageAttachment.Delete.title, onConfirm: { [weak self] viewController in
             viewController.dismiss(animated: true) {
                 self?.viewModel.delete(indexs: indexs)
+                self?.isSelectMode.accept(false)
             }
         }) { viewController in
             viewController.dismiss(animated: true)
@@ -128,11 +141,15 @@ public class AttachmentManagerViewController: UIViewController, UICollectionView
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if !self.isSelectMode.value {
-            collectionView.deselectItem(at: indexPath, animated: false)
-            if let attachment = self.viewModel.attachment(at: indexPath.row) {
-                self._showAttachmentView(attachment: attachment)
+        if self.viewModel.context.coordinator?.usage == .manage {
+            if !self.isSelectMode.value {
+                collectionView.deselectItem(at: indexPath, animated: false)
+                if let attachment = self.viewModel.attachment(at: indexPath.row) {
+                    self._showAttachmentView(attachment: attachment, index: indexPath.row)
+                }
             }
+        } else {
+            self.onSelectingAttachment.onNext(self.viewModel.attachment(at: indexPath.row))
         }
     }
         
@@ -159,7 +176,7 @@ public class AttachmentManagerViewController: UIViewController, UICollectionView
         self.viewModel.loadCellContent(at: indexPath.row)
     }
     
-    private func _showAttachmentView(attachment: Attachment) {
+    private func _showAttachmentView(attachment: Attachment, index: Int) {
         let actionsView = ActionsViewController()
 
         let view = AttachmentViewFactory.create(attachment: attachment)
@@ -178,7 +195,7 @@ public class AttachmentManagerViewController: UIViewController, UICollectionView
         
         if attachment.kind == .link {
             let linkInfo = attachment.linkInfo
-            actionsView.addAction(icon: Asset.Assets.right.image.fill(color: InterfaceTheme.Color.descriptive), title: L10n.Document.Link.open) { viewController in
+            actionsView.addAction(icon: nil, title: L10n.Document.Link.open) { viewController in
                 viewController.dismiss(animated: true, completion: {
                     if let url = URL(string: linkInfo?.0 ?? "") {
                         self.viewModel.dependency.globalCaptureEntryWindow?.show()
@@ -204,6 +221,20 @@ public class AttachmentManagerViewController: UIViewController, UICollectionView
         actionsView.addAction(icon: nil, title: L10n.General.Button.Title.close) { viewController in
             viewController.dismiss(animated: true, completion: {
                 self.viewModel.dependency.globalCaptureEntryWindow?.show()
+            })
+        }
+        
+        actionsView.addAction(icon: nil, title: L10n.General.Button.Title.delete, style: .warning) { viewController in
+            viewController.dismiss(animated: true, completion: {
+                let confirm = ConfirmViewController(contentText: L10n.General.Button.Title.delete, onConfirm: { viewController in
+                    viewController.dismiss(animated: true) {
+                        self.viewModel.delete(indexs: [index])
+                    }
+                }) { viewController in
+                    viewController.dismiss(animated: true)
+                }
+                
+                self.present(confirm, animated: true)
             })
         }
         

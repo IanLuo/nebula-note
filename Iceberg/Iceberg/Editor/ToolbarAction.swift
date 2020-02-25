@@ -55,6 +55,7 @@ public enum NormalAction: ToolbarActionProtocol, DocumentActon {
     case priority
     
     case captured
+    case allAttachments
     
     public var icon: UIImage {
         switch self {
@@ -106,6 +107,8 @@ public enum NormalAction: ToolbarActionProtocol, DocumentActon {
             return Asset.Assets.priority.image
         case .captured:
             return Asset.Assets.inspiration.image
+        case .allAttachments:
+            return Asset.Assets.attachment.image
         case .seperator:
             return Asset.Assets.seperator.image
         }

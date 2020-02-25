@@ -218,7 +218,7 @@ public struct ShareExtensionItemHandler {
         let ext = newFileName.pathExtension
         newFileName = newFileName.deletingPathExtension()
         newFileName = newFileName.appendingPathExtension(kind.rawValue).appendingPathExtension(ext) // add attachment kind in the url, second to the ext
-        newFileName.writeBlock(queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.background), accessor: { error in
+        newFileName.writeBlock(queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.utility), accessor: { error in
             if let error = error {
                 print("ERROR: \(error)")
                 completion()

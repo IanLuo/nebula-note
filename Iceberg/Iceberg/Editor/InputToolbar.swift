@@ -24,7 +24,7 @@ public class InputToolbar: UIView {
     private static let moveContent: [ToolbarActionProtocol] = [NormalAction.increaseIndent, NormalAction.decreaseIndent, NormalAction.moveUp, NormalAction.moveDown]
     private static let undoAndRedo: [ToolbarActionProtocol] = [NormalAction.undo, NormalAction.redo]
     private static let insertSpecailContent: [ToolbarActionProtocol] = [NormalAction.seperator, NormalAction.sourcecode, NormalAction.quote, NormalAction.checkbox, NormalAction.dateAndTime, NormalAction.list, NormalAction.orderedList]
-    private static let attachment: [ToolbarActionProtocol] = [NormalAction.captured, AttachmentAction.image, AttachmentAction.sketch, AttachmentAction.link, AttachmentAction.location, AttachmentAction.audio, AttachmentAction.video]
+    private static let attachment: [ToolbarActionProtocol] = [NormalAction.captured, NormalAction.allAttachments, AttachmentAction.image, AttachmentAction.sketch, AttachmentAction.link, AttachmentAction.location, AttachmentAction.audio, AttachmentAction.video]
     
     private static let headless: [[ToolbarActionProtocol]] = [headingActions, textMark, undoAndRedo, moveCursor, moveContent, insertSpecailContent, attachment]
     private static let actionsParagraph: [[ToolbarActionProtocol]] = [paragraphActions, headingActions, textMark, undoAndRedo, moveCursor, moveContent, insertSpecailContent, attachment]

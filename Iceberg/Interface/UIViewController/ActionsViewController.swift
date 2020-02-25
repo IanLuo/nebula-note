@@ -129,12 +129,14 @@ public class ActionsViewController: UIViewController, TransitionProtocol {
                 accessoryViewContainer.subviews.forEach { $0.removeFromSuperview() }
                 accessoryViewContainer.addSubview(accessoryView)
                 accessoryView.allSidesAnchors(to: accessoryViewContainer, edgeInset: 0)
+                accessoryView.setBorder(position: Border.Position.bottom, color: InterfaceTheme.Color.background3, width: 0.5)
             } else {
                 accessoryViewContainer.isHidden = true
                 let emptyView = UIView()
                 accessoryViewContainer.addSubview(emptyView)
                 emptyView.sizeAnchor(height: 0)
                 emptyView.allSidesAnchors(to: accessoryViewContainer, edgeInset: 0)
+                accessoryView?.removeBorders()
             }
         }
     }
@@ -180,7 +182,8 @@ public class ActionsViewController: UIViewController, TransitionProtocol {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.backgroundColor = InterfaceTheme.Color.background2
-        tableView.separatorStyle = .none
+        tableView.separatorStyle = .singleLine
+        tableView.separatorColor = InterfaceTheme.Color.background3
         tableView.register(ActionCell.self, forCellReuseIdentifier: ActionCell.reuseIdentifier)
         return tableView
     }()

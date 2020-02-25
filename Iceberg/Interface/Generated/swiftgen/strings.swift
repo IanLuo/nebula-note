@@ -524,6 +524,8 @@ public enum L10n {
         public static let `open` = L10n.tr("Localizable", "general.button.title.open")
         /// Save
         public static let save = L10n.tr("Localizable", "general.button.title.save")
+        /// Select
+        public static let select = L10n.tr("Localizable", "general.button.title.select")
       }
     }
     public enum Loading {

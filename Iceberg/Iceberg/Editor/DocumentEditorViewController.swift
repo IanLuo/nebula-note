@@ -47,7 +47,6 @@ public class DocumentEditorViewController: UIViewController {
         self.modalPresentationStyle = .fullScreen
         
         NotificationCenter.default.addObserver(self, selector: #selector(_documentStateChanged(_:)), name: UIDocument.stateChangedNotification, object: nil)
-        
     }
     
     deinit {
@@ -103,7 +102,6 @@ public class DocumentEditorViewController: UIViewController {
             self?.textView.isEditable = !isReadingMode
             self?.textView.inputAccessoryView?.isHidden = isReadingMode
         }).disposed(by: self.disposeBag)
-
     }
     
     public override func viewDidDisappear(_ animated: Bool) {

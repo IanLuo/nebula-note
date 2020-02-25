@@ -247,7 +247,7 @@ public class BrowserCell: UITableViewCell {
     
     private func _createNewDocumentActionItem(for actionsViewController: ActionsViewController) {
         if (self.cellModel?.coordinator?.dependency.purchaseManager.isMember.value ?? true) || (self.cellModel?.url.levelsToRoot ?? 0) < 2 {
-            actionsViewController.addActionAutoDismiss(icon: Asset.Assets.add.image, title: L10n.Browser.Actions.newSub) { [weak self] in
+            actionsViewController.addActionAutoDismiss(icon: nil, title: L10n.Browser.Actions.newSub) { [weak self] in
                 guard let strongSelf = self else { return }
                 guard let cellModel = strongSelf.cellModel else { return }
                 cellModel.createChildDocument(title: L10n.Browser.Title.untitled)
@@ -268,7 +268,7 @@ public class BrowserCell: UITableViewCell {
     }
     
     private func _createDeleteActionItem(for actionsViewController: ActionsViewController) {
-        actionsViewController.addAction(icon: Asset.Assets.trash.image, title: L10n.Browser.Actions.delete, style: .warning) { [weak self] viewController in
+        actionsViewController.addAction(icon: nil, title: L10n.Browser.Actions.delete, style: .warning) { [weak self] viewController in
             guard let strongSelf = self else { return }
             guard let cellModel = strongSelf.cellModel else { return }
             

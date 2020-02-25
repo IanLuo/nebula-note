@@ -103,6 +103,21 @@ public class EditorCoordinator: Coordinator {
         
         capturedListCoordinator.start(from: self)
     }
+    
+    public func showAllAttachmentPicker(completion: @escaping (Attachment) -> Void) {
+        let navigationController = Coordinator.createDefaultNavigationControlller()
+        
+        let attachmentPickerCoordinator = AttachmentManagerCoordinator(stack: navigationController, dependency: self.dependency, usage: .pick)
+        attachmentPickerCoordinator.onSelectAttachment = { [unowned attachmentPickerCoordinator] attachment in
+            attachmentPickerCoordinator.stop()
+            
+            if let attachment = attachment {
+                completion(attachment)
+            }
+        }
+        
+        attachmentPickerCoordinator.start(from: self)
+    }
         
     public func showLinkEditor(title: String, url: String, completeEdit: @escaping (String) -> Void) {
         let navigationController = Coordinator.createDefaultNavigationControlller()

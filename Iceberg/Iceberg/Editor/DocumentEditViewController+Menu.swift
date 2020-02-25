@@ -322,6 +322,18 @@ extension DocumentEditorViewController {
         }
     }
     
+    public func showAllAttachmentPicker(location: Int) {
+        self.viewModel.context.coordinator?.showAllAttachmentPicker { [weak self] attachment in
+            
+            guard let strongSelf = self else { return }
+            
+            let _ = strongSelf.viewModel.performAction(EditAction.addAttachment(strongSelf.textView.selectedRange.location,
+                                                                                attachment.key,
+                                                                                attachment.kind.rawValue),
+                                                       textView: strongSelf.textView)
+        }
+    }
+    
     public func showPlanningSelector(location: Int, current: String?) {
         let allPlannings = self.viewModel.dependency.settingAccessor.allPlannings.filter { $0 != current }
         

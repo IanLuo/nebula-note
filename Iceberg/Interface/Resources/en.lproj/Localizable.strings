@@ -11,6 +11,7 @@
 "general.button.title.cancel" = "Cancel";
 "general.button.title.delete" = "Delete";
 "general.button.title.close" = "Close";
+"general.button.title.select" = "Select";
 "general.loading.title" = "Loading...";
 "general.button.ok" = "OK";
 "general.help" = "Help";
