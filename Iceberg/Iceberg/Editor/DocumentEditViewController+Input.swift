@@ -137,6 +137,13 @@ extension DocumentEditorViewController {
                 return false
             }
             
+            for case let linkToken in self.viewModel.currentTokens where linkToken is LinkToken {
+                guard self.textView.selectedRange.location != linkToken.range.location else { return true }
+                
+                textView.selectedRange = linkToken.range
+                return false
+            }
+            
             for case let dateAndTimeToken in self.viewModel.currentTokens where dateAndTimeToken is DateAndTimeToken {
                 guard self.textView.selectedRange.location != dateAndTimeToken.range.location else { return true }
                 
