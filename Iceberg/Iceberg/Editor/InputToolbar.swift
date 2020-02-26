@@ -17,6 +17,11 @@ public protocol DocumentEditToolbarDelegate: class {
 }
 
 public class InputToolbar: UIView {
+    struct ActionGroup {
+        let actions: [ToolbarActionProtocol]
+        let isEnabled: Bool
+    }
+    
     private static let paragraphActions = [NormalAction.paragraph]
     private static let headingActions = [NormalAction.heading, NormalAction.planning, NormalAction.tag, NormalAction.priority]
     private static let textMark = [NormalAction.bold, NormalAction.italic, NormalAction.underscore, NormalAction.strikethrough, NormalAction.highlight]
@@ -26,11 +31,50 @@ public class InputToolbar: UIView {
     private static let insertSpecailContent: [ToolbarActionProtocol] = [NormalAction.seperator, NormalAction.sourcecode, NormalAction.quote, NormalAction.checkbox, NormalAction.dateAndTime, NormalAction.list, NormalAction.orderedList]
     private static let attachment: [ToolbarActionProtocol] = [NormalAction.captured, NormalAction.allAttachments, AttachmentAction.image, AttachmentAction.sketch, AttachmentAction.link, AttachmentAction.location, AttachmentAction.audio, AttachmentAction.video]
     
-    private static let headless: [[ToolbarActionProtocol]] = [headingActions, textMark, undoAndRedo, moveCursor, moveContent, insertSpecailContent, attachment]
-    private static let actionsParagraph: [[ToolbarActionProtocol]] = [paragraphActions, headingActions, textMark, undoAndRedo, moveCursor, moveContent, insertSpecailContent, attachment]
-    private static let actionsHeading: [[ToolbarActionProtocol]] = [paragraphActions, headingActions, undoAndRedo, moveCursor, moveContent]
-    private static let quoteBlock: [[ToolbarActionProtocol]] = [paragraphActions, headingActions, textMark, undoAndRedo, moveCursor, moveContent]
-    private static let codeBlock: [[ToolbarActionProtocol]] = [paragraphActions, headingActions, undoAndRedo, moveCursor, moveContent]
+    private static let headless: [ActionGroup] = [ActionGroup(actions: paragraphActions, isEnabled: false),
+                                                  ActionGroup(actions: headingActions, isEnabled: true),
+                                                  ActionGroup(actions: textMark, isEnabled: true),
+                                                  ActionGroup(actions: undoAndRedo, isEnabled: true),
+                                                  ActionGroup(actions: moveCursor, isEnabled: true),
+                                                  ActionGroup(actions: moveContent, isEnabled: true),
+                                                  ActionGroup(actions: insertSpecailContent, isEnabled: true),
+                                                  ActionGroup(actions: attachment, isEnabled: true)]
+    
+    private static let actionsParagraph: [ActionGroup] = [ActionGroup(actions: paragraphActions, isEnabled: true),
+                                                          ActionGroup(actions: headingActions, isEnabled: true),
+                                                          ActionGroup(actions: textMark, isEnabled: true),
+                                                          ActionGroup(actions: undoAndRedo, isEnabled: true),
+                                                          ActionGroup(actions: moveCursor, isEnabled: true),
+                                                          ActionGroup(actions: moveContent, isEnabled: true),
+                                                          ActionGroup(actions: insertSpecailContent, isEnabled: true),
+                                                          ActionGroup(actions: attachment, isEnabled: true)]
+    
+    private static let actionsHeading: [ActionGroup] = [ActionGroup(actions: paragraphActions, isEnabled: true),
+                                                        ActionGroup(actions: headingActions, isEnabled: true),
+                                                        ActionGroup(actions: textMark, isEnabled: false),
+                                                        ActionGroup(actions: undoAndRedo, isEnabled: true),
+                                                        ActionGroup(actions: moveCursor, isEnabled: true),
+                                                        ActionGroup(actions: moveContent, isEnabled: true),
+                                                        ActionGroup(actions: insertSpecailContent, isEnabled: false),
+                                                        ActionGroup(actions: attachment, isEnabled: false)]
+    
+    private static let quoteBlock: [ActionGroup] = [ActionGroup(actions: paragraphActions, isEnabled: true),
+                                                    ActionGroup(actions: headingActions, isEnabled: true),
+                                                    ActionGroup(actions: textMark, isEnabled: false),
+                                                    ActionGroup(actions: undoAndRedo, isEnabled: true),
+                                                    ActionGroup(actions: moveCursor, isEnabled: true),
+                                                    ActionGroup(actions: moveContent, isEnabled: true),
+                                                    ActionGroup(actions: insertSpecailContent, isEnabled: false),
+                                                    ActionGroup(actions: attachment, isEnabled: false)]
+    
+    private static let codeBlock: [ActionGroup] = [ActionGroup(actions: paragraphActions, isEnabled: true),
+                                                   ActionGroup(actions: headingActions, isEnabled: true),
+                                                   ActionGroup(actions: textMark, isEnabled: false),
+                                                   ActionGroup(actions: undoAndRedo, isEnabled: true),
+                                                   ActionGroup(actions: moveCursor, isEnabled: true),
+                                                   ActionGroup(actions: moveContent, isEnabled: true),
+                                                   ActionGroup(actions: insertSpecailContent, isEnabled: false),
+                                                   ActionGroup(actions: attachment, isEnabled: false)]
     
     public enum Mode {
         case  headless
@@ -39,7 +83,7 @@ public class InputToolbar: UIView {
         case quote
         case code
         
-        fileprivate func _createActions(mode: Mode) -> [[ToolbarActionProtocol]] {
+        fileprivate func _createActions(mode: Mode) -> [ActionGroup] {
             switch mode {
             case .headless:
                 return InputToolbar.headless
@@ -59,7 +103,7 @@ public class InputToolbar: UIView {
  
     private let _collectionView: UICollectionView
     
-    private var _actions: [[ToolbarActionProtocol]] = []
+    private var _actions: [ActionGroup] = []
     
     public var mode: Mode {
         didSet {
@@ -112,7 +156,7 @@ public class InputToolbar: UIView {
 
 extension InputToolbar: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self._actions[section].count
+        return self._actions[section].actions.count
     }
     
     public func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -122,8 +166,11 @@ extension InputToolbar: UICollectionViewDelegate, UICollectionViewDataSource, UI
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ActionButtonCell.reuseIdentifier, for: indexPath) as! ActionButtonCell
         
-        let action = self._actions[indexPath.section][indexPath.row]
-        cell.iconView.image = action.icon.withRenderingMode(.alwaysTemplate)
+        let actionGroup = self._actions[indexPath.section]
+        let action = actionGroup.actions[indexPath.row]
+        
+        let color = actionGroup.isEnabled ? InterfaceTheme.Color.interactive : UIColor.lightGray.withAlphaComponent(0.2)
+        cell.iconView.image = action.icon.withRenderingMode(.alwaysTemplate).fill(color: color)
         cell.memberFunctionImageView.isHidden = (self.delegate?.isMember() ?? false ) || !action.isMemberFunction
 
         return cell
@@ -145,7 +192,12 @@ extension InputToolbar: UICollectionViewDelegate, UICollectionViewDataSource, UI
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        self.delegate?.didTriggerAction(self._actions[indexPath.section][indexPath.row])
+        let actionGroup = self._actions[indexPath.section]
+        let action = actionGroup.actions[indexPath.row]
+        
+        if actionGroup.isEnabled {
+            self.delegate?.didTriggerAction(action)
+        }
     }
 }
 

@@ -123,15 +123,16 @@ public class AddNewHeadingAfterCurrentHeadingCommandComposer: DocumentContentCom
     }
     
     public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
-        let sectionEnd = textStorage.heading(contains: self.location)?.paragraphRange.upperBound ?? self.location
+        let sectionEnd = textStorage.heading(contains: self.location)?.paragraphWithSubRange.lastCharacterLocation ?? self.location
+        let insertLocation = sectionEnd + 1
         
         var textToReplace = "*" * self.level + " " + OutlineParser.Values.Character.linebreak
         
-        if textStorage.substring(NSRange(location: sectionEnd - 1, length: 1)) != OutlineParser.Values.Character.linebreak {
+        if textStorage.substring(NSRange(location: sectionEnd, length: 1)) != OutlineParser.Values.Character.linebreak || textStorage.isFolded(location: sectionEnd) {
             textToReplace = OutlineParser.Values.Character.linebreak + textToReplace
         }
         
-        return ReplaceContentCommandComposer(range: NSRange(location: sectionEnd, length: 0),
+        return ReplaceContentCommandComposer(range: NSRange(location: insertLocation, length: 0),
                                              textToReplace: textToReplace)
             .compose(textStorage: textStorage)
     }

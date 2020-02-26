@@ -393,7 +393,7 @@ extension DocumentEditorViewController {
         actionsController.addAction(icon: nil, title: L10n.Document.Heading.addHeadingBelowIt) { viewController in
             viewController.dismiss(animated: true) {
                 self.viewModel.showGlobalCaptureEntry()
-                let endOfThisSection = self.viewModel.heading(at: self.textView.selectedRange.location)?.paragraphRange.upperBound ?? self.textView.selectedRange.location
+                let endOfThisSection = self.viewModel.heading(at: self.textView.selectedRange.location)?.paragraphWithSubRange.upperBound ?? self.textView.selectedRange.location
                 let result = self.viewModel.performAction(EditAction.addSameLevelHeadingAfterCurrentHeading(location), textView: self.textView)
                 self.textView.selectedRange = NSRange(location: endOfThisSection, length: 0).offset(result.delta - 1) // move one position back, so user can start type heading text
             }
@@ -402,7 +402,7 @@ extension DocumentEditorViewController {
         actionsController.addAction(icon: nil, title: L10n.Document.Heading.addSubHeadingBelow) { viewController in
             viewController.dismiss(animated: true) {
                 self.viewModel.showGlobalCaptureEntry()
-                let endOfThisSection = self.viewModel.heading(at: self.textView.selectedRange.location)?.paragraphRange.upperBound ?? self.textView.selectedRange.location
+                let endOfThisSection = self.viewModel.heading(at: self.textView.selectedRange.location)?.paragraphWithSubRange.upperBound ?? self.textView.selectedRange.location
                 let result = self.viewModel.performAction(EditAction.addSubHeadingAfterCurrentHeading(location), textView: self.textView)
                 self.textView.selectedRange = NSRange(location: endOfThisSection, length: 0).offset(result.delta - 1) // move one position back, so user can start type heading text
             }
@@ -421,7 +421,7 @@ extension DocumentEditorViewController {
         let actionsController = ActionsViewController()
         actionsController.title = L10n.Document.Edit.Action.Paragraph.title
         
-        let isFolded = self.viewModel.isParagraphFolded(at: location)
+        let isFolded = self.viewModel.isSectionFolded(at: location)
         let foldTitle = isFolded ? L10n.Document.Heading.unfold : L10n.Document.Heading.fold
         let icon = isFolded ? Asset.Assets.up.image : Asset.Assets.down.image
         actionsController.addAction(icon: icon, title: foldTitle) { viewController in
@@ -513,7 +513,7 @@ extension DocumentEditorViewController {
         actionsController.addAction(icon: nil, title: L10n.Document.Heading.addHeadingBelowIt) { viewController in
             viewController.dismiss(animated: true) {
                 self.viewModel.showGlobalCaptureEntry()
-                let endOfThisSection = self.viewModel.heading(at: self.textView.selectedRange.location)?.paragraphRange.upperBound ?? self.textView.selectedRange.location
+                let endOfThisSection = self.viewModel.heading(at: self.textView.selectedRange.location)?.paragraphWithSubRange.upperBound ?? self.textView.selectedRange.location
                 let result = self.viewModel.performAction(EditAction.addSameLevelHeadingAfterCurrentHeading(location), textView: self.textView)
                 self.textView.selectedRange = NSRange(location: endOfThisSection, length: 0).offset(result.delta - 1) // move one position back, so user can start type heading text
             }
@@ -522,7 +522,7 @@ extension DocumentEditorViewController {
         actionsController.addAction(icon: nil, title: L10n.Document.Heading.addSubHeadingBelow) { viewController in
             viewController.dismiss(animated: true) {
                 self.viewModel.showGlobalCaptureEntry()
-                let endOfThisSection = self.viewModel.heading(at: self.textView.selectedRange.location)?.paragraphRange.upperBound ?? self.textView.selectedRange.location
+                let endOfThisSection = self.viewModel.heading(at: self.textView.selectedRange.location)?.paragraphWithSubRange.upperBound ?? self.textView.selectedRange.location
                 let result = self.viewModel.performAction(EditAction.addSubHeadingAfterCurrentHeading(location), textView: self.textView)
                 self.textView.selectedRange = NSRange(location: endOfThisSection, length: 0).offset(result.delta - 1) // move one position back, so user can start type heading text
             }

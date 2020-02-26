@@ -32,6 +32,14 @@ extension NSRange {
         let diff = new - self.lowerBound
         return self.moveLeftBound(by: diff)
     }
+    
+    public var lastCharacterLocation: Int {
+        return max(0, self.upperBound - 1)
+    }
+    
+    public var lastCharacterRange: NSRange {
+        return NSRange(location: self.lastCharacterLocation, length: min(1, self.length))
+    }
 }
 
 extension NSRange {

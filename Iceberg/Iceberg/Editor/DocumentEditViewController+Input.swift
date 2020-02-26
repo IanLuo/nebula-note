@@ -166,7 +166,7 @@ extension DocumentEditorViewController {
             for case let blockMark in self.viewModel.currentTokens where blockMark is BlockToken {
                 guard self.textView.selectedRange.location != blockMark.range.location else { return true }
                 
-                if blockMark.tokenRange.contains(self.textView.selectedRange.location) || blockMark.tokenRange.upperBound == self.textView.selectedRange.location {
+                if blockMark.tokenRange.contains(locationToDelete) || blockMark.tokenRange.lastCharacterLocation == locationToDelete {
                     textView.selectedRange = blockMark.range
                     return false
                 }

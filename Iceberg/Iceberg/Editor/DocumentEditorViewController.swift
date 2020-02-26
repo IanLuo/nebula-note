@@ -242,10 +242,10 @@ extension DocumentEditorViewController: DocumentEditViewModelDelegate {
             }
             
             if let lastToken = tokens.last {
-                if lastToken is BlockBeginToken {
-                    if lastToken.name == OutlineParser.Key.Node.quoteBlockBegin {
+                if lastToken is BlockToken {
+                    if lastToken.name == OutlineParser.Key.Node.quoteBlockBegin || lastToken.name == OutlineParser.Key.Node.quoteBlockEnd {
                         self.inputbar.mode = .quote
-                    } else if lastToken.name == OutlineParser.Key.Node.codeBlockBegin {
+                    } else if lastToken.name == OutlineParser.Key.Node.codeBlockBegin || lastToken.name == OutlineParser.Key.Node.codeBlockEnd {
                         self.inputbar.mode = .code
                     }
                 } else if lastToken is HeadingToken {

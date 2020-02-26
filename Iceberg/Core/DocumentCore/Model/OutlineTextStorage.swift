@@ -913,6 +913,14 @@ extension OutlineTextStorage: OutlineParserDelegate {
     
     // MARK: - utils
     
+    public func isFolded(location: Int) -> Bool {
+        if let headingToken = self.heading(contains: location) {
+            return self.isHeadingFolded(heading: headingToken)
+        } else {
+            return false
+        }
+    }
+    
     public func isHeadingFolded(heading: HeadingToken) -> Bool {
         if heading.contentRange != nil {
             if let foldingTempAttachmentAttribute = self.attribute(OutlineAttribute.tempShowAttachment, at: heading.contentRange!.location, effectiveRange: nil) as? String {
@@ -989,7 +997,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
     private func _findIntersectionTokenIndex(in range: NSRange, tokens: [Token]) -> [Int] {
         var indexes: [Int] = []
         for (index, token) in tokens.enumerated() {
-            if token.tokenRange.intersection(range) != nil || token.tokenRange.upperBound == range.location
+            if token.tokenRange.intersection(range) != nil
             {
                 indexes.append(index)
             }

@@ -121,10 +121,6 @@ public class DocumentEditViewModel: ViewModelProtocol {
         return self._editorService.headings
     }
     
-    public func isParagraphFolded(at location: Int) -> Bool {
-        return self._editorService.isHeadingFolded(at: location)
-    }
-    
     public var isReadingModel: Bool {
         get { return self._editorService.isReadingMode }
         set {
@@ -148,6 +144,10 @@ public class DocumentEditViewModel: ViewModelProtocol {
     
     public func foldedRange(at location: Int) -> NSRange? {
         return self._editorService.foldedRange(at: location)
+    }
+    
+    public func isSectionFolded(at location: Int) -> Bool {
+        return self._editorService.isHeadingFolded(at: location)
     }
     
     public func save(completion: @escaping () -> Void) {
