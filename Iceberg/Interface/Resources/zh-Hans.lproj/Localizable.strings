@@ -43,7 +43,8 @@
 
 "document.heading.title" = "标题";
 "document.heading.toParagraphContent" = "转为正文";
-"document.heading.addHeadingBelowIt" = "新建下一个段落";
+"document.heading.addHeadingAboveIt" = "在上方新建段落";
+"document.heading.addHeadingBelowIt" = "在下方新建段落";
 "document.heading.addSubHeadingBelow" = "新建子段落";
 "document.heading.toHeading" = "转为标题";
 "document.heading.unfold" = "展开这个段落";

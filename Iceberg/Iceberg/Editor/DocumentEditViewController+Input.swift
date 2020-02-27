@@ -125,7 +125,7 @@ extension DocumentEditorViewController {
     private func _handelBackspace(_ textView: UITextView) -> Bool {
         // 只有在没有选中多个字符时有效
         if textView.selectedRange.length == 0 {
-            let locationToDelete = self.textView.selectedRange.location - 1
+            let locationToDelete = max(0, self.textView.selectedRange.location - 1)
             if let foldedRange = self.viewModel.foldedRange(at: locationToDelete) {
                 textView.selectedRange = NSRange(location: foldedRange.location - 1, length: 0)
                 return false

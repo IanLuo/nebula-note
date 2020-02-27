@@ -113,6 +113,25 @@ public class AddNewSubHeadingAfterCurrentHeading: DocumentContentCommandComposer
     }
 }
 
+public class addNewSameLevelHeadingAboveCurrentHeadingCommandComposer: DocumentContentCommandComposer {
+    let location: Int
+    
+    public init(location: Int) {
+        self.location = location
+    }
+    
+    public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
+        let level = textStorage.heading(contains: self.location)?.level ?? 1
+        let insertLocation = max(0, (textStorage.heading(contains: self.location)?.range.location ?? self.location))
+        
+        let textToReplace = "*" * level + " " + OutlineParser.Values.Character.linebreak
+        
+        return ReplaceContentCommandComposer(range: NSRange(location: insertLocation, length: 0),
+                                             textToReplace: textToReplace)
+            .compose(textStorage: textStorage)
+    }
+}
+
 public class AddNewHeadingAfterCurrentHeadingCommandComposer: DocumentContentCommandComposer {
     let location: Int
     let level: Int

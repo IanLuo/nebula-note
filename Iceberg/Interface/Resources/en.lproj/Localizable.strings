@@ -43,7 +43,8 @@
 
 "document.heading.title" = "Heading";
 "document.heading.toParagraphContent" = "Convert to plain content";
-"document.heading.addHeadingBelowIt" = "Create next section entry";
+"document.heading.addHeadingAboveIt" = "Create section entry above";
+"document.heading.addHeadingBelowIt" = "Create section entry below";
 "document.heading.addSubHeadingBelow" = "Create sub section entry";
 "document.heading.toHeading" = "Convert to section heading";
 "document.heading.unfold" = "Unfold this section";

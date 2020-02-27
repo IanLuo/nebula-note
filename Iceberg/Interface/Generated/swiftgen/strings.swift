@@ -432,7 +432,9 @@ public enum L10n {
       public static let title = L10n.tr("Localizable", "document.export.title")
     }
     public enum Heading {
-      /// Create next section entry
+      /// Create section entry above
+      public static let addHeadingAboveIt = L10n.tr("Localizable", "document.heading.addHeadingAboveIt")
+      /// Create section entry below
       public static let addHeadingBelowIt = L10n.tr("Localizable", "document.heading.addHeadingBelowIt")
       /// Create sub section entry
       public static let addSubHeadingBelow = L10n.tr("Localizable", "document.heading.addSubHeadingBelow")
