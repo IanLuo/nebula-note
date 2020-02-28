@@ -20,8 +20,10 @@ open class SelectorViewController: UIViewController {
     public var onCancel: ((SelectorViewController) -> Void)?
     
     public var rowHeight: CGFloat = 50
+    public let heightRatio: CGFloat
     
-    public init() {
+    public init(heightRatio: CGFloat = 1/2) {
+        self.heightRatio = heightRatio
         super.init(nibName: nil, bundle: nil)
         
         self.modalPresentationStyle = .custom
@@ -61,6 +63,16 @@ open class SelectorViewController: UIViewController {
         view.layer.cornerRadius = 8
         view.layer.masksToBounds = true
         return view
+    }()
+    
+    private lazy var closeButton: RoundButton = {
+        let button = RoundButton()
+        button.setIcon(Asset.Assets.cross.image.resize(upto: CGSize(width: 10, height: 10)).fill(color: InterfaceTheme.Color.interactive), for: .normal)
+        button.setBackgroundColor(InterfaceTheme.Color.background3, for: .normal)
+        button.tapped { _ in
+            self.cancel()
+        }
+        return button
     }()
     
     public var emptyDataText: String = L10n.Selector.empty
@@ -128,14 +140,19 @@ open class SelectorViewController: UIViewController {
         self.view.addSubview(self.contentView)
         self.contentView.addSubview(self.tableView)
         self.contentView.addSubview(self.titleLabel)
+        self.contentView.addSubview(self.closeButton)
         
         self.contentView.sideAnchor(for: [.left, .right], to: self.view, edgeInset: 30)
-        self.contentView.sizeAnchor(height: self.view.bounds.height / 2)
+        self.contentView.sizeAnchor(height: self.view.bounds.height * heightRatio)
         self.contentView.centerAnchors(position: .centerY, to: self.view)
         
         self.titleLabel.sizeAnchor(height: 60)
         self.titleLabel.sideAnchor(for: [.left, .right, .top], to: self.contentView, edgeInset: 0)
         self.titleLabel.setBorder(position: .bottom, color: InterfaceTheme.Color.background3, width: 0.5)
+        
+        self.closeButton.sizeAnchor(width: 30)
+        self.closeButton.sideAnchor(for: [.right], to: self.contentView, edgeInset: 20)
+        self.closeButton.centerYAnchor.constraint(equalTo: self.titleLabel.centerYAnchor).isActive = true
         
         self.titleLabel.columnAnchor(view: self.tableView, space: 0)
         self.tableView.sideAnchor(for: [.left, .right, .bottom], to: self.contentView, edgeInset: 0)

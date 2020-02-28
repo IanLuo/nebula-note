@@ -316,20 +316,24 @@ public class BrowserCell: UITableViewCell {
                 viewController.dismiss(animated: true, completion: {  [weak self] in
                     guard let strongSelf = self else { return }
                     
-                    let selector = SelectorViewController()
+                    let selector = SelectorViewController(heightRatio: 0.8)
                     selector.title = L10n.Browser.Action.MoveTo.msg
                     selector.fromView = self
                     let root: String = "\\"
                     selector.addItem(title: root, enabled: cellModel.url.parentDocumentURL != nil)
                     
+                    let isMember = self?.cellModel?.coordinator?.dependency.purchaseManager.isMember.value == true
+                    
                     for file in files {
+                        let shouldEnable = file.levelsToRoot <= 1 || isMember
                         let indent = Array(repeating: "   ", count: file.levelsToRoot - 1).reduce("") { $0 + $1 }
                         let title = indent + file.wrapperURL.packageName
-                        selector.addItem(icon: nil,
+                        selector.addItem(icon: shouldEnable ? nil : Asset.Assets.proLabel.image,
                                          title: title,
                                          description: nil,
                                          enabled: file.documentRelativePath != cellModel.url.documentRelativePath
-                                            && file.documentRelativePath != cellModel.url.parentDocumentURL?.documentRelativePath)
+                                            && file.documentRelativePath != cellModel.url.parentDocumentURL?.documentRelativePath
+                                            && shouldEnable)
                     }
                     
                     selector.onCancel = { viewController in
