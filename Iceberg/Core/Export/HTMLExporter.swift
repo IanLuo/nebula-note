@@ -203,11 +203,11 @@ extension Token {
             if type == Attachment.Kind.image.rawValue, let url = AttachmentManager.attachmentFileURL(key: value) {
                 let tempURL = URL.directory(location: URLLocation.temporary).appendingPathComponent(url.lastPathComponent)
                 try? Data(contentsOf: url).write(to: tempURL)
-                return "<br><img src=\"\(tempURL.absoluteString)\" style=\"max-width:600px;width:100%\"/>"
+                return "<br><img src=\"\(tempURL.lastPathComponent)\" style=\"max-width:600px;width:100%\"/>"
             } else if type == Attachment.Kind.sketch.rawValue, let url = AttachmentManager.attachmentFileURL(key: value) {
                 let tempURL = URL.directory(location: URLLocation.temporary).appendingPathComponent(url.lastPathComponent)
                 try? Data(contentsOf: url).write(to: tempURL)
-                return "<br><img src=\"\(tempURL.absoluteString)\" style=\"max-width:600px;width:100%\"/>"
+                return "<br><img src=\"\(tempURL.lastPathComponent)\" style=\"max-width:600px;width:100%\"/>"
             } else {
                 return "#\(type):\(value)#"
             }

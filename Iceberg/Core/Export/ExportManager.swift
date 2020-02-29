@@ -79,7 +79,7 @@ public struct ExportManager {
                        failure: @escaping (Error) -> Void) {
         
         let exportable = type.exportable(url: url, exportManager: self)
-        let exportFileDir = URL.directory(location: URLLocation.temporary, relativePath: "export")
+        let exportFileDir = URL.directory(location: URLLocation.temporary)
         exportFileDir.createDirectoryIfNeeded { error in
             
             if let error = error {
