@@ -32,15 +32,16 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dnp-Uh-dnX">
-                                                    <rect key="frame" x="337" y="18" width="46" height="30"/>
+                                                    <rect key="frame" x="329" y="18" width="46" height="30"/>
                                                     <state key="normal" title="Button"/>
                                                 </button>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <constraints>
                                                 <constraint firstItem="dnp-Uh-dnX" firstAttribute="centerY" secondItem="HYw-5m-1OC" secondAttribute="centerY" id="03D-Y4-E41"/>
-                                                <constraint firstAttribute="trailing" secondItem="dnp-Uh-dnX" secondAttribute="trailing" id="3dy-2Z-jvG"/>
+                                                <constraint firstItem="dnp-Uh-dnX" firstAttribute="trailing" secondItem="HYw-5m-1OC" secondAttribute="trailingMargin" id="h1K-Po-nLR"/>
                                                 <constraint firstItem="TBm-Y5-r12" firstAttribute="centerY" secondItem="HYw-5m-1OC" secondAttribute="centerY" id="oO4-j0-puE"/>
+                                                <constraint firstItem="dnp-Uh-dnX" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="TBm-Y5-r12" secondAttribute="trailing" constant="20" id="t02-qa-1Qm"/>
                                                 <constraint firstItem="TBm-Y5-r12" firstAttribute="leading" secondItem="HYw-5m-1OC" secondAttribute="leadingMargin" id="via-6h-f75"/>
                                             </constraints>
                                         </tableViewCellContentView>
