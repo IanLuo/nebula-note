@@ -90,15 +90,11 @@ extension Token {
             let value = string.nsstring.substring(with: valueRange)
             
             if type == Attachment.Kind.image.rawValue, let url = AttachmentManager.attachmentFileURL(key: value) {
-                let tempURL = URL.directory(location: URLLocation.temporary).appendingPathComponent(url.lastPathComponent)
-                try? Data(contentsOf: url).write(to: tempURL)
-                return "![](\(tempURL.absoluteString))"
+                return "![](\(url.lastPathComponent))"
             } else if type == Attachment.Kind.sketch.rawValue, let url = AttachmentManager.attachmentFileURL(key: value) {
-                let tempURL = URL.directory(location: URLLocation.temporary).appendingPathComponent(url.lastPathComponent)
-                try? Data(contentsOf: url).write(to: tempURL)
-                return "![](\(tempURL.absoluteString))"
+                return "![](\(url.lastPathComponent))"
             } else {
-                return "#\(type):\(value)#"
+                return "\(type):\(value)"
             }
         } else {
             return string.nsstring.substring(with: self.range)

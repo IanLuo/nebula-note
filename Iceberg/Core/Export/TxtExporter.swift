@@ -75,6 +75,20 @@ extension Token {
     fileprivate func render(string: String) -> String {
         if self is HeadingToken {
             return string.nsstring.substring(with: (self as! HeadingToken).headingTextRange)
+        } else if let attachmentToken = self as? AttachmentToken {
+            guard let typeRange = attachmentToken.range(for: OutlineParser.Key.Element.Attachment.type) else { return ""}
+            guard let valueRange = attachmentToken.range(for: OutlineParser.Key.Element.Attachment.value) else { return ""}
+            
+            let type = string.nsstring.substring(with: typeRange)
+            let value = string.nsstring.substring(with: valueRange)
+            
+            if type == Attachment.Kind.image.rawValue, let url = AttachmentManager.attachmentFileURL(key: value) {
+                return "image:\(url.lastPathComponent)"
+            } else if type == Attachment.Kind.sketch.rawValue, let url = AttachmentManager.attachmentFileURL(key: value) {
+                return "sketch:\(url.lastPathComponent)"
+            } else {
+                return "\(type):\(value)"
+            }
         } else {
             return string.nsstring.substring(with: self.range)
         }

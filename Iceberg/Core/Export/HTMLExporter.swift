@@ -208,8 +208,16 @@ extension Token {
                 let tempURL = URL.directory(location: URLLocation.temporary).appendingPathComponent(url.lastPathComponent)
                 try? Data(contentsOf: url).write(to: tempURL)
                 return "<br><img src=\"\(tempURL.lastPathComponent)\" style=\"max-width:600px;width:100%\"/>"
+            } else if type == Attachment.Kind.audio.rawValue, let url = AttachmentManager.attachmentFileURL(key: value) {
+                let tempURL = URL.directory(location: URLLocation.temporary).appendingPathComponent(url.lastPathComponent)
+                try? Data(contentsOf: url).write(to: tempURL)
+                return "<br><audio src=\"\(tempURL.lastPathComponent)\" style=\"max-width:600px;width:100%\"/>"
+            } else if type == Attachment.Kind.video.rawValue, let url = AttachmentManager.attachmentFileURL(key: value) {
+                let tempURL = URL.directory(location: URLLocation.temporary).appendingPathComponent(url.lastPathComponent)
+                try? Data(contentsOf: url).write(to: tempURL)
+                return "<br><video src=\"\(tempURL.lastPathComponent)\" style=\"max-width:600px;width:100%\"/>"
             } else {
-                return "#\(type):\(value)#"
+                return "<!--\(type):\(value)--!>"
             }
         } else if let textMark = self as? TextMarkToken, let contentRange = textMark.range(for: OutlineParser.Key.Element.TextMark.content) {
             let content = string.nsstring.substring(with: contentRange)
