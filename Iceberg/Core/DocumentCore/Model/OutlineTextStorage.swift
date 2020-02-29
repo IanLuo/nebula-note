@@ -769,22 +769,34 @@ extension OutlineTextStorage: OutlineParserDelegate {
             dateAndTimeToken.decorationAttributesAction = { textStorage, token in
                 guard let range = token.range(for: OutlineParser.Key.Element.dateAndTIme) else { return }
                 
+                var shouldRenderDateColor = true
+                if let statusRange = textStorage.heading(contains: range.location)?.planning,
+                    SettingsAccessor.shared.finishedPlanning.contains(textStorage.substring(statusRange)) {
+                    shouldRenderDateColor = false
+                }
+                
+                // render date and time interactive attributes
                 let dataAndTimeString = textStorage.substring(range)
                 let dateAndTime = DateAndTimeType(dataAndTimeString)
                 let datesFromToday = dateAndTime?.date.daysFrom(Date()) ?? 4 // 默认为 4 天, normal 颜色
                 let dateAndTimeStyle = OutlineTheme.dateAndTimeStyle(datesFromToday: datesFromToday)
                 textStorage.addAttributes([OutlineAttribute.dateAndTime: dataAndTimeString], range: range)
-                textStorage.addAttributes(dateAndTimeStyle.textStyle.attributes, range: range)
                 
-                if let dataAndTimeObj = dateAndTime {
-                    if dataAndTimeObj.isSchedule {
-                        textStorage.addAttributes(OutlineTheme.markStyle.attributes, range: range.moveLeftBound(by: OutlineParser.Values.Other.scheduled.count + 2).head(1)) // set the left '<' to mark style
-                    } else if dataAndTimeObj.isDue {
-                        textStorage.addAttributes(OutlineTheme.markStyle.attributes, range: range.moveLeftBound(by: OutlineParser.Values.Other.due.count + 2).head(1)) // set the left '<' to mark style
-                    } else {
-                        textStorage.addAttributes(OutlineTheme.markStyle.attributes, range: range.head(1)) // set the left '<' to mark style
+                if shouldRenderDateColor {
+                    textStorage.addAttributes(dateAndTimeStyle.textStyle.attributes, range: range)
+                    
+                    if let dataAndTimeObj = dateAndTime {
+                        if dataAndTimeObj.isSchedule {
+                            textStorage.addAttributes(OutlineTheme.markStyle.attributes, range: range.moveLeftBound(by: OutlineParser.Values.Other.scheduled.count + 2).head(1)) // set the left '<' to mark style
+                        } else if dataAndTimeObj.isDue {
+                            textStorage.addAttributes(OutlineTheme.markStyle.attributes, range: range.moveLeftBound(by: OutlineParser.Values.Other.due.count + 2).head(1)) // set the left '<' to mark style
+                        } else {
+                            textStorage.addAttributes(OutlineTheme.markStyle.attributes, range: range.head(1)) // set the left '<' to mark style
+                        }
+                        textStorage.addAttributes(OutlineTheme.markStyle.attributes, range: range.tail(1)) // set the right '>' to mark style
                     }
-                    textStorage.addAttributes(OutlineTheme.markStyle.attributes, range: range.tail(1)) // set the right '>' to mark style
+                } else {
+                    textStorage.addAttributes(OutlineTheme.markStyle.attributes, range: range)
                 }
             }
         }
