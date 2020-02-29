@@ -176,22 +176,22 @@ public struct OutlineThemeStyle: OutlineThemeConfigProtocol {
                                     textStyle: TextStyle(font: theme.font.footnote, color: theme.color.interactive))
         self.priorityStyle = PriorityStyle(a: ButtonStyle(buttonColor: theme.color.background3,
                                                           textStyle: TextStyle(font: theme.font.footnote,
-                                                                               color: theme.color.warning.withAlphaComponent(1))),
+                                                                               color: theme.color.warning)),
                                            b: ButtonStyle(buttonColor: theme.color.background3,
                                                           textStyle: TextStyle(font: theme.font.footnote,
-                                                                               color: theme.color.warning.withAlphaComponent(0.9))),
+                                                                               color: theme.color.warning)),
                                            c: ButtonStyle(buttonColor: theme.color.background3,
                                                           textStyle: TextStyle(font: theme.font.footnote,
-                                                                               color: theme.color.warning.withAlphaComponent(0.8))),
+                                                                               color: theme.color.unfinished)),
                                            d: ButtonStyle(buttonColor: theme.color.background3,
                                                           textStyle: TextStyle(font: theme.font.footnote,
-                                                                               color: theme.color.warning.withAlphaComponent(0.7))),
+                                                                               color: theme.color.unfinished)),
                                            e: ButtonStyle(buttonColor: theme.color.background3,
                                                           textStyle: TextStyle(font: theme.font.footnote,
-                                                                               color: theme.color.warning.withAlphaComponent(0.6))),
+                                                                               color: theme.color.finished)),
                                            f: ButtonStyle(buttonColor: theme.color.background3,
                                                           textStyle: TextStyle(font: theme.font.footnote,
-                                                                               color: theme.color.warning.withAlphaComponent(0.5))))
+                                                                               color: theme.color.finished)))
     }
     
     public let seperatorStyle: UIColor
