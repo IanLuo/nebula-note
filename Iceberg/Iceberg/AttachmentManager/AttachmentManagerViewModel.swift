@@ -45,7 +45,10 @@ public class AttachmentManagerViewModel: ViewModelProtocol {
     public let input: Input = Input()
     
     public func loadData() {
-        let cellModels = self.context.dependency.attachmentManager.allAttachmentsKeys.map {
+        let captureKeys = self.dependency.captureService.loadAllAttachmentNames()
+        let cellModels = self.context.dependency.attachmentManager.allAttachmentsKeys.filter {
+            return !captureKeys.contains($0)
+        }.map {
             AttachmentManagerCellModel(key: $0)
         }
         

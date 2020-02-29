@@ -13,7 +13,7 @@ public protocol CaptureListViewModelDelegate: class {
     func didLoadData()
     func didDeleteCapture(index: Int)
     func didFail(error: String)
-    func didCompleteRefile(index: Int)
+    func didCompleteRefile(index: Int, attachment: Attachment)
     func didStartRefile(at index: Int)
 }
 
@@ -116,7 +116,7 @@ public class CaptureListViewModel: ViewModelProtocol {
                 self.currentIndex = nil // 移除当前选中的
                 
                 DispatchQueue.runOnMainQueueSafely {
-                    self.delegate?.didCompleteRefile(index: index)
+                    self.delegate?.didCompleteRefile(index: index, attachment: attachment)
                 }
                 
                     service.save { _ in
@@ -175,7 +175,7 @@ public class CaptureListViewModel: ViewModelProtocol {
         return nil
     }
     
-    public func delete(index: Int) {
+    public func delete(index: Int, alsoDeleteAttachment: Bool = false) {
         let removedCellModel = self.currentFilterdCellModels.remove(at: index)
         
         for (indexInTotal, dataToRemove) in self.data.enumerated() {
@@ -184,6 +184,10 @@ public class CaptureListViewModel: ViewModelProtocol {
                 self.currentFilteredData.remove(at: index)
                 self.service.delete(key: dataToRemove.key)
                 self.delegate?.didDeleteCapture(index: index)
+                
+                if alsoDeleteAttachment {
+                    self.dependency.attachmentManager.delete(key: dataToRemove.key, completion: { }, failure: { _ in })
+                }
                 
                 if index == self.currentIndex {
                     self.currentIndex = nil

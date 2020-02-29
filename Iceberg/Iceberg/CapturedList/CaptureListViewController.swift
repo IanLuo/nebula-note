@@ -264,7 +264,7 @@ extension CaptureListViewController: CaptureTableCellDelegate {
                     confirmViewController.confirmAction = { vc in
                         vc.dismiss(animated: true) {
                             guard let index = self.viewModel.index(for: cellModel) else { return }
-                            self.viewModel.delete(index: index)
+                            self.viewModel.delete(index: index, alsoDeleteAttachment: true)
                             self.viewModel.showGlobalCaptureEntry()
                         }
                     }
@@ -285,7 +285,8 @@ extension CaptureListViewController: CaptureTableCellDelegate {
                 viewController.dismiss(animated: true, completion: {
                     guard let index = self.viewModel.index(for: cellModel) else { return }
                     self.viewModel.selectAttachment(index: index)
-                    self.viewModel.delete(index: index)
+                    let shouldDeleteAttachment = cellModel.attachmentView.attachment.kind.displayAsPureText
+                    self.viewModel.delete(index: index, alsoDeleteAttachment: shouldDeleteAttachment)
                     self.viewModel.showGlobalCaptureEntry()
                 })
             }
@@ -352,7 +353,7 @@ extension CaptureListViewController: CaptureListViewModelDelegate {
         
     }
         
-    public func didCompleteRefile(index: Int) {
+    public func didCompleteRefile(index: Int, attachment: Attachment) {
         if let cell = self.tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? CaptureTableCell {
             cell.hideProcessingAnimation()
         }
@@ -361,7 +362,8 @@ extension CaptureListViewController: CaptureListViewModelDelegate {
         
         let confirmViewController = ConfirmViewController(contentText: L10n.CaptureList.Confirm.delete, onConfirm: { [weak self] viewController in
             viewController.dismiss(animated: true) {
-                self?.viewModel.delete(index: index)
+                let shouldDeleteAttachment = attachment.kind.displayAsPureText
+                self?.viewModel.delete(index: index, alsoDeleteAttachment: shouldDeleteAttachment)
             }
         }) { viewController in
             viewController.dismiss(animated: true)

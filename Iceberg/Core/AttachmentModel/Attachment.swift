@@ -45,6 +45,13 @@ public struct Attachment: Codable {
             default: return false
             }
         }
+        
+        public var displayAsPureText: Bool {
+            switch self {
+            case .text, .link: return true
+            default: return false
+            }
+        }
     }
     
     /// 序列化的 key
