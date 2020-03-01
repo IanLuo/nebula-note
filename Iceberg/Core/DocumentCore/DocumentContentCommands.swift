@@ -249,6 +249,8 @@ public class FoldingAndUnfoldingCommand: DocumentContentCommand {
         textStorage.removeAttribute(OutlineAttribute.tempHidden, range: range)
         textStorage.removeAttribute(OutlineAttribute.hidden, range: range)
         textStorage.removeAttribute(OutlineAttribute.tempShowAttachment, range: range)
+        textStorage.removeAttribute(OutlineAttribute.Attachment.type, range: range)
+        textStorage.removeAttribute(OutlineAttribute.Attachment.value, range: range)
         textStorage.removeAttribute(OutlineAttribute.showAttachment, range: range)
         textStorage.removeAttribute(OutlineAttribute.showAttachment, range: heading.levelRange)
         textStorage.removeAttribute(OutlineAttribute.hidden, range: heading.levelRange)
