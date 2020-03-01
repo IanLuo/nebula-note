@@ -83,7 +83,7 @@ public struct Layout {
     @objc public let background1: UIColor = UIColor(242, 242, 247)
     @objc public let background2: UIColor = UIColor(229, 229, 234)
     @objc public let background3: UIColor = UIColor(209, 209, 214)
-    @objc public let spotlight: UIColor = UIColor(red:0.01, green:0.73, blue:0.81, alpha:1.00)
+    @objc public let spotlight: UIColor = UIColor(90, 200, 250)
     @objc public let warning: UIColor = UIColor(255, 59, 48)
 }
 
@@ -99,7 +99,7 @@ public struct Layout {
     @objc public let background1: UIColor = UIColor(28, 28, 30)
     @objc public let background2: UIColor = UIColor(44, 44, 46)
     @objc public let background3: UIColor = UIColor(58, 58, 60)
-    @objc public let spotlight: UIColor = UIColor(red:0.01, green:0.73, blue:0.81, alpha:1.00)
+    @objc public let spotlight: UIColor = UIColor(100, 210, 255)
     @objc public let warning: UIColor = UIColor(255, 69, 58)
 }
 

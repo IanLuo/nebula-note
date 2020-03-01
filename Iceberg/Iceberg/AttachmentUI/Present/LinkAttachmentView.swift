@@ -34,7 +34,7 @@ public class LinkAttachmentView: UIView, AttachmentViewProtocol {
     
     public func setup(attachment: Attachment) {
         self.addSubview(self.label)
-        self.label.allSidesAnchors(to: self, edgeInsets: .init(top: 0, left: 30, bottom: 0, right: -30))
+        self.label.allSidesAnchors(to: self, edgeInsets: .init(top: 0, left: 10, bottom: 0, right: -10))
         
         self.attachment = attachment
         self.updateUI(attachment: attachment)

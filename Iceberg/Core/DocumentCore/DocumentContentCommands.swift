@@ -72,6 +72,19 @@ public class ReplaceTextCommand: DocumentContentCommand {
     }
 }
 
+public class DeleteSectionCommpandComposer: DocumentContentCommandComposer {
+    let location: Int
+    public init(location: Int) { self.location = location }
+    
+    public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
+        if let heading = textStorage.heading(contains: self.location) {
+            return ReplaceContentCommandComposer(range: heading.paragraphWithSubRange, textToReplace: "").compose(textStorage: textStorage)
+        } else {
+            return NoChangeCommandComposer().compose(textStorage: textStorage)
+        }
+    }
+}
+
 // MARK: - AddNewLineBelowCommandComposer
 public class AddNewLineBelowCommandComposer: DocumentContentCommandComposer {
     let location: Int
@@ -236,6 +249,7 @@ public class FoldingAndUnfoldingCommand: DocumentContentCommand {
         textStorage.removeAttribute(OutlineAttribute.tempHidden, range: range)
         textStorage.removeAttribute(OutlineAttribute.hidden, range: range)
         textStorage.removeAttribute(OutlineAttribute.tempShowAttachment, range: range)
+        textStorage.removeAttribute(OutlineAttribute.showAttachment, range: range)
         textStorage.removeAttribute(OutlineAttribute.showAttachment, range: heading.levelRange)
         textStorage.removeAttribute(OutlineAttribute.hidden, range: heading.levelRange)
         

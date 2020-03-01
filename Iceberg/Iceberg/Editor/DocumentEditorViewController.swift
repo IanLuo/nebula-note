@@ -27,7 +27,7 @@ public class DocumentEditorViewController: UIViewController {
     internal var _lastLocation: Int?
     internal var _isAdjustingSelectRange: Bool = false
     private let disposeBag = DisposeBag()
-    private let _contentEdgeInsect = UIEdgeInsets(top: 60, left: 0, bottom: 0, right: 0)
+    private let _contentEdgeInsect = UIEdgeInsets(top: 30, left: 12, bottom: 0, right: 20)
     
     public init(viewModel: DocumentEditViewModel) {
         self.viewModel = viewModel

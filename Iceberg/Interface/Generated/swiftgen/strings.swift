@@ -389,6 +389,10 @@ public enum L10n {
           /// Section actions
           public static let title = L10n.tr("Localizable", "document.edit.action.paragraph.title")
         }
+        public enum Section {
+          /// Delete current section
+          public static let delete = L10n.tr("Localizable", "document.edit.action.section.delete")
+        }
       }
       public enum Create {
         /// Failed to create document

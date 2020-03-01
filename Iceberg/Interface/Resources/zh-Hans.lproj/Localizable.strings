@@ -105,9 +105,10 @@
 "document.edit.action.arrow-right" = "Arrow right";
 "document.edit.action.arrow-up" = "Arrow up";
 "document.edit.action.arrow-down" = "Arrow down";
-"document.edit.action.quote-block" = "Quote block";
-"document.edit.action.paragraph.title" = "Paragraph actions";
-"document.edit.action.code-block" = "Code block";
+"document.edit.action.quote-block" = "引用块";
+"document.edit.action.paragraph.title" = "操作段落";
+"document.edit.action.section.delete" = "删除当前段落";
+"document.edit.action.code-block" = "代码块";
 "document.edit.tag.title" = "编辑标签";
 "document.edit.tag.add" = "新标签";
 "document.edit.tag.choose" = "选择标签";

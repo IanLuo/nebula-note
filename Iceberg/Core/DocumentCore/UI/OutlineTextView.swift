@@ -80,7 +80,11 @@ public class OutlineTextView: UITextView {
         let attributes = self.textStorage.attributes(at: characterIndex, effectiveRange: nil)
         
         var shouldPassTapToOtherGuestureRecognizers = false
-        if let hiddenValue = attributes[OutlineAttribute.tempHidden] as? Int, hiddenValue == OutlineAttribute.hiddenValueFolded.intValue {
+        if let hiddenValue = attributes[OutlineAttribute.tempShowAttachment] as? String {
+            if hiddenValue == OutlineAttribute.Heading.folded.rawValue {
+                self.outlineDelegate?.didTapOnHiddenAttachment(textView: self, characterIndex: characterIndex, point: location)
+            }
+        } else if let hiddenValue = attributes[OutlineAttribute.tempHidden] as? Int, hiddenValue == OutlineAttribute.hiddenValueFolded.intValue {
             // do nothing
         } else if let _ = attributes[OutlineAttribute.Heading.level] as? Int {
             self.outlineDelegate?.didTapOnLevel(textView: self, chracterIndex: characterIndex, point: location)
@@ -105,13 +109,7 @@ public class OutlineTextView: UITextView {
             let value = attributes[OutlineAttribute.Attachment.value] as? String {
             self.resignFirstResponder()
             self.outlineDelegate?.didTapOnAttachment(textView: self, characterIndex: characterIndex, type: type, value: value, point: location)
-        }
-//        else if let hiddenValue = attributes[OutlineAttribute.hidden] as? Int {
-//            if hiddenValue == OutlineAttribute.hiddenValueWithAttachment.intValue {
-//                self.outlineDelegate?.didTapOnHiddenAttachment(textView: self, characterIndex: characterIndex, point: location)
-//            }
-//        }
-        else {
+        } else {
             shouldPassTapToOtherGuestureRecognizers = true
         }
         

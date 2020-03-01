@@ -494,6 +494,29 @@ extension DocumentEditorViewController {
             }
         }
         
+        if self.viewModel.isMember {
+            actionsController.addAction(icon: nil, title: L10n.Document.Edit.Action.Section.delete) { [unowned self] viewController in
+                viewController.dismiss(animated: true, completion: {
+                    let comfirm = ConfirmViewController(contentText: L10n.Document.Edit.Action.Section.delete, onConfirm: { viewController in
+                        viewController.dismiss(animated: true) {
+                            let result = self.viewModel.performAction(EditAction.deleteSection(self.textView.selectedRange.location), textView: self.textView)
+                            self.textView.selectedRange = NSRange(location: result.range!.location, length: 0)
+                        }
+                    }) { viewController in
+                        viewController.dismiss(animated: true)
+                    }
+                    
+                    self.present(comfirm, animated: true)
+                })
+            }
+        } else {
+            actionsController.addAction(icon: Asset.Assets.proLabel.image, title: L10n.Document.Edit.Action.Section.delete) { [unowned self] viewController in
+                viewController.dismiss(animated: true, completion: {
+                    self.viewModel.context.coordinator?.showMembership()
+                })
+            }
+        }
+        
         actionsController.setCancel { viewController in
             viewController.dismiss(animated: true, completion: nil)
             self.viewModel.showGlobalCaptureEntry()
