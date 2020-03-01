@@ -208,6 +208,10 @@ public class EditorService {
         return self._editorController.textStorage.heading(contains: location)
     }
     
+    public func parentHeading(at location: Int) -> HeadingToken? {
+        return self._editorController.textStorage.parentHeading(contains: location)
+    }
+    
     public var currentCursorTokens: [Token] {
         return self._editorController.textStorage.currentTokens
     }

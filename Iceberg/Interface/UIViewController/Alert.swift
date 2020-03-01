@@ -13,7 +13,7 @@ import PKHUD
 extension UIViewController {
     public func showAlert(title: String, message: String) {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        alertController.addAction(UIAlertAction(title: L10n.General.Button.ok, style: .default, handler: nil))
         self.present(alertController, animated: true, completion: nil)
     }
     

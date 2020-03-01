@@ -4,7 +4,7 @@
 <dict>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.icetea.share</string>
+		<string>group.x3note.share</string>
 	</array>
 </dict>
 </plist>

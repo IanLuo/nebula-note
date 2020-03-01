@@ -213,6 +213,8 @@
 		E4CBCD1D236D914400A0FFDB /* EditAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4CBCD1C236D914400A0FFDB /* EditAction.swift */; };
 		E4CBCD1F2370695500A0FFDB /* ActivityHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4CBCD1E2370695500A0FFDB /* ActivityHandler.swift */; };
 		E4CBCD21237303E300A0FFDB /* CaptureActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4CBCD20237303E300A0FFDB /* CaptureActivity.swift */; };
+		E4D0BAE8240BA9CF000E991E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E4D0BAEA240BA9CF000E991E /* InfoPlist.strings */; };
+		E4D0BAEE240BAA3C000E991E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E4D0BAF0240BAA3C000E991E /* InfoPlist.strings */; };
 		E4D0FD7B2348D774001C3BA2 /* PreviewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D0FD7A2348D774001C3BA2 /* PreviewManager.swift */; };
 		E4D31DEC227D39A4001F5272 /* URLlHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D31DEB227D39A4001F5272 /* URLlHandler.swift */; };
 		E4D31DEE227DA633001F5272 /* URLHandlerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D31DED227DA633001F5272 /* URLHandlerManager.swift */; };
@@ -451,13 +453,13 @@
 		E42A7F8622DC679A0038A4DD /* PDFExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFExporter.swift; sourceTree = "<group>"; };
 		E42A87FC21CFC9B300151C90 /* AttachmentTextViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentTextViewController.swift; sourceTree = "<group>"; };
 		E42A87FE21CFCAC500151C90 /* AttachmentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentViewModel.swift; sourceTree = "<group>"; };
-		E43427F62121BF5B00EC6DC3 /* Icetea.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Icetea.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E43427F62121BF5B00EC6DC3 /* x3Note.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = x3Note.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E43427F92121BF5B00EC6DC3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E43428002121BF5F00EC6DC3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		E434280A2121BF5F00EC6DC3 /* IceteaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IceteaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E434280A2121BF5F00EC6DC3 /* x3NoteTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = x3NoteTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E434280E2121BF5F00EC6DC3 /* IcelandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IcelandTests.swift; sourceTree = "<group>"; };
 		E43428102121BF6000EC6DC3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		E43428152121BF6000EC6DC3 /* IceteaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IceteaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E43428152121BF6000EC6DC3 /* x3NoteUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = x3NoteUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E43428192121BF6000EC6DC3 /* IcelandUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IcelandUITests.swift; sourceTree = "<group>"; };
 		E434281B2121BF6000EC6DC3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E4357B4921A995DA006DDD72 /* CaptureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureTests.swift; sourceTree = "<group>"; };
@@ -604,6 +606,10 @@
 		E4CBCD1E2370695500A0FFDB /* ActivityHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityHandler.swift; sourceTree = "<group>"; };
 		E4CBCD20237303E300A0FFDB /* CaptureActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureActivity.swift; sourceTree = "<group>"; };
 		E4CC0C5821EEF92900058E5D /* Size.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Size.swift; sourceTree = "<group>"; };
+		E4D0BAE9240BA9CF000E991E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		E4D0BAEB240BA9D0000E991E /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		E4D0BAEF240BAA3C000E991E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		E4D0BAF1240BAA3E000E991E /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		E4D0FD7A2348D774001C3BA2 /* PreviewManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewManager.swift; sourceTree = "<group>"; };
 		E4D31DEB227D39A4001F5272 /* URLlHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLlHandler.swift; sourceTree = "<group>"; };
 		E4D31DED227DA633001F5272 /* URLHandlerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLHandlerManager.swift; sourceTree = "<group>"; };
@@ -1055,9 +1061,9 @@
 		E43427F72121BF5B00EC6DC3 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E43427F62121BF5B00EC6DC3 /* Icetea.app */,
-				E434280A2121BF5F00EC6DC3 /* IceteaTests.xctest */,
-				E43428152121BF6000EC6DC3 /* IceteaUITests.xctest */,
+				E43427F62121BF5B00EC6DC3 /* x3Note.app */,
+				E434280A2121BF5F00EC6DC3 /* x3NoteTests.xctest */,
+				E43428152121BF6000EC6DC3 /* x3NoteUITests.xctest */,
 				E41CB19B21D88D9300EF0A3C /* Core.framework */,
 				E41CB1A321D88D9400EF0A3C /* BusinessTests.xctest */,
 				E40F6E7E223B78AE00FFF53F /* Interface.framework */,
@@ -1138,6 +1144,7 @@
 				E43D4F3F22C0BFAF00B2322B /* ShareViewController.swift */,
 				E4E7ABD723CE064A005628E6 /* MainInterface.storyboard */,
 				E43D4F4422C0BFAF00B2322B /* Info.plist */,
+				E4D0BAEA240BA9CF000E991E /* InfoPlist.strings */,
 			);
 			path = CaptureIdeaExtension;
 			sourceTree = "<group>";
@@ -1167,6 +1174,7 @@
 				E440F1882309378E00E0EF02 /* ActionRequestHandler.swift */,
 				E440F18A2309378E00E0EF02 /* Action.js */,
 				E440F18C2309378E00E0EF02 /* Info.plist */,
+				E4D0BAF0240BAA3C000E991E /* InfoPlist.strings */,
 			);
 			path = CaptureActionExtension;
 			sourceTree = "<group>";
@@ -1548,9 +1556,9 @@
 			productReference = E41CB1A321D88D9400EF0A3C /* BusinessTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		E43427F52121BF5B00EC6DC3 /* Icetea */ = {
+		E43427F52121BF5B00EC6DC3 /* x3Note */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E434281E2121BF6000EC6DC3 /* Build configuration list for PBXNativeTarget "Icetea" */;
+			buildConfigurationList = E434281E2121BF6000EC6DC3 /* Build configuration list for PBXNativeTarget "x3Note" */;
 			buildPhases = (
 				2321C1BB856E335423F37C5B /* [CP] Check Pods Manifest.lock */,
 				E465E4A2222392380014673D /* ShellScript */,
@@ -1569,14 +1577,14 @@
 				E43D4F4622C0BFAF00B2322B /* PBXTargetDependency */,
 				E440F18E2309378E00E0EF02 /* PBXTargetDependency */,
 			);
-			name = Icetea;
+			name = x3Note;
 			productName = Iceland;
-			productReference = E43427F62121BF5B00EC6DC3 /* Icetea.app */;
+			productReference = E43427F62121BF5B00EC6DC3 /* x3Note.app */;
 			productType = "com.apple.product-type.application";
 		};
-		E43428092121BF5F00EC6DC3 /* IceteaTests */ = {
+		E43428092121BF5F00EC6DC3 /* x3NoteTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E43428212121BF6000EC6DC3 /* Build configuration list for PBXNativeTarget "IceteaTests" */;
+			buildConfigurationList = E43428212121BF6000EC6DC3 /* Build configuration list for PBXNativeTarget "x3NoteTests" */;
 			buildPhases = (
 				A379F6F5A85BFA01E78EA04A /* [CP] Check Pods Manifest.lock */,
 				E43428062121BF5F00EC6DC3 /* Sources */,
@@ -1589,14 +1597,14 @@
 			dependencies = (
 				E434280C2121BF5F00EC6DC3 /* PBXTargetDependency */,
 			);
-			name = IceteaTests;
+			name = x3NoteTests;
 			productName = IcelandTests;
-			productReference = E434280A2121BF5F00EC6DC3 /* IceteaTests.xctest */;
+			productReference = E434280A2121BF5F00EC6DC3 /* x3NoteTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		E43428142121BF6000EC6DC3 /* IceteaUITests */ = {
+		E43428142121BF6000EC6DC3 /* x3NoteUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E43428242121BF6000EC6DC3 /* Build configuration list for PBXNativeTarget "IceteaUITests" */;
+			buildConfigurationList = E43428242121BF6000EC6DC3 /* Build configuration list for PBXNativeTarget "x3NoteUITests" */;
 			buildPhases = (
 				E43428112121BF6000EC6DC3 /* Sources */,
 				E43428122121BF6000EC6DC3 /* Frameworks */,
@@ -1607,9 +1615,9 @@
 			dependencies = (
 				E43428172121BF6000EC6DC3 /* PBXTargetDependency */,
 			);
-			name = IceteaUITests;
+			name = x3NoteUITests;
 			productName = IcelandUITests;
-			productReference = E43428152121BF6000EC6DC3 /* IceteaUITests.xctest */;
+			productReference = E43428152121BF6000EC6DC3 /* x3NoteUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 		E43D4F3C22C0BFAF00B2322B /* CaptureIdeaExtension */ = {
@@ -1708,7 +1716,7 @@
 					};
 				};
 			};
-			buildConfigurationList = E43427F12121BF5B00EC6DC3 /* Build configuration list for PBXProject "Icetea" */;
+			buildConfigurationList = E43427F12121BF5B00EC6DC3 /* Build configuration list for PBXProject "x3Note" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -1722,9 +1730,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				E43427F52121BF5B00EC6DC3 /* Icetea */,
-				E43428092121BF5F00EC6DC3 /* IceteaTests */,
-				E43428142121BF6000EC6DC3 /* IceteaUITests */,
+				E43427F52121BF5B00EC6DC3 /* x3Note */,
+				E43428092121BF5F00EC6DC3 /* x3NoteTests */,
+				E43428142121BF6000EC6DC3 /* x3NoteUITests */,
 				E41CB19A21D88D9300EF0A3C /* Core */,
 				E41CB1A221D88D9400EF0A3C /* BusinessTests */,
 				E40F6E7D223B78AE00FFF53F /* Interface */,
@@ -1797,6 +1805,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E4E7ABD823CE064A005628E6 /* MainInterface.storyboard in Resources */,
+				E4D0BAE8240BA9CF000E991E /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1805,6 +1814,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E440F18B2309378E00E0EF02 /* Action.js in Resources */,
+				E4D0BAEE240BAA3C000E991E /* InfoPlist.strings in Resources */,
 				E440F1872309378E00E0EF02 /* Media.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2260,7 +2270,7 @@
 		};
 		E41CB1A821D88D9400EF0A3C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = E43427F52121BF5B00EC6DC3 /* Icetea */;
+			target = E43427F52121BF5B00EC6DC3 /* x3Note */;
 			targetProxy = E41CB1A721D88D9400EF0A3C /* PBXContainerItemProxy */;
 		};
 		E41CB1AF21D88D9400EF0A3C /* PBXTargetDependency */ = {
@@ -2270,12 +2280,12 @@
 		};
 		E434280C2121BF5F00EC6DC3 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = E43427F52121BF5B00EC6DC3 /* Icetea */;
+			target = E43427F52121BF5B00EC6DC3 /* x3Note */;
 			targetProxy = E434280B2121BF5F00EC6DC3 /* PBXContainerItemProxy */;
 		};
 		E43428172121BF6000EC6DC3 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = E43427F52121BF5B00EC6DC3 /* Icetea */;
+			target = E43427F52121BF5B00EC6DC3 /* x3Note */;
 			targetProxy = E43428162121BF6000EC6DC3 /* PBXContainerItemProxy */;
 		};
 		E43D4F4622C0BFAF00B2322B /* PBXTargetDependency */ = {
@@ -2321,6 +2331,24 @@
 			children = (
 				E440322E240B6D5400CCAEEE /* en */,
 				E4403230240B6D5900CCAEEE /* zh-Hans */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		E4D0BAEA240BA9CF000E991E /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E4D0BAE9240BA9CF000E991E /* en */,
+				E4D0BAEB240BA9D0000E991E /* zh-Hans */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		E4D0BAF0240BAA3C000E991E /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E4D0BAEF240BAA3C000E991E /* en */,
+				E4D0BAF1240BAA3E000E991E /* zh-Hans */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -2501,7 +2529,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Icetea.app/Icetea";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/x3Note.app/x3Note";
 			};
 			name = Debug;
 		};
@@ -2523,7 +2551,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Icetea.app/Icetea";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/x3Note.app/x3Note";
 			};
 			name = Release;
 		};
@@ -2660,8 +2688,8 @@
 					"@executable_path/Frameworks",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -D DEBUG=1";
-				PRODUCT_BUNDLE_IDENTIFIER = com.wod.icetea;
-				PRODUCT_NAME = Icetea;
+				PRODUCT_BUNDLE_IDENTIFIER = com.wod.x3note;
+				PRODUCT_NAME = x3Note;
 				SWIFT_ENABLE_BATCH_MODE = NO;
 				SWIFT_INSTALL_OBJC_HEADER = NO;
 				SWIFT_VERSION = 4.2;
@@ -2685,8 +2713,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.wod.icetea;
-				PRODUCT_NAME = Icetea;
+				PRODUCT_BUNDLE_IDENTIFIER = com.wod.x3note;
+				PRODUCT_NAME = x3Note;
 				SWIFT_ENABLE_BATCH_MODE = NO;
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -2711,7 +2739,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Icetea.app/Icetea";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/x3Note.app/x3Note";
 			};
 			name = Debug;
 		};
@@ -2733,7 +2761,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Icetea.app/Icetea";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/x3Note.app/x3Note";
 			};
 			name = Release;
 		};
@@ -2792,7 +2820,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.wod.icetea.CaptureIdeaExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = com.wod.x3note.CaptureIdeaExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.2;
@@ -2815,7 +2843,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.wod.icetea.CaptureIdeaExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = com.wod.x3note.CaptureIdeaExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.2;
@@ -2838,7 +2866,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.wod.icetea.CaptureActionExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = com.wod.x3note.CaptureActionExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.2;
@@ -2861,7 +2889,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.wod.icetea.CaptureActionExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = com.wod.x3note.CaptureActionExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.2;
@@ -2899,7 +2927,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E43427F12121BF5B00EC6DC3 /* Build configuration list for PBXProject "Icetea" */ = {
+		E43427F12121BF5B00EC6DC3 /* Build configuration list for PBXProject "x3Note" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E434281C2121BF6000EC6DC3 /* Debug */,
@@ -2908,7 +2936,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E434281E2121BF6000EC6DC3 /* Build configuration list for PBXNativeTarget "Icetea" */ = {
+		E434281E2121BF6000EC6DC3 /* Build configuration list for PBXNativeTarget "x3Note" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E434281F2121BF6000EC6DC3 /* Debug */,
@@ -2917,7 +2945,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E43428212121BF6000EC6DC3 /* Build configuration list for PBXNativeTarget "IceteaTests" */ = {
+		E43428212121BF6000EC6DC3 /* Build configuration list for PBXNativeTarget "x3NoteTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E43428222121BF6000EC6DC3 /* Debug */,
@@ -2926,7 +2954,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E43428242121BF6000EC6DC3 /* Build configuration list for PBXNativeTarget "IceteaUITests" */ = {
+		E43428242121BF6000EC6DC3 /* Build configuration list for PBXNativeTarget "x3NoteUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E43428252121BF6000EC6DC3 /* Debug */,

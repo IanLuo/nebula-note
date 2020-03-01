@@ -23,7 +23,14 @@ extension DocumentEditorViewController: OutlineTextViewDelegate {
     }
     
     public func didTapOnHiddenAttachment(textView: UITextView, characterIndex: Int, point: CGPoint) {
-        self.viewModel.foldOrUnfold(location: characterIndex)
+        // 1. find the first topest unfoled heading, and use that to unfold
+         
+        var currentCheckCharacterIndex = characterIndex
+        while let parent = self.viewModel.parentHeading(at: currentCheckCharacterIndex), self.viewModel.isSectionFolded(at: parent.range.location) {
+            currentCheckCharacterIndex = parent.range.location
+        }
+        
+        self.viewModel.foldOrUnfold(location: currentCheckCharacterIndex)
     }
     
     public func didTapOnPriority(textView: UITextView, characterIndex: Int, priority: String, point: CGPoint) {

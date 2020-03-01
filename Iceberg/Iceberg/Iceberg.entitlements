@@ -6,7 +6,7 @@
 	<string>production</string>
 	<key>com.apple.developer.icloud-container-identifiers</key>
 	<array>
-		<string>iCloud.com.wod.icetea</string>
+		<string>iCloud.com.wod.x3note</string>
 	</array>
 	<key>com.apple.developer.icloud-services</key>
 	<array>
@@ -17,13 +17,13 @@
 	<true/>
 	<key>com.apple.developer.ubiquity-container-identifiers</key>
 	<array>
-		<string>iCloud.com.wod.icetea</string>
+		<string>iCloud.com.wod.x3note</string>
 	</array>
 	<key>com.apple.developer.ubiquity-kvstore-identifier</key>
 	<string>$(TeamIdentifierPrefix)$(CFBundleIdentifier)</string>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.icetea.share</string>
+		<string>group.x3note.share</string>
 	</array>
 </dict>
 </plist>

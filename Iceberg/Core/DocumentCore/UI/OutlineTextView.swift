@@ -71,7 +71,10 @@ public class OutlineTextView: UITextView {
                                                                in: self.textContainer,
                                                                fractionOfDistanceBetweenInsertionPoints: &fraction)
         
-        guard fraction > 0 else { return true }
+        let rect = self.layoutManager.boundingRect(forGlyphRange: NSRange(location: self.layoutManager.glyphIndexForCharacter(at: characterIndex), length: 1), in: self.textContainer)
+        let center = CGPoint(x: rect.midX, y: rect.midY)
+        
+        guard sqrt(pow((center.x - location.x), 2) + pow((center.y - location.y), 2)) <= 44 else { return true }
         
         if let outlineTextStorage = self.textStorage as? OutlineTextStorage {
             outlineTextStorage.updateCurrentInfo(at: characterIndex)

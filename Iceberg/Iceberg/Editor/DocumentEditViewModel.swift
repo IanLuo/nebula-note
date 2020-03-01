@@ -179,6 +179,10 @@ public class DocumentEditViewModel: ViewModelProtocol {
         return self._editorService.heading(at: location)
     }
     
+    public func parentHeading(at location: Int) -> HeadingToken? {
+        return self._editorService.parentHeading(at: location)
+    }
+    
     public func priority(at location: Int) -> String? {
         if let priorityRange = self._editorService.heading(at: location)?.priority {
             return self._editorService.string.nsstring.substring(with: priorityRange)

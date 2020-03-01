@@ -213,7 +213,7 @@ public class MembershipViewController: UIViewController {
             .disposed(by: self.disposeBag)
         
         self.viewModel.output.errorOccurs.subscribe(onNext: { [weak self] error in
-            self?.showAlert(title: "error", message: "\(error)")
+            self?.showAlert(title: "error", message: "\(error.localizedDescription)")
         }).disposed(by:self.disposeBag)
     }
     

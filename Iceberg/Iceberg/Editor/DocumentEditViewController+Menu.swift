@@ -390,11 +390,20 @@ extension DocumentEditorViewController {
             })
         }
         
-        actionsController.addAction(icon: nil, title: L10n.Document.Heading.addHeadingAboveIt) { viewController in
-            viewController.dismiss(animated: true) {
-                self.viewModel.showGlobalCaptureEntry()
-                let result = self.viewModel.performAction(EditAction.addSameLevelHeadingAbove(location), textView: self.textView)
-                self.textView.selectedRange = NSRange(location: result.range!.upperBound - 1, length: 0)
+        if self.viewModel.isMember {
+            actionsController.addAction(icon: nil, title: L10n.Document.Heading.addHeadingAboveIt) { viewController in
+                viewController.dismiss(animated: true) {
+                    self.viewModel.showGlobalCaptureEntry()
+                    let result = self.viewModel.performAction(EditAction.addSameLevelHeadingAbove(location), textView: self.textView)
+                    self.textView.selectedRange = NSRange(location: result.range!.upperBound - 1, length: 0)
+                }
+            }
+        } else {
+            actionsController.addAction(icon: Asset.Assets.proLabel.image, title: L10n.Document.Heading.addHeadingAboveIt) { viewController in
+                viewController.dismiss(animated: true) {
+                    self.viewModel.showGlobalCaptureEntry()
+                    self.viewModel.context.coordinator?.showMembership()
+                }
             }
         }
         

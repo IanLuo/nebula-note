@@ -17,7 +17,7 @@
                BlueprintIdentifier = "E41F86E521902D94006C4CDB"
                BuildableName = "Storage.framework"
                BlueprintName = "Storage"
-               ReferencedContainer = "container:Icetea.xcodeproj">
+               ReferencedContainer = "container:x3Note.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -46,7 +46,7 @@
             BlueprintIdentifier = "E41F86E521902D94006C4CDB"
             BuildableName = "Storage.framework"
             BlueprintName = "Storage"
-            ReferencedContainer = "container:Icetea.xcodeproj">
+            ReferencedContainer = "container:x3Note.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </LaunchAction>
@@ -62,7 +62,7 @@
             BlueprintIdentifier = "E41F86E521902D94006C4CDB"
             BuildableName = "Storage.framework"
             BlueprintName = "Storage"
-            ReferencedContainer = "container:Icetea.xcodeproj">
+            ReferencedContainer = "container:x3Note.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

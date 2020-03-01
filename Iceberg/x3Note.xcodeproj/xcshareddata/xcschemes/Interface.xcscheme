@@ -17,7 +17,7 @@
                BlueprintIdentifier = "E40F6E7D223B78AE00FFF53F"
                BuildableName = "Interface.framework"
                BlueprintName = "Interface"
-               ReferencedContainer = "container:Icetea.xcodeproj">
+               ReferencedContainer = "container:x3Note.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -54,7 +54,7 @@
             BlueprintIdentifier = "E40F6E7D223B78AE00FFF53F"
             BuildableName = "Interface.framework"
             BlueprintName = "Interface"
-            ReferencedContainer = "container:Icetea.xcodeproj">
+            ReferencedContainer = "container:x3Note.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

@@ -4,7 +4,7 @@ platform :ios, '9.0'
 
 use_frameworks!
 
-target 'Icetea' do
+target 'x3Note' do
     pod 'RxSwift'
     pod 'RxCocoa'
     pod 'RxDataSources'
@@ -16,7 +16,7 @@ target 'Icetea' do
     pod 'PKHUD', '~> 5.0'
 end
 
-target 'IceteaTests' do
+target 'x3NoteTests' do
     pod 'RxSwift'
     pod 'RxCocoa'
 end

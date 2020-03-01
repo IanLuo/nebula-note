@@ -190,7 +190,7 @@ public class SettingsViewController: UITableViewController {
                                 self?.showAlert(title: L10n.Setting.Alert.IcloudIsNotEnabled.title,
                                                 message: L10n.Setting.Alert.IcloudIsNotEnabled.msg)
                             } else {
-                                self?.showAlert(title: L10n.Setting.Alert.failToStoreIniCloud, message: "\(error)")
+                                self?.showAlert(title: L10n.Setting.Alert.failToStoreIniCloud, message: "\(error.localizedDescription)")
                             }
                             
                         case .success:

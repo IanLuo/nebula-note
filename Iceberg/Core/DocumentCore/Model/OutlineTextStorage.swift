@@ -266,6 +266,21 @@ extension OutlineTextStorage {
         return nil
     }
     
+    public func parentHeading(contains location: Int) -> HeadingToken? {
+        if let headingToken = self.heading(contains: location) {
+            guard headingToken.range.location  > 0 else { return nil }
+            
+            if let maybeParent = self.heading(contains: headingToken.range.location - 1) {
+                guard maybeParent.level < headingToken.level else { return nil }
+                return maybeParent
+            } else {
+                return nil
+            }
+        } else {
+            return nil
+        }
+    }
+    
     public func subheadings(of heading: HeadingToken) -> [HeadingToken] {
         var subheadings: [HeadingToken] = []
         var mark: Bool = false // mark is the current heading is found

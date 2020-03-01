@@ -11,15 +11,15 @@ import RxSwift
 import Interface
 
 public enum HelpPage: String {
-    case allUserGuide = "https://forum.iceteanote.me/c/5"
-    case editor = "https://forum.iceteanote.me/t/12"
-    case capture = "https://forum.iceteanote.me/t/13"
-    case documentManagement = "https://forum.iceteanote.me/t/14"
-    case entrance = "https://forum.iceteanote.me/t/15"
-    case dateAndTime = "https://forum.iceteanote.me/t/16"
-    case agenda = "https://forum.iceteanote.me/t/17"
-    case membership = "https://forum.iceteanote.me/t/19";
-    case syntax = "https://forum.iceteanote.me/t/18";
+    case allUserGuide = "https://forum.x3note.site/c/5"
+    case editor = "https://forum.x3note.site/t/12"
+    case capture = "https://forum.x3note.site/t/13"
+    case documentManagement = "https://forum.x3note.site/t/14"
+    case entrance = "https://forum.x3note.site/t/15"
+    case dateAndTime = "https://forum.x3note.site/t/16"
+    case agenda = "https://forum.x3note.site/t/17"
+    case membership = "https://forum.x3note.site/t/19";
+    case syntax = "https://forum.x3note.site/t/18";
     
     public func open() {
         if let url = URL(string: self.rawValue), UIApplication.shared.canOpenURL(url) {

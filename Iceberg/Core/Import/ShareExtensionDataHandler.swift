@@ -13,7 +13,7 @@ public struct ShareExtensionDataHandler {
     public init() {}
     
     public var sharedContainterURL: URL {
-        return FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.icetea.share")!
+        return FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.x3note.share")!
     }
     
     public func clearAllSharedIdeas() {
