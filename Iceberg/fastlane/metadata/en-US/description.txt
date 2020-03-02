@@ -1,6 +1,6 @@
-Keeping excellent notes, writing great articles, the most important tool must be a handy, powerful editor. Other than that, for long term note keeping, or article writing, for most of them, it is a on going process, you need to keep collecting materials, making planning for you work, and keep writing, keep everything organized. These works are trivial, distractive, so it is important to form a set of working habbits and familiar tools, and to manage all thses planning, materials organizing and writings work well, with all the hard works, you can get greate notes or articles as a results and rewards.
+Keeping excellent notes, writing great articles, the most important tool must be a handy, powerful editor, and, for long term note keeping, or article writing, for most of them, it is a on going process, you need to keep collecting materials, making planning for you work, and keep writing, keep everything organized. These works are trivial, distractive, so it is important to form a set of working habbits and familiar tools, and to manage all thses planning, materials organizing and writings work well, with all the hard works, you can get greate notes or articles as a results and rewards.
 
-With that in mind, Icetea note is desinged to help you, with the 3 major parts: Editor, Planning, and Idea capture. Those parts works together seamlessly, to provide ability to handle planning, materials organizing in one place, let you focusing on your editor, make planning and managing materials without switching working context, and pick up where you left from the agenda which automatically generated from your work contents.
+With that in mind, x3 note is desinged to help you, with the 3 major parts: Editor, Planning, and idea capture. Those parts works together seamlessly, to provide ability to handle planning, materials organizing in one place, let you focusing on your editor, make planning and managing materials without switching working context, and pick up where you left from the agenda which automatically generated from your work contents.
 
 - Editor
 Lightweight markup launguage based rich text editor, Markdown like syntax, supports lots of attachment types, including image, sketch, audio, video, location, etc.
@@ -28,4 +28,4 @@ HTML, txt, image, PDF, Markdown.
 
 - And more to come.
 
-If you have any question, or feedback, or anything you want to let us know, please visit http://forum.iceteanote.me/.
+If you have any question, or feedback, or anything you want to let us know, please visit http://forum.x3note.site/.

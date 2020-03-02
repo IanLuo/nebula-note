@@ -103,7 +103,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>93</string>
+	<string>98</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>LSSupportsOpeningDocumentsInPlace</key>
@@ -122,12 +122,12 @@
 	<string>access your photo library</string>
 	<key>NSUbiquitousContainers</key>
 	<dict>
-		<key>iCloud.com.wod.icetea</key>
+		<key>iCloud.com.wod.x3note</key>
 		<dict>
 			<key>NSUbiquitousContainerIsDocumentScopePublic</key>
 			<true/>
 			<key>NSUbiquitousContainerName</key>
-			<string>Icetea</string>
+			<string>x3note</string>
 			<key>NSUbiquitousContainerSupportedFolderLevels</key>
 			<string>Any</string>
 		</dict>

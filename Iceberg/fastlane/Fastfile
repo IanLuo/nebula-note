@@ -19,28 +19,28 @@ platform :ios do
 
   lane :create_app do
     produce(
-      app_name: "Icetea Note",
-      app_identifier: "com.wod.icetea",
+      app_name: "x3 Note",
+      app_identifier: "com.wod.x3note",
       language: "English",
       app_version: "1.0",
-      sku: "icetea",
+      sku: "x3note",
     )
   end
 
   lane :beta do
     increment_build_number
     cert(development: false)
-    sigh(app_identifier: "com.wod.icetea", development: false)
-    sigh(app_identifier: "com.wod.icetea.CaptureIdeaExtension", development: false)
-    sigh(app_identifier: "com.wod.icetea.CaptureActionExtension", development: false)
+    sigh(app_identifier: "com.wod.x3note", development: false)
+    sigh(app_identifier: "com.wod.x3note.CaptureIdeaExtension", development: false)
+    sigh(app_identifier: "com.wod.x3note.CaptureActionExtension", development: false)
     build
     upload_testflight
   end
 
   lane :build do
     gym(
-      scheme: "Icetea",
-      workspace: "Icetea.xcworkspace",
+      scheme: "x3Note",
+      workspace: "x3Note.xcworkspace",
       clean: true,
       export_method: "app-store",
     )
@@ -69,7 +69,7 @@ platform :ios do
 
   lane :test do
     scan(
-      workspace: 'Iceberg.xcworkspace',
+      workspace: 'x3Note.xcworkspace',
       devices: ['iPhone XS', 'iPhone 8']
     )
   end

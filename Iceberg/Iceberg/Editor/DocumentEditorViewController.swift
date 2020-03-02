@@ -94,9 +94,9 @@ public class DocumentEditorViewController: UIViewController {
         self.inputbar.mode = .paragraph
         
         let notificationCenter = NotificationCenter.default
-        notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillHideNotification, object: nil)
-        notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
-        notificationCenter.addObserver(self, selector: #selector(_keyboardWillShow), name: UIResponder.keyboardDidShowNotification, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardDidShowNotification, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardDidHideNotification, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(_tryToShowUserGuide), name: UIResponder.keyboardDidShowNotification, object: nil)
         
         self.viewModel.dependency.appContext.isReadingMode.subscribe(onNext: { [weak self] isReadingMode in
             self?.textView.isEditable = !isReadingMode
@@ -125,7 +125,7 @@ public class DocumentEditorViewController: UIViewController {
         return button
     }
     
-    @objc private func _keyboardWillShow(_ notification: Notification) {
+    @objc private func _tryToShowUserGuide(_ notification: Notification) {
         
         guard shouldShowHeadingGuide() else { return }
         
@@ -164,22 +164,23 @@ public class DocumentEditorViewController: UIViewController {
     }
     
     @objc func adjustForKeyboard(notification: Notification) {
+        guard self.textView.isEditable else { return }
         guard let keyboardValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
 
         let keyboardScreenEndFrame = keyboardValue.cgRectValue
         let keyboardViewEndFrame = view.convert(keyboardScreenEndFrame, from: view.window)
 
-        if notification.name == UIResponder.keyboardWillHideNotification {
+        if notification.name == UIResponder.keyboardDidHideNotification {
             self.textView.contentInset = self._contentEdgeInsect
-        } else {
+        } else if notification.name == UIResponder.keyboardDidShowNotification {
             self.textView.contentInset = UIEdgeInsets(top: self._contentEdgeInsect.top, left: self._contentEdgeInsect.left, bottom: keyboardViewEndFrame.height - view.safeAreaInsets.bottom, right: self._contentEdgeInsect.right)
+            let selectedRange = self.textView.selectedRange
+            self.textView.scrollRangeToVisible(selectedRange)
         }
 
         self.textView.scrollIndicatorInsets = self.textView.contentInset
-
-        let selectedRange = self.textView.selectedRange
-        self.textView.scrollRangeToVisible(selectedRange)
     }
+
     
     private var _lastState: UIDocument.State?
     @objc private func _documentStateChanged(_ notification: NSNotification) {

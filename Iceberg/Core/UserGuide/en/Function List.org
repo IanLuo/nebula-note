@@ -1,5 +1,5 @@
 * Editor
-Icetea's goal is to build a professional, conforable to use editor, provides functions like basic text editing, rich text marks, insert multiple types of attachments, etc. And many more to be added.
+x3 note's goal is to build a professional, conforable to use editor, provides functions like basic text editing, rich text marks, insert multiple types of attachments, etc. And many more to be added.
 ** Text marks
 Supports *Bold*, _Underscore_, /Italic/, and ~Highlight~ effects.
 ** Attachment
@@ -36,9 +36,9 @@ When moving at paragraph content, you are moving the current line of text.
 ** Orgnize paragraphs
 You can move a paragraph to another paragraph, as its sub paragraph, or move to begining/ending of the document, and keeping the paragraph level, and the move can be inside one documents, or to another document.
 * Capture inspiration
-** Inside Icetea
-You access *Capture inspiration* at every page inside Icetea. When you are editing a document, you can find it by tapping the action button, other places, the button is floating at bottom right of the screen.
-** Share to Icetea
+** Inside x3 note
+You access *Capture inspiration* at every page inside x3 note. When you are editing a document, you can find it by tapping the action button, other places, the button is floating at bottom right of the screen.
+** Share to x3 note
 Any app that can share content, can share to Icea, and kept in *Captured ideas*
 ** Refile
 When you are managing the captured ideas, you can choose a place, then move that idea to the place of document you choose.
@@ -58,6 +58,6 @@ You can choose an image as the cover of a document.
 ** Duplicate
 Make a copy of the chosen document.
 ** Import
-Import other file into Icetea, use it's content to create a new document, now we support *org* file.
+Import other file into x3 note, use it's content to create a new document, now we support *org* file.
 ** iCloud synchorinize
 Save you document on iCloud, then it will synchronize across all your devices, free of charge.

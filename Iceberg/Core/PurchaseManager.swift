@@ -20,9 +20,9 @@ public struct PurchaseManager {
         public var key: String {
             switch self {
             case .monthlyMembership:
-                return "icetea_note_monthly_membership"
+                return "x3note_membership_monthly_renew"
             case .yearlyMembership:
-                return "yearly_icetea_note_membership"
+                return "x3_note_membership_yearly_renew"
             }
         }
     }

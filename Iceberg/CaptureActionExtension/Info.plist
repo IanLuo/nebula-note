@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Send to Icetea</string>
+	<string>Send to x3 note</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -19,7 +19,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
-	<string>93</string>
+	<string>98</string>
 	<key>NSExtension</key>
 	<dict>
 		<key>NSExtensionAttributes</key>
@@ -33,12 +33,12 @@
                         $extensionItem.attachments,
                         $attachment,
                         (
-                        ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "public.image" ||
-                        ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "public.movie" ||
-                        ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "public.audio" ||
-                        ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "public.url" ||
-                        ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "public.text" ||
-                        ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "com.apple.property-list"
+                        ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO &quot;public.image&quot; ||
+                        ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO &quot;public.movie&quot; ||
+                        ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO &quot;public.audio&quot; ||
+                        ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO &quot;public.url&quot; ||
+                        ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO &quot;public.text&quot; ||
+                        ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO &quot;com.apple.property-list&quot;
                         )
                     ).@count == $extensionItem.attachments.@count
                 ).@count &gt;= 1

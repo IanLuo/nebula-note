@@ -15,10 +15,6 @@ extension DocumentEditorViewController: UITextViewDelegate {
         self.viewModel.didUpdate()
     }
     
-    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        
-    }
-    
     public func textViewDidBeginEditing(_ textView: UITextView) {
         let location = textView.selectedRange.location
         
@@ -26,6 +22,8 @@ extension DocumentEditorViewController: UITextViewDelegate {
     }
     
     public func textViewDidChangeSelection(_ textView: UITextView) {
+        guard self.textView.isEditable else { return }
+        
         let location = textView.selectedRange.location
         
         self.viewModel.cursorLocationChanged(location)

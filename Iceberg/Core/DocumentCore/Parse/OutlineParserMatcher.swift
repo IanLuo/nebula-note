@@ -432,10 +432,10 @@ extension OutlineParser {
         }
         
         public struct Link {
-            public static let icetea: String = "icetea"
+            public static let x3: String = "x3"
             public static let http: String = "http"
             public static let https: String = "https"
-            public static let patternAll: String = "(\(http)|\(https)|\(icetea))"
+            public static let patternAll: String = "(\(http)|\(https)|\(x3))"
         }
     }
 }
