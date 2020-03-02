@@ -204,7 +204,7 @@ extension AgendaViewController: AgendaViewModelDelegate {
 
 extension AgendaViewController: EmptyContentPlaceHolderProtocol {
     public var text: String {
-        return "Great!, all job is done"
+        return L10n.Selector.empty
     }
     
     public var viewToShowImage: UIView {
@@ -212,7 +212,7 @@ extension AgendaViewController: EmptyContentPlaceHolderProtocol {
     }
     
     public var image: UIImage {
-        return Asset.Assets.emptyCup.image.fill(color: InterfaceTheme.Color.secondaryDescriptive)
+        return Asset.Assets.smallIcon.image.fill(color: InterfaceTheme.Color.secondaryDescriptive)
     }
 }
 

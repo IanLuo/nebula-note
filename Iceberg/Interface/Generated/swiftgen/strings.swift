@@ -271,6 +271,8 @@ public enum L10n {
   }
 
   public enum CaptureList {
+    /// All ideas are handled
+    public static let empty = L10n.tr("Localizable", "captureList.empty")
     /// Captured ideas
     public static let title = L10n.tr("Localizable", "captureList.title")
     public enum Action {

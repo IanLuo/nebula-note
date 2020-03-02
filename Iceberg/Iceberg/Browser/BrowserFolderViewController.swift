@@ -199,7 +199,7 @@ extension BrowserFolderViewController: EmptyContentPlaceHolderProtocol {
     }
     
     public var image: UIImage {
-        return Asset.Assets.emptyCup.image.fill(color: InterfaceTheme.Color.secondaryDescriptive)
+        return Asset.Assets.smallIcon.image.fill(color: InterfaceTheme.Color.secondaryDescriptive)
     }
     
     public var viewToShowImage: UIView {

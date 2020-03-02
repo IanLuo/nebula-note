@@ -179,11 +179,11 @@ extension DocumentSearchViewController: UITableViewDataSource, UITableViewDelega
 
 extension DocumentSearchViewController: EmptyContentPlaceHolderProtocol {
     public var text: String {
-        return self.searchInputView.textField.text?.count == 0 ? "" : "No result"
+        return self.searchInputView.textField.text?.count == 0 ? "" : L10n.Selector.empty
     }
     
     public var image: UIImage {
-        return Asset.Assets.emptyCup.image.fill(color: InterfaceTheme.Color.secondaryDescriptive)
+        return Asset.Assets.smallIcon.image.fill(color: InterfaceTheme.Color.secondaryDescriptive)
     }
     
     public var viewToShowImage: UIView {

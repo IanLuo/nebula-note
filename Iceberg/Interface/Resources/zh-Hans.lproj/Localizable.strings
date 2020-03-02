@@ -238,6 +238,7 @@
 "captureList.action.title" = "操作";
 "captureList.action.deleteConfirm" = "确定删除这个灵感？";
 "captureList.confirm.delete" = "移动完成，是否删除这个灵感？";
+"captureList.empty" = "所有灵感处理完毕";
 
 //location
 "location.title" = "添加一个位置";

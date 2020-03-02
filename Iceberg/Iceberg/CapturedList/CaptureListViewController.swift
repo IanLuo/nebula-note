@@ -321,11 +321,11 @@ extension CaptureListViewController: UITableViewDataSource {
 
 extension CaptureListViewController: EmptyContentPlaceHolderProtocol {
     public var text: String {
-        return "All ideas handled"
+        return L10n.CaptureList.empty
     }
     
     public var image: UIImage {
-        return Asset.Assets.emptyCup.image.fill(color: InterfaceTheme.Color.secondaryDescriptive)
+        return Asset.Assets.smallIcon.image.fill(color: InterfaceTheme.Color.secondaryDescriptive)
     }
     
     public var viewToShowImage: UIView {
