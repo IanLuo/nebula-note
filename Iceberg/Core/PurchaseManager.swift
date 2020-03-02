@@ -110,7 +110,7 @@ public struct PurchaseManager {
             validatServiceType = AppleReceiptValidator.VerifyReceiptURLType.sandbox
             #endif
             
-            let validator = AppleReceiptValidator(service: validatServiceType, sharedSecret: "7dc6efbf319f46f5834b39b19110d3ee")
+            let validator = AppleReceiptValidator(service: validatServiceType, sharedSecret: "fec2bd5d8c834d62bf4c8ba5b1577620")
             SwiftyStoreKit.verifyReceipt(using: validator) { result in
                 switch result {
                 case .error(error: let error):
