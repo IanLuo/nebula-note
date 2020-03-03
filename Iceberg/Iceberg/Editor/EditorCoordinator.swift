@@ -24,11 +24,12 @@ public class EditorCoordinator: Coordinator {
     
     public weak var delegate: EditorCoordinatorSelectHeadingDelegate?
     
-    private let usage: Usage
+    let usage: Usage
     
     private var _viewModel: DocumentEditViewModel!
     
     public var didSelectOutlineSelectionAction: ((OutlineLocation) -> Void)?
+    public var didCancelSelectionOutlineSelectionAction: (() -> Void)?
     
     private var _url: URL!
     
@@ -69,6 +70,9 @@ public class EditorCoordinator: Coordinator {
             coordinator?.stop(animated: true, completion: {
                 completion(selection)
             })
+        }
+        coordinator.didCancelSelectionOutlineSelectionAction = { [weak coordinator] in
+            coordinator?.stop(animated: true, completion: {})
         }
         coordinator.start(from: self)
     }
@@ -166,6 +170,7 @@ extension EditorCoordinator: SearchCoordinatorDelegate {
 extension EditorCoordinator: HeadingsOutlineViewControllerDelegate {
     public func didCancel() {
         self.delegate?.didCancel(coordinator: self)
+        self.didCancelSelectionOutlineSelectionAction?()
     }
     
     public func didSelect(url: URL, selection: OutlineLocation) {

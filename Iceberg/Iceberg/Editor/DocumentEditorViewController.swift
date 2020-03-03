@@ -94,8 +94,9 @@ public class DocumentEditorViewController: UIViewController {
         self.inputbar.mode = .paragraph
         
         let notificationCenter = NotificationCenter.default
-        notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardDidShowNotification, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillShowNotification, object: nil)
         notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardDidHideNotification, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardDidChangeFrameNotification, object: nil)
         notificationCenter.addObserver(self, selector: #selector(_tryToShowUserGuide), name: UIResponder.keyboardDidShowNotification, object: nil)
         
         self.viewModel.dependency.appContext.isReadingMode.subscribe(onNext: { [weak self] isReadingMode in
@@ -172,10 +173,9 @@ public class DocumentEditorViewController: UIViewController {
 
         if notification.name == UIResponder.keyboardDidHideNotification {
             self.textView.contentInset = self._contentEdgeInsect
-        } else if notification.name == UIResponder.keyboardDidShowNotification {
+        } else {
             self.textView.contentInset = UIEdgeInsets(top: self._contentEdgeInsect.top, left: self._contentEdgeInsect.left, bottom: keyboardViewEndFrame.height - view.safeAreaInsets.bottom, right: self._contentEdgeInsect.right)
-            let selectedRange = self.textView.selectedRange
-            self.textView.scrollRangeToVisible(selectedRange)
+            self.textView.scrollRangeToVisible(self.textView.selectedRange)
         }
 
         self.textView.scrollIndicatorInsets = self.textView.contentInset
@@ -285,13 +285,19 @@ extension DocumentEditorViewController: DocumentEditViewModelDelegate {
     
     internal func _scrollTo(location: Int, shouldScrollToZero: Bool = false) {
         if location > 0 {
-            self.textView.scrollRangeToVisible(self.textView.selectedRange)
             self.textView.selectedRange = NSRange(location: location, length: 0)
-            self.textView.becomeFirstResponder()
+            if self.textView.isFirstResponder {
+                self.textView.scrollRangeToVisible(self.textView.selectedRange)
+            } else {
+                self.textView.becomeFirstResponder()
+            }
         } else if shouldScrollToZero && location == 0 {
-            self.textView.scrollRectToVisible(CGRect.zero, animated: true)
             self.textView.selectedRange = NSRange(location: 0, length: 0)
-            self.textView.becomeFirstResponder()
+            if self.textView.isFirstResponder {
+                self.textView.scrollRangeToVisible(self.textView.selectedRange)
+            } else {
+                self.textView.becomeFirstResponder()
+            }
         }
     }
     

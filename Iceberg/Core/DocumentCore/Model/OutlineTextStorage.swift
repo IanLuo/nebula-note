@@ -271,8 +271,13 @@ extension OutlineTextStorage {
             guard headingToken.range.location  > 0 else { return nil }
             
             if let maybeParent = self.heading(contains: headingToken.range.location - 1) {
-                guard maybeParent.level < headingToken.level else { return nil }
-                return maybeParent
+                if maybeParent.level < headingToken.level {
+                    return maybeParent
+                } else if maybeParent.level == headingToken.level { // find sibline's parent
+                    return parentHeading(contains: maybeParent.range.location)
+                } else {
+                    return nil
+                }
             } else {
                 return nil
             }

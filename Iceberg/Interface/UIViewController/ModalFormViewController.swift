@@ -430,7 +430,6 @@ private class InputTextFieldCell: UITableViewCell, UITextFieldDelegate, Validata
         let textField = TextField()
         textField.font = InterfaceTheme.Font.body
         textField.textColor = InterfaceTheme.Color.interactive
-        textField.autocapitalizationType = .none
         textField.autocorrectionType = .no
         textField.clearButtonMode = .whileEditing
         textField.backgroundColor = InterfaceTheme.Color.background2

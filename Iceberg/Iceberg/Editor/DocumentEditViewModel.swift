@@ -60,8 +60,13 @@ public class DocumentEditViewModel: ViewModelProtocol {
     }
     
     deinit {
-        self._editorService.close()
-        self.removeObservers()
+        guard let usage = self.context.coordinator?.usage else { return }
+        switch usage {
+        case .editor:
+            self._editorService.close()
+            self.removeObservers()
+        default: break
+        }
     }
     
     private let disposeBag = DisposeBag()
@@ -379,6 +384,14 @@ public class DocumentEditViewModel: ViewModelProtocol {
 
 extension DocumentEditViewModel {
     fileprivate func addObservers() {
+        guard let usage = self.context.coordinator?.usage else { return }
+        
+        switch usage {
+        case .outline:
+            return
+        default: break
+        }
+        
         self.dependency.eventObserver.registerForEvent(on: self,
                                                                eventType: NewDocumentPackageDownloadedEvent.self,
                                                                queue: .main,

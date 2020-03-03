@@ -1,6 +1,6 @@
 //
 //  UserGuideViewController.swift
-//  Icetea
+//  x3
 //
 //  Created by ian luo on 2020/1/29.
 //  Copyright © 2020 wod. All rights reserved.

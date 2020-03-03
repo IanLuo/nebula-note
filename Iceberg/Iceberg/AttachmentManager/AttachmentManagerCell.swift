@@ -1,6 +1,6 @@
 //
 //  AttachmentManagerCell.swift
-//  Icetea
+//  x3
 //
 //  Created by ian luo on 2020/2/8.
 //  Copyright © 2020 wod. All rights reserved.
