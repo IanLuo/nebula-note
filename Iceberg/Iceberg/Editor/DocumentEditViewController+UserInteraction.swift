@@ -116,6 +116,12 @@ extension DocumentEditorViewController: OutlineTextViewDelegate {
     
     public func didTapOnLevel(textView: UITextView, chracterIndex: Int, point: CGPoint) {
         self.viewModel.foldOrUnfold(location: chracterIndex)
+        
+        if self.textView.isFirstResponder {
+            if let heading = self.viewModel.heading(at: chracterIndex) {
+                self.textView.selectedRange = heading.range.tail(0)
+            }
+        }
     }
     
     public func didTapOnCheckbox(textView: UITextView, characterIndex: Int, checkbox: String, point: CGPoint) {
