@@ -23,6 +23,7 @@ public class AudioAttachmentView: UIView, AttachmentViewProtocol {
     
     public func setup(attachment: Attachment) {
         self.playerController = AVPlayerViewController()
+        self.playerController.view.backgroundColor = InterfaceTheme.Color.background2
         self.addSubview(self.playerController.view)
         self.playerController.view.allSidesAnchors(to: self, edgeInset: 0)
         
