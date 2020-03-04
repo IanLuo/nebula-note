@@ -273,14 +273,6 @@ extension CaptureListViewController: CaptureTableCellDelegate {
                 })
             }
         case .pick:
-            actionsViewController.addAction(icon: nil, title: L10n.CaptureList.Action.copyToDocument) { viewController in
-                viewController.dismiss(animated: true, completion: {
-                    guard let index = self.viewModel.index(for: cellModel) else { return }
-                    self.viewModel.selectAttachment(index: index)
-                    self.viewModel.showGlobalCaptureEntry()
-                })
-            }
-            
             actionsViewController.addAction(icon: nil, title: L10n.CaptureList.Action.moveToDocument) { viewController in
                 viewController.dismiss(animated: true, completion: {
                     guard let index = self.viewModel.index(for: cellModel) else { return }
@@ -360,16 +352,9 @@ extension CaptureListViewController: CaptureListViewModelDelegate {
         
         self.showEmptyContentImage(self.viewModel.currentFilterdCellModels.count == 0)
         
-        let confirmViewController = ConfirmViewController(contentText: L10n.CaptureList.Confirm.delete, onConfirm: { [weak self] viewController in
-            viewController.dismiss(animated: true) {
-                let shouldDeleteAttachment = attachment.kind.displayAsPureText
-                self?.viewModel.delete(index: index, alsoDeleteAttachment: shouldDeleteAttachment)
-            }
-        }) { viewController in
-            viewController.dismiss(animated: true)
-        }
-        
-        self.present(confirmViewController, animated: true)
+        // remove attachment from capture list
+        let shouldDeleteAttachment = attachment.kind.displayAsPureText
+        self.viewModel.delete(index: index, alsoDeleteAttachment: shouldDeleteAttachment)
     }
     
     public func didLoadData() {
