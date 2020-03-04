@@ -31,6 +31,12 @@ extension DocumentEditorViewController: OutlineTextViewDelegate {
         }
         
         self.viewModel.foldOrUnfold(location: currentCheckCharacterIndex)
+        
+        if self.textView.isFirstResponder {
+            if let heading = self.viewModel.heading(at: characterIndex) {
+                self.textView.selectedRange = heading.range.tail(0)
+            }
+        }
     }
     
     public func didTapOnPriority(textView: UITextView, characterIndex: Int, priority: String, point: CGPoint) {
