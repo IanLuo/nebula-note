@@ -107,6 +107,7 @@ fileprivate struct PlistStore: KeyValueStore {
             let userDefaults = UserDefaults.standard
             userDefaults.removeObject(forKey: key)
             userDefaults.synchronize()
+            completion()
         }
     }
     

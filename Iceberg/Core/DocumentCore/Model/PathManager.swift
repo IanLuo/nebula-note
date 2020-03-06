@@ -296,8 +296,8 @@ extension URL {
     }
     
     public var containerRelativePath: String {
-        let path = self.resolvingSymlinksInPath().path
-        let rootPath = URL.localRootURL.resolvingSymlinksInPath().path
+        let path = self.path.removingPrefixIfNeeded()
+        let rootPath = URL.localRootURL.path.removingPrefixIfNeeded()
         if path == rootPath {
             return ""
         } else {
@@ -306,8 +306,8 @@ extension URL {
     }
     
     public var documentRelativePath: String {
-        let path = self.resolvingSymlinksInPath().path
-        let rootPath = URL.documentBaseURL.resolvingSymlinksInPath().path
+        let path = self.path.removingPrefixIfNeeded()
+        let rootPath = URL.documentBaseURL.path.removingPrefixIfNeeded()
         if path == rootPath {
             return ""
         } else {
@@ -315,7 +315,7 @@ extension URL {
             return path.replacingOccurrences(of: separator, with: "", options: [], range: nil)
         }
     }
-    
+        
     public var levelsToRoot: Int {
         return self.documentRelativePath.components(separatedBy: "/").filter { $0.count > 0 }.count
     }
@@ -325,6 +325,16 @@ extension URL {
     }
 }
 
+extension String {
+    func removingPrefixIfNeeded() -> String {
+        if self.hasPrefix("/private") {
+            return String(self[index(self.startIndex, offsetBy: 8)...])
+        } else {
+            return self
+        }
+    }
+
+}
 
 extension URL {
     public func duplicate(queue q: DispatchQueue, copyExt: String, completion: @escaping (URL?, Error?) -> Void) {

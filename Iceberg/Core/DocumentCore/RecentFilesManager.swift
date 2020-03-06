@@ -69,7 +69,6 @@ public class RecentFilesManager {
     /// 当文件名修改了之后，更改保存的最近文件的文件名
     @objc internal func onDocumentNameChange(event: RenameDocumentEvent) {
         let oldPath = event.oldUrl.documentRelativePath
-        let oldSubfolderPath = event.oldUrl.convertoFolderURL.documentRelativePath
         let plist = KeyValueStoreFactory.store(type: KeyValueStoreType.plist(PlistStoreType.custom(RecentFilesManager.recentFilesPlistFileName)))
         
         self.recentFiles.forEach { documentInfo in
@@ -81,16 +80,10 @@ public class RecentFilesManager {
                         self?.eventObserver.emit(RecentDocumentRenamedEvent(renameDocumentEvent: event))
                     }
                 }
-            } else if documentInfo.url.deletingLastPathComponent().path.contains(oldSubfolderPath) { // 子文件
-                let openDate = self.recentFile(url: documentInfo.url.documentRelativePath, plist: plist)?.lastRequestTime ?? Date()
-                self.removeRecentFile(url: documentInfo.url) {
-                    self.addRecentFile(url: event.newUrl, lastLocation: 0, date: openDate) { [weak self] in
-                        self?.clearFilesDoesNotExists({})
-                        self?.eventObserver.emit(RecentDocumentRenamedEvent(renameDocumentEvent: event))
-                    }
-                }
             }
         }
+        
+        self.clearFilesDoesNotExists({})
     }
     
     @objc private func onDocumentDelete(event: DeleteDocumentEvent) {
@@ -105,11 +98,9 @@ public class RecentFilesManager {
     public func removeRecentFile(url: URL, completion: @escaping () -> Void) {
         let plist = KeyValueStoreFactory.store(type: KeyValueStoreType.plist(PlistStoreType.custom(RecentFilesManager.recentFilesPlistFileName)))
         
-        plist.remove(key: url.documentRelativePath) {
-            self.clearFilesDoesNotExists {
-                DispatchQueue.runOnMainQueueSafely {
-                    completion()
-                }
+        plist.remove(key: url.lastPathComponent) {
+            DispatchQueue.runOnMainQueueSafely {
+                completion()
             }
         }
     }
@@ -142,7 +133,7 @@ public class RecentFilesManager {
             let jsonString = String(data: data, encoding: .utf8) ?? ""
             let plist = KeyValueStoreFactory.store(type: KeyValueStoreType.plist(PlistStoreType.custom(RecentFilesManager.recentFilesPlistFileName)))
             
-            plist.set(value: jsonString, key: url.documentRelativePath) {
+            plist.set(value: jsonString, key: url.lastPathComponent) {
                 completion()
             }
         } catch {

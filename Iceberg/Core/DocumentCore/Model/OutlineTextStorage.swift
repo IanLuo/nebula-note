@@ -404,7 +404,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
                         textStorage.addAttributes(OutlineTheme.textMarkStyle.strikethrought.attributes, range: contentRange)
                     case OutlineParser.Key.Element.TextMark.highlight:
                         var attributes = OutlineTheme.textMarkStyle.highlight.attributes
-                        attributes[NSAttributedString.Key.backgroundColor] = InterfaceTheme.Color.spotlight
+                        attributes[NSAttributedString.Key.backgroundColor] = InterfaceTheme.Color.spotlight.withAlphaComponent(0.5)
                         textStorage.addAttributes(attributes, range: contentRange)
                     case OutlineParser.Key.Element.TextMark.underscore:
                         textStorage.addAttributes(OutlineTheme.textMarkStyle.underscore.attributes, range: contentRange)
