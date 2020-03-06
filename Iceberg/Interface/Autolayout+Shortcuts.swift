@@ -175,11 +175,11 @@ extension UIView {
         
         if position.contains(Position.left) {
             if #available(iOS 11, *), considerSafeArea {
-                let left = self.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: edgeInsets.left)
+                let left = self.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: edgeInsets.left)
                 left.identifier = Position.left.identifier(for: self)
                 left.isActive = true
             } else {
-                let left = self.leftAnchor.constraint(equalTo: view.leftAnchor, constant: edgeInsets.left)
+                let left = self.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: edgeInsets.left)
                 left.identifier = Position.left.identifier(for: self)
                 left.isActive = true
             }
@@ -187,11 +187,11 @@ extension UIView {
         
         if position.contains(Position.right) {
             if #available(iOS 11, *), considerSafeArea {
-                let right = self.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: edgeInsets.right)
+                let right = self.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: edgeInsets.right)
                 right.identifier = Position.right.identifier(for: self)
                 right.isActive = true
             } else {
-                let right = self.rightAnchor.constraint(equalTo: view.rightAnchor, constant: edgeInsets.right)
+                let right = self.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: edgeInsets.right)
                 right.identifier = Position.right.identifier(for: self)
                 right.isActive = true
             }

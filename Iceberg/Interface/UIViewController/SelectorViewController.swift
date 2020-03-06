@@ -19,7 +19,6 @@ open class SelectorViewController: UIViewController {
     public var onSelection:((Int, SelectorViewController) -> Void)?
     public var onCancel: ((SelectorViewController) -> Void)?
     
-    public var rowHeight: CGFloat = 50
     public let heightRatio: CGFloat
     
     public init(heightRatio: CGFloat = 1/2) {
@@ -212,10 +211,6 @@ extension SelectorViewController: UITableViewDataSource, UITableViewDelegate {
         self.onSelection?(indexPath.row, unownedSelf)
     }
     
-    public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return self.rowHeight
-    }
-    
     public func showEmptyDataView() {
         let emptyDataView = UIView(frame: self.tableView.bounds)
         let label = UILabel()
@@ -276,6 +271,7 @@ fileprivate class ActionCell: UITableViewCell {
     let titleLabel: UILabel = {
         let label = UILabel()
         label.font = InterfaceTheme.Font.title
+        label.numberOfLines = 0
         label.textColor = InterfaceTheme.Color.interactive
         return label
     }()
@@ -290,9 +286,9 @@ fileprivate class ActionCell: UITableViewCell {
     func setIcon(image: UIImage?) {
         if let icon = image {
             self.iconView.image = icon
-            self.iconView.isHidden = false
+            self.iconView.sizeAnchor(width: 30, height: 30)
         } else {
-            self.iconView.isHidden = true
+            self.iconView.sizeAnchor(width: 0, height: 0)
         }
     }
     
@@ -315,7 +311,8 @@ fileprivate class ActionCell: UITableViewCell {
         self.iconView.rowAnchor(view: self.titleLabel, space: 20)
         self.iconView.ratioAnchor(1)
         
-        self.titleLabel.centerAnchors(position: [.centerY], to: self.contentView)
+        self.titleLabel.sideAnchor(for: [.top, .right, .bottom], to: self.contentView, edgeInset: 20)
+        self.titleLabel.leadingAnchor.constraint(greaterThanOrEqualTo: self.contentView.leadingAnchor, constant: 20).isActive = true
         
         self.descriptionLabel.sideAnchor(for: .right, to: self.contentView, edgeInset: 20)
         self.descriptionLabel.centerAnchors(position: .centerY, to: self.contentView)

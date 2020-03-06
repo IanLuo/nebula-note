@@ -1580,8 +1580,8 @@
 			buildRules = (
 			);
 			dependencies = (
-				E41CB1AF21D88D9400EF0A3C /* PBXTargetDependency */,
 				E40F6E84223B78AE00FFF53F /* PBXTargetDependency */,
+				E41CB1AF21D88D9400EF0A3C /* PBXTargetDependency */,
 				E43D4F4622C0BFAF00B2322B /* PBXTargetDependency */,
 				E440F18E2309378E00E0EF02 /* PBXTargetDependency */,
 			);

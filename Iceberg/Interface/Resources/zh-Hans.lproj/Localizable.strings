@@ -127,6 +127,12 @@
 "document.edit.create.failed" = "创建文档失败";
 
 "document.edit.image.use-as-cover" = "用作封面";
+
+"document.edit.sketch.brush" = "笔刷";
+"document.edit.sketch.pickBrushSize" = "笔刷颜色";
+"document.edit.sketch.color" = "颜色";
+"document.edit.sketch.pickColor" = "选择颜色";
+
 // sync
 "sync.confirm.useiCloud" = "是否使用 iCloud 保存文档？使用 iCloud 保存文档，可以在多台设备上共享内容，就算设备丢失，或者重新安装 app，也不会丢失编写的内容。";
 "sync.alert.status.on.title" = "正在使用 iCloud 保存文档";
@@ -176,6 +182,11 @@
 
 "setting.manageAttachment.title" = "管理附件";
 "setting.manageAttachment.delete.title" = "确定删除选中的附件?";
+
+"setting.feedback.title" = "举得 x3 笔记怎么样?";
+"settting.feedback.rate" = "如果觉得好用，请给我们五星好评，谢谢";
+"setting.feedback.promot" = "我想要推荐给别人";
+"setting.feedback.forum" = "我想加入论坛提供建议";
 
 //search
 "search.title" = "搜索";

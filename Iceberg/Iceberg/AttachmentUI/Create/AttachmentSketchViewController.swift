@@ -183,8 +183,8 @@ public class AttachmentSketchViewController: AttachmentViewController, Attachmen
     private func showColorPicker(button: RoundButton) {
         let selector = SelectorViewController()
         selector.delegate = self
-        selector.name = "color"
-        selector.title = "Pick Color"
+        selector.name = L10n.Document.Edit.Sketch.color
+        selector.title = L10n.Document.Edit.Sketch.pickColor
         self.colors.forEach {
             selector.addItem(icon: UIImage.create(with: $0.1, size: CGSize(width:30, height: 30), style: .circle),
                              title: "\($0.0)")
@@ -199,10 +199,9 @@ public class AttachmentSketchViewController: AttachmentViewController, Attachmen
     
     private func showBrushPicker(button: RoundButton) {
         let selector = SelectorViewController()
-        selector.rowHeight = 80
         selector.delegate = self
-        selector.name = "brush"
-        selector.title = "Pick Brush Size"
+        selector.name = L10n.Document.Edit.Sketch.brush
+        selector.title = L10n.Document.Edit.Sketch.pickBrushSize
         self.brushWidth.forEach {
             selector.addItem(icon: UIImage.create(with: InterfaceTheme.Color.interactive, size: CGSize(width: $0, height: $0), style: .circle),
                              title: "\($0)")
@@ -232,11 +231,11 @@ extension AttachmentSketchViewController: SelectorViewControllerDelegate {
     
     public func SelectorDidSelect(index: Int, viewController: SelectorViewController) {
         viewController.dismiss(animated: true) {
-            if viewController.name == "brush" {
+            if viewController.name == L10n.Document.Edit.Sketch.brush {
                 self.setBrush(self.brushWidth[index])
             }
             
-            else if viewController.name == "color" {
+            else if viewController.name == L10n.Document.Edit.Sketch.color {
                 self.setColor(index: index)
             }
         }

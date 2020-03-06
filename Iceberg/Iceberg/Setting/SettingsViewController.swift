@@ -10,6 +10,8 @@ import Foundation
 import UIKit
 import Interface
 import Core
+import RxSwift
+import StoreKit
 
 public protocol SettingsViewControllerDelegate: class {
     
@@ -41,6 +43,8 @@ public class SettingsViewController: UITableViewController {
     
     @IBOutlet var exportShowIndexLabel: UILabel!
     @IBOutlet var exportShowIndexSwitch: UISwitch!
+    
+    private let disposeBag = DisposeBag()
     
     public override init(style: UITableView.Style) {
         super.init(style: style)
@@ -122,6 +126,14 @@ public class SettingsViewController: UITableViewController {
             
             self?.attachmentManagerLabel.textColor = theme.color.interactive
         }
+        
+        let button = UIButton()
+        button.setImage(UIImage(named: "launchIcon")?.resize(upto: CGSize(width: 30, height: 30)), for: .normal)
+        let rightButton = UIBarButtonItem(customView: button)
+        button.rx.tap.subscribe(onNext: { [weak self] _ in
+            self?._showFeedbackOptions()
+        }).disposed(by: self.disposeBag)
+        self.navigationItem.rightBarButtonItem = rightButton
     }
     
 //    public override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -137,6 +149,35 @@ public class SettingsViewController: UITableViewController {
             case 4: return L10n.Setting.Export.title
         default: return nil
         }
+    }
+    
+    private func _showFeedbackOptions() {
+        let selector = SelectorViewController()
+        selector.title = L10n.Setting.Feedback.title
+        selector.addItem(title: L10n.Setting.Feedback.rate)
+        selector.addItem(title: L10n.Setting.Feedback.promot)
+        selector.addItem(title: L10n.Setting.Feedback.forum)
+        selector.onCancel = { viewController in
+            viewController.dismiss(animated: true)
+        }
+        
+        selector.onSelection = { selection, viewController in
+            switch selection {
+            case 0:
+                SKStoreReviewController.requestReview()
+            case 1:
+                if let name = URL(string: "https://itunes.apple.com/app/id1501111134"), !name.absoluteString.isEmpty {
+                    let objectsToShare = [name]
+                    let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
+
+                    viewController.present(activityVC, animated: true, completion: nil)
+                }
+            case 2:
+                UIApplication.shared.open(URL(string: "https://forum.x3note.site/")!, options: [:], completionHandler: nil)
+            default: break
+            }
+        }
+        self.present(selector, animated: true)
     }
         
     @objc private func _cancel() {

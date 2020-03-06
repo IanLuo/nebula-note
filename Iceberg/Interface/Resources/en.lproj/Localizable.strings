@@ -127,6 +127,11 @@
 "document.edit.create.failed" = "Failed to create document";
 
 "document.edit.image.use-as-cover" = "Use as cover";
+
+"document.edit.sketch.brush" = "Brush";
+"document.edit.sketch.pickBrushSize" = "Pick brush size";
+"document.edit.sketch.color" = "Color";
+"document.edit.sketch.pickColor" = "Pick color";
 // sync
 "sync.confirm.useiCloud" = "Do you want use iCloud to store, your documents. If so, you will be able to access the contents from any device with your iCloud account, and they will be kept safe if you remove the app, or even lose your device.";
 "sync.alert.status.on.title" = "Using iCloud storage";
@@ -175,6 +180,11 @@
 
 "setting.manageAttachment.title" = "Manage attachments";
 "setting.manageAttachment.delete.title" = "Delete selected attachments?";
+
+"setting.feedback.title" = "How do you think of x3 note?";
+"setting.feedback.rate" = "If you feed like x3 note, give us a five star, thanks you";
+"setting.feedback.promot" = "I want to share x3 note to people";
+"setting.feedback.forum" = "I want to join the forum and give my advices";
 
 //search
 "search.title" = "Search";

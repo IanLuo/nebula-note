@@ -412,6 +412,16 @@ public enum L10n {
         /// Keep remote one
         public static let one = L10n.tr("Localizable", "document.edit.remote_editing_arrived_keep_remote.one")
       }
+      public enum Sketch {
+        /// Brush
+        public static let brush = L10n.tr("Localizable", "document.edit.sketch.brush")
+        /// Color
+        public static let color = L10n.tr("Localizable", "document.edit.sketch.color")
+        /// Pick brush size
+        public static let pickBrushSize = L10n.tr("Localizable", "document.edit.sketch.pickBrushSize")
+        /// Pick color
+        public static let pickColor = L10n.tr("Localizable", "document.edit.sketch.pickColor")
+      }
       public enum Tag {
         /// Add new tag
         public static let add = L10n.tr("Localizable", "document.edit.tag.add")
@@ -652,6 +662,16 @@ public enum L10n {
       public static let showIndex = L10n.tr("Localizable", "setting.export.showIndex")
       /// Export
       public static let title = L10n.tr("Localizable", "setting.export.title")
+    }
+    public enum Feedback {
+      /// I want to join the forum and give my advices
+      public static let forum = L10n.tr("Localizable", "setting.feedback.forum")
+      /// I want to share x3 note to people
+      public static let promot = L10n.tr("Localizable", "setting.feedback.promot")
+      /// If you feed like x3 note, give us a five star, thanks you
+      public static let rate = L10n.tr("Localizable", "setting.feedback.rate")
+      /// How do you think of x3 note?
+      public static let title = L10n.tr("Localizable", "setting.feedback.title")
     }
     public enum General {
       /// General
