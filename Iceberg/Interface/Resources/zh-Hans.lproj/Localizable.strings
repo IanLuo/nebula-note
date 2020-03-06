@@ -183,7 +183,7 @@
 "setting.manageAttachment.title" = "管理附件";
 "setting.manageAttachment.delete.title" = "确定删除选中的附件?";
 
-"setting.feedback.title" = "举得 x3 笔记怎么样?";
+"setting.feedback.title" = "觉得 x3 笔记怎么样?";
 "setting.feedback.rate" = "如果觉得好用，请给我们五星好评，谢谢";
 "setting.feedback.promot" = "我想要推荐给别人";
 "setting.feedback.forum" = "我想加入论坛提供建议";
@@ -324,7 +324,7 @@
 
 // membership
 "membership.title" = "会员计划";
-"membership.letter" = "尊敬的用户，如果 x3 笔记用起来顺手，不妨考虑加入我们的会员，解锁所有高级功能。在你的支持下，我们将能够持对产品进行改进，带来更多更强大的新功能。";
+"membership.letter" = "亲爱的用户，如果 x3 笔记用起来顺手，不妨考虑加入我们的会员，解锁所有高级功能。在你的支持下，我们将能够持续对产品进行改进，带来更多更强大的新功能。";
 "membership.monthly.title" = "按月订阅会员";
 "membership.monthly.description" = "(赠送一星期) 无限制使用所有高级功能";
 "membership.yearly.title" = "按年订阅会员";

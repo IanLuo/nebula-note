@@ -668,7 +668,7 @@ public enum L10n {
       public static let forum = L10n.tr("Localizable", "setting.feedback.forum")
       /// I want to share x3 note to people
       public static let promot = L10n.tr("Localizable", "setting.feedback.promot")
-      /// If you feed like x3 note, give us a five star, thanks you
+      /// If you enjoy using x3 note, please rate us five star, thanks
       public static let rate = L10n.tr("Localizable", "setting.feedback.rate")
       /// How do you think of x3 note?
       public static let title = L10n.tr("Localizable", "setting.feedback.title")
