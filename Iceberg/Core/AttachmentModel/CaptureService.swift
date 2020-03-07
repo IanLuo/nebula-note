@@ -65,18 +65,18 @@ public struct CaptureService: CaptureServiceProtocol {
     public func loadAll(completion: @escaping ([Attachment]) -> Void, failure: @escaping (Error) -> Void) {        
         var attachments: [Attachment] = []
         
+        
         let group = DispatchGroup()
         
         DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
             self.loadAllAttachmentNames().forEach {
                 group.enter()
-                self._attachmentManager.attachment(with: $0, completion: {
-                    attachments.append($0)
-                    group.leave()
-                }, failure: { (error) in
-                    group.leave()
-                    failure(error)
-                })
+                
+                if let attachment = AttachmentDocument.createAttachment(url: AttachmentManager.wrappterURL(key: $0.unescaped)) {
+                    attachments.append(attachment)
+                }
+                
+                group.leave()
             }
             
             group.notify(queue: DispatchQueue.main) {

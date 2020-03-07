@@ -394,9 +394,17 @@ public class iCloudDocumentManager: NSObject {
                     }
                 }
                 
-                try FileManager.default.removeItem(at: icloudDocumentRoot)
-                try FileManager.default.removeItem(at: icloudAttachmentRoot)
-                try FileManager.default.removeItem(at: icloudKeyValueStoreRoot)
+                if FileManager.default.fileExists(atPath: icloudDocumentRoot.path) {
+                    try FileManager.default.removeItem(at: icloudDocumentRoot)
+                }
+                
+                if FileManager.default.fileExists(atPath: icloudAttachmentRoot.path) {
+                    try FileManager.default.removeItem(at: icloudAttachmentRoot)
+                }
+                
+                if FileManager.default.fileExists(atPath: icloudKeyValueStoreRoot.path) {
+                    try FileManager.default.removeItem(at: icloudKeyValueStoreRoot)
+                }
                 
                 completion(nil)
             } catch {

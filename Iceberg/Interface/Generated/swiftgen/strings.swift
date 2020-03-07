@@ -582,7 +582,7 @@ public enum L10n {
   }
 
   public enum Membership {
-    /// Dear user, if you feel enjoy using x3 note, please consider join our membership, to use more advanced functions, and help to let x3 note becomes more strong, more powerful, and more useful for you.
+    /// Dear user, if you are enjoy using x3 note, please consider join our membership, unlock all advanced functions, and help us making x3 note becomes stronger, bring more powerful functions.
     public static let letter = L10n.tr("Localizable", "membership.letter")
     /// More help
     public static let moreHelp = L10n.tr("Localizable", "membership.moreHelp")

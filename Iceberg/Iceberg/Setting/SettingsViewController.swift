@@ -169,7 +169,8 @@ public class SettingsViewController: UITableViewController {
                 if let name = URL(string: "https://itunes.apple.com/app/id1501111134"), !name.absoluteString.isEmpty {
                     let objectsToShare = [name]
                     let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
-
+                    activityVC.popoverPresentationController?.sourceView = viewController.view
+                    activityVC.popoverPresentationController?.sourceRect = CGRect(x: 0, y: 0, width: 500, height: 600)
                     viewController.present(activityVC, animated: true, completion: nil)
                 }
             case 2:

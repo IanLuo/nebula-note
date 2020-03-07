@@ -144,7 +144,7 @@ public class CaptureListViewModel: ViewModelProtocol {
     }
     
     public func loadAllCapturedData() {
-        DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
+        DispatchQueue.global(qos: DispatchQoS.QoSClass.userInteractive).async {
             self.service
                 .loadAll(completion: { [weak self] attachments in
                     let attachments = attachments.sorted(by: { last, next -> Bool in

@@ -61,6 +61,29 @@ public class AttachmentDocument: UIDocument {
         }
     }
     
+    public class func createAttachment(url: URL) -> Attachment? {
+        let jsonURL = url.appendingPathComponent(AttachmentDocument.jsonFile)
+        log.info(jsonURL)
+        do {
+            let data = try Data(contentsOf: jsonURL)
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .secondsSince1970
+            
+            let keyOnPath = url.deletingPathExtension().lastPathComponent
+            
+            var attachment = try decoder.decode(Attachment.self, from: data)
+            
+            if attachment.key != keyOnPath {
+                attachment.key = keyOnPath
+            }
+            
+            return attachment
+        } catch {
+            log.error(error)
+            return nil
+        }
+    }
+    
     public override func handleError(_ error: Error, userInteractionPermitted: Bool) {
         super.handleError(error, userInteractionPermitted: userInteractionPermitted)
         
