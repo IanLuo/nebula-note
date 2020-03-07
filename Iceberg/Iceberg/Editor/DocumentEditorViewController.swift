@@ -177,8 +177,6 @@ public class DocumentEditorViewController: UIViewController {
             self.textView.contentInset = UIEdgeInsets(top: self._contentEdgeInsect.top, left: self._contentEdgeInsect.left, bottom: keyboardViewEndFrame.height - view.safeAreaInsets.bottom, right: self._contentEdgeInsect.right)
             self.textView.scrollRangeToVisible(self.textView.selectedRange)
         }
-
-        self.textView.scrollIndicatorInsets = self.textView.contentInset
     }
 
     

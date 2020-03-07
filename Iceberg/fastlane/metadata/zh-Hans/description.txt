@@ -1,31 +1,23 @@
-Keeping excellent notes, writing great articles, the most important tool must be a handy, powerful editor, and, for long term note keeping, or article writing, for most of them, it is a on going process, you need to keep collecting materials, making planning for you work, and keep writing, keep everything organized. These works are trivial, distractive, so it is important to form a set of working habbits and familiar tools, and to manage all thses planning, materials organizing and writings work well, with all the hard works, you can get greate notes or articles as a results and rewards.
+- 记录出色的笔记，创作漂亮的文章，最重要的工具当然趁手的，功能完善的编辑器。其次，对于长期进行文字记录来说，大多数的记录，创作，都是一个持续的过程，包括收集素材，和定期整理，这些工作琐碎而分散，真正形成一套好用的记录习惯和系统，需要好的编辑器，对工作进行计划和管理，灵活收集和使用素材。
 
-With that in mind, x3 note is desinged to help you, with the 3 major parts: Editor, Planning, and idea capture. Those parts works together seamlessly, to provide ability to handle planning, materials organizing in one place, let you focusing on your editor, make planning and managing materials without switching working context, and pick up where you left from the agenda which automatically generated from your work contents.
+x3 笔记的三大功能，记笔记，做计划，抓灵感，可以做到无缝结合，以简单有效的方式，帮助你消除掉记录，写作过程中的障碍，持续不断的将你的所见所想装入你的笔记中，成为管理工作和生活的高手。
 
-- Editor
-Lightweight markup launguage based rich text editor, Markdown like syntax, supports lots of attachment types, including image, sketch, audio, video, location, etc.
-Supports text decorations: Bold, italic, underscore, strike through, highlight.
-Support insert elements: link, checkbox, ordered list, unordered list, date and time, quote block, code block.
-Folding and unfolding for sections.
-Move sections freely in or between documents.
-Outline.
+- 编辑器
+基于轻量标记语言的富文本编辑器，使用和 markdown 类似的标记语言，支持多种附件，包括图片，涂鸦，音频，视频，位置等。
+支持多种文字装饰，包括粗体，斜体，下划线，删除线，高亮。
+支持多种可交互组件，包括超链接，复选框，列表，日期，引用块，代码块等。
+支持段落折叠和展开。
+支持段落自由移动和整理。
+支持大纲。
+- 灵感采集
+采集任意 App 分享，以及手动采集各种格式内容，图片，录音，视频，定位，文字等等。
+- 日程管理
+自动根据文档内容建立日程表，通过日程快速定位并开始记录。
+- 文档管理
+支持任意层数子文件
+- iCloud 同步
+- 导出多种文件格式
+HTML，图片，PDF，Markdown
+- 更多功能正在开发中
 
-- Capture ideas
-Capture materials from any app that can share image, text, link, audio, video, or capture your idea with these forms by your self.
-
-- Planning
-Automatically create tasks based on contents that you put in your document, goto them directly and start work right away.
-Content marks: section status, priority, tags, automatically categorize by status, tags, schedule date, due date, etc.
-
-- Document management
-Any depth of level of sub documents, organize them and move around freely. Note only the documents, but also the contents, can be moved around documents easily.
-
-- iCloud sync
-Automatically sync to your iCloud account, keep your data safe, and keep all devices the same.
-
-- Export to other forms
-HTML, txt, image, PDF, Markdown.
-
-- And more to come.
-
-If you have any question, or feedback, or anything you want to let us know, please visit http://forum.x3note.site/.
+如果有疑问，请访问 http://forum.x3note.site/.
