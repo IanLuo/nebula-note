@@ -34,7 +34,7 @@ public class AttachmentAudioViewController: AttachmentViewController, Attachment
     // 用来显示界面，当前 viewController 并不显示 UI，只是协调和保存文件
     private lazy var actionsViewController: ActionsViewController = {
         let actionsViewController = ActionsViewController()
-        actionsViewController.title = "Record voice"
+        actionsViewController.title = L10n.Document.Record.title
         return actionsViewController
     }()
 

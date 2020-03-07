@@ -136,7 +136,7 @@ extension DocumentEditorViewController: OutlineTextViewDelegate {
         view.sizeAnchor(width: self.view.bounds.width, height: view.size(for: self.view.bounds.width).height)
         
         actionsView.accessoryView = view
-        actionsView.title = attachment.kind.rawValue
+        actionsView.title = attachment.kind.name
         
         if attachment.kind == .location {
             actionsView.addAction(icon: nil, title: L10n.CaptureList.Action.openLocation) { viewController in

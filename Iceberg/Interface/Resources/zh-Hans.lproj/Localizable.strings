@@ -72,6 +72,8 @@
 "document.link.open" = "在浏览器中打开链接";
 "document.link.edit" = "编辑链接";
 
+"document.record.title" = "录音";
+
 "document.menu.title" = "目录";
 "document.menu.foldAll" = "折叠所有段落";
 "document.menu.unfoldAll" = "展开所有段落";
@@ -181,6 +183,7 @@
 "setting.export.showIndex" = "显示序号";
 
 "setting.manageAttachment.title" = "管理附件";
+"setting.manageAttachment.choose.title" = "全部附件";
 "setting.manageAttachment.delete.title" = "确定删除选中的附件?";
 
 "setting.feedback.title" = "觉得 x3 笔记怎么样?";
@@ -240,6 +243,7 @@
 
 // capture list
 "captureList.title" = "灵感管理";
+"captureList.choose.title" = "选择灵感";
 "captureList.action.openLocation" = "打开位置";
 "captureList.action.openLink" = "打开链接";
 "captureList.action.delete" = "删除灵感";

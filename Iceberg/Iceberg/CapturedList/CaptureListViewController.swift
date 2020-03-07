@@ -75,8 +75,13 @@ public class CaptureListViewController: UIViewController {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
         viewModel.delegate = self
-        self.title = L10n.CaptureList.title
         self.tabBarItem = UITabBarItem(title: "", image: Asset.Assets.inspiration.image, tag: 0)
+        
+        if #available(iOS 13.0, *) {
+            self.isModalInPresentation = true
+        }
+        
+        self.title = L10n.CaptureList.title
     }
     
     public required init?(coder aDecoder: NSCoder) {
@@ -137,6 +142,12 @@ public class CaptureListViewController: UIViewController {
             HelpPage.capture.open()
         }).disposed(by: self.disposeBag)
         self.navigationItem.rightBarButtonItem = rightItem
+        
+        if self.viewModel.mode == .manage {
+            self.title = L10n.CaptureList.title
+        } else {
+            self.title = L10n.CaptureList.Choose.title
+        }
     }
     
     @objc private func cancel() {

@@ -83,24 +83,20 @@ public class AttachmentManagerCell: UICollectionViewCell {
     }
     
     public func configure(cellModel: AttachmentManagerCellModel) {
-        cellModel.image.subscribe(onNext: { image in
+        cellModel.image.subscribeOn(MainScheduler()).subscribe(onNext: { image in
             self.imageView.image = image
             self.contentView.hideProcessingAnimation()
         }).disposed(by: self.reuseDisposeBag)
         
-        cellModel.attachment
-            .skipWhile { $0 == nil }
-            .subscribe(onNext: { attachment in
-                let attachment = attachment!
-                switch attachment.kind {
-                case .video, .audio:
-                    self.titleLabel.text = "\(attachment.durationString) \n \(attachment.sizeString) \n \(attachment.date.shortDateString)"
-                default:
-                    self.titleLabel.text = "\(attachment.sizeString) \n \(attachment.date.shortDateString)"
-                }
-        }).disposed(by: self.disposeBag)
+        switch cellModel.attachment.kind {
+        case .video, .audio:
+            self.titleLabel.text = "\(cellModel.attachment.durationString) \n \(cellModel.attachment.sizeString) \n \(cellModel.attachment.date.shortDateString)"
+        default:
+            self.titleLabel.text = "\(cellModel.attachment.sizeString) \n \(cellModel.attachment.date.shortDateString)"
+        }
         
-        if cellModel.attachment.value == nil {
+        
+        if cellModel.image.value == nil {
             self.contentView.showProcessingAnimation()
         }
     }

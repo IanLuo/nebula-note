@@ -62,6 +62,9 @@ public class AttachmentManagerViewController: UIViewController, UICollectionView
             }).disposed(by: self.disposeBag)
             
             self.navigationItem.leftBarButtonItem = closeButton
+            self.title = L10n.Setting.ManageAttachment.Choose.title
+        } else {
+            self.title = L10n.Setting.ManageAttachment.title
         }
     }
     
@@ -165,11 +168,6 @@ public class AttachmentManagerViewController: UIViewController, UICollectionView
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 10
-    }
-    
-    public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        
-        self.viewModel.loadCellContent(at: indexPath.row)
     }
     
     private func _showAttachmentView(attachment: Attachment, index: Int) {

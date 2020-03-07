@@ -115,7 +115,7 @@ public class CaptureTableCell: UITableViewCell {
     }
     
     private func setupAttachmentUI(attachmentView: AttachmentViewType) {
-        self.titleLabel.text = attachmentView.attachment.kind.rawValue
+        self.titleLabel.text = attachmentView.attachment.kind.name
             + (attachmentView.attachment.duration != nil ? "(\(attachmentView.attachment.durationString))" : "")
         self.dateAndTimelabel.text = attachmentView.attachment.date.shortDateString
         

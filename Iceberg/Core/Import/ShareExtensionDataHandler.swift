@@ -80,7 +80,13 @@ public struct ShareExtensionDataHandler {
                         handleSaveItem(remains)
                     }
                 } else { //  if the url is not an attachment, try handle it use url scheme handler
-                    _ = urlHandler.handle(url: url, sourceApp: "")
+                    if urlHandler.handle(url: url, sourceApp: "") {
+                        do {
+                            try FileManager.default.removeItem(at: url)
+                        } catch {
+                            log.error(error)
+                        }
+                    }
                     handleSaveItem(remains)
                 }
             }

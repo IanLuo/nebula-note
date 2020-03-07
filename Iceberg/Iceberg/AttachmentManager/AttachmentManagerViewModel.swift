@@ -45,22 +45,29 @@ public class AttachmentManagerViewModel: ViewModelProtocol {
     public let input: Input = Input()
     
     public func loadData() {
-        let captureKeys = self.dependency.captureService.loadAllAttachmentNames()
-        let cellModels = self.context.dependency.attachmentManager.allAttachmentsKeys.filter {
-            return !captureKeys.contains($0)
-        }.map {
-            AttachmentManagerCellModel(key: $0)
-        }
         
-        self.output.attachments.accept([AttachmentManagerSection(items: cellModels)])
-    }
-    
-    public func loadCellContent(at index: Int) {
-        self.output.attachments.value.first?.items[index].loadFromFile(attachmentManager: self.context.dependency.attachmentManager)
+        DispatchQueue.global(qos: DispatchQoS.QoSClass.userInteractive).async {
+            let captureKeys = self.dependency.captureService.loadAllAttachmentNames()
+            let cellModels = self.context.dependency.attachmentManager.allAttachmentsKeys.filter {
+                return !captureKeys.contains($0)
+            }.compactMap { (key) -> AttachmentManagerCellModel? in
+                if let attachment = self.dependency.attachmentManager.attachment(with: key) {
+                    return AttachmentManagerCellModel(attachment: attachment)
+                } else {
+                    return nil
+                }
+            }.sorted { lhs, rhs in
+                lhs.attachment.date.timeIntervalSince1970 > rhs.attachment.date.timeIntervalSince1970
+            }
+            
+            DispatchQueue.main.async {
+                self.output.attachments.accept([AttachmentManagerSection(items: cellModels)])
+            }
+        }
     }
     
     public func attachment(at index: Int) -> Attachment? {
-        return self.output.attachments.value.first?.items[index].attachment.value
+        return self.output.attachments.value.first?.items[index].attachment
     }
     
     public func delete(indexs toDelete: [Int]) {
@@ -70,7 +77,7 @@ public class AttachmentManagerViewModel: ViewModelProtocol {
         
         for (index, cellModel) in cellModels.enumerated() {
             if toDelete.contains(index) {
-                keys.append(cellModel.key)
+                keys.append(cellModel.attachment.key)
             }
         }
         
@@ -85,7 +92,7 @@ public class AttachmentManagerViewModel: ViewModelProtocol {
                 let indexCounter: (Int) -> Int = { i in count - i - 1 }
                 
                 for (index, cellModel) in newCellModels.reversed().enumerated() {
-                    if deletedKeys.contains(cellModel.key) {
+                    if deletedKeys.contains(cellModel.attachment.key) {
                         newCellModels.remove(at: indexCounter(index))
                     }
                 }

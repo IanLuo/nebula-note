@@ -13,39 +13,23 @@ import RxCocoa
 import RxDataSources
 
 public class AttachmentManagerCellModel: IdentifiableType, Equatable {
-    public var identity: String { return self.key }
+    public var identity: String { return self.attachment.key }
     
     public typealias Identity = String
     
     private let disposeBag = DisposeBag()
         
     public static func == (lhs: AttachmentManagerCellModel, rhs: AttachmentManagerCellModel) -> Bool {
-        return lhs.key == rhs.key
+        return lhs.attachment.key == rhs.attachment.key
     }
     
-    public let key: String
-    public let attachment: BehaviorRelay<Attachment?> = BehaviorRelay(value: nil)
-    public let image: BehaviorRelay<UIImage?> = BehaviorRelay(value: nil)
+    public let attachment: Attachment
+    public var image: BehaviorRelay<UIImage?> = BehaviorRelay(value: nil)
 
-    public init(key: String) {
-        self.key = key
-        
-        self.attachment
-            .skipWhile { $0 == nil }
-            .flatMap { $0!.thumbnail }
-            .bind(to: self.image)
-            .disposed(by: self.disposeBag)
-    }
-    
-    public func loadFromFile(attachmentManager: AttachmentManager) {
-        if self.attachment.value == nil {
-            DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
-                if let attachment = attachmentManager.attachment(with: self.key) {
-                    DispatchQueue.main.async {
-                        self.attachment.accept(attachment)
-                    }
-                }
-            }
-        }
+    public init(attachment: Attachment) {
+        self.attachment = attachment
+        attachment.thumbnail
+            .observeOn(ConcurrentDispatchQueueScheduler(qos: DispatchQoS.background))
+            .bind(to: self.image).disposed(by: self.disposeBag)
     }
 }

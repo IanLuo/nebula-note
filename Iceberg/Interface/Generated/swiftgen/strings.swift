@@ -293,6 +293,10 @@ public enum L10n {
       /// Action
       public static let title = L10n.tr("Localizable", "captureList.action.title")
     }
+    public enum Choose {
+      /// Choose idea
+      public static let title = L10n.tr("Localizable", "captureList.choose.title")
+    }
     public enum Confirm {
       /// Refile done, do you want to delete this idea?
       public static let delete = L10n.tr("Localizable", "captureList.confirm.delete")
@@ -527,6 +531,10 @@ public enum L10n {
       /// Priority
       public static let title = L10n.tr("Localizable", "document.priority.title")
     }
+    public enum Record {
+      /// Record voice
+      public static let title = L10n.tr("Localizable", "document.record.title")
+    }
   }
 
   public enum General {
@@ -694,6 +702,10 @@ public enum L10n {
     public enum ManageAttachment {
       /// Manage attachments
       public static let title = L10n.tr("Localizable", "setting.manageAttachment.title")
+      public enum Choose {
+        /// All attachments
+        public static let title = L10n.tr("Localizable", "setting.manageAttachment.choose.title")
+      }
       public enum Delete {
         /// Delete selected attachments?
         public static let title = L10n.tr("Localizable", "setting.manageAttachment.delete.title")

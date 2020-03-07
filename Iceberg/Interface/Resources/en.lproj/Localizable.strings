@@ -72,6 +72,8 @@
 "document.link.open" = "Open link in browser";
 "document.link.edit" = "Edit link";
 
+"document.record.title" = "Record voice";
+
 "document.menu.title" = "Menu";
 "document.menu.foldAll" = "Fold all";
 "document.menu.unfoldAll" = "Unfold all";
@@ -179,6 +181,7 @@
 "setting.export.showIndex" = "Show index";
 
 "setting.manageAttachment.title" = "Manage attachments";
+"setting.manageAttachment.choose.title" = "All attachments";
 "setting.manageAttachment.delete.title" = "Delete selected attachments?";
 
 "setting.feedback.title" = "How do you think of x3 note?";
@@ -238,6 +241,7 @@
 
 // capture list
 "captureList.title" = "Captured ideas";
+"captureList.choose.title" = "Choose idea";
 "captureList.action.openLocation" = "Open location";
 "captureList.action.openLink" = "Open link";
 "captureList.action.delete" = "Delete idea";
