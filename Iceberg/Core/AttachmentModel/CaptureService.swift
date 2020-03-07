@@ -72,7 +72,7 @@ public struct CaptureService: CaptureServiceProtocol {
             self.loadAllAttachmentNames().forEach {
                 group.enter()
                 
-                if let attachment = AttachmentDocument.createAttachment(url: AttachmentManager.wrappterURL(key: $0.unescaped)) {
+                if let attachment = self._attachmentManager.attachment(with: $0) {
                     attachments.append(attachment)
                 }
                 

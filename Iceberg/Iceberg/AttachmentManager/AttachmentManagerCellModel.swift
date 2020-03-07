@@ -39,11 +39,13 @@ public class AttachmentManagerCellModel: IdentifiableType, Equatable {
     
     public func loadFromFile(attachmentManager: AttachmentManager) {
         if self.attachment.value == nil {
-            attachmentManager.attachment(with: self.key, completion: { [weak self] in
-                self?.attachment.accept($0)
-                }, failure: { error in
-                    log.error(error)
-            })
+            DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
+                if let attachment = attachmentManager.attachment(with: self.key) {
+                    DispatchQueue.main.async {
+                        self.attachment.accept(attachment)
+                    }
+                }
+            }
         }
     }
 }
