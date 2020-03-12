@@ -400,6 +400,16 @@ public enum L10n {
           public static let delete = L10n.tr("Localizable", "document.edit.action.section.delete")
         }
       }
+      public enum Conflict {
+        /// Current device
+        public static let current = L10n.tr("Localizable", "document.edit.conflict.current")
+        /// Choose the version you want to keep
+        public static let description = L10n.tr("Localizable", "document.edit.conflict.description")
+        /// Detect confliction
+        public static let found = L10n.tr("Localizable", "document.edit.conflict.found")
+        /// Sure to keep this version?
+        public static let warning = L10n.tr("Localizable", "document.edit.conflict.warning")
+      }
       public enum Create {
         /// Failed to create document
         public static let failed = L10n.tr("Localizable", "document.edit.create.failed")

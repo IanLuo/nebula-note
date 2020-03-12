@@ -25,6 +25,10 @@ public class EditorContext {
         OutlineParser.Matcher.reloadPlanning()
     }
     
+    public func requestTemp(url: URL) -> EditorService {
+        return EditorService(url: url, queue: self._editingQueue, eventObserver: self._eventObserver, parser: OutlineParser(), isTemp: true)
+    }
+    
     public func request(url: URL) -> EditorService {
         log.info("requesing editor service with url: \(url)")
         var url = url.wrapperURL

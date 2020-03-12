@@ -45,6 +45,8 @@ public class DocumentEditViewModel: ViewModelProtocol {
         }
     }
     
+    public var isResolvingConflict: Bool = false
+    
     public convenience init(editorService: EditorService, coordinator: EditorCoordinator) {
         self.init(coordinator: coordinator)
         
@@ -81,6 +83,10 @@ public class DocumentEditViewModel: ViewModelProtocol {
     
     public func revertContent() {
         self._editorService.revertContent()
+    }
+    
+    var isTemp: Bool {
+        return self._editorService.isTemp
     }
     
     public var wordCount: Int {
@@ -347,24 +353,41 @@ public class DocumentEditViewModel: ViewModelProtocol {
         self._editorService.delete(completion: completion)
     }
     
-    public func handleConflict(url: URL) throws {
+    public func handleConflict(url choosen: URL, completion: @escaping () -> Void) throws {
         
-        guard let conflictVersions = NSFileVersion.unresolvedConflictVersionsOfItem(at: url) else { return }
+        guard let conflictVersions = NSFileVersion.unresolvedConflictVersionsOfItem(at: self.url) else { return }
+        var isResolved = false
         
-        let sortedConflictVersions = conflictVersions.sorted { (version1, version2) -> Bool in
-            guard let date1 = version1.modificationDate,
-                let date2 = version2.modificationDate else { return true }
-            return date1.timeIntervalSince1970 > date2.timeIntervalSince1970
+        let completeResolving = {
+            if !isResolved {
+                // keep the current version
+                do {
+                    try NSFileVersion.removeOtherVersionsOfItem(at: self.url)
+                } catch {
+                    log.error(error)
+                }
+            }
+            
+            for version in conflictVersions {
+                version.isResolved = true
+            }
+            
+            completion()
         }
         
-        if let newestVersion = sortedConflictVersions.first {
-            try newestVersion.replaceItem(at: url, options: [])
-            try NSFileVersion.removeOtherVersionsOfItem(at: url)
+        for case let version in conflictVersions where version.url == choosen {
+            try version.replaceItem(at: self.url, options: [.init(rawValue: 0)])
+            try NSFileVersion.removeOtherVersionsOfItem(at: self.url)
+            self._editorService.revertContent { status in
+                isResolved = true
+                completeResolving()
+                return
+            }
         }
         
-        for version in sortedConflictVersions {
-            version.isResolved = true
-        }
+        completeResolving()
+        
+        
     }
 
     

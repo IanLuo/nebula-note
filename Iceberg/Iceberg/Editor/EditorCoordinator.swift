@@ -18,6 +18,7 @@ public protocol EditorCoordinatorSelectHeadingDelegate: class {
 
 public class EditorCoordinator: Coordinator {
     public enum Usage {
+        case temp(URL)
         case editor(URL, Int)
         case outline(URL, Int?)
     }
@@ -53,6 +54,13 @@ public class EditorCoordinator: Coordinator {
             let viewController = HeadingsOutlineViewController(viewModel: viewModel)
             viewController.ignoredHeadingLocation = ignoredHeadingLocation
             viewController.outlineDelegate = self
+            viewController.title = url.packageName
+            self.viewController = viewController
+        case .temp(let url):
+            let viewModel = DocumentEditViewModel(editorService: dependency.editorContext.requestTemp(url: url), coordinator: self)
+            self._viewModel = viewModel
+            self._url = url
+            let viewController = DocumentEditorViewController(viewModel: viewModel)
             viewController.title = url.packageName
             self.viewController = viewController
         }
@@ -144,6 +152,23 @@ public class EditorCoordinator: Coordinator {
         } else {
             return []
         }
+    }
+    
+    public func showConfictResolver(from: UIViewController, viewModel: DocumentEditViewModel) {
+        guard viewModel.isResolvingConflict == false else { return }
+        viewModel.isResolvingConflict = true
+        let resolverViewController = ConflictResolverViewController(viewModel: viewModel)
+        let nav = Application.createDefaultNavigationControlller(root: resolverViewController, transparentBar: false)
+        from.present(nav, animated: true)
+    }
+    
+    public func showTempDocument(url: URL, from: UIViewController) {
+        let documentCoordinator = EditorCoordinator(stack: self.stack, dependency: self.dependency,
+                                                    usage: EditorCoordinator.Usage.temp(url))
+        
+        guard let vc = documentCoordinator.viewController else { return }
+        
+        from.navigationController?.pushViewController(vc, animated: true)
     }
 }
 

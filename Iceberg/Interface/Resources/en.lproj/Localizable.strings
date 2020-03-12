@@ -134,6 +134,11 @@
 "document.edit.sketch.pickBrushSize" = "Pick brush size";
 "document.edit.sketch.color" = "Color";
 "document.edit.sketch.pickColor" = "Pick color";
+
+"document.edit.conflict.found" = "Detect confliction";
+"document.edit.conflict.description" = "Choose the version you want to keep";
+"document.edit.conflict.warning" = "Sure to keep this version?";
+"document.edit.conflict.current" = "Current device";
 // sync
 "sync.confirm.useiCloud" = "Do you want use iCloud to store, your documents. If so, you will be able to access the contents from any device with your iCloud account, and they will be kept safe if you remove the app, or even lose your device.";
 "sync.alert.status.on.title" = "Using iCloud storage";

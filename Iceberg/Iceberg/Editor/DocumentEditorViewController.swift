@@ -41,12 +41,12 @@ public class DocumentEditorViewController: UIViewController {
         
         self.textView.outlineDelegate = self
         self.textView.delegate = self
+        self.textView.isEditable = !self.viewModel.isTemp
         viewModel.delegate = self
         
         self.view.backgroundColor = InterfaceTheme.Color.background1
         self.modalPresentationStyle = .fullScreen
         
-        NotificationCenter.default.addObserver(self, selector: #selector(_documentStateChanged(_:)), name: UIDocument.stateChangedNotification, object: nil)
     }
     
     deinit {
@@ -79,30 +79,34 @@ public class DocumentEditorViewController: UIViewController {
         self.textView.allSidesAnchors(to: self.view, edgeInset: 0, considerSafeArea: true)
         self._loadingIndicator.centerAnchors(position: [.centerX, .centerY], to: self.view)
 
-        let closeButton = UIBarButtonItem(image: Asset.Assets.down.image.fill(color: InterfaceTheme.Color.interactive), style: .plain, target: self, action: #selector(cancel(_:)))
-        self.navigationItem.leftBarButtonItem = closeButton
-        
-        let menuButton = UIBarButtonItem(image: Asset.Assets.more.image.fill(color: InterfaceTheme.Color.interactive), style: .plain, target: self, action: #selector(showMenu))
-        let infoButton = UIBarButtonItem(image: Asset.Assets.left.image.fill(color: InterfaceTheme.Color.interactive), style: .plain, target: self, action: #selector(showInfo))
-        
-        self.navigationItem.rightBarButtonItems = [menuButton, infoButton]
-        
-        self.inputbar.frame = CGRect(origin: .zero, size: .init(width: self.view.bounds.width, height: 44))
-        self.inputbar.delegate = self
-        self.textView.inputAccessoryView = self.inputbar
-        
-        self.inputbar.mode = .paragraph
-        
-        let notificationCenter = NotificationCenter.default
-        notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillShowNotification, object: nil)
-        notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardDidHideNotification, object: nil)
-        notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardDidChangeFrameNotification, object: nil)
-        notificationCenter.addObserver(self, selector: #selector(_tryToShowUserGuide), name: UIResponder.keyboardDidShowNotification, object: nil)
-        
-        self.viewModel.dependency.appContext.isReadingMode.subscribe(onNext: { [weak self] isReadingMode in
-            self?.textView.isEditable = !isReadingMode
-            self?.textView.inputAccessoryView?.isHidden = isReadingMode
-        }).disposed(by: self.disposeBag)
+        if !self.viewModel.isTemp {
+            let closeButton = UIBarButtonItem(image: Asset.Assets.down.image.fill(color: InterfaceTheme.Color.interactive), style: .plain, target: self, action: #selector(cancel(_:)))
+            self.navigationItem.leftBarButtonItem = closeButton
+            
+            let menuButton = UIBarButtonItem(image: Asset.Assets.more.image.fill(color: InterfaceTheme.Color.interactive), style: .plain, target: self, action: #selector(showMenu))
+            let infoButton = UIBarButtonItem(image: Asset.Assets.left.image.fill(color: InterfaceTheme.Color.interactive), style: .plain, target: self, action: #selector(showInfo))
+            
+            self.navigationItem.rightBarButtonItems = [menuButton, infoButton]
+            
+            self.inputbar.frame = CGRect(origin: .zero, size: .init(width: self.view.bounds.width, height: 44))
+            self.inputbar.delegate = self
+            self.textView.inputAccessoryView = self.inputbar
+            
+            self.inputbar.mode = .paragraph
+            
+            NotificationCenter.default.addObserver(self, selector: #selector(_documentStateChanged(_:)), name: UIDocument.stateChangedNotification, object: nil)
+            
+            let notificationCenter = NotificationCenter.default
+            notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillShowNotification, object: nil)
+            notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardDidHideNotification, object: nil)
+            notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardDidChangeFrameNotification, object: nil)
+            notificationCenter.addObserver(self, selector: #selector(_tryToShowUserGuide), name: UIResponder.keyboardDidShowNotification, object: nil)
+            
+            self.viewModel.dependency.appContext.isReadingMode.subscribe(onNext: { [weak self] isReadingMode in
+                self?.textView.isEditable = !isReadingMode && self?.viewModel.isTemp == false
+                self?.textView.inputAccessoryView?.isHidden = isReadingMode
+            }).disposed(by: self.disposeBag)
+        }
     }
     
     public override func viewDidDisappear(_ animated: Bool) {
@@ -184,9 +188,6 @@ public class DocumentEditorViewController: UIViewController {
     @objc private func _documentStateChanged(_ notification: NSNotification) {
         if let document = notification.object as? UIDocument {
             if document.documentState == .normal {
-                if self._lastState == .editingDisabled { // recovered from editDisabled, that means other process has modified it, revert content
-                    self.viewModel.revertContent() // load content from disk
-                }
                 log.info("document state is: normal")
             }
             
@@ -199,14 +200,9 @@ public class DocumentEditorViewController: UIViewController {
             }
             
             if document.documentState.contains(.inConflict) {
-                log.info("document has conflict inConflict")
-                
-                do { try self.viewModel.handleConflict(url: document.fileURL) }
-                catch {
-                    log.error("failed to handle conflict: \(error)")
-                }
+                self.viewModel.context.coordinator?.showConfictResolver(from: self, viewModel: self.viewModel)
             }
-            
+                
             if document.documentState.contains(.progressAvailable) {
                 log.info("document state is: progressAvailable")
             }
@@ -275,9 +271,11 @@ extension DocumentEditorViewController: DocumentEditViewModelDelegate {
         }
         
         // 打开文件时， 添加到最近使用的文件
-        self.viewModel.dependency.editorContext.recentFilesManager.addRecentFile(url: self.viewModel.url, lastLocation: 0) { [weak self] in
-            guard let strongSelf = self else { return }
-            strongSelf.viewModel.dependency.eventObserver.emit(OpenDocumentEvent(url: strongSelf.viewModel.url))
+        if !self.viewModel.isTemp {
+            self.viewModel.dependency.editorContext.recentFilesManager.addRecentFile(url: self.viewModel.url, lastLocation: 0) { [weak self] in
+                guard let strongSelf = self else { return }
+                strongSelf.viewModel.dependency.eventObserver.emit(OpenDocumentEvent(url: strongSelf.viewModel.url))
+            }
         }
     }
     

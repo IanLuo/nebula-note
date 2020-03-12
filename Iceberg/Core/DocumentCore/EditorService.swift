@@ -24,10 +24,14 @@ public class EditorService {
     private var _queue: DispatchQueue!
     private let _url: URL
     
+    // means the document it opens, is not stored on users document folder
+    public let isTemp: Bool
+    
     // MARK: -
-    internal init(url: URL, queue: DispatchQueue, eventObserver: EventObserver, parser: OutlineParser) {
+    internal init(url: URL, queue: DispatchQueue, eventObserver: EventObserver, parser: OutlineParser, isTemp: Bool = false) {
         log.info("creating editor service with url: \(url)")
         self._url = url
+        self.isTemp = isTemp
         self._eventObserver = eventObserver
         self._editorController = EditorController(parser: parser, attachmentManager: AttachmentManager())
         self._queue = queue
@@ -173,10 +177,14 @@ public class EditorService {
         set { self.replace(text: newValue, range: NSRange(location: 0, length: _editorController.string.nsstring.length)) }
     }
     
-    public func revertContent() {
-        if let string = self._document?.string {
-            self._editorController.string = string
-        }
+    public func revertContent(complete: ((Bool) -> Void)? = nil) {
+        guard let url = self._document?.fileURL else { return }
+        self._document?.revert(toContentsOf: url, completionHandler: { status in
+            if let string = self._document?.string {
+                self._editorController.string = string
+            }
+            complete?(status)
+        })
     }
     
     public func replace(text: String, range: NSRange) {

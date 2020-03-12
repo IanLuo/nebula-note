@@ -254,6 +254,13 @@ extension Date {
     dateFormatter.dateStyle = DateFormatter.Style.medium
     return dateFormatter.string(from: self)
   }
+    
+    public var shotDateAndTimeString: String {
+      let dateFormatter = DateFormatter()
+      dateFormatter.dateStyle = DateFormatter.Style.short
+      dateFormatter.timeStyle = DateFormatter.Style.short
+      return dateFormatter.string(from: self)
+    }
 }
 
 

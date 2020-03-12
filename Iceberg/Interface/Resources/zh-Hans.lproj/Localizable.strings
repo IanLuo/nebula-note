@@ -135,6 +135,10 @@
 "document.edit.sketch.color" = "颜色";
 "document.edit.sketch.pickColor" = "选择颜色";
 
+"document.edit.conflict.found" = "发现冲突";
+"document.edit.conflict.description" = "选择要保留的版本";
+"document.edit.conflict.warning" = "确定保留这个版本？";
+"document.edit.conflict.current" = "当前设备";
 // sync
 "sync.confirm.useiCloud" = "是否使用 iCloud 保存文档？使用 iCloud 保存文档，可以在多台设备上共享内容，就算设备丢失，或者重新安装 app，也不会丢失编写的内容。";
 "sync.alert.status.on.title" = "正在使用 iCloud 保存文档";
