@@ -76,8 +76,9 @@ public class RecentFilesManager {
                 let openDate = self.recentFile(url: event.oldUrl.documentRelativePath, plist: plist)?.lastRequestTime ?? Date()
                 self.removeRecentFile(url: event.oldUrl) {
                     self.addRecentFile(url: event.newUrl, lastLocation: 0, date: openDate) { [weak self] in
-                        self?.clearFilesDoesNotExists({})
-                        self?.eventObserver.emit(RecentDocumentRenamedEvent(renameDocumentEvent: event))
+                        self?.clearFilesDoesNotExists {
+                            self?.eventObserver.emit(RecentDocumentRenamedEvent(renameDocumentEvent: event))
+                        }
                     }
                 }
             }
