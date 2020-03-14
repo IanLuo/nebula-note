@@ -1,10 +1,10 @@
 * Editor
-x3 note's goal is to build a professional, conforable to use editor, provides functions like basic text editing, rich text marks, insert multiple types of attachments, etc. And many more to be added.
+x3 note's goal is to build a professional, comfortable to use editor, provides functions like basic text editing, rich text marks, insert multiple types of attachments, etc. And many more to be added.
 ** Text marks
 Supports *Bold*, _Underscore_, /Italic/, and ~Highlight~ effects.
 ** Attachment
 - Image
-- Scketch
+- Sketch
 - Video
 - Audio
 - Location
@@ -12,10 +12,10 @@ Supports *Bold*, _Underscore_, /Italic/, and ~Highlight~ effects.
 ** Capture ideas
 Inspiration ideas other than text, will be inserted as attachments.
 ** Paragraph management
-Paragraph can attach tag, status and priority to them, those are tools to help do task management and orgnize your contents.
+Paragraph can attach tag, status and priority to them, those are tools to help do task management and organize your contents.
 And you can use move paragraph to rearrange you contents, or modify the level of the paragraph.
 *** Tag
-Orgnize paragraphs with tags.
+Organize paragraphs with tags.
 *** Status
 To indicate the work progress of the whatever you want to add to the paragraph, and also control if the paragraph shows in *Agenda*.
 *** Priority
@@ -32,14 +32,14 @@ When you move at paragraph heading, you are moving the whole paragraph.
 *** Paragraph content
 When moving at paragraph content, you are moving the current line of text.
 1. Move left and right to decrease and increase indent.
-2. Move up and down to swich posiont of line right above or below.
-** Orgnize paragraphs
-You can move a paragraph to another paragraph, as its sub paragraph, or move to begining/ending of the document, and keeping the paragraph level, and the move can be inside one documents, or to another document.
+2. Move up and down to switch position of the line right above or below.
+** Organize paragraphs
+You can move a paragraph to another paragraph, as its sub paragraph, or move to beginning/ending of the document, and keeping the paragraph level, and the move can be inside one documents, or to another document.
 * Capture inspiration
 ** Inside x3 note
-You access *Capture inspiration* at every page inside x3 note. When you are editing a document, you can find it by tapping the action button, other places, the button is floating at bottom right of the screen.
+You access *Capture inspiration* at every page inside x3 note. When you are editing a document, you can find it by tapping the action button, other places, the button is floating at bottom right bottom of the screen.
 ** Share to x3 note
-Any app that can share content, can share to Icea, and kept in *Captured ideas*
+Any app that can share content, can share to x3 note, and kept in *Captured ideas*
 ** Refile
 When you are managing the captured ideas, you can choose a place, then move that idea to the place of document you choose.
 * Agenda management
@@ -58,6 +58,6 @@ You can choose an image as the cover of a document.
 ** Duplicate
 Make a copy of the chosen document.
 ** Import
-Import other file into x3 note, use it's content to create a new document, now we support *org* file.
-** iCloud synchorinize
+Import other file into x3 note, use its content to create a new document, now we support *org* file, if you want to import a org file to x3 note, you can open it with x3 note, or share to x3 note.
+** iCloud synchornize
 Save you document on iCloud, then it will synchronize across all your devices, free of charge.

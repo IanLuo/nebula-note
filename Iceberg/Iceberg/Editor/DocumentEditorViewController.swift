@@ -143,17 +143,7 @@ public class DocumentEditorViewController: UIViewController {
             }
         }
     }
-    
-    @objc private func _keyboardWillHide(_ notification: Notification) {
-        UIView.animate(withDuration: 0.25, delay: 0.0, options: [], animations: {
-            self.textView.contentInset = UIEdgeInsets(top: self.textView.contentInset.top,
-                                                      left: self.textView.contentInset.left,
-                                                      bottom: 0,
-                                                      right: self.textView.contentInset.right)
-        }, completion: nil)
-    }
-    
-    
+        
     private var _didShowUserGuide: Bool = false
     private func shouldShowHeadingGuide() -> Bool {
         guard _didShowUserGuide == false else { return false }
@@ -267,6 +257,14 @@ extension DocumentEditorViewController: DocumentEditViewModelDelegate {
         } else {
             if !(SettingsAccessor.Item.unfoldAllEntriesWhenOpen.get(Bool.self) ?? false) {
                 self.viewModel.foldAll()
+            }
+            
+            if self.viewModel.string.count == 0 { // if there's no content, add an entry, and show keyboard
+                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.3) {
+                    let result = self.viewModel.performAction(EditAction.convertToHeading(0), textView: self.textView)
+                    self.textView.selectedRange = NSRange(location: result.range!.upperBound, length: 0)
+                    self.textView.becomeFirstResponder()
+                }
             }
         }
         

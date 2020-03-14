@@ -119,7 +119,8 @@ public class OutlineTextView: UITextView {
     // 调整光标的高度
     public override func caretRect(for position: UITextPosition) -> CGRect {
         var rect = super.caretRect(for: position)
-        rect.size.height -= 10
+        rect.size.height = self.font?.lineHeight ?? rect.size.height - 10
+        rect.size.height = max(rect.size.height, rect.size.height - 10)
         return rect
     }
 }
