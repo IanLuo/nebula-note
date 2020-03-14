@@ -30,7 +30,7 @@ public enum SettingsError: Error {
         case unfinishedPlannings
         case landingTabIndex
         case interfaceStyle
-        case unfoldAllEntriesWhenOpen
+        case foldAllEntriesWhenOpen
         case exportShowIndex
         case currentSubscription
         case isFirstLaunchApp

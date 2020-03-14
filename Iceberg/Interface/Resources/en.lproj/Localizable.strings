@@ -180,7 +180,7 @@
 "setting.planning.finish.title" = "Finish";
 
 "setting.editor.title" = "Editor";
-"setting.editor.unfoldAllWhenOpen" = "Unfold all entries when open";
+"setting.editor.foldAllWhenOpen" = "Fold all entries when open";
 
 "setting.export.title" = "Export";
 "setting.export.showIndex" = "Show index";

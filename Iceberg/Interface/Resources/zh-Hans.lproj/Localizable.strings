@@ -181,7 +181,7 @@
 "setting.planning.finish.title" = "已完成";
 
 "setting.editor.title" = "编辑器";
-"setting.editor.unfoldAllWhenOpen" = "打开文档时展开所有段落";
+"setting.editor.foldAllWhenOpen" = "打开文档时折叠所有段落";
 
 "setting.export.title" = "导出";
 "setting.export.showIndex" = "显示序号";

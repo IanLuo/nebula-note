@@ -80,8 +80,8 @@ public class SettingsViewController: UITableViewController {
         self.planningUnfinishLabel.text = L10n.Setting.Planning.Unfinish.title
         self.planningUnfinishButton.setTitle(self.viewModel.getPlanning(isForFinished: false).joined(separator: ","), for: .normal)
         
-        self.editorUnfoldLabel.text = L10n.Setting.Editor.unfoldAllWhenOpen
-        self.editorUnfoldSwitch.isOn = self.viewModel.unfoldWhenOpen
+        self.editorUnfoldLabel.text = L10n.Setting.Editor.foldAllWhenOpen
+        self.editorUnfoldSwitch.isOn = self.viewModel.foldWhenOpen
         
         self.exportShowIndexLabel.text = L10n.Setting.Export.showIndex
         self.exportShowIndexSwitch.isOn = self.viewModel.exportShowIndex
@@ -159,6 +159,7 @@ public class SettingsViewController: UITableViewController {
         selector.addItem(title: L10n.Setting.Feedback.forum)
         selector.onCancel = { viewController in
             viewController.dismiss(animated: true)
+            self.viewModel.showGlobalCaptureEntry()
         }
         
         selector.onSelection = { selection, viewController in
@@ -178,6 +179,8 @@ public class SettingsViewController: UITableViewController {
             default: break
             }
         }
+        
+        self.viewModel.hideGlobalCaptureEntry()
         self.present(selector, animated: true)
     }
         
@@ -341,8 +344,8 @@ public class SettingsViewController: UITableViewController {
         self._planningManage(isFinish: false)
     }
     
-    @IBAction func editorUnfoldWhenOpen(_ sender: UISwitch) {
-        self.viewModel.setUnfoldWhenOpen(sender.isOn)
+    @IBAction func editorFoldWhenOpen(_ sender: UISwitch) {
+        self.viewModel.setFoldWhenOpen(sender.isOn)
     }
     
     @IBAction func exportShowIndex(_ sender: UISwitch) {

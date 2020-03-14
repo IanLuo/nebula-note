@@ -670,10 +670,10 @@ public enum L10n {
       }
     }
     public enum Editor {
+      /// Fold all entries when open
+      public static let foldAllWhenOpen = L10n.tr("Localizable", "setting.editor.foldAllWhenOpen")
       /// Editor
       public static let title = L10n.tr("Localizable", "setting.editor.title")
-      /// Unfold all entries when open
-      public static let unfoldAllWhenOpen = L10n.tr("Localizable", "setting.editor.unfoldAllWhenOpen")
     }
     public enum Export {
       /// Show index

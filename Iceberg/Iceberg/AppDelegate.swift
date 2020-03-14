@@ -10,7 +10,7 @@ import UIKit
 import SwiftyBeaver
 import RxSwift
 #if DEBUG
-import TouchVisualizer
+import ShowTime
 #endif
 
 internal let log = SwiftyBeaver.self
@@ -27,7 +27,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         
         #if DEBUG
-        Visualizer.start()
+        ShowTime.enabled = .always
         #endif
         
         console.format = "$DHH:mm:ss$d $L $M"

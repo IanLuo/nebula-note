@@ -10,7 +10,7 @@
         <!--Root View Controller-->
         <scene sceneID="tmE-Oo-8fN">
             <objects>
-                <tableViewController id="154-Ln-0Qk" customClass="SettingsViewController" customModule="Icetea" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="154-Ln-0Qk" customClass="SettingsViewController" customModule="x3Note" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="oSf-i7-f1z">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -214,7 +214,7 @@
                                                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="l13-3P-OHb">
                                                     <rect key="frame" x="345" y="17.5" width="51" height="31"/>
                                                     <connections>
-                                                        <action selector="editorUnfoldWhenOpen:" destination="154-Ln-0Qk" eventType="valueChanged" id="mIv-Kg-nsh"/>
+                                                        <action selector="editorFoldWhenOpen:" destination="154-Ln-0Qk" eventType="valueChanged" id="lU1-w1-7qD"/>
                                                     </connections>
                                                 </switch>
                                             </subviews>
@@ -278,7 +278,7 @@
                         <outlet property="attachmentManagerLabel" destination="W4R-zj-xyU" id="cU7-de-HN9"/>
                         <outlet property="chooseLandingTabButton" destination="dnp-Uh-dnX" id="PRC-gg-q7c"/>
                         <outlet property="editorUnfoldLabel" destination="OsI-x5-0UW" id="2RW-4C-8Gi"/>
-                        <outlet property="editorUnfoldSwitch" destination="l13-3P-OHb" id="YBM-ft-n6T"/>
+                        <outlet property="editorUnfoldSwitch" destination="l13-3P-OHb" id="miJ-pa-NWL"/>
                         <outlet property="exportShowIndexLabel" destination="Na4-t8-FPr" id="NDp-Ty-Boq"/>
                         <outlet property="exportShowIndexSwitch" destination="pbA-Do-osX" id="1lo-ai-U9E"/>
                         <outlet property="interfaceStyleButton" destination="l4B-cf-DeA" id="qCC-oL-NY0"/>

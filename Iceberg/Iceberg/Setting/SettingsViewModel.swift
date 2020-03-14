@@ -62,12 +62,12 @@ public class SettingsViewModel: ViewModelProtocol {
         }
     }
     
-    public var unfoldWhenOpen: Bool {
-        SettingsAccessor.Item.unfoldAllEntriesWhenOpen.get(Bool.self) ?? false
+    public var foldWhenOpen: Bool {
+        SettingsAccessor.Item.foldAllEntriesWhenOpen.get(Bool.self) ?? false
     }
     
-    public func setUnfoldWhenOpen(_ unfold: Bool) {
-        SettingsAccessor.Item.unfoldAllEntriesWhenOpen.set(unfold) { [weak self] in
+    public func setFoldWhenOpen(_ unfold: Bool) {
+        SettingsAccessor.Item.foldAllEntriesWhenOpen.set(unfold) { [weak self] in
             self?.delegate?.didUpdateUnfoldWhenOpen(unfold: unfold)
         }
     }

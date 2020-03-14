@@ -166,7 +166,9 @@ public class DocumentEditorViewController: UIViewController {
         let keyboardViewEndFrame = view.convert(keyboardScreenEndFrame, from: view.window)
 
         if notification.name == UIResponder.keyboardDidHideNotification {
-            self.textView.contentInset = self._contentEdgeInsect
+            UIView.animate(withDuration: 0.2) {
+                self.textView.contentInset = self._contentEdgeInsect
+            }
         } else {
             self.textView.contentInset = UIEdgeInsets(top: self._contentEdgeInsect.top, left: self._contentEdgeInsect.left, bottom: keyboardViewEndFrame.height - view.safeAreaInsets.bottom, right: self._contentEdgeInsect.right)
             self.textView.scrollRangeToVisible(self.textView.selectedRange)
@@ -255,7 +257,7 @@ extension DocumentEditorViewController: DocumentEditViewModelDelegate {
             self.allowScrollContentWhenKeyboardDisapearTemporaily()
             self._scrollTo(location: self.viewModel.onLoadingLocation)
         } else {
-            if !(SettingsAccessor.Item.unfoldAllEntriesWhenOpen.get(Bool.self) ?? false) {
+            if (SettingsAccessor.Item.foldAllEntriesWhenOpen.get(Bool.self) ?? false) {
                 self.viewModel.foldAll()
             }
             
