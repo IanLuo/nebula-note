@@ -17,6 +17,7 @@ PODS:
   - SwiftGen (6.1.0)
   - SwiftyBeaver (1.8.4)
   - SwiftyStoreKit (0.15.0)
+  - TouchVisualizer (3.1.0)
 
 DEPENDENCIES:
   - Drawsana
@@ -29,6 +30,7 @@ DEPENDENCIES:
   - SwiftGen (~> 6.0)
   - SwiftyBeaver
   - SwiftyStoreKit
+  - TouchVisualizer (~> 3.1.0)
 
 SPEC REPOS:
   https://mirrors.tuna.tsinghua.edu.cn/git/CocoaPods/Specs.git:
@@ -44,6 +46,7 @@ SPEC REPOS:
     - SwiftGen
     - SwiftyBeaver
     - SwiftyStoreKit
+    - TouchVisualizer
 
 SPEC CHECKSUMS:
   Differentiator: 886080237d9f87f322641dedbc5be257061b0602
@@ -58,7 +61,8 @@ SPEC CHECKSUMS:
   SwiftGen: f872ca75cbd17bf7103c17f13dcfa0d9a15667b0
   SwiftyBeaver: f9a9aba96a6a6166e21682377804d728b0d20b95
   SwiftyStoreKit: 033d06b6f87955405d3f844a18a7687c2438592a
+  TouchVisualizer: b97b1efb0f25d1408bb4557e6f493eae454425e7
 
-PODFILE CHECKSUM: acc18f859485b713538918cdca18dd1dedee0cad
+PODFILE CHECKSUM: 4941acf0cd407c0dea9b842ac7891a7a7b65e9bb
 
 COCOAPODS: 1.9.0

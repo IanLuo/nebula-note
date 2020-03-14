@@ -9,6 +9,9 @@
 import UIKit
 import SwiftyBeaver
 import RxSwift
+#if DEBUG
+import TouchVisualizer
+#endif
 
 internal let log = SwiftyBeaver.self
 
@@ -22,6 +25,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        #if DEBUG
+        Visualizer.start()
+        #endif
         
         console.format = "$DHH:mm:ss$d $L $M"
         console.minLevel = .info
