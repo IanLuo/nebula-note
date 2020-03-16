@@ -8,6 +8,7 @@
 
 import Foundation
 import Core
+import Interface
 
 public protocol SettingsViewModelDelegate: class {
     func didSetIsSyncEnabled(_ enabled: Bool)
@@ -19,6 +20,59 @@ public protocol SettingsViewModelDelegate: class {
 }
 
 public class SettingsViewModel: ViewModelProtocol {
+    public enum ItemValue {
+        case list(Int, [String], [UIImage]?)
+        case `switch`(Bool)
+    }
+    
+    public struct Item {
+        let label: String
+        let value: ItemValue
+        let action: ((Any) -> Void)
+    }
+    
+    public class Group {
+        let title: String
+        var items: [Item] = []
+        
+        public init(title: String, items: [Item]) {
+            self.title = title
+        }
+        
+        public func addItem(_ item: Item) {
+            self.items.append(item)
+        }
+    }
+    
+    public class Page {
+        var groups: [Group] = []
+        
+        public func addGroup(_ group: Group) {
+            self.groups.append(group)
+        }
+    }
+    
+    public func makeData() -> Page {
+        let mainPage = Page()
+        mainPage.addGroup(SettingsViewModel.Group(title: "General", items: [
+            Item(label: "Default first screen",
+                 value: ItemValue.list(SettingsAccessor.Item.landingTabIndex.get(Int.self) ?? 3,
+                                       LandingTab.allCases.map { $0.name },
+                                       LandingTab.allCases.map { $0.icon }),
+                 action: { newIndex in
+                    SettingsAccessor.Item.landingTabIndex.set(newIndex, completion: {})
+            })
+        ]))
+        
+        mainPage.addGroup(SettingsViewModel.Group(title: "Customized status", items: [
+            // TODO:
+        ]))
+        
+        
+        return mainPage
+    }
+    
+    
     public var context: ViewModelContext<SettingsCoordinator>!
     
     public typealias CoordinatorType = SettingsCoordinator
@@ -119,6 +173,28 @@ public class SettingsViewModel: ViewModelProtocol {
                     }
                 }
             }
+        }
+    }
+}
+
+enum LandingTab: CaseIterable {
+    case agenda, captureList, search, browser
+    
+    var name: String {
+        switch self {
+        case .agenda: return  L10n.Agenda.title
+        case .captureList: return L10n.CaptureList.title
+        case .search: return L10n.Search.title
+        case .browser: return L10n.Browser.title
+        }
+    }
+    
+    var icon: UIImage {
+        switch self {
+        case .agenda: return Asset.Assets.agenda.image.fill(color: InterfaceTheme.Color.interactive)
+        case .captureList: return Asset.Assets.inspiration.image.fill(color: InterfaceTheme.Color.interactive)
+        case .search: return Asset.Assets.zoom.image.fill(color: InterfaceTheme.Color.interactive)
+        case .browser: return Asset.Assets.document.image.fill(color: InterfaceTheme.Color.interactive)
         }
     }
 }

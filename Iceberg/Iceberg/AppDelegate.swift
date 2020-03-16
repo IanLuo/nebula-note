@@ -10,7 +10,7 @@ import UIKit
 import SwiftyBeaver
 import RxSwift
 #if DEBUG
-import ShowTime
+//import ShowTime
 #endif
 
 internal let log = SwiftyBeaver.self
@@ -27,11 +27,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         
         #if DEBUG
-        ShowTime.enabled = .always
+//        ShowTime.enabled = .never
         #endif
         
         console.format = "$DHH:mm:ss$d $L $M"
-        console.minLevel = .info
+        console.minLevel = .error
         
         log.addDestination(console)
         

@@ -40,7 +40,7 @@ public class OutlineTextView: UITextView {
         self.tapGestureRecognizer.delegate = self
         self.addGestureRecognizer(self.tapGestureRecognizer)
         self.alwaysBounceVertical = true
-        self.autocapitalizationType = .none
+        self.autocapitalizationType = .sentences
         self.autocorrectionType = .no
         self.keyboardDismissMode = .interactive
 

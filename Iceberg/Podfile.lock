@@ -14,7 +14,6 @@ PODS:
   - RxRelay (5.0.1):
     - RxSwift (~> 5)
   - RxSwift (5.0.1)
-  - ShowTime (2.5.0)
   - SwiftGen (6.1.0)
   - SwiftyBeaver (1.8.4)
   - SwiftyStoreKit (0.15.0)
@@ -27,7 +26,6 @@ DEPENDENCIES:
   - RxCocoa
   - RxDataSources
   - RxSwift
-  - ShowTime
   - SwiftGen (~> 6.0)
   - SwiftyBeaver
   - SwiftyStoreKit
@@ -43,7 +41,6 @@ SPEC REPOS:
     - RxDataSources
     - RxRelay
     - RxSwift
-    - ShowTime
     - SwiftGen
     - SwiftyBeaver
     - SwiftyStoreKit
@@ -58,11 +55,10 @@ SPEC CHECKSUMS:
   RxDataSources: efee07fa4de48477eca0a4611e6d11e2da9c1114
   RxRelay: 89d54507f4fd4d969e6ec1d4bd7f3673640b4640
   RxSwift: e2dc62b366a3adf6a0be44ba9f405efd4c94e0c4
-  ShowTime: 7821a8fc33629f34dbd970e0b55f34126f6d9750
   SwiftGen: f872ca75cbd17bf7103c17f13dcfa0d9a15667b0
   SwiftyBeaver: f9a9aba96a6a6166e21682377804d728b0d20b95
   SwiftyStoreKit: 033d06b6f87955405d3f844a18a7687c2438592a
 
-PODFILE CHECKSUM: f04f5b60846590a2c042c903ac0ef8cc2e12b32f
+PODFILE CHECKSUM: b94e9a0dbe4d3f686c519b1b91205880e2014b26
 
 COCOAPODS: 1.9.0

@@ -440,28 +440,6 @@ public class SettingsViewController: UITableViewController {
         self.viewModel.dependency.globalCaptureEntryWindow?.hide()
     }
     
-    enum LandingTab: CaseIterable {
-        case agenda, captureList, search, browser
-        
-        var name: String {
-            switch self {
-            case .agenda: return  L10n.Agenda.title
-            case .captureList: return L10n.CaptureList.title
-            case .search: return L10n.Search.title
-            case .browser: return L10n.Browser.title
-            }
-        }
-        
-        var icon: UIImage {
-            switch self {
-            case .agenda: return Asset.Assets.agenda.image.fill(color: InterfaceTheme.Color.interactive)
-            case .captureList: return Asset.Assets.inspiration.image.fill(color: InterfaceTheme.Color.interactive)
-            case .search: return Asset.Assets.zoom.image.fill(color: InterfaceTheme.Color.interactive)
-            case .browser: return Asset.Assets.document.image.fill(color: InterfaceTheme.Color.interactive)
-            }
-        }
-    }
-    
     public override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
