@@ -38,8 +38,8 @@ public class SettingsViewController: UITableViewController {
     @IBOutlet var planningUnfinishLabel: UILabel!
     @IBOutlet var planningUnfinishButton: UIButton!
     
-    @IBOutlet var editorUnfoldLabel: UILabel!
-    @IBOutlet var editorUnfoldSwitch: UISwitch!
+    @IBOutlet var editorFoldLabel: UILabel!
+    @IBOutlet var editorFoldSwitch: UISwitch!
     
     @IBOutlet var exportShowIndexLabel: UILabel!
     @IBOutlet var exportShowIndexSwitch: UISwitch!
@@ -80,8 +80,8 @@ public class SettingsViewController: UITableViewController {
         self.planningUnfinishLabel.text = L10n.Setting.Planning.Unfinish.title
         self.planningUnfinishButton.setTitle(self.viewModel.getPlanning(isForFinished: false).joined(separator: ","), for: .normal)
         
-        self.editorUnfoldLabel.text = L10n.Setting.Editor.foldAllWhenOpen
-        self.editorUnfoldSwitch.isOn = self.viewModel.foldWhenOpen
+        self.editorFoldLabel.text = L10n.Setting.Editor.foldAllWhenOpen
+        self.editorFoldSwitch.isOn = self.viewModel.foldWhenOpen
         
         self.exportShowIndexLabel.text = L10n.Setting.Export.showIndex
         self.exportShowIndexSwitch.isOn = self.viewModel.exportShowIndex
@@ -104,22 +104,22 @@ public class SettingsViewController: UITableViewController {
             me.setNeedsStatusBarAppearanceUpdate()
             self?.view.backgroundColor = theme.color.background1
             self?.isSyncEnabledLabel.textColor = theme.color.interactive
-            self?.storeLocationButton.setTitleColor(theme.color.spotlight, for: .normal)
+            self?.storeLocationButton.setTitleColor(theme.color.descriptive, for: .normal)
             
             self?.interfaceStyleLabel.textColor = theme.color.interactive
-            self?.interfaceStyleButton.setTitleColor(theme.color.spotlight, for: .normal)
+            self?.interfaceStyleButton.setTitleColor(theme.color.descriptive, for: .normal)
             
             self?.landingTabTitleLabel.textColor = theme.color.interactive
-            self?.chooseLandingTabButton.setTitleColor(theme.color.spotlight, for: .normal)
+            self?.chooseLandingTabButton.setTitleColor(theme.color.descriptive, for: .normal)
             self?.landingTabRow.tintColor = theme.color.descriptive
             
             self?.planningFinishLabel.textColor = theme.color.interactive
-            self?.planningFinishButton.setTitleColor(theme.color.spotlight, for: .normal)
+            self?.planningFinishButton.setTitleColor(theme.color.descriptive, for: .normal)
             self?.planningUnfinishLabel.textColor = theme.color.interactive
-            self?.planningUnfinishButton.setTitleColor(theme.color.spotlight, for: .normal)
+            self?.planningUnfinishButton.setTitleColor(theme.color.descriptive, for: .normal)
             
-            self?.editorUnfoldLabel.textColor = theme.color.interactive
-            self?.editorUnfoldSwitch.onTintColor = theme.color.spotlight
+            self?.editorFoldLabel.textColor = theme.color.interactive
+            self?.editorFoldSwitch.onTintColor = theme.color.spotlight
             
             self?.exportShowIndexLabel.textColor = theme.color.interactive
             self?.exportShowIndexSwitch.onTintColor = theme.color.spotlight
@@ -128,7 +128,7 @@ public class SettingsViewController: UITableViewController {
         }
         
         let button = UIButton()
-        button.setImage(UIImage(named: "launchIcon")?.resize(upto: CGSize(width: 30, height: 30)), for: .normal)
+        button.setImage(UIImage(named: "AppIcon")?.resize(upto: CGSize(width: 30, height: 30)), for: .normal)
         let rightButton = UIBarButtonItem(customView: button)
         button.rx.tap.subscribe(onNext: { [weak self] _ in
             self?._showFeedbackOptions()

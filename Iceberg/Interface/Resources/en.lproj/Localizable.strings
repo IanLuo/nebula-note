@@ -191,8 +191,8 @@
 
 "setting.feedback.title" = "How do you think of x3 note?";
 "setting.feedback.rate" = "If you enjoy using x3 note, please rate us five star, thanks";
-"setting.feedback.promot" = "I want to share x3 note to people";
-"setting.feedback.forum" = "I want to join the forum and give my advices";
+"setting.feedback.promot" = "I like x3 note, and I want to share to others";
+"setting.feedback.forum" = "I want to join the forum";
 
 //search
 "search.title" = "Search";

@@ -135,12 +135,11 @@ public class EditorCoordinator: Coordinator {
         let navigationController = Coordinator.createDefaultNavigationControlller()
         let attachmentLinkCoordinator = AttachmentCoordinator(stack: navigationController, dependency: self.dependency, title: title, url: url)
         attachmentLinkCoordinator.onSaveAttachment = { key in
-            AttachmentManager().attachment(with: key, completion: { attachment in
+            if let attachment = self.dependency.attachmentManager.attachment(with: key) {
                 let linkString = OutlineParser.Values.Attachment.serialize(attachment: attachment)
                 completeEdit(linkString)
-            }, failure: { error in
-                log.error(error)
-            })
+                self.dependency.attachmentManager.delete(key: key, completion: {}, failure: { _ in })
+            }
         }
         
         attachmentLinkCoordinator.start(from: self)

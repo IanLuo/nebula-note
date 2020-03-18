@@ -64,6 +64,11 @@ extension DocumentEditorViewController: DocumentEditToolbarDelegate {
                         self.textView.selectedRange = oldSelection.offset(result.delta)
                         self.viewModel.dependency.globalCaptureEntryWindow?.show()
                     }
+                    
+                    // this is special for link, because link here do not need to save attachment file, so delete the attachment
+                    if attachmentAction.AttachmentKind == .link {
+                        self.viewModel.dependency.attachmentManager.delete(key: attachmentId, completion: {}, failure: { _ in })
+                    }
                 }, cancel: { [weak self] in
                     self?.viewModel.dependency.globalCaptureEntryWindow?.show()
                 })

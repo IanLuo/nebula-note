@@ -214,7 +214,7 @@
                                                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="l13-3P-OHb">
                                                     <rect key="frame" x="345" y="17.5" width="51" height="31"/>
                                                     <connections>
-                                                        <action selector="editorFoldWhenOpen:" destination="154-Ln-0Qk" eventType="valueChanged" id="lU1-w1-7qD"/>
+                                                        <action selector="editorFoldWhenOpen:" destination="154-Ln-0Qk" eventType="valueChanged" id="Mmw-yP-x2y"/>
                                                     </connections>
                                                 </switch>
                                             </subviews>
@@ -249,7 +249,6 @@
                                                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pbA-Do-osX">
                                                     <rect key="frame" x="345" y="17.5" width="51" height="31"/>
                                                     <connections>
-                                                        <action selector="editorUnfoldWhenOpen:" destination="154-Ln-0Qk" eventType="valueChanged" id="kjb-Ya-XdG"/>
                                                         <action selector="exportShowIndex:" destination="154-Ln-0Qk" eventType="valueChanged" id="obT-Ey-0UA"/>
                                                     </connections>
                                                 </switch>
@@ -277,8 +276,8 @@
                     <connections>
                         <outlet property="attachmentManagerLabel" destination="W4R-zj-xyU" id="cU7-de-HN9"/>
                         <outlet property="chooseLandingTabButton" destination="dnp-Uh-dnX" id="PRC-gg-q7c"/>
-                        <outlet property="editorUnfoldLabel" destination="OsI-x5-0UW" id="2RW-4C-8Gi"/>
-                        <outlet property="editorUnfoldSwitch" destination="l13-3P-OHb" id="miJ-pa-NWL"/>
+                        <outlet property="editorFoldLabel" destination="OsI-x5-0UW" id="tf9-RY-Zfn"/>
+                        <outlet property="editorFoldSwitch" destination="l13-3P-OHb" id="W4D-4K-D7S"/>
                         <outlet property="exportShowIndexLabel" destination="Na4-t8-FPr" id="NDp-Ty-Boq"/>
                         <outlet property="exportShowIndexSwitch" destination="pbA-Do-osX" id="1lo-ai-U9E"/>
                         <outlet property="interfaceStyleButton" destination="l4B-cf-DeA" id="qCC-oL-NY0"/>

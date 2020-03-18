@@ -191,9 +191,9 @@
 "setting.manageAttachment.delete.title" = "确定删除选中的附件?";
 
 "setting.feedback.title" = "觉得 x3 笔记怎么样?";
-"setting.feedback.rate" = "如果觉得好用，请给我们五星好评，谢谢";
-"setting.feedback.promot" = "我想要推荐给别人";
-"setting.feedback.forum" = "我想加入论坛提供建议";
+"setting.feedback.rate" = "如果觉得好用的话，麻烦给我们一个五星好评，谢谢";
+"setting.feedback.promot" = "我喜欢 x3 笔记，想推荐别人使用";
+"setting.feedback.forum" = "我想加入论坛";
 
 //search
 "search.title" = "搜索";
