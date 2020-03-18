@@ -136,7 +136,11 @@ public class DocumentEditViewModel: ViewModelProtocol {
         get { return self._editorService.isReadingMode }
         set {
             self._editorService.isReadingMode = newValue
-            self.revertContent()
+            self._editorService.save { isTrue in
+                if isTrue {
+                    self.revertContent()
+                }
+            }
         }
     }
     
