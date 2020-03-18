@@ -83,6 +83,7 @@ public enum Asset {
     public static let trash = ImageAsset(name: "trash")
     public static let underline = ImageAsset(name: "underline")
     public static let undo = ImageAsset(name: "undo")
+    public static let unfoldButton = ImageAsset(name: "unfold-button")
     public static let unfolded = ImageAsset(name: "unfolded")
     public static let up = ImageAsset(name: "up")
     public static let video = ImageAsset(name: "video")

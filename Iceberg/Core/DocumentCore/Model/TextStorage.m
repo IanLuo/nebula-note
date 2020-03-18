@@ -38,8 +38,8 @@ static NSMutableDictionary *attachmentMap;
 + (void)initialize {
     if ([self class] == [TextStorage class]) {
         foldingAttachment = [[NSTextAttachment alloc] init];
-        foldingAttachment.image = [UIImage imageNamed:@"more" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil];
-        foldingAttachment.bounds = CGRectMake(0, ([[SettingsAccessor shared] lineHeight] - 4) / 2, 14, 4);
+        foldingAttachment.image = [UIImage imageNamed:@"unfold-button" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil];
+        foldingAttachment.bounds = CGRectMake(0, ([[SettingsAccessor shared] lineHeight] - 20) / 2, 30, 20);
         
         linkAttachment = [[NSTextAttachment alloc] init];
         linkAttachment.image = [UIImage imageNamed: @"link" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil];
