@@ -102,10 +102,11 @@ public class DocumentEditorViewController: UIViewController {
             notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardDidChangeFrameNotification, object: nil)
             notificationCenter.addObserver(self, selector: #selector(_tryToShowUserGuide), name: UIResponder.keyboardDidShowNotification, object: nil)
             
-            self.viewModel.dependency.appContext.isReadingMode.subscribe(onNext: { [weak self] isReadingMode in
-                self?.textView.isEditable = !isReadingMode && self?.viewModel.isTemp == false
-                self?.textView.inputAccessoryView?.isHidden = isReadingMode
-            }).disposed(by: self.disposeBag)
+            // disable global mode for now
+//            self.viewModel.dependency.appContext.isReadingMode.subscribe(onNext: { [weak self] isReadingMode in
+//                self?.textView.isEditable = !isReadingMode && self?.viewModel.isTemp == false
+//                self?.textView.inputAccessoryView?.isHidden = isReadingMode
+//            }).disposed(by: self.disposeBag)
         }
     }
     

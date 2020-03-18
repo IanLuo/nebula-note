@@ -428,9 +428,9 @@ extension DocumentEditViewModel {
             }
         })
         
-        self.dependency.appContext.isReadingMode.subscribe(onNext: {[weak self] isReadingMode in
-            self?.isReadingModel = isReadingMode
-        }).disposed(by: self.disposeBag)
+//        self.dependency.appContext.isReadingMode.subscribe(onNext: {[weak self] isReadingMode in
+//            self?.isReadingModel = isReadingMode
+//        }).disposed(by: self.disposeBag)
     }
     
     fileprivate func removeObservers() {
