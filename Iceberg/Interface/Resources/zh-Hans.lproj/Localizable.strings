@@ -121,7 +121,7 @@
 "document.help.more" = "更多帮助";
 "document.help.markSyntax" = "标记使用帮助";
 
-"document.edit.remote_editing_arrived_title" = "其他文档已修改";
+"document.edit.remote_editing_arrived_title" = "发现其他设备有更新的版本，是否重新加载?";
 "document.edit.remote_editing_arrived_message" = "选择需要保存的版本";
 "document.edit.remote_editing_arrived_keep_this_one" = "保留当前版本";
 "document.edit.remote_editing_arrived_keep_remote.one" = "保存另一个版本";

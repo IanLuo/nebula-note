@@ -334,7 +334,7 @@ public enum L10n {
       public static let remoteEditingArrivedKeepThisOne = L10n.tr("Localizable", "document.edit.remote_editing_arrived_keep_this_one")
       /// Which version do you want to keep?
       public static let remoteEditingArrivedMessage = L10n.tr("Localizable", "document.edit.remote_editing_arrived_message")
-      /// Another device modified this document
+      /// Found newer version from another device, reload?
       public static let remoteEditingArrivedTitle = L10n.tr("Localizable", "document.edit.remote_editing_arrived_title")
       public enum Action {
         /// Arrow down

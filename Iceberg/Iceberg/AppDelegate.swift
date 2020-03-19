@@ -28,10 +28,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         #if DEBUG
 //        ShowTime.enabled = .never
+        console.minLevel = .info
+        #else
+        console.minLevel = .error
         #endif
         
         console.format = "$DHH:mm:ss$d $L $M"
-        console.minLevel = .error
         
         log.addDestination(console)
         

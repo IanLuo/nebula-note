@@ -81,8 +81,16 @@ public class DocumentEditViewModel: ViewModelProtocol {
         return self._editorService.string
     }
     
-    public func revertContent() {
-        self._editorService.revertContent()
+    public func revertContent(shouldSaveBeforeRevert: Bool = true) {
+        if shouldSaveBeforeRevert {
+            self._editorService.save { [weak self] isTrue in
+                if isTrue {                    
+                    self?._editorService.revertContent()
+                }
+            }
+        } else {
+            self._editorService.revertContent()
+        }
     }
     
     var isTemp: Bool {
@@ -136,11 +144,7 @@ public class DocumentEditViewModel: ViewModelProtocol {
         get { return self._editorService.isReadingMode }
         set {
             self._editorService.isReadingMode = newValue
-            self._editorService.save { isTrue in
-                if isTrue {
-                    self.revertContent()
-                }
-            }
+            self.revertContent()
         }
     }
     
@@ -390,7 +394,7 @@ public class DocumentEditViewModel: ViewModelProtocol {
         }
         
         completeResolving()
-        
+        self.isResolvingConflict = false
         
     }
 

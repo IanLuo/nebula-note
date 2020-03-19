@@ -578,9 +578,12 @@ extension iCloudDocumentManager: NSMetadataQueryDelegate {
         
         let handleDocumentDownloadCompletion: () -> Void = {
             
-            self.downloadingItemsCache[url] = nil
+            guard self.downloadingItemsCache[url] != nil else { return }
             
-            log.info("** complete downloading: \(item.fileName ?? "") size:(\(item.fileSize ?? 0)) **")
+            self.downloadingItemsCache[url] = nil
+            self.onDownloadingCompletes.onNext(url)
+            
+            log.info("** complete download: \(item.fileName ?? "") size:(\(item.fileSize ?? 0)) **")
             if url.pathExtension == Document.fileExtension {
                 self._eventObserver.emit(NewDocumentPackageDownloadedEvent(url: url))
             } else if url.pathExtension == "plist" {
@@ -611,8 +614,6 @@ extension iCloudDocumentManager: NSMetadataQueryDelegate {
 
             if item.downloadPercentage == 100 {
                 handleDocumentDownloadCompletion()
-                downloadingItems[url] = nil
-                self.onDownloadingCompletes.onNext(url)
             } else {
                 downloadingItems[url] = downloadPercent
             }
@@ -623,11 +624,6 @@ extension iCloudDocumentManager: NSMetadataQueryDelegate {
                 self.downloadingItemsCache[url] = url
             }
         }
-        
-//        if let isDownloaded = item.isDownloaded, isDownloaded == true,
-//            let isDownloading = item.isDownloading, isDownloading == true{
-//            handleDocumentDownloadCompletion()
-//        }
                 
     }
 }

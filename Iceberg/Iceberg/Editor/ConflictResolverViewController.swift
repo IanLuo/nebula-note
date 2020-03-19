@@ -127,12 +127,8 @@ public class ConflictResolverViewController: UIViewController, UITableViewDataSo
         
         let fileVersion = self.versions.value[indexPath.row]
         
-        if fileVersion.url == self.viewModel.url {
-            cell.textLabel?.text = L10n.Document.Edit.Conflict.current
-        } else {
-            let text = (fileVersion.modificationDate?.shotDateAndTimeString ?? "") + " " + (fileVersion.localizedNameOfSavingComputer ?? "")
-            cell.textLabel?.text = text
-        }
+        let text = (fileVersion.modificationDate?.shotDateAndTimeString ?? "") + " " + (fileVersion.localizedNameOfSavingComputer ?? "")
+        cell.textLabel?.text = text
         
         
         cell.accessoryType = .detailDisclosureButton

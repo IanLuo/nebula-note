@@ -102,6 +102,26 @@ public class DocumentEditorViewController: UIViewController {
             notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardDidChangeFrameNotification, object: nil)
             notificationCenter.addObserver(self, selector: #selector(_tryToShowUserGuide), name: UIResponder.keyboardDidShowNotification, object: nil)
             
+            self.viewModel.dependency.syncManager.onDownloadingCompletes.subscribe(onNext: { url in
+                guard url.path == self.viewModel.url.path else { return }
+                
+                guard (try? String(contentsOf: url)) != self.viewModel.string else { return }
+                
+                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 15) {
+                    if let lastState = self._lastState, !lastState.contains(.inConflict) {
+                        let confirm = ConfirmViewController(contentText: L10n.Document.Edit.remoteEditingArrivedTitle, onConfirm: { viewController in
+                            viewController.dismiss(animated: true) {
+                                self.viewModel.revertContent(shouldSaveBeforeRevert: false)
+                            }
+                        }) { viewController in
+                            viewController.dismiss(animated: true)
+                        }
+                        
+                        self.present(confirm, animated: true)
+                    }
+                }
+            }).disposed(by: self.disposeBag)
+            
             // disable global mode for now
 //            self.viewModel.dependency.appContext.isReadingMode.subscribe(onNext: { [weak self] isReadingMode in
 //                self?.textView.isEditable = !isReadingMode && self?.viewModel.isTemp == false
@@ -193,6 +213,7 @@ public class DocumentEditorViewController: UIViewController {
             }
             
             if document.documentState.contains(.inConflict) {
+                log.info("document state is: inConflict")
                 self.viewModel.context.coordinator?.showConfictResolver(from: self, viewModel: self.viewModel)
             }
                 
@@ -258,7 +279,7 @@ extension DocumentEditorViewController: DocumentEditViewModelDelegate {
             self.allowScrollContentWhenKeyboardDisapearTemporaily()
             self._scrollTo(location: self.viewModel.onLoadingLocation)
         } else {
-            if (SettingsAccessor.Item.foldAllEntriesWhenOpen.get(Bool.self) ?? false) {
+            if (SettingsAccessor.Item.foldAllEntriesWhenOpen.get(Bool.self) ?? false) && !self.viewModel.isTemp {
                 self.viewModel.foldAll()
             }
             

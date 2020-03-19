@@ -121,7 +121,7 @@
 "document.help.more" = "More help topics";
 "document.help.markSyntax" = "Marks syntax help";
 
-"document.edit.remote_editing_arrived_title" = "Another device modified this document";
+"document.edit.remote_editing_arrived_title" = "Found newer version from another device, reload?";
 "document.edit.remote_editing_arrived_message" = "Which version do you want to keep?";
 "document.edit.remote_editing_arrived_keep_this_one" = "Keep this one";
 "document.edit.remote_editing_arrived_keep_remote.one" = "Keep remote one";
