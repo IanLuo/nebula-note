@@ -62,8 +62,8 @@ public class PDFExporter: Exportable {
     }
     
     private func _createPDF(string: String, printFormater: UIPrintFormatter) -> URL {
-        let html = string
-        let fmt = UIMarkupTextPrintFormatter(markupText: html)
+//        let html = string
+//        let fmt = UIMarkupTextPrintFormatter(markupText: html)
         
         // 2. Assign print formatter to UIPrintPageRenderer
         let render = UIPrintPageRenderer()
