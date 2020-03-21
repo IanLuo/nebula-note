@@ -5,8 +5,8 @@ platform :ios, '9.0'
 use_frameworks!
 
 target 'x3Note' do
-    pod 'RxSwift'
-    pod 'RxCocoa'
+    pod 'RxSwift', :git => 'git@github.com:ReactiveX/RxSwift.git', :tag => '5.1.0'
+    pod 'RxCocoa', :git => 'git@github.com:ReactiveX/RxSwift.git', :tag => '5.1.0'
     pod 'RxDataSources'
     pod 'SwiftyBeaver'
     pod 'Haptico' # https://github.com/iSapozhnik/Haptico
@@ -18,15 +18,15 @@ target 'x3Note' do
 end
 
 target 'x3NoteTests' do
-    pod 'RxSwift'
-    pod 'RxCocoa'
+    pod 'RxSwift', :git => 'git@github.com:ReactiveX/RxSwift.git', :tag => '5.1.0'
+    pod 'RxCocoa', :git => 'git@github.com:ReactiveX/RxSwift.git', :tag => '5.1.0'
 end
 
 target 'Core' do
-  pod 'RxSwift'
-  pod 'RxCocoa'
+  pod 'RxSwift', :git => 'git@github.com:ReactiveX/RxSwift.git', :tag => '5.1.0'
+  pod 'RxCocoa', :git => 'git@github.com:ReactiveX/RxSwift.git', :tag => '5.1.0'
   pod 'SwiftyBeaver'
-  pod 'SwiftyStoreKit'
+  pod 'SwiftyStoreKit', :git => 'git@github.com:bizz84/SwiftyStoreKit.git', :tag => '0.15.1'
 end
 
 target 'Interface' do
