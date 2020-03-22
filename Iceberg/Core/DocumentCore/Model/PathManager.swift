@@ -28,6 +28,26 @@ public enum URLLocation {
     }
 }
 
+private var fileCoordinatorCache: [URL: NSFileCoordinator] = [:]
+private let _fileCoordinatorLock: NSRecursiveLock = NSRecursiveLock()
+private let fetchFileCoordinator: (URL) -> NSFileCoordinator = { url in
+    if let existingFileCoordinator = fileCoordinatorCache[url] {
+        return existingFileCoordinator
+    } else {
+        let fileCoordinator = NSFileCoordinator()
+        _fileCoordinatorLock.lock()
+        fileCoordinatorCache[url] = fileCoordinator
+        _fileCoordinatorLock.unlock()
+        return fileCoordinator
+    }
+}
+
+private let removeFileCoordinatorFromCache: (URL) -> Void = { url in
+    _fileCoordinatorLock.lock()
+    fileCoordinatorCache[url] = nil
+    _fileCoordinatorLock.unlock()
+}
+
 extension URL {
     public static var localDocumentBaseURL: URL {
         return URL.directory(location: URLLocation.document, relativePath: "files")
@@ -88,12 +108,13 @@ extension URL {
             if let error = error {
                 accessor(error)
             } else {
-                let fileCoordinator = NSFileCoordinator()
-                let intent = NSFileAccessIntent.writingIntent(with: self, options: NSFileCoordinator.WritingOptions.forReplacing)
+                let fileCoordinator = fetchFileCoordinator(self)
+                let intent = NSFileAccessIntent.writingIntent(with: self, options: [])
                 let queue = OperationQueue()
                 queue.underlyingQueue = q
                 fileCoordinator.coordinate(with: [intent], queue: queue) { error in
                     accessor(error)
+                    removeFileCoordinatorFromCache(self)
                 }
             }
         }
@@ -116,24 +137,43 @@ extension URL {
     
     public func read(completion: @escaping (Data) -> Void,
                      failure: ((Error) -> Void)? = nil) {
-        let fileCoordinator = NSFileCoordinator()
-        let intent = NSFileAccessIntent.readingIntent(with: self, options: NSFileCoordinator.ReadingOptions.withoutChanges)
-        let queue = OperationQueue()
+        let fileCoordinator = fetchFileCoordinator(self)
+        var error: NSError?
         
-        fileCoordinator.coordinate(with: [intent], queue: queue) { error in
-            if let error = error {
-                failure?(error)
-            } else {
+        fileCoordinator.coordinate(readingItemAt: self,
+                                   options: [.withoutChanges],
+                                   error: &error) { (url) in
+                                    do {
+                                        completion(try Data(contentsOf: url))
+                                        removeFileCoordinatorFromCache(self)
+                                    } catch {
+                                        failure?(error)
+                                        removeFileCoordinatorFromCache(self)
+                                    }
+        }
+        
+        if let error = error {
+            failure?(error)
+            removeFileCoordinatorFromCache(self)
+        }
+    }
+    
+    public static func read(urls: [URL], each: (URL, String) -> Void) {
+        let fileCoordinator = NSFileCoordinator()
+        
+        var error: NSError?
+        
+        fileCoordinator.prepare(forReadingItemsAt: urls, options: [], writingItemsAt: [], options: [], error: &error) { accessor in
+            for url in urls {
                 do {
-                    let data = try Data(contentsOf: self)
-                    completion(data)
+                    try each(url, String(contentsOf: url))
                 } catch {
-                    failure?(error)
+                    log.error(error)
                 }
             }
         }
     }
-    
+        
     public func deleteIfExists(queue q: DispatchQueue,
                                isDirectory: Bool,
                                completion: @escaping (Error?) -> Void) {
@@ -338,7 +378,7 @@ extension String {
 
 extension URL {
     public func duplicate(queue q: DispatchQueue, copyExt: String, completion: @escaping (URL?, Error?) -> Void) {
-        let fileCoordinator = NSFileCoordinator()
+        let fileCoordinator = fetchFileCoordinator(self)
         let read = NSFileAccessIntent.readingIntent(with: self, options: NSFileCoordinator.ReadingOptions.Element())
         
         var copyURL = self.concatingToFileName(" \(copyExt)")
@@ -359,20 +399,23 @@ extension URL {
         fileCoordinator.coordinate(with: [write, read], queue: queue) { error in
             if error != nil {
                 completion(nil, error)
+                removeFileCoordinatorFromCache(self)
             } else {
                 let fm = FileManager.default
                 do {
                     try fm.copyItem(at: read.url, to: write.url)
                     completion(copyURL, nil)
+                    removeFileCoordinatorFromCache(self)
                 } catch {
                     completion(nil, error)
+                    removeFileCoordinatorFromCache(self)
                 }
             }
         }
     }
     
     public func delete(queue q: DispatchQueue, completion: @escaping (Error?) -> Void) {
-        let fileCoordinator = NSFileCoordinator(filePresenter: nil)
+        let fileCoordinator = fetchFileCoordinator(self)
         let fileAccessIntent = NSFileAccessIntent.writingIntent(with: self, options: NSFileCoordinator.WritingOptions.forDeleting)
         let queue = OperationQueue()
         queue.underlyingQueue = q
@@ -383,8 +426,10 @@ extension URL {
                 do {
                     try FileManager.default.removeItem(at: fileAccessIntent.url)
                     completion(nil)
+                    removeFileCoordinatorFromCache(self)
                 } catch {
                     completion(error)
+                    removeFileCoordinatorFromCache(self)
                 }
             }
         }
@@ -394,21 +439,23 @@ extension URL {
         let oldURL = self
         let newURL = url
         
-        let fileCoordinator = NSFileCoordinator(filePresenter: nil)
+        let fileCoordinator = fetchFileCoordinator(self)
         let moving = NSFileAccessIntent.writingIntent(with: oldURL, options: NSFileCoordinator.WritingOptions.forMoving)
         let replacing = NSFileAccessIntent.writingIntent(with: newURL, options: NSFileCoordinator.WritingOptions.forReplacing)
         
         let queue = OperationQueue()
         queue.underlyingQueue = q
-        fileCoordinator.coordinate(with: [moving, replacing], queue: queue) { error in
+        fileCoordinator.coordinate(with: [moving, replacing], queue: queue) { [unowned fileCoordinator] error in
             do {
                 let fileManager = FileManager.default
                 fileCoordinator.item(at: moving.url, willMoveTo: replacing.url)
                 try fileManager.moveItem(at: moving.url, to: replacing.url)
                 fileCoordinator.item(at: moving.url, didMoveTo: replacing.url)
                 completion?(error)
+                removeFileCoordinatorFromCache(self)
             } catch {
                 completion?(error)
+                removeFileCoordinatorFromCache(self)
             }
         }
     }
@@ -435,7 +482,7 @@ extension URL {
         }
         
         log.info("no directory exists at: \(self.path), creating one...")
-        let fileCoordinator = NSFileCoordinator()
+        let fileCoordinator = fetchFileCoordinator(self)
         let intent = NSFileAccessIntent.writingIntent(with: URL(fileURLWithPath: path), options: NSFileCoordinator.WritingOptions.forReplacing)
         let queue = OperationQueue()
         queue.qualityOfService = .userInteractive
@@ -443,8 +490,10 @@ extension URL {
             do {
                 try Foundation.FileManager.default.createDirectory(atPath: intent.url.path, withIntermediateDirectories: true, attributes: nil)
                 completion?(nil)
+                removeFileCoordinatorFromCache(self)
             } catch {
                 completion?(error)
+                removeFileCoordinatorFromCache(self)
             }
         }
     }

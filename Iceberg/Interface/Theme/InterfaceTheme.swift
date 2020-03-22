@@ -8,6 +8,8 @@
 
 import Foundation
 import UIKit
+import RxSwift
+import RxCocoa
 
 public struct Layout {
     public static let cornerRadius: CGFloat = 10
@@ -138,16 +140,24 @@ public class InterfaceThemeSelector {
     public func changeTheme(_ theme: InterfaceThemeProtocol) {
         InterfaceThemeSelector.shared.currentTheme = theme
         
-        for key in self._registerMap.keyEnumerator().allObjects {
-            (self._registerMap.object(forKey: key as AnyObject) as? (InterfaceThemeProtocol) -> Void)?(theme)
-        }
+//        for key in self._registerMap.keyEnumerator().allObjects {
+//            (self._registerMap.object(forKey: key as AnyObject) as? (InterfaceThemeProtocol) -> Void)?(theme)
+//        }
+        
+        self._themeObservable.onNext(theme)
     }
     
-    public func register(observer key: AnyObject, changeAction: @escaping (InterfaceThemeProtocol) -> Void) {
-        self._registerMap.setObject(changeAction as AnyObject, forKey: key)
+    public func register(observer key: NSObject, changeAction: @escaping (InterfaceThemeProtocol) -> Void) {
+//        self._registerMap.setObject(changeAction as AnyObject, forKey: key)
+
+        _ = self._themeObservable.takeUntil(key.rx.deallocated).subscribe(onNext: { theme in
+            changeAction(theme)
+        })
         
         changeAction(self.currentTheme)
     }
+    
+    fileprivate let _themeObservable: PublishSubject<InterfaceThemeProtocol> = PublishSubject()
 }
 
 @objc public class InterfaceTheme: NSObject {

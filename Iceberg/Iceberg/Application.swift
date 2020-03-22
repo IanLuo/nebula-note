@@ -81,11 +81,6 @@ public class Application: Coordinator {
             
         }).disposed(by: self.disposeBag)
         
-        self.dependency.appContext.isFileReadyToAccess.subscribe(onNext: { [unowned self] isAccessable in
-            if isAccessable {
-                self.dependency.editorContext.recentFilesManager.clearFilesDoesNotExists {}
-            }
-        }).disposed(by: self.disposeBag)
     }
     
     deinit {

@@ -497,9 +497,9 @@ extension OutlineTextStorage: OutlineParserDelegate {
                     textStorage.addAttributes([OutlineAttribute.showAttachment: value],
                                        range: attachmentRange.head(1))
                     
-                    attachment.didLoadImage = { [weak self] in
+                    attachment.didLoadImage = { [weak self, weak textStorage] in
                         // make sure the attachment displays
-                        if textStorage.isFolded(location: attachmentRange.head(1).location) != true {
+                        if textStorage?.isFolded(location: attachmentRange.head(1).location) != true {
                             self?.layoutManagers.first?.invalidateLayout(forCharacterRange: attachmentRange.head(1), actualCharacterRange: nil)
                             self?.layoutManagers.first?.invalidateDisplay(forCharacterRange: attachmentRange.head(1))
                         }

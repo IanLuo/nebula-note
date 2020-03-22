@@ -351,7 +351,11 @@ extension OutlineParser {
                     catch { return "\(error)" }
                 case .link:
                     do {
-                        if let json = try JSONSerialization.jsonObject(with: Data(contentsOf: attachment.url), options: []) as? NSDictionary {
+                        var data: Data?
+                        attachment.url.read(completion: { d in
+                            data = d
+                        })
+                        if let data = data, let json = try JSONSerialization.jsonObject(with: data, options: []) as? NSDictionary {
                             let title = json[Link.keyTitle] ?? ""
                             let url = json[Link.keyURL] ?? ""
                             return "[[\(url)][\(title)]]"

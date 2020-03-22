@@ -88,6 +88,16 @@ public class BrowserRecentViewController: UIViewController {
         
         self.viewModel.loadData()
     }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        NSFileCoordinator.addFilePresenter(self.viewModel)
+    }
+    
+    public override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        NSFileCoordinator.removeFilePresenter(self.viewModel)
+    }
 }
 
 class RecentDocumentsHeader: UICollectionReusableView {
@@ -99,6 +109,7 @@ class RecentDocumentsHeader: UICollectionReusableView {
     }
     
     required init?(coder: NSCoder) {
+        
         fatalError("init(coder:) has not been implemented")
     }
     

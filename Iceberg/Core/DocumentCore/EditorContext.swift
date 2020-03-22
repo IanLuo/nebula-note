@@ -11,11 +11,8 @@ import Foundation
 public class EditorContext {
     
     public init(eventObserver: EventObserver) {
-         self.recentFilesManager = RecentFilesManager(eventObserver: eventObserver)
         self._eventObserver = eventObserver
     }
-    
-    public let recentFilesManager: RecentFilesManager
     
     private let _eventObserver: EventObserver
     private static var _cachedServiceInstances: [String: EditorService] = [:]

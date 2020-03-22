@@ -242,7 +242,6 @@
 		E4F42989229F9C4F004700E0 /* ListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4F42988229F9C4F004700E0 /* ListViewController.swift */; };
 		E4F823F123E17D7A00ADADCB /* UserGuideView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4F823F023E17D7A00ADADCB /* UserGuideView.swift */; };
 		E4F885EA226D5BE700748868 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4F885E9226D5BE700748868 /* Coordinator.swift */; };
-		E4F9ECDF21FBF61B009A08CD /* RecentFilesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4F9ECDE21FBF61B009A08CD /* RecentFilesManager.swift */; };
 		E4F9ECE121FECE5C009A08CD /* PathManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4F9ECE021FECE5C009A08CD /* PathManager.swift */; };
 		E4FB7CBE2285BBE500791F6F /* BasicInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4FB7CBD2285BBE500791F6F /* BasicInfoViewController.swift */; };
 		E4FC35A823EC4DCD00A371D3 /* AttachmentManagerCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4FC35A723EC4DCD00A371D3 /* AttachmentManagerCoordinator.swift */; };
@@ -652,7 +651,6 @@
 		E4F42988229F9C4F004700E0 /* ListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListViewController.swift; sourceTree = "<group>"; };
 		E4F823F023E17D7A00ADADCB /* UserGuideView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserGuideView.swift; sourceTree = "<group>"; };
 		E4F885E9226D5BE700748868 /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
-		E4F9ECDE21FBF61B009A08CD /* RecentFilesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentFilesManager.swift; sourceTree = "<group>"; };
 		E4F9ECE021FECE5C009A08CD /* PathManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathManager.swift; sourceTree = "<group>"; };
 		E4FB7CBD2285BBE500791F6F /* BasicInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicInfoViewController.swift; sourceTree = "<group>"; };
 		E4FC35A723EC4DCD00A371D3 /* AttachmentManagerCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentManagerCoordinator.swift; sourceTree = "<group>"; };
@@ -989,7 +987,6 @@
 				E41A539021D62095002B11E9 /* EditorService.swift */,
 				E43B909D2228EDA00008B44C /* EditorContext.swift */,
 				E41F870321902DB3006C4CDB /* KeyValueStore.swift */,
-				E4F9ECDE21FBF61B009A08CD /* RecentFilesManager.swift */,
 				E43E7874222ACF780007EE4F /* OutlineTextTrimmer.swift */,
 				E43E7876222AD0C70007EE4F /* DocumentContentCommands.swift */,
 			);
@@ -2072,7 +2069,6 @@
 				E495EB1623F0121B005CCEEA /* MarkdownExporter.swift in Sources */,
 				E41CB1D621D8921B00EF0A3C /* SettingsAccessor.swift in Sources */,
 				E41CB1C721D88DFD00EF0A3C /* AttachmentManager.swift in Sources */,
-				E4F9ECDF21FBF61B009A08CD /* RecentFilesManager.swift in Sources */,
 				E44683FD2289B5AD005D5B73 /* ExtensionProperty.swift in Sources */,
 				E4716E12238FDB6B00387C0F /* iCloudSyncManager.swift in Sources */,
 				E44683FB2289B554005D5B73 /* UIControlClosure.swift in Sources */,

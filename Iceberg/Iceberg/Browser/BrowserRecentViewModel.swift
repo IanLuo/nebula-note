@@ -29,12 +29,18 @@ extension RecentDocumentSection: AnimatableSectionModelType {
     public typealias Identity = String
 }
 
-public class BrowserRecentViewModel: ViewModelProtocol {
+public class BrowserRecentViewModel: NSObject, ViewModelProtocol {
     public var context: ViewModelContext<BrowserCoordinator>!
     
     public typealias CoordinatorType = BrowserCoordinator
     
-    public required init() {}
+    public required override init() {
+        super.init()
+    }
+    
+    deinit {
+        self.dependency.eventObserver.unregister(for: self, eventType: nil)
+    }
     
     public func didSetupContext() {
         self.setupObservers()
@@ -49,55 +55,62 @@ public class BrowserRecentViewModel: ViewModelProtocol {
     private let disposeBag = DisposeBag()
     
     private func setupObservers() {
-        self.dependency.eventObserver.registerForEvent(on: self, eventType: UpdateDocumentEvent.self, queue: .main, action: { [weak self] (event: UpdateDocumentEvent) in
+        self.dependency.eventObserver.registerForEvent(on: self, eventType: UIStackReadyEvent.self, queue: .main, action: { [weak self] (event: UIStackReadyEvent) in
             self?.loadData()
         })
         
-        self.dependency.eventObserver.registerForEvent(on: self, eventType: DeleteDocumentEvent.self, queue: .main, action: { [weak self] (event: DeleteDocumentEvent) in
-            self?.dependency.editorContext.recentFilesManager.removeRecentFile(url: event.url, completion: {
-                self?.loadData()
-            })
-        })
+        // only work for using iCloud
+        self.dependency
+            .syncManager.allFilesInCloud.subscribe(onNext: { [weak self] urls in
+                self?.load(files: urls)
+            }).disposed(by: self.disposeBag)
         
-        self.dependency.eventObserver.registerForEvent(on: self, eventType: OpenDocumentEvent.self, queue: .main, action: { [weak self] (event: OpenDocumentEvent) in
-            self?.loadData()
-        })
-        
-        self.dependency.eventObserver.registerForEvent(on: self, eventType: RecentDocumentRenamedEvent.self, queue: .main, action: { [weak self] (event: RecentDocumentRenamedEvent) in
-            self?.loadData()
-        })
-        
-        self.dependency.eventObserver.registerForEvent(on: self, eventType: ChangeDocumentCoverEvent.self, queue: .main, action: { [weak self] (changeDocumentEvent: ChangeDocumentCoverEvent) in
-            self?.loadData()
-        })
-
         self.dependency.eventObserver.registerForEvent(on: self, eventType: iCloudOpeningStatusChangedEvent.self, queue: .main, action: { [weak self] (event: iCloudOpeningStatusChangedEvent) in
             self?.loadData()
         })
         
-        self.dependency.eventObserver.registerForEvent(on: self, eventType: DocumentRemovedFromiCloudEvent.self, queue: .main, action: { [weak self] (event: DocumentRemovedFromiCloudEvent) in
+        self.dependency.eventObserver.registerForEvent(on: self, eventType: iCloudAvailabilityChangedEvent.self, queue: .main, action: { [weak self] (event: iCloudAvailabilityChangedEvent) in
             self?.loadData()
         })
-        
-        self.dependency.eventObserver.registerForEvent(on: self, eventType: NewRecentFilesListDownloadedEvent.self, queue: .main, action: { [weak self] (event: NewRecentFilesListDownloadedEvent) in
-            self?.loadData()
-        })
-        
-        self.dependency.eventObserver.registerForEvent(on: self, eventType: UIStackReadyEvent.self, queue: .main, action: { [weak self] (event: UIStackReadyEvent) in
-            self?.loadData()
-        })
-    }
-    
-    deinit {
-        self.dependency.eventObserver.unregister(for: self, eventType: nil)
     }
     
     public func loadData() {
-        let section = self.dependency
-            .editorContext
-            .recentFilesManager
-            .recentFiles.map { BrowserCellModel(url: $0.url) }
+        self.load(files: self.allFiles)
+    }
+    
+    private var allFiles: [URL] {
+        if iCloudDocumentManager.status == .on {
+            return self.dependency.syncManager.allFilesInCloud.value.filter { url in
+                url.path.hasSuffix(Document.fileExtension) && !url.path.contains(SyncCoordinator.Prefix.deleted.rawValue)
+            }
+        } else {
+            return self.dependency.syncManager.allFilesLocal.filter { url in
+                url.path.hasSuffix(Document.fileExtension) && !url.path.contains(SyncCoordinator.Prefix.deleted.rawValue)
+            }
+        }
+    }
+    
+    private func load(files: [URL]) {
+        let cellModels = files.filter { $0.lastModifyTimeStamp != nil && $0.path.hasSuffix(Document.fileExtension) && !$0.path.contains(SyncCoordinator.Prefix.deleted.rawValue) }
+        .sorted(by: { $0.lastModifyTimeStamp! > $1.lastModifyTimeStamp! })
+        .map { BrowserCellModel(url: $0) }
         
-        self.output.recentDocuments.accept([RecentDocumentSection(items: section)])
+        self.output.recentDocuments.accept([RecentDocumentSection(items: cellModels)])
+    }
+}
+
+extension BrowserRecentViewModel: NSFilePresenter {
+    public var presentedItemURL: URL? {
+        return URL.documentBaseURL
+    }
+    
+    public var presentedItemOperationQueue: OperationQueue {
+        return OperationQueue()
+    }
+    
+    public func presentedItemDidChange() {
+        DispatchQueue.runOnMainQueueSafely {
+            self.loadData()
+        }
     }
 }

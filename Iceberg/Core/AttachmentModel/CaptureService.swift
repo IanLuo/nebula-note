@@ -36,11 +36,13 @@ public struct CaptureService: CaptureServiceProtocol {
     
     /// 创建一个新的 attachment, 并添加到 capture 列表中
     public func save(key: String, completion: @escaping () -> Void) {
-        let plist = KeyValueStoreFactory.store(type: .plist(.custom(CaptureService.plistFileName)))
-        plist.set(value: "", key: key) {
-            log.info("successfully add new capture idea for key: \(key)")
-            completion()
-        } // value 没用
+        DispatchQueue.global(qos: DispatchQoS.QoSClass.userInteractive).async {
+            let plist = KeyValueStoreFactory.store(type: .plist(.custom(CaptureService.plistFileName)))
+            plist.set(value: "", key: key) {
+                log.info("successfully add new capture idea for key: \(key)")
+                completion()
+            } // value 没用
+        }
     }
     
     /// 删除 capture 中的 attachment

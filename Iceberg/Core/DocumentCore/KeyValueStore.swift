@@ -53,16 +53,19 @@ fileprivate class PlistStore: NSObject, KeyValueStore {
         case let .custom(fileName):
             self._url = URL.file(directory: URL.keyValueStoreURL, name: fileName, extension: "plist")
             
-            _store = NSMutableDictionary(contentsOf: self._url!) ?? NSMutableDictionary(dictionary: [PlistStore.storeVersionKey: 1])
-            log.verbose("created key value store with url: \(String(describing: self._url))")
+            self._url?.read(completion: { [weak self] data in
+                guard let strongSelf = self else { return }
+                
+                do {
+                    strongSelf._store = try PropertyListSerialization.propertyList(from: data, options: [], format: nil) as? NSMutableDictionary ?? NSMutableDictionary(dictionary: [PlistStore.storeVersionKey: 1])
+                    log.verbose("created key value store with url: \(strongSelf._url!)")
+                } catch {
+                    log.error(error)
+                }
+            })
         default: break
         }
         
-        NSFileCoordinator.addFilePresenter(self)
-    }
-    
-    deinit {
-        NSFileCoordinator.removeFilePresenter(self)
     }
     
     public func get<T>(key: String, type: T.Type) -> T? {
@@ -94,14 +97,14 @@ fileprivate class PlistStore: NSObject, KeyValueStore {
             url.deletingLastPathComponent().createDirectoryIfNeeded { error in
                 guard error == nil else { log.error(error!); return }
                 
-                url.writeBlock(queue: DispatchQueue.main, accessor: { error in
+                url.writeBlock(queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.userInteractive), accessor: { error in
                     if let error = error {
                         log.error(error)
                     } else {
                         // bump version number
                         self.bumpVersionNumber(store)
                         
-                        store.write(to: url, atomically: false)
+                        store.write(to: url, atomically: true)
                         completion()
                     }
                 })
@@ -117,7 +120,7 @@ fileprivate class PlistStore: NSObject, KeyValueStore {
         if let store = _store, let url = self._url {
             store.removeObject(forKey: key)
             
-            url.writeBlock(queue: DispatchQueue.main, accessor: { error in
+            url.writeBlock(queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.userInteractive), accessor: { error in
                 if let error = error {
                     log.error(error)
                 } else {
@@ -139,7 +142,7 @@ fileprivate class PlistStore: NSObject, KeyValueStore {
     public func clear(completion: @escaping () -> Void) {
         if let store = _store, let url = self._url {
             
-            url.writeBlock(queue: DispatchQueue.main) { error in
+            url.writeBlock(queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.userInteractive)) { error in
                 if let error = error {
                     log.error(error)
                 } else {
@@ -183,47 +186,4 @@ public func mergePlistFiles(name: String, url1: URL, url2: URL) -> URL {
     
     plist2.write(to: mergedFileURL, atomically: false)
     return mergedFileURL
-}
-
-extension PlistStore: NSFilePresenter {
-    var presentedItemURL: URL? {
-        return self._url
-    }
-    
-    var presentedItemOperationQueue: OperationQueue {
-        return OperationQueue.main
-    }
-    
-    func presentedItemDidGain(_ version: NSFileVersion) {
-        if let url = self._url, version.localizedName != nil {
-            let thatStore = NSMutableDictionary(contentsOf: version.url) ?? NSMutableDictionary()
-            let thatVersion = thatStore.value(forKey: PlistStore.storeVersionKey) as? Int ?? 0
-            let thisVersion = self._store?.value(forKey: PlistStore.storeVersionKey) as? Int ?? 0
-            
-            log.info("new version of file found: \(url)")
-            do {
-                if thisVersion < thatVersion {
-                    version.isResolved = true
-                    try version.replaceItem(at: url, options: [.init(rawValue: 0)])
-                    try NSFileVersion.removeOtherVersionsOfItem(at: url)
-                    log.info("found remote version, which is newer, use that one")
-                } else {
-                    version.isResolved = true
-                    try NSFileVersion.removeOtherVersionsOfItem(at: url)
-                    log.info("found remote version, which is older, removed")
-                }
-            } catch {
-                log.error(error)
-            }
-        }
-        
-    }
-    
-    func presentedItemDidLose(_ version: NSFileVersion) {
-        
-    }
-    
-    func presentedItemDidResolveConflict(_ version: NSFileVersion) {
-        
-    }
 }

@@ -8,6 +8,7 @@
 
 import Foundation
 import RxSwift
+import RxCocoa
 
 // https://developer.apple.com/library/archive/documentation/DataManagement/Conceptual/DocumentBasedAppPGiOS/ResolveVersionConflicts/ResolveVersionConflicts.html
 
@@ -102,6 +103,19 @@ public class iCloudDocumentManager: NSObject {
 //          self.startMonitoringiCloudFileUpdateIfNeeded()
 //    }
     
+    public let allFilesInCloud: BehaviorRelay<[URL]> = BehaviorRelay(value: [])
+    
+    public var allFilesLocal: [URL] {
+        let enumerator = FileManager.default.enumerator(at: URL.documentBaseURL, includingPropertiesForKeys: nil)
+        var urls: [URL] = []
+        
+        while let nextObject = enumerator?.nextObject() as? URL {
+            urls.append(nextObject)
+        }
+        
+        return urls
+    }
+    
     public func refreshCurrentiCloudAccountStatus() -> iCloudAccountStatus {
         let key = "ubiquityIdentityToken"
         let token = FileManager.default.ubiquityIdentityToken
@@ -175,9 +189,9 @@ public class iCloudDocumentManager: NSObject {
                             completion(error)
                         } else {
                             completion(nil)
-                            strongSelf?._eventObserver.emit(iCloudOpeningStatusChangedEvent(isiCloudEnabled: true))
                             iCloudDocumentManager.status = .on
                             strongSelf?.startMonitoringiCloudFileUpdateIfNeeded()
+                            strongSelf?._eventObserver.emit(iCloudOpeningStatusChangedEvent(isiCloudEnabled: true))
                         }
                     }
                 case .on:
@@ -196,9 +210,9 @@ public class iCloudDocumentManager: NSObject {
                             completion(error)
                         } else {
                             completion(nil)
-                            strongSelf?._eventObserver.emit(iCloudOpeningStatusChangedEvent(isiCloudEnabled: false))
                             iCloudDocumentManager.status = .off
                             strongSelf?.stopMonitoringiCloudFildUpdateIfNeeded()
+                            strongSelf?._eventObserver.emit(iCloudOpeningStatusChangedEvent(isiCloudEnabled: false))
                         }
                     }
                 }
@@ -543,21 +557,21 @@ extension iCloudDocumentManager: NSMetadataQueryDelegate {
     
     @objc private func _metadataQueryDidFinish(_ notification: Notification) {
         log.info("_metadataQueryDidFinish")
-
-        for item in ((notification.object as? NSMetadataQuery)?.results) ?? [] {
+        let items: [NSMetadataItem] = ((notification.object as? NSMetadataQuery)?.results as? [NSMetadataItem]) ?? []
+        for item in items {
         
-            if let item = item as? NSMetadataItem {
-                self._tryToDownload(item: item)
-                
-                // check if there's any file need to add to cache
-                // 1. add to uploading cache
-                // 2. downloading cache is handled above '_tryToDownload(item:)'
-                if let url = item.url, item.isUploading == true {
-                    self.uploadingItemsCache[url] = url
-                }
+            self._tryToDownload(item: item)
+            
+            // check if there's any file need to add to cache
+            // 1. add to uploading cache
+            // 2. downloading cache is handled above '_tryToDownload(item:)'
+            if let url = item.url, item.isUploading == true {
+                self.uploadingItemsCache[url] = url
             }
             
         }
+        
+        self.allFilesInCloud.accept(items.compactMap { $0.url })
     }
     
     @objc private func _metadataQueryProgress(_ notification: Notification) {
@@ -591,8 +605,6 @@ extension iCloudDocumentManager: NSMetadataQueryDelegate {
                     switch fileName {
                     case CaptureService.plistFileName + ".plist":
                         self._eventObserver.emit(NewCaptureListDownloadedEvent(url: url))
-                    case RecentFilesManager.recentFilesPlistFileName + ".plist":
-                        self._eventObserver.emit(NewRecentFilesListDownloadedEvent(url: url))
                     default: break
                     }
                 }

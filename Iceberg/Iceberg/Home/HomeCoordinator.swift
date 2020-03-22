@@ -66,7 +66,9 @@ public class HomeCoordinator: Coordinator {
                                               DashboardViewController.TabType.search(tabs[2], 2),
                                               DashboardViewController.TabType.documents(tabs[3], 3)])
         
-        self.dependency.appContext.isFileReadyToAccess.subscribe(onNext: { [weak self] _ in
+        let hasInitedLandingTab: PublishSubject<Void> = PublishSubject<Void>()
+        self.dependency.appContext.isFileReadyToAccess.takeUntil(hasInitedLandingTab).subscribe(onNext: { [weak self] _ in
+            hasInitedLandingTab.onNext(())
             self?.homeViewController.showChildViewController(tabs[SettingsAccessor.Item.landingTabIndex.get(Int.self) ?? 3])
         }).disposed(by: self.disposeBag)
     }

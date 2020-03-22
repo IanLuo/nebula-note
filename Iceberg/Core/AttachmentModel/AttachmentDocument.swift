@@ -65,7 +65,13 @@ public class AttachmentDocument: UIDocument {
         let jsonURL = url.appendingPathComponent(AttachmentDocument.jsonFile)
         log.info(jsonURL)
         do {
-            let data = try Data(contentsOf: jsonURL)
+            var dd: Data?
+            jsonURL.read(completion: { d in
+                dd = d
+            })
+
+            guard let data = dd else { return nil }
+            
             let decoder = JSONDecoder()
             decoder.dateDecodingStrategy = .secondsSince1970
             

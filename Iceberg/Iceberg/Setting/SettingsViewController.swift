@@ -62,6 +62,10 @@ public class SettingsViewController: UITableViewController {
         }
     }
     
+    deinit {
+        print("deinit")
+    }
+    
     public override func viewDidLoad() {
         self._setupUI()
         self._setupObserver()
