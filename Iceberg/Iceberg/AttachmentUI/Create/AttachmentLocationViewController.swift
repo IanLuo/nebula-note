@@ -104,23 +104,3 @@ public class AttachmentLocationViewController: AttachmentViewController, Attachm
         log.error(error)
     }
 }
-
-extension CLLocationCoordinate2D: Codable {
-    public enum Keys: CodingKey {
-        case longitude
-        case latitude
-    }
-    
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: Keys.self)
-        self.init()
-        self.latitude = try container.decode(Double.self, forKey: CLLocationCoordinate2D.Keys.latitude)
-        self.longitude = try container.decode(Double.self, forKey: CLLocationCoordinate2D.Keys.longitude)
-    }
-    
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: Keys.self)
-        try container.encode(self.latitude, forKey: CLLocationCoordinate2D.Keys.latitude)
-        try container.encode(self.longitude, forKey: CLLocationCoordinate2D.Keys.longitude)
-    }
-}

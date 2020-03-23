@@ -77,7 +77,7 @@ public struct Layout {
     @objc public var spotlitTitle: UIColor = UIColor(red:1.00, green:1.00, blue:1.00, alpha:1.00)
     @objc public var level: UIColor = UIColor(88, 86, 214)
     @objc public var finished: UIColor = UIColor(52, 199, 89)
-    @objc public var unfinished: UIColor = UIColor(red:1.00, green:0.77, blue:0.25, alpha:1.00)
+    @objc public var unfinished: UIColor = UIColor(red:0.87, green:0.69, blue:0.15, alpha:1.00)
     
     @objc public let interactive: UIColor = UIColor(28, 28, 30)
     @objc public let descriptive: UIColor = UIColor(72, 72, 74)

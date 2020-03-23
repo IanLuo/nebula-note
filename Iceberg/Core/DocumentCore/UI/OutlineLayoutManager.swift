@@ -67,10 +67,10 @@ public class OutlineLayoutManager: NSLayoutManager {
                 color.setFill()
                 
                 var rect = rect
-                rect.origin.x = rect.origin.x - 2
+                rect.origin.x = rect.origin.x - 1
                 rect.origin.y = rect.origin.y - font.descender
                 rect.size.height = font.lineHeight - font.descender
-                rect.size.width = rect.size.width + 4
+                rect.size.width = rect.size.width + 2
 
                 let path = UIBezierPath(roundedRect: rect, cornerRadius: 4)
                 path.fill()
