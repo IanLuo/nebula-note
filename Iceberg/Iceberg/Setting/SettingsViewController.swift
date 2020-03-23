@@ -471,7 +471,10 @@ extension SettingsViewController: SettingsViewModelDelegate {
     }
     
     public func didSetInterfaceStyle(newStyle: SettingsAccessor.InterfaceStyle) {
-        self.setupTheme()
+        // avoid dead lock for file coordiantor
+        DispatchQueue.main.async {
+            self.setupTheme()
+        }
     }
     
     public func didSetLandingTabIndex(index: Int) {
