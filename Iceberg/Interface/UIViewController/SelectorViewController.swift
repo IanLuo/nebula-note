@@ -284,8 +284,9 @@ fileprivate class ActionCell: UITableViewCell {
     }()
     
     func setIcon(image: UIImage?) {
-        if let icon = image {
-            self.iconView.image = icon
+        self.iconView.image = image
+        
+        if image != nil {
             self.iconView.sizeAnchor(width: 30, height: 30)
         } else {
             self.iconView.sizeAnchor(width: 0, height: 0)
