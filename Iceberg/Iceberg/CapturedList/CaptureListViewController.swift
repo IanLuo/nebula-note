@@ -77,10 +77,6 @@ public class CaptureListViewController: UIViewController {
         viewModel.delegate = self
         self.tabBarItem = UITabBarItem(title: "", image: Asset.Assets.inspiration.image, tag: 0)
         
-        if #available(iOS 13.0, *) {
-            self.isModalInPresentation = true
-        }
-        
         self.title = L10n.CaptureList.title
     }
     

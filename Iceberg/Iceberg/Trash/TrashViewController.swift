@@ -34,10 +34,6 @@ public class TrashViewController: UIViewController, UITableViewDelegate {
     public convenience init(viewModel: TrashViewModel) {
         self.init()
         self.viewModel = viewModel
-        
-        if #available(iOS 13.0, *) {
-            self.isModalInPresentation = true
-        }
     }
     
     public override func viewDidLoad() {
