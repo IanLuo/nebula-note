@@ -87,16 +87,8 @@ public class BrowserRecentViewController: UIViewController {
             .disposed(by: self.disposeBag)
         
         self.viewModel.loadData()
-    }
-    
-    public override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+        
         NSFileCoordinator.addFilePresenter(self.viewModel)
-    }
-    
-    public override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        NSFileCoordinator.removeFilePresenter(self.viewModel)
     }
 }
 
