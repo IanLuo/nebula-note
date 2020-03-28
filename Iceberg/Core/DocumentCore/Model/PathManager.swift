@@ -267,12 +267,16 @@ private struct DocumentConstants {
 }
 
 extension String {
-    public var escaped: String {
-        return self.replacingOccurrences(of: " ", with: "%20")
-    }
+//    public var escaped: String {
+//        return self.replacingOccurrences(of: " ", with: "%20")
+//    }
     
     public var unescaped: String {
-        return self.replacingOccurrences(of: "%20", with: " ")
+        return self.removingPercentEncoding ?? self
+    }
+    
+    public var escaped: String {
+        return self.addingPercentEncoding(withAllowedCharacters: CharacterSet.letters.union(CharacterSet.whitespaces).union(CharacterSet.alphanumerics).union(CharacterSet.decimalDigits)) ?? self
     }
 }
 

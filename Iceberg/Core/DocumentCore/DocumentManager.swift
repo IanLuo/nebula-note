@@ -248,6 +248,7 @@ public struct DocumentManager {
         
         if let below = below {
             self._createFolderIfNeeded(url: below) { folderURL in
+                
                 var newURL = folderURL.appendingPathComponent(to).appendingPathExtension(Document.fileExtension)
                 newURL = newURL.uniqueURL
                 renameAction(newURL)

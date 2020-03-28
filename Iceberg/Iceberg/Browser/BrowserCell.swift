@@ -377,7 +377,7 @@ public class BrowserCell: UITableViewCell {
             renameFormViewController.onSaveValueAutoDismissed = { [weak self] formValue in
                 guard let strongSelf = self else { return }
                 if let newName = formValue[title] as? String {
-                    cellModel.rename(to: newName)
+                    cellModel.rename(to: newName.escaped)
                         .subscribe(onNext: { fromURL, toURL in
                             strongSelf.onRenameDocument.onNext(toURL)
                         }).disposed(by: strongSelf.disposeBag)
