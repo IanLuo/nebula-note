@@ -276,7 +276,7 @@ extension String {
     }
     
     public var escaped: String {
-        return self.replacingOccurrences(of: "/", with: "%2F").replacingOccurrences(of: " ", with: "%20")
+        return self.replacingOccurrences(of: "/", with: "%2F")
     }
 }
 
