@@ -276,7 +276,7 @@ extension String {
     }
     
     public var escaped: String {
-        return self.addingPercentEncoding(withAllowedCharacters: CharacterSet.letters.union(CharacterSet.whitespaces).union(CharacterSet.alphanumerics).union(CharacterSet.decimalDigits)) ?? self
+        return self.replacingOccurrences(of: "/", with: "%2F").replacingOccurrences(of: " ", with: "%20")
     }
 }
 
