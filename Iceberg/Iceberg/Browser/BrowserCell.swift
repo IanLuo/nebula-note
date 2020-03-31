@@ -132,9 +132,9 @@ public class BrowserCell: UITableViewCell {
         }
         
         if cellModel.downloadingProcess < 100 {
-            self.showProcessingAnimation()
+            self.iconView.showProcessingAnimation()
         } else {
-            self.hideProcessingAnimation()
+            self.iconView.hideProcessingAnimation()
         }
     }
     

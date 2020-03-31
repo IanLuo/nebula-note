@@ -630,11 +630,11 @@ extension iCloudDocumentManager: NSMetadataQueryDelegate {
                 downloadingItems[url] = downloadPercent
             }
             
-            self.onDownloadingUpdates.accept(downloadingItems)
-            
             if self.downloadingItemsCache[url] == nil {
                 self.downloadingItemsCache[url] = url
             }
+            
+            self.onDownloadingUpdates.accept(downloadingItems)
         }
                 
     }
