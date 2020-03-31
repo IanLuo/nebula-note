@@ -287,6 +287,7 @@ extension URL {
         return URL(string: self.deletingPathExtension().deletingLastSplashIfThereIs + DocumentConstants.documentDirSuffix + "/")!
     }
         
+    // if return nil, means it is at root
     public var parentDocumentURL: URL? {
         var url = self.deletingPathExtension().deletingLastPathComponent()
         let fileName = url.lastPathComponent.replacingOccurrences(of: DocumentConstants.documentDirSuffix, with: "")

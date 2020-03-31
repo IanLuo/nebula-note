@@ -46,11 +46,6 @@ public class BrowserCellModel {
     public var hasSubDocuments: Bool {
         if url.hasSubDocuments {
             if url.isEmptyFolder {
-                url.convertoFolderURL.delete(queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.background)) { error in
-                    if let error = error {
-                        log.error(error)
-                    }
-                }
                 return false
             }
             

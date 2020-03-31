@@ -47,7 +47,7 @@ public class iCloudDocumentManager: NSObject {
         return iCloudDocumentManager.iCloudRoot?.appendingPathComponent("keyValueStore")
     }
     
-    public let onDownloadingUpdates: BehaviorSubject<[URL: Int]> = BehaviorSubject(value: [:])
+    public let onDownloadingUpdates: BehaviorRelay<[URL: Int]> = BehaviorRelay(value: [:])
     public let onDownloadingCompletes: PublishSubject<URL> = PublishSubject()
     
     public var isThereAnyFileUploading: Bool {
@@ -622,7 +622,7 @@ extension iCloudDocumentManager: NSMetadataQueryDelegate {
             let downloadSize = item.downloadingSize {
             log.info("downloading \(url) (\(downloadPercent)%), (\(downloadSize))")
             
-            var downloadingItems: [URL: Int] = try! self.onDownloadingUpdates.value()
+            var downloadingItems: [URL: Int] = self.onDownloadingUpdates.value
 
             if item.downloadPercentage == 100 {
                 handleDocumentDownloadCompletion()
@@ -630,7 +630,7 @@ extension iCloudDocumentManager: NSMetadataQueryDelegate {
                 downloadingItems[url] = downloadPercent
             }
             
-            self.onDownloadingUpdates.onNext(downloadingItems)
+            self.onDownloadingUpdates.accept(downloadingItems)
             
             if self.downloadingItemsCache[url] == nil {
                 self.downloadingItemsCache[url] = url

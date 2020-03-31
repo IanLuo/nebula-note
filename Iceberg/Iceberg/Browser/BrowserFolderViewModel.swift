@@ -139,7 +139,14 @@ public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
             var cellModels: [BrowserCellModel] = []
             
             do {
-                let urls = try self.dependency.documentManager.query(in: url.convertoFolderURL)
+                var urls = try self.dependency.documentManager.query(in: url.convertoFolderURL)
+                
+                //find from downloading urls
+                for url in Array(self.dependency.syncManager.onDownloadingUpdates.value.keys.filter { $0.pathExtension == Document.fileExtension }) {
+                    if (url.parentDocumentURL ?? URL.documentBaseURL) == self.url && !urls.contains(url) {
+                        urls.append(url)
+                    }
+                }
                 
                 urls.forEach {
                     let cellModel = BrowserCellModel(url: $0)
@@ -258,30 +265,18 @@ public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
         self.dependency.syncManager.onDownloadingUpdates.subscribe(onNext: { [weak self] downloadingItemMap in
             guard let strongSelf = self else { return }
             
-            let urlsBelongsToCurrentFolder = downloadingItemMap.keys.filter { $0.deletingLastPathComponent() == strongSelf.url }
+            let urlsBelongsToCurrentFolder = downloadingItemMap.keys.filter { $0.pathExtension == Document.fileExtension && ($0.parentDocumentURL ?? URL.documentBaseURL) == strongSelf.url }
             
-            for uploadDownloadingURL in urlsBelongsToCurrentFolder {
-                for case let downloadingCellModel in strongSelf._tableDocuments.filter({ $0.downloadingProcess != 100 }) where downloadingCellModel.url == uploadDownloadingURL {
-                    downloadingCellModel.downloadingProcess = downloadingItemMap[uploadDownloadingURL] ?? 1
-                    continue
-                }
-                
-                var documents = strongSelf._tableDocuments
-                documents.append(BrowserCellModel(url: uploadDownloadingURL, isDownloading: true))
+            if urlsBelongsToCurrentFolder.count > 0 {
+                strongSelf.reload()
             }
         }).disposed(by: self.disposeBag)
         
         self.dependency.syncManager.onDownloadingCompletes.subscribe(onNext: { [weak self] url in
             guard let strongSelf = self else { return }
             
-            var documents = strongSelf._tableDocuments
-            
-            for (index, document) in documents.enumerated() {
-                if document.url == url {
-                    documents.remove(at: index)
-                    strongSelf._tableDocuments = documents
-                    return
-                }
+            if (url.pathExtension == Document.fileExtension && (url.parentDocumentURL ?? URL.documentBaseURL) == strongSelf.url) {
+                strongSelf.reload()
             }
             
         }).disposed(by: self.disposeBag)

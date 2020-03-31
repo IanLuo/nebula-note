@@ -1,31 +1,34 @@
-Keeping excellent notes, writing great articles, the most important tool must be a handy, powerful editor, and, for long term note keeping, or article writing, for most of them, it is a on going process, you need to keep collecting materials, making planning for you work, and keep writing, keep everything organized. These works are trivial, distractive, so it is important to form a set of working habbits and familiar tools, and to manage all thses planning, materials organizing and writings work well, with all the hard works, you can get greate notes or articles as a results and rewards.
-
-With that in mind, x3 note is desinged to help you, with the 3 major parts: Editor, Planning, and idea capture. Those parts works together seamlessly, to provide ability to handle planning, materials organizing in one place, let you focusing on your editor, make planning and managing materials without switching working context, and pick up where you left from the agenda which automatically generated from your work contents.
+Some people are different, they are curious, creative, always have fresh ideas, they don't think like others do, they don't see the world the same way as everybody does, they can feel what other people can't, to them the world is bigger, the sky is deeper, there are so much for them to explore, to share to others, to help people with their remarkable works, show them what the world can be, and how colorful life can be, they change the world for the better, you might be one of them.
 
 - Editor
-Lightweight markup launguage based rich text editor, Markdown like syntax, supports lots of attachment types, including image, sketch, audio, video, location, etc.
-Supports text decorations: Bold, italic, underscore, strike through, highlight.
-Support insert elements: link, checkbox, ordered list, unordered list, date and time, quote block, code block.
-Folding and unfolding for sections.
-Move sections freely in or between documents.
-Outline.
+* Lightweight markup launguage based rich text editor, supports various of attachments, such as image, sketch, audio, video, location, etc.
+* Supports text decorations: Bold, italic, underscore, strike through, highlight.
+* Support insert elements: link, checkbox, ordered list, unordered list, date and time, quote block, code block.
+* Folding and unfolding for sections.
+* Move sections freely in or between documents.
+* Outline.
 
 - Capture ideas
-Capture materials from any app that can share image, text, link, audio, video, or capture your idea with these forms by your self.
+* Capture materials from any app that can share image, text, link, audio, video, or capture your idea with these forms by your self.
+* Manage ideas and delegate to any destination.
+* Choose and insert into document while editing.
 
 - Planning
-Automatically create tasks based on contents that you put in your document, goto them directly and start work right away.
-Content marks: section status, priority, tags, automatically categorize by status, tags, schedule date, due date, etc.
+* Automatically create tasks based on contents.
+* Pick up from where you left last time directly from agenda.
+* Status, priority, tags, automatically categorize by status, tags, schedule date, due date, etc.
 
 - Document management
-Any depth of level of sub documents, organize them and move around freely. Note only the documents, but also the contents, can be moved around documents easily.
+* Any depth of level of sub documents.
+* Organize them and move around freely. 
+* Note only the documents, but also the contents, can be moved around everywhere easily.
 
 - iCloud sync
-Automatically sync to your iCloud account, keep your data safe, and keep all devices the same.
+* Automatically sync to your iCloud account, keep your data safe, and keep all devices the same.
 
 - Export to other forms
 HTML, txt, image, PDF, Markdown.
 
 - And more to come.
 
-If you have any question, or feedback, or anything you want to let us know, please visit http://forum.x3note.site/.
+More information about x3 note please visit http://forum.x3note.site.

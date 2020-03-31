@@ -88,7 +88,13 @@ public class BrowserRecentViewController: UIViewController {
         
         self.viewModel.loadData()
         
-        NSFileCoordinator.addFilePresenter(self.viewModel)
+        NotificationCenter.default.rx.notification(UIApplication.willResignActiveNotification).subscribe(onNext: { _ in
+            NSFileCoordinator.removeFilePresenter(self.viewModel)
+        }).disposed(by: self.disposeBag)
+        
+        NotificationCenter.default.rx.notification(UIApplication.didBecomeActiveNotification).subscribe(onNext: { _ in
+            NSFileCoordinator.addFilePresenter(self.viewModel)
+        }).disposed(by: self.disposeBag)
     }
 }
 
