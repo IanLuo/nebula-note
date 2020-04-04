@@ -314,7 +314,7 @@ public class BrowserCell: UITableViewCell {
                     selector.title = L10n.Browser.Action.MoveTo.msg
                     selector.fromView = self
                     let root: String = "\\"
-                    selector.addItem(title: root, enabled: cellModel.url.parentDocumentURL != nil)
+                    selector.addItem(title: root, enabled: cellModel.url.parentDocumentURL != URL.documentBaseURL)
                     
                     let isMember = self?.cellModel?.coordinator?.dependency.purchaseManager.isMember.value == true
                     
@@ -326,7 +326,7 @@ public class BrowserCell: UITableViewCell {
                                          title: title,
                                          description: nil,
                                          enabled: file.documentRelativePath != cellModel.url.documentRelativePath
-                                            && file.documentRelativePath != cellModel.url.parentDocumentURL?.documentRelativePath
+                                            && file.documentRelativePath != cellModel.url.parentDocumentURL.documentRelativePath
                                             && shouldEnable)
                     }
                     

@@ -13,6 +13,8 @@
 # Uncomment the line if you want fastlane to automatically update itself
 # update_fastlane
 
+ENV["SPACESHIP_2FA_SMS_DEFAULT_PHONE_NUMBER"]="+8618190768602";
+
 default_platform(:ios)
 
 platform :ios do

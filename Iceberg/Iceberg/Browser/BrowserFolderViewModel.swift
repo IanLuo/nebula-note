@@ -139,15 +139,7 @@ public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
             var cellModels: [BrowserCellModel] = []
             
             do {
-                var urls = try self.dependency.documentManager.query(in: url.convertoFolderURL)
-                
-                //find from downloading urls
-                for url in Array(self.dependency.syncManager.onDownloadingUpdates.value.keys.filter { $0.pathExtension == Document.fileExtension }) {
-                    if (url.parentDocumentURL ?? URL.documentBaseURL) == self.url && !urls.contains(url) {
-                        urls.append(url)
-                    }
-                }
-                
+                let urls = try self.dependency.documentManager.query(in: url.convertoFolderURL)
                 urls.forEach {
                     let cellModel = BrowserCellModel(url: $0)
                     cellModel.shouldShowActions = self.mode.showActions
@@ -155,6 +147,18 @@ public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
                     cellModel.coordinator = self.context.coordinator
                     cellModels.append(cellModel)
                 }
+                
+                //find from downloading urls
+                for url in Array(self.dependency.syncManager.onDownloadingUpdates.value.keys.filter { $0.pathExtension == Document.fileExtension }) {
+                    if url.parentDocumentURL == self.url && !urls.contains(where: { $0.documentRelativePath == url.documentRelativePath }) {
+                        let cellModel = BrowserCellModel(url: url, isDownloading: true)
+                        cellModel.shouldShowActions = self.mode.showActions
+                        cellModel.shouldShowChooseHeadingIndicator = self.mode.showChooseIndicator
+                        cellModel.coordinator = self.context.coordinator
+                        cellModels.append(cellModel)
+                    }
+                }
+                
             } catch {
                 log.error(error)
             }
@@ -265,7 +269,7 @@ public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
         self.dependency.syncManager.onDownloadingUpdates.subscribe(onNext: { [weak self] downloadingItemMap in
             guard let strongSelf = self else { return }
             
-            let urlsBelongsToCurrentFolder = downloadingItemMap.keys.filter { $0.pathExtension == Document.fileExtension && ($0.parentDocumentURL ?? URL.documentBaseURL) == strongSelf.url }
+            let urlsBelongsToCurrentFolder = downloadingItemMap.keys.filter { $0.pathExtension == Document.fileExtension && $0.parentDocumentURL == strongSelf.url }
             
             if urlsBelongsToCurrentFolder.count > 0 {
                 strongSelf.reload()
@@ -275,7 +279,7 @@ public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
         self.dependency.syncManager.onDownloadingCompletes.subscribe(onNext: { [weak self] url in
             guard let strongSelf = self else { return }
             
-            if (url.pathExtension == Document.fileExtension && (url.parentDocumentURL ?? URL.documentBaseURL) == strongSelf.url) {
+            if (url.pathExtension == Document.fileExtension && url.parentDocumentURL == strongSelf.url) {
                 strongSelf.reload()
             }
             

@@ -288,17 +288,16 @@ extension URL {
     }
         
     // if return nil, means it is at root
-    public var parentDocumentURL: URL? {
+    public var parentDocumentURL: URL {
         var url = self.deletingPathExtension().deletingLastPathComponent()
+        
+        guard url != URL.documentBaseURL else { return URL.documentBaseURL }
+        
         let fileName = url.lastPathComponent.replacingOccurrences(of: DocumentConstants.documentDirSuffix, with: "")
         url = url.deletingLastPathComponent()
         let parentURL = url.appendingPathComponent(fileName).appendingPathExtension(Document.fileExtension)
         
-        if FileManager.default.fileExists(atPath: parentURL.path) {
-            return parentURL
-        }
-        
-        return nil
+        return parentURL
     }
         
     public var hasSubDocuments: Bool {

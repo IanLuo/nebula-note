@@ -29,6 +29,10 @@ private class ProcessingView: UIView {
 
 extension UIView {
     public func showProcessingAnimation() {
+        guard self.getPrecessingAnimationView() == nil else {
+            return
+        }
+        
         let view = self.createProcessingAnimationView()
         self.addSubview(view)
         view.allSidesAnchors(to: self, edgeInset: 0)
