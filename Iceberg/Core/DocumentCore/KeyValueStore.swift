@@ -113,6 +113,7 @@ fileprivate class PlistStore: NSObject, KeyValueStore {
             let userDefaults = UserDefaults.standard
             userDefaults.set(value, forKey: key)
             userDefaults.synchronize()
+            completion()
         }
     }
     

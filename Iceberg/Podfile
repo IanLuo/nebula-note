@@ -14,6 +14,7 @@ target 'x3Note' do
     pod 'SwiftGen', '~> 6.0'
     pod 'KDCalendar', '~> 1.6.5'
     pod 'PKHUD', '~> 5.0'
+#    pod 'Firebase/Analytics', :path => '~/Documents/firebase'
 #    pod 'ShowTime'
 end
 

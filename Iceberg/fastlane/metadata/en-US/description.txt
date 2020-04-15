@@ -1,6 +1,7 @@
 Some people are different, they are curious, creative, always have fresh ideas, they don't think like others do, they don't see the world the same way as everybody does, they can feel what other people can't, to them the world is bigger, the sky is deeper, there are so much for them to explore, to share to others, to help people with their remarkable works, show them what the world can be, and how colorful life can be, they change the world for the better, you might be one of them.
 
 - Editor
+* Minimal design let you focusing on writing.
 * Lightweight markup launguage based rich text editor, supports various of attachments, such as image, sketch, audio, video, location, etc.
 * Supports text decorations: Bold, italic, underscore, strike through, highlight.
 * Support insert elements: link, checkbox, ordered list, unordered list, date and time, quote block, code block.

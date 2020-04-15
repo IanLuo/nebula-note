@@ -9,6 +9,7 @@
 import UIKit
 import SwiftyBeaver
 import RxSwift
+//import Firebase
 #if DEBUG
 //import ShowTime
 #endif
@@ -36,6 +37,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         console.format = "$DHH:mm:ss$d $L $M"
         
         log.addDestination(console)
+        
+//        FirebaseApp.configure()
         
         window = UIWindow(frame: UIScreen.main.bounds)
         

@@ -56,6 +56,15 @@ platform :ios do
     
   end
 
+  lane :metadata_without_images do
+    deliver(
+      submit_for_review: false,
+      automatic_release: false,
+      skip_screenshots: true,
+      skip_binary_upload: true
+    )
+  end
+
   lane :metadata do
     deliver(
       submit_for_review: false,
