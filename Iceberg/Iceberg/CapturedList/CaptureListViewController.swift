@@ -77,10 +77,6 @@ public class CaptureListViewController: UIViewController {
         viewModel.delegate = self
         self.tabBarItem = UITabBarItem(title: "", image: Asset.Assets.inspiration.image, tag: 0)
         
-        if #available(iOS 13.0, *) {
-            self.isModalInPresentation = true
-        }
-        
         self.title = L10n.CaptureList.title
     }
     
@@ -178,6 +174,27 @@ public class CaptureListViewController: UIViewController {
         }
         
         self.viewModel.loadFilterdData(kind: self.viewModel.currentFilteredAttachmentKind)
+    }
+    
+    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let attachment = self.viewModel.currentFilteredData[indexPath.row]
+        
+        switch attachment.kind {
+        case .link:
+            if let link = attachment.linkTitle {
+                self.didTapActionsWithLink(attachment: attachment, link: link)
+            } else {
+                self.didTapActions(attachment: attachment)
+            }
+        case .location:
+            if let coor = attachment.coordinator {
+                self.didTapActionsWithLocation(attachment: attachment, location: coor)
+            } else {
+                self.didTapActions(attachment: attachment)
+            }
+        default:
+            self.didTapActions(attachment: attachment)
+        }
     }
 }
 

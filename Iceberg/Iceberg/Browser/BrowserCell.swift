@@ -75,10 +75,7 @@ public class BrowserCell: UITableViewCell {
     private func _setupUI() {
         self.contentView.addSubview(self.container)
         
-        self.container.allSidesAnchors(to: self.contentView, edgeInsets: .init(top: Layout.edgeInsets.top,
-                                                                               left: Layout.edgeInsets.left,
-                                                                               bottom: 0,
-                                                                               right: -Layout.edgeInsets.right))
+        self.container.allSidesAnchors(to: self.contentView, edgeInsets: .init(top: Layout.edgeInsets.top, left: Layout.edgeInsets.left, bottom: 0, right: -Layout.edgeInsets.right))
         
         self.container.addSubview(self.iconView)
         self.container.addSubview(self.titleLabel)
@@ -98,28 +95,19 @@ public class BrowserCell: UITableViewCell {
         
         self.iconView.sideAnchor(for: [.left, .top, .bottom],
                                  to: self.container,
-                                 edgeInsets: .init(top: 10,
-                                                   left: 10,
-                                                   bottom: -10,
-                                                   right: 0))
+                                 edgeInsets: .init(top: 10, left: 10, bottom: -10, right: 0))
         self.iconView.ratioAnchor(2.0 / 3)
         self.iconView.sizeAnchor(height: 100)
         
         self.iconView.rowAnchor(view: self.titleLabel, space: 10, alignment: .top)
         self.titleLabel.sideAnchor(for: [.top],
                                    to: self.container,
-                                   edgeInsets: .init(top: 10,
-                                                     left: 0,
-                                                     bottom: -10,
-                                                     right: 0))
+                                   edgeInsets: .init(top: 10, left: 0, bottom: -10, right: 0))
         
         self.titleLabel.rowAnchor(view: self.actionsContainerView, space: 10, alignment: .top)
         self.actionsContainerView.sideAnchor(for: [.top, .bottom, .right],
                                              to: self.container,
-                                             edgeInsets: .init(top: 10,
-                                                               left: 0,
-                                                               bottom: 0,
-                                                               right: 0))
+                                             edgeInsets: .init(top: 10, left: 0, bottom: 0, right: 0))
         
         self.iconView.rowAnchor(view: self.lastModifiedDateLabel, space: 10, alignment: .bottom)
         self.titleLabel.columnAnchor(view: self.lastModifiedDateLabel, space: 8, alignment: .leading)
@@ -141,6 +129,12 @@ public class BrowserCell: UITableViewCell {
             self.accessoryType = .disclosureIndicator
         } else {
             self.accessoryType = .none
+        }
+        
+        if cellModel.downloadingProcess < 100 {
+            self.iconView.showProcessingAnimation()
+        } else {
+            self.iconView.hideProcessingAnimation()
         }
     }
     
@@ -320,7 +314,7 @@ public class BrowserCell: UITableViewCell {
                     selector.title = L10n.Browser.Action.MoveTo.msg
                     selector.fromView = self
                     let root: String = "\\"
-                    selector.addItem(title: root, enabled: cellModel.url.parentDocumentURL != nil)
+                    selector.addItem(title: root, enabled: cellModel.url.parentDocumentURL != URL.documentBaseURL)
                     
                     let isMember = self?.cellModel?.coordinator?.dependency.purchaseManager.isMember.value == true
                     
@@ -332,7 +326,7 @@ public class BrowserCell: UITableViewCell {
                                          title: title,
                                          description: nil,
                                          enabled: file.documentRelativePath != cellModel.url.documentRelativePath
-                                            && file.documentRelativePath != cellModel.url.parentDocumentURL?.documentRelativePath
+                                            && file.documentRelativePath != cellModel.url.parentDocumentURL.documentRelativePath
                                             && shouldEnable)
                     }
                     
@@ -377,7 +371,7 @@ public class BrowserCell: UITableViewCell {
             renameFormViewController.onSaveValueAutoDismissed = { [weak self] formValue in
                 guard let strongSelf = self else { return }
                 if let newName = formValue[title] as? String {
-                    cellModel.rename(to: newName)
+                    cellModel.rename(to: newName.escaped)
                         .subscribe(onNext: { fromURL, toURL in
                             strongSelf.onRenameDocument.onNext(toURL)
                         }).disposed(by: strongSelf.disposeBag)

@@ -147,14 +147,6 @@ public class DocumentSearchManager {
         }
     }
     
-    public func searchAttachmentInDocument(url: URL, completion: @escaping ([[String: NSRange]]) -> Void) {
-        do {
-            return searchAttachment(string: try String(contentsOf: url), completion: completion)
-        } catch {
-            log.error(error)
-        }
-    }
-    
     // MARK: - deleted -
     public func searchTrash(completion: @escaping ([URL]) -> Void) {
         
@@ -209,10 +201,9 @@ public class DocumentSearchManager {
                 
                 var items: [DocumentTextSearchResult] = []
                 let matcher = try NSRegularExpression(pattern: "\(contain)", options: NSRegularExpression.Options.caseInsensitive)
-                try self.loadAllFiles().forEach { url in
-                    
+                
+                URL.read(urls: self.loadAllFiles()) { url, string in
                     // 1. 先获取所有文档的 heading
-                    let string = try String(contentsOf: url)
                     parser.parse(str: string)
                     
                     matcher.enumerateMatches(in: string,
@@ -241,7 +232,6 @@ public class DocumentSearchManager {
                                                                                       heading: documentHeading,
                                                                                       location: range.location))
                     })
-                    
                 }
                 
                 OperationQueue.main.addOperation {
@@ -272,38 +262,31 @@ public class DocumentSearchManager {
             parser.delegate = parseDelegate
             parser.includeParsee = [.heading, .dateAndTime]
             
-            do {
+            var results: [DocumentHeadingSearchResult] = []
+            
+            URL.read(urls: self.loadAllFiles()) { url, string in
+                parser.parse(str: string)
                 
-                var results: [DocumentHeadingSearchResult] = []
-                try self.loadAllFiles().forEach { url in
+                var resultsInFile: [DocumentHeadingSearchResult] = []
+                parseDelegate.dateAndTimes.forEach { dateAndTimeRange in
                     
-                    let string = try String(contentsOf: url)
-                    parser.parse(str: string)
-                    
-                    var resultsInFile: [DocumentHeadingSearchResult] = []
-                    parseDelegate.dateAndTimes.forEach { dateAndTimeRange in
+                    if let headingToken = parseDelegate.heading(contains: dateAndTimeRange.location) {
+                        let result = DocumentHeadingSearchResult(dateAndTime: DateAndTimeType(string.nsstring.substring(with: dateAndTimeRange))!,
+                                                                 documentInfo: DocumentInfo(wrapperURL: url.wrapperURL),
+                                                                 dateAndTimeRange: dateAndTimeRange,
+                                                                 heading: DocumentHeading(documentString: string,
+                                                                                          headingToken: headingToken,
+                                                                                          url: url))
                         
-                        if let headingToken = parseDelegate.heading(contains: dateAndTimeRange.location) {
-                            let result = DocumentHeadingSearchResult(dateAndTime: DateAndTimeType(string.nsstring.substring(with: dateAndTimeRange))!,
-                                                     documentInfo: DocumentInfo(wrapperURL: url.wrapperURL),
-                                                     dateAndTimeRange: dateAndTimeRange,
-                                                     heading: DocumentHeading(documentString: string,
-                                                                              headingToken: headingToken,
-                                                                              url: url))
-                            
-                            resultsInFile.append(result)
-                            
-                        }
+                        resultsInFile.append(result)
+                        
                     }
-                    
-                    results.append(contentsOf: resultsInFile)
                 }
                 
-                completion(results)
-                
-            } catch {
-                failure(error)
+                results.append(contentsOf: resultsInFile)
             }
+            
+            completion(results)
             
         }
         
@@ -381,20 +364,19 @@ public class DocumentSearchManager {
                     }
                 }
                 
-                try self.loadAllFiles().forEach { url in
+                URL.read(urls: self.loadAllFiles(), each: { url, string in
                     
-                    let string = try String(contentsOf: url)
                     parser.parse(str: string)
-                
+                    
                     var headingStack: [DocumentHeadingSearchResult] = []
                     headings.append(contentsOf: parseDelegate.headings.map { headingToken in
                         
                         let result = DocumentHeadingSearchResult(dateAndTime: nil,
-                                                    documentInfo: DocumentInfo(wrapperURL: url.wrapperURL),
-                                                    dateAndTimeRange: nil,
-                                                    heading: DocumentHeading(documentString: string,
-                                                                             headingToken: headingToken,
-                                                                             url: url))
+                                                                 documentInfo: DocumentInfo(wrapperURL: url.wrapperURL),
+                                                                 dateAndTimeRange: nil,
+                                                                 heading: DocumentHeading(documentString: string,
+                                                                                          headingToken: headingToken,
+                                                                                          url: url))
                         
                         // make the result parent/child relationship
                         figureOutParentChildRelation(headingStack: &headingStack, new: result)
@@ -403,11 +385,9 @@ public class DocumentSearchManager {
                         
                         return result
                     })
-                }
+                })
                 
                 completion(headings)
-            } catch {
-                failure(error)
             }
             
         }

@@ -600,7 +600,7 @@ public enum L10n {
   }
 
   public enum Membership {
-    /// Dear user, if you are enjoy using x3 note, please consider join our membership, unlock all advanced functions, and help us making x3 note becomes stronger, bring more powerful functions.
+    /// Dear user, if you enjoy using x3 note, please consider joining our membership to unlock all advanced functions. Your support will be great help for us making x3 note becomes better, and bring you more functions.
     public static let letter = L10n.tr("Localizable", "membership.letter")
     /// More help
     public static let moreHelp = L10n.tr("Localizable", "membership.moreHelp")
@@ -633,6 +633,12 @@ public enum L10n {
       public static let description = L10n.tr("Localizable", "membership.monthly.description")
       /// Order membership monthly
       public static let title = L10n.tr("Localizable", "membership.monthly.title")
+    }
+    public enum Price {
+      /// $1.49 USD
+      public static let monthly = L10n.tr("Localizable", "membership.price.monthly")
+      /// $13.49 USD
+      public static let yearly = L10n.tr("Localizable", "membership.price.yearly")
     }
     public enum Yearly {
       /// (1 bonus month) unlimited function access

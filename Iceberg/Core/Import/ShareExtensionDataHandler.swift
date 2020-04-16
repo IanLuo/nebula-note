@@ -37,7 +37,7 @@ public struct ShareExtensionDataHandler {
     }
     
     public func harvestSharedItems(attachmentManager: AttachmentManager, urlHandler: URLHandlerManager, captureService: CaptureService, completion: @escaping (Int) -> Void) {
-        DispatchQueue.global(qos: DispatchQoS.QoSClass.utility).async {
+        DispatchQueue.global(qos: DispatchQoS.QoSClass.userInteractive).async {
             let sharedItem = self.loadAllUnHandledShareIdeas()
             
             let completeHandleSharedItems: () -> Void = {

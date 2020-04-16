@@ -170,19 +170,21 @@ public class AgendaViewModel {
     // 加载 agenda 界面所有数据
     public func loadAgendaData() {
         
+        let finishedPlainings = SettingsAccessor.shared.finishedPlanning
+        
         self._documentSearchManager.allHeadings(completion: { [weak self] (results1) in
             self?._documentSearchManager.searchDateAndTime(completion: { (results2) in
                 var results = results1.filter { $0.heading.planning != nil }
                 results.append(contentsOf: results2)
                 let allData = results.map { AgendaCellModel(searchResult: $0) }
-                
+
                 self?.dateOrderedData = [:]
-                
+
                 // filter data for each date
                 self?.dates.forEach { date in
                     let mappedCellModels = allData.filter { cellModel in
                         // 已完成的条目不显示
-                        if let planning = cellModel.planning, SettingsAccessor.shared.finishedPlanning.contains(planning) {
+                        if let planning = cellModel.planning, finishedPlainings.contains(planning) {
                             return false
                         }
                             // only for item that has date and time
@@ -201,7 +203,7 @@ public class AgendaViewModel {
                             return true
                         }
                     }
-                    
+
                     self?.dateOrderedData[date] = mappedCellModels._trim()._sort()
                     DispatchQueue.runOnMainQueueSafely {
                         self?.delegate?.didCompleteLoadAllData()

@@ -24,9 +24,6 @@ public class AttachmentManagerViewController: UIViewController, UICollectionView
     public convenience init(viewModel: AttachmentManagerViewModel) {
         self.init()
         self.viewModel = viewModel
-        if #available(iOS 13.0, *) {
-            self.isModalInPresentation = true
-        }
     }
     
     private lazy var collectionView: UICollectionView = {

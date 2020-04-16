@@ -10,6 +10,7 @@ import Foundation
 import AVFoundation
 import RxSwift
 import Interface
+import CoreLocation
 
 /*
  1. 文本
@@ -131,6 +132,21 @@ public struct Attachment: Codable {
         }
     }
     
+    public var linkTitle: String? {
+        return self.linkInfo?.0
+    }
+    
+    public var coordinator: CLLocationCoordinate2D? {
+        do {
+            let jsonDecoder = JSONDecoder()
+            let coord = try jsonDecoder.decode(CLLocationCoordinate2D.self, from: try Data(contentsOf: self.url))
+            return coord
+        } catch {
+            log.error(error)
+            return nil
+        }
+    }
+    
     public var size: UInt64 {
         do {
             let fileAttributes = try FileManager.default.attributesOfItem(atPath: self.url.path)
@@ -231,5 +247,25 @@ extension Attachment {
                                   description: description,
                                   complete: complete,
                                   failure: failure)
+    }
+}
+
+extension CLLocationCoordinate2D: Codable {
+    public enum Keys: CodingKey {
+        case longitude
+        case latitude
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: Keys.self)
+        self.init()
+        self.latitude = try container.decode(Double.self, forKey: CLLocationCoordinate2D.Keys.latitude)
+        self.longitude = try container.decode(Double.self, forKey: CLLocationCoordinate2D.Keys.longitude)
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: Keys.self)
+        try container.encode(self.latitude, forKey: CLLocationCoordinate2D.Keys.latitude)
+        try container.encode(self.longitude, forKey: CLLocationCoordinate2D.Keys.longitude)
     }
 }

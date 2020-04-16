@@ -331,7 +331,7 @@
 
 // membership
 "membership.title" = "Membership plan";
-"membership.letter" = "Dear user, if you are enjoy using x3 note, please consider join our membership, unlock all advanced functions, and help us making x3 note becomes stronger, bring more powerful functions.";
+"membership.letter" = "Dear user, if you enjoy using x3 note, please consider joining our membership to unlock all advanced functions. Your support will be great help for us making x3 note becomes better, and bring you more functions.";
 "membership.monthly.title" = "Order membership monthly";
 "membership.monthly.description" = "(1 bonus week) unlimited function access";
 "membership.yearly.title" = "Order membership yearly";
@@ -348,6 +348,8 @@
 "membership.function.removeExportWaterprint" = "Remove export waterprint";
 "membership.function.andMoreToCome" = "And more to come";
 "membership.moreHelp" = "More help";
+"membership.price.monthly" = "$1.49 USD";
+"membership.price.yearly" = "$13.49 USD";
 
 // user guide
 "guide.document.edit.headingEntry" = "Tap on heading button to create an heading entry";

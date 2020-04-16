@@ -102,7 +102,7 @@ public class DocumentEditorViewController: UIViewController {
             notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardDidChangeFrameNotification, object: nil)
             notificationCenter.addObserver(self, selector: #selector(_tryToShowUserGuide), name: UIResponder.keyboardDidShowNotification, object: nil)
             
-            self.viewModel.dependency.syncManager.onDownloadingCompletes.subscribe(onNext: { url in
+            self.viewModel.dependency.syncManager.onDownloadingCompletes.subscribe(onNext: { [unowned self] url in
                 guard url.path == self.viewModel.url.path else { return }
                 
                 guard (try? String(contentsOf: url)) != self.viewModel.string else { return }
@@ -292,13 +292,6 @@ extension DocumentEditorViewController: DocumentEditViewModelDelegate {
             }
         }
         
-        // 打开文件时， 添加到最近使用的文件
-        if !self.viewModel.isTemp {
-            self.viewModel.dependency.editorContext.recentFilesManager.addRecentFile(url: self.viewModel.url, lastLocation: 0) { [weak self] in
-                guard let strongSelf = self else { return }
-                strongSelf.viewModel.dependency.eventObserver.emit(OpenDocumentEvent(url: strongSelf.viewModel.url))
-            }
-        }
     }
     
     internal func _scrollTo(location: Int, shouldScrollToZero: Bool = false) {

@@ -255,11 +255,6 @@ public class DocumentEditViewModel: ViewModelProtocol {
                             DispatchQueue.runOnMainQueueSafely {
                                 completion(result)
                             }
-                            
-                            // add to file to recent changed file
-                            self?.dependency.editorContext.recentFilesManager.addRecentFile(url: url, lastLocation: 0, completion: {
-                                self?.dependency.eventObserver.emit(OpenDocumentEvent(url: url))
-                            })
                         })
                     })
                     

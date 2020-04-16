@@ -349,6 +349,8 @@
 "membership.function.removeExportWaterprint" = "移除导出图片中的水印";
 "membership.function.andMoreToCome" = "更多功能持续开发中";
 "membership.moreHelp" = "更多帮助";
+"membership.price.monthly" = "￥10.00";
+"membership.price.yearly" = "￥98.00";
 
 // user guide
 "guide.document.edit.headingEntry" = "点击标题按钮，创建一个标题";

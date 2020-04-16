@@ -150,13 +150,16 @@ public class MembershipViewController: UIViewController {
         let aString = NSMutableAttributedString(string: L10n.Membership.Function.title + "\n\n")
         let titleLength = aString.length
         for `case` in MemberFunctions.allCases {
-            aString.append(NSAttributedString(string: "🥃 ", attributes: [NSAttributedString.Key.foregroundColor : InterfaceTheme.Color.spotlight]))
+            aString.append(NSAttributedString(string: "⭐️ ", attributes: [NSAttributedString.Key.foregroundColor : InterfaceTheme.Color.spotlight]))
             aString.append(NSAttributedString(string: `case`.name + "\n", attributes: [NSAttributedString.Key.foregroundColor : InterfaceTheme.Color.descriptive]))
         }
         
         aString.addAttributes([NSAttributedString.Key.paragraphStyle : NSParagraphStyle.bulletDescriptive], range: NSRange(location: titleLength, length: aString.length - titleLength))
         
         self.functionDescription.attributedText = aString
+        
+        self.monthlyProductView.orderButton.setTitle(L10n.Membership.Price.monthly, for: .normal)
+        self.yearlyProductView.orderButton.setTitle(L10n.Membership.Price.yearly, for: .normal)
     }
     
     private func bind() {
@@ -166,7 +169,7 @@ public class MembershipViewController: UIViewController {
             .asDriver()
             .drive(onNext: { [weak self] product in
                 self?.monthlyProductView.update(product: product)
-                self?.monthlyProductView.orderButton.hideProcessingAnimation()
+//                self?.monthlyProductView.orderButton.hideProcessingAnimation()
             }).disposed(by: self.disposeBag)
         
         self.viewModel
@@ -175,7 +178,7 @@ public class MembershipViewController: UIViewController {
             .asDriver()
             .drive(onNext: { [weak self] product in
                 self?.yearlyProductView.update(product: product)
-                self?.yearlyProductView.orderButton.hideProcessingAnimation()
+//                self?.yearlyProductView.orderButton.hideProcessingAnimation()
             }).disposed(by: self.disposeBag)
         
         self.monthlyProductView
@@ -183,7 +186,7 @@ public class MembershipViewController: UIViewController {
             .rx
             .tap
             .subscribe(onNext: { [weak self] in
-                self?.monthlyProductView.orderButton.showProcessingAnimation()
+//                self?.monthlyProductView.orderButton.showProcessingAnimation()
                 self?.viewModel.purchaseMonthlyMembership()
             })
             .disposed(by: self.disposeBag)
@@ -193,7 +196,7 @@ public class MembershipViewController: UIViewController {
             .rx
             .tap
             .subscribe(onNext: { [weak self] in
-                self?.yearlyProductView.orderButton.showProcessingAnimation()
+//                self?.yearlyProductView.orderButton.showProcessingAnimation()
                 self?.viewModel.purchaseYearlyMembership()
             })
             .disposed(by: self.disposeBag)
@@ -212,9 +215,9 @@ public class MembershipViewController: UIViewController {
             })
             .disposed(by: self.disposeBag)
         
-        self.viewModel.output.errorOccurs.subscribe(onNext: { [weak self] error in
-            self?.showAlert(title: "error", message: "\(error.localizedDescription)")
-        }).disposed(by:self.disposeBag)
+//        self.viewModel.output.errorOccurs.subscribe(onNext: { [weak self] error in
+//            self?.showAlert(title: "error", message: "\(error.localizedDescription)")
+//        }).disposed(by:self.disposeBag)
     }
     
     private func loadData() {
@@ -222,8 +225,8 @@ public class MembershipViewController: UIViewController {
         
         self.restoreButton.setTitle(L10n.Membership.restore, for: .normal)
         
-        self.monthlyProductView.orderButton.showProcessingAnimation()
-        self.yearlyProductView.orderButton.showProcessingAnimation()
+//        self.monthlyProductView.orderButton.showProcessingAnimation()
+//        self.yearlyProductView.orderButton.showProcessingAnimation()
     }
 }
 
@@ -302,7 +305,9 @@ class ProductDescriptionView: UIView {
             self.orderButton.setTitle("\(L10n.Membership.ordered) (\(expireDate.shortDateString))", for: .normal)
             self.orderButton.isEnabled = false
         } else {
-            self.orderButton.setTitle(product.price, for: .normal)
+            if let price = product.price {
+                self.orderButton.setTitle(price, for: .normal)
+            }
             self.orderButton.isEnabled = true
         }
     }

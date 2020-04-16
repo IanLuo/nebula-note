@@ -103,7 +103,7 @@ extension UIImage {
 }
 
 extension UIView {
-    @objc public var snapshot: UIImage? {
+    public var snapshot: UIImage? {
         var image: UIImage?
         UIGraphicsBeginImageContextWithOptions(self.bounds.size, false, 0)
         if let context = UIGraphicsGetCurrentContext() {

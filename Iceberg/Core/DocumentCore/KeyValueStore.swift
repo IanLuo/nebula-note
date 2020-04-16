@@ -41,20 +41,31 @@ public struct KeyValueStoreFactory {
     }
 }
 
-fileprivate struct PlistStore: KeyValueStore {
+fileprivate class PlistStore: NSObject, KeyValueStore {
     private var _url: URL?
     private var _store: NSMutableDictionary?
+    fileprivate static let storeVersionKey = "version"
     
     public init(type: PlistStoreType) {
+        super.init()
         switch type {
         /// 提供一个 key 作为文件名，不要文件后缀，如果文件无法被创建，将使用 standard userDefaults
         case let .custom(fileName):
             self._url = URL.file(directory: URL.keyValueStoreURL, name: fileName, extension: "plist")
             
-            _store = NSMutableDictionary(contentsOf: self._url!) ?? NSMutableDictionary()
-            log.verbose("created key value store with url: \(String(describing: self._url))")
+            self._url?.read(completion: { [weak self] data in
+                guard let strongSelf = self else { return }
+                
+                do {
+                    strongSelf._store = try PropertyListSerialization.propertyList(from: data, options: [], format: nil) as? NSMutableDictionary ?? NSMutableDictionary(dictionary: [PlistStore.storeVersionKey: 1])
+                    log.verbose("created key value store with url: \(strongSelf._url!)")
+                } catch {
+                    log.error(error)
+                }
+            })
         default: break
         }
+        
     }
     
     public func get<T>(key: String, type: T.Type) -> T? {
@@ -69,17 +80,31 @@ fileprivate struct PlistStore: KeyValueStore {
         }
     }
     
+    private func bumpVersionNumber(_ store: NSMutableDictionary, forceVersion: Int? = nil) {
+        if let version = store.value(forKey: PlistStore.storeVersionKey) as? Int {
+            let newVersion = forceVersion ?? version + 1
+            store.setValue(newVersion + 1, forKey: PlistStore.storeVersionKey)
+        } else {
+            let newVersion = forceVersion ?? 1
+            store.setValue(newVersion, forKey: PlistStore.storeVersionKey)
+        }
+    }
+    
     public func set(value: Any, key: String, completion: @escaping () -> Void) {
         if let store = _store, let url = self._url {
             store.setValue(value, forKey: key)
+            
             url.deletingLastPathComponent().createDirectoryIfNeeded { error in
                 guard error == nil else { log.error(error!); return }
                 
-                url.writeBlock(queue: DispatchQueue.main, accessor: { error in
+                url.writeBlock(queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.userInteractive), accessor: { error in
                     if let error = error {
                         log.error(error)
                     } else {
-                        store.write(to: url, atomically: false)
+                        // bump version number
+                        self.bumpVersionNumber(store)
+                        
+                        store.write(to: url, atomically: true)
                         completion()
                     }
                 })
@@ -88,6 +113,7 @@ fileprivate struct PlistStore: KeyValueStore {
             let userDefaults = UserDefaults.standard
             userDefaults.set(value, forKey: key)
             userDefaults.synchronize()
+            completion()
         }
     }
     
@@ -95,10 +121,13 @@ fileprivate struct PlistStore: KeyValueStore {
         if let store = _store, let url = self._url {
             store.removeObject(forKey: key)
             
-            url.writeBlock(queue: DispatchQueue.main, accessor: { error in
+            url.writeBlock(queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.userInteractive), accessor: { error in
                 if let error = error {
                     log.error(error)
                 } else {
+                    // bump version number
+                    self.bumpVersionNumber(store)
+                    
                     store.write(to: url, atomically: true)
                     completion()
                 }
@@ -113,11 +142,17 @@ fileprivate struct PlistStore: KeyValueStore {
     
     public func clear(completion: @escaping () -> Void) {
         if let store = _store, let url = self._url {
-            url.writeBlock(queue: DispatchQueue.main) { error in
+            
+            url.writeBlock(queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.userInteractive)) { error in
                 if let error = error {
                     log.error(error)
                 } else {
                     store.removeAllObjects()
+                    
+                    let version = (store.value(forKey: PlistStore.storeVersionKey) as? Int) ?? 0
+                    let newVersion = version + 1
+                    self.bumpVersionNumber(store, forceVersion: newVersion)
+                    
                     store.write(to: url, atomically: true)
                     completion()
                 }

@@ -53,7 +53,20 @@ public class Coordinator {
     /// navigation index
     public private(set) var index: Int = 0
     
-    public var viewController: UIViewController?
+    private let disposeBag = DisposeBag()
+    
+    public var viewController: UIViewController? {
+        didSet {
+            // if the viewController dealocated in other way, like dismissed by other action, remove this coordinator from it's parent
+            if let viewController = viewController {
+                viewController.rx.methodInvoked(#selector(UIViewController.viewDidDisappear(_:))).map { $0.first as? Bool ?? false }.subscribe(onNext: { [weak self] value in
+                    if self?.parent != nil && value && viewController.presentingViewController == nil && self?.isModal == true {
+                        self?.removeFromParent()
+                    }
+                }).disposed(by: self.disposeBag)
+            }
+        }
+    }
     
     public var isModal: Bool = false
     
@@ -134,6 +147,7 @@ public class Coordinator {
     
     public func removeFromParent() {
         self.parent?.remove(self)
+        self.parent = nil
     }
     
     open func start(from: Coordinator?, animated: Bool = true) {
@@ -318,8 +332,10 @@ extension Coordinator: CaptureCoordinatorDelegate {
                 self.showAttachmentPicker(kind: attachmentKind, complete: { [weak self] attachmentId in
                     self?.dependency.globalCaptureEntryWindow?.show()
                     coordinator.addAttachment(attachmentId: attachmentId) {
-                        HUD.flash(HUDContentType.success, delay: 1)
-                        self?.dependency.eventObserver.emit(NewCaptureAddedEvent(attachmentId: attachmentId, kind: attachmentKind.rawValue))
+                        DispatchQueue.runOnMainQueueSafely {
+                            HUD.flash(HUDContentType.success, delay: 1)
+                            self?.dependency.eventObserver.emit(NewCaptureAddedEvent(attachmentId: attachmentId, kind: attachmentKind.rawValue))
+                        }
                     }
                     }, cancel: { [weak self] in
                         self?.dependency.globalCaptureEntryWindow?.show()

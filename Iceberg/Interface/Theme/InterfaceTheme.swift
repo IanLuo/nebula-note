@@ -8,6 +8,8 @@
 
 import Foundation
 import UIKit
+import RxSwift
+import RxCocoa
 
 public struct Layout {
     public static let cornerRadius: CGFloat = 10
@@ -75,7 +77,7 @@ public struct Layout {
     @objc public var spotlitTitle: UIColor = UIColor(red:1.00, green:1.00, blue:1.00, alpha:1.00)
     @objc public var level: UIColor = UIColor(88, 86, 214)
     @objc public var finished: UIColor = UIColor(52, 199, 89)
-    @objc public var unfinished: UIColor = UIColor(red:1.00, green:0.77, blue:0.25, alpha:1.00)
+    @objc public var unfinished: UIColor = UIColor(red:0.87, green:0.69, blue:0.15, alpha:1.00)
     
     @objc public let interactive: UIColor = UIColor(28, 28, 30)
     @objc public let descriptive: UIColor = UIColor(72, 72, 74)
@@ -138,16 +140,24 @@ public class InterfaceThemeSelector {
     public func changeTheme(_ theme: InterfaceThemeProtocol) {
         InterfaceThemeSelector.shared.currentTheme = theme
         
-        for key in self._registerMap.keyEnumerator().allObjects {
-            (self._registerMap.object(forKey: key as AnyObject) as? (InterfaceThemeProtocol) -> Void)?(theme)
-        }
+//        for key in self._registerMap.keyEnumerator().allObjects {
+//            (self._registerMap.object(forKey: key as AnyObject) as? (InterfaceThemeProtocol) -> Void)?(theme)
+//        }
+        
+        self._themeObservable.onNext(theme)
     }
     
-    public func register(observer key: AnyObject, changeAction: @escaping (InterfaceThemeProtocol) -> Void) {
-        self._registerMap.setObject(changeAction as AnyObject, forKey: key)
+    public func register(observer key: NSObject, changeAction: @escaping (InterfaceThemeProtocol) -> Void) {
+//        self._registerMap.setObject(changeAction as AnyObject, forKey: key)
+
+        _ = self._themeObservable.takeUntil(key.rx.deallocated).subscribe(onNext: { theme in
+            changeAction(theme)
+        })
         
         changeAction(self.currentTheme)
     }
+    
+    fileprivate let _themeObservable: PublishSubject<InterfaceThemeProtocol> = PublishSubject()
 }
 
 @objc public class InterfaceTheme: NSObject {

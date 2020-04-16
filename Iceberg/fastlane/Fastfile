@@ -13,6 +13,8 @@
 # Uncomment the line if you want fastlane to automatically update itself
 # update_fastlane
 
+ENV["SPACESHIP_2FA_SMS_DEFAULT_PHONE_NUMBER"]="+8618190768602";
+
 default_platform(:ios)
 
 platform :ios do
@@ -52,6 +54,15 @@ platform :ios do
 
   lane :upload do
     
+  end
+
+  lane :metadata_without_images do
+    deliver(
+      submit_for_review: false,
+      automatic_release: false,
+      skip_screenshots: true,
+      skip_binary_upload: true
+    )
   end
 
   lane :metadata do

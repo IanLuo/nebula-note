@@ -23,6 +23,7 @@ public enum SettingsError: Error {
     
     private struct Constants {
         static var store: KeyValueStore { return KeyValueStoreFactory.store(type: KeyValueStoreType.plist(PlistStoreType.custom("Settings"))) }
+        static let storeURL: URL = URL.file(directory: URL.keyValueStoreURL, name: "Settings", extension: "plist")
     }
     
     public enum Item: String {
@@ -46,7 +47,10 @@ public enum SettingsError: Error {
     }
     
     private static let instance = SettingsAccessor()
-    private override init() {}
+    private override init() {
+        super.init()
+        NSFileCoordinator.addFilePresenter(self)
+    }
     @objc public static var shared: SettingsAccessor { return instance }
     
     public var customizedPlannings: [String]? {
@@ -153,4 +157,39 @@ public enum SettingsError: Error {
             _ = removePlanningAction(SettingsAccessor.Item.unfinishedPlannings)
         }
     }    
+}
+
+extension SettingsAccessor: NSFilePresenter {
+    public var presentedItemURL: URL? {
+        return Constants.storeURL
+    }
+    
+    public var presentedItemOperationQueue: OperationQueue {
+        return OperationQueue()
+    }
+    
+    public func presentedItemDidGain(_ version: NSFileVersion) {
+        if version.localizedName != nil {
+            let thatStore = NSMutableDictionary(contentsOf: version.url) ?? NSMutableDictionary()
+            let thatVersion = thatStore.value(forKey: "version") as? Int ?? 0
+            let thisVersion = Constants.store.get(key: "version") as? Int ?? 0
+            
+            log.info("new settings version of file found")
+            do {
+                if thisVersion < thatVersion {
+                    version.isResolved = true
+                    try version.replaceItem(at: Constants.storeURL, options: [.init(rawValue: 0)])
+                    try NSFileVersion.removeOtherVersionsOfItem(at: Constants.storeURL)
+                    log.info("found remote version, which is newer, use that one")
+                } else {
+                    version.isResolved = true
+                    try NSFileVersion.removeOtherVersionsOfItem(at: Constants.storeURL)
+                    log.info("found remote version, which is older, removed")
+                }
+            } catch {
+                log.error(error)
+            }
+        }
+        
+    }
 }

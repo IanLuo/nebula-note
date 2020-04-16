@@ -28,10 +28,6 @@ public struct DocumentManager {
     private let _eventObserver: EventObserver
     private let _syncManager: iCloudDocumentManager
     
-    public var recentFiles: [RecentDocumentInfo] {
-        return self._editorContext.recentFilesManager.recentFiles
-    }
-    
     public func getFileLocationComplete(_ completion: @escaping (URL?) -> Void) {
         if iCloudDocumentManager.status == .on {
             self._syncManager.geticloudContainerURL {
@@ -42,10 +38,6 @@ public struct DocumentManager {
         }
     }
     
-    public func removeRecentFile(url: URL) {
-        self._editorContext.recentFilesManager.removeRecentFile(url: url) {}
-    }
-        
     /// 查找指定目录下的 iceland 文件包
     public func query(in folder: URL, recursively: Bool = false) throws -> [URL] {
         
@@ -256,6 +248,7 @@ public struct DocumentManager {
         
         if let below = below {
             self._createFolderIfNeeded(url: below) { folderURL in
+                
                 var newURL = folderURL.appendingPathComponent(to).appendingPathExtension(Document.fileExtension)
                 newURL = newURL.uniqueURL
                 renameAction(newURL)

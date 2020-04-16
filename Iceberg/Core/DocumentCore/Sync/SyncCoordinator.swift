@@ -17,17 +17,22 @@ public protocol SyncManagerProtocol {
 }
 
 public protocol Syncable {
-    var lastModifyTimeStamp: TimeInterval { get }
+    var lastModifyOrCreateTimeStamp: TimeInterval { get }
 }
 
 extension URL: Syncable {
-    public var lastModifyTimeStamp: TimeInterval {
+    public var lastModifyOrCreateTimeStamp: TimeInterval {
         // if modifed date not there, use create, if none there, use distant past
         guard let resources = try? self.resourceValues(forKeys: [URLResourceKey.contentModificationDateKey, URLResourceKey.creationDateKey]),
             let modifyDateTimeInterval = (resources.contentModificationDate ?? resources.creationDate)
             else { return Date.distantPast.timeIntervalSince1970 }
         
         return modifyDateTimeInterval.timeIntervalSince1970
+    }
+    
+    public var lastModifyTimeStamp: TimeInterval? {
+        guard let resources = try? self.resourceValues(forKeys: [URLResourceKey.contentModificationDateKey, URLResourceKey.creationDateKey]) else { return nil }
+        return resources.contentModificationDate?.timeIntervalSince1970
     }
 }
 
@@ -219,7 +224,7 @@ public class SyncCoordinator {
                     
                     guard let remoteURL = remoteSyncManager.urlForRelativePath(remoteFileRelativePath) else { continue }
                     
-                    if remoteURL.lastModifyTimeStamp < localFile.lastModifyTimeStamp {
+                    if remoteURL.lastModifyOrCreateTimeStamp < localFile.lastModifyOrCreateTimeStamp {
                         // copy remote file to local
                         relativefilePathsToCopyFromRemoteToLocal.append(remoteFileRelativePath)
                     }
@@ -252,7 +257,7 @@ public class SyncCoordinator {
                     
                     localRelativePaths.remove(at: count - index - 1) // remove matched local path
                     
-                    if remoteFile.lastModifyTimeStamp < localFile.lastModifyTimeStamp {
+                    if remoteFile.lastModifyOrCreateTimeStamp < localFile.lastModifyOrCreateTimeStamp {
                         // copy remote file to local
                         relativefilePathsToCopyFromLocalToRemote.append(localRelativeFilePath)
                     }
