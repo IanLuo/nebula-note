@@ -96,7 +96,7 @@ public class BrowserViewController: UIViewController {
         
         let rightItem = UIBarButtonItem(title: L10n.General.help, style: .plain, target: nil, action: nil)
         rightItem.rx.tap.subscribe(onNext: {
-            HelpPage.documentManagement.open()
+            HelpPage.documentManagement.open(from: self)
         }).disposed(by: self.disposeBag)
         self.navigationItem.rightBarButtonItem = rightItem
     }

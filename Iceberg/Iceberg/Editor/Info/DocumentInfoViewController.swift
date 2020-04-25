@@ -117,25 +117,25 @@ public class DocumentInfoViewController: TransitionViewController {
         
         actionsViewController.addAction(icon: nil, title: L10n.Document.Help.textEditor) { viewController in
             viewController.dismiss(animated: true) {
-                HelpPage.editor.open()
+                HelpPage.editor.open(from: self)
             }
         }
         
         actionsViewController.addAction(icon: nil, title: L10n.Document.Help.markSyntax) { viewController in
             viewController.dismiss(animated: true) {
-                HelpPage.syntax.open()
+                HelpPage.syntax.open(from: self)
             }
         }
         
         actionsViewController.addAction(icon: nil, title: L10n.Document.Help.entrance) { viewController in
             viewController.dismiss(animated: true) {
-                HelpPage.entrance.open()
+                HelpPage.entrance.open(from: self)
             }
         }
         
         actionsViewController.addAction(icon: nil, title: L10n.Document.Help.more) { viewController in
             viewController.dismiss(animated: true) {
-                HelpPage.allUserGuide.open()
+                HelpPage.allUserGuide.open(from: self)
             }
         }
         

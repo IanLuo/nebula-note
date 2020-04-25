@@ -9,6 +9,7 @@
 import Foundation
 import RxSwift
 import Interface
+import MHWebViewController
 
 public enum HelpPage: String {
     case allUserGuide = "https://forum.x3note.site/c/5"
@@ -20,10 +21,22 @@ public enum HelpPage: String {
     case agenda = "https://forum.x3note.site/t/17"
     case membership = "https://forum.x3note.site/t/19";
     case syntax = "https://forum.x3note.site/t/18";
+    case privacyPolicy = "https://forum.x3note.site/t/32";
+    case termsOfService = "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/";
     
-    public func open() {
-        if let url = URL(string: self.rawValue), UIApplication.shared.canOpenURL(url) {
-            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+//    public func open() {
+//        if let url = URL(string: self.rawValue), UIApplication.shared.canOpenURL(url) {
+//            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+//        }
+//    }
+    
+    public func open(from: UIViewController) {
+        from.present(url: URL(string: self.rawValue)!, completion: nil)
+    }
+    
+    public static func open(from: UIViewController, url: String) {
+        if let url = URL(string: url) {
+            from.present(url: url, completion: nil)
         }
     }
 }

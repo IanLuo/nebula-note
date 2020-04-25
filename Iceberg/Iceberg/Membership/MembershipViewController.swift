@@ -15,7 +15,11 @@ import Core
 
 public class MembershipViewController: UIViewController {
     private var viewModel: MembershipViewModel!
-    private let scrollView: UIScrollView = UIScrollView()
+    private let scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 100, right: 0)
+        return scrollView
+    }()
     private let contentView: UIView = UIView()
     private let disposeBag = DisposeBag()
     
@@ -71,7 +75,7 @@ public class MembershipViewController: UIViewController {
         return button
     }()
     
-    lazy var moreHelpButton: UIButton = {
+    lazy var subscriptionInfoButton: UIButton = {
         let button = UIButton()
         
         button.interface { (me, theme) in
@@ -83,10 +87,36 @@ public class MembershipViewController: UIViewController {
         button.setTitle(L10n.Membership.moreHelp, for: .normal)
         
         button.rx.tap.subscribe(onNext: {
-            HelpPage.membership.open()
+            HelpPage.membership.open(from: self)
         }).disposed(by: self.disposeBag)
         
         return button
+    }()
+    
+    lazy var privacyAndTermsView: UIView = {
+        let view = UIStackView()
+        view.distribution = .equalCentering
+        
+        let privacyButton = UIButton()
+        privacyButton.setTitleColor(InterfaceTheme.Color.spotlight, for: .normal)
+        privacyButton.setTitle(L10n.Setting.privacy, for: .normal)
+        
+        let termsOfServiceButton = UIButton()
+        termsOfServiceButton.setTitleColor(InterfaceTheme.Color.spotlight, for: .normal)
+        termsOfServiceButton.setTitle(L10n.Setting.terms, for: .normal)
+        
+        privacyButton.rx.tap.subscribe(onNext: {
+            HelpPage.privacyPolicy.open(from: self)
+        }).disposed(by: self.disposeBag)
+        
+        termsOfServiceButton.rx.tap.subscribe(onNext: {
+            HelpPage.termsOfService.open(from: self)
+        }).disposed(by: self.disposeBag)
+        
+        view.addArrangedSubview(privacyButton)
+        view.addArrangedSubview(termsOfServiceButton)
+        
+        return view
     }()
     
     public override func viewDidLoad() {
@@ -106,7 +136,8 @@ public class MembershipViewController: UIViewController {
         self.contentView.addSubview(self.yearlyProductView)
         self.contentView.addSubview(self.restoreButton)
         self.contentView.addSubview(self.functionDescription)
-        self.contentView.addSubview(self.moreHelpButton)
+        self.contentView.addSubview(self.subscriptionInfoButton)
+        self.contentView.addSubview(self.privacyAndTermsView)
         
         self.scrollView.allSidesAnchors(to: self.view, edgeInset: 0)
         self.contentView.allSidesAnchors(to: self.scrollView, edgeInset: 0)
@@ -132,8 +163,11 @@ public class MembershipViewController: UIViewController {
         self.restoreButton.columnAnchor(view: self.functionDescription, space: 40, alignment: .centerX)
         self.functionDescription.sideAnchor(for: .left, to: self.contentView, edgeInsets: .init(top: 0, left: Layout.innerViewEdgeInsets.left, bottom: 0, right: 0))
         
-        self.functionDescription.columnAnchor(view: self.moreHelpButton, space: 40, alignment: .leading)
-        self.moreHelpButton.sideAnchor(for: [.left, .bottom], to: self.contentView, edgeInsets: .init(top: 0, left: Layout.innerViewEdgeInsets.left, bottom: -80, right: 0))
+        self.functionDescription.columnAnchor(view: self.subscriptionInfoButton, space: 40, alignment: .leading)
+        self.subscriptionInfoButton.sideAnchor(for: .left, to: self.contentView, edgeInsets: .init(top: 0, left: Layout.innerViewEdgeInsets.left, bottom: 0, right: 0))
+        
+        self.subscriptionInfoButton.columnAnchor(view: self.privacyAndTermsView, space: 20)
+        self.privacyAndTermsView.sideAnchor(for: [.left, .right, .bottom], to: self.contentView, edgeInsets: .init(top: 0, left: Layout.innerViewEdgeInsets.left, bottom: 0, right: -Layout.innerViewEdgeInsets.right))
         
         self.interface { (me, theme) in
             me.view.backgroundColor = theme.color.background1
@@ -228,6 +262,7 @@ public class MembershipViewController: UIViewController {
 //        self.monthlyProductView.orderButton.showProcessingAnimation()
 //        self.yearlyProductView.orderButton.showProcessingAnimation()
     }
+    
 }
 
 class ProductDescriptionView: UIView {

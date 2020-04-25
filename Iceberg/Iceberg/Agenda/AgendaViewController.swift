@@ -110,7 +110,7 @@ public class AgendaViewController: UIViewController {
         
         let rightItem = UIBarButtonItem(title: L10n.General.help, style: .plain, target: nil, action: nil)
         rightItem.rx.tap.subscribe(onNext: {
-            HelpPage.agenda.open()
+            HelpPage.agenda.open(from: self)
         }).disposed(by: self.disposeBag)
         self.navigationItem.rightBarButtonItem = rightItem
     }

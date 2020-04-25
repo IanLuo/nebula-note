@@ -3,6 +3,7 @@ PODS:
   - Drawsana (0.9.2)
   - Haptico (1.0.2)
   - KDCalendar (1.6.5)
+  - MHWebViewController (1.1.1)
   - PKHUD (5.3.0)
   - RxCocoa (5.1.0):
     - RxRelay (~> 5)
@@ -22,6 +23,7 @@ DEPENDENCIES:
   - Drawsana
   - Haptico
   - KDCalendar (~> 1.6.5)
+  - MHWebViewController
   - PKHUD (~> 5.0)
   - "RxCocoa (from `git@github.com:ReactiveX/RxSwift.git`, tag `5.1.0`)"
   - RxDataSources
@@ -36,6 +38,7 @@ SPEC REPOS:
     - Drawsana
     - Haptico
     - KDCalendar
+    - MHWebViewController
     - PKHUD
     - RxDataSources
     - RxRelay
@@ -69,6 +72,7 @@ SPEC CHECKSUMS:
   Drawsana: e6c738958804d69769b034019bc274fa58a56d10
   Haptico: ce38d1f993f3a0df9a6d7795a9dd2849648aa9d1
   KDCalendar: 15e74f37bd3d206bf7549c594fd08e0347c276f4
+  MHWebViewController: 6269a80674e88744f345a0e96925e3dbf565acd6
   PKHUD: 98f3e4bc904b9c916f1c5bb6d765365b5357291b
   RxCocoa: 13d2a4d7546a34b8ececae8c281e4ea1dbb94f2b
   RxDataSources: efee07fa4de48477eca0a4611e6d11e2da9c1114
@@ -78,6 +82,6 @@ SPEC CHECKSUMS:
   SwiftyBeaver: f9a9aba96a6a6166e21682377804d728b0d20b95
   SwiftyStoreKit: 555996ed1159bb57209e7ec251b2a775d4434a69
 
-PODFILE CHECKSUM: 236d12f585aace3680d3c6932a348fa3c3b29698
+PODFILE CHECKSUM: 3674ae74567e25bc364b7e189a5bce6b9a7643b3
 
 COCOAPODS: 1.9.1

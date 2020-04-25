@@ -602,7 +602,7 @@ public enum L10n {
   public enum Membership {
     /// Dear user, if you enjoy using x3 note, please consider joining our membership to unlock all advanced functions. Your support will be great help for us making x3 note becomes better, and bring you more functions.
     public static let letter = L10n.tr("Localizable", "membership.letter")
-    /// More help
+    /// About member subscription
     public static let moreHelp = L10n.tr("Localizable", "membership.moreHelp")
     /// Ordered
     public static let ordered = L10n.tr("Localizable", "membership.ordered")
@@ -659,10 +659,14 @@ public enum L10n {
   }
 
   public enum Setting {
+    /// Privicy policy
+    public static let privacy = L10n.tr("Localizable", "setting.privacy")
     /// Store location
     public static let storeLocation = L10n.tr("Localizable", "setting.storeLocation")
     /// Syncing in progress
     public static let syncingInProgress = L10n.tr("Localizable", "setting.syncingInProgress")
+    /// Terms of service
+    public static let terms = L10n.tr("Localizable", "setting.terms")
     /// Settings
     public static let title = L10n.tr("Localizable", "setting.title")
     public enum Alert {

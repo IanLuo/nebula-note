@@ -195,6 +195,9 @@
 "setting.feedback.promot" = "我喜欢 x3 笔记，想推荐别人使用";
 "setting.feedback.forum" = "我想加入论坛";
 
+"settings.privacy" = "隐私条款";
+"settings.terms" = "服务条款";
+
 //search
 "search.title" = "搜索";
 
@@ -348,7 +351,7 @@
 "membership.function.unlimitedLevelOfSubDocuments" = "不限制子文件夹的层数";
 "membership.function.removeExportWaterprint" = "移除导出图片中的水印";
 "membership.function.andMoreToCome" = "更多功能持续开发中";
-"membership.moreHelp" = "更多帮助";
+"membership.moreHelp" = "关于会员订阅";
 "membership.price.monthly" = "￥10.00";
 "membership.price.yearly" = "￥98.00";
 

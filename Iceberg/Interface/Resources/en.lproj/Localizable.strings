@@ -194,6 +194,9 @@
 "setting.feedback.promot" = "I like x3 note, and I want to share to others";
 "setting.feedback.forum" = "I want to join the forum";
 
+"setting.privacy" = "Privicy policy";
+"setting.terms" = "Terms of service";
+
 //search
 "search.title" = "Search";
 
@@ -347,7 +350,7 @@
 "membership.function.unlimitedLevelOfSubDocuments" = "Unlimited level of sub documents";
 "membership.function.removeExportWaterprint" = "Remove export waterprint";
 "membership.function.andMoreToCome" = "And more to come";
-"membership.moreHelp" = "More help";
+"membership.moreHelp" = "About member subscription";
 "membership.price.monthly" = "$1.49 USD";
 "membership.price.yearly" = "$13.49 USD";
 

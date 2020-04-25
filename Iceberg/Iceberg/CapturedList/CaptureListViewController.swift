@@ -135,7 +135,7 @@ public class CaptureListViewController: UIViewController {
         
         let rightItem = UIBarButtonItem(title: L10n.General.help, style: .plain, target: nil, action: nil)
         rightItem.rx.tap.subscribe(onNext: {
-            HelpPage.capture.open()
+            HelpPage.capture.open(from: self)
         }).disposed(by: self.disposeBag)
         self.navigationItem.rightBarButtonItem = rightItem
         

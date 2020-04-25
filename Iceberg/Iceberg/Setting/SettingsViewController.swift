@@ -44,6 +44,9 @@ public class SettingsViewController: UITableViewController {
     @IBOutlet var exportShowIndexLabel: UILabel!
     @IBOutlet var exportShowIndexSwitch: UISwitch!
     
+    @IBOutlet weak var privacyButton: UIButton!
+    @IBOutlet weak var termsOfServiceButton: UIButton!
+    
     private let disposeBag = DisposeBag()
     
     public override init(style: UITableView.Style) {
@@ -138,11 +141,31 @@ public class SettingsViewController: UITableViewController {
             self?._showFeedbackOptions()
         }).disposed(by: self.disposeBag)
         self.navigationItem.rightBarButtonItem = rightButton
+        
+        self.privacyButton.setTitle(L10n.Setting.privacy, for: .normal)
+        self.privacyButton.rx.tap.subscribe(onNext: {
+            HelpPage.privacyPolicy.open(from: self)
+        }).disposed(by: self.disposeBag)
+        
+        self.privacyButton.interface { (view, theme) in
+            let button = view as! UIButton
+            button.setTitleColor(theme.color.spotlight, for: .normal)
+        }
+        
+        self.termsOfServiceButton.setTitle(L10n.Setting.terms, for: .normal)
+        self.termsOfServiceButton.rx.tap.subscribe(onNext: {
+            HelpPage.termsOfService.open(from: self)
+        }).disposed(by: self.disposeBag)
+        self.termsOfServiceButton.interface { (view, theme) in
+            let button = view as! UIButton
+            button.setTitleColor(theme.color.spotlight, for: .normal)
+        }
     }
     
 //    public override var preferredStatusBarStyle: UIStatusBarStyle {
 //        return InterfaceTheme.statusBarStyle
 //    }
+    
     
     public override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch section {
