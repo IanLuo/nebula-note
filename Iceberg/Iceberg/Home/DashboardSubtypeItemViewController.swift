@@ -25,7 +25,7 @@ public class DashboardSubtypeItemViewController: UIViewController {
     
     public var didSelectAction: ((String) -> Void)?
     
-    private let subtype: DashboardViewController.SubtabType
+    private let subtype: DashboardViewModel.DahsboardItemData
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
@@ -38,7 +38,7 @@ public class DashboardSubtypeItemViewController: UIViewController {
         return tableView
     }()
     
-    public init(subtype: DashboardViewController.SubtabType) {
+    public init(subtype: DashboardViewModel.DahsboardItemData) {
         self.subtype = subtype
         super.init(nibName: nil, bundle: nil)
     }

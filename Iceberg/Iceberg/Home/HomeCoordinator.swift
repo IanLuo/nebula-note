@@ -33,6 +33,7 @@ public class HomeCoordinator: Coordinator {
         
         let homeViewController = HomeViewController(masterViewController: navigationController)
         self.homeViewController = homeViewController
+        
         self._dashboardViewController = dashboardViewController
         super.init(stack: stack, dependency: dependency)
         
@@ -146,34 +147,28 @@ extension HomeCoordinator: HomeViewControllerDelegate {
 }
 
 extension HomeCoordinator: DashboardViewControllerDelegate {
-    public func showHeadingsToday(headings: [DocumentHeadingSearchResult], from subTabType: DashboardViewController.SubtabType) {
-        let agendaCoordinator = AgendaCoordinator(filterType: .today(headings), stack: self.stack, dependency: self.dependency)
-        agendaCoordinator.viewController?.title = subTabType.title
-        self.showTempCoordinator(agendaCoordinator)
-    }
-    
-    public func showHeadingsScheduled(headings: [DocumentHeadingSearchResult], from subTabType: DashboardViewController.SubtabType) {
-        let agendaCoordinator = AgendaCoordinator(filterType: .scheduled(headings), stack: self.stack, dependency: self.dependency)
-        agendaCoordinator.viewController?.title = subTabType.title
-        self.showTempCoordinator(agendaCoordinator)
-    }
-    
-    public func showHeadingsOverdue(headings: [DocumentHeadingSearchResult], from subTabType: DashboardViewController.SubtabType) {
-        let agendaCoordinator = AgendaCoordinator(filterType: .overdue(headings), stack: self.stack, dependency: self.dependency)
-        agendaCoordinator.viewController?.title = subTabType.title
-        self.showTempCoordinator(agendaCoordinator)
-    }
-    
-    public func showHeadingsScheduleSoon(headings: [DocumentHeadingSearchResult], from subTabType: DashboardViewController.SubtabType) {
-        let agendaCoordinator = AgendaCoordinator(filterType: .startSoon(headings), stack: self.stack, dependency: self.dependency)
-        agendaCoordinator.viewController?.title = subTabType.title
-        self.showTempCoordinator(agendaCoordinator)
-    }
-    
-    public func showHeadingsOverdueSoon(headings: [DocumentHeadingSearchResult], from subTabType: DashboardViewController.SubtabType) {
-        let agendaCoordinator = AgendaCoordinator(filterType: .dueSoon(headings), stack: self.stack, dependency: self.dependency)
-        agendaCoordinator.viewController?.title = subTabType.title
-        self.showTempCoordinator(agendaCoordinator)
+    public func showHeadings(subTabType: DashboardViewModel.DahsboardItemData) {
+        var filterType: AgendaCoordinator.FilterType?
+        
+        switch subTabType {
+        case .scheduled(let headings):
+            filterType = .scheduled(headings)
+        case .overdue(let headings):
+            filterType = .overdue(headings)
+        case .startSoon(let headings):
+            filterType = .startSoon(headings)
+        case .overdueSoon(let headings):
+            filterType = .overdue(headings)
+        case .today(let headings):
+            filterType = .today(headings)
+        default: break
+        }
+        
+        if let filterType = filterType {
+            let agendaCoordinator = AgendaCoordinator(filterType: filterType, stack: self.stack, dependency: self.dependency)
+            agendaCoordinator.viewController?.title = subTabType.title
+            self.showTempCoordinator(agendaCoordinator)
+        }
     }
     
     public func showHeadings(tag: String) {

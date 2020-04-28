@@ -88,8 +88,13 @@ public class Application: Coordinator {
     }
     
     public override func start(from: Coordinator?, animated: Bool) {
-        let homeCoord = HomeCoordinator(stack: self.stack,
+        var homeCoord: Coordinator!
+        #if os(iOS)
+        homeCoord = HomeCoordinator(stack: self.stack,
                                         dependency: self.dependency)
+        #else
+        homeCoord = MacHomeCoordinator(stack: self.stack, dependency: self.dependency)
+        #endif
                 
         // 导入 extension 收集的 idea
         self.handleSharedIdeas()

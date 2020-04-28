@@ -14,6 +14,16 @@ public protocol DashboardViewModelDelegate: class {
 }
 
 public class DashboardViewModel {
+    public enum DahsboardItemData {
+        case scheduled([DocumentHeadingSearchResult])
+        case overdue([DocumentHeadingSearchResult])
+        case startSoon([DocumentHeadingSearchResult])
+        case overdueSoon([DocumentHeadingSearchResult])
+        case today([DocumentHeadingSearchResult])
+        case allTags([String])
+        case allStatus([String])
+    }
+    
     public weak var coordinator: HomeCoordinator? {
         didSet {
             self._setupHeadingChangeObserver()
@@ -29,20 +39,20 @@ public class DashboardViewModel {
     deinit {
         self.coordinator?.dependency.eventObserver.unregister(for: self, eventType: nil)
     }
+        
+    public var itemsData: [DahsboardItemData] = []
     
-    public var allTags: [String] = []
-    
-    public var allPlannings: [String] = []
-    
-    public var scheduled: [DocumentHeadingSearchResult] = []
-    
-    public var overdue: [DocumentHeadingSearchResult] = []
-    
-    public var startSoon: [DocumentHeadingSearchResult] = []
-    
-    public var overdueSoon: [DocumentHeadingSearchResult] = []
-    
-    public var today: [DocumentHeadingSearchResult] = []
+    public var allTags: [String] {
+        for itemData in self.itemsData {
+            switch itemData {
+            case .allTags(let tags):
+                return tags
+            default: break
+            }
+        }
+        
+        return []
+    }
     
     private var _isHeadingsNeedsReload: Bool = true
     
@@ -76,8 +86,18 @@ public class DashboardViewModel {
                                                                     eventType: TagAddedEvent.self,
                                                                     queue: self._headingChangeObservingQueue) { [weak self] (event: TagAddedEvent) -> Void in
                                                                         self?._isHeadingsNeedsReload = true
-                                                                        if self?.allTags.contains(event.tag) == false {
-                                                                            self?.allTags.append(event.tag)
+                                                                        
+                                                                        for (index, itemData) in (self?.itemsData ?? []).enumerated() {
+                                                                            switch itemData {
+                                                                            case .allTags(let tags):
+                                                                                if tags.contains(event.tag) == false {
+                                                                                    self?.itemsData.remove(at: index)
+                                                                                    var tags = tags
+                                                                                    tags.append(event.tag)
+                                                                                    self?.itemsData.insert(DahsboardItemData.allTags(tags), at: index)
+                                                                                }
+                                                                            default: break
+                                                                            }
                                                                         }
         }
         
@@ -127,13 +147,13 @@ public class DashboardViewModel {
     public func loadData() {
         let today = Date().dayEnd
         
-        self.allTags = []
-        self.allPlannings = []
-        self.scheduled = []
-        self.startSoon = []
-        self.overdue = []
-        self.overdueSoon = []
-        self.today = []
+        var scheduled: [DocumentHeadingSearchResult] = []
+        var startSoon: [DocumentHeadingSearchResult] = []
+        var overdue: [DocumentHeadingSearchResult] = []
+        var overdueSoon: [DocumentHeadingSearchResult] = []
+        var todayData: [DocumentHeadingSearchResult] = []
+        
+        self.itemsData = []
         
         let dispatchGroup = DispatchGroup()
         
@@ -150,24 +170,24 @@ public class DashboardViewModel {
                     let daysFromToday = dateAndTime.date.daysFrom(today) // date from the date to today
                     
                     if dateAndTime.date.isToday() {
-                        self?.today.append(result)
+                        todayData.append(result)
                     } else if dateAndTime.isDue {
                         if daysFromToday < 0 {
-                            self?.overdue.append(result)
+                            overdue.append(result)
                         } else if daysFromToday <= 3 {
-                            self?.overdueSoon.append(result)
+                            overdueSoon.append(result)
                         }
                     } else if dateAndTime.isSchedule {
                         if daysFromToday <= 3 && daysFromToday > 0 {
-                            self?.startSoon.append(result)
+                            startSoon.append(result)
                         } else {
-                            self?.scheduled.append(result)
+                            scheduled.append(result)
                         }
                     } else {
                         if daysFromToday <= 3 && daysFromToday > 0 {
-                            self?.startSoon.append(result)
+                            startSoon.append(result)
                         } else {
-                            self?.scheduled.append(result)
+                            scheduled.append(result)
                         }
                     }
                 }
@@ -192,8 +212,13 @@ public class DashboardViewModel {
                 }
             }
             
-            self?.allTags = Array<String>(Set(allTags))
-            self?.allPlannings = Array<String>(Set(allPlannings))
+            if allTags.count > 0 {
+                self?.itemsData.append(DahsboardItemData.allTags(Array<String>(Set(allTags))))
+            }
+            
+            if allPlannings.count > 0 {
+                self?.itemsData.append(DahsboardItemData.allStatus(Array<String>(Set(allPlannings))))
+            }
             
             dispatchGroup.leave()
         }) { error in
@@ -202,6 +227,26 @@ public class DashboardViewModel {
         }
         
         dispatchGroup.notify(queue: DispatchQueue.main) {
+            if overdue.count > 0 {
+                self.itemsData.append(DahsboardItemData.overdue(overdue))
+            }
+            
+            if startSoon.count > 0 {
+                self.itemsData.append(DahsboardItemData.startSoon(startSoon))
+            }
+            
+            if overdueSoon.count > 0 {
+                self.itemsData.append(DahsboardItemData.overdueSoon(overdueSoon))
+            }
+            
+            if todayData.count > 0 {
+                self.itemsData.append(DahsboardItemData.today(todayData))
+            }
+            
+            if scheduled.count > 0 {
+                self.itemsData.append(DahsboardItemData.scheduled(scheduled))
+            }
+            
             self.delegate?.didCompleteLoadFilteredData()
         }
     }
