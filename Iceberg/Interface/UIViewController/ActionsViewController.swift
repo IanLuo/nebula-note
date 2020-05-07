@@ -89,12 +89,27 @@ public class ActionsViewController: UIViewController, TransitionProtocol {
     
     private let transitionDelegate = FadeBackgroundTransition(animator: MoveInAnimtor())
     
-    public var fromView: UIView?
+    public var fromView: UIView? {
+        didSet {
+            #if targetEnvironment(macCatalyst)
+            self.popoverPresentationController?.sourceView = fromView
+            
+            if let fromView = fromView {
+                self.popoverPresentationController?.sourceRect = CGRect(origin: CGPoint(x: fromView.frame.midX, y: fromView.frame.midY), size: .zero)
+            }
+            #endif
+        }
+    }
     
     public init() {
         super.init(nibName: nil, bundle: nil)
+        
+        #if targetEnvironment(macCatalyst)
+        self.modalPresentationStyle = UIModalPresentationStyle.popover
+        #else
         self.modalPresentationStyle = .overCurrentContext
         self.transitioningDelegate = transitionDelegate
+        #endif
     }
     
     public required init?(coder aDecoder: NSCoder) {
@@ -114,6 +129,15 @@ public class ActionsViewController: UIViewController, TransitionProtocol {
         self.cancelButton.tapped { [weak self] _ in
             self?.cancel()
         }
+        
+        #if targetEnvironment(macCatalyst)
+        if self.fromView == nil {
+            self.popoverPresentationController?.sourceView = self.view
+            self.popoverPresentationController?.sourceRect = CGRect(x: self.view.bounds.width / 2, y: self.view.bounds.height / 2, width: 0, height: 0)
+        }
+        let size = self.view.systemLayoutSizeFitting(CGSize(width: self.view.bounds.width, height: 0))
+        self.preferredContentSize = CGSize(width: 300, height: size.height)
+        #endif
     }
     
     private var items: [Item] = []
@@ -130,13 +154,8 @@ public class ActionsViewController: UIViewController, TransitionProtocol {
                 accessoryViewContainer.addSubview(accessoryView)
                 accessoryView.allSidesAnchors(to: accessoryViewContainer, edgeInset: 0)
                 accessoryView.setBorder(position: Border.Position.bottom, color: InterfaceTheme.Color.background3, width: 0.5)
-            } else {
-                accessoryViewContainer.isHidden = true
-                let emptyView = UIView()
-                accessoryViewContainer.addSubview(emptyView)
-                emptyView.sizeAnchor(height: 0)
-                emptyView.allSidesAnchors(to: accessoryViewContainer, edgeInset: 0)
-                accessoryView?.removeBorders()
+                
+                accessoryViewContainer.constraint(for: Position.height)?.isActive = false
             }
         }
     }
@@ -149,6 +168,11 @@ public class ActionsViewController: UIViewController, TransitionProtocol {
     private let actionsContainerView: UIView = {
         let view = UIView()
         view.backgroundColor = InterfaceTheme.Color.background2
+        
+        #if targetEnvironment(macCatalyst)
+        view.backgroundColor = .clear
+        #endif
+        
         view.setBorder(position: Border.Position.bottom, color: InterfaceTheme.Color.background3, width: 0.5)
         return view
     }()
@@ -156,6 +180,9 @@ public class ActionsViewController: UIViewController, TransitionProtocol {
     public let contentView: UIView = {
         let view = UIView()
         view.backgroundColor = InterfaceTheme.Color.background2
+        #if targetEnvironment(macCatalyst)
+        view.backgroundColor = .clear
+        #endif
         view.layer.cornerRadius = 8
         view.layer.masksToBounds = true
         return view
@@ -182,6 +209,9 @@ public class ActionsViewController: UIViewController, TransitionProtocol {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.backgroundColor = InterfaceTheme.Color.background2
+        #if targetEnvironment(macCatalyst)
+        tableView.backgroundColor = .clear
+        #endif
         tableView.separatorStyle = .singleLine
         tableView.separatorColor = InterfaceTheme.Color.background3
         tableView.register(ActionCell.self, forCellReuseIdentifier: ActionCell.reuseIdentifier)
@@ -207,11 +237,13 @@ public class ActionsViewController: UIViewController, TransitionProtocol {
         self.titleLabel.rowAnchor(view: self.cancelButton)
         self.titleLabel.centerYAnchor.constraint(equalTo: self.cancelButton.centerYAnchor).isActive = true
         
-        self.actionsContainerView.columnAnchor(view: self.accessoryViewContainer)
-        
         self.contentView.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 10, considerSafeArea: true)
         self.contentView.topAnchor.constraint(greaterThanOrEqualTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 50).isActive = true
         
+        self.actionsContainerView.sideAnchor(for: [.left, .top, .right], to: self.contentView, edgeInset: 0)
+        self.actionsContainerView.columnAnchor(view: self.accessoryViewContainer)
+        
+        self.accessoryViewContainer.sizeAnchor(height: 0)
         self.accessoryViewContainer.sideAnchor(for: [.left, .right], to: self.contentView, edgeInset: 0)
         self.accessoryViewContainer.columnAnchor(view: self.tableView)
         
@@ -316,7 +348,9 @@ fileprivate class ActionCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         self.backgroundColor = InterfaceTheme.Color.background2
-        
+        #if targetEnvironment(macCatalyst)
+        self.backgroundColor = .clear
+        #endif
         self.contentView.addSubview(self.iconView)
         self.contentView.addSubview(self.titleLabel)
         
@@ -324,7 +358,7 @@ fileprivate class ActionCell: UITableViewCell {
         self.titleLabel.sizeAnchor(height: ActionsViewController.Constants.rowHeight)
         self.titleLabel.rowAnchor(view: self.iconView)
         
-        self.titleLabel.rowAnchor(view: self.iconView)
+        self.iconView.sizeAnchor(width: 44)
         self.iconView.sideAnchor(for: .right, to: self.contentView, edgeInset: Layout.edgeInsets.right)
     }
     
@@ -337,6 +371,9 @@ fileprivate class ActionCell: UITableViewCell {
             self.backgroundColor = InterfaceTheme.Color.background3
         } else {
             self.backgroundColor = InterfaceTheme.Color.background2
+            #if targetEnvironment(macCatalyst)
+            self.backgroundColor = .clear
+            #endif
         }
     }
 
@@ -345,6 +382,9 @@ fileprivate class ActionCell: UITableViewCell {
             self.backgroundColor = InterfaceTheme.Color.background3
         } else {
             self.backgroundColor = InterfaceTheme.Color.background2
+            #if targetEnvironment(macCatalyst)
+            self.backgroundColor = .clear
+            #endif
         }
     }
 }

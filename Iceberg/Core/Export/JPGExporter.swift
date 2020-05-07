@@ -68,8 +68,8 @@ public class JPGExporter: Exportable {
     }
     
     private func _createImage(size: CGSize, htmlString: String, printFormatter: UIPrintFormatter) -> URL {
-        let html = htmlString
-        let fmt = UIMarkupTextPrintFormatter(markupText: html)
+//        let html = htmlString
+//        let fmt = UIMarkupTextPrintFormatter(markupText: html)
                 
         // 2. Assign print formatter to UIPrintPageRenderer
         let render = UIPrintPageRenderer()

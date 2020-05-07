@@ -14,16 +14,16 @@ import Interface
 import RxSwift
 
 public class HomeCoordinator: Coordinator {
-    private let homeViewController: HomeViewController
+    private var _dashboardViewController: DashboardViewController!
     
-    private let _dashboardViewController: DashboardViewController
-    
-    private let _viewModel: DashboardViewModel
+    private var _viewModel: DashboardViewModel!
     
     private let disposeBag = DisposeBag()
     
     public override init(stack: UINavigationController, dependency: Dependency) {
-        let viewModel = DashboardViewModel(documentSearchManager: dependency.documentSearchManager)
+        super.init(stack: stack, dependency: dependency)
+        
+        let viewModel = DashboardViewModel(coordinator: self)
         let dashboardViewController = DashboardViewController(viewModel: viewModel)
         
         self._viewModel = viewModel
@@ -31,19 +31,21 @@ public class HomeCoordinator: Coordinator {
         let navigationController = Coordinator.createDefaultNavigationControlller()
         navigationController.pushViewController(dashboardViewController, animated: false)
         
-        let homeViewController = HomeViewController(masterViewController: navigationController)
-        self.homeViewController = homeViewController
-        
         self._dashboardViewController = dashboardViewController
-        super.init(stack: stack, dependency: dependency)
         
         viewModel.coordinator = self
         dashboardViewController.delegate = self
-        homeViewController.delegate = self
         
+        #if targetEnvironment(macCatalyst)
+        self.viewController = MacHomeViewController(dashboardViewController: dashboardViewController, documentTabsContainerViewController: MacDocumentTabContainerViewController())
+        #else
+        let homeViewController = HomeViewController(masterViewController: navigationController)
         self.viewController = homeViewController
+        homeViewController.delegate = self
+        #endif
         
         let agendaCoordinator = AgendaCoordinator(stack: stack, dependency: dependency)
+        agendaCoordinator.delegate = self
         self.addPersistentCoordinator(agendaCoordinator)
         
         let captureCoordinator = CaptureListCoordinator(stack: stack, dependency: dependency, mode: CaptureListViewModel.Mode.manage)
@@ -68,10 +70,16 @@ public class HomeCoordinator: Coordinator {
                                               DashboardViewController.TabType.documents(tabs[3], 3)])
         
         let hasInitedLandingTab: PublishSubject<Void> = PublishSubject<Void>()
+        
+        #if targetEnvironment(macCatalyst)
+        #else
+        if let homeViewController = self.viewController as? HomeViewController {}
+        
         self.dependency.appContext.isFileReadyToAccess.takeUntil(hasInitedLandingTab).subscribe(onNext: { [weak self] _ in
             hasInitedLandingTab.onNext(())
-            self?.homeViewController.showChildViewController(tabs[SettingsAccessor.Item.landingTabIndex.get(Int.self) ?? 3])
+            homeViewController.showChildViewController(tabs[SettingsAccessor.Item.landingTabIndex.get(Int.self) ?? 3])
         }).disposed(by: self.disposeBag)
+        #endif
     }
     
     private var tempCoordinator: Coordinator?
@@ -86,8 +94,13 @@ public class HomeCoordinator: Coordinator {
         self.addChild(coordinator)
         self.tempCoordinator = coordinator
         
-        self.homeViewController.showChildViewController(Coordinator.createDefaultNavigationControlller(root: coordinator.viewController!))
-        self.homeViewController.showDetailView()
+        #if targetEnvironment(macCatalyst)
+        #else
+        if let homeViewController = self.viewController as? HomeViewController {}
+        
+        homeViewController.showChildViewController(Coordinator.createDefaultNavigationControlller(root: coordinator.viewController!))
+        homeViewController.showDetailView()
+        #endif
     }
     
     public func addPersistentCoordinator(_ coordinator: Coordinator) {
@@ -119,7 +132,11 @@ public class HomeCoordinator: Coordinator {
 
 extension HomeCoordinator: SearchCoordinatorDelegate {
     public func didSelectDocument(url: URL, location: Int, searchCoordinator: SearchCoordinator) {
+        #if targetEnvironment(macCatalyst)
+        self.openDocumentInHomeViewRightPart(url: url, location: location)
+        #else
         self.openDocument(url: url, location: location)
+        #endif
     }
     
     public func didCancelSearching() {
@@ -127,9 +144,23 @@ extension HomeCoordinator: SearchCoordinatorDelegate {
     }
 }
 
+extension HomeCoordinator: AgendaCoordinatorDelegate {
+    public func didSelectDocument(url: URL, location: Int) {
+        #if targetEnvironment(macCatalyst)
+        self.openDocumentInHomeViewRightPart(url: url, location: location)
+        #else
+        self.openDocument(url: url, location: location)
+        #endif
+    }
+}
+
 extension HomeCoordinator: BrowserCoordinatorDelegate {
     public func didSelectDocument(url: URL, coordinator: BrowserCoordinator) {
+        #if targetEnvironment(macCatalyst)
+        self.openDocumentInHomeViewRightPart(url: url, location: 0)
+        #else
         self.openDocument(url: url, location: 0)
+        #endif
     }
     
     public func didSelectOutline(url: URL, selection: OutlineLocation, coordinator: BrowserCoordinator) {}
@@ -190,7 +221,40 @@ extension HomeCoordinator: DashboardViewControllerDelegate {
             self.tempCoordinator = nil
         }
         
-        self.homeViewController.showChildViewController(viewController)
-        self.homeViewController.showDetailView()
+        
+        #if targetEnvironment(macCatalyst)
+        #else
+        if let homeViewController = self.viewController as? HomeViewController {}
+        
+        homeViewController.showChildViewController(viewController)
+        homeViewController.showDetailView()
+        #endif
+    }
+}
+
+extension HomeCoordinator {
+    public func openDocumentInHomeViewRightPart(url: URL, location: Int) {
+        let stack = Coordinator.createDefaultNavigationControlller()
+        let editorCoordinator = EditorCoordinator(stack: stack, dependency: self.dependency, usage: .editor(url, location))
+        self.addChild(editorCoordinator)
+        
+        if let viewController = editorCoordinator.viewController as? DocumentEditorViewController {
+            (self.viewController as? MacHomeViewController)?.showDocument(url: url, editorViewController: viewController)
+        }
+    }
+    
+    public func closeDocment(url: URL) {
+        self.children.forEach {
+            if let editor = $0 as? EditorCoordinator {
+                switch editor.usage {
+                case .editor(let _url, _):
+                    if url == _url {
+                        self.remove(editor)
+                        (self.viewController as? MacHomeViewController)?.closeDocument(url: url)
+                    }
+                default: break
+                }
+            }
+        }
     }
 }

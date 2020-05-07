@@ -13,7 +13,15 @@ public protocol DashboardViewModelDelegate: class {
     func didCompleteLoadFilteredData()
 }
 
-public class DashboardViewModel {
+public class DashboardViewModel: ViewModelProtocol {
+    public required init() {
+        
+    }
+    
+    public var context: ViewModelContext<CoordinatorType>!
+    
+    public typealias CoordinatorType = HomeCoordinator
+    
     public enum DahsboardItemData {
         case scheduled([DocumentHeadingSearchResult])
         case overdue([DocumentHeadingSearchResult])
@@ -29,12 +37,8 @@ public class DashboardViewModel {
             self._setupHeadingChangeObserver()
         }
     }
-    private let _documentSearchManager: DocumentSearchManager
+
     public weak var delegate: DashboardViewModelDelegate?
-    
-    public init(documentSearchManager: DocumentSearchManager) {
-        self._documentSearchManager = documentSearchManager
-    }
     
     deinit {
         self.coordinator?.dependency.eventObserver.unregister(for: self, eventType: nil)
@@ -158,7 +162,7 @@ public class DashboardViewModel {
         let dispatchGroup = DispatchGroup()
         
         dispatchGroup.enter()
-        self._documentSearchManager.searchDateAndTime(completion: { [weak self] results in
+        self.context.dependency.documentSearchManager.searchDateAndTime(completion: { [weak self] results in
             results.forEach { result in
                 if let planning = result.heading.planning,
                     let finishedPlannings = self?.coordinator?.dependency.settingAccessor.finishedPlanning,
@@ -199,7 +203,7 @@ public class DashboardViewModel {
         }
         
         dispatchGroup.enter()
-        self._documentSearchManager.allHeadings(completion: { [weak self] results in
+        self.context.dependency.documentSearchManager.allHeadings(completion: { [weak self] results in
             var allTags:[String] = []
             var allPlannings: [String] = []
             for result in results {

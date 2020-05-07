@@ -47,8 +47,8 @@ public class BrowserCell: UITableViewCell {
         return label
     }()
     
-    public let actionButton: RoundButton = RoundButton()
-    public let enterChildButton: RoundButton = RoundButton()
+    public var actionButton: RoundButton = RoundButton()
+//    public let enterChildButton: RoundButton = RoundButton()
     public let actionsContainerView: UIView = UIView()
     public let container: UIView = {
         let view = UIView()
@@ -167,6 +167,8 @@ public class BrowserCell: UITableViewCell {
             strongSelf.onPresentingModalViewController.onNext(strongSelf.actionViewController)
         }
         
+        self.actionButton = actionButton
+        
         view.addSubview(actionButton)
         actionButton.sizeAnchor(width: 44)
         view.sizeAnchor(width: 44)
@@ -192,6 +194,8 @@ public class BrowserCell: UITableViewCell {
             strongSelf.cellModel?.coordinator?.dependency.globalCaptureEntryWindow?.hide()
         }
         
+        self.actionButton = actionButton
+
         let enterButton = UIButton()
         enterButton.interface { (me, theme) in
             if let button = me as? UIButton {
@@ -215,13 +219,13 @@ public class BrowserCell: UITableViewCell {
         actionButton.columnAnchor(view: enterButton)
         enterButton.sideAnchor(for: [.left, .bottom, .right], to: view, edgeInsets: .init(top: 0, left: 0, bottom: -5, right: -5))
         enterButton.sizeAnchor(width: 44, height: 44)
-        
         return view
     }()
     
     private var actionViewController: UIViewController {
         let actionsViewController = ActionsViewController()
         actionsViewController.title = L10n.Browser.Actions.title
+        actionsViewController.fromView = self.actionButton
         
         self._createNewDocumentActionItem(for: actionsViewController)
         self._createRenameActionItem(for: actionsViewController)

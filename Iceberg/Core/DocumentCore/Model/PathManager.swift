@@ -240,7 +240,7 @@ extension URL {
     public func concatingToFileName(_ string: String) -> URL {
         let ext = self.pathExtension
         let string = string.escaped
-        return URL(string: self.deletingPathExtension().deletingLastSplashIfThereIs.appending(string))!.appendingPathExtension(ext)
+        return URL(fileURLWithPath: self.deletingPathExtension().deletingLastSplashIfThereIs.appending(string)).appendingPathExtension(ext)
     }
     
     public var deletingLastSplashIfThereIs: String {
@@ -277,6 +277,10 @@ extension String {
     
     public var escaped: String {
         return self.replacingOccurrences(of: "/", with: "%2F")
+    }
+    
+    public var escapedSpace: String {
+        return self.replacingOccurrences(of: " ", with: "%20")
     }
 }
 

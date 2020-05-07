@@ -162,7 +162,7 @@ public class DashboardViewController: UIViewController {
         }
     }
     
-    fileprivate func selectOnSubtab(tab: Int, subtab: Int?) {
+    public func selectOnSubtab(tab: Int, subtab: Int?) {
         self.tabs.forEach {
             $0.sub.forEach {
                 $0.isCurrent = false
@@ -398,6 +398,7 @@ extension DashboardViewController: DashboardViewModelDelegate {
 
 private class TabView: UITableViewHeaderFooterView {
     static let reuseIdentifier = "TabView"
+    private let disposeBag = DisposeBag()
     
     var tab: DashboardViewController.Tab? {
         didSet {
@@ -413,7 +414,7 @@ private class TabView: UITableViewHeaderFooterView {
         }
     }
     
-    let titleButton: UIButton = {
+    lazy var titleButton: UIButton = {
         let button = UIButton()
         
         button.interface({ (me, theme) in
@@ -424,7 +425,9 @@ private class TabView: UITableViewHeaderFooterView {
             button.setBackgroundImage(UIImage.create(with: theme.color.background1, size: .singlePoint), for: .normal)
         })
         button.contentHorizontalAlignment = .left
-        button.addTarget(self, action: #selector(actionTapped), for: .touchUpInside)
+        button.rx.tap.subscribe(onNext: { [weak self] in
+            self?.action?()
+        }).disposed(by: self.disposeBag)
         return button
     }()
     
@@ -443,10 +446,6 @@ private class TabView: UITableViewHeaderFooterView {
     var isHighlighted: Bool {
         get { return self.titleButton.isSelected }
         set { self.titleButton.isSelected = newValue }
-    }
-    
-    @objc private func actionTapped() {
-        self.action?()
     }
     
     override init(reuseIdentifier: String?) {

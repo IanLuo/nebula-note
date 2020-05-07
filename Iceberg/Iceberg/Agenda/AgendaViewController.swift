@@ -12,12 +12,18 @@ import Core
 import Interface
 import RxSwift
 
+public protocol AgendaViewControllerDelegate: class {
+    func didSelectDocument(url: URL, location: Int)
+}
+
 public class AgendaViewController: UIViewController {
     public struct Constants {
         static let besideDateBarHeight: CGFloat = 80
     }
     
     private let viewModel: AgendaViewModel
+    
+    public weak var delegate: AgendaViewControllerDelegate?
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
@@ -167,9 +173,9 @@ extension AgendaViewController: UITableViewDelegate {
         let data = self.viewModel.data[indexPath.row]
         
         if let dateAndTimeRange = data.dateAndTimeRange {
-            self.viewModel.coordinator?.openDocument(url: data.url, location: dateAndTimeRange.upperBound)
+            self.delegate?.didSelectDocument(url: data.url, location: dateAndTimeRange.upperBound)
         } else {
-            self.viewModel.coordinator?.openDocument(url: data.url, location: data.heading.range.upperBound)
+            self.delegate?.didSelectDocument(url: data.url, location: data.heading.range.upperBound)
         }
     }
 }

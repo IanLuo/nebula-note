@@ -309,6 +309,15 @@ extension DocumentEditorViewController {
             })
         }
         
+        #if targetEnvironment(macCatalyst)
+        actionsViewController.popoverPresentationController?.sourceView = self.view
+        
+        if let tagRange = self.viewModel.heading(at: location)?.tags {
+            actionsViewController.popoverPresentationController?.sourceRect = self.textView.rect(forStringRange: tagRange) ?? .zero
+        } else {
+            actionsViewController.popoverPresentationController?.sourceRect = .zero
+        }
+        #endif
         self.present(actionsViewController, animated: true, completion: nil)
         self.viewModel.hideGlobalCaptureEntry()
     }

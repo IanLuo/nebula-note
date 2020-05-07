@@ -207,6 +207,11 @@ extension DocumentEditorViewController {
     }
     
     private func _handleTab(_ textView: UITextView) -> Bool {
+        if let heading = self.viewModel.heading(at: self.textView.selectedRange.location), self.textView.selectedRange.location == heading.range.location {
+            self.viewModel.foldOrUnfold(location: heading.range.location)
+            return false
+        }
+        
         for case let heading in self.viewModel.currentTokens where heading is HeadingToken {
             var newLevel = (heading as! HeadingToken).level + 1
             if newLevel >= SettingsAccessor.shared.maxLevel { newLevel = 1 }

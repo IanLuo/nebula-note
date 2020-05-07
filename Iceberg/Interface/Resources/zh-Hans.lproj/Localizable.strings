@@ -195,8 +195,8 @@
 "setting.feedback.promot" = "我喜欢 x3 笔记，想推荐别人使用";
 "setting.feedback.forum" = "我想加入论坛";
 
-"settings.privacy" = "隐私条款";
-"settings.terms" = "服务条款";
+"setting.privacy" = "隐私条款";
+"setting.terms" = "服务条款";
 
 //search
 "search.title" = "搜索";

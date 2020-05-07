@@ -135,3 +135,30 @@ extension OutlineTextView: UIGestureRecognizerDelegate {
         }
     }
 }
+
+extension UITextView {
+    #if targetEnvironment(macCatalyst)
+    @objc(_focusRingType)
+    var focusRingType: UInt {
+        return 1 //NSFocusRingTypeNone
+    }
+    #endif
+}
+
+
+extension UITextView {
+    
+    /// 查找文本范围所在的矩形范围
+    ///
+    /// - Parameter range: 文本范围
+    /// - Returns: 文本范围所在的矩形范围
+    public func rect(forStringRange range: NSRange) -> CGRect? {
+        
+        guard let start = self.position(from: self.beginningOfDocument, offset: range.location) else { return nil }
+        guard let end = self.position(from: start, offset: range.length) else { return nil }
+        guard let textRange = self.textRange(from: start, to: end) else { return nil }
+        let rect = self.firstRect(for: textRange)
+        return self.convert(rect, from: self.textInputView)
+    }
+    
+}

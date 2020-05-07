@@ -10,6 +10,8 @@ import Foundation
 import UIKit
 import RxCocoa
 import RxSwift
+import Core
+import Interface
 
 public class MacHomeViewController: UIViewController {
     struct Constants {
@@ -17,16 +19,24 @@ public class MacHomeViewController: UIViewController {
         static let middleWidth: CGFloat = 375
     }
     
-    private var toolBar: UIView = UIView()
+    private let disposeBag: DisposeBag = DisposeBag()
+    
+    private var toolBar: UIView = {
+        let view = UIView()
+        view.backgroundColor = InterfaceTheme.Color.background1
+        return view
+    }()
     private var leftPart: UIView = UIView()
     private var middlePart: UIView = UIView()
     private var rightPart: UIView = UIView()
     
     private var dashboardViewController: DashboardViewController!
+    private var documentTabsContainerViewController: MacDocumentTabContainerViewController!
     
-    convenience init(dashboardViewController: DashboardViewController) {
+    convenience init(dashboardViewController: DashboardViewController, documentTabsContainerViewController: MacDocumentTabContainerViewController) {
         self.init()
         self.dashboardViewController = dashboardViewController
+        self.documentTabsContainerViewController = documentTabsContainerViewController
     }
     
     public override func viewDidLoad() {
@@ -36,6 +46,14 @@ public class MacHomeViewController: UIViewController {
         self.view.addSubview(self.rightPart)
         
         self.setupUI()
+    }
+    
+    public func showDocument(url: URL, editorViewController: DocumentEditorViewController) {
+        self.documentTabsContainerViewController.showDocument(url: url, viewController: editorViewController)
+    }
+    
+    public func closeDocument(url: URL) {
+        self.documentTabsContainerViewController.closeDocument(url: url)
     }
     
     private func setupUI() {
@@ -52,32 +70,68 @@ public class MacHomeViewController: UIViewController {
         self.middlePart.leftAnchor.constraint(equalTo: self.leftPart.rightAnchor).isActive = true
         
         self.rightPart.sideAnchor(for: [.bottom, .right], to: self.view, edgeInset: 0)
+        self.rightPart.topAnchor.constraint(equalTo: self.toolBar.bottomAnchor).isActive = true
         self.rightPart.leftAnchor.constraint(equalTo: self.middlePart.rightAnchor).isActive = true
         
         self.setupToolBar()
         self.setupLeftPart()
-        self.setupMiddlePart()
+        self.setupRightPart()
     }
     
     private func setupToolBar() {
+        let stackView = UIStackView()
+        stackView.distribution = .equalSpacing
         
+        let ideasButton = UIButton()
+        ideasButton.setImage(Asset.Assets.inspiration.image, for: .normal)
+        ideasButton.rx.tap.subscribe().disposed(by: self.disposeBag)
+        
+        let toggleLeftPartButton = UIButton()
+        toggleLeftPartButton.setImage(Asset.Assets.leftPart.image, for: .normal)
+        toggleLeftPartButton.rx.tap.subscribe(onNext: { [weak self, unowned toggleLeftPartButton] in
+            self?.toggleLeftPartVisiability(visiable: !toggleLeftPartButton.isSelected)
+            toggleLeftPartButton.isSelected = !toggleLeftPartButton.isSelected
+        }).disposed(by: self.disposeBag)
+        
+        let toggleMiddlePartButton = UIButton()
+        toggleMiddlePartButton.setImage(Asset.Assets.middlePart.image, for: .normal)
+        toggleMiddlePartButton.rx.tap.subscribe(onNext: { [weak self, unowned toggleMiddlePartButton] in
+            self?.toggleMiddlePartVisiability(visiable: !toggleMiddlePartButton.isSelected)
+            toggleMiddlePartButton.isSelected = !toggleMiddlePartButton.isSelected
+        }).disposed(by: self.disposeBag)
+        
+        let actionsStack = UIStackView()
+        actionsStack.spacing = 20
+        actionsStack.addArrangedSubview(toggleLeftPartButton)
+        actionsStack.addArrangedSubview(toggleMiddlePartButton)
+        
+        stackView.addArrangedSubview(actionsStack)
+        stackView.addArrangedSubview(ideasButton)
+        
+        self.toolBar.addSubview(stackView)
+        stackView.allSidesAnchors(to: self.toolBar, edgeInset: 30)
     }
     
     private func setupLeftPart() {
-        self.addChild(self.dashboardViewController)
+        self.addChildViewController(self.dashboardViewController)
+        self.dashboardViewController.delegate = self
         self.leftPart.addSubview(self.dashboardViewController.view)
+        self.dashboardViewController.view.allSidesAnchors(to: self.leftPart, edgeInset: 0)
     }
     
-    private func setupMiddlePart() {
+    private func setupRightPart() {
+        self.addChild(self.documentTabsContainerViewController)
         
-    }
-    
-    private func showDocument() {
-        
+        self.rightPart.addSubview(self.documentTabsContainerViewController.view)
+        self.documentTabsContainerViewController.view.allSidesAnchors(to: self.rightPart, edgeInset: 0)
     }
     
     public func chooseTab(index: Int, subTab: Int?) {
-        
+        if let subTab = subTab {
+            self.dashboardViewController.selectOnSubtab(tab: index, subtab: subTab)
+        } else {
+            self.dashboardViewController.selectOnTab(index: index)
+        }
     }
     
     private func toggleLeftPartVisiability(visiable: Bool) {
@@ -85,6 +139,9 @@ public class MacHomeViewController: UIViewController {
             self.leftPart.constraint(for: .width)?.constant = 0
         } else {
             self.leftPart.constraint(for: .width)?.constant = Constants.leftWidth
+        }
+        UIView.animate(withDuration: 0.2) {
+            self.leftPart.setNeedsLayout()
         }
     }
     
@@ -94,5 +151,36 @@ public class MacHomeViewController: UIViewController {
         } else {
             self.middlePart.constraint(for: .width)?.constant = Constants.middleWidth
         }
+        UIView.animate(withDuration: 0.2) {
+            self.middlePart.setNeedsLayout()
+        }
+    }
+}
+
+var lastChildViewController: UIViewController?
+
+extension MacHomeViewController: DashboardViewControllerDelegate {
+    public func didSelectTab(at index: Int, viewController: UIViewController) {
+        if let lastChildViewController = lastChildViewController {
+            lastChildViewController.removeFromParent()
+            lastChildViewController.view.removeFromSuperview()
+        }
+        
+        self.addChildViewController(viewController)
+        self.middlePart.addSubview(viewController.view)
+        viewController.view.allSidesAnchors(to: self.middlePart, edgeInset: 0)
+        lastChildViewController = viewController
+    }
+    
+    public func showHeadings(tag: String) {
+        
+    }
+    
+    public func showHeadings(planning: String) {
+        
+    }
+    
+    public func showHeadings(subTabType: DashboardViewModel.DahsboardItemData) {
+        
     }
 }
