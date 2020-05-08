@@ -71,11 +71,8 @@ public class HomeCoordinator: Coordinator {
         
         let hasInitedLandingTab: PublishSubject<Void> = PublishSubject<Void>()
         
-        #if targetEnvironment(macCatalyst)
-        #else
-        if let homeViewController = self.viewController as? HomeViewController {}
-        
-        self.dependency.appContext.isFileReadyToAccess.takeUntil(hasInitedLandingTab).subscribe(onNext: { [weak self] _ in
+        #if !targetEnvironment(macCatalyst)
+        self.dependency.appContext.isFileReadyToAccess.takeUntil(hasInitedLandingTab).subscribe(onNext: { _ in
             hasInitedLandingTab.onNext(())
             homeViewController.showChildViewController(tabs[SettingsAccessor.Item.landingTabIndex.get(Int.self) ?? 3])
         }).disposed(by: self.disposeBag)
@@ -94,12 +91,11 @@ public class HomeCoordinator: Coordinator {
         self.addChild(coordinator)
         self.tempCoordinator = coordinator
         
-        #if targetEnvironment(macCatalyst)
-        #else
-        if let homeViewController = self.viewController as? HomeViewController {}
-        
-        homeViewController.showChildViewController(Coordinator.createDefaultNavigationControlller(root: coordinator.viewController!))
-        homeViewController.showDetailView()
+        #if !targetEnvironment(macCatalyst)
+        if let homeViewController = self.viewController as? HomeViewController {
+            homeViewController.showChildViewController(Coordinator.createDefaultNavigationControlller(root: coordinator.viewController!))
+            homeViewController.showDetailView()
+        }
         #endif
     }
     
@@ -222,12 +218,11 @@ extension HomeCoordinator: DashboardViewControllerDelegate {
         }
         
         
-        #if targetEnvironment(macCatalyst)
-        #else
-        if let homeViewController = self.viewController as? HomeViewController {}
-        
-        homeViewController.showChildViewController(viewController)
-        homeViewController.showDetailView()
+        #if !targetEnvironment(macCatalyst)
+        if let homeViewController = self.viewController as? HomeViewController {
+            homeViewController.showChildViewController(viewController)
+            homeViewController.showDetailView()
+        }
         #endif
     }
 }

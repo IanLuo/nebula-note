@@ -219,6 +219,7 @@
 		E4CBCD1D236D914400A0FFDB /* EditAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4CBCD1C236D914400A0FFDB /* EditAction.swift */; };
 		E4CBCD1F2370695500A0FFDB /* ActivityHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4CBCD1E2370695500A0FFDB /* ActivityHandler.swift */; };
 		E4CBCD21237303E300A0FFDB /* CaptureActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4CBCD20237303E300A0FFDB /* CaptureActivity.swift */; };
+		E4CF20792465A83F005E38CE /* Misc.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4CF20782465A83F005E38CE /* Misc.swift */; };
 		E4D0BAE8240BA9CF000E991E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E4D0BAEA240BA9CF000E991E /* InfoPlist.strings */; };
 		E4D0BAEE240BAA3C000E991E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E4D0BAF0240BAA3C000E991E /* InfoPlist.strings */; };
 		E4D0FD7B2348D774001C3BA2 /* PreviewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D0FD7A2348D774001C3BA2 /* PreviewManager.swift */; };
@@ -621,6 +622,7 @@
 		E4CBCD1E2370695500A0FFDB /* ActivityHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityHandler.swift; sourceTree = "<group>"; };
 		E4CBCD20237303E300A0FFDB /* CaptureActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureActivity.swift; sourceTree = "<group>"; };
 		E4CC0C5821EEF92900058E5D /* Size.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Size.swift; sourceTree = "<group>"; };
+		E4CF20782465A83F005E38CE /* Misc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Misc.swift; sourceTree = "<group>"; };
 		E4D0BAE9240BA9CF000E991E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		E4D0BAEB240BA9D0000E991E /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		E4D0BAEF240BAA3C000E991E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -813,6 +815,7 @@
 				E4BC264121F56DB900B0F2B9 /* Rect.swift */,
 				E4F3029D21D750ED00BDE178 /* Autolayout+Shortcuts.swift */,
 				E4BC264321F587BC00B0F2B9 /* FrameLayout+Shortcuts.swift */,
+				E4CF20782465A83F005E38CE /* Misc.swift */,
 				E40F6E80223B78AE00FFF53F /* Interface.h */,
 				E40F6E81223B78AE00FFF53F /* Info.plist */,
 			);
@@ -2024,6 +2027,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E4CF20792465A83F005E38CE /* Misc.swift in Sources */,
 				E428B89E234487180026AC1F /* UIView+Style.swift in Sources */,
 				E49FE98D245C1107005F634C /* UIViewController+Heirachy.swift in Sources */,
 				E40F6E9A223B7A5B00FFF53F /* TransitionProtocol.swift in Sources */,

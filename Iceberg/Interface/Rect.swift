@@ -24,4 +24,8 @@ extension CGRect {
         rect.origin.y = y
         return rect
     }
+    
+    public var center: CGPoint {
+        return CGPoint(x: self.midX, y: self.midY)
+    }
 }

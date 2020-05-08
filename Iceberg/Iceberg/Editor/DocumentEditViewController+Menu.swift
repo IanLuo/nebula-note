@@ -91,7 +91,7 @@ extension DocumentEditorViewController {
         
         self.textView.resignFirstResponder() // 隐藏键盘
         
-        self.present(actionsController, animated: true, completion: nil)
+        actionsController.present(from: actionsController)
         
         self.viewModel.hideGlobalCaptureEntry()
     }
@@ -164,7 +164,12 @@ extension DocumentEditorViewController {
             self.viewModel.showGlobalCaptureEntry()
         }
         
-        self.present(actionsViewController, animated: true, completion: nil)
+        if let location = self.textView.rect(forStringRange: self.textView.selectedRange) {
+            actionsViewController.present(from: self, at: self.textView, location: location.center)
+        } else {
+            actionsViewController.present(from: self)
+        }
+
         self.viewModel.hideGlobalCaptureEntry()
     }
     
@@ -201,7 +206,12 @@ extension DocumentEditorViewController {
             self.viewModel.showGlobalCaptureEntry()
         }
         
-        self.present(actionsController, animated: true, completion: nil)
+        if let priorityRange = self.viewModel.heading(at: location)?.priority, let location = self.textView.rect(forStringRange: priorityRange) {
+            actionsController.present(from: self, at: self.textView, location: location.center)
+        } else {
+            actionsController.present(from: self)
+        }
+
         self.viewModel.hideGlobalCaptureEntry()
     }
     
@@ -309,16 +319,12 @@ extension DocumentEditorViewController {
             })
         }
         
-        #if targetEnvironment(macCatalyst)
-        actionsViewController.popoverPresentationController?.sourceView = self.view
-        
-        if let tagRange = self.viewModel.heading(at: location)?.tags {
-            actionsViewController.popoverPresentationController?.sourceRect = self.textView.rect(forStringRange: tagRange) ?? .zero
+        if let priorityRange = self.viewModel.heading(at: location)?.tags, let location = self.textView.rect(forStringRange: priorityRange) {
+            actionsViewController.present(from: self, at: self.textView, location: location.center)
         } else {
-            actionsViewController.popoverPresentationController?.sourceRect = .zero
+            actionsViewController.present(from: self)
         }
-        #endif
-        self.present(actionsViewController, animated: true, completion: nil)
+        
         self.viewModel.hideGlobalCaptureEntry()
     }
     
@@ -384,7 +390,12 @@ extension DocumentEditorViewController {
             self.viewModel.showGlobalCaptureEntry()
         }
         
-        self.present(actionsController, animated: true)
+        if let priorityRange = self.viewModel.heading(at: location)?.planning, let location = self.textView.rect(forStringRange: priorityRange) {
+            actionsController.present(from: self, at: self.textView, location: location.center)
+        } else {
+            actionsController.present(from: self)
+        }
+        
         self.viewModel.hideGlobalCaptureEntry()
     }
     
@@ -440,7 +451,12 @@ extension DocumentEditorViewController {
             self.viewModel.showGlobalCaptureEntry()
         }
         
-        self.present(actionsController, animated: true, completion: nil)
+        if let location = self.textView.rect(forStringRange: self.textView.selectedRange) {
+            actionsController.present(from: self, at: self.textView, location: location.center)
+        } else {
+            actionsController.present(from:self)
+        }
+        
         self.viewModel.hideGlobalCaptureEntry()
     }
     
@@ -543,7 +559,12 @@ extension DocumentEditorViewController {
             self.viewModel.showGlobalCaptureEntry()
         }
         
-        self.present(actionsController, animated: true, completion: nil)
+        if let location = self.textView.rect(forStringRange: self.textView.selectedRange) {
+            actionsController.present(from: self, at: self.textView, location: location.center)
+        } else {
+            actionsController.present(from: self)
+        }
+
         self.viewModel.hideGlobalCaptureEntry()
     }
     
@@ -589,7 +610,12 @@ extension DocumentEditorViewController {
             self.viewModel.showGlobalCaptureEntry()
         }
         
-        self.present(actionsController, animated: true, completion: nil)
+        if let location = self.textView.rect(forStringRange: self.textView.selectedRange) {
+            actionsController.present(from: self, at: self.textView, location: location.center)
+        } else {
+            actionsController.present(from: self)
+        }
+
         self.viewModel.showGlobalCaptureEntry()
     }
 }

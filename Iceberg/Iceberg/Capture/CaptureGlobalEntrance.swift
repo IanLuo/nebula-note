@@ -61,23 +61,27 @@ public class CaptureGlobalEntranceWindow: UIWindow {
     }
     
     public func hide() {
-        UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveEaseInOut, animations: {
-            self.frame = CGRect(x: UIScreen.main.bounds.width, y: UIScreen.main.bounds.height - self._fromWindow!.safeArea.bottom - 60 - 30, width: self.frame.size.width, height: self.frame.size.height)
-        }, completion: { _ in
-            self.isOffScreen = true
-            self.alpha = 0 // 防止旋转的时候在屏幕上出现
-        })
+        if !isMacOrPad {
+            UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveEaseInOut, animations: {
+                self.frame = CGRect(x: UIScreen.main.bounds.width, y: UIScreen.main.bounds.height - self._fromWindow!.safeArea.bottom - 60 - 30, width: self.frame.size.width, height: self.frame.size.height)
+            }, completion: { _ in
+                self.isOffScreen = true
+                self.alpha = 0 // 防止旋转的时候在屏幕上出现
+            })
+        }
     }
     
     public func show() {
-        guard self.isForcedToHide == false else { return }
-        
-        self.alpha = 1
-        UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveEaseInOut, animations: {
-            self.frame = CGRect(x: UIScreen.main.bounds.width - self.frame.width - 30, y: UIScreen.main.bounds.height - self._fromWindow!.safeArea.bottom - 60 - 30, width: self.frame.size.width, height: self.frame.size.height)
-        }, completion: { _ in
-            self.isOffScreen = false
-        })
+        if !isMacOrPad {
+            guard self.isForcedToHide == false else { return }
+            
+            self.alpha = 1
+            UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveEaseInOut, animations: {
+                self.frame = CGRect(x: UIScreen.main.bounds.width - self.frame.width - 30, y: UIScreen.main.bounds.height - self._fromWindow!.safeArea.bottom - 60 - 30, width: self.frame.size.width, height: self.frame.size.height)
+            }, completion: { _ in
+                self.isOffScreen = false
+            })
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -104,8 +108,10 @@ private class _CaptureGlobalEntranceViewController: UIViewController {
     }()
     
     override func viewDidLoad() {
-        super.viewDidLoad()
-        self._setupUI()
+        if !isMacOrPad {
+            super.viewDidLoad()
+            self._setupUI()
+        }
     }
     
     private func _setupUI() {

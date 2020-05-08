@@ -33,6 +33,19 @@ public class ActionsViewController: UIViewController, TransitionProtocol {
         }
     }
     
+    public func present(from: UIViewController, at: UIView? = nil, location: CGPoint? = nil, completion: (() -> Void)? = nil) {
+        self.fromView = at ?? from.view
+
+        if isMacOrPad {
+            self.popoverPresentationController?.sourceView = self.fromView
+            if let location = location {
+                self.popoverPresentationController?.sourceRect = CGRect(origin: location, size: .zero)
+            }
+        }
+        
+        from.present(self, animated: true, completion: completion)
+    }
+    
     public func addAction(icon: UIImage?, title: String, style: Style = .default, at: Int? = nil, action: @escaping (ActionsViewController) -> Void) {
         
         if let at = at {
@@ -91,25 +104,25 @@ public class ActionsViewController: UIViewController, TransitionProtocol {
     
     public var fromView: UIView? {
         didSet {
-            #if targetEnvironment(macCatalyst)
-            self.popoverPresentationController?.sourceView = fromView
-            
-            if let fromView = fromView {
-                self.popoverPresentationController?.sourceRect = CGRect(origin: CGPoint(x: fromView.frame.midX, y: fromView.frame.midY), size: .zero)
+            if isMacOrPad {
+                self.popoverPresentationController?.sourceView = fromView
+                
+                if let fromView = fromView {
+                    self.popoverPresentationController?.sourceRect = CGRect(origin: CGPoint(x: fromView.frame.midX, y: fromView.frame.midY), size: .zero)
+                }
             }
-            #endif
         }
     }
     
     public init() {
         super.init(nibName: nil, bundle: nil)
         
-        #if targetEnvironment(macCatalyst)
-        self.modalPresentationStyle = UIModalPresentationStyle.popover
-        #else
-        self.modalPresentationStyle = .overCurrentContext
-        self.transitioningDelegate = transitionDelegate
-        #endif
+        if isMacOrPad {
+            self.modalPresentationStyle = UIModalPresentationStyle.popover
+        } else {
+            self.modalPresentationStyle = .overCurrentContext
+            self.transitioningDelegate = transitionDelegate
+        }
     }
     
     public required init?(coder aDecoder: NSCoder) {
