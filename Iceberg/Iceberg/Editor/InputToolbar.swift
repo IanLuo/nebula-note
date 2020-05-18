@@ -12,7 +12,7 @@ import Interface
 import Core
 
 public protocol DocumentEditToolbarDelegate: class {
-    func didTriggerAction(_ action: ToolbarActionProtocol)
+    func didTriggerAction(_ action: ToolbarActionProtocol, from: UIView)
     func isMember() -> Bool
 }
 
@@ -20,6 +20,7 @@ public class InputToolbar: UIView {
     struct ActionGroup {
         let actions: [ToolbarActionProtocol]
         let isEnabled: Bool
+        let isAvailable: Bool
     }
     
     private static let paragraphActions = [NormalAction.paragraph]
@@ -31,50 +32,50 @@ public class InputToolbar: UIView {
     private static let insertSpecailContent: [ToolbarActionProtocol] = [NormalAction.seperator, NormalAction.sourcecode, NormalAction.quote, NormalAction.checkbox, NormalAction.dateAndTime, NormalAction.list, NormalAction.orderedList]
     private static let attachment: [ToolbarActionProtocol] = [NormalAction.captured, NormalAction.allAttachments, AttachmentAction.image, AttachmentAction.sketch, AttachmentAction.link, AttachmentAction.location, AttachmentAction.audio, AttachmentAction.video]
     
-    private static let headless: [ActionGroup] = [ActionGroup(actions: paragraphActions, isEnabled: false),
-                                                  ActionGroup(actions: headingActions, isEnabled: true),
-                                                  ActionGroup(actions: textMark, isEnabled: true),
-                                                  ActionGroup(actions: undoAndRedo, isEnabled: true),
-                                                  ActionGroup(actions: moveCursor, isEnabled: true),
-                                                  ActionGroup(actions: moveContent, isEnabled: true),
-                                                  ActionGroup(actions: insertSpecailContent, isEnabled: true),
-                                                  ActionGroup(actions: attachment, isEnabled: true)]
+    private static let headless: [ActionGroup] = [ActionGroup(actions: paragraphActions, isEnabled: false, isAvailable: true),
+                                                  ActionGroup(actions: headingActions, isEnabled: true, isAvailable: true),
+                                                  ActionGroup(actions: textMark, isEnabled: true, isAvailable: true),
+                                                  ActionGroup(actions: undoAndRedo, isEnabled: true, isAvailable: true),
+                                                  ActionGroup(actions: moveCursor, isEnabled: true, isAvailable: !isMac),
+                                                  ActionGroup(actions: moveContent, isEnabled: true, isAvailable: true),
+                                                  ActionGroup(actions: insertSpecailContent, isEnabled: true, isAvailable: true),
+                                                  ActionGroup(actions: attachment, isEnabled: true, isAvailable: true)]
     
-    private static let actionsParagraph: [ActionGroup] = [ActionGroup(actions: paragraphActions, isEnabled: true),
-                                                          ActionGroup(actions: headingActions, isEnabled: true),
-                                                          ActionGroup(actions: textMark, isEnabled: true),
-                                                          ActionGroup(actions: undoAndRedo, isEnabled: true),
-                                                          ActionGroup(actions: moveCursor, isEnabled: true),
-                                                          ActionGroup(actions: moveContent, isEnabled: true),
-                                                          ActionGroup(actions: insertSpecailContent, isEnabled: true),
-                                                          ActionGroup(actions: attachment, isEnabled: true)]
+    private static let actionsParagraph: [ActionGroup] = [ActionGroup(actions: paragraphActions, isEnabled: true, isAvailable: true),
+                                                          ActionGroup(actions: headingActions, isEnabled: true, isAvailable: true),
+                                                          ActionGroup(actions: textMark, isEnabled: true, isAvailable: true),
+                                                          ActionGroup(actions: undoAndRedo, isEnabled: true, isAvailable: true),
+                                                          ActionGroup(actions: moveCursor, isEnabled: true, isAvailable: !isMac),
+                                                          ActionGroup(actions: moveContent, isEnabled: true, isAvailable: true),
+                                                          ActionGroup(actions: insertSpecailContent, isEnabled: true, isAvailable: true),
+                                                          ActionGroup(actions: attachment, isEnabled: true, isAvailable: true)]
     
-    private static let actionsHeading: [ActionGroup] = [ActionGroup(actions: paragraphActions, isEnabled: true),
-                                                        ActionGroup(actions: headingActions, isEnabled: true),
-                                                        ActionGroup(actions: textMark, isEnabled: false),
-                                                        ActionGroup(actions: undoAndRedo, isEnabled: true),
-                                                        ActionGroup(actions: moveCursor, isEnabled: true),
-                                                        ActionGroup(actions: moveContent, isEnabled: true),
-                                                        ActionGroup(actions: insertSpecailContent, isEnabled: false),
-                                                        ActionGroup(actions: attachment, isEnabled: false)]
+    private static let actionsHeading: [ActionGroup] = [ActionGroup(actions: paragraphActions, isEnabled: true, isAvailable: true),
+                                                        ActionGroup(actions: headingActions, isEnabled: true, isAvailable: true),
+                                                        ActionGroup(actions: textMark, isEnabled: false, isAvailable: true),
+                                                        ActionGroup(actions: undoAndRedo, isEnabled: true, isAvailable: true),
+                                                        ActionGroup(actions: moveCursor, isEnabled: true, isAvailable: !isMac),
+                                                        ActionGroup(actions: moveContent, isEnabled: true, isAvailable: true),
+                                                        ActionGroup(actions: insertSpecailContent, isEnabled: false, isAvailable: true),
+                                                        ActionGroup(actions: attachment, isEnabled: false, isAvailable: true)]
     
-    private static let quoteBlock: [ActionGroup] = [ActionGroup(actions: paragraphActions, isEnabled: true),
-                                                    ActionGroup(actions: headingActions, isEnabled: true),
-                                                    ActionGroup(actions: textMark, isEnabled: false),
-                                                    ActionGroup(actions: undoAndRedo, isEnabled: true),
-                                                    ActionGroup(actions: moveCursor, isEnabled: true),
-                                                    ActionGroup(actions: moveContent, isEnabled: true),
-                                                    ActionGroup(actions: insertSpecailContent, isEnabled: false),
-                                                    ActionGroup(actions: attachment, isEnabled: false)]
+    private static let quoteBlock: [ActionGroup] = [ActionGroup(actions: paragraphActions, isEnabled: true, isAvailable: true),
+                                                    ActionGroup(actions: headingActions, isEnabled: true, isAvailable: true),
+                                                    ActionGroup(actions: textMark, isEnabled: false, isAvailable: true),
+                                                    ActionGroup(actions: undoAndRedo, isEnabled: true, isAvailable: true),
+                                                    ActionGroup(actions: moveCursor, isEnabled: true, isAvailable: !isMac),
+                                                    ActionGroup(actions: moveContent, isEnabled: true, isAvailable: true),
+                                                    ActionGroup(actions: insertSpecailContent, isEnabled: false, isAvailable: true),
+                                                    ActionGroup(actions: attachment, isEnabled: false, isAvailable: true)]
     
-    private static let codeBlock: [ActionGroup] = [ActionGroup(actions: paragraphActions, isEnabled: true),
-                                                   ActionGroup(actions: headingActions, isEnabled: true),
-                                                   ActionGroup(actions: textMark, isEnabled: false),
-                                                   ActionGroup(actions: undoAndRedo, isEnabled: true),
-                                                   ActionGroup(actions: moveCursor, isEnabled: true),
-                                                   ActionGroup(actions: moveContent, isEnabled: true),
-                                                   ActionGroup(actions: insertSpecailContent, isEnabled: false),
-                                                   ActionGroup(actions: attachment, isEnabled: false)]
+    private static let codeBlock: [ActionGroup] = [ActionGroup(actions: paragraphActions, isEnabled: true, isAvailable: true),
+                                                   ActionGroup(actions: headingActions, isEnabled: true, isAvailable: true),
+                                                   ActionGroup(actions: textMark, isEnabled: false, isAvailable: true),
+                                                   ActionGroup(actions: undoAndRedo, isEnabled: true, isAvailable: true),
+                                                   ActionGroup(actions: moveCursor, isEnabled: true, isAvailable: !isMac),
+                                                   ActionGroup(actions: moveContent, isEnabled: true, isAvailable: true),
+                                                   ActionGroup(actions: insertSpecailContent, isEnabled: false, isAvailable: true),
+                                                   ActionGroup(actions: attachment, isEnabled: false, isAvailable: true)]
     
     public enum Mode {
         case  headless
@@ -129,14 +130,18 @@ public class InputToolbar: UIView {
 
         super.init(frame: .zero)
         
-        self._collectionView.backgroundColor = InterfaceTheme.Color.background2
+        if isMacOrPad {
+            self._collectionView.backgroundColor = InterfaceTheme.Color.background1
+        } else {
+            self._collectionView.backgroundColor = InterfaceTheme.Color.background2
+        }
         self._collectionView.showsHorizontalScrollIndicator = false
         self._collectionView.delegate = self
         self._collectionView.dataSource = self
         self._collectionView.register(ActionButtonCell.self, forCellWithReuseIdentifier: ActionButtonCell.reuseIdentifier)
         self._collectionView.register(GroupSeparator.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: GroupSeparator.reuseIdentifier)
         self._collectionView.decelerationRate = .fast
-        
+                
         self._setupUI()
     }
     
@@ -151,22 +156,30 @@ public class InputToolbar: UIView {
     private func _setupUI() {
         self.addSubview(self._collectionView)
         self._collectionView.allSidesAnchors(to: self, edgeInset: 0)
+        
+        if isMac {
+            self._collectionView.showsHorizontalScrollIndicator = true
+        }
     }
 }
 
 extension InputToolbar: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    private var actionGroups: [ActionGroup] {
+        return self._actions.filter{ $0.isAvailable }
+    }
+    
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self._actions[section].actions.count
+        return self.actionGroups[section].actions.count
     }
     
     public func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return self._actions.count
+        return self.actionGroups.count
     }
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ActionButtonCell.reuseIdentifier, for: indexPath) as! ActionButtonCell
         
-        let actionGroup = self._actions[indexPath.section]
+        let actionGroup = self.actionGroups[indexPath.section]
         let action = actionGroup.actions[indexPath.row]
         
         let color = actionGroup.isEnabled ? InterfaceTheme.Color.interactive : UIColor.lightGray.withAlphaComponent(0.2)
@@ -192,11 +205,11 @@ extension InputToolbar: UICollectionViewDelegate, UICollectionViewDataSource, UI
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let actionGroup = self._actions[indexPath.section]
+        let actionGroup = self.actionGroups[indexPath.section]
         let action = actionGroup.actions[indexPath.row]
         
-        if actionGroup.isEnabled {
-            self.delegate?.didTriggerAction(action)
+        if actionGroup.isEnabled, let cell = collectionView.cellForItem(at: indexPath) {
+            self.delegate?.didTriggerAction(action, from: cell)
         }
     }
 }
@@ -255,7 +268,11 @@ private class ActionButtonCell: UICollectionViewCell {
         
         self.interface { (me, theme) in
             let me = me as! UICollectionViewCell
-            me.contentView.backgroundColor = InterfaceTheme.Color.background2
+            if isMacOrPad {
+                me.contentView.backgroundColor = InterfaceTheme.Color.background1
+            } else {
+                me.contentView.backgroundColor = InterfaceTheme.Color.background2
+            }
         }
     }
     

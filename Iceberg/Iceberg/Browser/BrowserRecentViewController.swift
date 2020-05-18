@@ -36,6 +36,10 @@ public class BrowserRecentViewController: UIViewController {
         collectionView.register(RecentDocumentsHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header")
         collectionView.contentInset = UIEdgeInsets(top: 0, left: Layout.edgeInsets.left, bottom: 0, right: Layout.edgeInsets.right)
         
+        if isMac {
+            collectionView.showsHorizontalScrollIndicator = true
+        }
+        
         return collectionView
     }()
     

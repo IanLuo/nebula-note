@@ -172,10 +172,6 @@ extension UIView {
     
     public func sideAnchor(for position: Position, to view: UIView, edgeInsets: UIEdgeInsets, considerSafeArea: Bool = false) {
         self.makeSureTranslationIsSetToFalse()
-        var considerSafeArea = considerSafeArea
-        #if targetEnvironment(macCatalyst)
-        considerSafeArea = false
-        #endif
         
         if position.contains(Position.left) {
             if #available(iOS 11, *), considerSafeArea {

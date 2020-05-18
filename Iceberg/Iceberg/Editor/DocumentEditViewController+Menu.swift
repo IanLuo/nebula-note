@@ -208,6 +208,8 @@ extension DocumentEditorViewController {
         
         if let priorityRange = self.viewModel.heading(at: location)?.priority, let location = self.textView.rect(forStringRange: priorityRange) {
             actionsController.present(from: self, at: self.textView, location: location.center)
+        } else if let headingRange = self.viewModel.heading(at: location)?.range, let location = self.textView.rect(forStringRange: headingRange) {
+            actionsController.present(from: self, at: self.textView, location: location.center)
         } else {
             actionsController.present(from: self)
         }
@@ -321,6 +323,8 @@ extension DocumentEditorViewController {
         
         if let priorityRange = self.viewModel.heading(at: location)?.tags, let location = self.textView.rect(forStringRange: priorityRange) {
             actionsViewController.present(from: self, at: self.textView, location: location.center)
+        } else if let headingRange = self.viewModel.heading(at: location)?.range, let location = self.textView.rect(forStringRange: headingRange){
+            actionsViewController.present(from: self, at: self.textView, location: location.center)
         } else {
             actionsViewController.present(from: self)
         }
@@ -392,6 +396,8 @@ extension DocumentEditorViewController {
         
         if let priorityRange = self.viewModel.heading(at: location)?.planning, let location = self.textView.rect(forStringRange: priorityRange) {
             actionsController.present(from: self, at: self.textView, location: location.center)
+        } else if let headingRange = self.viewModel.heading(at: location)?.range, let location = self.textView.rect(forStringRange: headingRange){
+            actionsController.present(from: self, at: self.textView, location: location.center)
         } else {
             actionsController.present(from: self)
         }
@@ -453,8 +459,10 @@ extension DocumentEditorViewController {
         
         if let location = self.textView.rect(forStringRange: self.textView.selectedRange) {
             actionsController.present(from: self, at: self.textView, location: location.center)
+        } else if let headingRange = self.viewModel.heading(at: location)?.range, let location = self.textView.rect(forStringRange: headingRange){
+            actionsController.present(from: self, at: self.textView, location: location.center)
         } else {
-            actionsController.present(from:self)
+            actionsController.present(from: self)
         }
         
         self.viewModel.hideGlobalCaptureEntry()
@@ -561,6 +569,8 @@ extension DocumentEditorViewController {
         
         if let location = self.textView.rect(forStringRange: self.textView.selectedRange) {
             actionsController.present(from: self, at: self.textView, location: location.center)
+        } else if let headingRange = self.viewModel.heading(at: location)?.range, let location = self.textView.rect(forStringRange: headingRange){
+            actionsController.present(from: self, at: self.textView, location: location.center)
         } else {
             actionsController.present(from: self)
         }
@@ -611,6 +621,8 @@ extension DocumentEditorViewController {
         }
         
         if let location = self.textView.rect(forStringRange: self.textView.selectedRange) {
+            actionsController.present(from: self, at: self.textView, location: location.center)
+        } else if let headingRange = self.viewModel.heading(at: location)?.range, let location = self.textView.rect(forStringRange: headingRange){
             actionsController.present(from: self, at: self.textView, location: location.center)
         } else {
             actionsController.present(from: self)

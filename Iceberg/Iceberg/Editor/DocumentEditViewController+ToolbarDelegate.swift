@@ -40,7 +40,7 @@ extension DocumentEditorViewController: DocumentEditToolbarDelegate {
         return self.viewModel.isMember
     }
     
-    public func didTriggerAction(_ action: ToolbarActionProtocol) {
+    public func didTriggerAction(_ action: ToolbarActionProtocol, from: UIView) {
         
         if (action.isMemberFunction && !self.viewModel.isMember) {
             self.viewModel.context.coordinator?.showMembership()

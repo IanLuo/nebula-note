@@ -13,9 +13,9 @@ import CoreLocation
 import Interface
 
 public protocol CaptureTableCellDelegate: class {
-    func didTapActions(attachment: Attachment)
-    func didTapActionsWithLink(attachment: Attachment, link: String?)
-    func didTapActionsWithLocation(attachment: Attachment, location: CLLocationCoordinate2D)
+    func didTapActions(attachment: Attachment, from: UIView)
+    func didTapActionsWithLink(attachment: Attachment, link: String?, from: UIView)
+    func didTapActionsWithLocation(attachment: Attachment, location: CLLocationCoordinate2D, from: UIView)
 }
 
 public class CaptureTableCell: UITableViewCell {
@@ -47,17 +47,6 @@ public class CaptureTableCell: UITableViewCell {
             label.textColor = theme.color.descriptive
         })
         return label
-    }()
-    
-    private lazy var actionsButton: UIButton = {
-        let button = UIButton()
-        button.interface({ (me, theme) in
-            button.titleLabel?.font = theme.font.body
-            button.setTitleColor(theme.color.interactive, for: .normal)
-            button.setImage(Asset.Assets.more.image.fill(color: theme.color.interactive), for: .normal)
-        })
-        button.addTarget(self, action: #selector(didTapActionButton), for: .touchUpInside)
-        return button
     }()
     
     private let actionsContainerView: UIView = {
@@ -104,12 +93,8 @@ public class CaptureTableCell: UITableViewCell {
         
         self.actionsContainerView.addSubview(self.dateAndTimelabel)
         self.titleLabel.rowAnchor(view: self.dateAndTimelabel, space: 10)
-        self.dateAndTimelabel.sideAnchor(for: .bottom, to: self.actionsContainerView, edgeInset: 0)
-        
-        self.actionsContainerView.addSubview(self.actionsButton)
-        self.actionsButton.sideAnchor(for: [.top, .right, .bottom], to: self.actionsContainerView, edgeInset: 0)
-        self.actionsButton.sizeAnchor(width: 60, height: 60)
-        
+        self.dateAndTimelabel.sideAnchor(for: [.bottom, .right], to: self.actionsContainerView, edgeInset: 0)
+                
         self.actionsContainerView.columnAnchor(view: self.attachmentContentView)
         self.attachmentContentView.sideAnchor(for: [.left, .bottom, .right], to: self.contentView, edgeInset: 30)
     }
@@ -130,21 +115,21 @@ public class CaptureTableCell: UITableViewCell {
             do {
                 let jsonDecoder = JSONDecoder()
                 let dic = try jsonDecoder.decode([String : String].self, from: try Data(contentsOf: attachment.url))
-                self.delegate?.didTapActionsWithLink(attachment: attachment, link: dic["link"])
+                self.delegate?.didTapActionsWithLink(attachment: attachment, link: dic["link"], from: self)
             } catch {
                 log.error(error)
-                self.delegate?.didTapActions(attachment: attachment)
+                self.delegate?.didTapActions(attachment: attachment, from: self)
             }
         case .location:
             do {
                 let jsonDecoder = JSONDecoder()
                 let coord = try jsonDecoder.decode(CLLocationCoordinate2D.self, from: try Data(contentsOf: attachment.url))
-                self.delegate?.didTapActionsWithLocation(attachment: attachment, location: coord)
+                self.delegate?.didTapActionsWithLocation(attachment: attachment, location: coord, from: self)
             } catch {
                 log.error(error)
-                self.delegate?.didTapActions(attachment: attachment)
+                self.delegate?.didTapActions(attachment: attachment, from: self)
             }
-        default: self.delegate?.didTapActions(attachment: attachment)
+        default: self.delegate?.didTapActions(attachment: attachment, from: self)
         }
     }
     

@@ -29,6 +29,10 @@ public class DocumentEditorViewController: UIViewController {
     private let disposeBag = DisposeBag()
     private let _contentEdgeInsect = UIEdgeInsets(top: 30, left: 12, bottom: 0, right: 20)
     
+    // these two part is used for mac and ipad
+    private let topViewContainer: UIView = UIView()
+    private let rightViewContainer: UIView = UIView()
+    
     public init(viewModel: DocumentEditViewModel) {
         self.viewModel = viewModel
         self.textView = OutlineTextView(frame: .zero,
@@ -68,15 +72,24 @@ public class DocumentEditorViewController: UIViewController {
         self.interface { [weak self] (me, theme) in
             self?.setNeedsStatusBarAppearanceUpdate()
         }
-        
+
+        self.view.addSubview(self.topViewContainer)
         self.view.addSubview(self.textView)
+        self.view.addSubview(self.rightViewContainer)
         self.view.addSubview(self._loadingIndicator)
         
         if !self.viewModel.isReadyToEdit {
             self._loadingIndicator.startAnimating()
         }
         
-        self.textView.allSidesAnchors(to: self.view, edgeInset: 0, considerSafeArea: true)
+        self.topViewContainer.sideAnchor(for: [.left, .top, .right], to: self.view, edgeInset: 0)
+        self.topViewContainer.bottomAnchor.constraint(equalTo: self.textView.topAnchor).isActive = true
+        self.topViewContainer.bottomAnchor.constraint(equalTo: self.rightViewContainer.topAnchor).isActive = true
+        self.textView.sideAnchor(for: [.left, .bottom], to: self.view, edgeInset: 0)
+        self.textView.rightAnchor.constraint(equalTo: self.rightViewContainer.leftAnchor).isActive = true
+        self.rightViewContainer.sideAnchor(for: [.right, .bottom], to: self.view, edgeInset: 0)
+        self.rightViewContainer.sizeAnchor(width: 0)
+
         self._loadingIndicator.centerAnchors(position: [.centerX, .centerY], to: self.view)
 
         if !self.viewModel.isTemp {
@@ -88,9 +101,17 @@ public class DocumentEditorViewController: UIViewController {
             
             self.navigationItem.rightBarButtonItems = [menuButton, infoButton]
             
-            self.inputbar.frame = CGRect(origin: .zero, size: .init(width: self.view.bounds.width, height: 44))
             self.inputbar.delegate = self
-            self.textView.inputAccessoryView = self.inputbar
+            
+            if isMacOrPad {
+                self.topViewContainer.addSubview(self.inputbar)
+                self.topViewContainer.sizeAnchor(height: 60)
+                self.inputbar.allSidesAnchors(to: self.topViewContainer, edgeInsets: .init(top: 0, left: Layout.edgeInsets.left, bottom: 0, right: -Layout.edgeInsets.right), considerSafeArea: true)
+            } else {
+                self.inputbar.frame = CGRect(origin: .zero, size: .init(width: self.view.bounds.width, height: 44))
+                self.topViewContainer.sizeAnchor(height: 0)
+                self.textView.inputAccessoryView = self.inputbar
+            }
             
             self.inputbar.mode = .paragraph
             

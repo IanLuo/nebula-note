@@ -58,7 +58,7 @@ public class MacHomeViewController: UIViewController {
     
     private func setupUI() {
         self.toolBar.sizeAnchor(height: 80)
-        self.toolBar.sideAnchor(for: [.left, .top, .right], to: self.view, edgeInset: 0)
+        self.toolBar.sideAnchor(for: [.left, .top, .right], to: self.view, edgeInset: 0, considerSafeArea: true)
         
         self.leftPart.sideAnchor(for: [.left, .bottom], to: self.view, edgeInset: 0)
         self.leftPart.sizeAnchor(width: Constants.leftWidth)
@@ -109,14 +109,16 @@ public class MacHomeViewController: UIViewController {
         stackView.addArrangedSubview(ideasButton)
         
         self.toolBar.addSubview(stackView)
-        stackView.allSidesAnchors(to: self.toolBar, edgeInset: 30)
+        stackView.sideAnchor(for: [.left, .right], to: self.toolBar, edgeInset: 30)
+        stackView.centerAnchors(position: .centerY, to: self.toolBar)
+        stackView.sizeAnchor(height: 80)
     }
     
     private func setupLeftPart() {
-        self.addChildViewController(self.dashboardViewController)
-        self.dashboardViewController.delegate = self
-        self.leftPart.addSubview(self.dashboardViewController.view)
-        self.dashboardViewController.view.allSidesAnchors(to: self.leftPart, edgeInset: 0)
+        let nav = Application.createDefaultNavigationControlller(root: self.dashboardViewController, transparentBar: true)
+        self.addChildViewController(nav)
+        self.leftPart.addSubview(nav.view)
+        nav.view.allSidesAnchors(to: self.leftPart, edgeInset: 0)
     }
     
     private func setupRightPart() {
@@ -155,12 +157,8 @@ public class MacHomeViewController: UIViewController {
             self.middlePart.setNeedsLayout()
         }
     }
-}
-
-var lastChildViewController: UIViewController?
-
-extension MacHomeViewController: DashboardViewControllerDelegate {
-    public func didSelectTab(at index: Int, viewController: UIViewController) {
+    
+    public func showInMiddlePart(viewController: UIViewController) {
         if let lastChildViewController = lastChildViewController {
             lastChildViewController.removeFromParent()
             lastChildViewController.view.removeFromSuperview()
@@ -171,16 +169,6 @@ extension MacHomeViewController: DashboardViewControllerDelegate {
         viewController.view.allSidesAnchors(to: self.middlePart, edgeInset: 0)
         lastChildViewController = viewController
     }
-    
-    public func showHeadings(tag: String) {
-        
-    }
-    
-    public func showHeadings(planning: String) {
-        
-    }
-    
-    public func showHeadings(subTabType: DashboardViewModel.DahsboardItemData) {
-        
-    }
 }
+
+var lastChildViewController: UIViewController?

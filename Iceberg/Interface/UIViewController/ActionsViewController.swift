@@ -38,9 +38,8 @@ public class ActionsViewController: UIViewController, TransitionProtocol {
 
         if isMacOrPad {
             self.popoverPresentationController?.sourceView = self.fromView
-            if let location = location {
-                self.popoverPresentationController?.sourceRect = CGRect(origin: location, size: .zero)
-            }
+            let location = location ?? CGPoint(x: self.fromView!.bounds.midX, y: self.fromView!.bounds.midY)
+            self.popoverPresentationController?.sourceRect = CGRect(origin: location, size: .zero)
         }
         
         from.present(self, animated: true, completion: completion)
@@ -143,14 +142,14 @@ public class ActionsViewController: UIViewController, TransitionProtocol {
             self?.cancel()
         }
         
-        #if targetEnvironment(macCatalyst)
-        if self.fromView == nil {
-            self.popoverPresentationController?.sourceView = self.view
-            self.popoverPresentationController?.sourceRect = CGRect(x: self.view.bounds.width / 2, y: self.view.bounds.height / 2, width: 0, height: 0)
+        if isMacOrPad {
+            if self.fromView == nil {
+                self.popoverPresentationController?.sourceView = self.view
+                self.popoverPresentationController?.sourceRect = CGRect(x: self.view.bounds.width / 2, y: self.view.bounds.height / 2, width: 0, height: 0)
+            }
+            let size = self.view.systemLayoutSizeFitting(CGSize(width: self.view.bounds.width, height: 0))
+            self.preferredContentSize = CGSize(width: 300, height: size.height)
         }
-        let size = self.view.systemLayoutSizeFitting(CGSize(width: self.view.bounds.width, height: 0))
-        self.preferredContentSize = CGSize(width: 300, height: size.height)
-        #endif
     }
     
     private var items: [Item] = []
@@ -182,9 +181,9 @@ public class ActionsViewController: UIViewController, TransitionProtocol {
         let view = UIView()
         view.backgroundColor = InterfaceTheme.Color.background2
         
-        #if targetEnvironment(macCatalyst)
-        view.backgroundColor = .clear
-        #endif
+        if isMacOrPad {
+            view.backgroundColor = .clear
+        }
         
         view.setBorder(position: Border.Position.bottom, color: InterfaceTheme.Color.background3, width: 0.5)
         return view
@@ -193,9 +192,11 @@ public class ActionsViewController: UIViewController, TransitionProtocol {
     public let contentView: UIView = {
         let view = UIView()
         view.backgroundColor = InterfaceTheme.Color.background2
-        #if targetEnvironment(macCatalyst)
-        view.backgroundColor = .clear
-        #endif
+        
+        if isMacOrPad {
+            view.backgroundColor = .clear
+        }
+
         view.layer.cornerRadius = 8
         view.layer.masksToBounds = true
         return view
@@ -222,9 +223,11 @@ public class ActionsViewController: UIViewController, TransitionProtocol {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.backgroundColor = InterfaceTheme.Color.background2
-        #if targetEnvironment(macCatalyst)
-        tableView.backgroundColor = .clear
-        #endif
+
+        if isMacOrPad {
+            tableView.backgroundColor = .clear
+        }
+
         tableView.separatorStyle = .singleLine
         tableView.separatorColor = InterfaceTheme.Color.background3
         tableView.register(ActionCell.self, forCellReuseIdentifier: ActionCell.reuseIdentifier)
@@ -251,12 +254,15 @@ public class ActionsViewController: UIViewController, TransitionProtocol {
         self.titleLabel.centerYAnchor.constraint(equalTo: self.cancelButton.centerYAnchor).isActive = true
         
         self.contentView.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 10, considerSafeArea: true)
-        self.contentView.topAnchor.constraint(greaterThanOrEqualTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 50).isActive = true
+        self.contentView.topAnchor.constraint(greaterThanOrEqualTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
+//        self.contentView.topAnchor.constraint(greaterThanOrEqualTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 50).isActive = true
         
         self.actionsContainerView.sideAnchor(for: [.left, .top, .right], to: self.contentView, edgeInset: 0)
         self.actionsContainerView.columnAnchor(view: self.accessoryViewContainer)
         
-        self.accessoryViewContainer.sizeAnchor(height: 0)
+        if self.accessoryView == nil {
+            self.accessoryViewContainer.sizeAnchor(height: 0)
+        }
         self.accessoryViewContainer.sideAnchor(for: [.left, .right], to: self.contentView, edgeInset: 0)
         self.accessoryViewContainer.columnAnchor(view: self.tableView)
         

@@ -15,23 +15,26 @@ import RxCocoa
 
 public class Application: Coordinator {
     weak var window: UIWindow?
-    private let _entranceWindow: CaptureGlobalEntranceWindow
+    private var _entranceWindow: CaptureGlobalEntranceWindow?
     fileprivate var _didTheUserTurnOffiCloudFromSettings: Bool = false
     private let disposeBag = DisposeBag()
     
     public init(window: UIWindow) {
         self.window = window
-        
-        _entranceWindow = CaptureGlobalEntranceWindow(window: window)
-        
-        _entranceWindow.makeKeyAndVisible()
-
-        let navigationController = Coordinator.createDefaultNavigationControlller()
-        
         let dependency = Dependency()
-        dependency.globalCaptureEntryWindow = self._entranceWindow
         
+        let navigationController = Coordinator.createDefaultNavigationControlller()
         super.init(stack: navigationController, dependency: dependency)
+        
+        // init entry window for iPhone
+        if !isMacOrPad {
+            _entranceWindow = CaptureGlobalEntranceWindow(window: window)
+            _entranceWindow?.makeKeyAndVisible()
+            dependency.globalCaptureEntryWindow = self._entranceWindow
+            _entranceWindow?.entryAction = { [weak self] in
+                self?.showCaptureEntrance()
+            }
+        }
         
         
         // if the user turn off iCloud from settings, this sign must be set here
@@ -43,10 +46,6 @@ public class Application: Coordinator {
         }
         
         self.window?.rootViewController = self.stack
-        
-        _entranceWindow.entryAction = { [weak self] in
-            self?.showCaptureEntrance()
-        }
         
         self._setupObservers()
     }

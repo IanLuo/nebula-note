@@ -179,21 +179,23 @@ public class CaptureListViewController: UIViewController {
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let attachment = self.viewModel.currentFilteredData[indexPath.row]
         
+        let fromView = tableView.cellForRow(at: indexPath) ?? tableView
+        
         switch attachment.kind {
         case .link:
             if let link = attachment.linkTitle {
-                self.didTapActionsWithLink(attachment: attachment, link: link)
+                self.didTapActionsWithLink(attachment: attachment, link: link, from: fromView)
             } else {
-                self.didTapActions(attachment: attachment)
+                self.didTapActions(attachment: attachment, from: fromView)
             }
         case .location:
             if let coor = attachment.coordinator {
-                self.didTapActionsWithLocation(attachment: attachment, location: coor)
+                self.didTapActionsWithLocation(attachment: attachment, location: coor, from: fromView)
             } else {
-                self.didTapActions(attachment: attachment)
+                self.didTapActions(attachment: attachment, from: fromView)
             }
         default:
-            self.didTapActions(attachment: attachment)
+            self.didTapActions(attachment: attachment, from: fromView)
         }
     }
 }
@@ -208,16 +210,17 @@ extension CaptureListViewController: CaptureTableCellDelegate {
         return nil
     }
     
-    public func didTapActions(attachment: Attachment) {
+    public func didTapActions(attachment: Attachment, from: UIView) {
         guard let index = self._index(for: attachment) else { return }
         let cellModel = self.viewModel.currentFilterdCellModels[index]
         let actionsViewController = self.createActionsViewController(cellModel: cellModel)
         
-        self.present(actionsViewController, animated: true, completion: nil)
+        actionsViewController.present(from: self, at: from)
+
         self.viewModel.hideGlobalCaptureEntry()
     }
     
-    public func didTapActionsWithLink(attachment: Attachment, link: String?) {
+    public func didTapActionsWithLink(attachment: Attachment, link: String?, from: UIView) {
         guard let index = self._index(for: attachment) else { return }
         let cellModel = self.viewModel.currentFilterdCellModels[index]
         let actionsViewController = self.createActionsViewController(cellModel: cellModel)
@@ -231,11 +234,12 @@ extension CaptureListViewController: CaptureTableCellDelegate {
             })
         }
         
-        self.present(actionsViewController, animated: true, completion: nil)
+        actionsViewController.present(from: self, at: from)
+        
         self.viewModel.hideGlobalCaptureEntry()
     }
     
-    public func didTapActionsWithLocation(attachment: Attachment, location: CLLocationCoordinate2D) {
+    public func didTapActionsWithLocation(attachment: Attachment, location: CLLocationCoordinate2D, from: UIView) {
         guard let index = self._index(for: attachment) else { return }
         let cellModel = self.viewModel.currentFilterdCellModels[index]
         let actionsViewController = self.createActionsViewController(cellModel: cellModel)
@@ -249,7 +253,8 @@ extension CaptureListViewController: CaptureTableCellDelegate {
         }
         
         
-        self.present(actionsViewController, animated: true, completion: nil)
+        actionsViewController.present(from: self, at: from)
+        
         self.viewModel.hideGlobalCaptureEntry()
     }
     
@@ -261,24 +266,15 @@ extension CaptureListViewController: CaptureTableCellDelegate {
         switch self.viewModel.mode {
             // 在 capture list 中显示的菜单，至少包含 refile 和 delete 操作
         case .manage:
-            if self.viewModel.isMember {
-                actionsViewController.addAction(icon: nil, title: L10n.CaptureList.Action.refile) { viewController in
-                    viewController.dismiss(animated: true, completion: {
-                        guard let index = self.viewModel.index(for: cellModel) else { return }
-                        self.viewModel.chooseRefileLocation(index: index, completion: {
-                            self.viewModel.showGlobalCaptureEntry()
-                        }, canceled: {
-                            self.viewModel.showGlobalCaptureEntry()
-                        })
-                    })
-                }
-            } else {
-                actionsViewController.addAction(icon: Asset.Assets.proLabel.image, title: L10n.CaptureList.Action.refile) { viewController in
-                    viewController.dismiss(animated: true, completion: {
-                        self.viewModel.context.coordinator?.showMembership()
+            actionsViewController.addAction(icon: nil, title: L10n.CaptureList.Action.refile) { viewController in
+                viewController.dismiss(animated: true, completion: {
+                    guard let index = self.viewModel.index(for: cellModel) else { return }
+                    self.viewModel.chooseRefileLocation(index: index, completion: {
+                        self.viewModel.showGlobalCaptureEntry()
+                    }, canceled: {
                         self.viewModel.showGlobalCaptureEntry()
                     })
-                }
+                })
             }
             
             actionsViewController.addAction(icon: nil, title: L10n.CaptureList.Action.delete, style: .warning) { viewController in

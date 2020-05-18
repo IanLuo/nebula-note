@@ -47,7 +47,14 @@ public class AgendaCoordinator: Coordinator {
         viewModel.filterType = filterType
         viewModel.coordinator = self
         let viewController = FilteredItemsViewController(viewModel: viewModel)
+        viewController.delegate = self
         self.viewController = viewController
+    }
+}
+
+extension AgendaCoordinator: FilteredItemsViewControllerDelegate {
+    public func didTapOnDocument(url: URL, location: Int) {
+        self.delegate?.didSelectDocument(url: url, location: location)
     }
 }
 

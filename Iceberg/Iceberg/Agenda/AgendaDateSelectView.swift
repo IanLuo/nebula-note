@@ -33,6 +33,11 @@ public class AgendaDateSelectView: UIView {
             me.backgroundColor = theme.color.background1
         })
         collectionView.register(DateCell.self, forCellWithReuseIdentifier: DateCell.reuseIdentifier)
+        
+        if isMac {
+            collectionView.showsHorizontalScrollIndicator = true
+        }
+        
         return collectionView
     }()
     

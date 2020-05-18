@@ -16,7 +16,7 @@ import MapKit
 extension DocumentEditorViewController: OutlineTextViewDelegate {
     public func didTapOnAttachment(textView: UITextView, characterIndex: Int, type: String, value: String, point: CGPoint) {
         self.viewModel.dependency.attachmentManager.attachment(with: value, completion: { [weak self] attachment in
-            self?._showAttachmentView(attachment: attachment)
+            self?._showAttachmentView(attachment: attachment, atCharactor: characterIndex)
         }, failure: { error in
             
         })
@@ -110,7 +110,8 @@ extension DocumentEditorViewController: OutlineTextViewDelegate {
             self.viewModel.dependency.globalCaptureEntryWindow?.show()
         }
         
-        self.present(actionsController, animated: true, completion: nil)
+        actionsController.present(from: self, at: self.textView, location: point)
+
         self.viewModel.dependency.globalCaptureEntryWindow?.hide()
     }
     
@@ -129,7 +130,7 @@ extension DocumentEditorViewController: OutlineTextViewDelegate {
                                              textView: self.textView)
     }
     
-    private func _showAttachmentView(attachment: Attachment) {
+    private func _showAttachmentView(attachment: Attachment, atCharactor: Int) {
         let actionsView = ActionsViewController()
 
         let view = AttachmentViewFactory.create(attachment: attachment)
@@ -182,7 +183,12 @@ extension DocumentEditorViewController: OutlineTextViewDelegate {
             })
         }
         
-        self.present(actionsView, animated: true, completion: nil)
+        if let location = self.textView.rect(forStringRange: NSRange(location: atCharactor, length: 0)) {
+            actionsView.present(from: self, at: self.textView, location: location.center)
+        } else {
+            actionsView.present(from: self)
+        }
+
         self.viewModel.dependency.globalCaptureEntryWindow?.hide()
     }
 }

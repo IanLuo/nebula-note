@@ -11,8 +11,13 @@ import UIKit
 import Core
 import Interface
 
+public protocol FilteredItemsViewControllerDelegate: class {
+    func didTapOnDocument(url: URL, location: Int)
+}
+
 public class FilteredItemsViewController: UIViewController {
     let viewModel: AgendaViewModel
+    public weak var delegate: FilteredItemsViewControllerDelegate?
     
     public init(viewModel: AgendaViewModel) {
         self.viewModel = viewModel
@@ -67,11 +72,10 @@ extension FilteredItemsViewController: UITableViewDelegate {
         let cellModel = self.viewModel.data[indexPath.row]
         
         if let dataAndTimeRange = cellModel.dateAndTimeRange {
-            self.viewModel.coordinator?.openDocument(url: cellModel.url, location: dataAndTimeRange.upperBound)
+            self.delegate?.didTapOnDocument(url: cellModel.url, location: dataAndTimeRange.upperBound)
         } else {
-            self.viewModel.coordinator?.openDocument(url: cellModel.url, location: cellModel.heading.range.upperBound)
+            self.delegate?.didTapOnDocument(url: cellModel.url, location: cellModel.heading.range.upperBound)
         }
-
         
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
             tableView.deselectRow(at: indexPath, animated: true)

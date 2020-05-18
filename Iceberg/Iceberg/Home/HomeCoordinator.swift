@@ -36,13 +36,13 @@ public class HomeCoordinator: Coordinator {
         viewModel.coordinator = self
         dashboardViewController.delegate = self
         
-        #if targetEnvironment(macCatalyst)
-        self.viewController = MacHomeViewController(dashboardViewController: dashboardViewController, documentTabsContainerViewController: MacDocumentTabContainerViewController())
-        #else
-        let homeViewController = HomeViewController(masterViewController: navigationController)
-        self.viewController = homeViewController
-        homeViewController.delegate = self
-        #endif
+        if isMacOrPad {
+            self.viewController = MacHomeViewController(dashboardViewController: dashboardViewController, documentTabsContainerViewController: MacDocumentTabContainerViewController())
+        } else {
+            let homeViewController = HomeViewController(masterViewController: navigationController)
+            self.viewController = homeViewController
+            homeViewController.delegate = self
+        }
         
         let agendaCoordinator = AgendaCoordinator(stack: stack, dependency: dependency)
         agendaCoordinator.delegate = self
@@ -71,12 +71,12 @@ public class HomeCoordinator: Coordinator {
         
         let hasInitedLandingTab: PublishSubject<Void> = PublishSubject<Void>()
         
-        #if !targetEnvironment(macCatalyst)
-        self.dependency.appContext.isFileReadyToAccess.takeUntil(hasInitedLandingTab).subscribe(onNext: { _ in
-            hasInitedLandingTab.onNext(())
-            homeViewController.showChildViewController(tabs[SettingsAccessor.Item.landingTabIndex.get(Int.self) ?? 3])
-        }).disposed(by: self.disposeBag)
-        #endif
+        if !isMacOrPad {
+            self.dependency.appContext.isFileReadyToAccess.takeUntil(hasInitedLandingTab).subscribe(onNext: { _ in
+                hasInitedLandingTab.onNext(())
+                (self.viewController as? HomeViewController)?.showChildViewController(tabs[SettingsAccessor.Item.landingTabIndex.get(Int.self) ?? 3])
+            }).disposed(by: self.disposeBag)
+        }
     }
     
     private var tempCoordinator: Coordinator?
@@ -91,12 +91,16 @@ public class HomeCoordinator: Coordinator {
         self.addChild(coordinator)
         self.tempCoordinator = coordinator
         
-        #if !targetEnvironment(macCatalyst)
-        if let homeViewController = self.viewController as? HomeViewController {
-            homeViewController.showChildViewController(Coordinator.createDefaultNavigationControlller(root: coordinator.viewController!))
-            homeViewController.showDetailView()
+        if isMacOrPad {
+            if let viewController = coordinator.viewController {
+                (self.viewController as? MacHomeViewController)?.showInMiddlePart(viewController: viewController)
+            }
+        } else {
+            if let homeViewController = self.viewController as? HomeViewController {
+                homeViewController.showChildViewController(Coordinator.createDefaultNavigationControlller(root: coordinator.viewController!))
+                homeViewController.showDetailView()
+            }
         }
-        #endif
     }
     
     public func addPersistentCoordinator(_ coordinator: Coordinator) {
@@ -128,11 +132,12 @@ public class HomeCoordinator: Coordinator {
 
 extension HomeCoordinator: SearchCoordinatorDelegate {
     public func didSelectDocument(url: URL, location: Int, searchCoordinator: SearchCoordinator) {
-        #if targetEnvironment(macCatalyst)
-        self.openDocumentInHomeViewRightPart(url: url, location: location)
-        #else
-        self.openDocument(url: url, location: location)
-        #endif
+        if isMacOrPad {
+            self.openDocumentInHomeViewRightPart(url: url, location: location)
+        } else {
+            self.openDocument(url: url, location: location)
+            
+        }
     }
     
     public func didCancelSearching() {
@@ -142,21 +147,21 @@ extension HomeCoordinator: SearchCoordinatorDelegate {
 
 extension HomeCoordinator: AgendaCoordinatorDelegate {
     public func didSelectDocument(url: URL, location: Int) {
-        #if targetEnvironment(macCatalyst)
-        self.openDocumentInHomeViewRightPart(url: url, location: location)
-        #else
-        self.openDocument(url: url, location: location)
-        #endif
+        if isMacOrPad {
+            self.openDocumentInHomeViewRightPart(url: url, location: location)
+        } else {
+            self.openDocument(url: url, location: location)
+        }
     }
 }
 
 extension HomeCoordinator: BrowserCoordinatorDelegate {
     public func didSelectDocument(url: URL, coordinator: BrowserCoordinator) {
-        #if targetEnvironment(macCatalyst)
-        self.openDocumentInHomeViewRightPart(url: url, location: 0)
-        #else
-        self.openDocument(url: url, location: 0)
-        #endif
+        if isMacOrPad {
+            self.openDocumentInHomeViewRightPart(url: url, location: 0)
+        } else {
+            self.openDocument(url: url, location: 0)
+        }
     }
     
     public func didSelectOutline(url: URL, selection: OutlineLocation, coordinator: BrowserCoordinator) {}
@@ -193,6 +198,7 @@ extension HomeCoordinator: DashboardViewControllerDelegate {
         
         if let filterType = filterType {
             let agendaCoordinator = AgendaCoordinator(filterType: filterType, stack: self.stack, dependency: self.dependency)
+            agendaCoordinator.delegate = self
             agendaCoordinator.viewController?.title = subTabType.title
             self.showTempCoordinator(agendaCoordinator)
         }
@@ -200,12 +206,14 @@ extension HomeCoordinator: DashboardViewControllerDelegate {
     
     public func showHeadings(tag: String) {
         let agendaCoordinator = AgendaCoordinator(filterType: .tag(tag), stack: self.stack, dependency: self.dependency)
+        agendaCoordinator.delegate = self
         agendaCoordinator.viewController?.title = tag
         self.showTempCoordinator(agendaCoordinator)
     }
     
     public func showHeadings(planning: String) {
         let agendaCoordinator = AgendaCoordinator(filterType: .planning(planning), stack: self.stack, dependency: self.dependency)
+        agendaCoordinator.delegate = self
         agendaCoordinator.viewController?.title = planning
         self.showTempCoordinator(agendaCoordinator)
     }
@@ -217,13 +225,14 @@ extension HomeCoordinator: DashboardViewControllerDelegate {
             self.tempCoordinator = nil
         }
         
-        
-        #if !targetEnvironment(macCatalyst)
-        if let homeViewController = self.viewController as? HomeViewController {
-            homeViewController.showChildViewController(viewController)
-            homeViewController.showDetailView()
+        if isMacOrPad {
+            (self.viewController as? MacHomeViewController)?.showInMiddlePart(viewController: viewController)
+        } else {
+            if let homeViewController = self.viewController as? HomeViewController {
+                homeViewController.showChildViewController(viewController)
+                homeViewController.showDetailView()
+            }
         }
-        #endif
     }
 }
 

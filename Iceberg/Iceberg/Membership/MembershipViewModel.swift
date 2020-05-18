@@ -25,7 +25,7 @@ public enum MemberFunctions: CaseIterable {
     case customizedStatus
     case unlimitedLevelSubDocument
     case advancedAttachments
-    case refile
+//    case refile
     case moveToOtherDocument
     case removeExportWaterprint
     case andMoreToCome
@@ -35,7 +35,7 @@ public enum MemberFunctions: CaseIterable {
         case .customizedStatus: return L10n.Membership.Function.customStatus
         case .unlimitedLevelSubDocument: return L10n.Membership.Function.unlimitedLevelOfSubDocuments
         case .advancedAttachments: return L10n.Membership.Function.advancedAttachments
-        case .refile: return L10n.Membership.Function.refile
+//        case .refile: return L10n.Membership.Function.refile
         case .moveToOtherDocument: return L10n.Membership.Function.moveToOtherDocument
         case .andMoreToCome: return L10n.Membership.Function.andMoreToCome
         case .removeExportWaterprint: return L10n.Membership.Function.removeExportWaterprint

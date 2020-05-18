@@ -143,15 +143,15 @@ public class AttachmentManagerViewController: UIViewController, UICollectionView
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if !self.isSelectMode.value {
             collectionView.deselectItem(at: indexPath, animated: false)
-            if let attachment = self.viewModel.attachment(at: indexPath.row) {
-                self._showAttachmentView(attachment: attachment, index: indexPath.row)
+            if let attachment = self.viewModel.attachment(at: indexPath.row), let cell = collectionView.cellForItem(at: indexPath) {
+                self._showAttachmentView(attachment: attachment, index: indexPath.row, from: cell)
             }
         }
     }
         
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
-        let side = (collectionView.bounds.width - Layout.edgeInsets.left - Layout.edgeInsets.right - 10 - 10) / 3
+        let side = min(100, (collectionView.bounds.width - Layout.edgeInsets.left - Layout.edgeInsets.right - 10 - 10) / 3)
         return CGSize(width: side, height: side)
     }
     
@@ -167,7 +167,7 @@ public class AttachmentManagerViewController: UIViewController, UICollectionView
         return 10
     }
     
-    private func _showAttachmentView(attachment: Attachment, index: Int) {
+    private func _showAttachmentView(attachment: Attachment, index: Int, from: UIView) {
         let actionsView = ActionsViewController()
 
         let view = AttachmentViewFactory.create(attachment: attachment)
@@ -245,7 +245,8 @@ public class AttachmentManagerViewController: UIViewController, UICollectionView
             })
         }
         
-        self.present(actionsView, animated: true, completion: nil)
+        actionsView.present(from: self, at: self.view, location: self.view.convert(from.center, to: self.view))
+
         self.viewModel.dependency.globalCaptureEntryWindow?.hide()
     }
 }

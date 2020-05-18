@@ -12,10 +12,14 @@ public var isPad: Bool {
     return UIDevice.current.userInterfaceIdiom == .pad
 }
 
-public var isMacOrPad: Bool {
+public var isMac: Bool {
     #if targetEnvironment(macCatalyst)
     return true
     #else
-    return isPad
+    return false
     #endif
+}
+
+public var isMacOrPad: Bool {
+    return isPad || isMac
 }
