@@ -45,19 +45,7 @@ extension DocumentEditorViewController {
         
         actionsController.addAction(icon: Asset.Assets.master.image, title: L10n.Document.Menu.outline) { [unowned self] viewController in
             viewController.dismiss(animated: true, completion: {
-                self.viewModel.context.coordinator?.showOutline(completion: { selection in
-                    self.viewModel.unfoldAll()
-                    self.allowScrollContentWhenKeyboardDisapearTemporaily()
-                    
-                    switch selection {
-                    case .heading(let heading):
-                        self._scrollTo(location: heading.range.upperBound, shouldScrollToZero: true)
-                    case .position(let location):
-                        self._scrollTo(location: location, shouldScrollToZero: true)
-                    }
-                    
-                })
-                self.viewModel.showGlobalCaptureEntry()
+                self.showOutline()
             })
             
             viewController.setCancel(action: { [unowned self] viewController in
@@ -94,6 +82,22 @@ extension DocumentEditorViewController {
         actionsController.present(from: actionsController)
         
         self.viewModel.hideGlobalCaptureEntry()
+    }
+    
+    func showOutline(from: UIView? = nil) {
+        self.viewModel.context.coordinator?.showOutline(from: from, completion: { selection in
+            self.viewModel.unfoldAll()
+            self.allowScrollContentWhenKeyboardDisapearTemporaily()
+            
+            switch selection {
+            case .heading(let heading):
+                self._scrollTo(location: heading.range.upperBound, shouldScrollToZero: true)
+            case .position(let location):
+                self._scrollTo(location: location, shouldScrollToZero: true)
+            }
+            
+        })
+        self.viewModel.showGlobalCaptureEntry()
     }
     
     public func showDateAndTimeCreator(location: Int) {

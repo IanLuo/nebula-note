@@ -65,7 +65,7 @@ public class RoundButton: UIView {
         }
     }
     
-    public func setButtonRedius(_ radius: CGFloat) {
+    public func setButtonRadius(_ radius: CGFloat) {
         self.button.sizeAnchor(width: radius * 2, height: radius * 2)
     }
     

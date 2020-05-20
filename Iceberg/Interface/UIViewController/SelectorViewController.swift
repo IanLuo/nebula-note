@@ -25,8 +25,13 @@ open class SelectorViewController: UIViewController {
         self.heightRatio = heightRatio
         super.init(nibName: nil, bundle: nil)
         
-        self.modalPresentationStyle = .custom
-        self.transitioningDelegate = self.transitionDelegate
+        // custom transition only add to iPhone
+        if isMacOrPad {
+            self.modalPresentationStyle = UIModalPresentationStyle.popover
+        } else {
+            self.modalPresentationStyle = .custom
+            self.transitioningDelegate = self.transitionDelegate
+        }
     }
     
     required public init?(coder aDecoder: NSCoder) {
@@ -59,8 +64,11 @@ open class SelectorViewController: UIViewController {
     
     public let contentView: UIView = {
         let view = UIView()
-        view.layer.cornerRadius = 8
-        view.layer.masksToBounds = true
+        
+        if isMacOrPad {
+            view.layer.cornerRadius = 8
+            view.layer.masksToBounds = true
+        }
         return view
     }()
     
@@ -88,6 +96,15 @@ open class SelectorViewController: UIViewController {
         self.view.addGestureRecognizer(tap)
         
         self.titleLabel.text = self.title
+        
+        if isMacOrPad {
+            if self.fromView == nil {
+                self.popoverPresentationController?.sourceView = self.view
+                self.popoverPresentationController?.sourceRect = CGRect(x: self.view.bounds.width / 2, y: self.view.bounds.height / 2, width: 0, height: 0)
+            }
+//            let size = self.view.systemLayoutSizeFitting(CGSize(width: self.view.bounds.width, height: 0))
+//            self.preferredContentSize = CGSize(width: 400, height: size.height)
+        }
     }
     
     public func scrollToDefaultValue() {
@@ -133,7 +150,17 @@ open class SelectorViewController: UIViewController {
     }
     
     // transite delegate will access this
-    public var fromView: UIView?
+    public var fromView: UIView? {
+        didSet {
+            if isMacOrPad {
+                self.popoverPresentationController?.sourceView = fromView
+                
+                if let fromView = fromView {
+                    self.popoverPresentationController?.sourceRect = CGRect(origin: CGPoint(x: fromView.frame.midX, y: fromView.frame.midY), size: .zero)
+                }
+            }
+        }
+    }
 
     private func setupUI() {
         self.view.addSubview(self.contentView)
@@ -141,9 +168,17 @@ open class SelectorViewController: UIViewController {
         self.contentView.addSubview(self.titleLabel)
         self.contentView.addSubview(self.closeButton)
         
-        self.contentView.sideAnchor(for: [.left, .right], to: self.view, edgeInset: 30)
-        self.contentView.sizeAnchor(height: self.view.bounds.height * heightRatio)
-        self.contentView.centerAnchors(position: .centerY, to: self.view)
+        let insets: CGFloat = isMacOrPad ? 0 : 30
+        self.contentView.sideAnchor(for: [.left, .right], to: self.view, edgeInset: insets)
+        
+        if isMacOrPad {
+            self.contentView.sizeAnchor(height: self.view.bounds.height)
+            self.contentView.sideAnchor(for: [.top, .bottom], to: self.view, edgeInset: 0)
+        } else {
+            self.contentView.centerAnchors(position: .centerY, to: self.view)
+            self.contentView.sizeAnchor(height: self.view.bounds.height * heightRatio)
+        }
+        
         
         self.titleLabel.sizeAnchor(height: 60)
         self.titleLabel.sideAnchor(for: [.left, .right, .top], to: self.contentView, edgeInset: 0)
@@ -152,6 +187,10 @@ open class SelectorViewController: UIViewController {
         self.closeButton.sizeAnchor(width: 30)
         self.closeButton.sideAnchor(for: [.right], to: self.contentView, edgeInset: 20)
         self.closeButton.centerYAnchor.constraint(equalTo: self.titleLabel.centerYAnchor).isActive = true
+        
+        if isMacOrPad {
+            self.closeButton.isHidden = true
+        }
         
         self.titleLabel.columnAnchor(view: self.tableView, space: 0)
         self.tableView.sideAnchor(for: [.left, .right, .bottom], to: self.contentView, edgeInset: 0)

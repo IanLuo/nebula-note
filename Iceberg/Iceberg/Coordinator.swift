@@ -12,6 +12,7 @@ import Core
 import PKHUD
 import RxSwift
 import RxCocoa
+import Interface
 
 public struct AppContext {
     public let isFileReadyToAccess: BehaviorRelay<Bool> = BehaviorRelay(value: false)
@@ -72,6 +73,8 @@ public class Coordinator {
     
     public weak var parent: Coordinator?
     
+    public var fromView: UIView?
+    
     public var dependency: Dependency
     
     public var onMovingOut: (() -> Void)?
@@ -103,7 +106,11 @@ public class Coordinator {
         
         self.onMovingOut?()
         
-        if self.stack == parent?.stack {
+        if let transitionViewController = top as? TransitionViewController {
+            transitionViewController.dismiss(animated: true) {
+                completion?()
+            }
+        } else if self.stack == parent?.stack {
             self.stack.popViewController(animated: animated)
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.3) {
                 completion?()
@@ -123,13 +130,15 @@ public class Coordinator {
                 self.index = self.parent!.index + 1
             } else { // means it's a modal
                 self.isModal = true
-                self.stack.pushViewController(viewController,
-                                              animated: false)
                 
-                self.stack.modalPresentationStyle = viewController.modalPresentationStyle
-                self.stack.transitioningDelegate = viewController.transitioningDelegate
-                
-                top?.present(self.stack, animated: animated, completion: nil)
+                if let transitionViewController = viewController as? TransitionViewController, let fromView = self.fromView {
+                    transitionViewController.present(from: top!, at: fromView, location: CGPoint(x: fromView.bounds.midX, y: fromView.bounds.midY))
+                } else {
+                    self.stack.pushViewController(viewController,animated: false)
+                    self.stack.modalPresentationStyle = viewController.modalPresentationStyle
+                    self.stack.transitioningDelegate = viewController.transitioningDelegate
+                    top?.present(self.stack, animated: animated, completion: nil)
+                }
                 
                 self.level = self.parent!.level + 1
             }

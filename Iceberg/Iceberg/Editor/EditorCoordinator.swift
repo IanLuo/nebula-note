@@ -70,7 +70,7 @@ public class EditorCoordinator: Coordinator {
         self.dependency.editorContext.end(with: self._url)
     }
     
-    public func showOutline(ignoredHeadingLocation: Int? = nil, completion: @escaping (OutlineLocation) -> Void) {
+    public func showOutline(ignoredHeadingLocation: Int? = nil, from: UIView? = nil, completion: @escaping (OutlineLocation) -> Void) {
         let navigationController = Coordinator.createDefaultNavigationControlller()
         navigationController.isNavigationBarHidden = true
         let coordinator = EditorCoordinator(stack: navigationController, dependency: self.dependency, usage: EditorCoordinator.Usage.outline(self._viewModel.url, ignoredHeadingLocation))
@@ -82,6 +82,7 @@ public class EditorCoordinator: Coordinator {
         coordinator.didCancelSelectionOutlineSelectionAction = { [weak coordinator] in
             coordinator?.stop(animated: true, completion: {})
         }
+        coordinator.fromView = from
         coordinator.start(from: self)
     }
     

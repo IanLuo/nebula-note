@@ -82,11 +82,11 @@ public class BrowserRecentViewModel: NSObject, ViewModelProtocol {
         if iCloudDocumentManager.status == .on {
             return self.dependency.syncManager.allFilesInCloud.value.filter { url in
                 url.path.hasSuffix(Document.fileExtension) && !url.path.contains(SyncCoordinator.Prefix.deleted.rawValue)
-            }
+            }.first(20)
         } else {
             return self.dependency.syncManager.allFilesLocal.filter { url in
                 url.path.hasSuffix(Document.fileExtension) && !url.path.contains(SyncCoordinator.Prefix.deleted.rawValue)
-            }
+            }.first(20)
         }
     }
     

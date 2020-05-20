@@ -22,4 +22,18 @@ public extension Array {
         
         return result.count > 0 ? result : nil
     }
+    
+    func first(_ count: Int) -> [Element] {
+        var result: [Element] = []
+        
+        for (i, e) in self.enumerated() {
+            if i < count {
+                result.append(e)
+            } else {
+                return result
+            }
+        }
+        
+        return result
+    }
 }

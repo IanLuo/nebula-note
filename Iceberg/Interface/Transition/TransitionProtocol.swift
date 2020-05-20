@@ -20,6 +20,22 @@ public protocol TransitionProtocol {
     func didTransiteToShow()
 }
 
+extension TransitionProtocol {
+    public func present(from: UIViewController, at: UIView? = nil, location: CGPoint? = nil, completion: (() -> Void)? = nil) {
+        if var viewController = self as? TransitionViewController {
+            viewController.fromView = at ?? from.view
+            
+            if isMacOrPad {
+                viewController.popoverPresentationController?.sourceView = self.fromView
+                let location = location ?? CGPoint(x: self.fromView!.bounds.midX, y: self.fromView!.bounds.midY)
+                viewController.popoverPresentationController?.sourceRect = CGRect(origin: location, size: .zero)
+            }
+            
+            from.present(viewController, animated: true, completion: completion)
+        }
+    }
+}
+
 // 显示 navigation controller 的时候，使用第一个 viewController 的 transition delegate
 extension UINavigationController: TransitionProtocol {
     public var contentView: UIView {

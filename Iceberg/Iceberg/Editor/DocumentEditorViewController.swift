@@ -27,7 +27,13 @@ public class DocumentEditorViewController: UIViewController {
     internal var _lastLocation: Int?
     internal var _isAdjustingSelectRange: Bool = false
     private let disposeBag = DisposeBag()
-    private let _contentEdgeInsect = UIEdgeInsets(top: 30, left: 12, bottom: 0, right: 20)
+    private let _contentEdgeInsect: UIEdgeInsets = {
+        if isMacOrPad {
+            return UIEdgeInsets(top: 100, left: 12, bottom: 0, right: 20)
+        } else {
+            return UIEdgeInsets(top: 30, left: 12, bottom: 0, right: 20)
+        }
+    }()
     
     // these two part is used for mac and ipad
     private let topViewContainer: UIView = UIView()
@@ -63,7 +69,14 @@ public class DocumentEditorViewController: UIViewController {
     
     public let inputbar = InputToolbar(mode: .paragraph)
     
-    private let _toolBar: UIStackView = UIStackView()
+    private let _toolBar: UIStackView = {
+        let view = UIStackView()
+        view.axis = .horizontal
+        view.distribution = .fillProportionally
+        view.spacing = 50
+        return view
+    }()
+    
     private var _keyboardHeight: CGFloat = 0
     
     public override func viewDidLoad() {
@@ -105,8 +118,25 @@ public class DocumentEditorViewController: UIViewController {
             
             if isMacOrPad {
                 self.topViewContainer.addSubview(self.inputbar)
-                self.topViewContainer.sizeAnchor(height: 60)
-                self.inputbar.allSidesAnchors(to: self.topViewContainer, edgeInsets: .init(top: 0, left: Layout.edgeInsets.left, bottom: 0, right: -Layout.edgeInsets.right), considerSafeArea: true)
+                self.view.addSubview(self._toolBar)
+                
+                self.inputbar.sideAnchor(for: [.left, .top, .right, .bottom], to: self.topViewContainer, edgeInsets: .init(top: 0, left: Layout.innerViewEdgeInsets.left, bottom: 0, right: -Layout.innerViewEdgeInsets.right))
+                self.inputbar.sizeAnchor(height: 60)
+                self.topViewContainer.columnAnchor(view: self._toolBar, space: 30, alignment: .right)
+                self._toolBar.sideAnchor(for: .right, to: self.view, edgeInsets: .init(top: 0, left: 0, bottom: 0, right: -Layout.innerViewEdgeInsets.right))
+                self._toolBar.sizeAnchor(height: 64)
+                
+                self.addToolbarButton(title: L10n.Document.Menu.foldAll, icon: Asset.Assets.folded.image) { button in
+                    self.viewModel.foldAll()
+                }
+                
+                self.addToolbarButton(title: L10n.Document.Menu.unfoldAll, icon: Asset.Assets.unfolded.image) { button in
+                    self.viewModel.unfoldAll()
+                }
+                
+                self.addToolbarButton(title: L10n.Document.Menu.outline, icon: Asset.Assets.list.image) { button in
+                    self.showOutline(from: button)
+                }
             } else {
                 self.inputbar.frame = CGRect(origin: .zero, size: .init(width: self.view.bounds.width, height: 44))
                 self.topViewContainer.sizeAnchor(height: 0)
@@ -170,6 +200,38 @@ public class DocumentEditorViewController: UIViewController {
         button.setIcon(icon, for: .normal)
         button.setBackgroundColor(InterfaceTheme.Color.background2, for: .normal)
         return button
+    }
+    
+    private func addToolbarButton(title: String, icon: UIImage, action: @escaping (RoundButton) -> Void) {
+        let button = RoundButton(style: RoundButton.Style.verticle)
+        button.interface { (it, theme) in
+            (it as! RoundButton).setIcon(icon.fill(color: theme.color.interactive), for: .normal)
+            (it as! RoundButton).tintColor = theme.color.interactive
+        }
+        button.title = title
+        button.tapped { action($0) }
+        button.setButtonRadius(22)
+        
+        self._toolBar.addArrangedSubview(button)
+    }
+    
+    private var _rightPartViewController: UIViewController?
+    func toggleRightPart(viewController: UIViewController?) {
+        
+        self._rightPartViewController?.removeFromParent()
+        self._rightPartViewController?.view.removeFromSuperview()
+        
+        if let viewController = viewController {
+            self.addChild(viewController)
+            self._rightPartViewController = viewController
+            
+            self.rightViewContainer.addSubview(viewController.view)
+            viewController.view.allSidesAnchors(to: self.rightViewContainer, edgeInset: 0)
+            
+            self.rightViewContainer.constraint(for: Position.width)?.constant = 300
+        } else {
+            self.rightViewContainer.constraint(for: Position.width)?.constant = 0
+        }
     }
     
     @objc private func _tryToShowUserGuide(_ notification: Notification) {
