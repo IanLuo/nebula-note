@@ -86,13 +86,13 @@ extension UIImage {
     public func addSubImage(_ image: UIImage) -> UIImage {
         var newImage: UIImage!
         
-        UIGraphicsBeginImageContextWithOptions(self.size, false, 0)
+        let newSize = CGSize(width: max(image.size.width, self.size.width), height: max(image.size.height, self.size.height))
         
-        self.draw(in: CGRect(origin: CGPoint.zero, size: size))
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 0)
+        
+        self.draw(in: CGRect(origin: CGPoint(x: (newSize.width - self.size.width) / 2, y: (newSize.height - self.size.height) / 2), size: size))
 
-        let x = (self.size.width - image.size.width) / 2
-        let y = (self.size.height - image.size.height) / 2
-        image.draw(in: CGRect(origin: CGPoint(x: x, y: y), size: image.size), blendMode: CGBlendMode.normal, alpha: 1)
+        image.draw(in: CGRect(origin: CGPoint(x: (newSize.width - image.size.width) / 2, y: (newSize.height - image.size.height) / 2), size: image.size), blendMode: CGBlendMode.normal, alpha: 1)
         
         newImage = UIGraphicsGetImageFromCurrentImageContext()
 

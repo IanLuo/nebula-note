@@ -29,7 +29,7 @@ public class DocumentEditorViewController: UIViewController {
     private let disposeBag = DisposeBag()
     private let _contentEdgeInsect: UIEdgeInsets = {
         if isMacOrPad {
-            return UIEdgeInsets(top: 100, left: 12, bottom: 0, right: 20)
+            return UIEdgeInsets(top: 70, left: 60, bottom: 0, right: 100)
         } else {
             return UIEdgeInsets(top: 30, left: 12, bottom: 0, right: 20)
         }
@@ -71,9 +71,9 @@ public class DocumentEditorViewController: UIViewController {
     
     private let _toolBar: UIStackView = {
         let view = UIStackView()
-        view.axis = .horizontal
-        view.distribution = .fillProportionally
-        view.spacing = 50
+        view.axis = .vertical
+        view.distribution = .equalSpacing
+        view.spacing = 20
         return view
     }()
     
@@ -120,11 +120,11 @@ public class DocumentEditorViewController: UIViewController {
                 self.topViewContainer.addSubview(self.inputbar)
                 self.view.addSubview(self._toolBar)
                 
-                self.inputbar.sideAnchor(for: [.left, .top, .right, .bottom], to: self.topViewContainer, edgeInsets: .init(top: 0, left: Layout.innerViewEdgeInsets.left, bottom: 0, right: -Layout.innerViewEdgeInsets.right))
+                self.inputbar.allSidesAnchors(to: self.topViewContainer, edgeInsets: .init(top: 0, left: Layout.innerViewEdgeInsets.left, bottom: 0, right: -50))
                 self.inputbar.sizeAnchor(height: 60)
-                self.topViewContainer.columnAnchor(view: self._toolBar, space: 30, alignment: .right)
+                self.topViewContainer.columnAnchor(view: self._toolBar, space: 50, alignment: .none)
                 self._toolBar.sideAnchor(for: .right, to: self.view, edgeInsets: .init(top: 0, left: 0, bottom: 0, right: -Layout.innerViewEdgeInsets.right))
-                self._toolBar.sizeAnchor(height: 64)
+                self._toolBar.sizeAnchor(width: 44)
                 
                 self.addToolbarButton(title: L10n.Document.Menu.foldAll, icon: Asset.Assets.folded.image) { button in
                     self.viewModel.foldAll()
@@ -210,7 +210,7 @@ public class DocumentEditorViewController: UIViewController {
         }
         button.title = title
         button.tapped { action($0) }
-        button.setButtonRadius(22)
+        button.setButtonRadius(20)
         
         self._toolBar.addArrangedSubview(button)
     }

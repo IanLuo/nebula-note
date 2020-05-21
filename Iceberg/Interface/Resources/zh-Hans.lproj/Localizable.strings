@@ -75,8 +75,8 @@
 "document.record.title" = "录音";
 
 "document.menu.title" = "目录";
-"document.menu.foldAll" = "折叠所有段落";
-"document.menu.unfoldAll" = "展开所有段落";
+"document.menu.foldAll" = "全部折叠";
+"document.menu.unfoldAll" = "全部展开";
 "document.menu.outline" = "显示大纲";
 "document.menu.capture" = "采集灵感";
 "document.menu.enableReadingMode" = "进入阅读模式";

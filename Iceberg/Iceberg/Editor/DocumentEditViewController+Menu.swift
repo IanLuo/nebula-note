@@ -634,4 +634,53 @@ extension DocumentEditorViewController {
 
         self.viewModel.showGlobalCaptureEntry()
     }
+    
+    func pickAttachment(location: Int) {
+        let actionsViewController = ActionsViewController()
+        
+        Attachment.Kind.allCases.forEach { attachment in
+            let haveAccess = !attachment.isMemberFunction || self.viewModel.isMember
+            var icon = attachment.icon
+            if !haveAccess {
+                icon = attachment.icon.addSubImage(Asset.Assets.proLabel.image.translation(offset: CGPoint(x: 0, y: 10)))
+            }
+            
+            actionsViewController.addActionAutoDismiss(icon: icon, title: attachment.name) {
+                self.viewModel.dependency.globalCaptureEntryWindow?.hide()
+                
+                if haveAccess {
+                    self.viewModel.context.coordinator?.showAttachmentPicker(kind: attachment,
+                                                                             complete: { [unowned self] attachmentId in
+                                                                                let oldSelection = self.textView.selectedRange
+                                                                                let result = self.viewModel.performAction(EditAction.addAttachment(location,
+                                                                                                                                                   attachmentId,
+                                                                                                                                                   attachment.rawValue),
+                                                                                                                          textView: self.textView)
+                                                                                DispatchQueue.runOnMainQueueSafely {
+                                                                                    self.textView.selectedRange = oldSelection.offset(result.delta)
+                                                                                    self.viewModel.dependency.globalCaptureEntryWindow?.show()
+                                                                                }
+                                                                                
+                                                                                // this is special for link, because link here do not need to save attachment file, so delete the attachment
+                                                                                if attachment == .link {
+                                                                                    self.viewModel.dependency.attachmentManager.delete(key: attachmentId, completion: {}, failure: { _ in })
+                                                                                }
+                        }, cancel: { [weak self] in
+                            self?.viewModel.dependency.globalCaptureEntryWindow?.show()
+                    })
+                } else {
+                    self.viewModel.context.coordinator?.showMembership()
+                }
+                
+            }
+        }
+        
+        if let location = self.textView.rect(forStringRange: self.textView.selectedRange) {
+            actionsViewController.present(from: self, at: self.textView, location: location.center)
+        } else if let headingRange = self.viewModel.heading(at: location)?.range, let location = self.textView.rect(forStringRange: headingRange){
+            actionsViewController.present(from: self, at: self.textView, location: location.center)
+        } else {
+            actionsViewController.present(from: self)
+        }
+    }
 }

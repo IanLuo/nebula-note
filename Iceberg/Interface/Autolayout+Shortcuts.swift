@@ -15,6 +15,7 @@ public struct Position: OptionSet {
         self.rawValue = rawValue
     }
     
+    public static let none: Position = Position(rawValue: 0)
     public static let top: Position = Position(rawValue: 1 << 0)
     public static let left: Position = Position(rawValue: 1 << 1)
     public static let bottom: Position = Position(rawValue: 1 << 2)
