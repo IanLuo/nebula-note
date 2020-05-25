@@ -41,8 +41,8 @@ public class MacHomeViewController: UIViewController {
     
     public override func viewDidLoad() {
         self.view.addSubview(self.toolBar)
-        self.view.addSubview(self.leftPart)
         self.view.addSubview(self.middlePart)
+        self.view.addSubview(self.leftPart)
         self.view.addSubview(self.rightPart)
         
         self.setupUI()
@@ -66,8 +66,9 @@ public class MacHomeViewController: UIViewController {
         
         self.middlePart.sideAnchor(for: .bottom, to: self.view, edgeInset: 0)
         self.middlePart.sizeAnchor(width: Constants.middleWidth)
-        self.middlePart.topAnchor.constraint(equalTo: self.toolBar.bottomAnchor).isActive = true
-        self.middlePart.leftAnchor.constraint(equalTo: self.leftPart.rightAnchor).isActive = true
+        
+        self.toolBar.columnAnchor(view: self.middlePart, alignment: .none)
+        self.leftPart.rowAnchor(view: self.middlePart)
         
         self.rightPart.sideAnchor(for: [.bottom, .right], to: self.view, edgeInset: 0)
         self.rightPart.topAnchor.constraint(equalTo: self.toolBar.bottomAnchor).isActive = true
@@ -138,23 +139,25 @@ public class MacHomeViewController: UIViewController {
     
     private func toggleLeftPartVisiability(visiable: Bool) {
         if visiable {
-            self.leftPart.constraint(for: .width)?.constant = 0
+            self.leftPart.constraint(for: .left)?.constant = -Constants.leftWidth
         } else {
-            self.leftPart.constraint(for: .width)?.constant = Constants.leftWidth
+            self.leftPart.constraint(for: .left)?.constant = 0
         }
-        UIView.animate(withDuration: 0.2) {
-            self.leftPart.setNeedsLayout()
+        
+        UIView.animate(withDuration: 0.3) {
+            self.view.layoutIfNeeded()
         }
     }
     
     private func toggleMiddlePartVisiability(visiable: Bool) {
         if visiable {
-            self.middlePart.constraint(for: .width)?.constant = 0
+            self.leftPart.constraint(for: .right)?.constant = Constants.middleWidth
         } else {
-            self.middlePart.constraint(for: .width)?.constant = Constants.middleWidth
+            self.leftPart.constraint(for: .right)?.constant = 0
         }
-        UIView.animate(withDuration: 0.2) {
-            self.middlePart.setNeedsLayout()
+        
+        UIView.animate(withDuration: 0.3) {
+            self.view.layoutIfNeeded()
         }
     }
     
