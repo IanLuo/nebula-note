@@ -520,6 +520,8 @@ public enum L10n {
       public static let enableReadingMode = L10n.tr("Localizable", "document.menu.enableReadingMode")
       /// Fold all
       public static let foldAll = L10n.tr("Localizable", "document.menu.foldAll")
+      /// Full screen
+      public static let fullScreen = L10n.tr("Localizable", "document.menu.fullScreen")
       /// Show outline
       public static let outline = L10n.tr("Localizable", "document.menu.outline")
       /// Menu

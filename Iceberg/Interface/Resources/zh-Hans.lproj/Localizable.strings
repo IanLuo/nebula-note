@@ -81,6 +81,7 @@
 "document.menu.capture" = "采集灵感";
 "document.menu.enableReadingMode" = "进入阅读模式";
 "document.menu.enableEditingMode" = "进入编辑模式";
+"document.menu.fullScreen" = "全屏";
 
 "document.edit.date.all-day" = "全天";
 

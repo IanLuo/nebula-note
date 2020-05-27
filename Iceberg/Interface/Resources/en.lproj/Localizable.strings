@@ -81,6 +81,7 @@
 "document.menu.capture" = "Capture an idea";
 "document.menu.enableReadingMode" = "Reading mode";
 "document.menu.enableEditingMode" = "Editing mode";
+"document.menu.fullScreen" = "Full screen";
 
 "document.edit.date.all-day" = "All day";
 

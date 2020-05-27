@@ -70,6 +70,10 @@ public class EditorCoordinator: Coordinator {
         self.dependency.editorContext.end(with: self._url)
     }
     
+    public func toggleFullScreen() {
+        (self.rootCoordinator as? Application)?.homeCoordinator?.toggleFullScreen()
+    }
+    
     public func showOutline(ignoredHeadingLocation: Int? = nil, from: UIView? = nil, completion: @escaping (OutlineLocation) -> Void) {
         let navigationController = Coordinator.createDefaultNavigationControlller()
         navigationController.isNavigationBarHidden = true

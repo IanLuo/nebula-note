@@ -30,6 +30,9 @@ public class MacHomeViewController: UIViewController {
     private var middlePart: UIView = UIView()
     private var rightPart: UIView = UIView()
     
+    private let toggleLeftPartButton = UIButton()
+    private let toggleMiddlePartButton = UIButton()
+    
     private var dashboardViewController: DashboardViewController!
     private var documentTabsContainerViewController: MacDocumentTabContainerViewController!
     
@@ -40,12 +43,16 @@ public class MacHomeViewController: UIViewController {
     }
     
     public override func viewDidLoad() {
+        self.navigationController?.navigationBar.isHidden = true
         self.view.addSubview(self.toolBar)
         self.view.addSubview(self.middlePart)
         self.view.addSubview(self.leftPart)
         self.view.addSubview(self.rightPart)
         
         self.setupUI()
+        
+        self.toggleLeftPartVisiability(visiable: true, animated: false)
+        self.toggleMiddlePartVisiability(visiable: false, animated: false)
     }
     
     public func showDocument(url: URL, editorViewController: DocumentEditorViewController) {
@@ -87,18 +94,25 @@ public class MacHomeViewController: UIViewController {
         ideasButton.setImage(Asset.Assets.inspiration.image, for: .normal)
         ideasButton.rx.tap.subscribe().disposed(by: self.disposeBag)
         
-        let toggleLeftPartButton = UIButton()
-        toggleLeftPartButton.setImage(Asset.Assets.leftPart.image, for: .normal)
-        toggleLeftPartButton.rx.tap.subscribe(onNext: { [weak self, unowned toggleLeftPartButton] in
-            self?.toggleLeftPartVisiability(visiable: !toggleLeftPartButton.isSelected)
-            toggleLeftPartButton.isSelected = !toggleLeftPartButton.isSelected
-        }).disposed(by: self.disposeBag)
         
-        let toggleMiddlePartButton = UIButton()
-        toggleMiddlePartButton.setImage(Asset.Assets.middlePart.image, for: .normal)
-        toggleMiddlePartButton.rx.tap.subscribe(onNext: { [weak self, unowned toggleMiddlePartButton] in
+        self.toggleLeftPartButton.interface { (me, theme) in
+            let button = me as! UIButton
+            button.setImage(Asset.Assets.leftPart.image.fill(color: theme.color.interactive), for: .normal)
+            button.setImage(Asset.Assets.leftPart.image.fill(color: theme.color.descriptive), for: .selected)
+        }
+
+        self.toggleLeftPartButton.rx.tap.subscribe(onNext: { [weak self, unowned toggleLeftPartButton] in
+            self?.toggleLeftPartVisiability(visiable: !toggleLeftPartButton.isSelected)
+        }).disposed(by: self.disposeBag)
+                
+        self.toggleMiddlePartButton.interface { (me, theme) in
+            let button = me as! UIButton
+            button.setImage(Asset.Assets.middlePart.image.fill(color: theme.color.interactive), for: .normal)
+            button.setImage(Asset.Assets.middlePart.image.fill(color: theme.color.descriptive), for: .selected)
+        }
+        
+        self.toggleMiddlePartButton.rx.tap.subscribe(onNext: { [weak self, unowned toggleMiddlePartButton] in
             self?.toggleMiddlePartVisiability(visiable: !toggleMiddlePartButton.isSelected)
-            toggleMiddlePartButton.isSelected = !toggleMiddlePartButton.isSelected
         }).disposed(by: self.disposeBag)
         
         let actionsStack = UIStackView()
@@ -115,6 +129,11 @@ public class MacHomeViewController: UIViewController {
         stackView.sizeAnchor(height: 80)
     }
     
+    public func hideLeftAndMiddlePart() {
+        self.toggleLeftPartVisiability(visiable: false)
+        self.toggleMiddlePartVisiability(visiable: false)
+    }
+    
     private func setupLeftPart() {
         let nav = Application.createDefaultNavigationControlller(root: self.dashboardViewController, transparentBar: true)
         self.addChildViewController(nav)
@@ -129,36 +148,52 @@ public class MacHomeViewController: UIViewController {
         self.documentTabsContainerViewController.view.allSidesAnchors(to: self.rightPart, edgeInset: 0)
     }
     
-    public func chooseTab(index: Int, subTab: Int?) {
-        if let subTab = subTab {
-            self.dashboardViewController.selectOnSubtab(tab: index, subtab: subTab)
-        } else {
-            self.dashboardViewController.selectOnTab(index: index)
-        }
-    }
-    
-    private func toggleLeftPartVisiability(visiable: Bool) {
+    internal func toggleLeftPartVisiability(visiable: Bool, animated: Bool = true) {
+        guard visiable != self.isLeftPartVisiable else { return }
+        
         if visiable {
-            self.leftPart.constraint(for: .left)?.constant = -Constants.leftWidth
-        } else {
             self.leftPart.constraint(for: .left)?.constant = 0
+        } else {
+            self.leftPart.constraint(for: .left)?.constant = -Constants.leftWidth
         }
         
-        UIView.animate(withDuration: 0.3) {
+        self.toggleLeftPartButton.isSelected = visiable
+        
+        if animated {
+            UIView.animate(withDuration: 0.3) {
+                self.view.layoutIfNeeded()
+            }
+        } else {
             self.view.layoutIfNeeded()
         }
     }
     
-    private func toggleMiddlePartVisiability(visiable: Bool) {
+    internal var isLeftPartVisiable: Bool {
+        return self.leftPart.constraint(for: .left)?.constant == 0
+    }
+    
+    internal func toggleMiddlePartVisiability(visiable: Bool, animated: Bool = true) {
+        guard visiable != self.isMiddlePartVisiable else { return }
+        
         if visiable {
-            self.leftPart.constraint(for: .right)?.constant = Constants.middleWidth
-        } else {
             self.leftPart.constraint(for: .right)?.constant = 0
+        } else {
+            self.leftPart.constraint(for: .right)?.constant = Constants.middleWidth
         }
         
-        UIView.animate(withDuration: 0.3) {
+        self.toggleMiddlePartButton.isSelected = visiable
+        
+        if animated {
+            UIView.animate(withDuration: 0.3) {
+                self.view.layoutIfNeeded()
+            }
+        } else {
             self.view.layoutIfNeeded()
         }
+    }
+    
+    internal var isMiddlePartVisiable: Bool {
+        return self.leftPart.constraint(for: .right)?.constant == 0
     }
     
     public func showInMiddlePart(viewController: UIViewController) {
@@ -171,6 +206,10 @@ public class MacHomeViewController: UIViewController {
         self.middlePart.addSubview(viewController.view)
         viewController.view.allSidesAnchors(to: self.middlePart, edgeInset: 0)
         lastChildViewController = viewController
+        
+        if !self.isMiddlePartVisiable {
+            self.toggleMiddlePartVisiability(visiable: true)
+        }
     }
 }
 

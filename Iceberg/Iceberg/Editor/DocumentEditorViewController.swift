@@ -29,7 +29,7 @@ public class DocumentEditorViewController: UIViewController {
     private let disposeBag = DisposeBag()
     private let _contentEdgeInsect: UIEdgeInsets = {
         if isMacOrPad {
-            return UIEdgeInsets(top: 70, left: 60, bottom: 0, right: 100)
+            return UIEdgeInsets(top: 30, left: 60, bottom: 0, right: 100)
         } else {
             return UIEdgeInsets(top: 30, left: 12, bottom: 0, right: 20)
         }
@@ -125,6 +125,10 @@ public class DocumentEditorViewController: UIViewController {
                 self.topViewContainer.columnAnchor(view: self._toolBar, space: 50, alignment: .none)
                 self._toolBar.sideAnchor(for: .right, to: self.view, edgeInsets: .init(top: 0, left: 0, bottom: 0, right: -Layout.innerViewEdgeInsets.right))
                 self._toolBar.sizeAnchor(width: 44)
+                
+                self.addToolbarButton(title: L10n.Document.Menu.fullScreen, icon: Asset.Assets.folded.image) { button in
+                    self.viewModel.context.coordinator?.toggleFullScreen()
+                }
                 
                 self.addToolbarButton(title: L10n.Document.Menu.foldAll, icon: Asset.Assets.folded.image) { button in
                     self.viewModel.foldAll()

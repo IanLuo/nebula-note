@@ -77,6 +77,18 @@ public class HomeCoordinator: Coordinator {
                 (self.viewController as? HomeViewController)?.showChildViewController(tabs[SettingsAccessor.Item.landingTabIndex.get(Int.self) ?? 3])
             }).disposed(by: self.disposeBag)
         }
+        
+        if let opendFiles = SettingsAccessor.Item.openedDocuments.get([URL].self) {
+            if isMacOrPad {
+                opendFiles.forEach {
+                    self.openDocumentInHomeViewRightPart(url: $0, location: 0)
+                }
+            } else {
+                if let first = opendFiles.first {
+                    self.openDocument(url: first, location: 0)
+                }
+            }
+        }
     }
     
     private var tempCoordinator: Coordinator?
@@ -202,6 +214,21 @@ extension HomeCoordinator: DashboardViewControllerDelegate {
             agendaCoordinator.viewController?.title = subTabType.title
             self.showTempCoordinator(agendaCoordinator)
         }
+    }
+    
+    public func toggleFullScreen() {
+        let macHomeViewController = (self.viewController as? MacHomeViewController)
+        
+        if macHomeViewController?.isLeftPartVisiable == true || macHomeViewController?.isMiddlePartVisiable == true {
+            macHomeViewController?.hideLeftAndMiddlePart()
+        } else {
+            showAllParts()
+        }
+    }
+    
+    public func showAllParts() {
+        (self.viewController as? MacHomeViewController)?.toggleLeftPartVisiability(visiable: true)
+        (self.viewController as? MacHomeViewController)?.toggleMiddlePartVisiability(visiable: true)
     }
     
     public func showHeadings(tag: String) {

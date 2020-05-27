@@ -18,6 +18,7 @@ public class Application: Coordinator {
     private var _entranceWindow: CaptureGlobalEntranceWindow?
     fileprivate var _didTheUserTurnOffiCloudFromSettings: Bool = false
     private let disposeBag = DisposeBag()
+    var homeCoordinator: HomeCoordinator?
     
     public init(window: UIWindow) {
         self.window = window
@@ -87,7 +88,7 @@ public class Application: Coordinator {
     }
     
     public override func start(from: Coordinator?, animated: Bool) {
-        var homeCoord: Coordinator = HomeCoordinator(stack: self.stack, dependency: self.dependency)
+        self.homeCoordinator = HomeCoordinator(stack: self.stack, dependency: self.dependency)
                 
         // 导入 extension 收集的 idea
         self.handleSharedIdeas()
@@ -110,7 +111,7 @@ public class Application: Coordinator {
             strongSelf.dependency.eventObserver.emit(UIStackReadyEvent())
         }
         
-        homeCoord.start(from: self, animated: animated)
+        self.homeCoordinator?.start(from: self, animated: animated)
         
         // 设置 iCloud
         self._setupiCloud()
