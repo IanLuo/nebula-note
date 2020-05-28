@@ -77,6 +77,31 @@ public enum SettingsError: Error {
         return OutlineParser.Values.Heading.Priority.all
     }
     
+    public func logOpenDocument(url: URL) {
+        if var paths = Item.openedDocuments.get([String].self) {
+            paths.append(url.documentRelativePath)
+            paths = Array(Set(paths))
+            Item.openedDocuments.set(paths, completion: {})
+        } else {
+            Item.openedDocuments.set([url.documentRelativePath], completion: {})
+        }
+    }
+    
+    public func logCloseDocument(url: URL) {
+        if var paths = Item.openedDocuments.get([String].self) {
+            paths.removeAll { p -> Bool in
+                p == url.documentRelativePath
+            }
+            Item.openedDocuments.set(paths, completion: {})
+        }
+    }
+    
+    public var openedDocuments: [URL]? {
+        return Item.openedDocuments.get([String].self)?.map {
+            URL.documentBaseURL.appendingPathComponent($0)
+        }
+    }
+    
     public var interfaceStyle: InterfaceStyle {
         // 支持 dark mode 的系统，默认值为自动，否则为 light
         if #available(iOS 13, *) {

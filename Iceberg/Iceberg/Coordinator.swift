@@ -27,7 +27,7 @@ public class Dependency {
     lazy var appContext: AppContext = { AppContext() }()
     lazy var documentManager: DocumentManager = { DocumentManager(editorContext: editorContext, eventObserver: eventObserver, syncManager: syncManager) }()
     lazy var documentSearchManager: DocumentSearchManager = { DocumentSearchManager() }()
-    lazy var editorContext: EditorContext = { EditorContext(eventObserver: eventObserver) }()
+    lazy var editorContext: EditorContext = { EditorContext(eventObserver: eventObserver, settingsAccessor: settingAccessor) }()
     lazy var textTrimmer: OutlineTextTrimmer = { OutlineTextTrimmer(parser: OutlineParser()) }()
     lazy var eventObserver: EventObserver = { EventObserver() }()
     lazy var settingAccessor: SettingsAccessor = { SettingsAccessor.shared }()
@@ -47,6 +47,10 @@ public class Coordinator {
     private let id: String = UUID().uuidString
     public var children: [Coordinator] = []
     public let stack: UINavigationController
+    
+    open func didMoveIn() {}
+    
+    open func didMoveOut() {}
     
     /// modal level
     public private(set) var level: Int = 0
@@ -109,15 +113,20 @@ public class Coordinator {
         if let transitionViewController = top as? TransitionViewController {
             transitionViewController.dismiss(animated: true) {
                 completion?()
+                self.didMoveOut()
             }
         } else if self.stack == parent?.stack {
             self.stack.popViewController(animated: animated)
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.3) {
                 completion?()
+                self.didMoveOut()
             }
         } else {
             self.stack.presentingViewController?.dismiss(animated: animated,
-                                                         completion: completion)
+                                                         completion: {
+                                                            completion?()
+                                                            self.didMoveOut()
+            })
         }
     }
     
@@ -128,6 +137,10 @@ public class Coordinator {
                                               animated: animated)
                 
                 self.index = self.parent!.index + 1
+                
+                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.3) {
+                    self.didMoveIn()
+                }
             } else { // means it's a modal
                 self.isModal = true
                 
@@ -137,7 +150,9 @@ public class Coordinator {
                     self.stack.pushViewController(viewController,animated: false)
                     self.stack.modalPresentationStyle = viewController.modalPresentationStyle
                     self.stack.transitioningDelegate = viewController.transitioningDelegate
-                    top?.present(self.stack, animated: animated, completion: nil)
+                    top?.present(self.stack, animated: animated, completion: {
+                        self.didMoveIn()
+                    })
                 }
                 
                 self.level = self.parent!.level + 1

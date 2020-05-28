@@ -78,14 +78,17 @@ public class HomeCoordinator: Coordinator {
             }).disposed(by: self.disposeBag)
         }
         
-        if let opendFiles = SettingsAccessor.Item.openedDocuments.get([URL].self) {
+    }
+    
+    public override func didMoveIn() {
+        if let opendFiles = dependency.settingAccessor.openedDocuments {
             if isMacOrPad {
                 opendFiles.forEach {
                     self.openDocumentInHomeViewRightPart(url: $0, location: 0)
                 }
             } else {
                 if let first = opendFiles.first {
-                    self.openDocument(url: first, location: 0)
+                    self.topCoordinator?.openDocument(url: first, location: 0)
                 }
             }
         }

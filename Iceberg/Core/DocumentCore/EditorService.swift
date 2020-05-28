@@ -23,18 +23,20 @@ public class EditorService {
     private let _eventObserver: EventObserver
     private var _queue: DispatchQueue!
     private let _url: URL
+    private let _settingsAccessor: SettingsAccessor
     
     // means the document it opens, is not stored on users document folder
     public let isTemp: Bool
     
     // MARK: -
-    internal init(url: URL, queue: DispatchQueue, eventObserver: EventObserver, parser: OutlineParser, isTemp: Bool = false) {
+    internal init(url: URL, queue: DispatchQueue, eventObserver: EventObserver, parser: OutlineParser, isTemp: Bool = false, settingsAccessor: SettingsAccessor) {
         log.info("creating editor service with url: \(url)")
         self._url = url
         self.isTemp = isTemp
         self._eventObserver = eventObserver
         self._editorController = EditorController(parser: parser, attachmentManager: AttachmentManager())
         self._queue = queue
+        self._settingsAccessor = settingsAccessor
         
         self._editorController.delegate = self
         
@@ -89,8 +91,10 @@ public class EditorService {
                 // 打开文档，触发解析，然后返回
                 document.open { [unowned document] (isOpenSuccessfully: Bool) in
                     guard let strongSelf = self else { return }
-                    
+                                        
                     if isOpenSuccessfully {
+                        
+                        self?._settingsAccessor.logOpenDocument(url: strongSelf._url)
                         DispatchQueue.runOnMainQueueSafely {
                             log.info("open document success(\(strongSelf._url))")
                              strongSelf._editorController.string = document.string // 触发解析
@@ -118,10 +122,15 @@ public class EditorService {
         
         self.isClosing = true
         
-        self._queue.async {
+        self._queue.async { [weak self] in
             document.close {
                 completion?($0)
-                self.isClosing = false
+                
+                guard let strongSelf = self else { return }
+                
+                self?._settingsAccessor.logCloseDocument(url: strongSelf._url)
+                
+                self?.isClosing = false
             }
         }
     }

@@ -12,6 +12,7 @@ import Interface
 import Core
 import RxSwift
 import StoreKit
+import Doorbell
 
 public protocol SettingsViewControllerDelegate: class {
     
@@ -184,6 +185,7 @@ public class SettingsViewController: UITableViewController {
         selector.addItem(title: L10n.Setting.Feedback.rate)
         selector.addItem(title: L10n.Setting.Feedback.promot)
         selector.addItem(title: L10n.Setting.Feedback.forum)
+        selector.addItem(title: "Feedback")
         selector.onCancel = { viewController in
             viewController.dismiss(animated: true)
             self.viewModel.showGlobalCaptureEntry()
@@ -203,6 +205,18 @@ public class SettingsViewController: UITableViewController {
                 }
             case 2:
                 UIApplication.shared.open(URL(string: "https://forum.x3note.site/")!, options: [:], completionHandler: nil)
+            case 3:
+                let appId = "11641"
+                let appKey = "k2q6pHh2ekAbQjELagm2VZ3rHJFHEj3bl1GI529FjaDO29hfwLcn5sJ9jBSVA24Q"
+
+                viewController.dismiss(animated: true) {
+                    let feedback = Doorbell.init(apiKey: appKey, appId: appId)
+                    feedback!.showFeedbackDialog(in: self, completion: { (error, cancelled) -> Void in
+                        if (error?.localizedDescription != nil) {
+                            print(error!.localizedDescription);
+                        }
+                    })
+                }
             default: break
             }
         }

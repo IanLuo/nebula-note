@@ -10,11 +10,13 @@ import Foundation
 
 public class EditorContext {
     
-    public init(eventObserver: EventObserver) {
+    public init(eventObserver: EventObserver, settingsAccessor: SettingsAccessor) {
         self._eventObserver = eventObserver
+        self._settingsAccessor = settingsAccessor
     }
     
     private let _eventObserver: EventObserver
+    private let _settingsAccessor: SettingsAccessor
     private static var _cachedServiceInstances: [String: EditorService] = [:]
     public let _editingQueue: DispatchQueue = DispatchQueue(label: "editor.doing.editing", qos: DispatchQoS.userInteractive)
     
@@ -23,7 +25,7 @@ public class EditorContext {
     }
     
     public func requestTemp(url: URL) -> EditorService {
-        return EditorService(url: url, queue: self._editingQueue, eventObserver: self._eventObserver, parser: OutlineParser(), isTemp: true)
+        return EditorService(url: url, queue: self._editingQueue, eventObserver: self._eventObserver, parser: OutlineParser(), isTemp: true, settingsAccessor: self._settingsAccessor)
     }
     
     public func request(url: URL) -> EditorService {
@@ -64,7 +66,7 @@ public class EditorContext {
     
     private func _createAndCacheNewService(with url: URL) -> EditorService {
         let cacheKey = url.documentRelativePath
-        let newService = EditorService(url: url, queue: self._editingQueue, eventObserver: self._eventObserver, parser: OutlineParser())
+        let newService = EditorService(url: url, queue: self._editingQueue, eventObserver: self._eventObserver, parser: OutlineParser(), settingsAccessor: self._settingsAccessor)
         EditorContext._cachedServiceInstances[cacheKey] = newService
         log.info("created new editor service with url: \(url), and saved with cache key: \(cacheKey)")
         return newService
