@@ -90,7 +90,8 @@ private class TabBar: UIView {
     
     private let stackView: UIStackView = {
         let stackView = UIStackView()
-        stackView.alignment = .firstBaseline
+        stackView.alignment = .center
+        stackView.distribution = .equalCentering
         stackView.spacing = 20
         return stackView
     }()
@@ -105,7 +106,8 @@ private class TabBar: UIView {
     private func setup() {
         self.addSubview(self.stackView)
         
-        self.stackView.allSidesAnchors(to: self, edgeInset: 0)
+        self.stackView.sideAnchor(for: [.left, .top, .bottom], to: self, edgeInset: 0)
+        self.stackView.rightAnchor.constraint(lessThanOrEqualTo: self.rightAnchor).isActive = true
         
         self.interface { (me, theme) in
             me.backgroundColor = theme.color.background1
