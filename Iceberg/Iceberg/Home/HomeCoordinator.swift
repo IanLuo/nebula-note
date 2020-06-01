@@ -37,7 +37,7 @@ public class HomeCoordinator: Coordinator {
         dashboardViewController.delegate = self
         
         if isMacOrPad {
-            self.viewController = MacHomeViewController(dashboardViewController: dashboardViewController, documentTabsContainerViewController: MacDocumentTabContainerViewController())
+            self.viewController = MacHomeViewController(dashboardViewController: dashboardViewController, documentTabsContainerViewController: MacDocumentTabContainerViewController(viewModel: viewModel))
         } else {
             let homeViewController = HomeViewController(masterViewController: navigationController)
             self.viewController = homeViewController

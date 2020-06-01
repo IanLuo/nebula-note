@@ -1594,6 +1594,7 @@
 				E43F74CB21840083000206E5 /* Embed Frameworks */,
 				89BB8E1A607231A876C83FE3 /* [CP] Embed Pods Frameworks */,
 				E43D4F4B22C0BFAF00B2322B /* Embed App Extensions */,
+				E4C93F5C24814223006A806C /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -2019,6 +2020,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n$PODS_ROOT/SwiftGen/bin/swiftgen config run\n";
+		};
+		E4C93F5C24814223006A806C /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n#${PODS_ROOT}/FirebaseCrashlytics/run\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
