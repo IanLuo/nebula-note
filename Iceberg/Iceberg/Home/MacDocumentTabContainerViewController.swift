@@ -58,14 +58,22 @@ public class MacDocumentTabContainerViewController: UIViewController {
                 viewController.view.allSidesAnchors(to: strongSelf.container, edgeInset: 0)
             }
         }).disposed(by: self.disposeBag)
+        
+        self.interface { (me, theme) in
+            me.view.backgroundColor = theme.color.background1
+        }
     }
     
     public func showDocument(url: URL, viewController: DocumentEditorViewController) {
-        self.openingViewControllers[url] = viewController
-        self.addChild(viewController)
-        
-        self.container.addSubview(viewController.view)
-        viewController.view.allSidesAnchors(to: self.container, edgeInset: 0)
+        if let viewController = self.openingViewControllers[url] {
+            self.container.addSubview(viewController.view)
+            viewController.view.allSidesAnchors(to: self.container, edgeInset: 0)
+        } else {
+            self.openingViewControllers[url] = viewController
+            self.container.addSubview(viewController.view)
+            viewController.view.allSidesAnchors(to: self.container, edgeInset: 0)
+            self.addChild(viewController)
+        }
         
         self.tabBar.openDocument.onNext(url)
     }
@@ -91,8 +99,7 @@ private class TabBar: UIView {
     private let stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.alignment = .center
-        stackView.distribution = .equalCentering
-        stackView.spacing = 20
+        stackView.spacing = 10
         return stackView
     }()
     
@@ -113,20 +120,49 @@ private class TabBar: UIView {
             me.backgroundColor = theme.color.background1
         }
         
-        self.openDocument.subscribe(onNext: { url in
-            let tab = Tab(url: url)
-            self.stackView.addArrangedSubview(tab)
+        self.openDocument.subscribe(onNext: { [weak self] url in
+            guard let strongSelf = self else { return }
             
-            tab.onCloseTapped.subscribe(onNext: { [weak tab] url in
-                self.onCloseDocument.onNext(url)
-                tab?.removeFromSuperview()
-            }).disposed(by: self.disposeBag)
+            var didFoundPresentingTab: Bool = false
+            strongSelf.stackView.arrangedSubviews.forEach {
+                if let tab = $0 as? Tab {
+                    if  tab.url == url {
+                        tab.isSelected.onNext(true)
+                        didFoundPresentingTab = true
+                    } else {
+                        tab.isSelected.onNext(false)
+                    }
+                }
+            }
             
-            tab.onSelect.subscribe(onNext: { url in
-                self.onSelectDocument.onNext(url)
-            }).disposed(by: self.disposeBag)
+            if !didFoundPresentingTab {
+                let tab = Tab(url: url)
+                tab.isSelected.onNext(true)
+                strongSelf.stackView.addArrangedSubview(tab)
+                
+                tab.onCloseTapped.subscribe(onNext: { [weak tab] url in
+                    strongSelf.onCloseDocument.onNext(url)
+                    tab?.removeFromSuperview()
+                }).disposed(by: strongSelf.disposeBag)
+                
+                tab.onSelect.subscribe(onNext: { url in
+                    strongSelf.onSelectDocument.onNext(url)
+                    
+                    strongSelf.stackView.arrangedSubviews.forEach {
+                        if let tab = $0 as? Tab {
+                            if  tab.url == url {
+                                tab.isSelected.onNext(true)
+                            } else {
+                                tab.isSelected.onNext(false)
+                            }
+                        }
+                    }
+                }).disposed(by: strongSelf.disposeBag)
+            }
+            
         }).disposed(by: self.disposeBag)
     }
+    
 }
 
 private class Tab: UIView {
@@ -134,6 +170,7 @@ private class Tab: UIView {
     
     let onCloseTapped: PublishSubject<URL> = PublishSubject()
     let onSelect: PublishSubject<URL> = PublishSubject()
+    let isSelected: BehaviorSubject<Bool> = BehaviorSubject(value: false)
     
     private let disposeBag: DisposeBag = DisposeBag()
     
@@ -151,17 +188,18 @@ private class Tab: UIView {
         
         closeButton.interface { (me, theme) in
             let button = me as! UIButton
-            button.setImage(Asset.Assets.cross.image.fill(color: theme.color.interactive), for: .normal)
+            button.setImage(Asset.Assets.cross.image.fill(color: theme.color.interactive).resize(upto: CGSize(width: 10, height: 10)), for: .normal)
             label.setTitleColor(theme.color.interactive, for: .normal)
-            self.backgroundColor = theme.color.background1
+            label.titleLabel?.font = theme.font.footnote
+            self.backgroundColor = theme.color.background2
         }
         
         self.addSubview(label)
         self.addSubview(closeButton)
         
-        label.sideAnchor(for: [.left, .top, .bottom], to: self, edgeInset: 0)
+        label.sideAnchor(for: [.left, .top, .bottom], to: self, edgeInsets: .init(top: 0, left: 5, bottom: 0, right: 0))
         label.rowAnchor(view: closeButton, space: 5)
-        closeButton.sideAnchor(for: [.top, .bottom, .right], to: self, edgeInset: 5)
+        closeButton.sideAnchor(for: [.top, .bottom, .right], to: self, edgeInsets: .init(top: 0, left: 15, bottom: 0, right: -5))
         
         label.rx
             .tap
@@ -174,5 +212,9 @@ private class Tab: UIView {
             .map { [unowned self] in self.url }
             .bind(to: self.onCloseTapped)
             .disposed(by: self.disposeBag)
+        
+        isSelected.subscribe(onNext: { [weak self] isSelected in
+            self?.backgroundColor = isSelected ? InterfaceTheme.Color.spotlight : InterfaceTheme.Color.background2
+        }).disposed(by: self.disposeBag)
     }
 }
