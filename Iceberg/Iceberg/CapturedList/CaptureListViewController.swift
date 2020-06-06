@@ -293,7 +293,8 @@ extension CaptureListViewController: CaptureTableCellDelegate {
                         }
                     }
                     
-                    self.present(confirmViewController, animated: true)
+                    guard let index = self.viewModel.index(for: cellModel) else { return }
+                    confirmViewController.present(from: self, at: self.tableView.cellForRow(at: IndexPath(row: index, section: 0)))
                 })
             }
         case .pick:

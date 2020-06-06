@@ -21,7 +21,17 @@ public class ConfirmViewController: TransitionViewController {
         return view
     }()
     
-    public var fromView: UIView?
+    public var fromView: UIView? {
+        didSet {
+            if isMacOrPad {
+                self.popoverPresentationController?.sourceView = fromView
+                
+                if let fromView = fromView {
+                    self.popoverPresentationController?.sourceRect = CGRect(origin: CGPoint(x: fromView.frame.midX, y: fromView.frame.midY), size: .zero)
+                }
+            }
+        }
+    }
     
     public var contentText: String = "you haven't set any content"
     
@@ -41,7 +51,12 @@ public class ConfirmViewController: TransitionViewController {
         super.init(nibName: nil, bundle: nil)
         
         self.transitioningDelegate = self._transitionDelegate
-        self.modalPresentationStyle = .overCurrentContext
+        
+        if isMacOrPad {
+            self.modalPresentationStyle = UIModalPresentationStyle.popover
+        } else {
+            self.modalPresentationStyle = .custom
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -56,12 +71,26 @@ public class ConfirmViewController: TransitionViewController {
         let tap = UITapGestureRecognizer(target: self, action: #selector(_cancel))
         tap.delegate = self
         self.view.addGestureRecognizer(tap)
+        
+        if isMacOrPad {
+            if self.fromView == nil {
+                self.popoverPresentationController?.sourceView = self.view
+                self.popoverPresentationController?.sourceRect = CGRect(x: self.view.bounds.width / 2, y: self.view.bounds.height / 2, width: 0, height: 0)
+            }
+            let size = self.view.systemLayoutSizeFitting(CGSize(width: self.view.bounds.width, height: 0))
+            self.preferredContentSize = CGSize(width: 300, height: size.height)
+        }
     }
     
     private func _setupUI() {
         self.view.addSubview(self.contentView)
         self.contentView.backgroundColor = InterfaceTheme.Color.background2
-        self.contentView.centerAnchors(position: [.centerX, .centerY], to: self.view)
+        
+        if isMacOrPad {
+            self.contentView.allSidesAnchors(to: self.view, edgeInset: 0)
+        } else {
+            self.contentView.centerAnchors(position: [.centerX, .centerY], to: self.view)
+        }
         
         let content = UILabel()
         content.text = self.contentText
@@ -72,7 +101,7 @@ public class ConfirmViewController: TransitionViewController {
         content.numberOfLines = 0
         self.contentView.addSubview(content)
         
-        content.sizeAnchor(width: self.view.bounds.width * 2 / 3)
+        content.sizeAnchor(width: min(300, self.view.bounds.width * 2 / 3))
         content.sideAnchor(for: [.left, .top, .right], to: self.contentView, edgeInsets: .init(top: Layout.innerViewEdgeInsets.top, left: Layout.innerViewEdgeInsets.left, bottom: -Layout.innerViewEdgeInsets.bottom, right: -Layout.innerViewEdgeInsets.right))
         
         let yesButton = UIButton()

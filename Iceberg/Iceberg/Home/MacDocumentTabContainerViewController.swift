@@ -40,7 +40,7 @@ public class MacDocumentTabContainerViewController: UIViewController {
         self.view.addSubview(self.container)
         
         self.tabBar.sideAnchor(for: [.leading, .top, .traling], to: self.view, edgeInset: 0)
-        self.tabBar.sizeAnchor(height: 44)
+        self.tabBar.sizeAnchor(height: 30)
         
         self.tabBar.columnAnchor(view: self.container, alignment: .none)
         self.container.sideAnchor(for: [.leading, .bottom, .traling], to: self.view, edgeInset: 0, considerSafeArea: true)
@@ -203,7 +203,7 @@ private class Tab: UIView {
         
         label.rx
             .tap
-            .map { [unowned self] in self.url }
+            .map { self.url }
             .bind(to: onSelect)
             .disposed(by: self.disposeBag)
         

@@ -71,12 +71,15 @@ public class HomeCoordinator: Coordinator {
         
         let hasInitedLandingTab: PublishSubject<Void> = PublishSubject<Void>()
         
-        if !isMacOrPad {
-            self.dependency.appContext.isFileReadyToAccess.takeUntil(hasInitedLandingTab).subscribe(onNext: { _ in
-                hasInitedLandingTab.onNext(())
-                (self.viewController as? HomeViewController)?.showChildViewController(tabs[SettingsAccessor.Item.landingTabIndex.get(Int.self) ?? 3])
-            }).disposed(by: self.disposeBag)
-        }
+        self.dependency.appContext.isFileReadyToAccess.takeUntil(hasInitedLandingTab).subscribe(onNext: { _ in
+            hasInitedLandingTab.onNext(())
+            let viewController = tabs[SettingsAccessor.Item.landingTabIndex.get(Int.self) ?? 3]
+            if isMacOrPad {
+                (self.viewController as? MacHomeViewController)?.showInMiddlePart(viewController: viewController)
+            } else {
+                (self.viewController as? HomeViewController)?.showChildViewController(viewController)
+            }
+        }).disposed(by: self.disposeBag)
         
     }
     

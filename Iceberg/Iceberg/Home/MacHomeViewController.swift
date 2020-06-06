@@ -52,7 +52,7 @@ public class MacHomeViewController: UIViewController {
         self.setupUI()
         
         self.toggleLeftPartVisiability(visiable: true, animated: false)
-        self.toggleMiddlePartVisiability(visiable: false, animated: false)
+        self.toggleMiddlePartVisiability(visiable: true, animated: false)
     }
     
     public func showDocument(url: URL, editorViewController: DocumentEditorViewController) {

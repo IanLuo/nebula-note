@@ -102,8 +102,6 @@ open class SelectorViewController: UIViewController {
                 self.popoverPresentationController?.sourceView = self.view
                 self.popoverPresentationController?.sourceRect = CGRect(x: self.view.bounds.width / 2, y: self.view.bounds.height / 2, width: 0, height: 0)
             }
-//            let size = self.view.systemLayoutSizeFitting(CGSize(width: self.view.bounds.width, height: 0))
-//            self.preferredContentSize = CGSize(width: 400, height: size.height)
         }
     }
     
