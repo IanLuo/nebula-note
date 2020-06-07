@@ -11,21 +11,14 @@ import UIKit
 import Core
 import Interface
 
-public class AttachmentImageViewController: AttachmentViewController, AttachmentViewModelDelegate, TransitionProtocol {
-    public var contentView: UIView {
-        return self.actionsViewController.contentView
-    }
+public class AttachmentImageViewController: ActionsViewController, AttachmentViewControllerProtocol {
+    public weak var attachmentDelegate: AttachmentViewControllerDelegate?
     
-    public var fromView: UIView?
-    
-    let actionsViewController = ActionsViewController()
+    public weak var viewModel: AttachmentViewModel!
     
     public override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        self.viewModel.delegate = self
-        
         self.showImageSourcePicker()
+        super.viewDidLoad()
     }
     
     public func showCamera() {
@@ -43,31 +36,27 @@ public class AttachmentImageViewController: AttachmentViewController, Attachment
     }
     
     public func showImageSourcePicker() {
-        actionsViewController.title = L10n.ImagePicker.add
+        self.title = L10n.ImagePicker.add
         
         if UIImagePickerController.isSourceTypeAvailable(UIImagePickerController.SourceType.camera) {
-            actionsViewController.addAction(icon: Asset.Assets.camera.image.fill(color: InterfaceTheme.Color.descriptive), title: L10n.ImagePicker.camera, action: { vc in
+            self.addAction(icon: Asset.Assets.camera.image.fill(color: InterfaceTheme.Color.descriptive), title: L10n.ImagePicker.camera, action: { vc in
                 self.showCamera()
             })
         }
         
-        actionsViewController.addAction(icon: Asset.Assets.imageLibrary.image.fill(color: InterfaceTheme.Color.descriptive), title: L10n.ImagePicker.library, action: { vc in
+        self.addAction(icon: Asset.Assets.imageLibrary.image.fill(color: InterfaceTheme.Color.descriptive), title: L10n.ImagePicker.library, action: { vc in
             self.showImageLibrary()
         })
         
-        actionsViewController.setCancel { viewController in
+        self.setCancel { viewController in
             self.viewModel.coordinator?.stop()
-            self.delegate?.didCancelAttachment()
+            self.attachmentDelegate?.didCancelAttachment()
         }
-        
-        self.view.addSubview(self.actionsViewController.view)
-        
-        self.actionsViewController.view.allSidesAnchors(to: self.view, edgeInset: 0, considerSafeArea: true)
     }
     
     public func didSaveAttachment(key: String) {
         self.viewModel.coordinator?.stop()
-        self.delegate?.didSaveAttachment(key: key)
+        self.attachmentDelegate?.didSaveAttachment(key: key)
     }
     
     public func didFailToSave(error: Error, content: String, kind: Attachment.Kind, descritpion: String) {

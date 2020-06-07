@@ -12,7 +12,15 @@ import Drawsana
 import Core
 import Interface
 
-public class AttachmentSketchViewController: AttachmentViewController, AttachmentViewModelDelegate {
+public class AttachmentSketchViewController: UIViewController, AttachmentViewControllerProtocol, AttachmentViewModelDelegate {
+    public weak var attachmentDelegate: AttachmentViewControllerDelegate?
+    
+    public var viewModel: AttachmentViewModel!
+    
+    public var contentView: UIView = UIView()
+    
+    public var fromView: UIView?
+    
     private lazy var drawingView: DrawsanaView = {
         let drawingView = DrawsanaView()
         drawingView.delegate = self
@@ -80,7 +88,7 @@ public class AttachmentSketchViewController: AttachmentViewController, Attachmen
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         self.view.backgroundColor = InterfaceTheme.Color.background1
         self.setupUI()
         
@@ -93,7 +101,7 @@ public class AttachmentSketchViewController: AttachmentViewController, Attachmen
     
     @objc private func cancel() {
         self.viewModel.coordinator?.stop()
-        self.delegate?.didCancelAttachment()
+        self.attachmentDelegate?.didCancelAttachment()
     }
     
     @objc private func undo() {
@@ -130,26 +138,29 @@ public class AttachmentSketchViewController: AttachmentViewController, Attachmen
     private let brushWidth: [CGFloat] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 30, 40]
     
     private func setupUI() {
-        self.view.addSubview(self.exitButton)
-        self.exitButton.sideAnchor(for: [.top, .right], to: self.view, edgeInsets: .init(top: 10, left: 0, bottom: 0, right: -30), considerSafeArea: true)
+        self.view.addSubview(self.contentView)
+        self.contentView.allSidesAnchors(to: self.view, edgeInset: 0)
+        
+        self.contentView.addSubview(self.exitButton)
+        self.exitButton.sideAnchor(for: [.top, .right], to: self.contentView, edgeInsets: .init(top: 10, left: 0, bottom: 0, right: -30), considerSafeArea: true)
         self.exitButton.sizeAnchor(width: 44, height: 44)
         
-        self.view.addSubview(self.undoButton)
-        self.view.addSubview(self.redoButton)
+        self.contentView.addSubview(self.undoButton)
+        self.contentView.addSubview(self.redoButton)
 
-        self.undoButton.sideAnchor(for: [.left, .top], to: self.view, edgeInsets: .init(top: 10, left: 30, bottom: 0, right: 0), considerSafeArea: true)
+        self.undoButton.sideAnchor(for: [.left, .top], to: self.contentView, edgeInsets: .init(top: 10, left: 30, bottom: 0, right: 0), considerSafeArea: true)
         self.undoButton.rowAnchor(view: self.redoButton, space: 20)
         self.undoButton.sizeAnchor(width: 44, height: 44)
         self.redoButton.sizeAnchor(width: 44, height: 44)
-        self.redoButton.sideAnchor(for: .top, to: self.view, edgeInset: 10, considerSafeArea: true)
+        self.redoButton.sideAnchor(for: .top, to: self.contentView, edgeInset: 10, considerSafeArea: true)
         
-        self.view.addSubview(self.drawingView)
-        self.drawingView.sideAnchor(for: [.left, .right], to: self.view, edgeInset: 30)
+        self.contentView.addSubview(self.drawingView)
+        self.drawingView.sideAnchor(for: [.left, .right], to: self.contentView, edgeInset: 30)
         self.drawingView.ratioAnchor(1)
 
         self.exitButton.columnAnchor(view: self.drawingView, space: 10, alignment: .traling)
         
-        self.view.addSubview(self.controlsView)
+        self.contentView.addSubview(self.controlsView)
 
         self.drawingView.columnAnchor(view: self.controlsView, space: 10)
         self.controlsView.addSubview(self.pickColorButton)
@@ -162,9 +173,9 @@ public class AttachmentSketchViewController: AttachmentViewController, Attachmen
         self.pickBrushButton.sideAnchor(for: [.right, .top, .bottom], to: self.controlsView, edgeInsets: .init(top: 0, left: 20, bottom: 0, right: 0))
         self.pickColorButton.rowAnchor(view: self.pickBrushButton, widthRatio: 1)
 
-        self.view.addSubview(self.saveButton)
+        self.contentView.addSubview(self.saveButton)
         
-        self.saveButton.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 0, considerSafeArea: true)
+        self.saveButton.sideAnchor(for: [.left, .right, .bottom], to: self.contentView, edgeInset: 0, considerSafeArea: true)
         self.saveButton.sizeAnchor(height: 60)
     }
     
@@ -215,7 +226,7 @@ public class AttachmentSketchViewController: AttachmentViewController, Attachmen
     }
     
     public func didSaveAttachment(key: String) {
-        self.delegate?.didSaveAttachment(key: key)
+        self.attachmentDelegate?.didSaveAttachment(key: key)
         self.viewModel.coordinator?.stop()
     }
     

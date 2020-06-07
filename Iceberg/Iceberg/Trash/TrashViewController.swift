@@ -54,7 +54,7 @@ public class TrashViewController: UIViewController, UITableViewDelegate {
             
             confirmController.title = L10n.Trash.removeAll
             
-            self.present(confirmController, animated: true)
+            confirmController.present(from: self, at: self.view)
         }).disposed(by: self.disposeBag)
         
         self.navigationItem.rightBarButtonItem = removeAllButtonItem

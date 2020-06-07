@@ -23,7 +23,7 @@ public class AttachmentCoordinator: Coordinator {
     
     public var kind: Attachment.Kind
     
-    public init(stack: UINavigationController, dependency: Dependency, kind: Attachment.Kind) {
+    public init(stack: UINavigationController, dependency: Dependency, kind: Attachment.Kind, at: UIView?, location: CGPoint?) {
 
         let attachmentViewModel = AttachmentViewModel(attachmentManager: dependency.attachmentManager)
         
@@ -33,31 +33,36 @@ public class AttachmentCoordinator: Coordinator {
         
         attachmentViewModel.coordinator = self
 
-        let viewController: AttachmentViewController!
+        var viewController: AttachmentViewControllerProtocol!
         switch kind {
         case .text:
-            viewController = AttachmentTextViewController(viewModel: attachmentViewModel)
+            viewController = AttachmentTextViewController()
         case .link:
-            viewController = AttachmentLinkViewController(viewModel: attachmentViewModel)
+            viewController = AttachmentLinkViewController()
         case .image:
-            viewController = AttachmentImageViewController(viewModel: attachmentViewModel)
+            viewController = AttachmentImageViewController()
         case .sketch:
-            viewController = AttachmentSketchViewController(viewModel: attachmentViewModel)
+            viewController = AttachmentSketchViewController()
         case .location:
-            viewController = AttachmentLocationViewController(viewModel: attachmentViewModel)
+            viewController = AttachmentLocationViewController()
         case .audio:
-            viewController = AttachmentAudioViewController(viewModel: attachmentViewModel)
+            viewController = AttachmentAudioViewController()
         case .video:
-            viewController = AttachmentVideoViewController(viewModel: attachmentViewModel)
+            viewController = AttachmentVideoViewController()
         }
 
-        viewController.delegate = self
-        
+        viewController.attachmentDelegate = self
+        viewController.viewModel = attachmentViewModel
+        attachmentViewModel.delegate = viewController
         self.viewController = viewController
+        
+        self.fromLocation = location
+        self.fromView = at
+        
     }
     
-    public convenience init (stack: UINavigationController, dependency: Dependency, title: String, url: String) {
-        self.init(stack: stack, dependency: dependency, kind: Attachment.Kind.link)
+    public convenience init (stack: UINavigationController, dependency: Dependency, title: String, url: String, at: UIView?, location: CGPoint?) {
+        self.init(stack: stack, dependency: dependency, kind: Attachment.Kind.link, at: at, location: location)
         
         if let linkViewController = self.viewController as? AttachmentLinkViewController {
             linkViewController.defaultTitle = title

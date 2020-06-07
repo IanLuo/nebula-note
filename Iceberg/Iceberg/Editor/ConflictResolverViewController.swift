@@ -114,7 +114,7 @@ public class ConflictResolverViewController: UIViewController, UITableViewDataSo
                 viewController.dismiss(animated: true)
             }
             
-            self.present(conformViewController, animated: true)
+            conformViewController.present(from: self)
         }
     }
     

@@ -11,7 +11,11 @@ import UIKit
 import Core
 import Interface
 
-public class AttachmentAudioViewController: AttachmentViewController, AttachmentViewModelDelegate {
+public class AttachmentAudioViewController: ActionsViewController, AttachmentViewControllerProtocol, AttachmentViewModelDelegate {
+    public weak var attachmentDelegate: AttachmentViewControllerDelegate?
+    
+    public var viewModel: AttachmentViewModel!
+    
     private lazy var recorder: AudioRecorder = {
         let _ = URL.audioCacheURL.createDirectoryIfNeeded()
         let recorder = AudioRecorder(url: URL.file(directory: URL.audioCacheURL, name: UUID().uuidString, extension: "m4a"))
@@ -31,28 +35,20 @@ public class AttachmentAudioViewController: AttachmentViewController, Attachment
         return recorderView
     }()
     
-    // 用来显示界面，当前 viewController 并不显示 UI，只是协调和保存文件
-    private lazy var actionsViewController: ActionsViewController = {
-        let actionsViewController = ActionsViewController()
-        actionsViewController.title = L10n.Document.Record.title
-        return actionsViewController
-    }()
-
     public override func viewDidLoad() {
-        super.viewDidLoad()
+        self.title = L10n.Document.Record.title
         
         self.viewModel.delegate = self
         
         self.recorderView.status = .initing
         self.recorder.getReady()
         
-        self.addChild(self.actionsViewController)
-        
         self.showRecorder()
+        super.viewDidLoad()
     }
     
     public func showRecorder() {
-        self.actionsViewController.accessoryView = self.recorderView
+        self.accessoryView = self.recorderView
         
         self.recorderView.translatesAutoresizingMaskIntoConstraints = false
         self.recorderView.sizeAnchor(width: UIScreen.main.bounds.width, height: 200)
@@ -60,18 +56,14 @@ public class AttachmentAudioViewController: AttachmentViewController, Attachment
             self.recorderView.allSidesAnchors(to: superview, edgeInset: 0)
         }
         
-        self.actionsViewController.setCancel { viewController in
+        self.setCancel { viewController in
             self.viewModel.coordinator?.stop()
-            self.delegate?.didCancelAttachment()
+            self.attachmentDelegate?.didCancelAttachment()
         }
-        
-        self.view.addSubview(self.actionsViewController.view)
-        self.actionsViewController.didMove(toParent: self)
-        self.actionsViewController.view.allSidesAnchors(to: self.view, edgeInset: 0, considerSafeArea: true)
     }
     
     public func didSaveAttachment(key: String) {
-        self.delegate?.didSaveAttachment(key: key)
+        self.attachmentDelegate?.didSaveAttachment(key: key)
         self.viewModel.coordinator?.stop(animated: false)
     }
     
@@ -89,14 +81,14 @@ extension AttachmentAudioViewController: AudioRecorderDelegate {
         self.recorderView.status = .recording
         
         // 移除保存按钮
-        self.actionsViewController.removeAction(with: L10n.General.Button.Title.save)
+        self.removeAction(with: L10n.General.Button.Title.save)
     }
     
     public func recorderDidStopRecording(url: URL) {
         self.recorderView.status = .stopped
         
         // 显示保存按钮
-        self.actionsViewController.addAction(icon: nil, title: L10n.General.Button.Title.save, style: .highlight) { [unowned self] (actionController) in
+        self.addAction(icon: nil, title: L10n.General.Button.Title.save, style: .highlight) { [unowned self] (actionController) in
             self.viewModel.save(content: url.path, kind: .audio, description: "recorded voice")
         }
         

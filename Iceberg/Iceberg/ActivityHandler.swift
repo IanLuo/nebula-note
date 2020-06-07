@@ -64,7 +64,7 @@ public class ActivityHandler {
     
     private func handleCapture(application: Application, kind: Attachment.Kind) {
         application.dependency.globalCaptureEntryWindow?.hide()
-        application.topCoordinator?.showAttachmentPicker(kind: kind, complete: { [unowned application] attachmentId in
+        application.topCoordinator?.showAttachmentPicker(kind: kind, at: UIApplication.shared.windows.first, location: nil, complete: { [unowned application] attachmentId in
             application.dependency.globalCaptureEntryWindow?.show()
             application.dependency.captureService.save(key: attachmentId) {
                 HUD.flash(HUDContentType.success, delay: 1)

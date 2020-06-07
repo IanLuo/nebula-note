@@ -172,7 +172,7 @@ public class DocumentEditorViewController: UIViewController {
                             viewController.dismiss(animated: true)
                         }
                         
-                        self.present(confirm, animated: true)
+                        confirm.present(from: self)
                     }
                 }
             }).disposed(by: self.disposeBag)

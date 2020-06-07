@@ -56,6 +56,7 @@ public class MacDocumentTabContainerViewController: UIViewController {
                 strongSelf.container.subviews.forEach { $0.removeFromSuperview() }
                 strongSelf.container.addSubview(viewController.view)
                 viewController.view.allSidesAnchors(to: strongSelf.container, edgeInset: 0)
+                self?.viewModel.dependency.settingAccessor.logOpenDocument(url: url)
             }
         }).disposed(by: self.disposeBag)
         
@@ -89,7 +90,7 @@ public class MacDocumentTabContainerViewController: UIViewController {
     }
 }
 
-private class TabBar: UIView {
+private class TabBar: UIScrollView {
     let openDocument: PublishSubject<URL> = PublishSubject()
     let onCloseDocument: PublishSubject<URL> = PublishSubject()
     let onSelectDocument: PublishSubject<URL> = PublishSubject()
@@ -112,6 +113,8 @@ private class TabBar: UIView {
     
     private func setup() {
         self.addSubview(self.stackView)
+        
+        self.contentInset = UIEdgeInsets(top: 0, left: Layout.innerViewEdgeInsets.left, bottom: 0, right: -Layout.innerViewEdgeInsets.right)
         
         self.stackView.sideAnchor(for: [.left, .top, .bottom], to: self, edgeInset: 0)
         self.stackView.rightAnchor.constraint(lessThanOrEqualTo: self.rightAnchor).isActive = true

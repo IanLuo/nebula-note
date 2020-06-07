@@ -36,10 +36,13 @@ public class MacHomeViewController: UIViewController {
     private var dashboardViewController: DashboardViewController!
     private var documentTabsContainerViewController: MacDocumentTabContainerViewController!
     
-    convenience init(dashboardViewController: DashboardViewController, documentTabsContainerViewController: MacDocumentTabContainerViewController) {
+    private weak var coordinator: HomeCoordinator?
+    
+    convenience init(dashboardViewController: DashboardViewController, coordinator: HomeCoordinator, documentTabsContainerViewController: MacDocumentTabContainerViewController) {
         self.init()
         self.dashboardViewController = dashboardViewController
         self.documentTabsContainerViewController = documentTabsContainerViewController
+        self.coordinator = coordinator
     }
     
     public override func viewDidLoad() {
@@ -92,8 +95,9 @@ public class MacHomeViewController: UIViewController {
         
         let ideasButton = UIButton()
         ideasButton.setImage(Asset.Assets.inspiration.image, for: .normal)
-        ideasButton.rx.tap.subscribe().disposed(by: self.disposeBag)
-        
+        ideasButton.rx.tap.subscribe(onNext: {
+            self.coordinator?.showCaptureEntrance()
+        }).disposed(by: self.disposeBag)
         
         self.toggleLeftPartButton.interface { (me, theme) in
             let button = me as! UIButton

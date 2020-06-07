@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-public class ActionsViewController: UIViewController, TransitionProtocol {
+open class ActionsViewController: UIViewController, TransitionProtocol {
     fileprivate struct Constants {
         static let rowHeight: CGFloat = 50
         static let specialItemSeparatorHeight: CGFloat = 0.5
@@ -34,6 +34,18 @@ public class ActionsViewController: UIViewController, TransitionProtocol {
     }
     
     public func addAction(icon: UIImage?, title: String, style: Style = .default, at: Int? = nil, action: @escaping (ActionsViewController) -> Void) {
+        self.addAction(icon: icon, title: title, style: style, at: at) { (viewController, _, _) in
+            action(viewController)
+        }
+    }
+    
+    public func addAction(icon: UIImage?, title: String, style: Style = .default, at: Int? = nil, action: @escaping (ActionsViewController, UIView) -> Void) {
+           self.addAction(icon: icon, title: title, style: style, at: at) { (viewController, _, view) in
+               action(viewController, view)
+           }
+       }
+    
+    public func addAction(icon: UIImage?, title: String, style: Style = .default, at: Int? = nil, action: @escaping (ActionsViewController, Int, UIView) -> Void) {
         
         if let at = at {
             self.items.insert(Item(icon: icon, title: title, action: action, style: style), at: at)
@@ -51,7 +63,7 @@ public class ActionsViewController: UIViewController, TransitionProtocol {
     }
     
     public func addActionAutoDismiss(icon: UIImage?, title: String, style: Style = .default, at: Int? = nil, action: @escaping () -> Void) {
-        self.addAction(icon: icon, title: title) { viewController in
+        self.addAction(icon: icon, title: title, style: style, at: at) { viewController in
             viewController.dismiss(animated: true) {
                 action()
             }
@@ -116,7 +128,7 @@ public class ActionsViewController: UIViewController, TransitionProtocol {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override func viewDidLoad() {
+    open override func viewDidLoad() {
         super.viewDidLoad()
         self.setupUI()
         
@@ -131,6 +143,7 @@ public class ActionsViewController: UIViewController, TransitionProtocol {
         }
         
         if isMacOrPad {
+            self.cancelButton.isHidden = true
             if self.fromView == nil {
                 self.popoverPresentationController?.sourceView = self.view
                 self.popoverPresentationController?.sourceRect = CGRect(x: self.view.bounds.width / 2, y: self.view.bounds.height / 2, width: 0, height: 0)
@@ -267,7 +280,7 @@ public class ActionsViewController: UIViewController, TransitionProtocol {
     fileprivate struct Item {
         let icon: UIImage?
         let title: String
-        let action: (ActionsViewController) -> Void
+        let action: (ActionsViewController, Int, UIView) -> Void
         let style: ActionsViewController.Style
     }
 }
@@ -293,7 +306,9 @@ extension ActionsViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.items[indexPath.row].action(self)
+        guard let cell = tableView.cellForRow(at: indexPath) else { return }
+        
+        self.items[indexPath.row].action(self, indexPath.row, cell)
         
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
             tableView.deselectRow(at: indexPath, animated: true)

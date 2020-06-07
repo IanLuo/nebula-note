@@ -37,7 +37,7 @@ public class HomeCoordinator: Coordinator {
         dashboardViewController.delegate = self
         
         if isMacOrPad {
-            self.viewController = MacHomeViewController(dashboardViewController: dashboardViewController, documentTabsContainerViewController: MacDocumentTabContainerViewController(viewModel: viewModel))
+            self.viewController = MacHomeViewController(dashboardViewController: dashboardViewController, coordinator: self, documentTabsContainerViewController: MacDocumentTabContainerViewController(viewModel: viewModel))
         } else {
             let homeViewController = HomeViewController(masterViewController: navigationController)
             self.viewController = homeViewController
@@ -90,7 +90,7 @@ public class HomeCoordinator: Coordinator {
                     self.openDocumentInHomeViewRightPart(url: $0, location: 0)
                 }
             } else {
-                if let first = opendFiles.first {
+                if let first = opendFiles.last {
                     self.topCoordinator?.openDocument(url: first, location: 0)
                 }
             }

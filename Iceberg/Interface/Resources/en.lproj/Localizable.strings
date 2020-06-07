@@ -194,10 +194,10 @@
 "setting.feedback.rate" = "If you enjoy using x3 note, please rate us five star, thanks";
 "setting.feedback.promot" = "I like x3 note, and I want to share to others";
 "setting.feedback.forum" = "I want to join the forum";
+"setting.feedback" = "Feedback";
 
 "setting.privacy" = "Privicy policy";
 "setting.terms" = "Terms of service";
-
 //search
 "search.title" = "Search";
 

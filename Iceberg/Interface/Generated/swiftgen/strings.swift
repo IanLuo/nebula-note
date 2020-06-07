@@ -661,6 +661,8 @@ public enum L10n {
   }
 
   public enum Setting {
+    /// Feedback
+    public static let feedback = L10n.tr("Localizable", "setting.feedback")
     /// Privicy policy
     public static let privacy = L10n.tr("Localizable", "setting.privacy")
     /// Store location

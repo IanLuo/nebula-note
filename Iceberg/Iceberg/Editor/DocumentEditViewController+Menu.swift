@@ -279,7 +279,10 @@ extension DocumentEditorViewController {
                     })
                 }
                 
-                self.present(selector, animated: true, completion: nil)
+                if let range = self.viewModel.heading(at: location)?.range {
+                    selector.present(from: self, at: self.textView, location: self.textView.rect(forStringRange: range)?.center)
+                }
+                
             })
             
         }
@@ -555,7 +558,7 @@ extension DocumentEditorViewController {
                         viewController.dismiss(animated: true)
                     }
                     
-                    self.present(comfirm, animated: true)
+                    comfirm.present(from: self)
                 })
             }
         } else {
@@ -649,7 +652,7 @@ extension DocumentEditorViewController {
                 self.viewModel.dependency.globalCaptureEntryWindow?.hide()
                 
                 if haveAccess {
-                    self.viewModel.context.coordinator?.showAttachmentPicker(kind: attachment,
+                    self.viewModel.context.coordinator?.showAttachmentPicker(kind: attachment, at: self.view, location: self.textView.rect(forStringRange: self.textView.selectedRange)?.center,
                                                                              complete: { [unowned self] attachmentId in
                                                                                 let oldSelection = self.textView.selectedRange
                                                                                 let result = self.viewModel.performAction(EditAction.addAttachment(location,

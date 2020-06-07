@@ -13,23 +13,23 @@ import MapKit
 import Core
 import Interface
 
-public class AttachmentLocationViewController: AttachmentViewController, AttachmentViewModelDelegate, MKMapViewDelegate {
+public class AttachmentLocationViewController: ActionsViewController, AttachmentViewControllerProtocol, AttachmentViewModelDelegate, MKMapViewDelegate {
+    public weak var attachmentDelegate: AttachmentViewControllerDelegate?
+    
+    public var viewModel: AttachmentViewModel!
+    
     public override func viewDidLoad() {
-        super.viewDidLoad()
         self.viewModel.delegate = self
         self.showLocationPicker()
-        
-        self.addChild(self.actionsViewController)
+        super.viewDidLoad()
     }
-    
-    let actionsViewController = ActionsViewController()
     
     private func showLocationPicker() {
         let mapView = MKMapView()
 
-        actionsViewController.accessoryView = mapView
+        self.accessoryView = mapView
         
-        actionsViewController.title = L10n.Location.title
+        self.title = L10n.Location.title
         
         mapView.sizeAnchor(width: self.view.bounds.width, height: self.view.bounds.width)
         
@@ -37,16 +37,16 @@ public class AttachmentLocationViewController: AttachmentViewController, Attachm
         mapView.showsScale = true
         mapView.delegate = self
         
-        actionsViewController.addAction(icon: nil, title: L10n.Location.current) { viewController in
+        self.addAction(icon: nil, title: L10n.Location.current) { viewController in
             self.showCurrentLocation(on: mapView, animated: true)
         }
         
-        actionsViewController.setCancel { viewController in
+        self.setCancel { viewController in
             self.viewModel.coordinator?.stop()
-            self.delegate?.didCancelAttachment()
+            self.attachmentDelegate?.didCancelAttachment()
         }
         
-        actionsViewController.addAction(icon: nil, title: L10n.General.Button.Title.save, style: ActionsViewController.Style.highlight) { viewController in
+        self.addAction(icon: nil, title: L10n.General.Button.Title.save, style: ActionsViewController.Style.highlight) { viewController in
             let jsonEncoder = JSONEncoder()
             do {
                 let data = try jsonEncoder.encode(mapView.centerCoordinate)
@@ -59,10 +59,6 @@ public class AttachmentLocationViewController: AttachmentViewController, Attachm
                 log.error(error)
             }
         }
-        
-        self.view.addSubview(actionsViewController.view)
-        self.actionsViewController.view.allSidesAnchors(to: self.view, edgeInset: 0, considerSafeArea: true)
-        self.actionsViewController.didMove(toParent: self)
         
         self.showCurrentLocation(on: mapView, animated: false)
     }
@@ -96,7 +92,7 @@ public class AttachmentLocationViewController: AttachmentViewController, Attachm
     }
     
     public func didSaveAttachment(key: String) {
-        self.delegate?.didSaveAttachment(key: key)
+        self.attachmentDelegate?.didSaveAttachment(key: key)
         self.viewModel.coordinator?.stop(animated: false)
     }
     

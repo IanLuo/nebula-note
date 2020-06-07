@@ -11,21 +11,32 @@ import UIKit
 import MobileCoreServices
 import Core
 
-public class AttachmentVideoViewController: AttachmentViewController, AttachmentViewModelDelegate {
+public class AttachmentVideoViewController: UIViewController, AttachmentViewControllerProtocol, AttachmentViewModelDelegate {
+    public weak var attachmentDelegate: AttachmentViewControllerDelegate?
+    
+    public var viewModel: AttachmentViewModel!
+    
+    public var contentView: UIView = UIView()
+    
+    public var fromView: UIView?
+    
     
     let imagePicker = UIImagePickerController()
     public override func viewDidLoad() {
-        super.viewDidLoad()
         self.viewModel.delegate = self
+        self.view.addSubview(self.contentView)
+        self.contentView.allSidesAnchors(to: self.view, edgeInset: 0)
         
         imagePicker.sourceType = .camera
         imagePicker.mediaTypes = [(kUTTypeMovie as String)]
         imagePicker.delegate = self
-        self.view.addSubview(imagePicker.view)
+        self.contentView.addSubview(imagePicker.view)
+        
+        super.viewDidLoad()
     }
     
     public func didSaveAttachment(key: String) {
-        self.delegate?.didSaveAttachment(key: key)
+        self.attachmentDelegate?.didSaveAttachment(key: key)
         self.viewModel.coordinator?.stop(animated: false)
     }
     
@@ -38,7 +49,7 @@ extension AttachmentVideoViewController: UINavigationControllerDelegate, UIImage
     public func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true, completion: nil)
         self.viewModel.coordinator?.stop()
-        self.delegate?.didCancelAttachment()
+        self.attachmentDelegate?.didCancelAttachment()
     }
     
     public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {

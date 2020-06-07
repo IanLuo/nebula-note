@@ -138,7 +138,7 @@ public class EditorCoordinator: Coordinator {
         
     public func showLinkEditor(title: String, url: String, completeEdit: @escaping (String) -> Void) {
         let navigationController = Coordinator.createDefaultNavigationControlller()
-        let attachmentLinkCoordinator = AttachmentCoordinator(stack: navigationController, dependency: self.dependency, title: title, url: url)
+        let attachmentLinkCoordinator = AttachmentCoordinator(stack: navigationController, dependency: self.dependency, title: title, url: url, at: self.fromView, location: self.fromLocation)
         attachmentLinkCoordinator.onSaveAttachment = { key in
             if let attachment = self.dependency.attachmentManager.attachment(with: key) {
                 let linkString = OutlineParser.Values.Attachment.serialize(attachment: attachment)

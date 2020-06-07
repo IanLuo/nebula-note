@@ -55,7 +55,7 @@ extension DocumentEditorViewController: DocumentEditToolbarDelegate {
             // attachment
             if let attachmentAction = documentAction as? AttachmentAction {
                 self.viewModel.dependency.globalCaptureEntryWindow?.hide()
-                self.viewModel.context.coordinator?.showAttachmentPicker(kind: attachmentAction.AttachmentKind, complete: { [unowned self] attachmentId in
+                self.viewModel.context.coordinator?.showAttachmentPicker(kind: attachmentAction.AttachmentKind, at: from, location: self.textView.rect(forStringRange: self.textView.selectedRange)?.center, complete: { [unowned self] attachmentId in
                     let oldSelection = self.textView.selectedRange
                     let result = self.viewModel.performAction(EditAction.addAttachment(currentLocation,
                                                                           attachmentId, attachmentAction.AttachmentKind.rawValue),

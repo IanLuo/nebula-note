@@ -137,7 +137,7 @@ public class AttachmentManagerViewController: UIViewController, UICollectionView
             viewController.dismiss(animated: true)
         }
         
-        self.present(confirmController, animated: true)
+        confirmController.present(from: self, at: self.view)
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {

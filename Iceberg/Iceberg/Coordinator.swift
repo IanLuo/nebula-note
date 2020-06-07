@@ -79,6 +79,8 @@ public class Coordinator {
     
     public var fromView: UIView?
     
+    public var fromLocation: CGPoint?
+    
     public var dependency: Dependency
     
     public var onMovingOut: (() -> Void)?
@@ -145,7 +147,7 @@ public class Coordinator {
                 self.isModal = true
                 
                 if let transitionViewController = viewController as? TransitionViewController, let fromView = self.fromView {
-                    transitionViewController.present(from: top!, at: fromView, location: CGPoint(x: fromView.bounds.midX, y: fromView.bounds.midY))
+                    transitionViewController.present(from: top!, at: fromView, location: self.fromLocation ?? CGPoint(x: fromView.bounds.midX, y: fromView.bounds.midY))
                 } else {
                     self.stack.pushViewController(viewController,animated: false)
                     self.stack.modalPresentationStyle = viewController.modalPresentationStyle
@@ -193,7 +195,7 @@ extension Coordinator {
         self.dependency.globalCaptureEntryWindow?.isForcedToHide = true
     }
     
-    public func showAttachmentPicker(kind: Attachment.Kind, complete: @escaping (String) -> Void, cancel: @escaping () -> Void) {
+    public func showAttachmentPicker(kind: Attachment.Kind, at: UIView?, location: CGPoint?, complete: @escaping (String) -> Void, cancel: @escaping () -> Void) {
         
         switch kind {
         case .video:
@@ -212,7 +214,7 @@ extension Coordinator {
         
         let attachmentCoordinator = AttachmentCoordinator(stack: navigationController,
                                                           dependency: self.dependency,
-                                                          kind: kind)
+                                                          kind: kind, at: at, location: location)
         attachmentCoordinator.onSaveAttachment = complete
         attachmentCoordinator.onCancel = cancel
         
@@ -353,7 +355,7 @@ extension Coordinator: CaptureCoordinatorDelegate {
                     return
                 }
                 
-                self.showAttachmentPicker(kind: attachmentKind, complete: { [weak self] attachmentId in
+                self.showAttachmentPicker(kind: attachmentKind, at: self.fromView, location: self.fromLocation, complete: { [weak self] attachmentId in
                     self?.dependency.globalCaptureEntryWindow?.show()
                     coordinator.addAttachment(attachmentId: attachmentId) {
                         DispatchQueue.runOnMainQueueSafely {

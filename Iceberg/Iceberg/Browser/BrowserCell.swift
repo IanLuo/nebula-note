@@ -266,7 +266,7 @@ public class BrowserCell: UITableViewCell {
     }
     
     private func _createDeleteActionItem(for actionsViewController: ActionsViewController) {
-        actionsViewController.addAction(icon: nil, title: L10n.Browser.Actions.delete, style: .warning) { [weak self] viewController in
+        actionsViewController.addAction(icon: nil, title: L10n.Browser.Actions.delete, style: .warning) { [weak self] (viewController: UIViewController, view: UIView) -> Void in
             guard let strongSelf = self else { return }
             guard let cellModel = strongSelf.cellModel else { return }
             
@@ -290,7 +290,7 @@ public class BrowserCell: UITableViewCell {
                 cellModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
             }
             
-            viewController.present(confirmViewController, animated: true, completion: nil)
+            confirmViewController.present(from: viewController, at: view)
         }
     }
     

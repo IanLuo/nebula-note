@@ -17,7 +17,7 @@ public protocol ModalFormViewControllerDelegate: class {
     func validate(formdata: [String: Codable]) -> [String: String]
 }
 
-public class ModalFormViewController: TransitionViewController {
+open class ModalFormViewController: TransitionViewController {
     public var contentView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 8
@@ -25,7 +25,17 @@ public class ModalFormViewController: TransitionViewController {
         return view
     }()
     
-    public var fromView: UIView?
+    public var fromView: UIView? {
+        didSet {
+            if isMacOrPad {
+                self.popoverPresentationController?.sourceView = fromView
+                
+                if let fromView = fromView {
+                    self.popoverPresentationController?.sourceRect = CGRect(origin: CGPoint(x: fromView.frame.midX, y: fromView.frame.midY), size: .zero)
+                }
+            }
+        }
+    }
     
     
     public enum InputType {
@@ -98,14 +108,19 @@ public class ModalFormViewController: TransitionViewController {
         super.init(nibName: nil, bundle: nil)
         
         self.transitioningDelegate = self._transitionDelegate
-        self.modalPresentationStyle = .overCurrentContext
+        
+        if isMacOrPad {
+            self.modalPresentationStyle = UIModalPresentationStyle.popover
+        } else {
+            self.modalPresentationStyle = .overCurrentContext
+        }
     }
     
     public required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override func viewDidLoad() {
+    open override func viewDidLoad() {
         super.viewDidLoad()
         
         self.setupUI()
@@ -125,6 +140,13 @@ public class ModalFormViewController: TransitionViewController {
         
         self.cancelButton.tapped { [weak self] _ in
             self?.cancel()
+        }
+        
+        if isMacOrPad {
+            if self.fromView == nil {
+                self.popoverPresentationController?.sourceView = self.view
+                self.popoverPresentationController?.sourceRect = CGRect(x: self.view.bounds.width / 2, y: self.view.bounds.height / 2, width: 0, height: 0)
+            }
         }
     }
     
@@ -157,16 +179,20 @@ public class ModalFormViewController: TransitionViewController {
         self.actionButtonsContainer.sideAnchor(for: [.left, .right, .top], to: self.contentView, edgeInset: 0)
         self.actionButtonsContainer.sizeAnchor(height: 60)
         
-        self.saveButton.sideAnchor(for: .left, to: actionButtonsContainer, edgeInset: 10)
-        self.saveButton.sizeAnchor(width: 30)
+        if isMacOrPad {
+            self.cancelButton.isHidden = true
+        }
+        
+        self.cancelButton.sideAnchor(for: .left, to: actionButtonsContainer, edgeInset: 10)
+        self.cancelButton.sizeAnchor(width: 30)
         
         self.titleLabel.centerAnchors(position: .centerY, to: self.actionButtonsContainer)
         self.saveButton.centerAnchors(position: .centerY, to: self.actionButtonsContainer)
         self.cancelButton.centerAnchors(position: .centerY, to: self.actionButtonsContainer)
         
-        self.saveButton.rowAnchor(view: self.titleLabel)
-        self.cancelButton.sideAnchor(for: .right, to: actionButtonsContainer, edgeInset: 10)
-        self.cancelButton.sizeAnchor(width: 30)
+        self.cancelButton.rowAnchor(view: self.titleLabel)
+        self.saveButton.sideAnchor(for: .right, to: actionButtonsContainer, edgeInset: 10)
+        self.saveButton.sizeAnchor(width: 30)
         
         self.titleLabel.rowAnchor(view: self.cancelButton)
         

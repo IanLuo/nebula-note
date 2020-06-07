@@ -139,7 +139,7 @@ public class SettingsViewController: UITableViewController {
         button.setImage(UIImage(named: "AppIcon")?.resize(upto: CGSize(width: 30, height: 30)), for: .normal)
         let rightButton = UIBarButtonItem(customView: button)
         button.rx.tap.subscribe(onNext: { [weak self] _ in
-            self?._showFeedbackOptions()
+            self?._showFeedbackOptions(from: button)
         }).disposed(by: self.disposeBag)
         self.navigationItem.rightBarButtonItem = rightButton
         
@@ -179,13 +179,13 @@ public class SettingsViewController: UITableViewController {
         }
     }
     
-    private func _showFeedbackOptions() {
+    private func _showFeedbackOptions(from: UIView) {
         let selector = SelectorViewController()
         selector.title = L10n.Setting.Feedback.title
         selector.addItem(title: L10n.Setting.Feedback.rate)
         selector.addItem(title: L10n.Setting.Feedback.promot)
         selector.addItem(title: L10n.Setting.Feedback.forum)
-        selector.addItem(title: "Feedback")
+        selector.addItem(title: L10n.Setting.feedback)
         selector.onCancel = { viewController in
             viewController.dismiss(animated: true)
             self.viewModel.showGlobalCaptureEntry()
@@ -222,7 +222,7 @@ public class SettingsViewController: UITableViewController {
         }
         
         self.viewModel.hideGlobalCaptureEntry()
-        self.present(selector, animated: true)
+        selector.present(from: self, at: from)
     }
         
     @objc private func _cancel() {
@@ -297,7 +297,7 @@ public class SettingsViewController: UITableViewController {
                         viewController.dismiss(animated: true)
                     }
                     
-                    self.present(confirm, animated: true)
+                    confirm.present(from: self, at: button)
                 } else {
                     doSwitchAction()
                 }
@@ -342,11 +342,11 @@ public class SettingsViewController: UITableViewController {
             self.interfaceStyleButton.setTitle(styles[index].localizedTitle, for: .normal)
         }
         
-        self.present(selector, animated: true)
+        selector.present(from: self, at: button)
         dependency.globalCaptureEntryWindow?.hide()
     }
     
-    @objc private func _showLandingTabNamesSelector() {
+    @objc private func _showLandingTabNamesSelector(from: UIView) {
         let dependency = self.viewModel.dependency
         
         let selector = SelectorViewController()
@@ -373,7 +373,7 @@ public class SettingsViewController: UITableViewController {
         
         selector.currentTitle = tabs[self.viewModel.currentLandigTabIndex].name
         
-        self.present(selector, animated: true, completion: nil)
+        selector.present(from: self, at: from)
         dependency.globalCaptureEntryWindow?.hide()
     }
     
@@ -484,9 +484,11 @@ public class SettingsViewController: UITableViewController {
     public override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
+        guard let cell = tableView.cellForRow(at: indexPath) else { return }
+        
         switch (indexPath.section, indexPath.row) {
         case (0, 0):
-            self._showLandingTabNamesSelector()
+            self._showLandingTabNamesSelector(from: cell)
         case (0, 1):
             self._interfaceStyleButtonTapped(self.interfaceStyleButton)
         case (1, 0):

@@ -11,34 +11,30 @@ import UIKit
 import Core
 import Interface
 
-public class AttachmentLinkViewController: AttachmentViewController, AttachmentViewModelDelegate {
+public class AttachmentLinkViewController: ModalFormViewController, AttachmentViewControllerProtocol, AttachmentViewModelDelegate {
+    public weak var attachmentDelegate: AttachmentViewControllerDelegate?
+    
+    public var viewModel: AttachmentViewModel!
+    
     public var defaultTitle: String?
     public var defaultURL: String? = "https://"
     
     public override func viewDidLoad() {
-        super.viewDidLoad()
-        
         self.showCreateLinkForm()
-        
-        self.viewModel.delegate = self
+        super.viewDidLoad()
     }
     
-    let formViewController = ModalFormViewController()
     private func showCreateLinkForm() {
-        formViewController.delegate = self
-        formViewController.addTextFied(title: L10n.CaptureLink.Title.title, placeHoder: L10n.CaptureLink.Title.placeholder, defaultValue: self.defaultTitle)
-        formViewController.addTextFied(title: L10n.CaptureLink.Url.title, placeHoder: L10n.CaptureLink.Url.placeholder, defaultValue: self.defaultURL, keyboardType: .URL)
-        formViewController.title = L10n.CaptureLink.title
-
-        self.view.addSubview(formViewController.view)
-        self.formViewController.didMove(toParent: self)
-        self.formViewController.view.allSidesAnchors(to: self.view, edgeInset: 0, considerSafeArea: true)
+        self.delegate = self
+        self.addTextFied(title: L10n.CaptureLink.Title.title, placeHoder: L10n.CaptureLink.Title.placeholder, defaultValue: self.defaultTitle)
+        self.addTextFied(title: L10n.CaptureLink.Url.title, placeHoder: L10n.CaptureLink.Url.placeholder, defaultValue: self.defaultURL, keyboardType: .URL)
+        self.title = L10n.CaptureLink.title
         
-        self.formViewController.makeFirstTextFieldFirstResponder()
+        self.makeFirstTextFieldFirstResponder()
     }
     
     public func didSaveAttachment(key: String) {
-        self.delegate?.didSaveAttachment(key: key)
+        self.attachmentDelegate?.didSaveAttachment(key: key)
         self.viewModel.coordinator?.stop()
     }
     
@@ -54,7 +50,7 @@ extension AttachmentLinkViewController: ModalFormViewControllerDelegate {
     
     public func modalFormDidCancel(viewController: ModalFormViewController) {
         self.viewModel.coordinator?.stop()
-        self.delegate?.didCancelAttachment()
+        self.attachmentDelegate?.didCancelAttachment()
     }
     
     public func modalFormDidSave(viewController: ModalFormViewController, formData: [String: Codable]) {

@@ -11,25 +11,23 @@ import UIKit
 import Core
 import Interface
 
-public class AttachmentTextViewController: AttachmentViewController, AttachmentViewModelDelegate {
+public class AttachmentTextViewController: ModalFormViewController, AttachmentViewControllerProtocol, AttachmentViewModelDelegate {
 
-    private let formViewController: ModalFormViewController = ModalFormViewController()
+    public var viewModel: AttachmentViewModel!
+    public weak var attachmentDelegate: AttachmentViewControllerDelegate?
     
-    public override func viewDidLoad() {
-        super.viewDidLoad()
-        
+    public override func viewDidLoad() {        
         self.viewModel.delegate = self
 
-        self.formViewController.delegate = self
-        self.formViewController.title = L10n.CaptureText.title
-        self.formViewController.addTextView(title: L10n.CaptureText.Text.title, defaultValue: nil)
+        self.delegate = self
+        self.title = L10n.CaptureText.title
+        self.addTextView(title: L10n.CaptureText.Text.title, defaultValue: nil)
         
-        self.view.addSubview(self.formViewController.view)
-        self.formViewController.view.allSidesAnchors(to: self.view, edgeInset: 0, considerSafeArea: true)
+        super.viewDidLoad()
     }
     
     public func didSaveAttachment(key: String) {
-        self.delegate?.didSaveAttachment(key: key)
+        self.attachmentDelegate?.didSaveAttachment(key: key)
         self.viewModel.coordinator?.stop()
     }
     
@@ -45,7 +43,7 @@ extension AttachmentTextViewController: ModalFormViewControllerDelegate {
     
     public func modalFormDidCancel(viewController: ModalFormViewController) {
         self.viewModel.coordinator?.stop()
-        self.delegate?.didCancelAttachment()
+        self.attachmentDelegate?.didCancelAttachment()
     }
     
     public func modalFormDidSave(viewController: ModalFormViewController, formData: [String : Codable]) {

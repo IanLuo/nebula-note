@@ -25,6 +25,11 @@ public class Application: Coordinator {
         let dependency = Dependency()
         
         let navigationController = Coordinator.createDefaultNavigationControlller()
+        
+        if isMacOrPad {
+            navigationController.navigationBar.isHidden = true
+        }
+        
         super.init(stack: navigationController, dependency: dependency)
         
         // init entry window for iPhone
@@ -198,7 +203,7 @@ public class Application: Coordinator {
                     })
                 }
                 
-                self.stack.present(confirmViewController, animated: true, completion: nil)
+                confirmViewController.present(from: self.stack, at: self.stack.view)
             } else if iCloudDocumentManager.status == .on {
                 
                 self.dependency.syncManager.geticloudContainerURL(completion: { [unowned self] url in
