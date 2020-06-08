@@ -8,6 +8,10 @@
 
 import Foundation
 
+public var isPhone: Bool {
+    return UIDevice.current.userInterfaceIdiom == .phone
+}
+
 public var isPad: Bool {
     return UIDevice.current.userInterfaceIdiom == .pad
 }

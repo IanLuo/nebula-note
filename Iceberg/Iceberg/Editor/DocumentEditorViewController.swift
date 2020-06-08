@@ -126,20 +126,20 @@ public class DocumentEditorViewController: UIViewController {
                 self._toolBar.sideAnchor(for: .right, to: self.view, edgeInsets: .init(top: 0, left: 0, bottom: 0, right: -Layout.innerViewEdgeInsets.right))
                 self._toolBar.sizeAnchor(width: 44)
                 
-                self.addToolbarButton(title: L10n.Document.Menu.fullScreen, icon: Asset.Assets.folded.image) { button in
-                    self.viewModel.context.coordinator?.toggleFullScreen()
+                self.addToolbarButton(title: L10n.Document.Menu.fullScreen, icon: Asset.Assets.folded.image) { [weak self] button in
+                    self?.viewModel.context.coordinator?.toggleFullScreen()
                 }
                 
-                self.addToolbarButton(title: L10n.Document.Menu.foldAll, icon: Asset.Assets.folded.image) { button in
-                    self.viewModel.foldAll()
+                self.addToolbarButton(title: L10n.Document.Menu.foldAll, icon: Asset.Assets.folded.image) { [weak self]  button in
+                    self?.viewModel.foldAll()
                 }
                 
-                self.addToolbarButton(title: L10n.Document.Menu.unfoldAll, icon: Asset.Assets.unfolded.image) { button in
-                    self.viewModel.unfoldAll()
+                self.addToolbarButton(title: L10n.Document.Menu.unfoldAll, icon: Asset.Assets.unfolded.image) { [weak self]  button in
+                    self?.viewModel.unfoldAll()
                 }
                 
-                self.addToolbarButton(title: L10n.Document.Menu.outline, icon: Asset.Assets.list.image) { button in
-                    self.showOutline(from: button)
+                self.addToolbarButton(title: L10n.Document.Menu.outline, icon: Asset.Assets.list.image) { [weak self]  button in
+                    self?.showOutline(from: button)
                 }
             } else {
                 self.inputbar.frame = CGRect(origin: .zero, size: .init(width: self.view.bounds.width, height: 44))
@@ -189,9 +189,13 @@ public class DocumentEditorViewController: UIViewController {
         super.viewDidDisappear(animated)
         
         self.textView.endEditing(true)
-        if self.presentingViewController == nil {
+        
+        // only for phone
+        if self.presentingViewController == nil && isPhone {
             self.viewModel.context.coordinator?.removeFromParent()
         }
+        
+        self.viewModel.dependency.settingAccessor.logOpenDocument(url: self.viewModel.url)
     }
     
     public override var preferredStatusBarStyle: UIStatusBarStyle {

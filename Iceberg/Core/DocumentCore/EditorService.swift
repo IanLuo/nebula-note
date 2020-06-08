@@ -94,7 +94,6 @@ public class EditorService {
                                         
                     if isOpenSuccessfully {
                         
-                        self?._settingsAccessor.logOpenDocument(url: strongSelf._url)
                         DispatchQueue.runOnMainQueueSafely {
                             log.info("open document success(\(strongSelf._url))")
                              strongSelf._editorController.string = document.string // 触发解析
@@ -125,10 +124,6 @@ public class EditorService {
         self._queue.async { [weak self] in
             document.close {
                 completion?($0)
-                
-                guard let strongSelf = self else { return }
-                
-                self?._settingsAccessor.logCloseDocument(url: strongSelf._url)
                 
                 self?.isClosing = false
             }

@@ -48,7 +48,7 @@ public class MacDocumentTabContainerViewController: UIViewController {
         self.tabBar.onCloseDocument
             .subscribe(onNext: { [weak self ] url in
                 self?.closeDocument(url: url)
-                
+                self?.viewModel.dependency.settingAccessor.logCloseDocument(url: url)
             }).disposed(by: self.disposeBag)
         
         self.tabBar.onSelectDocument.subscribe(onNext: { [weak self] url in
@@ -84,7 +84,7 @@ public class MacDocumentTabContainerViewController: UIViewController {
             viewController.removeFromParent()
             viewController.view.removeFromSuperview()
             self.openingViewControllers[url] = nil
-            
+            self.delegate?.didCloseDocument(url: url, editorViewController: viewController)
             self.viewModel.dependency.settingAccessor.logCloseDocument(url: url)
         }
     }

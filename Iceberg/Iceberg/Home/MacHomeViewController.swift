@@ -62,10 +62,6 @@ public class MacHomeViewController: UIViewController {
         self.documentTabsContainerViewController.showDocument(url: url, viewController: editorViewController)
     }
     
-    public func closeDocument(url: URL) {
-        self.documentTabsContainerViewController.closeDocument(url: url)
-    }
-    
     private func setupUI() {
         self.toolBar.sizeAnchor(height: 80)
         self.toolBar.sideAnchor(for: [.left, .top, .right], to: self.view, edgeInset: 0, considerSafeArea: true)

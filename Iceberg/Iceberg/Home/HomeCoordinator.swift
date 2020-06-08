@@ -279,15 +279,16 @@ extension HomeCoordinator {
             (self.viewController as? MacHomeViewController)?.showDocument(url: url, editorViewController: viewController)
         }
     }
-    
-    public func closeDocment(url: URL) {
+}
+
+extension HomeCoordinator: MacDocumentTabContainerViewControllerDelegate {
+    public func didCloseDocument(url: URL, editorViewController: DocumentEditorViewController) {
         self.children.forEach {
             if let editor = $0 as? EditorCoordinator {
                 switch editor.usage {
                 case .editor(let _url, _):
                     if url == _url {
                         self.remove(editor)
-                        (self.viewController as? MacHomeViewController)?.closeDocument(url: url)
                     }
                 default: break
                 }

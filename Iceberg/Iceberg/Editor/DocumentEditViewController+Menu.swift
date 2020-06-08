@@ -16,6 +16,7 @@ extension DocumentEditorViewController {
         self.viewModel.close { _ in }
         self.dismiss(animated: true, completion: nil)
         self.viewModel.dependency.globalCaptureEntryWindow?.isForcedToHide = false
+        self.viewModel.dependency.settingAccessor.logCloseDocument(url: self.viewModel.url)
     }
     
     @objc public func showInfo() {
