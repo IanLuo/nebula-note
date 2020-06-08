@@ -82,10 +82,6 @@ public class OutlineLayoutManager: NSLayoutManager {
     
     private func _handleForQuote(textStorage: NSTextStorage, range: NSRange, origin: CGPoint, shouldStop: inout Bool) {
         textStorage.enumerateAttribute(OutlineAttribute.Block.quote, in: range, options: []) { (value, range, stop) in
-            guard let value = value else {
-                super.drawGlyphs(forGlyphRange: range, at: origin);return
-            }
-            
             guard let color = (value as? UIColor) else { return }
             let glRange = glyphRange(forCharacterRange: range, actualCharacterRange: nil);
             

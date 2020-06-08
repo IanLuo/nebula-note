@@ -31,12 +31,20 @@ public enum HelpPage: String {
 //    }
     
     public func open(from: UIViewController) {
-        from.present(url: URL(string: self.rawValue)!, completion: nil)
+        if isMacOrPad {
+            UIApplication.shared.open(URL(string: self.rawValue)!, options: [:])
+        } else {
+            from.present(url: URL(string: self.rawValue)!, completion: nil)
+        }
     }
     
     public static func open(from: UIViewController, url: String) {
         if let url = URL(string: url) {
-            from.present(url: url, completion: nil)
+            if isMacOrPad {
+                UIApplication.shared.open(url, options: [:])
+            } else {
+                from.present(url: url, completion: nil)
+            }
         }
     }
 }

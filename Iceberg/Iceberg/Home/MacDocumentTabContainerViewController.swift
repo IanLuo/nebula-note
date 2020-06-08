@@ -40,15 +40,22 @@ public class MacDocumentTabContainerViewController: UIViewController {
         self.view.addSubview(self.container)
         
         self.tabBar.sideAnchor(for: [.leading, .top, .traling], to: self.view, edgeInset: 0)
-        self.tabBar.sizeAnchor(height: 30)
+        self.tabBar.sizeAnchor(height: 44)
         
         self.tabBar.columnAnchor(view: self.container, alignment: .none)
         self.container.sideAnchor(for: [.leading, .bottom, .traling], to: self.view, edgeInset: 0, considerSafeArea: true)
         
         self.tabBar.onCloseDocument
-            .subscribe(onNext: { [weak self ] url in
-                self?.closeDocument(url: url)
-                self?.viewModel.dependency.settingAccessor.logCloseDocument(url: url)
+            .subscribe(onNext: { [weak self ] tab in
+                self?.closeDocument(url: tab.url)
+                self?.viewModel.dependency.settingAccessor.logCloseDocument(url: tab.url)
+                
+                // if the closed document is currently openning, open another one
+                if try! tab.isSelected.value() {
+                    if let nextUrl = self?.openingViewControllers.keys.first, let viewController = self?.openingViewControllers[nextUrl] {
+                        self?.showDocument(url: nextUrl, viewController: viewController)
+                    }
+                }
             }).disposed(by: self.disposeBag)
         
         self.tabBar.onSelectDocument.subscribe(onNext: { [weak self] url in
@@ -56,7 +63,6 @@ public class MacDocumentTabContainerViewController: UIViewController {
                 strongSelf.container.subviews.forEach { $0.removeFromSuperview() }
                 strongSelf.container.addSubview(viewController.view)
                 viewController.view.allSidesAnchors(to: strongSelf.container, edgeInset: 0)
-                self?.viewModel.dependency.settingAccessor.logOpenDocument(url: url)
             }
         }).disposed(by: self.disposeBag)
         
@@ -76,6 +82,8 @@ public class MacDocumentTabContainerViewController: UIViewController {
             self.addChild(viewController)
         }
         
+        self.viewModel.dependency.settingAccessor.logOpenDocument(url: url)
+
         self.tabBar.openDocument.onNext(url)
     }
     
@@ -92,7 +100,7 @@ public class MacDocumentTabContainerViewController: UIViewController {
 
 private class TabBar: UIScrollView {
     let openDocument: PublishSubject<URL> = PublishSubject()
-    let onCloseDocument: PublishSubject<URL> = PublishSubject()
+    let onCloseDocument: PublishSubject<Tab> = PublishSubject()
     let onSelectDocument: PublishSubject<URL> = PublishSubject()
     
     private var opendDocuments: [URL] = []
@@ -100,7 +108,7 @@ private class TabBar: UIScrollView {
     private let stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.alignment = .center
-        stackView.spacing = 10
+        stackView.spacing = 5
         return stackView
     }()
     
@@ -114,7 +122,7 @@ private class TabBar: UIScrollView {
     private func setup() {
         self.addSubview(self.stackView)
         
-        self.contentInset = UIEdgeInsets(top: 0, left: Layout.innerViewEdgeInsets.left, bottom: 0, right: -Layout.innerViewEdgeInsets.right)
+        self.contentInset = UIEdgeInsets(top: 0, left: Layout.innerViewEdgeInsets.left, bottom: 0, right: Layout.innerViewEdgeInsets.right)
         
         self.stackView.sideAnchor(for: [.left, .top, .bottom], to: self, edgeInset: 0)
         self.stackView.rightAnchor.constraint(lessThanOrEqualTo: self.rightAnchor).isActive = true
@@ -142,10 +150,12 @@ private class TabBar: UIScrollView {
                 let tab = Tab(url: url)
                 tab.isSelected.onNext(true)
                 strongSelf.stackView.addArrangedSubview(tab)
+                tab.sizeAnchor(height: 44)
                 
                 tab.onCloseTapped.subscribe(onNext: { [weak tab] url in
-                    strongSelf.onCloseDocument.onNext(url)
-                    tab?.removeFromSuperview()
+                    guard let tab = tab else { return }
+                    strongSelf.onCloseDocument.onNext(tab)
+                    tab.removeFromSuperview()
                 }).disposed(by: strongSelf.disposeBag)
                 
                 tab.onSelect.subscribe(onNext: { url in
@@ -200,9 +210,9 @@ private class Tab: UIView {
         self.addSubview(label)
         self.addSubview(closeButton)
         
-        label.sideAnchor(for: [.left, .top, .bottom], to: self, edgeInsets: .init(top: 0, left: 5, bottom: 0, right: 0))
+        label.sideAnchor(for: [.left, .top, .bottom], to: self, edgeInsets: .init(top: 0, left: 15, bottom: 0, right: 0))
         label.rowAnchor(view: closeButton, space: 5)
-        closeButton.sideAnchor(for: [.top, .bottom, .right], to: self, edgeInsets: .init(top: 0, left: 15, bottom: 0, right: -5))
+        closeButton.sideAnchor(for: [.top, .bottom, .right], to: self, edgeInsets: .init(top: 0, left: 25, bottom: 0, right: -15))
         
         label.rx
             .tap
