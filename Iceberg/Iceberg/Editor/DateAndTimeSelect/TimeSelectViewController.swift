@@ -36,7 +36,10 @@ public class TimeSelectViewController: UIViewController {
             self?._allDayLabel.textColor = InterfaceTheme.Color.interactive
             self?._allDayLabel.font = InterfaceTheme.Font.body
             self?._timePickerContainer.backgroundColor = InterfaceTheme.Color.background2
-            self?._datePicker.setValue(InterfaceTheme.Color.interactive, forKey: "textColor")
+            
+            if !isMac {
+                self?._datePicker.setValue(InterfaceTheme.Color.interactive, forKey: "textColor")
+            }
         }
         
         self._timePickerContainer.sizeAnchor(height: 0)

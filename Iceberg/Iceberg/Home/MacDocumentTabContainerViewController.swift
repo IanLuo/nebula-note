@@ -71,20 +71,28 @@ public class MacDocumentTabContainerViewController: UIViewController {
         }
     }
     
-    public func showDocument(url: URL, viewController: DocumentEditorViewController) {
+    public func isDocumentOpened(url: URL) -> Bool {
+        return self.openingViewControllers[url] != nil
+    }
+    
+    public func showDocument(url: URL, viewController: DocumentEditorViewController?, location: Int? = nil) {
+        self.viewModel.dependency.settingAccessor.logOpenDocument(url: url)
+        
+        self.tabBar.openDocument.onNext(url)
+        
         if let viewController = self.openingViewControllers[url] {
+            self.container.subviews.forEach { $0.removeFromSuperview() }
             self.container.addSubview(viewController.view)
             viewController.view.allSidesAnchors(to: self.container, edgeInset: 0)
-        } else {
+            if let location = location {
+                viewController._scrollTo(location: location)
+            }
+        } else if let viewController = viewController {
             self.openingViewControllers[url] = viewController
             self.container.addSubview(viewController.view)
             viewController.view.allSidesAnchors(to: self.container, edgeInset: 0)
             self.addChild(viewController)
         }
-        
-        self.viewModel.dependency.settingAccessor.logOpenDocument(url: url)
-
-        self.tabBar.openDocument.onNext(url)
     }
     
     public func closeDocument(url: URL) {

@@ -58,8 +58,12 @@ public class MacHomeViewController: UIViewController {
         self.toggleMiddlePartVisiability(visiable: true, animated: false)
     }
     
-    public func showDocument(url: URL, editorViewController: DocumentEditorViewController) {
-        self.documentTabsContainerViewController.showDocument(url: url, viewController: editorViewController)
+    public func isDocumentOpened(url: URL) -> Bool {
+        return self.documentTabsContainerViewController.isDocumentOpened(url: url)
+    }
+    
+    public func showDocument(url: URL, editorViewController: DocumentEditorViewController?, location: Int? = nil) {
+        self.documentTabsContainerViewController.showDocument(url: url, viewController: editorViewController, location: location)
     }
     
     private func setupUI() {

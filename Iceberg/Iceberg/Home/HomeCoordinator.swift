@@ -271,12 +271,19 @@ extension HomeCoordinator: DashboardViewControllerDelegate {
 
 extension HomeCoordinator {
     public func openDocumentInHomeViewRightPart(url: URL, location: Int) {
-        let stack = Coordinator.createDefaultNavigationControlller()
-        let editorCoordinator = EditorCoordinator(stack: stack, dependency: self.dependency, usage: .editor(url, location))
-        self.addChild(editorCoordinator)
         
-        if let viewController = editorCoordinator.viewController as? DocumentEditorViewController {
-            (self.viewController as? MacHomeViewController)?.showDocument(url: url, editorViewController: viewController)
+        if let macHomeViewController = self.viewController as? MacHomeViewController {
+            if macHomeViewController.isDocumentOpened(url: url) {
+                macHomeViewController.showDocument(url: url, editorViewController: nil, location: location)
+            } else {
+                let stack = Coordinator.createDefaultNavigationControlller()
+                let editorCoordinator = EditorCoordinator(stack: stack, dependency: self.dependency, usage: .editor(url, location))
+                
+                if let viewController = editorCoordinator.viewController as? DocumentEditorViewController {
+                    macHomeViewController.showDocument(url: url, editorViewController: viewController)
+                    self.addChild(editorCoordinator)
+                }
+            }
         }
     }
 }
