@@ -94,6 +94,8 @@ public class DateAndTimeSelectViewController: TransitionViewController {
         let tap = UITapGestureRecognizer(target: self, action: #selector(_cancel))
         tap.delegate = self
         self.view.addGestureRecognizer(tap)
+        
+        self.view.layoutIfNeeded()
     }
     
     private func _initValues() {
@@ -139,6 +141,11 @@ public class DateAndTimeSelectViewController: TransitionViewController {
         self._deleteButton.setTitle(L10n.General.Button.Title.delete, for: .normal)
         
         self._timeSelectViewController.switch.isOn = self._selectTime == nil
+        
+        // hide time selector for now for Mac
+        if isMac {
+            self._timeContainer.isHidden = true
+        }
         
         self._contentView.roundConer(radius: 10)
     }
