@@ -89,23 +89,23 @@ public class OutlineTextView: UITextView {
         } else if let checkbox = attributes[OutlineAttribute.checkbox] as? String {
             self.outlineDelegate?.didTapOnCheckbox(textView: self, characterIndex: characterIndex, checkbox: checkbox, point: location)
         } else if let linkStructure = attributes[OutlineAttribute.Link.title] as? [String: String] {
-            self.resignFirstResponder()
+            self.hideKeyboardIfNeeded()
             self.outlineDelegate?.didTapOnLink(textView: self, characterIndex: characterIndex, linkStructure: linkStructure, point: location)
         } else if let tags = attributes[OutlineAttribute.Heading.tags] as? [String] {
-            self.resignFirstResponder()
+            self.hideKeyboardIfNeeded()
             self.outlineDelegate?.didTapOnTags(textView: self, characterIndex: characterIndex, tags: tags, point: location)
         } else if let dateAndTimeString = attributes[OutlineAttribute.dateAndTime] as? String {
-            self.resignFirstResponder()
+            self.hideKeyboardIfNeeded()
             self.outlineDelegate?.didTapDateAndTime(textView: self, characterIndex: characterIndex, dateAndTimeString: dateAndTimeString, point: location)
         } else if let planning = attributes[OutlineAttribute.Heading.planning] as? String {
-            self.resignFirstResponder()
+            self.hideKeyboardIfNeeded()
             self.outlineDelegate?.didTapOnPlanning(textView: self, characterIndex: characterIndex, planning: planning, point: location)
         } else if let priority = attributes[OutlineAttribute.Heading.priority] as? String {
-            self.resignFirstResponder()
+            self.hideKeyboardIfNeeded()
             self.outlineDelegate?.didTapOnPriority(textView: self, characterIndex: characterIndex, priority: priority, point: location)
         }  else if let type = attributes[OutlineAttribute.Attachment.type] as? String,
             let value = attributes[OutlineAttribute.Attachment.value] as? String {
-            self.resignFirstResponder()
+            self.hideKeyboardIfNeeded()
             self.outlineDelegate?.didTapOnAttachment(textView: self, characterIndex: characterIndex, type: type, value: value, point: location)
         } else {
             shouldPassTapToOtherGuestureRecognizers = true
@@ -114,6 +114,12 @@ public class OutlineTextView: UITextView {
         lastTap = (location, shouldPassTapToOtherGuestureRecognizers)
         
         return shouldPassTapToOtherGuestureRecognizers
+    }
+    
+    private func hideKeyboardIfNeeded() {
+        if isPhone {
+            self.resignFirstResponder()
+        }
     }
     
     // 调整光标的高度

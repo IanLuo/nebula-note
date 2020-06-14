@@ -23,7 +23,10 @@ public class MacHomeViewController: UIViewController {
     
     private var toolBar: UIView = {
         let view = UIView()
-        view.backgroundColor = InterfaceTheme.Color.background1
+        
+        view.interface { (me, theme) in
+            me.backgroundColor = InterfaceTheme.Color.background1
+        }
         return view
     }()
     private var leftPart: UIView = UIView()

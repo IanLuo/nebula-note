@@ -59,7 +59,7 @@ extension DocumentEditorViewController: OutlineTextViewDelegate {
             }
             
             self.viewModel.dependency.eventObserver.emit(DateAndTimeChangedEvent(oldDateAndTime: dateAndTime,
-                                                                                              newDateAndTime: newDateAndTime))
+                                                                                 newDateAndTime: newDateAndTime))
             }, delete: {
                 let oldSelectedRange = textView.selectedRange
                 let result = self.viewModel.performAction(EditAction.updateDateAndTime(characterIndex, nil), textView: self.textView)
