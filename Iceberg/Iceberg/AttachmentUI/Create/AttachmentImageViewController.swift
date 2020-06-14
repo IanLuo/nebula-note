@@ -14,7 +14,7 @@ import Interface
 public class AttachmentImageViewController: ActionsViewController, AttachmentViewControllerProtocol {
     public weak var attachmentDelegate: AttachmentViewControllerDelegate?
     
-    public weak var viewModel: AttachmentViewModel!
+    public var viewModel: AttachmentViewModel!
     
     public override func viewDidLoad() {
         self.showImageSourcePicker()
