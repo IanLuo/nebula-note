@@ -119,7 +119,7 @@ open class ActionsViewController: UIViewController, TransitionProtocol {
         if isMacOrPad {
             self.modalPresentationStyle = UIModalPresentationStyle.popover
         } else {
-            self.modalPresentationStyle = .overCurrentContext
+            self.modalPresentationStyle = .custom
             self.transitioningDelegate = transitionDelegate
         }
     }
@@ -182,24 +182,17 @@ open class ActionsViewController: UIViewController, TransitionProtocol {
         let view = UIView()
         view.backgroundColor = InterfaceTheme.Color.background2
         
-        if isMacOrPad {
-            view.backgroundColor = .clear
-        }
-        
         view.setBorder(position: Border.Position.bottom, color: InterfaceTheme.Color.background3, width: 0.5)
         return view
     }()
     
     public let contentView: UIView = {
         let view = UIView()
-        view.backgroundColor = InterfaceTheme.Color.background2
-        
-        if isMacOrPad {
-            view.backgroundColor = .clear
-        }
 
-        view.layer.cornerRadius = 8
-        view.layer.masksToBounds = true
+        if isMacOrPad {
+            view.layer.cornerRadius = 8
+            view.layer.masksToBounds = true
+        }
         return view
     }()
     
@@ -236,6 +229,8 @@ open class ActionsViewController: UIViewController, TransitionProtocol {
     }()
     
     private func setupUI() {
+        self.view.backgroundColor = InterfaceTheme.Color.background2
+        
         self.view.addSubview(self.contentView)
         
         self.contentView.addSubview(self.tableView)
@@ -256,7 +251,6 @@ open class ActionsViewController: UIViewController, TransitionProtocol {
         
         self.contentView.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 10, considerSafeArea: true)
         self.contentView.topAnchor.constraint(greaterThanOrEqualTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
-//        self.contentView.topAnchor.constraint(greaterThanOrEqualTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 50).isActive = true
         
         self.actionsContainerView.sideAnchor(for: [.left, .top, .right], to: self.contentView, edgeInset: 0)
         self.actionsContainerView.columnAnchor(view: self.accessoryViewContainer)
@@ -370,9 +364,6 @@ fileprivate class ActionCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         self.backgroundColor = InterfaceTheme.Color.background2
-        #if targetEnvironment(macCatalyst)
-        self.backgroundColor = .clear
-        #endif
         self.contentView.addSubview(self.iconView)
         self.contentView.addSubview(self.titleLabel)
         
@@ -393,9 +384,9 @@ fileprivate class ActionCell: UITableViewCell {
             self.backgroundColor = InterfaceTheme.Color.background3
         } else {
             self.backgroundColor = InterfaceTheme.Color.background2
-            #if targetEnvironment(macCatalyst)
-            self.backgroundColor = .clear
-            #endif
+            if isMacOrPad {
+                self.backgroundColor = .clear
+            }
         }
     }
 
@@ -404,9 +395,9 @@ fileprivate class ActionCell: UITableViewCell {
             self.backgroundColor = InterfaceTheme.Color.background3
         } else {
             self.backgroundColor = InterfaceTheme.Color.background2
-            #if targetEnvironment(macCatalyst)
-            self.backgroundColor = .clear
-            #endif
+            if isMacOrPad {
+                self.backgroundColor = .clear
+            }
         }
     }
 }

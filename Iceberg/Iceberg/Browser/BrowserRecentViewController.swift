@@ -58,6 +58,10 @@ public class BrowserRecentViewController: UIViewController {
         self.view.addSubview(self.collectionView)
         self.collectionView.allSidesAnchors(to: self.view, edgeInset: 0)
         
+        if !isMac {
+            self.view.roundConer(radius: 8)
+        }
+        
         let dataSource = RxCollectionViewSectionedReloadDataSource<RecentDocumentSection>(configureCell: { (dataSource, collectionView, indexPath, cellModel) -> UICollectionViewCell in
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RecentFileCell.reuseIdentifier, for: indexPath) as! RecentFileCell
             cell.configure(cellModel: cellModel)
@@ -112,7 +116,6 @@ class RecentDocumentsHeader: UICollectionReusableView {
     }
     
     required init?(coder: NSCoder) {
-        
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -187,8 +190,10 @@ private class RecentFileCell: UICollectionViewCell {
         self.interface { [weak self] (me, theme) in
             self?.contentView.backgroundColor = InterfaceTheme.Color.background2
         }
-        self.contentView.layer.cornerRadius = 8
-        self.contentView.layer.masksToBounds = true
+        
+        if !isMac {
+            self.roundConer(radius: 8)
+        }
         self.contentView.addSubview(self.coverView)
         self.contentView.addSubview(self.titleLabel)
         

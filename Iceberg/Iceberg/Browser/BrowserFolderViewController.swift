@@ -52,7 +52,7 @@ public class BrowserFolderViewController: UIViewController {
         return button
     }()
     
-    private let present: PublishSubject<UIViewController> = PublishSubject()
+//    private let present: PublishSubject<UIViewController> = PublishSubject()
     private let tableCellMoved: PublishSubject<(URL, URL)> = PublishSubject()
     private let tableCellUpdate: PublishSubject<URL> = PublishSubject()
     private let tableCellDeleted: PublishSubject<URL> = PublishSubject()
@@ -106,7 +106,14 @@ public class BrowserFolderViewController: UIViewController {
             cell.onPresentingModalViewController
                 .asObserver()
                 .observeOn(MainScheduler())
-                .bind(to: self.present)
+                .subscribe(onNext: { [weak self, weak cell] viewController in
+                    guard let strongSelf = self else { return }
+                    if let transitionController = viewController as? TransitionViewController {
+                        transitionController.present(from: strongSelf, at: cell)
+                    } else {
+                        self?.present(viewController, animated: true)
+                    }
+                })
                 .disposed(by: cell.reuseDisposeBag)
 
             cell.onMoveDocument.bind(to: self.tableCellMoved).disposed(by: cell.reuseDisposeBag)
@@ -177,9 +184,14 @@ public class BrowserFolderViewController: UIViewController {
             })
             .disposed(by: self.disposeBag)
         
-        self.present.subscribe(onNext: { [weak self] viewController in
-            self?.present(viewController, animated: true)
-        }).disposed(by: self.disposeBag)
+//        self.present.subscribe(onNext: { [weak self] viewController in
+//            guard let strongSelf = self else { return }
+//            if let transitionController = viewController as? TransitionViewController {
+//                transitionController.present(from: strongSelf)
+//            } else {
+//                self?.present(viewController, animated: true)
+//            }
+//        }).disposed(by: self.disposeBag)
     }
     
     private func enterChild(url: URL) {

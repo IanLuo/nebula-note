@@ -89,7 +89,8 @@ public class CaptureViewController: UIViewController, TransitionProtocol {
         
         self.tableView.allSidesAnchors(to: self.contentView, edgeInset: 0, considerSafeArea: true)
         
-        self.cancelButton.sideAnchor(for: [.right, .bottom], to: self.contentView, edgeInset: 30, considerSafeArea: true)
+        self.cancelButton.sideAnchor(for: .bottom, to: self.contentView, edgeInset: 30, considerSafeArea: true)
+        self.cancelButton.centerAnchors(position: .centerX, to: self.contentView)
         self.cancelButton.sizeAnchor(width: 60)
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(cancel))

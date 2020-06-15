@@ -84,17 +84,19 @@ public class HomeCoordinator: Coordinator {
     }
     
     public override func didMoveIn() {
-        if let opendFiles = dependency.settingAccessor.openedDocuments {
-            if isMacOrPad {
-                opendFiles.forEach {
-                    self.openDocumentInHomeViewRightPart(url: $0, location: 0)
-                }
-            } else {
-                if let first = opendFiles.last {
-                    self.topCoordinator?.openDocument(url: first, location: 0)
+        self.dependency.appContext.isFileReadyToAccess.subscribe(onNext: { [weak self] _ in
+            if let opendFiles = self?.dependency.settingAccessor.openedDocuments {
+                if isMacOrPad {
+                    opendFiles.forEach {
+                        self?.openDocumentInHomeViewRightPart(url: $0, location: 0)
+                    }
+                } else {
+                    if let first = opendFiles.last {
+                        self?.topCoordinator?.openDocument(url: first, location: 0)
+                    }
                 }
             }
-        }
+        }).disposed(by: self.disposeBag)
     }
     
     private var tempCoordinator: Coordinator?

@@ -146,8 +146,9 @@ public class Coordinator {
             } else { // means it's a modal
                 self.isModal = true
                 
-                if let transitionViewController = viewController as? TransitionViewController, let fromView = self.fromView {
-                    transitionViewController.present(from: top!, at: fromView, location: self.fromLocation ?? CGPoint(x: fromView.bounds.midX, y: fromView.bounds.midY))
+                if let transitionViewController = viewController as? TransitionViewController, let top = top {
+                    let fromView: UIView = self.fromView ?? transitionViewController.view
+                    transitionViewController.present(from: top, at: fromView, location: self.fromLocation ?? CGPoint(x: fromView.bounds.midX, y: fromView.bounds.midY))
                 } else {
                     self.stack.pushViewController(viewController,animated: false)
                     self.stack.modalPresentationStyle = viewController.modalPresentationStyle
@@ -217,6 +218,8 @@ extension Coordinator {
                                                           kind: kind, at: at, location: location)
         attachmentCoordinator.onSaveAttachment = complete
         attachmentCoordinator.onCancel = cancel
+        attachmentCoordinator.fromView = at
+        attachmentCoordinator.fromLocation = location
         
         if let topCoordinator = self.topCoordinator {
             attachmentCoordinator.start(from: topCoordinator)
@@ -225,10 +228,11 @@ extension Coordinator {
         }
     }
     
-    public func showCaptureEntrance() {
+    public func showCaptureEntrance(at: UIView? = nil) {
         let navigationController = Coordinator.createDefaultNavigationControlller()
         
         let captureCoordinator = CaptureCoordinator(stack: navigationController, dependency: self.dependency)
+        captureCoordinator.fromView = at
         captureCoordinator.delegate = self
         
         if let topCoordinator = self.topCoordinator {
@@ -348,6 +352,11 @@ extension Coordinator: CaptureCoordinatorDelegate {
     public func didSelect(attachmentKind: Attachment.Kind, coordinator: CaptureCoordinator) {
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now()) {
             coordinator.stop {
+                
+                if isMacOrPad {
+                    self.fromView = coordinator.fromView
+                    self.fromLocation = coordinator.fromLocation
+                }
                 
                 if attachmentKind.isMemberFunction && !self.dependency.purchaseManager.isMember.value {
                     self.topCoordinator?.showMembership()

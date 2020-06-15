@@ -69,9 +69,7 @@ public class BrowserViewController: UIViewController {
         self.recentViewController.view.columnAnchor(view: nav.view, space: 20, alignment: .centerX)
         self.addChild(nav)
         nav.didMove(toParent: self)
-        
-        self.recentViewController.view.roundConer(radius: 10)
-        
+                
         self.interface { [unowned self] (me, theme) in
             self.recentViewController.view.border(color: theme.color.background2, width: 1)
             self.view.backgroundColor = theme.color.background1

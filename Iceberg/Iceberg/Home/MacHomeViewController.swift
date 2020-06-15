@@ -97,9 +97,12 @@ public class MacHomeViewController: UIViewController {
         stackView.distribution = .equalSpacing
         
         let ideasButton = UIButton()
-        ideasButton.setImage(Asset.Assets.inspiration.image, for: .normal)
-        ideasButton.rx.tap.subscribe(onNext: {
-            self.coordinator?.showCaptureEntrance()
+        ideasButton.interface { (me, interface) in
+            let ideasButton = me as! UIButton
+            ideasButton.setImage(Asset.Assets.inspiration.image.fill(color: interface.color.interactive), for: .normal)
+        }
+        ideasButton.rx.tap.subscribe(onNext: { [weak ideasButton] in
+            self.coordinator?.showCaptureEntrance(at: ideasButton)
         }).disposed(by: self.disposeBag)
         
         self.toggleLeftPartButton.interface { (me, theme) in
