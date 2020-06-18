@@ -60,6 +60,10 @@ public class BrowserRecentViewController: UIViewController {
         
         if !isMac {
             self.view.roundConer(radius: 8)
+            
+            self.interface { [weak self] me, theme in
+                self?.view.border(color: theme.color.background2, width: 1)
+            }
         }
         
         let dataSource = RxCollectionViewSectionedReloadDataSource<RecentDocumentSection>(configureCell: { (dataSource, collectionView, indexPath, cellModel) -> UICollectionViewCell in

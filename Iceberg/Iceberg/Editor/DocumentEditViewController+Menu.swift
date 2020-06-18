@@ -325,7 +325,7 @@ extension DocumentEditorViewController {
                     self.viewModel.showGlobalCaptureEntry()
                 }
                 
-                self.present(formController, animated: true, completion: nil)
+                formController.present(from: self, at: self.textView, location: self.textView.rect(forStringRange: NSRange(location: location, length: 0))?.origin)
             })
         }
         

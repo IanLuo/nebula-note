@@ -438,38 +438,15 @@ public class BrowserCell: UITableViewCell {
     }
     
     private func _createExportActionItem(for actionsViewController: ActionsViewController) {
-        guard let cellModel = self.cellModel else { return }
-        
-        actionsViewController.addActionAutoDismiss(icon: nil, title: L10n.Document.Export.title) { [weak self] in
-            guard let exportManager = cellModel.coordinator?.dependency.exportManager else { return }
+        actionsViewController.addActionAutoDismiss(icon: nil, title: L10n.Attachment.share) { [weak self] in
             
-            let selector = SelectorViewController()
-            selector.title = L10n.Document.Export.msg
-            for item in exportManager.exportMethods {
-                selector.addItem(title: item.title)
-            }
+            guard let cellModel = self?.cellModel else { return }
             
-            selector.onSelection = { [weak self] index, viewController in
-                guard let strongSelf = self else { return }
-                viewController.dismiss(animated: true, completion: {
-                    cellModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
-                    exportManager.export(isMember: cellModel.coordinator?.dependency.purchaseManager.isMember.value ?? false, url: cellModel.url, type:exportManager.exportMethods[index], completion: { url in
-                        
-                        let shareViewController = exportManager.createPreviewController(url: url)
-                        strongSelf.onPresentingModalViewController.onNext(shareViewController)
-                    }, failure: { error in
-                        // TODO: show error
-                    })
-                })
-            }
-            
-            selector.onCancel = { viewController in
-                viewController.dismiss(animated: true, completion: nil)
-                cellModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
-            }
-            
-            self?.onPresentingModalViewController.onNext(selector)
+            cellModel.coordinator?.showExportSelector(document: cellModel.url, at: self, complete: { [weak cellModel] in
+                cellModel?.coordinator?.dependency.globalCaptureEntryWindow?.show()
+            })
         }
+        
     }
 }
 

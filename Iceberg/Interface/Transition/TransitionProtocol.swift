@@ -26,8 +26,8 @@ extension TransitionProtocol {
             viewController.fromView = at ?? from.view
             
             if isMacOrPad {
-                viewController.popoverPresentationController?.sourceView = self.fromView
-                let location = location ?? CGPoint(x: self.fromView!.bounds.midX, y: self.fromView!.bounds.midY)
+                viewController.popoverPresentationController?.sourceView = viewController.fromView
+                let location = location ?? CGPoint(x: viewController.fromView!.bounds.midX, y: viewController.fromView!.bounds.midY)
                 viewController.popoverPresentationController?.sourceRect = CGRect(origin: location, size: .zero)
             }
             
@@ -37,7 +37,7 @@ extension TransitionProtocol {
 }
 
 // 显示 navigation controller 的时候，使用第一个 viewController 的 transition delegate
-extension UINavigationController: TransitionProtocol {
+extension UINavigationController {
     public var contentView: UIView {
         if let rootViewController = self.topViewController as? TransitionProtocol {
             return rootViewController.contentView

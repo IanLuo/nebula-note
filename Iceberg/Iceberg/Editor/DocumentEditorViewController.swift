@@ -141,6 +141,11 @@ public class DocumentEditorViewController: UIViewController {
                 self.addToolbarButton(title: L10n.Document.Menu.outline, icon: Asset.Assets.list.image) { [weak self]  button in
                     self?.showOutline(from: button)
                 }
+                
+                self.addToolbarButton(title: L10n.Attachment.share, icon: Asset.Assets.list.image) { [weak self]  button in
+                    guard let strongSelf = self else { return }
+                    strongSelf.viewModel.context.coordinator?.showExportSelector(document: strongSelf.viewModel.url, at: button, complete: {})
+                }
             } else {
                 self.inputbar.frame = CGRect(origin: .zero, size: .init(width: self.view.bounds.width, height: 44))
                 self.topViewContainer.sizeAnchor(height: 0)

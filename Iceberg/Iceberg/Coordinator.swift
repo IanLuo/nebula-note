@@ -292,6 +292,37 @@ extension Coordinator {
         let attachmentManagerCoordinator = AttachmentManagerCoordinator(stack: self.stack, dependency: self.dependency)
         attachmentManagerCoordinator.start(from: self)
     }
+    
+    public func showExportSelector(document url: URL, at: UIView?, complete: @escaping () -> Void) {
+        let exportManager = self.dependency.exportManager
+        
+        let selector = SelectorViewController()
+        selector.title = L10n.Document.Export.msg
+        for item in exportManager.exportMethods {
+            selector.addItem(title: item.title)
+        }
+        
+        selector.onSelection = { index, viewController in
+            viewController.dismiss(animated: true, completion: {
+                complete()
+                exportManager.export(isMember: self.dependency.purchaseManager.isMember.value, url: url, type:exportManager.exportMethods[index], completion: { url in
+                    let shareViewController = exportManager.createPreviewController(url: url)
+                    self.viewController?.present(shareViewController, animated: true)
+                }, failure: { error in
+                    // TODO: show error
+                })
+            })
+        }
+        
+        selector.onCancel = { viewController in
+            viewController.dismiss(animated: true, completion: nil)
+            complete()
+        }
+        
+        if let viewController = self.viewController {
+            selector.present(from: viewController, at: at)
+        }
+    }
 }
 
 extension Coordinator {

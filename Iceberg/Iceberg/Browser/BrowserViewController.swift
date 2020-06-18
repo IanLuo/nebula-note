@@ -70,9 +70,8 @@ public class BrowserViewController: UIViewController {
         self.addChild(nav)
         nav.didMove(toParent: self)
                 
-        self.interface { [unowned self] (me, theme) in
-            self.recentViewController.view.border(color: theme.color.background2, width: 1)
-            self.view.backgroundColor = theme.color.background1
+        self.interface { [weak self] (me, theme) in
+            self?.view.backgroundColor = theme.color.background1
             nav.navigationBar.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.background1, size: .singlePoint), for: .default)
         }
         

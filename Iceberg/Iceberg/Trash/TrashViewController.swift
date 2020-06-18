@@ -132,7 +132,7 @@ public class TrashViewController: UIViewController, UITableViewDelegate {
             viewController.dismiss(animated: true)
         }
         
-        self.present(actions, animated: true)
+        actions.present(from: self, at: tableView.cellForRow(at: indexPath))
         self.viewModel.hideGlobalCaptureEntry()
     }
     

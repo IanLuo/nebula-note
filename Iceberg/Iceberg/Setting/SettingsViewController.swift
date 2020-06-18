@@ -377,12 +377,12 @@ public class SettingsViewController: UITableViewController {
         dependency.globalCaptureEntryWindow?.hide()
     }
     
-    @objc func _planningManageFinish() {
-        self._planningManage(isFinish: true)
+    @objc func _planningManageFinish(from: UIView) {
+        self._planningManage(isFinish: true, from: from)
     }
     
-    @objc func _planningManageUnfinish() {
-        self._planningManage(isFinish: false)
+    @objc func _planningManageUnfinish(from: UIView) {
+        self._planningManage(isFinish: false, from: from)
     }
     
     @IBAction func editorFoldWhenOpen(_ sender: UISwitch) {
@@ -392,7 +392,7 @@ public class SettingsViewController: UITableViewController {
     @IBAction func exportShowIndex(_ sender: UISwitch) {
         self.viewModel.setExportShowIndex(sender.isOn) {}
     }
-    private func _planningManage(isFinish: Bool) {
+    private func _planningManage(isFinish: Bool, from: UIView) {
         let plannings = self.viewModel.getPlanning(isForFinished: isFinish)
         
         let actionsViewController = ActionsViewController()
@@ -477,6 +477,7 @@ public class SettingsViewController: UITableViewController {
             })
         }
         
+        actionsViewController.present(from: self, at: from)
         self.present(actionsViewController, animated: true, completion: nil)
         self.viewModel.dependency.globalCaptureEntryWindow?.hide()
     }
@@ -492,9 +493,9 @@ public class SettingsViewController: UITableViewController {
         case (0, 1):
             self._interfaceStyleButtonTapped(self.interfaceStyleButton)
         case (1, 0):
-            self._planningManageFinish()
+            self._planningManageFinish(from: cell)
         case (1, 1):
-            self._planningManageUnfinish()
+            self._planningManageUnfinish(from: cell)
         case (2, 0):
             self._storeLocationButtonTapped(self.storeLocationButton)
         case (2, 1):

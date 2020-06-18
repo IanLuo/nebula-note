@@ -167,6 +167,10 @@ open class ModalFormViewController: TransitionViewController {
     }
     
     private func setupUI() {
+        self.interface { (me, interface) in
+            me.view.backgroundColor = interface.color.background2
+        }
+        
         self.view.addSubview(self.contentView)
         self.contentView.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 10, considerSafeArea: true)
         

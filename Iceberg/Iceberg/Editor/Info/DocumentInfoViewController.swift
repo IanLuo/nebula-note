@@ -139,7 +139,7 @@ public class DocumentInfoViewController: TransitionViewController {
             }
         }
         
-        self.present(actionsViewController, animated: true)
+        actionsViewController.present(from: self, at: self.view)
     }
 }
 
