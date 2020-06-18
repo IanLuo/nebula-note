@@ -89,7 +89,11 @@ open class ActionsViewController: UIViewController, TransitionProtocol {
                 self.view.layoutIfNeeded()
             }, completion: {
                 if $0 {
-                    self.tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: UITableView.RowAnimation.bottom)
+                    if isMac {
+                        self.tableView.reloadData()
+                    } else {
+                        self.tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: UITableView.RowAnimation.bottom)
+                    }
                 }
             })
         }
