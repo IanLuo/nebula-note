@@ -226,7 +226,7 @@
 
 // agenda
 "agenda.title" = "日程表";
-"agenda.startToday" = "今天日期";
+"agenda.startToday" = "今天开始";
 "agenda.startInDaysWithPlaceHolder" = "%@ 天后开始";
 "agenda.startTomorrowWithPlaceHolder" = "明天开始";
 "agenda.startDaysAgoWithPlaceHodler" = "%@ 天前已开始";

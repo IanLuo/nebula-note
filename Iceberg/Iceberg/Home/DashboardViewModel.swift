@@ -8,6 +8,7 @@
 
 import Foundation
 import Core
+import Interface
 
 public protocol DashboardViewModelDelegate: class {
     func didCompleteLoadFilteredData()
@@ -67,23 +68,31 @@ public class DashboardViewModel: ViewModelProtocol {
         return queue
     }()
     
+    private func markNeedReloadData() {
+        self._isHeadingsNeedsReload = true
+        
+        if isMacOrPad {
+            self.loadDataIfNeeded()
+        }
+    }
+    
     private func _setupHeadingChangeObserver() {
         self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
                                                                     eventType: DocumentHeadingChangeEvent.self,
                                                                     queue: self._headingChangeObservingQueue) { [weak self] (event: DocumentHeadingChangeEvent) -> Void in
-                                                                        self?._isHeadingsNeedsReload = true
+                                                                        self?.markNeedReloadData()
         }
         
         self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
                                                                     eventType: NewAttachmentDownloadedEvent.self,
                                                                     queue: self._headingChangeObservingQueue) { [weak self] (event: NewAttachmentDownloadedEvent) -> Void in
-                                                                        self?._isHeadingsNeedsReload = true
+                                                                        self?.markNeedReloadData()
         }
         
         self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
                                                                     eventType: AppStartedEvent.self,
                                                                     queue: self._headingChangeObservingQueue) { [weak self] (event: AppStartedEvent) -> Void in
-                                                                        self?.loadDataIfNeeded()
+                                                                        self?.markNeedReloadData()
         }
         
         self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
@@ -108,28 +117,28 @@ public class DashboardViewModel: ViewModelProtocol {
         self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
                                                                     eventType: TagDeleteEvent.self,
                                                                     queue: self._headingChangeObservingQueue) { [weak self] (event: TagDeleteEvent) -> Void in
-                                                                        self?._isHeadingsNeedsReload = true
+                                                                        self?.markNeedReloadData()
         }
         
         self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
                                                                     eventType: DateAndTimeChangedEvent.self,
                                                                     queue: self._headingChangeObservingQueue,
                                                                     action: { [weak self] (event: DateAndTimeChangedEvent) -> Void in
-                                                                        self?._isHeadingsNeedsReload = true
+                                                                        self?.markNeedReloadData()
         })
         
         self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
                                                                     eventType: iCloudOpeningStatusChangedEvent.self,
                                                                     queue: .main,
                                                                     action: { [weak self] (event: iCloudOpeningStatusChangedEvent) in
-                                                                        self?._isHeadingsNeedsReload = true
+                                                                        self?.markNeedReloadData()
         })
         
         self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
                                                                     eventType: NewDocumentPackageDownloadedEvent.self,
                                                                     queue: .main,
                                                                     action: { [weak self] (event: NewDocumentPackageDownloadedEvent) in
-                                                                        self?._isHeadingsNeedsReload = true
+                                                                        self?.markNeedReloadData()
         })
         
         self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
@@ -148,7 +157,11 @@ public class DashboardViewModel: ViewModelProtocol {
         self.loadData()
     }
     
+    private var isLoading: Bool = false
     public func loadData() {
+        guard self.isLoading == false else { return }
+        self.isLoading = true
+        
         let today = Date().dayEnd
         
         var scheduled: [DocumentHeadingSearchResult] = []
@@ -252,6 +265,7 @@ public class DashboardViewModel: ViewModelProtocol {
             }
             
             self.delegate?.didCompleteLoadFilteredData()
+            self.isLoading = false
         }
     }
 }
