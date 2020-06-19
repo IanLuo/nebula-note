@@ -80,7 +80,7 @@ extension DocumentEditorViewController {
         
         self.textView.resignFirstResponder() // 隐藏键盘
         
-        actionsController.present(from: actionsController)
+        actionsController.present(from: self)
         
         self.viewModel.hideGlobalCaptureEntry()
     }
