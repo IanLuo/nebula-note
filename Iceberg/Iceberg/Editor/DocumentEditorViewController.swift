@@ -20,7 +20,11 @@ public class DocumentEditorViewController: UIViewController {
     
     private let _loadingIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView()
-        indicator.color = InterfaceTheme.Color.interactive
+        
+        indicator.interface { (me, interface) in
+            let indicator = me as! UIActivityIndicatorView
+            indicator.color = InterfaceTheme.Color.interactive
+        }
         return indicator
     }()
     
@@ -54,7 +58,9 @@ public class DocumentEditorViewController: UIViewController {
         self.textView.isEditable = !self.viewModel.isTemp
         viewModel.delegate = self
         
-        self.view.backgroundColor = InterfaceTheme.Color.background1
+        self.interface { (me, interface) in
+            me.view.backgroundColor = InterfaceTheme.Color.background1
+        }
         self.modalPresentationStyle = .fullScreen
         
     }
@@ -84,6 +90,7 @@ public class DocumentEditorViewController: UIViewController {
         
         self.interface { [weak self] (me, theme) in
             self?.setNeedsStatusBarAppearanceUpdate()
+            self?.viewModel.revertContent()
         }
 
         self.view.addSubview(self.topViewContainer)
@@ -211,7 +218,11 @@ public class DocumentEditorViewController: UIViewController {
         let button = RoundButton()
         
         button.setIcon(icon, for: .normal)
-        button.setBackgroundColor(InterfaceTheme.Color.background2, for: .normal)
+        
+        button.interface { (me, interface) in
+            let button = me as! RoundButton
+            button.setBackgroundColor(InterfaceTheme.Color.background2, for: .normal)
+        }
         return button
     }
     
@@ -220,6 +231,7 @@ public class DocumentEditorViewController: UIViewController {
         button.interface { (it, theme) in
             (it as! RoundButton).setIcon(icon.fill(color: theme.color.interactive), for: .normal)
             (it as! RoundButton).tintColor = theme.color.interactive
+            (it as! RoundButton).setBackgroundColor(theme.color.background3, for: .normal)
         }
         button.title = title
         button.tapped { action($0) }

@@ -48,10 +48,18 @@ public class OutlineTextView: UITextView {
             self.smartDashesType = .no
         }
         
-        self.tintColor = InterfaceTheme.Color.spotlight
-        self.backgroundColor = InterfaceTheme.Color.background1
-        self.typingAttributes = [NSAttributedString.Key.font: InterfaceTheme.Font.body,
-                                 NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.interactive]
+        self.interface { (me, interface) in
+            let textView = me as! UITextView
+            textView.tintColor = interface.color.spotlight
+            textView.backgroundColor = interface.color.background1
+            textView.typingAttributes = [NSAttributedString.Key.font: interface.font.body,
+                                     NSAttributedString.Key.foregroundColor: interface.color.interactive]
+            
+            if isMac {
+                let textInputTraits = self.value(forKey: "textInputTraits") as? NSObject
+                textInputTraits?.setValue(interface.color.spotlight, forKey: "insertionPointColor")
+            }
+        }
     }
     
     private var lastTap: (CGPoint, Bool) = (.zero, true)

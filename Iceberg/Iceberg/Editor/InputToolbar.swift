@@ -130,11 +130,15 @@ public class InputToolbar: UIView {
 
         super.init(frame: .zero)
         
-        if isMacOrPad {
-            self._collectionView.backgroundColor = InterfaceTheme.Color.background1
-        } else {
-            self._collectionView.backgroundColor = InterfaceTheme.Color.background2
+        self.interface { (me, interface) in
+            let toolBar = me as! InputToolbar
+            if isMacOrPad {
+                toolBar._collectionView.backgroundColor = InterfaceTheme.Color.background1
+            } else {
+                toolBar._collectionView.backgroundColor = InterfaceTheme.Color.background2
+            }
         }
+        
         self._collectionView.showsHorizontalScrollIndicator = false
         self._collectionView.delegate = self
         self._collectionView.dataSource = self
@@ -182,8 +186,11 @@ extension InputToolbar: UICollectionViewDelegate, UICollectionViewDataSource, UI
         let actionGroup = self.actionGroups[indexPath.section]
         let action = actionGroup.actions[indexPath.row]
         
-        let color = actionGroup.isEnabled ? InterfaceTheme.Color.interactive : UIColor.lightGray.withAlphaComponent(0.2)
-        cell.iconView.image = action.icon.withRenderingMode(.alwaysTemplate).fill(color: color)
+        self.interface { (me, interface) in
+            let color = actionGroup.isEnabled ? interface.color.interactive : UIColor.lightGray.withAlphaComponent(0.2)
+            cell.iconView.image = action.icon.withRenderingMode(.alwaysTemplate).fill(color: color)
+        }
+        
         cell.memberFunctionImageView.isHidden = (self.delegate?.isMember() ?? false ) || !action.isMemberFunction
 
         return cell
