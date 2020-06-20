@@ -478,7 +478,6 @@ public class SettingsViewController: UITableViewController {
         }
         
         actionsViewController.present(from: self, at: from)
-        self.present(actionsViewController, animated: true, completion: nil)
         self.viewModel.dependency.globalCaptureEntryWindow?.hide()
     }
     
