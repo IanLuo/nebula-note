@@ -193,7 +193,7 @@ open class ActionsViewController: UIViewController, TransitionProtocol {
     public let contentView: UIView = {
         let view = UIView()
 
-        if isMacOrPad {
+        if !isMacOrPad {
             view.layer.cornerRadius = 8
             view.layer.masksToBounds = true
         }

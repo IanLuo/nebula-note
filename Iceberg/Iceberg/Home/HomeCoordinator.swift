@@ -91,7 +91,8 @@ public class HomeCoordinator: Coordinator {
                         self?.openDocumentInHomeViewRightPart(url: $0, location: 0)
                     }
                 } else {
-                    if let first = opendFiles.last {
+                    if let first = opendFiles.first {
+                        first.lastModifyTimeStamp
                         self?.topCoordinator?.openDocument(url: first, location: 0)
                     }
                 }

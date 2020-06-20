@@ -236,6 +236,7 @@ private class Tab: UIView {
         
         isSelected.subscribe(onNext: { [weak self] isSelected in
             self?.backgroundColor = isSelected ? InterfaceTheme.Color.spotlight : InterfaceTheme.Color.background2
+            label.setTitleColor(isSelected ? InterfaceTheme.Color.spotlitTitle : InterfaceTheme.Color.interactive, for: .normal)
         }).disposed(by: self.disposeBag)
     }
 }
