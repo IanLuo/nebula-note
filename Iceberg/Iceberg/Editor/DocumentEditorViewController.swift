@@ -69,6 +69,10 @@ public class DocumentEditorViewController: UIViewController {
         NotificationCenter.default.removeObserver(self)
     }
     
+    public func start() {
+        self.viewModel.start()
+    }
+    
     public required init?(coder aDecoder: NSCoder) {
         fatalError()
     }
@@ -105,7 +109,9 @@ public class DocumentEditorViewController: UIViewController {
         self.topViewContainer.sideAnchor(for: [.left, .top, .right], to: self.view, edgeInset: 0)
         self.topViewContainer.bottomAnchor.constraint(equalTo: self.textView.topAnchor).isActive = true
         self.topViewContainer.bottomAnchor.constraint(equalTo: self.rightViewContainer.topAnchor).isActive = true
-        self.topViewContainer.sizeAnchor(height: 0) // this view only available for iPad and mac
+        if isPhone {
+            self.topViewContainer.sizeAnchor(height: 0) // this view only available for iPad and mac
+        }
         self.textView.sideAnchor(for: [.left, .bottom], to: self.view, edgeInset: 0)
         self.textView.rightAnchor.constraint(equalTo: self.rightViewContainer.leftAnchor).isActive = true
         self.rightViewContainer.sideAnchor(for: [.right, .bottom], to: self.view, edgeInset: 0)
@@ -194,6 +200,14 @@ public class DocumentEditorViewController: UIViewController {
 //                self?.textView.isEditable = !isReadingMode && self?.viewModel.isTemp == false
 //                self?.textView.inputAccessoryView?.isHidden = isReadingMode
 //            }).disposed(by: self.disposeBag)
+        }
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        if isPhone {
+            self.viewModel.start()
         }
     }
     

@@ -36,6 +36,11 @@ public class HeadingsOutlineViewController: SelectorViewController {
         self.emptyDataText = L10n.Document.Outlet.noHeading
     }
     
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        self.viewModel.start()
+    }
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
         self.view.showProcessingAnimation()

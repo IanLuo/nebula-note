@@ -63,6 +63,7 @@ public class MacDocumentTabContainerViewController: UIViewController {
                 strongSelf.container.subviews.forEach { $0.removeFromSuperview() }
                 strongSelf.container.addSubview(viewController.view)
                 viewController.view.allSidesAnchors(to: strongSelf.container, edgeInset: 0)
+                viewController.start()
             }
         }).disposed(by: self.disposeBag)
         
@@ -202,6 +203,8 @@ private class Tab: UIView {
     }
     
     private func setup() {
+        self.roundConer(radius: 4)
+        
         let label = UIButton()
         label.setTitle(self.url.packageName, for: .normal)
         

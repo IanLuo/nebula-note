@@ -31,9 +31,7 @@ public class BrowserCell: UITableViewCell {
             me.backgroundColor = theme.color.background3
         }
         
-        if !isMac {
-            imageView.roundConer(radius: Layout.cornerRadius)
-        }
+        imageView.roundConer(radius: Layout.cornerRadius)
         
         imageView.clipsToBounds = true
         imageView.contentMode = .center
@@ -56,9 +54,7 @@ public class BrowserCell: UITableViewCell {
     public let actionsContainerView: UIView = UIView()
     public let container: UIView = {
         let view = UIView()
-        if !isMac {
-            view.roundConer(radius: Layout.cornerRadius)
-        }
+        view.roundConer(radius: Layout.cornerRadius)
         return view
     }()
     
@@ -474,9 +470,7 @@ public class BrowserCellWithSubFolder: BrowserCell {
     
     private let _subFolderIndicatorView: UIView = {
        let view = UIView()
-        if !isMac {
-            view.roundConer(radius: 10)
-        }
+        view.roundConer(radius: 8)
         view.layer.borderWidth = 1
         view.interface { (me, interface) in
             me.layer.borderColor = interface.color.background2.cgColor

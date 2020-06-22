@@ -72,6 +72,11 @@ public class EditorService {
         }
     }
     
+    public var isOpen: Bool {
+        guard let document = self._document else { return false }
+        return document.documentState == .normal
+    }
+    
     public func open(completion:((String?) -> Void)? = nil) {
         log.info("open file: \(self._url)")
         guard let document = self._document else {

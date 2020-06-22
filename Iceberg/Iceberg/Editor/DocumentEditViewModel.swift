@@ -9,6 +9,7 @@
 import Foundation
 import Core
 import RxSwift
+import Interface
 
 public protocol DocumentEditViewModelDelegate: class {
     func updateHeadingInfo(heading: HeadingToken?)
@@ -52,13 +53,22 @@ public class DocumentEditViewModel: ViewModelProtocol {
         
         self._editorService = editorService
         
-        editorService.onReadyToUse = { [weak self] service in
+        self.addObservers()
+    }
+    
+    private var isOpenning: Bool = false
+    public func start() {
+        guard !self._editorService.isOpen else { return }
+        guard !isOpenning else { return }
+        
+        self.isOpenning = true
+        
+        self._editorService.onReadyToUse = { [weak self] service in
             service.open {
                 self?.isReadyToEdit = $0 != nil
+                self?.isOpenning = false
             }
         }
-        
-        self.addObservers()
     }
     
     deinit {
