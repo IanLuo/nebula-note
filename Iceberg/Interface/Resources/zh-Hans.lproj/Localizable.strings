@@ -64,7 +64,7 @@
 
 // document info
 "document.info.editDate" = "编辑日期";
-"document.info.createDate" = "新建日期";
+"document.info.createDate" = "创建日期";
 "document.info.wordCount" = "文字总数";
 "document.info.paragraphCount" = "段落总数";
 "document.info.characterCount" = "字符总数";

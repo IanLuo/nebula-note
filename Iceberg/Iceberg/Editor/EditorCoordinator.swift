@@ -158,10 +158,13 @@ public class EditorCoordinator: Coordinator {
         }
     }
     
-    public func showConfictResolver(from: UIViewController, viewModel: DocumentEditViewModel) {
+    public func showConfictResolverIfFoundConflictVersions(from: UIViewController, viewModel: DocumentEditViewModel) {
         guard viewModel.isResolvingConflict == false else { return }
         viewModel.isResolvingConflict = true
         let resolverViewController = ConflictResolverViewController(viewModel: viewModel)
+        
+        guard resolverViewController.shouldShow else { return }
+        
         let nav = Application.createDefaultNavigationControlller(root: resolverViewController, transparentBar: false)
         from.present(nav, animated: true)
     }

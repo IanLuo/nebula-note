@@ -409,6 +409,7 @@ private class TabView: UITableViewHeaderFooterView {
             
             tab.didSetIsCurrent = {
                 self.isHighlighted = $0
+                self.iconView.tintColor = $0 ? InterfaceTheme.Color.spotlitTitle : InterfaceTheme.Color.interactive
             }
             
         }
@@ -421,7 +422,8 @@ private class TabView: UITableViewHeaderFooterView {
             let button = me as! UIButton
             button.titleLabel?.font = theme.font.title
             button.setTitleColor(theme.color.interactive, for: .normal)
-            button.setBackgroundImage(UIImage.create(with: theme.color.background2, size: .singlePoint), for: .selected)
+            button.setTitleColor(theme.color.spotlitTitle, for: .selected)
+            button.setBackgroundImage(UIImage.create(with: theme.color.spotlight, size: .singlePoint), for: .selected)
             button.setBackgroundImage(UIImage.create(with: theme.color.background1, size: .singlePoint), for: .normal)
         })
         button.contentHorizontalAlignment = .left
@@ -431,12 +433,12 @@ private class TabView: UITableViewHeaderFooterView {
         return button
     }()
     
-    let iconView: UIImageView = {
+    lazy var iconView: UIImageView = {
         let imageView = UIImageView()
         
-        imageView.interface({ (me, theme) in
+        imageView.interface({ [weak self] (me, theme) in
             let imageView = me as! UIImageView
-            imageView.tintColor = theme.color.descriptive
+            imageView.tintColor = self?.isHighlighted == true ? theme.color.spotlitTitle : theme.color.descriptive
         })
         imageView.contentMode = .scaleAspectFit
         return imageView
@@ -463,7 +465,8 @@ private class TabView: UITableViewHeaderFooterView {
         self.iconView.centerAnchors(position: .centerY, to: self.contentView)
         self.iconView.sizeAnchor(width: 20, height: 20)
         
-        self.titleButton.allSidesAnchors(to: self.contentView, edgeInset: 0)
+        self.titleButton.roundConer(radius: 8)
+        self.titleButton.allSidesAnchors(to: self.contentView, edgeInsets: .init(top: 0, left: Layout.edgeInsets.left, bottom: 0, right: -Layout.edgeInsets.right))
         self.titleButton.contentEdgeInsets = UIEdgeInsets(top: 20, left: Layout.innerViewEdgeInsets.left + 20 + 20, bottom: 20, right: 0)
     }
     
@@ -522,6 +525,8 @@ private class SubtabCell: UITableViewCell {
         return imageView
     }()
     
+    let innerContentView = UIView()
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
@@ -529,13 +534,17 @@ private class SubtabCell: UITableViewCell {
             me.backgroundColor = theme.color.background1
         }
         
-        self.contentView.addSubview(self.titleLabel)
-        self.contentView.addSubview(self.iconView)
-        self.contentView.addSubview(self.subtitleLabel)
-        self.contentView.addSubview(self.detailIconView)
+        self.contentView.addSubview(self.innerContentView)
+        self.innerContentView.addSubview(self.titleLabel)
+        self.innerContentView.addSubview(self.iconView)
+        self.innerContentView.addSubview(self.subtitleLabel)
+        self.innerContentView.addSubview(self.detailIconView)
         
-        self.iconView.sideAnchor(for: .left, to: self.contentView, edgeInsets: .init(top: 0, left: 60, bottom: 0, right: 0))
-        self.iconView.centerAnchors(position: .centerY, to: self.contentView)
+        self.innerContentView.allSidesAnchors(to: self.contentView, edgeInsets: .init(top: 0, left: 60, bottom: 0, right: -Layout.edgeInsets.right))
+        self.innerContentView.roundConer(radius: 8)
+        
+        self.iconView.sideAnchor(for: .left, to: self.innerContentView, edgeInsets: .init(top: 0, left: Layout.edgeInsets.left, bottom: 0, right: 0))
+        self.iconView.centerAnchors(position: .centerY, to: self.innerContentView)
         self.iconView.sizeAnchor(width: 15, height: 15)
         self.iconView.rowAnchor(view: self.titleLabel, space: 20)
         
@@ -543,7 +552,7 @@ private class SubtabCell: UITableViewCell {
         
         self.subtitleLabel.rowAnchor(view: self.detailIconView, space: 3)
         self.subtitleLabel.setContentHuggingPriority(UILayoutPriority.defaultHigh, for: NSLayoutConstraint.Axis.horizontal)
-        self.detailIconView.sideAnchor(for: .right, to: self.contentView, edgeInset: Layout.edgeInsets.right)
+        self.detailIconView.sideAnchor(for: .right, to: self.innerContentView, edgeInset: Layout.edgeInsets.right)
         self.detailIconView.sizeAnchor(width: 10, height: 10)
     }
     
@@ -553,17 +562,33 @@ private class SubtabCell: UITableViewCell {
     
     override public func setHighlighted(_ highlighted: Bool, animated: Bool) {
         if highlighted {
-            self.backgroundColor = InterfaceTheme.Color.background2
+            self.innerContentView.backgroundColor = InterfaceTheme.Color.spotlight
+            self.subtitleLabel.textColor = InterfaceTheme.Color.spotlitTitle
+            self.titleLabel.textColor = InterfaceTheme.Color.spotlitTitle
+            self.detailIconView.tintColor = InterfaceTheme.Color.spotlitTitle
+            self.iconView.tintColor = InterfaceTheme.Color.spotlitTitle
         } else {
-            self.backgroundColor = InterfaceTheme.Color.background1
+            self.innerContentView.backgroundColor = InterfaceTheme.Color.background1
+            self.subtitleLabel.textColor = InterfaceTheme.Color.interactive
+            self.titleLabel.textColor = InterfaceTheme.Color.interactive
+            self.detailIconView.tintColor = InterfaceTheme.Color.interactive
+            self.iconView.tintColor = InterfaceTheme.Color.interactive
         }
     }
     
     override public func setSelected(_ selected: Bool, animated: Bool) {
         if selected {
-            self.backgroundColor = InterfaceTheme.Color.background2
+            self.innerContentView.backgroundColor = InterfaceTheme.Color.spotlight
+            self.subtitleLabel.textColor = InterfaceTheme.Color.spotlitTitle
+            self.titleLabel.textColor = InterfaceTheme.Color.spotlitTitle
+            self.detailIconView.tintColor = InterfaceTheme.Color.spotlitTitle
+            self.iconView.tintColor = InterfaceTheme.Color.spotlitTitle
         } else {
-            self.backgroundColor = InterfaceTheme.Color.background1
+            self.innerContentView.backgroundColor = InterfaceTheme.Color.background1
+            self.subtitleLabel.textColor = InterfaceTheme.Color.interactive
+            self.titleLabel.textColor = InterfaceTheme.Color.interactive
+            self.detailIconView.tintColor = InterfaceTheme.Color.interactive
+            self.iconView.tintColor = InterfaceTheme.Color.interactive
         }
     }
 }

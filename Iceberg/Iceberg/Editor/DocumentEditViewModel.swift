@@ -354,6 +354,9 @@ public class DocumentEditViewModel: ViewModelProtocol {
     
     public func delete(completion: ((Error?) -> Void)? = nil) {
         self._editorService.delete(completion: completion)
+        
+        // remove file from openning list
+        self.dependency.settingAccessor.logCloseDocument(url: self.url)
     }
     
     public func handleConflict(url choosen: URL, completion: @escaping () -> Void) throws {

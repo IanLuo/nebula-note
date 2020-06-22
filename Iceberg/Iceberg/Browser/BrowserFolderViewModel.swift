@@ -149,7 +149,8 @@ public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
                 }
                 
                 //find from downloading urls
-                for url in Array(self.dependency.syncManager.onDownloadingUpdates.value.keys.filter { $0.pathExtension == Document.fileExtension }) {
+                for url in Array(self.dependency.syncManager.onDownloadingUpdates.value.keys.filter { $0.pathExtension == Document.fileExtension && !$0.packageName
+                    .hasPrefix(SyncCoordinator.Prefix.deleted.rawValue) }) {
                     if url.parentDocumentURL == self.url && !urls.contains(where: { $0.documentRelativePath == url.documentRelativePath }) {
                         let cellModel = BrowserCellModel(url: url, isDownloading: true)
                         cellModel.shouldShowActions = self.mode.showActions

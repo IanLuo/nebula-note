@@ -20,6 +20,7 @@ public class ConflictResolverViewController: UIViewController, UITableViewDataSo
         tableView.register(VersionCell.self, forCellReuseIdentifier: VersionCell.reuseIdentifier)
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.tableFooterView = UIView()
         return tableView
     }()
     
@@ -49,16 +50,24 @@ public class ConflictResolverViewController: UIViewController, UITableViewDataSo
         if #available(iOS 13.0, *) {
             self.isModalInPresentation = true
         }
-    }
-    
-    public override func viewDidLoad() {
         
         if let conflictVersions = NSFileVersion.unresolvedConflictVersionsOfItem(at: self.viewModel.url), let currentVersion = NSFileVersion.currentVersionOfItem(at: self.viewModel.url) {
             var versions = conflictVersions
-            versions.append(currentVersion)
+            
+            if conflictVersions.count > 0 {
+                versions.append(currentVersion)
+            } else {
+                try? self.viewModel.handleConflict(url: currentVersion.url, completion: {})
+            }
             self.versions.accept(versions)
         }
-        
+    }
+    
+    public var shouldShow: Bool {
+        return self.versions.value.count > 0
+    }
+    
+    public override func viewDidLoad() {
         self.title = L10n.Document.Edit.Conflict.found
         
         self.view.backgroundColor = InterfaceTheme.Color.background1

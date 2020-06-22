@@ -16,7 +16,7 @@ import Doorbell
 
 public protocol SettingsViewControllerDelegate: class {
     
-}
+}   
 
 public class SettingsViewController: UITableViewController {
     public var viewModel: SettingsViewModel!

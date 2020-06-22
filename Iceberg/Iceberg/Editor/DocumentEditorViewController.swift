@@ -105,6 +105,7 @@ public class DocumentEditorViewController: UIViewController {
         self.topViewContainer.sideAnchor(for: [.left, .top, .right], to: self.view, edgeInset: 0)
         self.topViewContainer.bottomAnchor.constraint(equalTo: self.textView.topAnchor).isActive = true
         self.topViewContainer.bottomAnchor.constraint(equalTo: self.rightViewContainer.topAnchor).isActive = true
+        self.topViewContainer.sizeAnchor(height: 0) // this view only available for iPad and mac
         self.textView.sideAnchor(for: [.left, .bottom], to: self.view, edgeInset: 0)
         self.textView.rightAnchor.constraint(equalTo: self.rightViewContainer.leftAnchor).isActive = true
         self.rightViewContainer.sideAnchor(for: [.right, .bottom], to: self.view, edgeInset: 0)
@@ -112,6 +113,7 @@ public class DocumentEditorViewController: UIViewController {
 
         self._loadingIndicator.centerAnchors(position: [.centerX, .centerY], to: self.view)
 
+        // temp is used for show only the content, can't edit, like conflict preview
         if !self.viewModel.isTemp {
             let closeButton = UIBarButtonItem(image: Asset.Assets.down.image.fill(color: InterfaceTheme.Color.interactive), style: .plain, target: self, action: #selector(cancel(_:)))
             self.navigationItem.leftBarButtonItem = closeButton
@@ -149,13 +151,11 @@ public class DocumentEditorViewController: UIViewController {
                     self?.showOutline(from: button)
                 }
                 
-                self.addToolbarButton(title: L10n.Attachment.share, icon: Asset.Assets.list.image) { [weak self]  button in
-                    guard let strongSelf = self else { return }
-                    strongSelf.viewModel.context.coordinator?.showExportSelector(document: strongSelf.viewModel.url, at: button, complete: {})
+                self.addToolbarButton(title: "", icon: Asset.Assets.more.image) { [weak self]  button in
+                    self?.showInfo()
                 }
             } else {
                 self.inputbar.frame = CGRect(origin: .zero, size: .init(width: self.view.bounds.width, height: 44))
-                self.topViewContainer.sizeAnchor(height: 0)
                 self.textView.inputAccessoryView = self.inputbar
             }
             
@@ -207,7 +207,10 @@ public class DocumentEditorViewController: UIViewController {
             self.viewModel.context.coordinator?.removeFromParent()
         }
         
-        self.viewModel.dependency.settingAccessor.logOpenDocument(url: self.viewModel.url)
+        // temp editor don't keep record
+        if !self.viewModel.isTemp {
+            self.viewModel.dependency.settingAccessor.logOpenDocument(url: self.viewModel.url)
+        }
     }
     
     public override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -322,7 +325,7 @@ public class DocumentEditorViewController: UIViewController {
             
             if document.documentState.contains(.inConflict) {
                 log.info("document state is: inConflict")
-                self.viewModel.context.coordinator?.showConfictResolver(from: self, viewModel: self.viewModel)
+                self.viewModel.context.coordinator?.showConfictResolverIfFoundConflictVersions(from: self, viewModel: self.viewModel)
             }
                 
             if document.documentState.contains(.progressAvailable) {
