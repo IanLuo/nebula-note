@@ -402,7 +402,7 @@ extension DocumentEditorViewController: DocumentEditViewModelDelegate {
         // 移动到指定的位置（如果需要）
         if self.viewModel.onLoadingLocation > 0 {
             self.allowScrollContentWhenKeyboardDisapearTemporaily()
-            self._scrollTo(location: self.viewModel.onLoadingLocation)
+            self.scrollTo(location: self.viewModel.onLoadingLocation)
         } else {
             if (SettingsAccessor.Item.foldAllEntriesWhenOpen.get(Bool.self) ?? false) && !self.viewModel.isTemp {
                 self.viewModel.foldAll()
@@ -419,7 +419,7 @@ extension DocumentEditorViewController: DocumentEditViewModelDelegate {
         
     }
     
-    internal func _scrollTo(location: Int, shouldScrollToZero: Bool = false) {
+    internal func scrollTo(location: Int, shouldScrollToZero: Bool = false) {
         if location > 0 {
             self.textView.selectedRange = NSRange(location: location, length: 0)
             if self.textView.isFirstResponder {

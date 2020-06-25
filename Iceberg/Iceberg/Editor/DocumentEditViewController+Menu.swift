@@ -92,9 +92,9 @@ extension DocumentEditorViewController {
             
             switch selection {
             case .heading(let heading):
-                self._scrollTo(location: heading.range.upperBound, shouldScrollToZero: true)
+                self.scrollTo(location: heading.range.upperBound, shouldScrollToZero: true)
             case .position(let location):
-                self._scrollTo(location: location, shouldScrollToZero: true)
+                self.scrollTo(location: location, shouldScrollToZero: true)
             }
             
         })

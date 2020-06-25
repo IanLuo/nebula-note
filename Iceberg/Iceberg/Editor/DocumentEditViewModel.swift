@@ -58,7 +58,15 @@ public class DocumentEditViewModel: ViewModelProtocol {
     
     private var isOpenning: Bool = false
     public func start() {
-        guard !self._editorService.isOpen else { return }
+        guard !self._editorService.isOpen else {
+            
+            // if the service is cached, new view model may not get the ready tag set
+            if !self.isReadyToEdit {
+                self.isReadyToEdit = true
+            }
+            return
+        }
+        
         guard !isOpenning else { return }
         
         self.isOpenning = true

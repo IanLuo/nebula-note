@@ -32,7 +32,7 @@ public class EditorCoordinator: Coordinator {
     public var didSelectOutlineSelectionAction: ((OutlineLocation) -> Void)?
     public var didCancelSelectionOutlineSelectionAction: (() -> Void)?
     
-    private var _url: URL!
+    public private(set) var url: URL!
     
     public init(stack: UINavigationController, dependency: Dependency, usage: Usage) {
         self.usage = usage
@@ -43,14 +43,14 @@ public class EditorCoordinator: Coordinator {
             let viewModel = DocumentEditViewModel(editorService: dependency.editorContext.request(url: url), coordinator: self)
             viewModel.onLoadingLocation = location
             self._viewModel = viewModel
-            self._url = url
+            self.url = url
             let viewController = DocumentEditorViewController(viewModel: viewModel)
             viewController.title = url.packageName
             self.viewController = viewController
         case .outline(let url, let ignoredHeadingLocation):
             let viewModel = DocumentEditViewModel(editorService: dependency.editorContext.request(url: url), coordinator: self)
             self._viewModel = viewModel
-            self._url = url
+            self.url = url
             let viewController = HeadingsOutlineViewController(viewModel: viewModel)
             viewController.ignoredHeadingLocation = ignoredHeadingLocation
             viewController.outlineDelegate = self
@@ -59,7 +59,7 @@ public class EditorCoordinator: Coordinator {
         case .temp(let url):
             let viewModel = DocumentEditViewModel(editorService: dependency.editorContext.requestTemp(url: url), coordinator: self)
             self._viewModel = viewModel
-            self._url = url
+            self.url = url
             let viewController = DocumentEditorViewController(viewModel: viewModel)
             viewController.title = url.packageName
             self.viewController = viewController
@@ -67,7 +67,7 @@ public class EditorCoordinator: Coordinator {
     }
     
     deinit {
-        self.dependency.editorContext.end(with: self._url)
+        self.dependency.editorContext.end(with: self.url)
     }
     
     public func toggleFullScreen() {

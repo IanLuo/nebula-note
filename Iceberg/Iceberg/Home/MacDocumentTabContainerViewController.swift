@@ -52,19 +52,14 @@ public class MacDocumentTabContainerViewController: UIViewController {
                 
                 // if the closed document is currently openning, open another one
                 if try! tab.isSelected.value() {
-                    if let nextUrl = self?.openingViewControllers.keys.first, let viewController = self?.openingViewControllers[nextUrl] {
-                        self?.showDocument(url: nextUrl, viewController: viewController)
+                    if let nextUrl = self?.openingViewControllers.keys.first {
+                        self?.selectTab(url: nextUrl, location: 0)
                     }
                 }
             }).disposed(by: self.disposeBag)
         
         self.tabBar.onSelectDocument.subscribe(onNext: { [weak self] url in
-            if let viewController = self?.openingViewControllers[url], let strongSelf = self {
-                strongSelf.container.subviews.forEach { $0.removeFromSuperview() }
-                strongSelf.container.addSubview(viewController.view)
-                viewController.view.allSidesAnchors(to: strongSelf.container, edgeInset: 0)
-                viewController.start()
-            }
+            self?.selectTab(url: url, location: 0)
         }).disposed(by: self.disposeBag)
         
         self.interface { (me, theme) in
@@ -72,27 +67,39 @@ public class MacDocumentTabContainerViewController: UIViewController {
         }
     }
     
-    public func isDocumentOpened(url: URL) -> Bool {
+    public func isDocumentAdded(url: URL) -> Bool {
         return self.openingViewControllers[url] != nil
     }
     
-    public func showDocument(url: URL, viewController: DocumentEditorViewController?, location: Int? = nil) {
+    public func selectTab(url: URL, location: Int) {
         self.viewModel.dependency.settingAccessor.logOpenDocument(url: url)
-        
-        self.tabBar.openDocument.onNext(url)
         
         if let viewController = self.openingViewControllers[url] {
             self.container.subviews.forEach { $0.removeFromSuperview() }
             self.container.addSubview(viewController.view)
             viewController.view.allSidesAnchors(to: self.container, edgeInset: 0)
-            if let location = location {
-                viewController._scrollTo(location: location)
+            
+            if location > 0 {
+                viewController.scrollTo(location: location)
             }
-        } else if let viewController = viewController {
-            self.openingViewControllers[url] = viewController
-            self.container.addSubview(viewController.view)
-            viewController.view.allSidesAnchors(to: self.container, edgeInset: 0)
-            self.addChild(viewController)
+            
+            self.tabBar.selectDocument.onNext(url)
+            
+            // load content
+            viewController.start()
+        }
+    }
+    
+    public func addTabs(editorCoordinator: EditorCoordinator, shouldSelected: Bool) {
+        
+        if self.openingViewControllers[editorCoordinator.url] == nil, let viewController = editorCoordinator.viewController as? DocumentEditorViewController {
+            self.openingViewControllers[editorCoordinator.url] = viewController
+            
+            self.tabBar.addDocument.onNext(editorCoordinator.url)
+        }
+        
+        if shouldSelected {
+            self.selectTab(url: editorCoordinator.url, location: 0)
         }
     }
     
@@ -108,7 +115,8 @@ public class MacDocumentTabContainerViewController: UIViewController {
 }
 
 private class TabBar: UIScrollView {
-    let openDocument: PublishSubject<URL> = PublishSubject()
+    let addDocument: PublishSubject<URL> = PublishSubject()
+    let selectDocument: PublishSubject<URL> = PublishSubject()
     let onCloseDocument: PublishSubject<Tab> = PublishSubject()
     let onSelectDocument: PublishSubject<URL> = PublishSubject()
     
@@ -140,47 +148,57 @@ private class TabBar: UIScrollView {
             me.backgroundColor = theme.color.background1
         }
         
-        self.openDocument.subscribe(onNext: { [weak self] url in
+        self.selectDocument.subscribe(onNext: { [weak self] url in
             guard let strongSelf = self else { return }
             
-            var didFoundPresentingTab: Bool = false
             strongSelf.stackView.arrangedSubviews.forEach {
                 if let tab = $0 as? Tab {
-                    if  tab.url == url {
+                    if (try? tab.isSelected.value()) == false, tab.url == url {
                         tab.isSelected.onNext(true)
-                        didFoundPresentingTab = true
-                    } else {
+                    } else if (try? tab.isSelected.value()) == true, tab.url != url {
                         tab.isSelected.onNext(false)
                     }
                 }
             }
+        }).disposed(by: self.disposeBag)
+        
+        self.addDocument.subscribe(onNext: { [weak self] url in
+            guard let strongSelf = self else { return }
             
-            if !didFoundPresentingTab {
-                let tab = Tab(url: url)
-                tab.isSelected.onNext(true)
-                strongSelf.stackView.addArrangedSubview(tab)
-                tab.sizeAnchor(height: 44)
+            var tab: Tab?
+            strongSelf.stackView.arrangedSubviews.forEach {
+                if let _tab = $0 as? Tab, _tab.url == url {
+                    tab = _tab
+                    return
+                }
+            }
+
+            guard (try? tab?.isSelected.value()) != true else { return }
+            
+            let newTab = Tab(url: url)
+            newTab.isSelected.onNext(true)
+            strongSelf.stackView.addArrangedSubview(newTab)
+            newTab.sizeAnchor(height: 44)
+            
+            newTab.onCloseTapped.subscribe(onNext: { [weak newTab] url in
+                guard let newTab = newTab else { return }
+                strongSelf.onCloseDocument.onNext(newTab)
+                newTab.removeFromSuperview()
+            }).disposed(by: strongSelf.disposeBag)
+            
+            newTab.onSelect.subscribe(onNext: { url in
+                strongSelf.onSelectDocument.onNext(url)
                 
-                tab.onCloseTapped.subscribe(onNext: { [weak tab] url in
-                    guard let tab = tab else { return }
-                    strongSelf.onCloseDocument.onNext(tab)
-                    tab.removeFromSuperview()
-                }).disposed(by: strongSelf.disposeBag)
-                
-                tab.onSelect.subscribe(onNext: { url in
-                    strongSelf.onSelectDocument.onNext(url)
-                    
-                    strongSelf.stackView.arrangedSubviews.forEach {
-                        if let tab = $0 as? Tab {
-                            if  tab.url == url {
-                                tab.isSelected.onNext(true)
-                            } else {
-                                tab.isSelected.onNext(false)
-                            }
+                strongSelf.stackView.arrangedSubviews.forEach {
+                    if let tab = $0 as? Tab {
+                        if  tab.url == url {
+                            tab.isSelected.onNext(true)
+                        } else {
+                            tab.isSelected.onNext(false)
                         }
                     }
-                }).disposed(by: strongSelf.disposeBag)
-            }
+                }
+            }).disposed(by: strongSelf.disposeBag)
             
         }).disposed(by: self.disposeBag)
     }

@@ -61,14 +61,18 @@ public class MacHomeViewController: UIViewController {
         self.toggleMiddlePartVisiability(visiable: true, animated: false)
     }
     
-    public func isDocumentOpened(url: URL) -> Bool {
-        return self.documentTabsContainerViewController.isDocumentOpened(url: url)
+    public func isDocumentAdded(url: URL) -> Bool {
+        return self.documentTabsContainerViewController.isDocumentAdded(url: url)
     }
     
-    public func showDocument(url: URL, editorViewController: DocumentEditorViewController?, location: Int? = nil) {
-        self.documentTabsContainerViewController.showDocument(url: url, viewController: editorViewController, location: location)
+    public func selectDocument(url: URL, location: Int) {
+        self.documentTabsContainerViewController.selectTab(url: url, location: location)
     }
     
+    public func addDocuments(editorCoordinator: EditorCoordinator, souldSelect: Bool) {
+        self.documentTabsContainerViewController.addTabs(editorCoordinator: editorCoordinator, shouldSelected: souldSelect)
+    }
+        
     private func setupUI() {
         self.toolBar.sizeAnchor(height: 80)
         self.toolBar.sideAnchor(for: [.left, .top, .right], to: self.view, edgeInset: 0, considerSafeArea: true)

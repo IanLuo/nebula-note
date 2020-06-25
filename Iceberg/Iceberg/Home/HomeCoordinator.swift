@@ -88,7 +88,10 @@ public class HomeCoordinator: Coordinator {
             if let opendFiles = self?.dependency.settingAccessor.openedDocuments {
                 if isMacOrPad {
                     opendFiles.forEach {
-                        self?.openDocumentInHomeViewRightPart(url: $0, location: 0)
+                        self?.addTabIfNeeded(url: $0)
+                    }
+                    if let last = opendFiles.last {
+                        self?.selectTab(url: last, location: 0)
                     }
                 } else {
                     if let first = opendFiles.first, FileManager.default.fileExists(atPath: first.path) {
@@ -153,7 +156,8 @@ public class HomeCoordinator: Coordinator {
 extension HomeCoordinator: SearchCoordinatorDelegate {
     public func didSelectDocument(url: URL, location: Int, searchCoordinator: SearchCoordinator) {
         if isMacOrPad {
-            self.openDocumentInHomeViewRightPart(url: url, location: location)
+            self.addTabIfNeeded(url: url)
+            self.selectTab(url: url, location: location)
         } else {
             self.openDocument(url: url, location: location)
             
@@ -168,7 +172,8 @@ extension HomeCoordinator: SearchCoordinatorDelegate {
 extension HomeCoordinator: AgendaCoordinatorDelegate {
     public func didSelectDocument(url: URL, location: Int) {
         if isMacOrPad {
-            self.openDocumentInHomeViewRightPart(url: url, location: location)
+            self.addTabIfNeeded(url: url)
+            self.selectTab(url: url, location: location)
         } else {
             self.openDocument(url: url, location: location)
         }
@@ -178,7 +183,8 @@ extension HomeCoordinator: AgendaCoordinatorDelegate {
 extension HomeCoordinator: BrowserCoordinatorDelegate {
     public func didSelectDocument(url: URL, coordinator: BrowserCoordinator) {
         if isMacOrPad {
-            self.openDocumentInHomeViewRightPart(url: url, location: 0)
+            self.addTabIfNeeded(url: url)
+            self.selectTab(url: url, location: 0)
         } else {
             self.openDocument(url: url, location: 0)
         }
@@ -272,20 +278,17 @@ extension HomeCoordinator: DashboardViewControllerDelegate {
 }
 
 extension HomeCoordinator {
-    public func openDocumentInHomeViewRightPart(url: URL, location: Int) {
-        
-        if let macHomeViewController = self.viewController as? MacHomeViewController {
-            if macHomeViewController.isDocumentOpened(url: url) {
-                macHomeViewController.showDocument(url: url, editorViewController: nil, location: location)
-            } else {
-                let stack = Coordinator.createDefaultNavigationControlller()
-                let editorCoordinator = EditorCoordinator(stack: stack, dependency: self.dependency, usage: .editor(url, location))
-                
-                if let viewController = editorCoordinator.viewController as? DocumentEditorViewController {
-                    macHomeViewController.showDocument(url: url, editorViewController: viewController)
-                    self.addChild(editorCoordinator)
-                }
-            }
+    public func selectTab(url: URL, location: Int) {
+        (self.viewController as? MacHomeViewController)?.selectDocument(url: url, location: location)
+    }
+    
+    public func addTabIfNeeded(url: URL) {
+        if let macHomeViewController = self.viewController as? MacHomeViewController, !macHomeViewController.isDocumentAdded(url: url) {
+            let stack = Coordinator.createDefaultNavigationControlller()
+            let editorCoordinator = EditorCoordinator(stack: stack, dependency: self.dependency, usage: .editor(url, 0))
+            
+            macHomeViewController.addDocuments(editorCoordinator: editorCoordinator, souldSelect: false)
+            self.addChild(editorCoordinator)
         }
     }
 }
