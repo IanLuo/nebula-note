@@ -82,7 +82,12 @@ public class OutlineLayoutManager: NSLayoutManager {
     
     private func _handleForQuote(textStorage: NSTextStorage, range: NSRange, origin: CGPoint, shouldStop: inout Bool) {
         textStorage.enumerateAttribute(OutlineAttribute.Block.quote, in: range, options: []) { (value, range, stop) in
-            guard let color = (value as? UIColor) else { return }
+            guard var color = (value as? UIColor) else { return }
+            
+            // workaround on mac the cursor can't see
+            if isMac {
+                color = color.withAlphaComponent(0.5)
+            }
             let glRange = glyphRange(forCharacterRange: range, actualCharacterRange: nil);
             
             guard let context = UIGraphicsGetCurrentContext() else { return }
@@ -114,7 +119,13 @@ public class OutlineLayoutManager: NSLayoutManager {
                 super.drawGlyphs(forGlyphRange: range, at: origin);return
             }
             
-            guard let color = (value as? UIColor) else { return }
+            guard var color = (value as? UIColor) else { return }
+            
+            // workaround on mac the cursor can't see
+            if isMac {
+                color = color.withAlphaComponent(0.5)
+            }
+            
             let glRange = glyphRange(forCharacterRange: range, actualCharacterRange: nil);
             
             guard let context = UIGraphicsGetCurrentContext() else { return }

@@ -525,7 +525,15 @@ private class SubtabCell: UITableViewCell {
         return imageView
     }()
     
-    let innerContentView = UIView()
+    let innerContentView: UIView = {
+        let view = UIView()
+        
+        view.interface ({ (me, interface) in
+            me.backgroundColor = interface.color.background1
+        })
+        
+        return view
+    }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
