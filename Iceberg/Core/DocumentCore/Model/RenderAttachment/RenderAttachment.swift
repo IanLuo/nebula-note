@@ -30,55 +30,29 @@ public class RenderAttachment: NSTextAttachment {
         self.value = value
         super.init(data: nil, ofType: nil)
         
-        self._manager.attachment(with: value, completion: { [weak self] attachment in
-            guard let strongSelf = self else { return }
-            
-            strongSelf._attachment = attachment
-            strongSelf.url = attachment.url
-            
-            attachment.thumbnail.observeOn(MainScheduler()).subscribe(onNext: { image in
-                switch attachment.kind {
-                case .sketch, .image, .video:
-                    if let image = image {
-                        let image = image.resize(upto: CGSize(width: UIScreen.main.bounds.width * 0.7, height: UIScreen.main.bounds.width * 0.7))
-                        let scale = UIScreen.main.scale / image.scale
-                        self?.image = image
-                        self?.bounds = CGRect(origin: .zero, size: image.size.applying(CGAffineTransform(scaleX: 1/scale, y: 1/scale)))
-                    } else {
-                        // TODO: 使用找不到图片的 placehoder 图片
-                    }
-                default:
-                    self?.bounds = CGRect(origin: .zero, size: .init(width: 200, height: 60))
-                    self?.image = AttachmentThumbnailView(bounds: self!.bounds, attachment: attachment).snapshot
+        guard let attachment = self._manager.attachment(with: value) else { return }
+        
+        self._attachment = attachment
+        self.url = attachment.url
+        
+        attachment.thumbnail.observeOn(MainScheduler()).subscribe(onNext: { image in
+            switch attachment.kind {
+            case .sketch, .image, .video:
+                if let image = image {
+                    let image = image.resize(upto: CGSize(width: UIScreen.main.bounds.width * 0.7, height: UIScreen.main.bounds.width * 0.7))
+                    let scale = UIScreen.main.scale / image.scale
+                    self.image = image
+                    self.bounds = CGRect(origin: .zero, size: image.size.applying(CGAffineTransform(scaleX: 1/scale, y: 1/scale)))
+                } else {
+                    // TODO: 使用找不到图片的 placehoder 图片
                 }
-                
-            }, onCompleted: {
-                self?.didLoadImage?()
-            }).disposed(by: strongSelf.disposeBag)
-            
-//            DispatchQueue.runOnMainQueueSafely {
-//                switch attachment.kind {
-//                case .sketch:
-//                    fallthrough // 使用 image 同样的渲染方法
-//                case .image:
-//                    if let image = UIImage(contentsOfFile: attachment.url.path) {
-//                        let image = image.resize(upto: CGSize(width: UIScreen.main.bounds.width * 0.7, height: UIScreen.main.bounds.width * 0.7))
-//                        let scale = UIScreen.main.scale / image.scale
-//                        self?.image = image
-//                        self?.bounds = CGRect(origin: .zero, size: image.size.applying(CGAffineTransform(scaleX: 1/scale, y: 1/scale)))
-//                    } else {
-//                        // TODO: 使用找不到图片的 placehoder 图片
-//                    }
-//                default:
-//                    self?.bounds = CGRect(origin: .zero, size: .init(width: 200, height: 60))
-//                    self?.image = AttachmentThumbnailView(bounds: self!.bounds, attachment: attachment).snapshot
-//                }
-//
-//                self?.didLoadImage?()
-//            }
-        }) { error in
-            
-        }
+            default:
+                self.bounds = CGRect(origin: .zero, size: .init(width: 200, height: 60))
+                self.image = AttachmentThumbnailView(bounds: self.bounds, attachment: attachment).snapshot
+            }
+        }, onCompleted: {
+            self.didLoadImage?()
+        }).disposed(by: self.disposeBag)
     }
     
     required init?(coder aDecoder: NSCoder) {
