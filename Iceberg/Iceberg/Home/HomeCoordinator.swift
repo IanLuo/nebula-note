@@ -37,7 +37,7 @@ public class HomeCoordinator: Coordinator {
         dashboardViewController.delegate = self
         
         if isMacOrPad {
-            self.viewController = MacHomeViewController(dashboardViewController: dashboardViewController, coordinator: self, documentTabsContainerViewController: MacDocumentTabContainerViewController(viewModel: viewModel))
+            self.viewController = DesktopHomeViewController(dashboardViewController: dashboardViewController, coordinator: self, documentTabsContainerViewController: DocumentTabContainerViewController(viewModel: viewModel))
         } else {
             let homeViewController = HomeViewController(masterViewController: navigationController)
             self.viewController = homeViewController
@@ -75,7 +75,7 @@ public class HomeCoordinator: Coordinator {
             hasInitedLandingTab.onNext(())
             let viewController = tabs[SettingsAccessor.Item.landingTabIndex.get(Int.self) ?? 3]
             if isMacOrPad {
-                (self.viewController as? MacHomeViewController)?.showInMiddlePart(viewController: viewController)
+                (self.viewController as? DesktopHomeViewController)?.showInMiddlePart(viewController: viewController)
             } else {
                 (self.viewController as? HomeViewController)?.showChildViewController(viewController)
             }
@@ -116,7 +116,7 @@ public class HomeCoordinator: Coordinator {
         
         if isMacOrPad {
             if let viewController = coordinator.viewController {
-                (self.viewController as? MacHomeViewController)?.showInMiddlePart(viewController: viewController)
+                (self.viewController as? DesktopHomeViewController)?.showInMiddlePart(viewController: viewController)
             }
         } else {
             if let homeViewController = self.viewController as? HomeViewController {
@@ -231,7 +231,7 @@ extension HomeCoordinator: DashboardViewControllerDelegate {
     }
     
     public func toggleFullScreen() {
-        let macHomeViewController = (self.viewController as? MacHomeViewController)
+        let macHomeViewController = (self.viewController as? DesktopHomeViewController)
         
         if macHomeViewController?.isLeftPartVisiable == true || macHomeViewController?.isMiddlePartVisiable == true {
             macHomeViewController?.hideLeftAndMiddlePart()
@@ -241,8 +241,8 @@ extension HomeCoordinator: DashboardViewControllerDelegate {
     }
     
     public func showAllParts() {
-        (self.viewController as? MacHomeViewController)?.toggleLeftPartVisiability(visiable: true)
-        (self.viewController as? MacHomeViewController)?.toggleMiddlePartVisiability(visiable: true)
+        (self.viewController as? DesktopHomeViewController)?.toggleLeftPartVisiability(visiable: true)
+        (self.viewController as? DesktopHomeViewController)?.toggleMiddlePartVisiability(visiable: true)
     }
     
     public func showHeadings(tag: String) {
@@ -267,7 +267,7 @@ extension HomeCoordinator: DashboardViewControllerDelegate {
         }
         
         if isMacOrPad {
-            (self.viewController as? MacHomeViewController)?.showInMiddlePart(viewController: viewController)
+            (self.viewController as? DesktopHomeViewController)?.showInMiddlePart(viewController: viewController)
         } else {
             if let homeViewController = self.viewController as? HomeViewController {
                 homeViewController.showChildViewController(viewController)
@@ -279,11 +279,11 @@ extension HomeCoordinator: DashboardViewControllerDelegate {
 
 extension HomeCoordinator {
     public func selectTab(url: URL, location: Int) {
-        (self.viewController as? MacHomeViewController)?.selectDocument(url: url, location: location)
+        (self.viewController as? DesktopHomeViewController)?.selectDocument(url: url, location: location)
     }
     
     public func addTabIfNeeded(url: URL) {
-        if let macHomeViewController = self.viewController as? MacHomeViewController, !macHomeViewController.isDocumentAdded(url: url) {
+        if let macHomeViewController = self.viewController as? DesktopHomeViewController, !macHomeViewController.isDocumentAdded(url: url) {
             let stack = Coordinator.createDefaultNavigationControlller()
             let editorCoordinator = EditorCoordinator(stack: stack, dependency: self.dependency, usage: .editor(url, 0))
             
@@ -293,7 +293,7 @@ extension HomeCoordinator {
     }
 }
 
-extension HomeCoordinator: MacDocumentTabContainerViewControllerDelegate {
+extension HomeCoordinator: DesktopDocumentTabContainerViewControllerDelegate {
     public func didCloseDocument(url: URL, editorViewController: DocumentEditorViewController) {
         self.children.forEach {
             if let editor = $0 as? EditorCoordinator {

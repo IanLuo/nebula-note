@@ -121,24 +121,29 @@ public class iCloudDocumentManager: NSObject {
         let token = FileManager.default.ubiquityIdentityToken
         let savedTokenData = UserDefaults.standard.data(forKey: key)
         
-        switch (token, savedTokenData) {
-        case (nil, _):
-            return .closed
-        case let (token?, nil):
-            let tokenData = NSKeyedArchiver.archivedData(withRootObject: token)
-            UserDefaults.standard.setValue(tokenData, forKey: key)
-            UserDefaults.standard.synchronize()
-            return .open
-        case let(token?, oldTokenData?):
-            let tokenData = NSKeyedArchiver.archivedData(withRootObject: token)
-            if tokenData == oldTokenData {
-                return .open
-            } else {
-                let tokenData = NSKeyedArchiver.archivedData(withRootObject: token)
+        do {
+            switch (token, savedTokenData) {
+            case (nil, _):
+                return .closed
+            case let (token?, nil):
+                let tokenData = try NSKeyedArchiver.archivedData(withRootObject: token, requiringSecureCoding: true)
                 UserDefaults.standard.setValue(tokenData, forKey: key)
                 UserDefaults.standard.synchronize()
-                return .changed
+                return .open
+            case let(token?, oldTokenData?):
+                let tokenData = try NSKeyedArchiver.archivedData(withRootObject: token, requiringSecureCoding: true)
+                if tokenData == oldTokenData {
+                    return .open
+                } else {
+                    let tokenData = try NSKeyedArchiver.archivedData(withRootObject: token, requiringSecureCoding: true)
+                    UserDefaults.standard.setValue(tokenData, forKey: key)
+                    UserDefaults.standard.synchronize()
+                    return .changed
+                }
             }
+        } catch {
+            log.error(error)
+            return .closed
         }
     }
     

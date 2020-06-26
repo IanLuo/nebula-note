@@ -40,6 +40,8 @@ public class AttachmentManagerViewController: UIViewController, UICollectionView
         self.bind()
         
         self.viewModel.loadData()
+        
+        self.view.showProcessingAnimation()
     }
     
     private func setupUI() {
@@ -80,6 +82,7 @@ public class AttachmentManagerViewController: UIViewController, UICollectionView
             .output
             .attachments
             .asDriver()
+            .do(onNext: { [weak self] _ in self?.view.hideProcessingAnimation() })
             .drive(self.collectionView.rx.items(dataSource: datasource))
             .disposed(by: self.disposeBag)
         

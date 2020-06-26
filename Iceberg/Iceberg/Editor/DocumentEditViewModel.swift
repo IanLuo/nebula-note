@@ -102,7 +102,7 @@ public class DocumentEditViewModel: ViewModelProtocol {
     public func revertContent(shouldSaveBeforeRevert: Bool = true) {
         if shouldSaveBeforeRevert {
             self._editorService.save { [weak self] isTrue in
-                if isTrue {                    
+                if isTrue && self?.isReadyToEdit == true {                    
                     self?._editorService.revertContent()
                 }
             }
@@ -188,6 +188,8 @@ public class DocumentEditViewModel: ViewModelProtocol {
     }
     
     public func save(completion: @escaping () -> Void) {
+        guard self.isReadyToEdit else { return }
+        
         _editorService.save { _  in
             completion()
         }

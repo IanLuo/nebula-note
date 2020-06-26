@@ -99,9 +99,10 @@ public class EditorService {
                                         
                     if isOpenSuccessfully {
                         
+                        log.info("open document success(\(strongSelf._url))")
+                        
                         DispatchQueue.runOnMainQueueSafely {
-                            log.info("open document success(\(strongSelf._url))")
-                             strongSelf._editorController.string = document.string // 触发解析
+                            strongSelf._editorController.string = document.string // 触发解析
                             completion?(document.string)
                         }
                     } else {
@@ -122,6 +123,7 @@ public class EditorService {
             return
         }
         
+        guard !self.isOpen else { return }
         guard self.isClosing == false else { return }
         
         self.isClosing = true
@@ -288,6 +290,7 @@ public class EditorService {
     
     public func save(completion: ((Bool) -> Void)? = nil) {
         guard let document = self._document else { return }
+        guard self.isOpen else { return }
         
         _queue.async {
             document.updateContent(self._editorController.string)

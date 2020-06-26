@@ -38,9 +38,9 @@ public class OutlineLayoutManager: NSLayoutManager {
             var stop: Bool = false
             
             self._handleButton(textStorage: textStorage, range: glyphsToShow, origin: origin, shouldStop: &stop)
-            
+
             self._handleForQuote(textStorage: textStorage, range: glyphsToShow, origin: origin, shouldStop: &stop)
-            
+
             self._handleForCode(textStorage: textStorage, range: glyphsToShow, origin: origin, shouldStop: &stop)
             
             super.drawGlyphs(forGlyphRange: glyphsToShow, at: origin)

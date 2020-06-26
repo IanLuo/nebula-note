@@ -403,9 +403,9 @@ private class TabView: UITableViewHeaderFooterView {
     var tab: DashboardViewController.Tab? {
         didSet {
             guard let tab = tab else { return }
-            self.iconView.image = tab.icon?.withRenderingMode(.alwaysTemplate)
             self.titleButton.setTitle(tab.title, for: .normal)
             self.isHighlighted = tab.isCurrent
+            self.iconView.image = tab.icon?.withRenderingMode(UIImage.RenderingMode.alwaysTemplate)
             
             tab.didSetIsCurrent = {
                 self.isHighlighted = $0

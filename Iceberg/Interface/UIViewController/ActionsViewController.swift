@@ -194,9 +194,11 @@ open class ActionsViewController: UIViewController, TransitionProtocol {
         let view = UIView()
 
         if !isMacOrPad {
-            view.layer.cornerRadius = 8
+            view.layer.cornerRadius = Layout.cornerRadius
             view.layer.masksToBounds = true
+            view.backgroundColor = InterfaceTheme.Color.background2
         }
+        
         return view
     }()
     

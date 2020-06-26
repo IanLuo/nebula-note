@@ -12,13 +12,13 @@ import Interface
 import Core
 import RxSwift
 
-public protocol MacDocumentTabContainerViewControllerDelegate: class {
+public protocol DesktopDocumentTabContainerViewControllerDelegate: class {
     func didCloseDocument(url: URL, editorViewController: DocumentEditorViewController)
 }
 
 public class DocumentTabContainerViewController: UIViewController {
     
-    public weak var delegate: MacDocumentTabContainerViewControllerDelegate?
+    public weak var delegate: DesktopDocumentTabContainerViewControllerDelegate?
     
     private var openingViewControllers: [URL: DocumentEditorViewController] = [:]
     
@@ -155,12 +155,13 @@ private class TabBar: UIScrollView {
                 if let tab = $0 as? Tab {
                     if (try? tab.isSelected.value()) == false, tab.url == url {
                         tab.isSelected.onNext(true)
-                        
+                        strongSelf.srollToIfNeeded(tab: tab)
                     } else if (try? tab.isSelected.value()) == true, tab.url != url {
                         tab.isSelected.onNext(false)
                     }
                 }
             }
+            
         }).disposed(by: self.disposeBag)
         
         self.addDocument.subscribe(onNext: { [weak self] url in
@@ -203,9 +204,10 @@ private class TabBar: UIScrollView {
             
         }).disposed(by: self.disposeBag)
     }
- 
-    private func scrollToTab(_ tab: Tab) {
-        
+    
+    private func srollToIfNeeded(tab: Tab) {
+        let frame = self.stackView.convert(tab.frame, to: self)
+        self.scrollRectToVisibleIfneeded(frame, animated: true)
     }
 }
 

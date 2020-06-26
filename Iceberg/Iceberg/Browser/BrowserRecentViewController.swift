@@ -58,12 +58,10 @@ public class BrowserRecentViewController: UIViewController {
         self.view.addSubview(self.collectionView)
         self.collectionView.allSidesAnchors(to: self.view, edgeInset: 0)
         
-        if !isMac {
-            self.view.roundConer(radius: 8)
-            
-            self.interface { [weak self] me, theme in
-                self?.view.border(color: theme.color.background2, width: 1)
-            }
+        self.view.roundConer(radius: Layout.cornerRadius)
+        
+        self.interface { [weak self] me, theme in
+            self?.view.border(color: theme.color.background2, width: 1)
         }
         
         let dataSource = RxCollectionViewSectionedReloadDataSource<RecentDocumentSection>(configureCell: { (dataSource, collectionView, indexPath, cellModel) -> UICollectionViewCell in
@@ -195,9 +193,7 @@ private class RecentFileCell: UICollectionViewCell {
             self?.contentView.backgroundColor = InterfaceTheme.Color.background2
         }
         
-        if !isMac {
-            self.roundConer(radius: 8)
-        }
+        self.roundConer(radius: Layout.cornerRadius)
         self.contentView.addSubview(self.coverView)
         self.contentView.addSubview(self.titleLabel)
         
