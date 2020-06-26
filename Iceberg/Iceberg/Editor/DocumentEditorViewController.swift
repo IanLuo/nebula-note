@@ -141,15 +141,15 @@ public class DocumentEditorViewController: UIViewController {
                 self._toolBar.sideAnchor(for: .right, to: self.view, edgeInsets: .init(top: 0, left: 0, bottom: 0, right: -Layout.innerViewEdgeInsets.right))
                 self._toolBar.sizeAnchor(width: 44)
                 
-                self.addToolbarButton(title: L10n.Document.Menu.fullScreen, icon: Asset.Assets.folded.image) { [weak self] button in
+                self.addToolbarButton(title: L10n.Document.Menu.fullScreen, icon: Asset.Assets.fullscreen.image) { [weak self] button in
                     self?.viewModel.context.coordinator?.toggleFullScreen()
                 }
                 
-                self.addToolbarButton(title: L10n.Document.Menu.foldAll, icon: Asset.Assets.folded.image) { [weak self]  button in
+                self.addToolbarButton(title: L10n.Document.Menu.foldAll, icon: Asset.Assets.foldAll.image) { [weak self]  button in
                     self?.viewModel.foldAll()
                 }
                 
-                self.addToolbarButton(title: L10n.Document.Menu.unfoldAll, icon: Asset.Assets.unfolded.image) { [weak self]  button in
+                self.addToolbarButton(title: L10n.Document.Menu.unfoldAll, icon: Asset.Assets.unfoldAll.image) { [weak self]  button in
                     self?.viewModel.unfoldAll()
                 }
                 
