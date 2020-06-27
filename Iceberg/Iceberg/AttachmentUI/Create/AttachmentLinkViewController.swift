@@ -57,8 +57,8 @@ extension AttachmentLinkViewController: ModalFormViewControllerDelegate {
         let jsonEncoder = JSONEncoder()
         do {
             let linkData: [String: Codable] = [
-                OutlineParser.Values.Attachment.Link.keyTitle: formData[L10n.CaptureLink.Title.title]!,
-                OutlineParser.Values.Attachment.Link.keyURL: formData[L10n.CaptureLink.Url.title]!
+                OutlineParser.Values.Attachment.Link.keyTitle: formData[L10n.CaptureLink.Title.title] ?? "",
+                OutlineParser.Values.Attachment.Link.keyURL: formData[L10n.CaptureLink.Url.title] ?? ""
             ]
             let data = try jsonEncoder.encode(linkData)
             let string = String(data: data, encoding: .utf8) ?? ""

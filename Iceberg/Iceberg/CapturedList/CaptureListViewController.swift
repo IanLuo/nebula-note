@@ -131,13 +131,40 @@ public class CaptureListViewController: UIViewController {
         
         if self.viewModel.context.coordinator?.isModal ?? false {
             self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: Asset.Assets.down.image, style: .plain, target: self, action: #selector(cancel))
+        } else {
+            let refreshButton = UIButton()
+            refreshButton.interface { (me, theme) in
+                let button = me as! UIButton
+                button.setImage(Asset.Assets.refresh.image.fill(color: theme.color.interactive), for: .normal)
+            }
+            
+            refreshButton.rx.tap.subscribe(onNext: { [unowned refreshButton] in
+                let handler = self.viewModel.dependency.shareExtensionHandler
+                refreshButton.showProcessingAnimation()
+                
+                handler.harvestSharedItems(attachmentManager: self.viewModel.dependency.attachmentManager,
+                                           urlHandler: self.viewModel.dependency.urlHandlerManager,
+                                           captureService: self.viewModel.dependency.captureService) { ideasCount in
+                                            
+                                            refreshButton.hideProcessingAnimation()
+                                            
+                                            if ideasCount > 0 {
+                                                DispatchQueue.runOnMainQueueSafely {
+                                                    self.viewModel.loadFilterdData(kind: self.viewModel.currentFilteredAttachmentKind)
+                                                }
+                                            }
+                }
+            }).disposed(by: self.disposeBag)
+            
+            let refreshItem = UIBarButtonItem(customView: refreshButton)
+            self.navigationItem.leftBarButtonItem = refreshItem
         }
         
         let rightItem = UIBarButtonItem(title: L10n.General.help, style: .plain, target: nil, action: nil)
         rightItem.rx.tap.subscribe(onNext: {
             HelpPage.capture.open(from: self)
         }).disposed(by: self.disposeBag)
-        self.navigationItem.rightBarButtonItem = rightItem
+        self.navigationItem.rightBarButtonItem = rightItem        
         
         if self.viewModel.mode == .manage {
             self.title = L10n.CaptureList.title

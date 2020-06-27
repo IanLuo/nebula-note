@@ -178,18 +178,24 @@ public class DocumentEditorViewController: UIViewController {
             self.viewModel.dependency.syncManager.onDownloadingCompletes.subscribe(onNext: { [unowned self] url in
                 guard url.path == self.viewModel.url.path else { return }
                 
+                guard self.viewModel.isReadyToEdit else { return }
+                
+                guard self.view.window != nil else { return }
+                
                 guard (try? String(contentsOf: url)) != self.viewModel.string else { return }
                 
                 DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 15) {
                     if let lastState = self._lastState, !lastState.contains(.inConflict) {
-                        let confirm = ConfirmViewController(contentText: L10n.Document.Edit.remoteEditingArrivedTitle, onConfirm: { viewController in
-                            viewController.dismiss(animated: true) {
-                                self.viewModel.revertContent(shouldSaveBeforeRevert: false)
-                            }
+                        let confirm = ConfirmViewController(contentText: L10n.Document.Edit.remoteEditingArrivedTitle,
+                                                            onConfirm: { viewController in
+                                                                viewController.dismiss(animated: true) {
+                                                                    self.viewModel.revertContent(shouldSaveBeforeRevert: false)
+                                                                }
                         }) { viewController in
                             viewController.dismiss(animated: true)
                         }
                         
+                        confirm.title = url.packageName
                         confirm.present(from: self)
                     }
                 }
@@ -411,8 +417,11 @@ extension DocumentEditorViewController: DocumentEditViewModelDelegate {
             if self.viewModel.string.count == 0 { // if there's no content, add an entry, and show keyboard
                 DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.3) {
                     let result = self.viewModel.performAction(EditAction.convertToHeading(0), textView: self.textView)
-                    self.textView.selectedRange = NSRange(location: result.range!.upperBound, length: 0)
-                    self.textView.becomeFirstResponder()
+                    
+                    if let range = result.range {
+                        self.textView.selectedRange = NSRange(location: range.upperBound, length: 0)
+                        self.textView.becomeFirstResponder()
+                    }
                 }
             }
         }

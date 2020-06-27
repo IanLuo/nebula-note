@@ -49,6 +49,10 @@ private let removeFileCoordinatorFromCache: (URL) -> Void = { url in
 }
 
 extension URL {
+    public init(documentRelativePath: String) {
+        self = URL.documentBaseURL.appendingPathComponent(documentRelativePath)
+    }
+    
     public static var localDocumentBaseURL: URL {
         return URL.directory(location: URLLocation.document, relativePath: "files")
     }
@@ -536,5 +540,11 @@ extension String {
     
     public func removing(_ range: NSRange) -> String {
         return self.replacingOccurrences(of: self.nsstring.substring(with: range), with: "")
+    }
+}
+
+extension URL {
+    public func isSameDocument(another: URL) -> Bool {
+        return self.documentRelativePath == another.documentRelativePath
     }
 }

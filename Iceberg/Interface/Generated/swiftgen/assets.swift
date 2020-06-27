@@ -70,6 +70,7 @@ public enum Asset {
     public static let quote = ImageAsset(name: "quote")
     public static let record = ImageAsset(name: "record")
     public static let redo = ImageAsset(name: "redo")
+    public static let refresh = ImageAsset(name: "refresh")
     public static let `right` = ImageAsset(name: "right")
     public static let scheduled = ImageAsset(name: "scheduled")
     public static let separator = ImageAsset(name: "separator")

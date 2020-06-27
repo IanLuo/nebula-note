@@ -93,7 +93,7 @@ public struct ShareExtensionItemHandler {
     }
     
     private func _saveVideo(attachment: NSItemProvider, completion: @escaping () -> Void) {
-        attachment.loadItem(forTypeIdentifier: "public.movie", options: nil) { (data, error) in
+        attachment.loadItem(forTypeIdentifier: "public.url", options: [:]) { (data, error) in
             if let videoURL = data as? NSURL {
                 self._saveFile(url: videoURL as URL, kind: Attachment.Kind.video, completion: completion)
             }
@@ -106,7 +106,7 @@ public struct ShareExtensionItemHandler {
     }
     
     private func _saveAudio(attachment: NSItemProvider, completion: @escaping () -> Void) {
-        attachment.loadItem(forTypeIdentifier: "public.audio", options: nil) { (data, error) in
+        attachment.loadItem(forTypeIdentifier: "public.url", options: nil) { (data, error) in
             if let audioURL = data as? NSURL {
                 self._saveFile(url: audioURL as URL, kind: Attachment.Kind.audio, completion: completion)
             } else {
@@ -121,6 +121,22 @@ public struct ShareExtensionItemHandler {
     }
     
     private func _saveText(attachment: NSItemProvider, userInput: String?, completion: @escaping () -> Void) {
+        let trySaveString: (String) -> Void = { string in
+            guard userInput?.count ?? 0 <= 0 else {
+                completion()
+                return
+            }// if user typed something, ignore this part of text
+            
+            let url = URL.file(directory: URL.directory(location: URLLocation.temporary), name: UUID().uuidString, extension: "txt")
+            do {
+                try string.write(to: url, atomically: true, encoding: .utf8)
+                self._saveFile(url: url, kind: Attachment.Kind.text, completion: completion)
+            } catch {
+                print("ERROR: \(error)")
+                completion()
+            }
+        }
+        
         attachment.loadItem(forTypeIdentifier: "public.text", options: nil) { (data, error) in
             if let url = data as? URL {
                 // if the shared text file is one of that can be imported, so import it
@@ -129,20 +145,10 @@ public struct ShareExtensionItemHandler {
                 } else {
                     self._saveFile(url: url as URL, kind: Attachment.Kind.text, completion: completion)
                 }
+            } else if let data = data as? Data, let string = String(data: data, encoding: .utf8) {
+                trySaveString(string)
             } else if let string = data as? String {
-                guard userInput?.count ?? 0 <= 0 else {
-                    completion()
-                    return
-                }// if user typed something, ignore this part of text
-                
-                let url = URL.file(directory: URL.directory(location: URLLocation.temporary), name: UUID().uuidString, extension: "txt")
-                do {
-                    try string.write(to: url, atomically: true, encoding: .utf8)
-                    self._saveFile(url: url, kind: Attachment.Kind.text, completion: completion)
-                } catch {
-                    print("ERROR: \(error)")
-                    completion()
-                }
+                trySaveString(string)
             } else {
                 print(log.info("unhandled text !!!"))
                 completion()
@@ -175,19 +181,8 @@ public struct ShareExtensionItemHandler {
     }
     
     private func _saveImage(attachment: NSItemProvider, completion: @escaping () -> Void) {
-        let containerURL = handler.sharedContainterURL
-
-        attachment.loadItem(forTypeIdentifier: "public.image", options: nil) { data, error in
-            if let image = data as? UIImage {
-                let name = UUID().uuidString
-                do {
-                    try image.pngData()!.write(to: containerURL.appendingPathComponent(name).appendingPathExtension(Attachment.Kind.image.rawValue).appendingPathExtension("png"))
-                    completion()
-                } catch {
-                    print("ERROR: \(error)")
-                    completion()
-                }
-            } else if let imageURL = data as? NSURL {
+        attachment.loadItem(forTypeIdentifier: "public.url", options: nil) { data, error in
+            if let imageURL = data as? NSURL {
                 self._saveFile(url: imageURL as URL, kind: Attachment.Kind.image, completion: completion)
             } else {
                 completion()

@@ -29,33 +29,37 @@ private class ProcessingView: UIView {
 
 extension UIView {
     public func showProcessingAnimation() {
-        guard self.getPrecessingAnimationView() == nil else {
-            return
-        }
-        
-        let view = self.createProcessingAnimationView()
-        self.addSubview(view)
-        view.allSidesAnchors(to: self, edgeInset: 0)
-        view.alpha = 0
-        
-        UIView.animate(withDuration: 0.1, animations: {
-            view.alpha = 1
-        }, completion: {
-            if $0 {
-                view.start()
+        DispatchQueue.runOnMainQueueSafely {
+            guard self.getPrecessingAnimationView() == nil else {
+                return
             }
-        })
+            
+            let view = self.createProcessingAnimationView()
+            self.addSubview(view)
+            view.allSidesAnchors(to: self, edgeInset: 0)
+            view.alpha = 0
+            
+            UIView.animate(withDuration: 0.1, animations: {
+                view.alpha = 1
+            }, completion: {
+                if $0 {
+                    view.start()
+                }
+            })
+        }
     }
     
     public func hideProcessingAnimation() {
-        if let view = self.getPrecessingAnimationView() {
-            UIView.animate(withDuration: 0.1, animations: {
-                view.alpha = 0
-            }, completion: {
-                if $0 {
-                    view.removeFromSuperview()
-                }
-            })
+        DispatchQueue.runOnMainQueueSafely {
+            if let view = self.getPrecessingAnimationView() {
+                UIView.animate(withDuration: 0.1, animations: {
+                    view.alpha = 0
+                }, completion: {
+                    if $0 {
+                        view.removeFromSuperview()
+                    }
+                })
+            }
         }
     }
     
@@ -66,5 +70,17 @@ extension UIView {
     private func createProcessingAnimationView() -> ProcessingView {
         let view = ProcessingView()
         return view
+    }
+}
+
+extension DispatchQueue {
+    fileprivate static func runOnMainQueueSafely(_ block: @escaping () -> Void) {
+        if Thread.isMainThread {
+            block()
+        } else {
+            DispatchQueue.main.async {
+                block()
+            }
+        }
     }
 }

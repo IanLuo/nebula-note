@@ -20,7 +20,7 @@ public class DocumentTabContainerViewController: UIViewController {
     
     public weak var delegate: DesktopDocumentTabContainerViewControllerDelegate?
     
-    private var openingViewControllers: [URL: DocumentEditorViewController] = [:]
+    private var openingViewControllers: [String: DocumentEditorViewController] = [:]
     
     private let tabBar: TabBar = TabBar()
     
@@ -52,8 +52,8 @@ public class DocumentTabContainerViewController: UIViewController {
                 
                 // if the closed document is currently openning, open another one
                 if try! tab.isSelected.value() {
-                    if let nextUrl = self?.openingViewControllers.keys.first {
-                        self?.selectTab(url: nextUrl, location: 0)
+                    if let documentRelativePath = self?.openingViewControllers.keys.first {
+                        self?.selectTab(url: URL(documentRelativePath: documentRelativePath), location: 0)
                     }
                 }
             }).disposed(by: self.disposeBag)
@@ -68,32 +68,35 @@ public class DocumentTabContainerViewController: UIViewController {
     }
     
     public func isDocumentAdded(url: URL) -> Bool {
-        return self.openingViewControllers[url] != nil
+        return self.openingViewControllers[url.documentRelativePath] != nil
     }
     
     public func selectTab(url: URL, location: Int) {
         self.viewModel.dependency.settingAccessor.logOpenDocument(url: url)
         
-        if let viewController = self.openingViewControllers[url] {
-            self.container.subviews.forEach { $0.removeFromSuperview() }
-            self.container.addSubview(viewController.view)
-            viewController.view.allSidesAnchors(to: self.container, edgeInset: 0)
+        if let viewController = self.openingViewControllers[url.documentRelativePath] {
+            
+            if !self.container.subviews.contains(where: { $0 == viewController.view}) {
+                self.container.subviews.forEach { $0.removeFromSuperview() }
+                self.container.addSubview(viewController.view)
+                viewController.view.allSidesAnchors(to: self.container, edgeInset: 0)
+                
+                self.tabBar.selectDocument.onNext(url)
+                
+                // load content
+                viewController.start()
+            }
             
             if location > 0 {
                 viewController.scrollTo(location: location)
             }
-            
-            self.tabBar.selectDocument.onNext(url)
-            
-            // load content
-            viewController.start()
         }
     }
     
     public func addTabs(editorCoordinator: EditorCoordinator, shouldSelected: Bool) {
-        
-        if self.openingViewControllers[editorCoordinator.url] == nil, let viewController = editorCoordinator.viewController as? DocumentEditorViewController {
-            self.openingViewControllers[editorCoordinator.url] = viewController
+        let documentRelativePath = editorCoordinator.url.documentRelativePath
+        if self.openingViewControllers[documentRelativePath] == nil, let viewController = editorCoordinator.viewController as? DocumentEditorViewController {
+            self.openingViewControllers[documentRelativePath] = viewController
             
             self.tabBar.addDocument.onNext(editorCoordinator.url)
         }
@@ -104,10 +107,10 @@ public class DocumentTabContainerViewController: UIViewController {
     }
     
     public func closeDocument(url: URL) {
-        if let viewController = self.openingViewControllers[url] {
+        if let viewController = self.openingViewControllers[url.documentRelativePath] {
             viewController.removeFromParent()
             viewController.view.removeFromSuperview()
-            self.openingViewControllers[url] = nil
+            self.openingViewControllers[url.documentRelativePath] = nil
             self.delegate?.didCloseDocument(url: url, editorViewController: viewController)
             self.viewModel.dependency.settingAccessor.logCloseDocument(url: url)
         }
@@ -153,10 +156,10 @@ private class TabBar: UIScrollView {
             
             strongSelf.stackView.arrangedSubviews.forEach {
                 if let tab = $0 as? Tab {
-                    if (try? tab.isSelected.value()) == false, tab.url == url {
+                    if (try? tab.isSelected.value()) == false, tab.url.isSameDocument(another: url) {
                         tab.isSelected.onNext(true)
                         strongSelf.srollToIfNeeded(tab: tab)
-                    } else if (try? tab.isSelected.value()) == true, tab.url != url {
+                    } else if (try? tab.isSelected.value()) == true, !tab.url.isSameDocument(another: url) {
                         tab.isSelected.onNext(false)
                     }
                 }
@@ -169,7 +172,7 @@ private class TabBar: UIScrollView {
             
             var tab: Tab?
             strongSelf.stackView.arrangedSubviews.forEach {
-                if let _tab = $0 as? Tab, _tab.url == url {
+                if let _tab = $0 as? Tab, _tab.url.isSameDocument(another: url) {
                     tab = _tab
                     return
                 }
@@ -179,7 +182,7 @@ private class TabBar: UIScrollView {
             
             let newTab = Tab(url: url)
             newTab.isSelected.onNext(true)
-            strongSelf.stackView.addArrangedSubview(newTab)
+            strongSelf.stackView.insertArrangedSubview(newTab, at: 0)
             newTab.sizeAnchor(height: 44)
             
             newTab.onCloseTapped.subscribe(onNext: { [weak newTab] url in
@@ -193,7 +196,7 @@ private class TabBar: UIScrollView {
                 
                 strongSelf.stackView.arrangedSubviews.forEach {
                     if let tab = $0 as? Tab {
-                        if  tab.url == url {
+                        if  tab.url.isSameDocument(another: url) {
                             tab.isSelected.onNext(true)
                         } else {
                             tab.isSelected.onNext(false)
