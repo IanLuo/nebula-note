@@ -39,11 +39,6 @@ public class ExportSelectViewController: UIViewController, UICollectionViewDeleg
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.register(ExportItemCell.self, forCellWithReuseIdentifier: ExportItemCell.reuseIdentifier)
-        collectionView.showsHorizontalScrollIndicator = false
-        
-        if isMac {
-            collectionView.showsHorizontalScrollIndicator = true
-        }
         return collectionView
     }()
     

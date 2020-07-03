@@ -139,7 +139,6 @@ public class InputToolbar: UIView {
             }
         }
         
-        self._collectionView.showsHorizontalScrollIndicator = false
         self._collectionView.delegate = self
         self._collectionView.dataSource = self
         self._collectionView.register(ActionButtonCell.self, forCellWithReuseIdentifier: ActionButtonCell.reuseIdentifier)
@@ -160,10 +159,6 @@ public class InputToolbar: UIView {
     private func _setupUI() {
         self.addSubview(self._collectionView)
         self._collectionView.allSidesAnchors(to: self, edgeInset: 0)
-        
-        if isMac {
-            self._collectionView.showsHorizontalScrollIndicator = true
-        }
     }
 }
 

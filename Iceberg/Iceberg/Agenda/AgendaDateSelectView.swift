@@ -27,16 +27,11 @@ public class AgendaDateSelectView: UIView {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.delegate = self
         collectionView.dataSource = self
-        collectionView.showsHorizontalScrollIndicator = false
         
         collectionView.interface({ (me, theme) in
             me.backgroundColor = theme.color.background1
         })
         collectionView.register(DateCell.self, forCellWithReuseIdentifier: DateCell.reuseIdentifier)
-        
-        if isMac {
-            collectionView.showsHorizontalScrollIndicator = true
-        }
         
         return collectionView
     }()

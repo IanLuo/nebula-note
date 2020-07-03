@@ -24,7 +24,6 @@ public class BrowserRecentViewController: UIViewController {
         layout.scrollDirection = .horizontal
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.showsHorizontalScrollIndicator = false
         collectionView.delegate = self
         
         collectionView.interface({ (me, theme) in
@@ -35,10 +34,6 @@ public class BrowserRecentViewController: UIViewController {
         collectionView.register(RecentFileCell.self, forCellWithReuseIdentifier: RecentFileCell.reuseIdentifier)
         collectionView.register(RecentDocumentsHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header")
         collectionView.contentInset = UIEdgeInsets(top: 0, left: Layout.edgeInsets.left, bottom: 0, right: Layout.edgeInsets.right)
-        
-        if isMac {
-            collectionView.showsHorizontalScrollIndicator = true
-        }
         
         return collectionView
     }()

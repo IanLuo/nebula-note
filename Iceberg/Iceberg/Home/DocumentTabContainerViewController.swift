@@ -232,27 +232,32 @@ private class Tab: UIView {
     private func setup() {
         self.roundConer(radius: 4)
         
-        let label = UIButton()
-        label.setTitle(self.url.packageName, for: .normal)
+        let titleButton = UIButton()
+        titleButton.setTitle(self.url.packageName, for: .normal)
+        
+        titleButton.interface { (me, theme) in
+            let button = me as! UIButton
+            button.setTitleColor(theme.color.interactive, for: .normal)
+            button.titleLabel?.font = theme.font.footnote
+        }
         
         let closeButton = UIButton()
         
         closeButton.interface { (me, theme) in
             let button = me as! UIButton
             button.setImage(Asset.Assets.cross.image.fill(color: theme.color.interactive).resize(upto: CGSize(width: 10, height: 10)), for: .normal)
-            label.setTitleColor(theme.color.interactive, for: .normal)
-            label.titleLabel?.font = theme.font.footnote
+            button.setTitleColor(theme.color.interactive, for: .normal)
             self.backgroundColor = theme.color.background2
         }
         
-        self.addSubview(label)
+        self.addSubview(titleButton)
         self.addSubview(closeButton)
         
-        label.sideAnchor(for: [.left, .top, .bottom], to: self, edgeInsets: .init(top: 0, left: 15, bottom: 0, right: 0))
-        label.rowAnchor(view: closeButton, space: 5)
+        titleButton.sideAnchor(for: [.left, .top, .bottom], to: self, edgeInsets: .init(top: 0, left: 15, bottom: 0, right: 0))
+        titleButton.rowAnchor(view: closeButton, space: 5)
         closeButton.sideAnchor(for: [.top, .bottom, .right], to: self, edgeInsets: .init(top: 0, left: 25, bottom: 0, right: -15))
         
-        label.rx
+        titleButton.rx
             .tap
             .map { self.url }
             .bind(to: onSelect)
@@ -266,7 +271,7 @@ private class Tab: UIView {
         
         isSelected.subscribe(onNext: { [weak self] isSelected in
             self?.backgroundColor = isSelected ? InterfaceTheme.Color.spotlight : InterfaceTheme.Color.background2
-            label.setTitleColor(isSelected ? InterfaceTheme.Color.spotlitTitle : InterfaceTheme.Color.interactive, for: .normal)
+            titleButton.setTitleColor(isSelected ? InterfaceTheme.Color.spotlitTitle : InterfaceTheme.Color.interactive, for: .normal)
         }).disposed(by: self.disposeBag)
     }
 }
