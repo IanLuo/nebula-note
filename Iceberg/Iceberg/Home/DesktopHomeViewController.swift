@@ -12,6 +12,8 @@ import RxCocoa
 import RxSwift
 import Core
 import Interface
+import StoreKit
+import Doorbell
 
 public class DesktopHomeViewController: UIViewController {
     struct Constants {
@@ -74,8 +76,8 @@ public class DesktopHomeViewController: UIViewController {
     }
         
     private func setupUI() {
-        self.toolBar.sizeAnchor(height: 80)
-        self.toolBar.sideAnchor(for: [.left, .top, .right], to: self.view, edgeInset: 0, considerSafeArea: true)
+        self.toolBar.sizeAnchor(height: 120)
+        self.toolBar.sideAnchor(for: [.left, .top, .right], to: self.view, edgeInset: 0)
         
         self.leftPart.sideAnchor(for: [.left, .bottom], to: self.view, edgeInset: 0)
         self.leftPart.sizeAnchor(width: Constants.leftWidth)
@@ -141,6 +143,16 @@ public class DesktopHomeViewController: UIViewController {
         stackView.sideAnchor(for: [.left, .right], to: self.toolBar, edgeInset: 30)
         stackView.centerAnchors(position: .centerY, to: self.toolBar)
         stackView.sizeAnchor(height: 80)
+        
+        let titleButton = UIButton()
+        titleButton.roundConer(radius: 8)
+        titleButton.setImage(UIImage(named: "AppIcon")?.resize(upto: CGSize(width: 30, height: 30)), for: .normal)
+        titleButton.rx.tap.subscribe(onNext: { [weak self] _ in
+            self?._showFeedbackOptions(from: titleButton)
+        }).disposed(by: self.disposeBag)
+        
+        self.toolBar.addSubview(titleButton)
+        titleButton.centerAnchors(position: [.centerX, .centerY], to: self.toolBar)
     }
     
     public func hideLeftAndMiddlePart() {
@@ -163,7 +175,7 @@ public class DesktopHomeViewController: UIViewController {
     }
     
     internal func toggleLeftPartVisiability(visiable: Bool, animated: Bool = true) {
-        guard visiable != self.isLeftPartVisiable else { return }
+        self.toggleLeftPartButton.isSelected = visiable
         
         if visiable {
             self.leftPart.constraint(for: .left)?.constant = 0
@@ -187,7 +199,7 @@ public class DesktopHomeViewController: UIViewController {
     }
     
     internal func toggleMiddlePartVisiability(visiable: Bool, animated: Bool = true) {
-        guard visiable != self.isMiddlePartVisiable else { return }
+        self.toggleMiddlePartButton.isSelected = visiable
         
         if visiable {
             self.leftPart.constraint(for: .right)?.constant = 0
@@ -224,6 +236,52 @@ public class DesktopHomeViewController: UIViewController {
         if !self.isMiddlePartVisiable {
             self.toggleMiddlePartVisiability(visiable: true)
         }
+    }
+    
+    private func _showFeedbackOptions(from: UIView) {
+        let selector = SelectorViewController()
+        selector.title = L10n.Setting.Feedback.title
+        selector.addItem(title: L10n.Setting.Feedback.rate)
+        selector.addItem(title: L10n.Setting.Feedback.promot)
+        selector.addItem(title: L10n.Setting.Feedback.forum)
+        selector.addItem(title: L10n.Setting.feedback)
+        selector.onCancel = { viewController in
+            viewController.dismiss(animated: true)
+            self.coordinator?.dependency.globalCaptureEntryWindow?.show()
+        }
+        
+        selector.onSelection = { selection, viewController in
+            switch selection {
+            case 0:
+                SKStoreReviewController.requestReview()
+            case 1:
+                if let name = URL(string: "https://itunes.apple.com/app/id1501111134"), !name.absoluteString.isEmpty {
+                    let objectsToShare = [name]
+                    let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
+                    activityVC.popoverPresentationController?.sourceView = viewController.view
+                    activityVC.popoverPresentationController?.sourceRect = CGRect(x: 0, y: 0, width: 500, height: 600)
+                    viewController.present(activityVC, animated: true, completion: nil)
+                }
+            case 2:
+                UIApplication.shared.open(URL(string: "https://forum.x3note.site/")!, options: [:], completionHandler: nil)
+            case 3:
+                let appId = "11641"
+                let appKey = "k2q6pHh2ekAbQjELagm2VZ3rHJFHEj3bl1GI529FjaDO29hfwLcn5sJ9jBSVA24Q"
+
+                viewController.dismiss(animated: true) {
+                    let feedback = Doorbell.init(apiKey: appKey, appId: appId)
+                    feedback!.showFeedbackDialog(in: self, completion: { (error, cancelled) -> Void in
+                        if (error?.localizedDescription != nil) {
+                            print(error!.localizedDescription);
+                        }
+                    })
+                }
+            default: break
+            }
+        }
+        
+        self.coordinator?.dependency.globalCaptureEntryWindow?.hide()
+        selector.present(from: self, at: from)
     }
 }
 
