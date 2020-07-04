@@ -272,6 +272,7 @@ private class Tab: UIView {
         isSelected.subscribe(onNext: { [weak self] isSelected in
             self?.backgroundColor = isSelected ? InterfaceTheme.Color.spotlight : InterfaceTheme.Color.background2
             titleButton.setTitleColor(isSelected ? InterfaceTheme.Color.spotlitTitle : InterfaceTheme.Color.interactive, for: .normal)
+            closeButton.setImage(Asset.Assets.cross.image.fill(color: isSelected ? InterfaceTheme.Color.spotlitTitle : InterfaceTheme.Color.interactive).resize(upto: CGSize(width: 10, height: 10)), for: .normal)
         }).disposed(by: self.disposeBag)
     }
 }

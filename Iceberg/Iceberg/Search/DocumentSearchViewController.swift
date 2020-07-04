@@ -261,17 +261,17 @@ private class SearchInputView: UIView, UITextFieldDelegate {
         textField.autocorrectionType = .no
         textField.autocapitalizationType = .none
         
-        let clearButton = UIButton(frame: CGRect(origin: .zero, size: CGSize(width: 20, height: 20)))
+        let clearButton = UIButton(frame: CGRect(origin: .zero, size: .zero))
         
         clearButton.interface({ (me, theme) in
             let clearButton = me as! UIButton
             clearButton.setBackgroundImage(UIImage.create(with: theme.color.background2, size: .singlePoint), for: .normal)
-            clearButton.setImage(Asset.Assets.cross.image.fill(color: theme.color.interactive), for: .normal)
+            clearButton.setImage(Asset.Assets.cross.image.resize(upto: CGSize(width: 10, height: 10)).fill(color: theme.color.interactive), for: .normal)
         })
+        clearButton.imageView?.contentMode = .center
         clearButton.addTarget(self, action: #selector(clear), for: .touchUpInside)
-        clearButton.layer.cornerRadius = 13
-        clearButton.layer.masksToBounds = true
-        clearButton.contentEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
+        clearButton.roundConer(radius: 12)
+        clearButton.contentEdgeInsets = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
         textField.rightView = clearButton
         textField.rightViewMode = .whileEditing
         return textField

@@ -36,10 +36,10 @@ public class CaptureListViewController: UIViewController {
         
         seg.selectedSegmentIndex = 0
         seg.interface { (view, theme) in
-            seg.tintColor = theme.color.interactive
+            seg.selectedSegmentTintColor = theme.color.spotlight
             let seg = view as! UISegmentedControl
             seg.setTitleTextAttributes([NSAttributedString.Key.foregroundColor : theme.color.secondaryDescriptive], for: UIControl.State.normal)
-            seg.setTitleTextAttributes([NSAttributedString.Key.foregroundColor : theme.color.interactive], for: UIControl.State.selected)
+            seg.setTitleTextAttributes([NSAttributedString.Key.foregroundColor : theme.color.spotlitTitle], for: UIControl.State.selected)
         }
         
         seg.addTarget(self, action: #selector(filterIdeas), for: UIControl.Event.valueChanged)

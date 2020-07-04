@@ -111,6 +111,13 @@ public class DesktopHomeViewController: UIViewController {
             self.coordinator?.showCaptureEntrance(at: ideasButton)
         }).disposed(by: self.disposeBag)
         
+        let iconButton = UIButton()
+        iconButton.roundConer(radius: 8)
+        iconButton.setImage(UIImage(named: "AppIcon")?.resize(upto: CGSize(width: 30, height: 30)), for: .normal)
+        iconButton.rx.tap.subscribe(onNext: { [weak self] _ in
+            self?._showFeedbackOptions(from: iconButton)
+        }).disposed(by: self.disposeBag)
+        
         self.toggleLeftPartButton.interface { (me, theme) in
             let button = me as! UIButton
             button.setImage(Asset.Assets.leftPart.image.fill(color: theme.color.interactive), for: .normal)
@@ -136,23 +143,18 @@ public class DesktopHomeViewController: UIViewController {
         actionsStack.addArrangedSubview(toggleLeftPartButton)
         actionsStack.addArrangedSubview(toggleMiddlePartButton)
         
+        let otherStack = UIStackView()
+        otherStack.spacing = 20
+        otherStack.addArrangedSubview(ideasButton)
+        otherStack.addArrangedSubview(iconButton)
+        
         stackView.addArrangedSubview(actionsStack)
-        stackView.addArrangedSubview(ideasButton)
+        stackView.addArrangedSubview(otherStack)
         
         self.toolBar.addSubview(stackView)
         stackView.sideAnchor(for: [.left, .right], to: self.toolBar, edgeInset: 30)
         stackView.centerAnchors(position: .centerY, to: self.toolBar)
         stackView.sizeAnchor(height: 80)
-        
-        let titleButton = UIButton()
-        titleButton.roundConer(radius: 8)
-        titleButton.setImage(UIImage(named: "AppIcon")?.resize(upto: CGSize(width: 30, height: 30)), for: .normal)
-        titleButton.rx.tap.subscribe(onNext: { [weak self] _ in
-            self?._showFeedbackOptions(from: titleButton)
-        }).disposed(by: self.disposeBag)
-        
-        self.toolBar.addSubview(titleButton)
-        titleButton.centerAnchors(position: [.centerX, .centerY], to: self.toolBar)
     }
     
     public func hideLeftAndMiddlePart() {

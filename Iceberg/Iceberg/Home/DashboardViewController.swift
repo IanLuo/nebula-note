@@ -73,6 +73,8 @@ public class DashboardViewController: UIViewController {
     }
     
     public override func viewDidLoad() {
+        title = L10n.dashboard
+        
         super.viewDidLoad()
         
         self.interface { me, theme in

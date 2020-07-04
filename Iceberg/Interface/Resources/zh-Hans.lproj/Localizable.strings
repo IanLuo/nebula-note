@@ -18,6 +18,8 @@
 
 "selector.empty" = "没有内容";
 
+"dashboard" = "控制台";
+
 "document.browser.delete.confirm" = "删除这个文档？";
 
 "attachment.kind.image" = "图片";

@@ -20,6 +20,8 @@
 
 "document.browser.delete.confirm" = "Delete this file?";
 
+"dashboard" = "Dashboard";
+
 "attachment.kind.image" = "Image";
 "attachment.kind.audio" = "Audio";
 "attachment.kind.video" = "Video";

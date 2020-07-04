@@ -11,6 +11,8 @@ import Foundation
 // swiftlint:disable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:disable nesting type_body_length type_name
 public enum L10n {
+  /// Dashboard
+  public static let dashboard = L10n.tr("Localizable", "dashboard")
 
   public enum Activity {
     public enum Document {
