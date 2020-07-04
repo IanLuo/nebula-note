@@ -89,7 +89,7 @@ public class HomeViewController: UIViewController {
     }
     
     public override var preferredStatusBarStyle: UIStatusBarStyle {
-        return InterfaceTheme.statusBarStyle
+        return  InterfaceTheme.statusBarStyle
     }
     
     private func setupUI() {

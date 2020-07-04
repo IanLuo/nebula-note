@@ -36,7 +36,11 @@ public class CaptureListViewController: UIViewController {
         
         seg.selectedSegmentIndex = 0
         seg.interface { (view, theme) in
-            seg.selectedSegmentTintColor = theme.color.spotlight
+            if #available(iOS 13.0, *) {
+                seg.selectedSegmentTintColor = theme.color.spotlight
+            } else {
+                seg.tintColor = theme.color.spotlight
+            }
             let seg = view as! UISegmentedControl
             seg.setTitleTextAttributes([NSAttributedString.Key.foregroundColor : theme.color.secondaryDescriptive], for: UIControl.State.normal)
             seg.setTitleTextAttributes([NSAttributedString.Key.foregroundColor : theme.color.spotlitTitle], for: UIControl.State.selected)
@@ -146,7 +150,9 @@ public class CaptureListViewController: UIViewController {
                                            urlHandler: self.viewModel.dependency.urlHandlerManager,
                                            captureService: self.viewModel.dependency.captureService) { ideasCount in
                                             
-                                            refreshButton.hideProcessingAnimation()
+                                            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1) {
+                                                refreshButton.hideProcessingAnimation()
+                                            }
                                             
                                             if ideasCount > 0 {
                                                 DispatchQueue.runOnMainQueueSafely {

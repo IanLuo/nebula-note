@@ -10,7 +10,13 @@ import Foundation
 import UIKit
 
 private class ProcessingView: UIView {
-    private let indicator = UIActivityIndicatorView(style: UIActivityIndicatorView.Style.white)
+    private let indicator: UIActivityIndicatorView = {
+        if #available(iOS 13.0, *) {
+            return UIActivityIndicatorView(style: UIActivityIndicatorView.Style.medium)
+        } else {
+            return UIActivityIndicatorView(style: UIActivityIndicatorView.Style.gray)
+        }
+    }()
 
     public func start() {
         if indicator.superview == nil {

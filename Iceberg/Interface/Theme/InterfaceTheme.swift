@@ -68,7 +68,7 @@ public struct Layout {
         if #available(iOS 13.0, *) {
             return .darkContent
         } else {
-            return .lightContent
+            return .default
         }
     }
 }
@@ -161,6 +161,10 @@ public class InterfaceThemeSelector {
 }
 
 @objc public class InterfaceTheme: NSObject {
+    @objc public static var isDartMode: Bool {
+        return InterfaceThemeSelector.shared.currentTheme is DarkInterfaceTheme
+    }
+    
     @objc public static var Color: InterfaceThemeColorProtocol {
         return InterfaceThemeSelector.shared.currentTheme.color
     }

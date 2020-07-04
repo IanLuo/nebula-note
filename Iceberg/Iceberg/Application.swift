@@ -233,6 +233,12 @@ extension Coordinator {
             navigationController.navigationBar.backIndicatorImage = Asset.Assets.left.image.fill(color: theme.color.descriptive)
             navigationController.navigationBar.backIndicatorTransitionMaskImage = Asset.Assets.left.image
             navigationController.navigationBar.barTintColor = theme.color.background1
+            
+            if InterfaceTheme.isDartMode {
+                navigationController.navigationBar.barStyle = .black
+            } else {
+                navigationController.navigationBar.barStyle = .default
+            }
         }
         
         if transparentBar {
