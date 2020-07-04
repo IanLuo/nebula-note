@@ -20,9 +20,9 @@ extension DocumentEditorViewController: DocumentEditToolbarDelegate {
     private func commandCompletionActionMoveCursorForTextMark(_ oldSelectedRange: NSRange) -> (DocumentContentCommandResult) -> Void {
         return { result in
             if result.delta > 0 {
-                self.textView.selectedRange = oldSelectedRange.offset(1)
+                self.textView.selectedRange = oldSelectedRange.offset(2)
             } else {
-                self.textView.selectedRange = oldSelectedRange.offset(-1)
+                self.textView.selectedRange = oldSelectedRange.offset(-2)
             }
         }
     }

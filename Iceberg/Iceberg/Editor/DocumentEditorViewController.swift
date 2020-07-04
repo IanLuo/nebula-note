@@ -104,6 +104,7 @@ public class DocumentEditorViewController: UIViewController {
         
         if !self.viewModel.isReadyToEdit {
             self._loadingIndicator.startAnimating()
+            self.setToolbarEnabled(false)
         }
         
         self.topViewContainer.sideAnchor(for: [.left, .top, .right], to: self.view, edgeInset: 0)
@@ -263,6 +264,12 @@ public class DocumentEditorViewController: UIViewController {
         self._toolBar.addArrangedSubview(button)
     }
     
+    private func setToolbarEnabled(_ enable: Bool) {
+        self._toolBar.arrangedSubviews.forEach {
+            ($0 as? UIButton)?.isEnabled = enable
+        }
+    }
+    
     private var _rightPartViewController: UIViewController?
     func toggleRightPart(viewController: UIViewController?) {
         
@@ -404,6 +411,8 @@ extension DocumentEditorViewController: DocumentEditViewModelDelegate {
     
     public func didReadyToEdit() {
         self._loadingIndicator.stopAnimating()
+        
+        self.setToolbarEnabled(true)
         
         // 移动到指定的位置（如果需要）
         if self.viewModel.onLoadingLocation > 0 {

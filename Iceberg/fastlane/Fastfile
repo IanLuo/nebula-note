@@ -31,12 +31,18 @@ platform :ios do
 
   lane :beta do
     increment_build_number
+
     cert(development: false, generate_apple_certs: true)
-    sigh(app_identifier: "com.wod.x3note", development: false, force: true)
-    sigh(app_identifier: "com.wod.x3note.CaptureIdeaExtension", development: false, force: true)
-    sigh(app_identifier: "com.wod.x3note.CaptureActionExtension", development: false, force: true)
-    build
-    upload_testflight
+    sigh(app_identifier: "com.wod.x3note", development: false, force: false)
+    sigh(app_identifier: "com.wod.x3note.CaptureIdeaExtension", development: false, force: false)
+    sigh(app_identifier: "com.wod.x3note.CaptureActionExtension", development: false, force: false)
+    
+   # sigh(app_identifier: "com.wod.x3note", development: false, force: false, platform: macos)
+   #  sigh(app_identifier: "com.wod.x3note.CaptureIdeaExtension", development: false, force: false, platform: macos)
+   #  sigh(app_identifier: "com.wod.x3note.CaptureActionExtension", development: false, force: false, platform: macos)
+
+    build()
+    upload_testflight()
   end
 
   lane :build do
@@ -48,13 +54,16 @@ platform :ios do
       export_method: "app-store",
     )
 
-    gym(
-      scheme: "x3Note",
-      workspace: "x3Note.xcworkspace",
-      catalyst_platform: 'macos',
-      clean: true,
-      export_method: "app-store",
-    )
+
+
+#    gym(
+#      scheme: "x3Note",
+#      workspace: "x3Note.xcworkspace",
+#      catalyst_platform: 'macos',
+#      clean: true,
+#      export_method: "app-store",
+#    )
+
   end
 
   lane :upload_testflight do
