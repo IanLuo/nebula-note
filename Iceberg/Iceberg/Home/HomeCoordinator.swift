@@ -88,7 +88,9 @@ public class HomeCoordinator: Coordinator {
             if let opendFiles = self?.dependency.settingAccessor.openedDocuments {
                 if isMacOrPad {
                     opendFiles.forEach {
-                        self?.addTabIfNeeded(url: $0)
+                        if FileManager.default.fileExists(atPath: $0.path) {
+                            self?.addTabIfNeeded(url: $0)
+                        }
                     }
                     if let last = opendFiles.last {
                         self?.selectTab(url: last, location: 0)

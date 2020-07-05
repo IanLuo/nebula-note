@@ -158,7 +158,11 @@ public class InputToolbar: UIView {
     
     private func _setupUI() {
         self.addSubview(self._collectionView)
-        self._collectionView.allSidesAnchors(to: self, edgeInset: 0)
+        if isMac {
+            self._collectionView.allSidesAnchors(to: self, edgeInsets: .init(top: 0, left: 0, bottom: -10, right: 0))
+        } else {
+            self._collectionView.allSidesAnchors(to: self, edgeInset: 0)
+        }
     }
 }
 

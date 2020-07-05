@@ -40,7 +40,7 @@ public class DocumentTabContainerViewController: UIViewController {
         self.view.addSubview(self.container)
         
         self.tabBar.sideAnchor(for: [.leading, .top, .traling], to: self.view, edgeInset: 0)
-        self.tabBar.sizeAnchor(height: 44)
+        self.tabBar.sizeAnchor(height: 54)
         
         self.tabBar.columnAnchor(view: self.container, alignment: .none)
         self.container.sideAnchor(for: [.leading, .bottom, .traling], to: self.view, edgeInset: 0, considerSafeArea: true)
@@ -144,7 +144,7 @@ private class TabBar: UIScrollView {
         
         self.contentInset = UIEdgeInsets(top: 0, left: Layout.innerViewEdgeInsets.left, bottom: 0, right: Layout.innerViewEdgeInsets.right)
         
-        self.stackView.sideAnchor(for: [.left, .top, .bottom], to: self, edgeInset: 0)
+        self.stackView.sideAnchor(for: [.left, .top, .bottom], to: self, edgeInsets: .init(top: 0, left: 0, bottom: -10, right: 0))
         self.stackView.rightAnchor.constraint(lessThanOrEqualTo: self.rightAnchor).isActive = true
         
         self.interface { (me, theme) in
@@ -242,7 +242,6 @@ private class Tab: UIView {
         }
         
         let closeButton = UIButton()
-        
         closeButton.interface { (me, theme) in
             let button = me as! UIButton
             button.setImage(Asset.Assets.cross.image.fill(color: theme.color.interactive).resize(upto: CGSize(width: 10, height: 10)), for: .normal)
@@ -254,8 +253,9 @@ private class Tab: UIView {
         self.addSubview(closeButton)
         
         titleButton.sideAnchor(for: [.left, .top, .bottom], to: self, edgeInsets: .init(top: 0, left: 15, bottom: 0, right: 0))
-        titleButton.rowAnchor(view: closeButton, space: 5)
-        closeButton.sideAnchor(for: [.top, .bottom, .right], to: self, edgeInsets: .init(top: 0, left: 25, bottom: 0, right: -15))
+        titleButton.rowAnchor(view: closeButton, space: 16)
+        closeButton.sideAnchor(for: [.top, .bottom, .right], to: self, edgeInsets: .init(top: 0, left: 25, bottom: 0, right: -5))
+        closeButton.sizeAnchor(width: 30, height: 30)
         
         titleButton.rx
             .tap

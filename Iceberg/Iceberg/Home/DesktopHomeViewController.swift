@@ -76,7 +76,7 @@ public class DesktopHomeViewController: UIViewController {
     }
         
     private func setupUI() {
-        self.toolBar.sizeAnchor(height: 120)
+        self.toolBar.sizeAnchor(height: 100)
         self.toolBar.sideAnchor(for: [.left, .top, .right], to: self.view, edgeInset: 0)
         
         self.leftPart.sideAnchor(for: [.left, .bottom], to: self.view, edgeInset: 0)
@@ -140,13 +140,13 @@ public class DesktopHomeViewController: UIViewController {
         
         let actionsStack = UIStackView()
         actionsStack.spacing = 20
+        actionsStack.addArrangedSubview(iconButton)
         actionsStack.addArrangedSubview(toggleLeftPartButton)
         actionsStack.addArrangedSubview(toggleMiddlePartButton)
         
         let otherStack = UIStackView()
         otherStack.spacing = 20
         otherStack.addArrangedSubview(ideasButton)
-        otherStack.addArrangedSubview(iconButton)
         
         stackView.addArrangedSubview(actionsStack)
         stackView.addArrangedSubview(otherStack)

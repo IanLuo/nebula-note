@@ -971,7 +971,7 @@ public class TextMarkCommandComposer: DocumentContentCommandComposer {
 
     public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
         let temp = textStorage.string.nsstring.substring(with: self.range)
-        let replacement = self.markType.mark + temp + self.markType.mark
+        let replacement = " " + self.markType.mark + temp + self.markType.mark
 
         return ReplaceTextCommand(range: self.range, textToReplace: replacement, textStorage: textStorage)
     }
