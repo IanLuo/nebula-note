@@ -39,7 +39,7 @@ You can move a paragraph to another paragraph, as its sub paragraph, or move to 
 ** Inside x3 note
 You access *Capture inspiration* at every page inside x3 note. When you are editing a document, you can find it by tapping the action button, other places, the button is floating at bottom right bottom of the screen.
 ** Share to x3 note
-Any app that can share content, can share to x3 note, and kept in *Captured ideas*
+Any app that can share content, can share to x3 note, and kept in *Ideas*
 ** Refile
 When you are managing the captured ideas, you can choose a place, then move that idea to the place of document you choose.
 * Agenda management

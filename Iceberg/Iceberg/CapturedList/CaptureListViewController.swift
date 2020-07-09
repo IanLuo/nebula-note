@@ -216,7 +216,7 @@ public class CaptureListViewController: UIViewController {
         
         switch attachment.kind {
         case .link:
-            if let link = attachment.linkTitle {
+            if let link = attachment.linkValue {
                 self.didTapActionsWithLink(attachment: attachment, link: link, from: fromView)
             } else {
                 self.didTapActions(attachment: attachment, from: fromView)

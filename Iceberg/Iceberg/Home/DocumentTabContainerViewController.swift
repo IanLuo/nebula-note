@@ -40,6 +40,7 @@ public class DocumentTabContainerViewController: UIViewController {
         self.view.addSubview(self.container)
         
         self.tabBar.sideAnchor(for: [.leading, .top, .traling], to: self.view, edgeInset: 0)
+        
         self.tabBar.sizeAnchor(height: 54)
         
         self.tabBar.columnAnchor(view: self.container, alignment: .none)

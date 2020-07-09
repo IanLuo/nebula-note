@@ -253,7 +253,7 @@
 "agenda.sub.today" = "今天";
 
 // capture list
-"captureList.title" = "灵感管理";
+"captureList.title" = "灵感";
 "captureList.choose.title" = "选择灵感";
 "captureList.action.openLocation" = "打开位置";
 "captureList.action.openLink" = "打开链接";

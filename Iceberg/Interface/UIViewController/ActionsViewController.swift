@@ -274,7 +274,11 @@ open class ActionsViewController: UIViewController, TransitionProtocol {
     }
     
     @objc func cancel() {
-        self.cancelAction?(self)
+        if let cancelAction = self.cancelAction {
+            cancelAction(self)
+        } else {
+            self.dismiss(animated: true)
+        }
     }
     
     fileprivate struct Item {

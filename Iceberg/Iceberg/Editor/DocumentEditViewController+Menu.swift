@@ -679,6 +679,10 @@ extension DocumentEditorViewController {
             }
         }
         
+        actionsViewController.setCancel { viewController in
+            viewController.dismiss(animated: true)
+        }
+        
         if let location = self.textView.rect(forStringRange: self.textView.selectedRange) {
             actionsViewController.present(from: self, at: self.textView, location: location.center)
         } else if let headingRange = self.viewModel.heading(at: location)?.range, let location = self.textView.rect(forStringRange: headingRange){

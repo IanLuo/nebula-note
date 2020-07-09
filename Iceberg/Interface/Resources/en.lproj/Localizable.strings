@@ -251,7 +251,7 @@
 "agenda.sub.today" = "Today";
 
 // capture list
-"captureList.title" = "Captured ideas";
+"captureList.title" = "Ideas";
 "captureList.choose.title" = "Choose idea";
 "captureList.action.openLocation" = "Open location";
 "captureList.action.openLink" = "Open link";

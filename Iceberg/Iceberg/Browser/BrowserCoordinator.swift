@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import Core
 import RxSwift
+import Interface
 
 public protocol BrowserCoordinatorDelegate: class {
     func didSelectDocument(url: URL, coordinator: BrowserCoordinator)
@@ -85,7 +86,9 @@ public class BrowserCoordinator: Coordinator {
         let navigationController = Coordinator.createDefaultNavigationControlller()
         navigationController.isNavigationBarHidden = true
         
-        let editorCoord = EditorCoordinator(stack: navigationController,
+        let nav = isMacOrPad ? self.stack : navigationController
+        
+        let editorCoord = EditorCoordinator(stack: nav,
                                             dependency: self.dependency,
                                             usage: .outline(url, nil))
         editorCoord.delegate = self

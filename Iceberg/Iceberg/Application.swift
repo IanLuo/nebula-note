@@ -33,7 +33,7 @@ public class Application: Coordinator {
         super.init(stack: navigationController, dependency: dependency)
         
         // init entry window for iPhone
-        if !isMacOrPad {
+        if isPhone {
             _entranceWindow = CaptureGlobalEntranceWindow(window: window)
             _entranceWindow?.makeKeyAndVisible()
             dependency.globalCaptureEntryWindow = self._entranceWindow

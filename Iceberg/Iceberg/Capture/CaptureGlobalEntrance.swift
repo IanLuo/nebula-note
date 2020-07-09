@@ -36,7 +36,11 @@ public class CaptureGlobalEntranceWindow: UIWindow {
     }
     
     public init(window: UIWindow) {
-        super.init(frame: CaptureGlobalEntranceWindow.windowFrame(from: window))
+        if #available(iOS 13, *) {
+            super.init(windowScene: window.windowScene!)
+        } else {
+            super.init(frame: CaptureGlobalEntranceWindow.windowFrame(from: window))
+        }
         self._fromWindow = window
         self.windowLevel = .alert
         let viewController = _CaptureGlobalEntranceViewController()
@@ -61,7 +65,7 @@ public class CaptureGlobalEntranceWindow: UIWindow {
     }
     
     public func hide() {
-        if !isMacOrPad {
+        if isPhone {
             UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveEaseInOut, animations: {
                 self.frame = CGRect(x: UIScreen.main.bounds.width, y: UIScreen.main.bounds.height - self._fromWindow!.safeArea.bottom - 60 - 30, width: self.frame.size.width, height: self.frame.size.height)
             }, completion: { _ in
@@ -72,7 +76,7 @@ public class CaptureGlobalEntranceWindow: UIWindow {
     }
     
     public func show() {
-        if !isMacOrPad {
+        if isPhone {
             guard self.isForcedToHide == false else { return }
             
             self.alpha = 1
@@ -108,7 +112,7 @@ private class _CaptureGlobalEntranceViewController: UIViewController {
     }()
     
     override func viewDidLoad() {
-        if !isMacOrPad {
+        if isPhone {
             super.viewDidLoad()
             self._setupUI()
         }

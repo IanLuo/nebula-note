@@ -17,9 +17,9 @@ Supports picture, audio, video, link, location, sketch as attachments.
 We put inspirations as attachments in x3 note, you can capture those ideas at anytime, in any form, manage them later, and use them when needed.
 ** Capture, check them later
 While using x3 note，a *capture* button is always accessible at your current view, when you are editing, it's in the actions button, in other view its at bottom right corner.
-Inspiration ideas are categorized on kept in the *captured ideas*.
+Inspiration ideas are categorized on kept in the *Ideas*.
 ** Share to x3 note
-When using any other app that have a share button, can share to x3 note, and the item shared can be find in the *Captured ideas* in x3 note.
+When using any other app that have a share button, can share to x3 note, and the item shared can be find in the *Ideas* in x3 note.
 * Arrange agenda
 On any paragraph, by adding *Status* or *Date and time*, will make this paragraph managed by agenda, will be shown on the *Agenda* view, and multiple shortcuts below *Agenda* tab at left.
 ** Status

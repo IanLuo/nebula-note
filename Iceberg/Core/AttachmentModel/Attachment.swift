@@ -136,6 +136,10 @@ public struct Attachment: Codable {
         return self.linkInfo?.0
     }
     
+    public var linkValue: String? {
+        return self.linkInfo?.1
+    }
+    
     public var coordinator: CLLocationCoordinate2D? {
         do {
             let jsonDecoder = JSONDecoder()
