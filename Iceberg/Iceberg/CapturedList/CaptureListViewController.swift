@@ -155,9 +155,7 @@ public class CaptureListViewController: UIViewController {
                                             }
                                             
                                             if ideasCount > 0 {
-                                                DispatchQueue.runOnMainQueueSafely {
-                                                    self.viewModel.loadFilterdData(kind: self.viewModel.currentFilteredAttachmentKind)
-                                                }
+                                                self.viewModel.loadAllCapturedData()
                                             }
                 }
             }).disposed(by: self.disposeBag)

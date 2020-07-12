@@ -10,7 +10,7 @@ import UIKit
 import Social
 import Core
 
-class ShareViewController: SLComposeServiceViewController {
+@objc(ShareViewController) class ShareViewController: SLComposeServiceViewController {
     
     private let _extensionItemHandler: ShareExtensionItemHandler = ShareExtensionItemHandler()
 

@@ -1,1 +1,3 @@
-After a long process of research, design, development, test, x3 note finally make it's 1.0 milestone. while actually using it, it feels so good, it is not just working, but really helpful for my work, through out the development process, I have kept using x3 note to track my work, make plans and write notes, as the process of development and design move farward, it grows better and better, now I hope more people can share how we feel about it, and feel the convenience x3 note can bring to you.
+1. macOS version is released, now everything including documents, ideas and attachments will all be synced across iPhone, iPad and macOS version
+
+2. Fix some issues

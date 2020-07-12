@@ -83,8 +83,19 @@ platform :ios do
     )
   end
 
+
   lane :metadata do
     deliver(
+      submit_for_review: false,
+      automatic_release: false,
+      skip_screenshots: false,
+      skip_binary_upload: true
+    )
+  end
+
+  lane :metadata_mac do
+    deliver(
+      platform: 'osx',
       submit_for_review: false,
       automatic_release: false,
       skip_screenshots: false,
