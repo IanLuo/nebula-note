@@ -107,6 +107,11 @@ public class DocumentEditorViewController: UIViewController {
             self.setToolbarEnabled(false)
         }
         
+        // temp editor don't keep record
+        if !self.viewModel.isTemp {
+            self.viewModel.dependency.settingAccessor.logOpenDocument(url: self.viewModel.url)
+        }
+        
         self.topViewContainer.sideAnchor(for: [.left, .top, .right], to: self.view, edgeInset: 0)
         self.topViewContainer.bottomAnchor.constraint(equalTo: self.textView.topAnchor).isActive = true
         self.topViewContainer.bottomAnchor.constraint(equalTo: self.rightViewContainer.topAnchor).isActive = true
@@ -226,11 +231,6 @@ public class DocumentEditorViewController: UIViewController {
         // only for phone
         if self.presentingViewController == nil && isPhone {
             self.viewModel.context.coordinator?.removeFromParent()
-        }
-        
-        // temp editor don't keep record
-        if !self.viewModel.isTemp {
-            self.viewModel.dependency.settingAccessor.logOpenDocument(url: self.viewModel.url)
         }
     }
     

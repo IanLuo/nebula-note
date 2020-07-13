@@ -99,7 +99,7 @@ public class DocumentTabContainerViewController: UIViewController {
         if self.openingViewControllers[documentRelativePath] == nil, let viewController = editorCoordinator.viewController as? DocumentEditorViewController {
             self.openingViewControllers[documentRelativePath] = viewController
             
-            self.tabBar.addDocument.onNext(editorCoordinator.url)
+            self.tabBar.addDocument.onNext((editorCoordinator.url, shouldSelected))
         }
         
         if shouldSelected {
@@ -119,7 +119,7 @@ public class DocumentTabContainerViewController: UIViewController {
 }
 
 private class TabBar: UIScrollView {
-    let addDocument: PublishSubject<URL> = PublishSubject()
+    let addDocument: PublishSubject<(URL, Bool)> = PublishSubject()
     let selectDocument: PublishSubject<URL> = PublishSubject()
     let onCloseDocument: PublishSubject<Tab> = PublishSubject()
     let onSelectDocument: PublishSubject<URL> = PublishSubject()
@@ -168,7 +168,7 @@ private class TabBar: UIScrollView {
             
         }).disposed(by: self.disposeBag)
         
-        self.addDocument.subscribe(onNext: { [weak self] url in
+        self.addDocument.subscribe(onNext: { [weak self] url, shouldSelect in
             guard let strongSelf = self else { return }
             
             var tab: Tab?
@@ -182,7 +182,7 @@ private class TabBar: UIScrollView {
             guard (try? tab?.isSelected.value()) != true else { return }
             
             let newTab = Tab(url: url)
-            newTab.isSelected.onNext(true)
+            newTab.isSelected.onNext(shouldSelect)
             strongSelf.stackView.insertArrangedSubview(newTab, at: 0)
             newTab.sizeAnchor(height: 44)
             

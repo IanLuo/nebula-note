@@ -62,9 +62,9 @@ public class RecentDocumentRenamedEvent: RenameDocumentEvent {
 // MARK: -
 
 public class DocumentHeadingChangeEvent: Event {
-    let url: URL
-    let oldHeadings: [HeadingToken]
-    let newHeadings: [HeadingToken]
+    public let url: URL
+    public let oldHeadings: [HeadingToken]
+    public let newHeadings: [HeadingToken]
 
     public init(url: URL, oldHeadings: [HeadingToken], newHeadings: [HeadingToken]) {
         self.url = url

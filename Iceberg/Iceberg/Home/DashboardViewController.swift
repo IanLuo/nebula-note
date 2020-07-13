@@ -411,7 +411,6 @@ private class TabView: UITableViewHeaderFooterView {
             
             tab.didSetIsCurrent = {
                 self.isHighlighted = $0
-                self.iconView.tintColor = $0 ? InterfaceTheme.Color.spotlitTitle : InterfaceTheme.Color.interactive
             }
             
         }
@@ -449,7 +448,10 @@ private class TabView: UITableViewHeaderFooterView {
     var action: (() -> Void)?
     var isHighlighted: Bool {
         get { return self.titleButton.isSelected }
-        set { self.titleButton.isSelected = newValue }
+        set {
+            self.titleButton.isSelected = newValue
+            self.iconView.tintColor = newValue ? InterfaceTheme.Color.spotlitTitle : InterfaceTheme.Color.interactive
+        }
     }
     
     override init(reuseIdentifier: String?) {

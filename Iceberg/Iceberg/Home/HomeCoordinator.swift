@@ -69,11 +69,14 @@ public class HomeCoordinator: Coordinator {
                                               DashboardViewController.TabType.search(tabs[2], 2),
                                               DashboardViewController.TabType.documents(tabs[3], 3)])
         
+        let defaultTabIndex = SettingsAccessor.Item.landingTabIndex.get(Int.self) ?? 3
+        
         let hasInitedLandingTab: PublishSubject<Void> = PublishSubject<Void>()
         
         self.dependency.appContext.isFileReadyToAccess.takeUntil(hasInitedLandingTab).subscribe(onNext: { _ in
             hasInitedLandingTab.onNext(())
-            let viewController = tabs[SettingsAccessor.Item.landingTabIndex.get(Int.self) ?? 3]
+            let viewController = tabs[defaultTabIndex]
+            dashboardViewController.selectOnTab(index: defaultTabIndex)
             if isMacOrPad {
                 (self.viewController as? DesktopHomeViewController)?.showInMiddlePart(viewController: viewController)
             } else {
@@ -86,14 +89,11 @@ public class HomeCoordinator: Coordinator {
     public override func didMoveIn() {
         self.dependency.appContext.isFileReadyToAccess.subscribe(onNext: { [weak self] _ in
             if let opendFiles = self?.dependency.settingAccessor.openedDocuments {
-                if isMacOrPad {
+                if isMacOrPad, let last = opendFiles.last {
                     opendFiles.forEach {
                         if FileManager.default.fileExists(atPath: $0.path) {
-                            self?.addTabIfNeeded(url: $0)
+                            self?.addTabIfNeeded(url: $0, shouldSelect: last.documentRelativePath == $0.documentRelativePath)
                         }
-                    }
-                    if let last = opendFiles.last {
-                        self?.selectTab(url: last, location: 0)
                     }
                 } else {
 //                    if let first = opendFiles.first, FileManager.default.fileExists(atPath: first.path) {
@@ -158,7 +158,7 @@ public class HomeCoordinator: Coordinator {
 extension HomeCoordinator: SearchCoordinatorDelegate {
     public func didSelectDocument(url: URL, location: Int, searchCoordinator: SearchCoordinator) {
         if isMacOrPad {
-            self.addTabIfNeeded(url: url)
+            self.addTabIfNeeded(url: url, shouldSelect: true)
             self.selectTab(url: url, location: location)
         } else {
             self.openDocument(url: url, location: location)
@@ -174,7 +174,7 @@ extension HomeCoordinator: SearchCoordinatorDelegate {
 extension HomeCoordinator: AgendaCoordinatorDelegate {
     public func didSelectDocument(url: URL, location: Int) {
         if isMacOrPad {
-            self.addTabIfNeeded(url: url)
+            self.addTabIfNeeded(url: url, shouldSelect: true)
             self.selectTab(url: url, location: location)
         } else {
             self.openDocument(url: url, location: location)
@@ -185,7 +185,7 @@ extension HomeCoordinator: AgendaCoordinatorDelegate {
 extension HomeCoordinator: BrowserCoordinatorDelegate {
     public func didSelectDocument(url: URL, coordinator: BrowserCoordinator) {
         if isMacOrPad {
-            self.addTabIfNeeded(url: url)
+            self.addTabIfNeeded(url: url, shouldSelect: true)
             self.selectTab(url: url, location: 0)
         } else {
             self.openDocument(url: url, location: 0)
@@ -284,12 +284,12 @@ extension HomeCoordinator {
         (self.viewController as? DesktopHomeViewController)?.selectDocument(url: url, location: location)
     }
     
-    public func addTabIfNeeded(url: URL) {
+    public func addTabIfNeeded(url: URL, shouldSelect: Bool) {
         if let macHomeViewController = self.viewController as? DesktopHomeViewController, !macHomeViewController.isDocumentAdded(url: url) {
             let stack = Coordinator.createDefaultNavigationControlller()
             let editorCoordinator = EditorCoordinator(stack: stack, dependency: self.dependency, usage: .editor(url, 0))
             
-            macHomeViewController.addDocuments(editorCoordinator: editorCoordinator, souldSelect: false)
+            macHomeViewController.addDocuments(editorCoordinator: editorCoordinator, souldSelect: shouldSelect)
             self.addChild(editorCoordinator)
         }
     }
