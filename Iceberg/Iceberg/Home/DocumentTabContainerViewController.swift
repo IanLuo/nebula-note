@@ -103,7 +103,9 @@ public class DocumentTabContainerViewController: UIViewController {
         }
         
         if shouldSelected {
-            self.selectTab(url: editorCoordinator.url, location: 0)
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now()) {
+                self.selectTab(url: editorCoordinator.url, location: 0)
+            }
         }
     }
     
@@ -231,7 +233,7 @@ private class Tab: UIView {
     }
     
     private func setup() {
-        self.roundConer(radius: 4)
+        self.roundConer(radius: 4, corners: [CACornerMask.layerMinXMinYCorner, CACornerMask.layerMaxXMinYCorner])
         
         let titleButton = UIButton()
         titleButton.setTitle(self.url.packageName, for: .normal)

@@ -203,6 +203,16 @@ public class DocumentSearchManager {
                 let matcher = try NSRegularExpression(pattern: "\(contain)", options: NSRegularExpression.Options.caseInsensitive)
                 
                 URL.read(urls: self.loadAllFiles()) { url, string in
+                    // 0. match file name
+                    let range = (url.packageName as NSString).range(of: contain, options: [.caseInsensitive])
+                    if range.length > 0 {
+                        items.append(DocumentTextSearchResult(documentInfo: DocumentInfo(wrapperURL: url.wrapperURL),
+                        highlightRange: range,
+                        context: url.packageName,
+                        heading: nil,
+                        location: 0))
+                    }
+                    
                     // 1. 先获取所有文档的 heading
                     parser.parse(str: string)
                     

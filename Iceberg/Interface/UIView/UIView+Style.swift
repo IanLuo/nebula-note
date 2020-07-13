@@ -10,8 +10,9 @@ import Foundation
 import UIKit
 
 public extension UIView {
-    func roundConer(radius: CGFloat) {
+    func roundConer(radius: CGFloat, corners: CACornerMask = [.layerMaxXMaxYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner, .layerMinXMinYCorner]) {
         self.layer.cornerRadius = radius
+        self.layer.maskedCorners = corners
         self.layer.masksToBounds = true
     }
     

@@ -89,10 +89,10 @@ public class HomeCoordinator: Coordinator {
     public override func didMoveIn() {
         self.dependency.appContext.isFileReadyToAccess.subscribe(onNext: { [weak self] _ in
             if let opendFiles = self?.dependency.settingAccessor.openedDocuments {
-                if isMacOrPad, let last = opendFiles.last {
-                    opendFiles.forEach {
-                        if FileManager.default.fileExists(atPath: $0.path) {
-                            self?.addTabIfNeeded(url: $0, shouldSelect: last.documentRelativePath == $0.documentRelativePath)
+                if isMacOrPad {
+                    for (index, url) in opendFiles.enumerated() {
+                        if FileManager.default.fileExists(atPath: url.path) {
+                            self?.addTabIfNeeded(url: url, shouldSelect: index == opendFiles.count - 1)
                         }
                     }
                 } else {
