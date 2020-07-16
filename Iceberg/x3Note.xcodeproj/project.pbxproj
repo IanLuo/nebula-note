@@ -227,6 +227,7 @@
 		E4D0FD7B2348D774001C3BA2 /* PreviewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D0FD7A2348D774001C3BA2 /* PreviewManager.swift */; };
 		E4D31DEC227D39A4001F5272 /* URLlHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D31DEB227D39A4001F5272 /* URLlHandler.swift */; };
 		E4D31DEE227DA633001F5272 /* URLHandlerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D31DED227DA633001F5272 /* URLHandlerManager.swift */; };
+		E4D7B14324C09FC000503870 /* DocumentEditViewController+Keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D7B14224C09FC000503870 /* DocumentEditViewController+Keyboard.swift */; };
 		E4E1B146224B27040061D327 /* KeyValueStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F870321902DB3006C4CDB /* KeyValueStore.swift */; };
 		E4E7ABD123CE04DA005628E6 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E4E7ABD323CE04DA005628E6 /* Localizable.strings */; };
 		E4E7ABD623CE0576005628E6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E4E7ABD523CE0576005628E6 /* LaunchScreen.storyboard */; };
@@ -633,6 +634,7 @@
 		E4D0FD7A2348D774001C3BA2 /* PreviewManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewManager.swift; sourceTree = "<group>"; };
 		E4D31DEB227D39A4001F5272 /* URLlHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLlHandler.swift; sourceTree = "<group>"; };
 		E4D31DED227DA633001F5272 /* URLHandlerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLHandlerManager.swift; sourceTree = "<group>"; };
+		E4D7B14224C09FC000503870 /* DocumentEditViewController+Keyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DocumentEditViewController+Keyboard.swift"; sourceTree = "<group>"; };
 		E4E7ABD223CE04DA005628E6 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		E4E7ABD423CE0519005628E6 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		E4E7ABD523CE0576005628E6 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -1387,6 +1389,7 @@
 				E41FA5742191569C001D8C63 /* DocumentEditorViewController.swift */,
 				E4144EA622854B5800CB12FF /* DocumentEditViewController+UserInteraction.swift */,
 				E4144EA22285492E00CB12FF /* DocumentEditViewController+Input.swift */,
+				E4D7B14224C09FC000503870 /* DocumentEditViewController+Keyboard.swift */,
 				E465F8812242269000FA6E83 /* DocumentEditViewController+ToolbarDelegate.swift */,
 				E4144EA422854A0B00CB12FF /* DocumentEditViewController+Menu.swift */,
 				E47829FC222E683B0054513E /* InputToolbar.swift */,
@@ -2172,6 +2175,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E4D7B14324C09FC000503870 /* DocumentEditViewController+Keyboard.swift in Sources */,
 				E4EA856321D1F83800DD92F9 /* HeadingsOutlineViewController.swift in Sources */,
 				E41F86C3218EF4BF006C4CDB /* AttachmentCoordinator.swift in Sources */,
 				E41CB15F21D887D500EF0A3C /* AttachmentViewController.swift in Sources */,
