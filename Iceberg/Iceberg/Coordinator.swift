@@ -196,7 +196,7 @@ extension Coordinator {
         self.dependency.globalCaptureEntryWindow?.isForcedToHide = true
     }
     
-    public func showAttachmentPicker(kind: Attachment.Kind, at: UIView?, location: CGPoint?, complete: @escaping (String) -> Void, cancel: @escaping () -> Void) {
+    public func showAttachmentPicker(coordinator: Coordinator? = nil, kind: Attachment.Kind, at: UIView?, location: CGPoint?, complete: @escaping (String) -> Void, cancel: @escaping () -> Void) {
         
         switch kind {
         case .video:
@@ -221,7 +221,9 @@ extension Coordinator {
         attachmentCoordinator.fromView = at
         attachmentCoordinator.fromLocation = location
         
-        if let topCoordinator = self.topCoordinator {
+        if let coordinator = coordinator {
+            attachmentCoordinator.start(from: coordinator)
+        } else if let topCoordinator = self.topCoordinator {
             attachmentCoordinator.start(from: topCoordinator)
         } else {
             log.error("can't find a coordinator to start")

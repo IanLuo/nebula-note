@@ -653,7 +653,7 @@ extension DocumentEditorViewController {
                 self.viewModel.dependency.globalCaptureEntryWindow?.hide()
                 
                 if haveAccess {
-                    self.viewModel.context.coordinator?.showAttachmentPicker(kind: attachment, at: self.view, location: self.textView.rect(forStringRange: self.textView.selectedRange)?.center,
+                    self.viewModel.context.coordinator?.showAttachmentPicker(coordinator: self.self.viewModel.context.coordinator, kind: attachment, at: self.textView, location: self.textView.rect(forStringRange: self.textView.selectedRange)?.center,
                                                                              complete: { [unowned self] attachmentId in
                                                                                 let oldSelection = self.textView.selectedRange
                                                                                 let result = self.viewModel.performAction(EditAction.addAttachment(location,

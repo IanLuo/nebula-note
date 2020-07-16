@@ -136,7 +136,7 @@ public class EditorCoordinator: Coordinator {
         attachmentPickerCoordinator.start(from: self)
     }
         
-    public func showLinkEditor(title: String, url: String, completeEdit: @escaping (String) -> Void) {
+    public func showLinkEditor(title: String, url: String, from: UIView, location: CGPoint?, completeEdit: @escaping (String) -> Void) {
         let navigationController = Coordinator.createDefaultNavigationControlller()
         let attachmentLinkCoordinator = AttachmentCoordinator(stack: navigationController, dependency: self.dependency, title: title, url: url, at: self.fromView, location: self.fromLocation)
         attachmentLinkCoordinator.onSaveAttachment = { key in
@@ -147,6 +147,8 @@ public class EditorCoordinator: Coordinator {
             }
         }
         
+        attachmentLinkCoordinator.fromView = from
+        attachmentLinkCoordinator.fromLocation = location
         attachmentLinkCoordinator.start(from: self)
     }
     

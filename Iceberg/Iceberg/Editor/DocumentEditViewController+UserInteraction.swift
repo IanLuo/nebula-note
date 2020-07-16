@@ -96,7 +96,8 @@ extension DocumentEditorViewController: OutlineTextViewDelegate {
         
         actionsController.addAction(icon: Asset.Assets.edit.image.fill(color: InterfaceTheme.Color.descriptive), title: L10n.Document.Link.edit) { viewController in
             viewController.dismiss(animated: true, completion: {
-                self.viewModel.context.coordinator?.showLinkEditor(title: linkStructure["title"]!, url: linkStructure["url"]!, completeEdit: { [unowned self] linkString in
+                let location = textView.rect(forStringRange: textView.selectedRange)?.center
+                self.viewModel.context.coordinator?.showLinkEditor(title: linkStructure["title"]!, url: linkStructure["url"]!, from: self.textView, location: location, completeEdit: { [unowned self] linkString in
                     self.viewModel.dependency.globalCaptureEntryWindow?.show()
                     let oldSelectedRange = textView.selectedRange
                     let result = self.viewModel.performAction(EditAction.updateLink(characterIndex, linkString), textView: self.textView)
