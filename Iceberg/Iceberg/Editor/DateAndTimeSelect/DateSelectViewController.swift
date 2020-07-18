@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import KDCalendar
 import Interface
+import RxSwift
 
 public protocol DateSelectViewControllerDelegate: class {
     func didSelect(date: Date)
@@ -18,6 +19,8 @@ public protocol DateSelectViewControllerDelegate: class {
 public class DateSelectViewController: UIViewController {
 
     public weak var delegate: DateSelectViewControllerDelegate?
+    
+    private let disposeBag = DisposeBag()
     
     private let _calendarView: CalendarView = {
         let view = CalendarView()
@@ -35,7 +38,26 @@ public class DateSelectViewController: UIViewController {
     public override func viewDidLoad() {
         self.view.addSubview(self._calendarView)
         
-        self._calendarView.allSidesAnchors(to: self.view, edgeInset: 0)
+        let lastMonthButton = UIButton().title("<", for: .normal).titleColor(InterfaceTheme.Color.interactive, for: .normal)
+        lastMonthButton.rx.tap.subscribe(onNext: {
+            self._calendarView.goToPreviousMonth()
+        }).disposed(by: disposeBag)
+        let nextMonthButton = UIButton().title(">", for: .normal).titleColor(InterfaceTheme.Color.interactive, for: .normal)
+        nextMonthButton.rx.tap.subscribe(onNext: {
+            self._calendarView.goToNextMonth()
+        }).disposed(by: disposeBag)
+        
+        let container = UIStackView()
+        container.distribution = .fillEqually
+        container.addArrangedSubview(lastMonthButton)
+        container.addArrangedSubview(nextMonthButton)
+        
+        self.view.addSubview(container)
+        
+        self._calendarView.sideAnchor(for: [.left, .top, .right], to: self.view, edgeInset: 0)
+        self._calendarView.columnAnchor(view: container, space: 10)
+        container.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 0)
+        container.sizeAnchor(height: 44)
         
         self._calendarView.delegate = self
         self._calendarView.dataSource = self

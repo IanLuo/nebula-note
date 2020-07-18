@@ -228,6 +228,7 @@
 		E4D31DEC227D39A4001F5272 /* URLlHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D31DEB227D39A4001F5272 /* URLlHandler.swift */; };
 		E4D31DEE227DA633001F5272 /* URLHandlerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D31DED227DA633001F5272 /* URLHandlerManager.swift */; };
 		E4D7B14324C09FC000503870 /* DocumentEditViewController+Keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D7B14224C09FC000503870 /* DocumentEditViewController+Keyboard.swift */; };
+		E4D7B14524C349BA00503870 /* UIView+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D7B14424C349BA00503870 /* UIView+Convenience.swift */; };
 		E4E1B146224B27040061D327 /* KeyValueStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F870321902DB3006C4CDB /* KeyValueStore.swift */; };
 		E4E7ABD123CE04DA005628E6 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E4E7ABD323CE04DA005628E6 /* Localizable.strings */; };
 		E4E7ABD623CE0576005628E6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E4E7ABD523CE0576005628E6 /* LaunchScreen.storyboard */; };
@@ -635,6 +636,7 @@
 		E4D31DEB227D39A4001F5272 /* URLlHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLlHandler.swift; sourceTree = "<group>"; };
 		E4D31DED227DA633001F5272 /* URLHandlerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLHandlerManager.swift; sourceTree = "<group>"; };
 		E4D7B14224C09FC000503870 /* DocumentEditViewController+Keyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DocumentEditViewController+Keyboard.swift"; sourceTree = "<group>"; };
+		E4D7B14424C349BA00503870 /* UIView+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Convenience.swift"; sourceTree = "<group>"; };
 		E4E7ABD223CE04DA005628E6 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		E4E7ABD423CE0519005628E6 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		E4E7ABD523CE0576005628E6 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -1016,6 +1018,7 @@
 			children = (
 				E41CB1E121D8BD9B00EF0A3C /* UIView+Processing.swift */,
 				E428B89D234487180026AC1F /* UIView+Style.swift */,
+				E4D7B14424C349BA00503870 /* UIView+Convenience.swift */,
 			);
 			path = UIView;
 			sourceTree = "<group>";
@@ -2080,6 +2083,7 @@
 				E40F6E8C223B78DB00FFF53F /* FrameLayout+Shortcuts.swift in Sources */,
 				E42574C32294DEF3008993BC /* InterfaceTheme.swift in Sources */,
 				E40F6EA4223B7A7200FFF53F /* CoverPickerViewController.swift in Sources */,
+				E4D7B14524C349BA00503870 /* UIView+Convenience.swift in Sources */,
 				E40F6E9B223B7A5E00FFF53F /* FadeBackgroundTransition.swift in Sources */,
 				E40F6EA0223B7A6D00FFF53F /* SquareButton.swift in Sources */,
 				E40F6E8D223B78DB00FFF53F /* Image+Generation.swift in Sources */,
