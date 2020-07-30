@@ -164,6 +164,10 @@ public class DashboardViewController: UIViewController {
         }
     }
     
+    public func viewController(at index: Int) -> UIViewController? {
+        return self.tabs[index].type.viewController
+    }
+    
     public func selectOnSubtab(tab: Int, subtab: Int?) {
         self.tabs.forEach {
             $0.sub.forEach {

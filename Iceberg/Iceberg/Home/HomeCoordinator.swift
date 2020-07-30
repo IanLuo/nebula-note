@@ -36,26 +36,18 @@ public class HomeCoordinator: Coordinator {
         viewModel.coordinator = self
         dashboardViewController.delegate = self
         
-        if isMacOrPad {
-            self.viewController = DesktopHomeViewController(dashboardViewController: dashboardViewController, coordinator: self, documentTabsContainerViewController: DocumentTabContainerViewController(viewModel: viewModel))
-        } else {
-            let homeViewController = HomeViewController(masterViewController: navigationController)
-            self.viewController = homeViewController
-            homeViewController.delegate = self
-        }
-        
-        let agendaCoordinator = AgendaCoordinator(stack: stack, dependency: dependency)
+        let agendaCoordinator = AgendaCoordinator(stack: self.stack, dependency: self.dependency)
         agendaCoordinator.delegate = self
         self.addPersistentCoordinator(agendaCoordinator)
         
-        let captureCoordinator = CaptureListCoordinator(stack: stack, dependency: dependency, mode: CaptureListViewModel.Mode.manage)
+        let captureCoordinator = CaptureListCoordinator(stack: self.stack, dependency: self.dependency, mode: CaptureListViewModel.Mode.manage)
         self.addPersistentCoordinator(captureCoordinator)
         
-        let searchCoordinator = SearchCoordinator(stack: stack, dependency: dependency)
+        let searchCoordinator = SearchCoordinator(stack: self.stack, dependency: self.dependency)
         searchCoordinator.delegate = self
         self.addPersistentCoordinator(searchCoordinator)
         
-        let browserCoordinator = BrowserCoordinator(stack: stack, dependency: dependency, usage: .browseDocument)
+        let browserCoordinator = BrowserCoordinator(stack: self.stack, dependency: self.dependency, usage: .browseDocument)
         browserCoordinator.delegate = self
         self.addPersistentCoordinator(browserCoordinator)
         
@@ -69,36 +61,21 @@ public class HomeCoordinator: Coordinator {
                                               DashboardViewController.TabType.search(tabs[2], 2),
                                               DashboardViewController.TabType.documents(tabs[3], 3)])
         
-        let defaultTabIndex = SettingsAccessor.Item.landingTabIndex.get(Int.self) ?? 3
-        
-        let hasInitedLandingTab: PublishSubject<Void> = PublishSubject<Void>()
-        
-        self.dependency.appContext.isFileReadyToAccess.takeUntil(hasInitedLandingTab).subscribe(onNext: { _ in
-            hasInitedLandingTab.onNext(())
-            let viewController = tabs[defaultTabIndex]
-            dashboardViewController.selectOnTab(index: defaultTabIndex)
-            if isMacOrPad {
-                (self.viewController as? DesktopHomeViewController)?.showInMiddlePart(viewController: viewController)
-            } else {
-                (self.viewController as? HomeViewController)?.showChildViewController(viewController)
-            }
-        }).disposed(by: self.disposeBag)
-        
+        if isMacOrPad {
+            self.viewController = DesktopHomeViewController(dashboardViewController: dashboardViewController, coordinator: self, documentTabsContainerViewController: DocumentTabContainerViewController(viewModel: viewModel))
+        } else {
+            let homeViewController = HomeViewController(masterViewController: navigationController)
+            self.viewController = homeViewController
+            homeViewController.delegate = self
+        }
     }
     
     public override func didMoveIn() {
-        self.dependency.appContext.isFileReadyToAccess.subscribe(onNext: { [weak self] _ in
-            if let opendFiles = self?.dependency.settingAccessor.openedDocuments?.filter({ FileManager.default.fileExists(atPath: $0.path) }) {
-                if isMacOrPad {
-                    for (index, url) in opendFiles.enumerated() {
-                        self?.addTabIfNeeded(url: url, shouldSelect: index == opendFiles.count - 1)
-                    }
-                } else {
-//                    if let first = opendFiles.first, FileManager.default.fileExists(atPath: first.path) {
-//                        self?.topCoordinator?.openDocument(url: first, location: 0)
-//                    }
-                }
-            }
+        self.dependency.appContext.isFileReadyToAccess.subscribe(onNext: { [weak self] in
+            guard $0 else { return }
+            
+            self?.initializeDefaultTab()
+            self?.initializedDefaultOpeningDocuments()
         }).disposed(by: self.disposeBag)
     }
     
@@ -150,6 +127,43 @@ public class HomeCoordinator: Coordinator {
     
     public func getAllTags() -> [String] {
         return self._viewModel.allTags
+    }
+    
+    // MARK: - private -
+    
+    private func initializedDefaultOpeningDocuments() {
+        if let opendFiles = self.dependency.settingAccessor.openedDocuments?.filter({ FileManager.default.fileExists(atPath: $0.path) }) {
+            if isMacOrPad {
+                for (index, url) in opendFiles.enumerated() {
+                    self.addTabIfNeeded(url: url, shouldSelect: index == opendFiles.count - 1)
+                }
+            } else {
+                //                    if let first = opendFiles.first, FileManager.default.fileExists(atPath: first.path) {
+                //                        self?.topCoordinator?.openDocument(url: first, location: 0)
+                //                    }
+            }
+        }
+    }
+    
+    private func initializeDefaultTab() {
+        let hasInitedLandingTab: PublishSubject<Void> = PublishSubject<Void>()
+        
+        self.dependency.appContext.uiStackReady.takeUntil(hasInitedLandingTab).subscribe(onNext: { [weak self] in
+            guard let strongSelf = self else { return }
+            guard $0 else { return }
+            
+            hasInitedLandingTab.onNext(())
+            
+            let defaultTabIndex = SettingsAccessor.Item.landingTabIndex.get(Int.self) ?? 3
+            guard let viewController = strongSelf._dashboardViewController.viewController(at: defaultTabIndex) else { return }
+            
+            strongSelf._dashboardViewController.selectOnTab(index: defaultTabIndex)
+            if isMacOrPad {
+                (strongSelf.viewController as? DesktopHomeViewController)?.showInMiddlePart(viewController: viewController)
+            } else {
+                (strongSelf.viewController as? HomeViewController)?.showChildViewController(viewController)
+            }
+        }).disposed(by: self.disposeBag)
     }
 }
 

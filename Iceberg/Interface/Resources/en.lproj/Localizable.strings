@@ -337,7 +337,7 @@
 
 // membership
 "membership.title" = "Membership plan";
-"membership.letter" = "Dear user, if you enjoy using x3 note, please consider joining our membership to unlock all advanced functions. Your support will be great help for us making x3 note becomes better, and bring you more functions.";
+"membership.letter" = "If you enjoy using x3 note, please consider joining membership, to unlock all advanced functions, support the continuous development, and bring you more powerfurl and useful functions.";
 "membership.monthly.title" = "Order membership monthly";
 "membership.monthly.description" = "(1 bonus week) unlimited function access";
 "membership.yearly.title" = "Order membership yearly";
