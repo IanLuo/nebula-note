@@ -93,6 +93,7 @@ public class DesktopHomeViewController: UIViewController {
         self.rightPart.topAnchor.constraint(equalTo: self.toolBar.bottomAnchor).isActive = true
         self.rightPart.leftAnchor.constraint(equalTo: self.middlePart.rightAnchor).isActive = true
         
+        self.middlePart.backgroundColor = InterfaceTheme.Color.background1
         self.setupToolBar()
         self.setupLeftPart()
         self.setupRightPart()
