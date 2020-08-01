@@ -10,6 +10,7 @@ import Foundation
 import Core
 import RxSwift
 import RxCocoa
+import Interface
 
 public protocol AgendaViewModelDelegate: class {
     func didCompleteLoadAllData()
@@ -224,6 +225,10 @@ public class AgendaViewModel {
                                                                     eventType: DocumentHeadingChangeEvent.self,
                                                                     queue: self._headingChangeObservingQueue) { [weak self] (event: DocumentHeadingChangeEvent) -> Void in
                                                                         self?._shouldReloadData = true
+                                                                        
+                                                                        if isMacOrPad {
+                                                                            self?.loadData()
+                                                                        }
         }
         
         self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
@@ -231,13 +236,10 @@ public class AgendaViewModel {
                                                                     queue: self._headingChangeObservingQueue,
                                                                     action: { [weak self] (event: DateAndTimeChangedEvent) -> Void in
                                                                         self?._shouldReloadData = true
-        })
-        
-        self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
-                                                                    eventType: iCloudOpeningStatusChangedEvent.self,
-                                                                    queue: .main,
-                                                                    action: { [weak self] (event: iCloudOpeningStatusChangedEvent) in
-            self?._shouldReloadData = true
+                                                                        
+                                                                        if isMacOrPad {
+                                                                            self?.loadData()
+                                                                        }
         })
         
         self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
@@ -245,6 +247,21 @@ public class AgendaViewModel {
                                                                     queue: .main,
                                                                     action: { [weak self] (event: iCloudOpeningStatusChangedEvent) in
                                                                         self?._shouldReloadData = true
+                                                                        
+                                                                        if isMacOrPad {
+                                                                            self?.loadData()
+                                                                        }
+        })
+        
+        self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
+                                                                    eventType: iCloudOpeningStatusChangedEvent.self,
+                                                                    queue: .main,
+                                                                    action: { [weak self] (event: iCloudOpeningStatusChangedEvent) in
+                                                                        self?._shouldReloadData = true
+                                                                        
+                                                                        if isMacOrPad {
+                                                                            self?.loadData()
+                                                                        }
         })
         
         self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
@@ -252,6 +269,7 @@ public class AgendaViewModel {
                                                                     queue: .main,
                                                                     action: { [weak self] (event: NewDocumentPackageDownloadedEvent) in
                                                                         self?._shouldReloadData = true
+                                                                        self?.loadData()
         })
         
         self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
@@ -259,6 +277,7 @@ public class AgendaViewModel {
                                                                     queue: .main,
                                                                     action: { [weak self] (event: iCloudAvailabilityChangedEvent) in
                                                                         self?._shouldReloadData = true
+                                                                        self?.loadData()
         })
     }
 }
