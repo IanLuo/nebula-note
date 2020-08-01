@@ -213,6 +213,10 @@ public class Application: Coordinator {
                     
                     self.dependency.appContext.isFileReadyToAccess.accept(true)
                 })
+                
+                // means off
+            } else {
+                self.dependency.appContext.isFileReadyToAccess.accept(true)
             }
         }
     }

@@ -212,7 +212,7 @@ open class ActionsViewController: UIViewController, TransitionProtocol {
     
     private var titleLabel: UILabel = {
         let label = UILabel()
-        label.font = InterfaceTheme.Font.title
+        label.font = InterfaceTheme.Font.caption1
         label.textColor = InterfaceTheme.Color.descriptive
         label.textAlignment = .left
         return label

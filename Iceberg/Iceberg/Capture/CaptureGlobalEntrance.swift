@@ -38,6 +38,7 @@ public class CaptureGlobalEntranceWindow: UIWindow {
     public init(window: UIWindow) {
         if #available(iOS 13, *) {
             super.init(windowScene: window.windowScene!)
+            self.frame = CaptureGlobalEntranceWindow.windowFrame(from: window)
         } else {
             super.init(frame: CaptureGlobalEntranceWindow.windowFrame(from: window))
         }

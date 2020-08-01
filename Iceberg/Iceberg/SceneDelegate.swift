@@ -24,12 +24,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         window = UIWindow(windowScene: windowScene)
         
-        self.application = Application(window: window!)
-        self.application?.start(from: nil, animated: false)
-        self.application.dependency.purchaseManager.initialize()
-        
-        self.window?.makeKeyAndVisible()
-        
         #if targetEnvironment(macCatalyst)
         if let titlebar = windowScene.titlebar {
             titlebar.titleVisibility = .hidden
@@ -40,6 +34,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             })
         }
         #endif
+        
+        self.window?.makeKeyAndVisible()
+        
+        self.application = Application(window: window!)
+        self.application.dependency.purchaseManager.initialize()
+        self.application?.start(from: nil, animated: false)
     }
     
 }

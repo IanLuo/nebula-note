@@ -246,7 +246,7 @@ extension CaptureListViewController: CaptureTableCellDelegate {
         let cellModel = self.viewModel.currentFilterdCellModels[index]
         let actionsViewController = self.createActionsViewController(cellModel: cellModel)
         
-        actionsViewController.present(from: self, at: from)
+        actionsViewController.present(from: self, at: self.view, location: self.tableView.convert(from.center, to: self.view))
 
         self.viewModel.hideGlobalCaptureEntry()
     }
@@ -265,7 +265,7 @@ extension CaptureListViewController: CaptureTableCellDelegate {
             })
         }
         
-        actionsViewController.present(from: self, at: from)
+        actionsViewController.present(from: self, at: self.view, location: self.tableView.convert(from.center, to: self.view))
         
         self.viewModel.hideGlobalCaptureEntry()
     }

@@ -239,6 +239,27 @@ public class AgendaViewModel {
                                                                     action: { [weak self] (event: iCloudOpeningStatusChangedEvent) in
             self?._shouldReloadData = true
         })
+        
+        self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
+                                                                    eventType: iCloudOpeningStatusChangedEvent.self,
+                                                                    queue: .main,
+                                                                    action: { [weak self] (event: iCloudOpeningStatusChangedEvent) in
+                                                                        self?._shouldReloadData = true
+        })
+        
+        self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
+                                                                    eventType: NewDocumentPackageDownloadedEvent.self,
+                                                                    queue: .main,
+                                                                    action: { [weak self] (event: NewDocumentPackageDownloadedEvent) in
+                                                                        self?._shouldReloadData = true
+        })
+        
+        self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
+                                                                    eventType: iCloudAvailabilityChangedEvent.self,
+                                                                    queue: .main,
+                                                                    action: { [weak self] (event: iCloudAvailabilityChangedEvent) in
+                                                                        self?._shouldReloadData = true
+        })
     }
 }
 
