@@ -101,10 +101,15 @@ public enum SettingsError: Error {
         return Item.openedDocuments.get([String].self)?.map {
             URL.documentBaseURL.appendingPathComponent($0)
         }.sorted(by: { url1, url2 in
-            if let urlResourceValue1 = try? url1.resourceValues(forKeys: resourceKeys), let urlResourceValue2 = try? url2.resourceValues(forKeys: resourceKeys),
-                let accessDate1 = urlResourceValue1.contentModificationDate, let accessDate2 = urlResourceValue2.contentModificationDate {
-                return accessDate1.timeIntervalSince1970 < accessDate2.timeIntervalSince1970
-            } else {
+            do {
+                let urlResourceValue1 = try url1.resourceValues(forKeys: resourceKeys)
+                let urlResourceValue2 = try url2.resourceValues(forKeys: resourceKeys)
+                if let accessDate1 = urlResourceValue1.contentModificationDate, let accessDate2 = urlResourceValue2.contentModificationDate {
+                    return accessDate1.timeIntervalSince1970 < accessDate2.timeIntervalSince1970
+                } else {
+                    return true
+                }
+            } catch {
                 return true
             }
         })

@@ -30,7 +30,7 @@ public class InputToolbar: UIView {
     private static let moveContent: [ToolbarActionProtocol] = [NormalAction.increaseIndent, NormalAction.decreaseIndent, NormalAction.moveUp, NormalAction.moveDown]
     private static let undoAndRedo: [ToolbarActionProtocol] = [NormalAction.undo, NormalAction.redo]
     private static let insertSpecailContent: [ToolbarActionProtocol] = [NormalAction.seperator, NormalAction.sourcecode, NormalAction.quote, NormalAction.checkbox, NormalAction.dateAndTime, NormalAction.list, NormalAction.orderedList]
-    private static let attachment: [ToolbarActionProtocol] = [NormalAction.captured, NormalAction.allAttachments, NormalAction.newAttachment]
+    private static let attachment: [ToolbarActionProtocol] = [NormalAction.captured, NormalAction.allAttachments, NormalAction.newAttachment, NormalAction.fileLink]
     
     private static let headless: [ActionGroup] = [ActionGroup(actions: paragraphActions, isEnabled: false, isAvailable: true),
                                                   ActionGroup(actions: headingActions, isEnabled: true, isAvailable: true),

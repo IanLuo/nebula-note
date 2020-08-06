@@ -441,6 +441,21 @@ extension OutlineParser {
             public static let http: String = "http"
             public static let https: String = "https"
             public static let patternAll: String = "(\(http)|\(https)|\(x3))"
+            
+            public static func removeScheme(link: String) -> String {
+                let comp = link.components(separatedBy: "//")
+                if comp.count > 1 {
+                    return comp.last!
+                } else {
+                    return link
+                }
+            }
+            
+            public static func serializeFileLink(url: URL) -> String {
+                let name = url.packageName
+                let path = url.documentRelativePath
+                return "[[\(x3)://\(path)][\(name)]]"
+            }
         }
     }
 }

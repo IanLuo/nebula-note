@@ -73,6 +73,19 @@ public class DocumentHeadingChangeEvent: Event {
     }
 }
 
+// MARK: -
+
+public class DocumentAgendaRelatedChangeEvent: Event {
+    public let url: URL
+    public let oldHeadings: [HeadingToken]
+    public let newHeadings: [HeadingToken]
+
+    public init(url: URL, oldHeadings: [HeadingToken], newHeadings: [HeadingToken]) {
+        self.url = url
+        self.oldHeadings = oldHeadings
+        self.newHeadings = newHeadings
+    }
+}
 
 // MARK: -
 

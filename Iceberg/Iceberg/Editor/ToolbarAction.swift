@@ -57,6 +57,7 @@ public enum NormalAction: ToolbarActionProtocol, DocumentActon {
     case captured
     case allAttachments
     case newAttachment
+    case fileLink
     
     public var icon: UIImage {
         switch self {
@@ -114,6 +115,8 @@ public enum NormalAction: ToolbarActionProtocol, DocumentActon {
             return Asset.Assets.seperator.image
         case .newAttachment:
             return Asset.Assets.add.image
+        case .fileLink:
+            return Asset.Assets.fileLink.image
         }
     }
 }

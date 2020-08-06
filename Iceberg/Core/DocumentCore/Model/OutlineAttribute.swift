@@ -26,6 +26,8 @@ public struct OutlineAttribute {
     
     public static let dateAndTime: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_DATE_AND_TIME)
     
+    public static let documentLink: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_DOCUMENT_URL)
+    
     public struct Attachment {
         public static let attachment: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_ATTACHMENT)
         public static let value: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_ATTACHMENT_VALUE)

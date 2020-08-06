@@ -43,6 +43,7 @@ public enum EditAction {
     case addSameLevelHeadingAfterCurrentHeading(Int)
     case addSubHeadingAfterCurrentHeading(Int)
     case deleteSection(Int)
+    case addFileLink(Int, URL)
     
     public var commandComposer: DocumentContentCommandComposer {
         switch self {
@@ -112,6 +113,8 @@ public enum EditAction {
             return AddNewSubHeadingAfterCurrentHeading(location: location)
         case .deleteSection(let location):
             return DeleteSectionCommpandComposer(location: location)
+        case .addFileLink(let location, let url):
+            return AddDocumentLinkCommpandComposer(location: location, url: url)
         }
     }
 }

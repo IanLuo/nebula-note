@@ -446,8 +446,9 @@ extension OutlineTextStorage: OutlineParserDelegate {
                     let hiddenRange = urlRange.moveLeftBound(by: 1)
                     let attachmentRange = token.range.head(1)
                     
+                    let attachment = (token as? LinkToken)?.isDocumentLink(textStorage: textStorage) ?? false ? OutlineAttribute.documentLink : OutlineAttribute.Link.url
                     textStorage.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment,
-                                               OutlineAttribute.showAttachment: OutlineAttribute.Link.url],
+                                               OutlineAttribute.showAttachment: attachment],
                                               range: attachmentRange)
                     
                     textStorage.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueDefault],
@@ -907,8 +908,10 @@ extension OutlineTextStorage: OutlineParserDelegate {
         self._insert(tokens: newHeadings, into: &self._savedHeadings)
         
         if removedHeadintToken.count > 0 || newHeadings.count > 0 {
-            self.outlineDelegate?.didUpdateHeadings(newHeadings: newHeadings,
-                                                    oldHeadings: removedHeadintToken)
+            if !removedHeadintToken.isHeadingChanged(newHeadings) {
+                self.outlineDelegate?.didUpdateHeadings(newHeadings: newHeadings,
+                                                        oldHeadings: removedHeadintToken)
+            }
         }
         
         // 更新 code block 缓存
@@ -1209,6 +1212,12 @@ extension NSRange {
         }
         
         return buf.count == lineCount
+    }
+}
+
+extension Array where Element: HeadingToken {
+    fileprivate func isHeadingChanged(_ another: [HeadingToken]) -> Bool {
+        return self.count != another.count
     }
 }
 

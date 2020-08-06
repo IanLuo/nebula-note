@@ -205,8 +205,8 @@ public class AgendaViewModel {
                         }
                     }
 
-                    self?.dateOrderedData[date] = mappedCellModels._trim()._sort()
                     DispatchQueue.runOnMainQueueSafely {
+                        self?.dateOrderedData[date] = mappedCellModels._trim()._sort()
                         self?.delegate?.didCompleteLoadAllData()
                     }
                 }
@@ -222,8 +222,8 @@ public class AgendaViewModel {
         
     private func _setupObserver() {
         self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
-                                                                    eventType: DocumentHeadingChangeEvent.self,
-                                                                    queue: self._headingChangeObservingQueue) { [weak self] (event: DocumentHeadingChangeEvent) -> Void in
+                                                                    eventType: DocumentAgendaRelatedChangeEvent.self,
+                                                                    queue: .main) { [weak self] (event: DocumentAgendaRelatedChangeEvent) -> Void in
                                                                         self?._shouldReloadData = true
                                                                         
                                                                         if isMacOrPad {
@@ -233,7 +233,7 @@ public class AgendaViewModel {
         
         self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
                                                                     eventType: DateAndTimeChangedEvent.self,
-                                                                    queue: self._headingChangeObservingQueue,
+                                                                    queue: .main,
                                                                     action: { [weak self] (event: DateAndTimeChangedEvent) -> Void in
                                                                         self?._shouldReloadData = true
                                                                         

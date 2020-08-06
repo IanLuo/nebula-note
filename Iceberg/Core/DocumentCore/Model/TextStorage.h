@@ -46,6 +46,7 @@ FOUNDATION_EXPORT const unsigned char TextStorageVersionString[];
 #define OUTLINE_ATTRIBUTE_LINK_OTHER @"link-other"
 #define OUTLINE_ATTRIBUTE_LINK_TITLE @"link-title"
 #define OUTLINE_ATTRIBUTE_LINK_URL @"link-URL"
+#define OUTLINE_ATTRIBUTE_DOCUMENT_URL @"document-URL"
 
 #define OUTLINE_ATTRIBUTE_UNORDERED_LIST @"unordered-list"
 #define OUTLINE_ATTRIBUTE_UNORDERED_LIST_PREFIX @"unordered-list-prefix"

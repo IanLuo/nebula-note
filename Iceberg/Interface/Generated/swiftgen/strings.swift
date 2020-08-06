@@ -199,6 +199,8 @@ public enum L10n {
   public enum Browser {
     /// Folder is empty
     public static let empty = L10n.tr("Localizable", "browser.empty")
+    /// File not exists
+    public static let fileNotExisted = L10n.tr("Localizable", "browser.file-not-existed")
     /// Document management help
     public static let help = L10n.tr("Localizable", "browser.help")
     /// Documents
@@ -240,6 +242,10 @@ public enum L10n {
           return L10n.tr("Localizable", "browser.actions.delete.confirm", p1)
         }
       }
+    }
+    public enum FileNotExisted {
+      /// Please check if the file is renamed or moved
+      public static let message = L10n.tr("Localizable", "browser.file-not-existed.message")
     }
     public enum Outline {
       /// Document begining

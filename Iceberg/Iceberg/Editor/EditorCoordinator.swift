@@ -179,6 +179,30 @@ public class EditorCoordinator: Coordinator {
         
         from.navigationController?.pushViewController(vc, animated: true)
     }
+    
+    public func showDocumentBrowser(completion: @escaping (URL) -> Void) {
+        let coor = BrowserCoordinator(stack: Application.createDefaultNavigationControlller(), dependency: self.dependency, usage: .browseDocument)
+        coor.didSelectDocumentAction = { [weak coor] url in
+            coor?.stop()
+            completion(url)
+        }
+        coor.start(from: self)
+    }
+    
+    public func openDocumentLink(link: String) {
+        let url = URL.documentBaseURL.appendingPathComponent(OutlineParser.Values.Link.removeScheme(link: link))
+        
+        if FileManager.default.fileExists(atPath: url.path) {
+            if isMacOrPad {
+                self.dependency.eventObserver.emit(OpenDocumentEvent(url: url))
+            } else {
+                let editorCoor = EditorCoordinator(stack: self.stack, dependency: self.dependency, usage: .editor(url, 0))
+                editorCoor.start(from: self)
+            }
+        } else {
+            self.viewController?.showAlert(title: L10n.Browser.fileNotExisted, message: L10n.Browser.FileNotExisted.message)
+        }
+    }
 }
 
 extension EditorCoordinator: SearchCoordinatorDelegate {

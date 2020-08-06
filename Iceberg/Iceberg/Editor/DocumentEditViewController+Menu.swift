@@ -691,4 +691,12 @@ extension DocumentEditorViewController {
             actionsViewController.present(from: self)
         }
     }
+    
+    public func showFileLinkChoose(location: Int) {
+        self.viewModel.context.coordinator?.showDocumentBrowser(completion: { [weak self] url in
+            guard let strongSelf = self else { return }
+            let result = strongSelf.viewModel.performAction(EditAction.addFileLink(location, url), textView: strongSelf.textView)
+            strongSelf.textView.selectedRange = NSRange(location: result.delta + location, length: 0)
+        })
+    }
 }

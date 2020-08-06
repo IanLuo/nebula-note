@@ -225,6 +225,8 @@
 "browser.outline.endOfDocument" = "文档结尾";
 "browser.empty" = "没有子文档";
 "browser.help" = "文档管理帮助";
+"browser.file-not-existed" = "文件不存在";
+"browser.file-not-existed.message" = "请检查文件是否已经改名或者移动";
 
 // agenda
 "agenda.title" = "日程表";

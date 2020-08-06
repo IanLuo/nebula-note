@@ -36,6 +36,7 @@ public enum Asset {
     public static let down = ImageAsset(name: "down")
     public static let due = ImageAsset(name: "due")
     public static let edit = ImageAsset(name: "edit")
+    public static let fileLink = ImageAsset(name: "fileLink")
     public static let foldAll = ImageAsset(name: "fold-all")
     public static let folded = ImageAsset(name: "folded")
     public static let fullscreen = ImageAsset(name: "fullscreen")

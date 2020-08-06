@@ -85,7 +85,15 @@ public class OrderedListToken: Token {
 public class CheckboxToken: Token {}
 
 // MARK: - LinkToken
-public class LinkToken: Token {}
+public class LinkToken: Token {
+    func isDocumentLink(textStorage: OutlineTextStorage) -> Bool {
+        if let urlRange = self.range(for: OutlineParser.Key.Element.Link.url) {
+            return textStorage.substring(urlRange).hasPrefix(OutlineParser.Values.Link.x3)
+        } else {
+            return false
+        }
+    }
+}
 
 // MARK: - AttachmentToken
 public class AttachmentToken: Token {

@@ -14,6 +14,7 @@
 
 static NSTextAttachment *foldingAttachment;
 static NSTextAttachment *linkAttachment;
+static NSTextAttachment *documentAttachment;
 static NSTextAttachment *foldedAttachment;
 static NSTextAttachment *unfoldedAttachment;
 static NSTextAttachment *scheduleAttachment;
@@ -44,6 +45,10 @@ static NSMutableDictionary *attachmentMap;
         linkAttachment = [[NSTextAttachment alloc] init];
         linkAttachment.image = [UIImage imageNamed: @"link" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil];
         linkAttachment.bounds = CGRectMake(0, 0, 15, 15);
+        
+        documentAttachment = [[NSTextAttachment alloc] init];
+        documentAttachment.image = [UIImage imageNamed: @"document" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil];
+        documentAttachment.bounds = CGRectMake(0, 0, 15, 15);
         
         foldedAttachment = [[NSTextAttachment alloc] init];
         foldedAttachment.image = [[UIImage imageNamed: @"folded" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil] fillWithColor:[[InterfaceTheme Color]spotlight]];
@@ -80,6 +85,7 @@ static NSMutableDictionary *attachmentMap;
         attachmentMap = [@{
                           OUTLINE_ATTRIBUTE_HEADING_FOLDED: foldingAttachment,
                           OUTLINE_ATTRIBUTE_LINK_URL: linkAttachment,
+                          OUTLINE_ATTRIBUTE_DOCUMENT_URL: documentAttachment,
                           OUTLINE_ATTRIBUTE_SEPARATOR: [[SeparaterAttachment alloc]init],
                           OUTLINE_ATTRIBUTE_HEADING_FOLD_FOLDED: foldedAttachment,
                           OUTLINE_ATTRIBUTE_HEADING_FOLD_UNFOLDED: unfoldedAttachment,

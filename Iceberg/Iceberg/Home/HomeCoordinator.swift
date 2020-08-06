@@ -68,6 +68,14 @@ public class HomeCoordinator: Coordinator {
             self.viewController = homeViewController
             homeViewController.delegate = self
         }
+        
+        self.dependency.eventObserver.registerForEvent(on: self, eventType: OpenDocumentEvent.self, queue: .main, action: { [weak self] (event: OpenDocumentEvent) -> Void in
+            self?.openDocumentFromEvent(event: event)
+        })
+    }
+    
+    deinit {
+        self.dependency.eventObserver.unregister(for: self, eventType: nil)
     }
     
     public override func didMoveIn() {
@@ -164,6 +172,11 @@ public class HomeCoordinator: Coordinator {
                 (strongSelf.viewController as? HomeViewController)?.showChildViewController(viewController)
             }
         }).disposed(by: self.disposeBag)
+    }
+    
+    public func openDocumentFromEvent(event: OpenDocumentEvent) {
+        self.addTabIfNeeded(url: event.url, shouldSelect: true)
+        self.selectTab(url: event.url, location: 0)
     }
 }
 

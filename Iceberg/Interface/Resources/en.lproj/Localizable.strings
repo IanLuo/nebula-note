@@ -223,6 +223,8 @@
 "browser.outline.endOfDocument" = "Document ending";
 "browser.empty" = "Folder is empty";
 "browser.help" = "Document management help";
+"browser.file-not-existed" = "File not exists";
+"browser.file-not-existed.message" = "Please check if the file is renamed or moved";
 
 // agenda
 "agenda.title" = "Agenda";

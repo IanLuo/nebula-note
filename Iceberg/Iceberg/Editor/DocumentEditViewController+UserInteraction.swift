@@ -87,9 +87,15 @@ extension DocumentEditorViewController: OutlineTextViewDelegate {
         
         actionsController.addAction(icon: Asset.Assets.right.image.fill(color: InterfaceTheme.Color.descriptive), title: L10n.Document.Link.open) { viewController in
             viewController.dismiss(animated: true, completion: {
-                if let url = URL(string: linkStructure[OutlineParser.Key.Element.Link.url]!) {
-                    self.viewModel.dependency.globalCaptureEntryWindow?.show()
-                    UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                if let link = linkStructure[OutlineParser.Key.Element.Link.url] {
+                    if link.hasPrefix(OutlineParser.Values.Link.x3) {
+                        self.viewModel.context.coordinator?.openDocumentLink(link: link)
+                    } else {
+                        if let url = URL(string: linkStructure[OutlineParser.Key.Element.Link.url] ?? "") {
+                            self.viewModel.dependency.globalCaptureEntryWindow?.show()
+                            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                        }
+                    }
                 }
             })
         }

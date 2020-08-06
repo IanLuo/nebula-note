@@ -8,7 +8,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.ExceptionBreakpoint">
          <BreakpointContent
             uuid = "5853DB2C-F946-4FBD-B04F-4D45CF7B926A"
-            shouldBeEnabled = "No"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             scope = "1"
@@ -19,7 +19,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.RuntimeIssueBreakpoint">
          <BreakpointContent
             uuid = "0E90BB2C-89E8-47A8-ADB6-DDBF7742C797"
-            shouldBeEnabled = "No"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             breakpointStackSelectionBehavior = "1"
@@ -52,7 +52,7 @@
             <Locations>
                <Location
                   uuid = "6E6B4EF2-6301-447E-BF54-D9678D34DFB1 - 5a62b0f816ee7800"
-                  shouldBeEnabled = "Yes"
+                  shouldBeEnabled = "No"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
                   symbolName = "Core.ShareExtensionItemHandler.(_saveImage in _0E93CB3B343920EFD897EEA2D3E86D4F)(attachment: __C.NSItemProvider, completion: () -&gt; ()) -&gt; ()"
@@ -67,7 +67,7 @@
                </Location>
                <Location
                   uuid = "6E6B4EF2-6301-447E-BF54-D9678D34DFB1 - f892adfe2ea0b892"
-                  shouldBeEnabled = "Yes"
+                  shouldBeEnabled = "No"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
                   symbolName = "closure #1 (Swift.Optional&lt;__C.NSSecureCoding&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in Core.ShareExtensionItemHandler.(_saveImage in _0E93CB3B343920EFD897EEA2D3E86D4F)(attachment: __C.NSItemProvider, completion: () -&gt; ()) -&gt; ()"
