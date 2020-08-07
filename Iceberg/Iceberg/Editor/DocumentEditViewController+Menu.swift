@@ -13,8 +13,7 @@ import Interface
 
 extension DocumentEditorViewController {
     @objc public func cancel(_ button: UIView) {
-        self.viewModel.close { _ in }
-        self.dismiss(animated: true, completion: nil)
+        self.viewModel.context.coordinator?.stop()
         self.viewModel.dependency.globalCaptureEntryWindow?.isForcedToHide = false
         self.viewModel.dependency.settingAccessor.logCloseDocument(url: self.viewModel.url)
     }
@@ -692,10 +691,13 @@ extension DocumentEditorViewController {
         }
     }
     
-    public func showFileLinkChoose(location: Int) {
+    public func showFileLinkChoose(location: Int, linkRange: NSRange?) {
         self.viewModel.context.coordinator?.showDocumentBrowser(completion: { [weak self] url in
             guard let strongSelf = self else { return }
-            let result = strongSelf.viewModel.performAction(EditAction.addFileLink(location, url), textView: strongSelf.textView)
+            
+            let range = linkRange ?? NSRange(location: location, length: 0)
+            
+            let result = strongSelf.viewModel.performAction(EditAction.addFileLink(range, url), textView: strongSelf.textView)
             strongSelf.textView.selectedRange = NSRange(location: result.delta + location, length: 0)
         })
     }

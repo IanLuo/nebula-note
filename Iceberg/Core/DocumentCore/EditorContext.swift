@@ -84,7 +84,15 @@ public class EditorContext {
         
         if self._serviceReferenceCounter.checkCount(url: url) == 0 {
             let cacheKey = url.documentRelativePath
-            EditorContext._cachedServiceInstances[cacheKey] = nil
+            
+            if let service = EditorContext._cachedServiceInstances[cacheKey] {
+                if service.isOpen {
+                    service.close()
+                }
+                EditorContext._cachedServiceInstances[cacheKey] = nil
+            } else {
+                EditorContext._cachedServiceInstances[cacheKey] = nil
+            }
         }
     }
     

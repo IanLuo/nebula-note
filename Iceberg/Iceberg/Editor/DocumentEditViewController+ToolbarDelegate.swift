@@ -169,7 +169,7 @@ extension DocumentEditorViewController: DocumentEditToolbarDelegate {
                 case .newAttachment:
                     self.pickAttachment(location: currentLocation)
                 case .fileLink:
-                    self.showFileLinkChoose(location: currentLocation)
+                    self.showFileLinkChoose(location: currentLocation, linkRange: nil)
                 }
             }
         }

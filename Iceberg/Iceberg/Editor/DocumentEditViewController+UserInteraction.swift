@@ -80,18 +80,29 @@ extension DocumentEditorViewController: OutlineTextViewDelegate {
         self.showTagEditor(location: characterIndex)
     }
     
-    public func didTapOnLink(textView: UITextView, characterIndex: Int, linkStructure: [String : String], point: CGPoint) {
+    public func didTapOnLink(textView: UITextView, characterIndex: Int, linkStructure: [String : Any], point: CGPoint) {
         let actionsController = ActionsViewController()
         
-        actionsController.title = linkStructure["url"]
+        actionsController.title = linkStructure["url"] as? String
         
-        actionsController.addAction(icon: Asset.Assets.right.image.fill(color: InterfaceTheme.Color.descriptive), title: L10n.Document.Link.open) { viewController in
+        let linkPath = linkStructure[OutlineParser.Key.Element.Link.url] as? String ?? ""
+        let linkTitle = linkStructure[OutlineParser.Key.Element.Link.title] as? String ?? ""
+        let linkLength = linkStructure["length"] as? Int
+        let linkLocation = linkStructure["location"] as? Int
+        let isDocumentLink = linkPath.hasPrefix(OutlineParser.Values.Link.x3)
+        
+        let openLinkText = isDocumentLink ? L10n.Document.Link.openDocumentLink : L10n.Document.Link.open
+        let editLinkText = isDocumentLink ? L10n.Document.Link.editDocumentLink : L10n.Document.Link.edit
+        let editLinkIcon = isDocumentLink ? Asset.Assets.fileLink.image.fill(color: InterfaceTheme.Color.descriptive) : Asset.Assets.edit.image.fill(color: InterfaceTheme.Color.descriptive)
+        
+        actionsController.addAction(icon: Asset.Assets.right.image.fill(color: InterfaceTheme.Color.descriptive), title: openLinkText) { viewController in
             viewController.dismiss(animated: true, completion: {
-                if let link = linkStructure[OutlineParser.Key.Element.Link.url] {
-                    if link.hasPrefix(OutlineParser.Values.Link.x3) {
+                
+                if let link = linkStructure[OutlineParser.Key.Element.Link.url] as? String {
+                    if isDocumentLink {
                         self.viewModel.context.coordinator?.openDocumentLink(link: link)
                     } else {
-                        if let url = URL(string: linkStructure[OutlineParser.Key.Element.Link.url] ?? "") {
+                        if let url = URL(string: linkStructure[OutlineParser.Key.Element.Link.url] as? String ?? "") {
                             self.viewModel.dependency.globalCaptureEntryWindow?.show()
                             UIApplication.shared.open(url, options: [:], completionHandler: nil)
                         }
@@ -100,15 +111,23 @@ extension DocumentEditorViewController: OutlineTextViewDelegate {
             })
         }
         
-        actionsController.addAction(icon: Asset.Assets.edit.image.fill(color: InterfaceTheme.Color.descriptive), title: L10n.Document.Link.edit) { viewController in
+        actionsController.addAction(icon: editLinkIcon, title: editLinkText) { viewController in
             viewController.dismiss(animated: true, completion: {
                 let location = textView.rect(forStringRange: textView.selectedRange)?.center
-                self.viewModel.context.coordinator?.showLinkEditor(title: linkStructure["title"]!, url: linkStructure["url"]!, from: self.textView, location: location, completeEdit: { [unowned self] linkString in
-                    self.viewModel.dependency.globalCaptureEntryWindow?.show()
-                    let oldSelectedRange = textView.selectedRange
-                    let result = self.viewModel.performAction(EditAction.updateLink(characterIndex, linkString), textView: self.textView)
-                    textView.selectedRange = oldSelectedRange.offset(result.delta)
-                })
+                
+                if isDocumentLink { // 编辑文档连接
+                    if let linkLocation = linkLocation, let linkLength = linkLength {
+                        self.showFileLinkChoose(location: characterIndex, linkRange: NSRange(location: linkLocation, length: linkLength))
+                    }
+                } else { // 编辑普通连接
+                    self.viewModel.context.coordinator?.showLinkEditor(title: linkTitle, url: linkPath, from: self.textView, location: location, completeEdit: { [unowned self] linkString in
+                        self.viewModel.dependency.globalCaptureEntryWindow?.show()
+                        let oldSelectedRange = textView.selectedRange
+                        let result = self.viewModel.performAction(EditAction.updateLink(characterIndex, linkString), textView: self.textView)
+                        textView.selectedRange = oldSelectedRange.offset(result.delta)
+                    })
+                }
+                
             })
         }
         

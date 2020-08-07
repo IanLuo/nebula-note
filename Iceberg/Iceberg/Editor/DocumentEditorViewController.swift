@@ -127,11 +127,11 @@ public class DocumentEditorViewController: UIViewController {
 
         // temp is used for show only the content, can't edit, like conflict preview
         if !self.viewModel.isTemp {
-            let closeButton = UIBarButtonItem(image: Asset.Assets.down.image.fill(color: InterfaceTheme.Color.interactive), style: .plain, target: self, action: #selector(cancel(_:)))
+            let closeButton = UIBarButtonItem(image: Asset.Assets.cross.image.fill(color: InterfaceTheme.Color.interactive), style: .plain, target: self, action: #selector(cancel(_:)))
             self.navigationItem.leftBarButtonItem = closeButton
             
             let menuButton = UIBarButtonItem(image: Asset.Assets.more.image.fill(color: InterfaceTheme.Color.interactive), style: .plain, target: self, action: #selector(showMenu))
-            let infoButton = UIBarButtonItem(image: Asset.Assets.left.image.fill(color: InterfaceTheme.Color.interactive), style: .plain, target: self, action: #selector(showInfo))
+            let infoButton = UIBarButtonItem(image: Asset.Assets.document.image.fill(color: InterfaceTheme.Color.interactive), style: .plain, target: self, action: #selector(showInfo))
             
             self.navigationItem.rightBarButtonItems = [menuButton, infoButton]
             

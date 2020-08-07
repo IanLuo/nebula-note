@@ -72,7 +72,9 @@
 "document.info.characterCount" = "Character count";
 
 "document.link.open" = "Open link in browser";
+"document.link.openDocumentLink" = "Go to document";
 "document.link.edit" = "Edit link";
+"document.link.editDocumentLink" = "Change Document";
 
 "document.record.title" = "Record voice";
 

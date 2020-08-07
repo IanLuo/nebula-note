@@ -14,7 +14,7 @@ public protocol OutlineTextViewDelegate: class {
     func didTapOnLevel(textView: UITextView, chracterIndex: Int, point: CGPoint)
     func didTapOnHiddenAttachment(textView: UITextView, characterIndex: Int, point: CGPoint)
     func didTapOnCheckbox(textView: UITextView, characterIndex: Int, checkbox: String, point: CGPoint)
-    func didTapOnLink(textView: UITextView, characterIndex: Int, linkStructure: [String: String], point: CGPoint)
+    func didTapOnLink(textView: UITextView, characterIndex: Int, linkStructure: [String: Any], point: CGPoint)
     func didTapOnTags(textView: UITextView, characterIndex: Int, tags: [String], point: CGPoint)
     func didTapDateAndTime(textView: UITextView, characterIndex: Int, dateAndTimeString: String, point: CGPoint)
     func didTapOnPlanning(textView: UITextView, characterIndex: Int, planning: String, point: CGPoint)
@@ -96,7 +96,7 @@ public class OutlineTextView: UITextView {
             self.outlineDelegate?.didTapOnLevel(textView: self, chracterIndex: characterIndex, point: location)
         } else if let checkbox = attributes[OutlineAttribute.checkbox] as? String {
             self.outlineDelegate?.didTapOnCheckbox(textView: self, characterIndex: characterIndex, checkbox: checkbox, point: location)
-        } else if let linkStructure = attributes[OutlineAttribute.Link.title] as? [String: String] {
+        } else if let linkStructure = attributes[OutlineAttribute.Link.title] as? [String: Any] {
             self.hideKeyboardIfNeeded()
             self.outlineDelegate?.didTapOnLink(textView: self, characterIndex: characterIndex, linkStructure: linkStructure, point: location)
         } else if let tags = attributes[OutlineAttribute.Heading.tags] as? [String] {

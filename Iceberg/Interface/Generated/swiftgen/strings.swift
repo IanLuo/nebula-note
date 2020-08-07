@@ -516,8 +516,12 @@ public enum L10n {
     public enum Link {
       /// Edit link
       public static let edit = L10n.tr("Localizable", "document.link.edit")
+      /// Change Document
+      public static let editDocumentLink = L10n.tr("Localizable", "document.link.editDocumentLink")
       /// Open link in browser
       public static let `open` = L10n.tr("Localizable", "document.link.open")
+      /// Go to document
+      public static let openDocumentLink = L10n.tr("Localizable", "document.link.openDocumentLink")
     }
     public enum Menu {
       /// Capture an idea
