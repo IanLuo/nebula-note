@@ -150,9 +150,13 @@ open class ModalFormViewController: TransitionViewController {
                 self.popoverPresentationController?.sourceView = self.view
                 self.popoverPresentationController?.sourceRect = CGRect(x: self.view.bounds.width / 2, y: self.view.bounds.height / 2, width: 0, height: 0)
             }
-            let size = self.view.systemLayoutSizeFitting(CGSize(width: self.view.bounds.width, height: 0))
-            self.preferredContentSize = CGSize(width: 300, height: size.height)
         }
+    }
+    
+    open override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        self.preferredContentSize = CGSize(width: 300, height: self.contentView.bounds.height + 20) // 20 is edge insets
     }
     
     public func makeFirstTextFieldFirstResponder() {
@@ -173,7 +177,7 @@ open class ModalFormViewController: TransitionViewController {
     
     private func setupUI() {
         self.interface { (me, interface) in
-            me.view.backgroundColor = interface.color.background2
+            me.view.backgroundColor = interface.color.background1
         }
         
         self.view.addSubview(self.contentView)
