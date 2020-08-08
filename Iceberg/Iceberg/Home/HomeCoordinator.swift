@@ -156,7 +156,7 @@ public class HomeCoordinator: Coordinator {
     private func initializeDefaultTab() {
         let hasInitedLandingTab: PublishSubject<Void> = PublishSubject<Void>()
         
-        self.dependency.appContext.uiStackReady.takeUntil(hasInitedLandingTab).subscribe(onNext: { [weak self] in
+        self.dependency.appContext.isFileReadyToAccess.takeUntil(hasInitedLandingTab).subscribe(onNext: { [weak self] in
             guard let strongSelf = self else { return }
             guard $0 else { return }
             
