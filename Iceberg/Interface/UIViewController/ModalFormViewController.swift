@@ -536,7 +536,7 @@ private class InputTextFieldCell: UITableViewCell, UITextFieldDelegate, Validata
             self.textField.backgroundColor = InterfaceTheme.Color.warning
         } else {
             self.titleLabel.text = self.validateKey
-            self.textField.backgroundColor = InterfaceTheme.Color.background1
+            self.textField.backgroundColor = InterfaceTheme.Color.background2
         }
     }
     
