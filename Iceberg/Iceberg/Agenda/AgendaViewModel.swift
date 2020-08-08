@@ -97,7 +97,7 @@ public class AgendaViewModel {
     }
     
     public func loadData() {
-        guard isConnectingScreen && self._shouldReloadData else { return }
+        guard (isConnectingScreen || isMacOrPad) && self._shouldReloadData else { return }
         
         self._shouldReloadData = false
         

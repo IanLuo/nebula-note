@@ -82,18 +82,18 @@ public class BrowserRecentViewModel: NSObject, ViewModelProtocol {
         if iCloudDocumentManager.status == .on {
             return self.dependency.syncManager.allFilesInCloud.value.filter { url in
                 url.path.hasSuffix(Document.fileExtension) && !url.path.contains(SyncCoordinator.Prefix.deleted.rawValue)
-            }.first(20)
+            }
         } else {
             return self.dependency.syncManager.allFilesLocal.filter { url in
                 url.path.hasSuffix(Document.fileExtension) && !url.path.contains(SyncCoordinator.Prefix.deleted.rawValue)
-            }.first(20)
+            }
         }
     }
     
     private func load(files: [URL]) {
         let cellModels = files.filter { $0.lastModifyTimeStamp != nil && $0.path.hasSuffix(Document.fileExtension) && !$0.path.contains(SyncCoordinator.Prefix.deleted.rawValue) }
         .sorted(by: { $0.lastModifyTimeStamp! > $1.lastModifyTimeStamp! })
-        .map { BrowserCellModel(url: $0) }
+            .map { BrowserCellModel(url: $0) }.first(20)
         
         self.output.recentDocuments.accept([RecentDocumentSection(items: cellModels)])
     }

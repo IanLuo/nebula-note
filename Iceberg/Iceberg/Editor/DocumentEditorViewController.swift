@@ -58,9 +58,6 @@ public class DocumentEditorViewController: UIViewController {
         self.textView.isEditable = !self.viewModel.isTemp
         viewModel.delegate = self
         
-        self.interface { (me, interface) in
-            me.view.backgroundColor = InterfaceTheme.Color.background1
-        }
         self.modalPresentationStyle = .fullScreen
         
     }
@@ -91,8 +88,8 @@ public class DocumentEditorViewController: UIViewController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        
         self.interface { [weak self] (me, theme) in
+            me.view.backgroundColor = InterfaceTheme.Color.background1
             self?.setNeedsStatusBarAppearanceUpdate()
             self?.viewModel.revertContent()
         }
@@ -127,7 +124,12 @@ public class DocumentEditorViewController: UIViewController {
 
         // temp is used for show only the content, can't edit, like conflict preview
         if !self.viewModel.isTemp {
-            let closeButton = UIBarButtonItem(image: Asset.Assets.cross.image.fill(color: InterfaceTheme.Color.interactive), style: .plain, target: self, action: #selector(cancel(_:)))
+            
+            var closeButtonIcon = Asset.Assets.cross.image.fill(color: InterfaceTheme.Color.interactive)
+            if self.viewModel.context.coordinator?.isModal == false {
+                closeButtonIcon = Asset.Assets.left.image.fill(color: InterfaceTheme.Color.interactive)
+            }
+            let closeButton = UIBarButtonItem(image: closeButtonIcon, style: .plain, target: self, action: #selector(cancel(_:)))
             self.navigationItem.leftBarButtonItem = closeButton
             
             let menuButton = UIBarButtonItem(image: Asset.Assets.more.image.fill(color: InterfaceTheme.Color.interactive), style: .plain, target: self, action: #selector(showMenu))
