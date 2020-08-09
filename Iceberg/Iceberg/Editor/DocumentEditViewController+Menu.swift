@@ -14,7 +14,10 @@ import Interface
 extension DocumentEditorViewController {
     @objc public func cancel(_ button: UIView) {
         self.viewModel.context.coordinator?.stop()
-        self.viewModel.dependency.globalCaptureEntryWindow?.isForcedToHide = false
+        
+        if self.viewModel.context.coordinator?.isModal == true {
+            self.viewModel.dependency.globalCaptureEntryWindow?.isForcedToHide = false
+        }
         self.viewModel.dependency.settingAccessor.logCloseDocument(url: self.viewModel.url)
     }
     

@@ -67,7 +67,7 @@ public class AttachmentManagerCell: UICollectionViewCell {
         self.checkmarkImageView.sideAnchor(for: [.left, .top], to: self.contentView, edgeInset: 12)
         self.checkmarkImageView.sizeAnchor(width: 20, height: 20)
         self.checkmarkImageView.layer.cornerRadius = 10
-        self.checkmarkImageView.backgroundColor = UIColor.white
+        self.checkmarkImageView.backgroundColor = InterfaceTheme.Color.background1
         self.checkmarkImageView.isHidden = true
     }
     

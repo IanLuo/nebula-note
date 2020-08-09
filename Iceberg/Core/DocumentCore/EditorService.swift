@@ -123,7 +123,7 @@ public class EditorService {
             return
         }
         
-        guard !self.isOpen else { return }
+        guard self.isOpen else { return }
         guard self.isClosing == false else { return }
         
         self.isClosing = true
