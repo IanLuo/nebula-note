@@ -36,6 +36,11 @@ public class DocumentTabContainerViewController: UIViewController {
     }
     
     public override func viewDidLoad() {
+        self.setupUI()
+        self.setupObservers()
+    }
+    
+    private func setupUI() {
         self.view.addSubview(self.tabBar)
         self.view.addSubview(self.container)
         
@@ -46,6 +51,12 @@ public class DocumentTabContainerViewController: UIViewController {
         self.tabBar.columnAnchor(view: self.container, alignment: .none)
         self.container.sideAnchor(for: [.leading, .bottom, .traling], to: self.view, edgeInset: 0, considerSafeArea: true)
         
+        self.interface { (me, theme) in
+            me.view.backgroundColor = theme.color.background1
+        }
+    }
+    
+    private func setupObservers() {
         self.tabBar.onCloseDocument
             .subscribe(onNext: { [weak self ] tab in
                 self?.closeDocument(url: tab.url)
@@ -63,9 +74,27 @@ public class DocumentTabContainerViewController: UIViewController {
             self?.selectTab(url: url, location: 0)
         }).disposed(by: self.disposeBag)
         
-        self.interface { (me, theme) in
-            me.view.backgroundColor = theme.color.background1
+        self.viewModel.context.dependency.eventObserver.registerForEvent(on: self, eventType: RenameDocumentEvent.self, queue: .main) { (event: RenameDocumentEvent) -> Void in
+            let oldKey = event.oldUrl.documentRelativePath
+            let newKey = event.newUrl.documentRelativePath
+            
+            if let controller = self.openingViewControllers[oldKey] {
+                self.tabBar.renameTab(with: event.oldUrl, to: event.newUrl)
+                self.openingViewControllers[newKey] = controller
+                self.openingViewControllers[oldKey] = nil
+                self.viewModel.context.dependency.settingAccessor.logCloseDocument(url: event.oldUrl)
+                self.viewModel.context.dependency.settingAccessor.logOpenDocument(url: event.newUrl)
+            }
         }
+        
+        self.viewModel.context.dependency.eventObserver.registerForEvent(on: self, eventType: DeleteDocumentEvent.self, queue: .main) { (event: DeleteDocumentEvent) -> Void in
+            self.closeDocument(url: event.url)
+            self.tabBar.removeTab(with: event.url)
+        }
+    }
+    
+    deinit {
+        self.viewModel.context.dependency.eventObserver.unregister(for: self, eventType: nil)
     }
     
     public func isDocumentAdded(url: URL) -> Bool {
@@ -140,6 +169,22 @@ private class TabBar: UIScrollView {
     convenience init() {
         self.init(frame: .zero)
         self.setup()
+    }
+    
+    func renameTab(with url: URL, to anotherUrl: URL) {
+        self.stackView.arrangedSubviews.forEach { tab in
+            if let tab = tab as? Tab, tab.url.documentRelativePath == url.documentRelativePath {
+                tab.replaceUrl(to: anotherUrl)
+            }
+        }
+    }
+    
+    func removeTab(with url: URL) {
+        self.stackView.arrangedSubviews.forEach { tab in
+            if let tab = tab as? Tab, tab.url.documentRelativePath == url.documentRelativePath {
+                tab.removeFromSuperview()
+            }
+        }
     }
     
     private func setup() {
@@ -223,6 +268,7 @@ private class Tab: UIView {
     let onCloseTapped: PublishSubject<URL> = PublishSubject()
     let onSelect: PublishSubject<URL> = PublishSubject()
     let isSelected: BehaviorSubject<Bool> = BehaviorSubject(value: false)
+    let titleButton = UIButton()
     
     private let disposeBag: DisposeBag = DisposeBag()
     
@@ -232,10 +278,15 @@ private class Tab: UIView {
         self.setup()
     }
     
+    func replaceUrl(to newUrl: URL) {
+        self.url = newUrl
+        titleButton.setTitle(self.url.packageName, for: .normal)
+    }
+    
     private func setup() {
         self.roundConer(radius: 4, corners: [CACornerMask.layerMinXMinYCorner, CACornerMask.layerMaxXMinYCorner])
         
-        let titleButton = UIButton()
+        
         titleButton.setTitle(self.url.packageName, for: .normal)
         
         titleButton.interface { (me, theme) in
@@ -274,7 +325,7 @@ private class Tab: UIView {
         
         isSelected.subscribe(onNext: { [weak self] isSelected in
             self?.backgroundColor = isSelected ? InterfaceTheme.Color.spotlight : InterfaceTheme.Color.background2
-            titleButton.setTitleColor(isSelected ? InterfaceTheme.Color.spotlitTitle : InterfaceTheme.Color.interactive, for: .normal)
+            self?.titleButton.setTitleColor(isSelected ? InterfaceTheme.Color.spotlitTitle : InterfaceTheme.Color.interactive, for: .normal)
             closeButton.setImage(Asset.Assets.cross.image.fill(color: isSelected ? InterfaceTheme.Color.spotlitTitle : InterfaceTheme.Color.interactive).resize(upto: CGSize(width: 10, height: 10)), for: .normal)
         }).disposed(by: self.disposeBag)
     }
