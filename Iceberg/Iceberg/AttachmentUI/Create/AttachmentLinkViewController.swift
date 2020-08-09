@@ -25,6 +25,10 @@ public class AttachmentLinkViewController: ModalFormViewController, AttachmentVi
     }
     
     private func showCreateLinkForm() {
+        if let defaultTitle = self.viewModel.coordinator?.accessoryData?[AttachmentCoordinator.kDefaultLinkTitle] as? String {
+            self.defaultTitle = defaultTitle
+        }
+        
         self.delegate = self
         self.addTextFied(title: L10n.CaptureLink.Title.title, placeHoder: L10n.CaptureLink.Title.placeholder, defaultValue: self.defaultTitle)
         self.addTextFied(title: L10n.CaptureLink.Url.title, placeHoder: L10n.CaptureLink.Url.placeholder, defaultValue: self.defaultURL, keyboardType: .URL)

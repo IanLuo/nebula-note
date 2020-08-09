@@ -743,12 +743,12 @@ public class InsertTextCommandComposer: DocumentContentCommandComposer {
 // MARK: - AddAttachmentCommand
 public class AddAttachmentCommandComposer: DocumentContentCommandComposer {
     let attachmentId: String
-    let location: Int
+    let range: NSRange
     let kind: String
     
-    public init(attachmentId: String, location: Int, kind: String) {
+    public init(attachmentId: String, range: NSRange, kind: String) {
         self.attachmentId = attachmentId
-        self.location = location
+        self.range = range
         self.kind = kind
     }
     
@@ -761,7 +761,7 @@ public class AddAttachmentCommandComposer: DocumentContentCommandComposer {
             content = OutlineParser.Values.Character.linebreak + OutlineParser.Values.Attachment.serialize(kind: kind, value: self.attachmentId) + OutlineParser.Values.Character.linebreak // 在添加附件前后添加空行，方便选择
         }
         
-        return InsertTextCommandComposer(location: self.location, textToInsert: content).compose(textStorage: textStorage)
+        return ReplaceContentCommandComposer(range: self.range, textToReplace: content).compose(textStorage: textStorage)
     }
 }
 

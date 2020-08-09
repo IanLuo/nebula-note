@@ -121,10 +121,10 @@ public class ConfirmViewController: TransitionViewController {
         
         content.columnAnchor(view: yesButton, space: Layout.innerViewEdgeInsets.bottom)
         
-        yesButton.sideAnchor(for: [.left, .bottom], to: self.contentView, edgeInset: 0)
+        yesButton.sideAnchor(for: [.left, .bottom], to: self.contentView, edgeInset: 0, considerSafeArea: true)
         yesButton.rowAnchor(view: noButton, widthRatio: 1)
         yesButton.heightAnchor.constraint(equalTo: noButton.heightAnchor).isActive = true
-        noButton.sideAnchor(for: [.right, .bottom], to: self.contentView, edgeInset: 0)
+        noButton.sideAnchor(for: [.right, .bottom], to: self.contentView, edgeInset: 0, considerSafeArea: true)
         
         yesButton.sizeAnchor(height: 44)
         yesButton.setBorder(position: [.top, .right], color: InterfaceTheme.Color.background2, width: 0.5)

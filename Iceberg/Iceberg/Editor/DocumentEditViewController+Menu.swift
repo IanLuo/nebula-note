@@ -347,7 +347,7 @@ extension DocumentEditorViewController {
             
             guard let strongSelf = self else { return }
             
-            let _ = strongSelf.viewModel.performAction(EditAction.addAttachment(strongSelf.textView.selectedRange.location,
+            let _ = strongSelf.viewModel.performAction(EditAction.addAttachment(strongSelf.textView.selectedRange,
                                                                                 attachment.key,
                                                                                 attachment.kind.rawValue),
                                                        textView: strongSelf.textView)
@@ -359,7 +359,7 @@ extension DocumentEditorViewController {
             
             guard let strongSelf = self else { return }
             
-            let _ = strongSelf.viewModel.performAction(EditAction.addAttachment(strongSelf.textView.selectedRange.location,
+            let _ = strongSelf.viewModel.performAction(EditAction.addAttachment(strongSelf.textView.selectedRange,
                                                                                 attachment.key,
                                                                                 attachment.kind.rawValue),
                                                        textView: strongSelf.textView)
@@ -641,7 +641,7 @@ extension DocumentEditorViewController {
         self.viewModel.showGlobalCaptureEntry()
     }
     
-    func pickAttachment(location: Int) {
+    func pickAttachment(selectedRange: NSRange) {
         let actionsViewController = ActionsViewController()
         
         Attachment.Kind.allCases.forEach { attachment in
@@ -655,10 +655,14 @@ extension DocumentEditorViewController {
                 self.viewModel.dependency.globalCaptureEntryWindow?.hide()
                 
                 if haveAccess {
-                    self.viewModel.context.coordinator?.showAttachmentPicker(coordinator: self.self.viewModel.context.coordinator, kind: attachment, at: self.textView, location: self.textView.rect(forStringRange: self.textView.selectedRange)?.center,
+                    self.viewModel.context.coordinator?.showAttachmentPicker(from: self.self.viewModel.context.coordinator,
+                                                                             kind: attachment,
+                                                                             at: self.textView,
+                                                                             location: self.textView.rect(forStringRange: self.textView.selectedRange)?.center,
+                                                                             accessoryData: [AttachmentCoordinator.kDefaultLinkTitle: self.textView.text.nsstring.substring(with: selectedRange)],
                                                                              complete: { [unowned self] attachmentId in
                                                                                 let oldSelection = self.textView.selectedRange
-                                                                                let result = self.viewModel.performAction(EditAction.addAttachment(location,
+                                                                                let result = self.viewModel.performAction(EditAction.addAttachment(selectedRange,
                                                                                                                                                    attachmentId,
                                                                                                                                                    attachment.rawValue),
                                                                                                                           textView: self.textView)
@@ -687,7 +691,7 @@ extension DocumentEditorViewController {
         
         if let location = self.textView.rect(forStringRange: self.textView.selectedRange) {
             actionsViewController.present(from: self, at: self.textView, location: location.center)
-        } else if let headingRange = self.viewModel.heading(at: location)?.range, let location = self.textView.rect(forStringRange: headingRange){
+        } else if let headingRange = self.viewModel.heading(at: selectedRange.location)?.range, let location = self.textView.rect(forStringRange: headingRange){
             actionsViewController.present(from: self, at: self.textView, location: location.center)
         } else {
             actionsViewController.present(from: self)

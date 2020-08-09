@@ -375,6 +375,10 @@ extension URL {
     public var coverURL: URL {
         return self.appendingPathComponent(Document.coverKey)
     }
+    
+    public var contentURL: URL {
+        return self.appendingPathComponent(Document.contentKey)
+    }
 }
 
 extension String {

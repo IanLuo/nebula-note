@@ -16,6 +16,8 @@ public protocol AttachmentCoordinatorDelegate: class {
 }
 
 public class AttachmentCoordinator: Coordinator {
+    public static let kDefaultLinkTitle = "linkTitle"
+    
     public weak var delegate: AttachmentCoordinatorDelegate?
     
     public var onSaveAttachment: ((String) -> Void)?

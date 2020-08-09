@@ -34,6 +34,11 @@ extension URL: Syncable {
         guard let resources = try? self.resourceValues(forKeys: [URLResourceKey.contentModificationDateKey, URLResourceKey.creationDateKey]) else { return nil }
         return resources.contentModificationDate?.timeIntervalSince1970
     }
+    
+    public var lastOpenedStamp: TimeInterval? {
+        guard let resources = try? self.resourceValues(forKeys: [URLResourceKey.contentAccessDateKey]) else { return nil }
+        return resources.contentAccessDate?.timeIntervalSince1970
+    }
 }
 
 public class SyncCoordinator {

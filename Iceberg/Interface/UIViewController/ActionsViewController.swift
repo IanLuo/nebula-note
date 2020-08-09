@@ -223,6 +223,7 @@ open class ActionsViewController: UIViewController, TransitionProtocol {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.backgroundColor = InterfaceTheme.Color.background2
+        tableView.showsVerticalScrollIndicator = true
 
         if isMacOrPad {
             tableView.backgroundColor = .clear

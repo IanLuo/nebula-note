@@ -167,7 +167,7 @@ extension DocumentEditorViewController: DocumentEditToolbarDelegate {
                     let result = self.viewModel.performAction(EditAction.insertSeparator(self.textView.selectedRange.location), textView: self.textView)
                     self.textView.selectedRange = oldSelectedRange.offset(result.delta)
                 case .newAttachment:
-                    self.pickAttachment(location: currentLocation)
+                    self.pickAttachment(selectedRange: self.textView.selectedRange)
                 case .fileLink:
                     self.showFileLinkChoose(location: currentLocation, linkRange: nil)
                 }

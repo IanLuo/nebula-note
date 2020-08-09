@@ -11,7 +11,7 @@ import Core
 
 public enum EditAction {
     case toggleCheckboxStatus(Int, String)
-    case addAttachment(Int, String, String)
+    case addAttachment(NSRange, String, String)
     case updateDateAndTime(Int, DateAndTimeType?)
     case addTag(String, Int)
     case removeTag(String, Int)
@@ -49,8 +49,8 @@ public enum EditAction {
         switch self {
         case .toggleCheckboxStatus(let location, let checkbox):
             return CheckboxStatusCommandComposer(location: location, checkboxString: checkbox)
-        case let .addAttachment(location, attachmentId, kind):
-            return AddAttachmentCommandComposer(attachmentId: attachmentId, location: location, kind: kind)
+        case let .addAttachment(range, attachmentId, kind):
+            return AddAttachmentCommandComposer(attachmentId: attachmentId, range: range, kind: kind)
         case let .addTag(tag, location):
             return TagCommandComposer(location: location, kind: .add(tag))
         case let .removeTag(tag, location):

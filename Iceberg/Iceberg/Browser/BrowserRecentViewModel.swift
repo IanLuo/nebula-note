@@ -66,12 +66,34 @@ public class BrowserRecentViewModel: NSObject, ViewModelProtocol {
             }).disposed(by: self.disposeBag)
         
         self.dependency.eventObserver.registerForEvent(on: self, eventType: iCloudOpeningStatusChangedEvent.self, queue: .main, action: { [weak self] (event: iCloudOpeningStatusChangedEvent) in
-            self?.loadData()
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1) {
+                self?.loadData()
+            }
         })
         
         self.dependency.eventObserver.registerForEvent(on: self, eventType: iCloudAvailabilityChangedEvent.self, queue: .main, action: { [weak self] (event: iCloudAvailabilityChangedEvent) in
-            self?.loadData()
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1) {
+                self?.loadData()
+            }
         })
+        
+        self.dependency.eventObserver.registerForEvent(on: self, eventType: DeleteDocumentEvent.self, queue: .main, action: { [weak self] (event: DeleteDocumentEvent) in
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1) {
+                self?.loadData()
+            }
+        })
+        
+        self.dependency.eventObserver.registerForEvent(on: self, eventType: RenameDocumentEvent.self, queue: .main, action: { [weak self] (event: RenameDocumentEvent) in
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1) {
+                self?.loadData()
+            }
+        })
+        
+        self.dependency.settingAccessor.documentDidOpen.subscribe(onNext: { [weak self] _ in
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1) {
+                self?.loadData()
+            }
+        }).disposed(by: self.disposeBag)
     }
     
     public func loadData() {
@@ -91,8 +113,8 @@ public class BrowserRecentViewModel: NSObject, ViewModelProtocol {
     }
     
     private func load(files: [URL]) {
-        let cellModels = files.filter { $0.lastModifyTimeStamp != nil && $0.path.hasSuffix(Document.fileExtension) && !$0.path.contains(SyncCoordinator.Prefix.deleted.rawValue) }
-        .sorted(by: { $0.lastModifyTimeStamp! > $1.lastModifyTimeStamp! })
+        let cellModels = files.filter { $0.lastOpenedStamp != nil && $0.path.hasSuffix(Document.fileExtension) && !$0.path.contains(SyncCoordinator.Prefix.deleted.rawValue) }
+        .sorted(by: { $0.lastOpenedStamp! > $1.lastOpenedStamp! })
             .map { BrowserCellModel(url: $0) }.first(20)
         
         self.output.recentDocuments.accept([RecentDocumentSection(items: cellModels)])

@@ -89,6 +89,8 @@ public class Coordinator {
         return self.topViewController?.view.window != nil
     }
     
+    var accessoryData: [String: Any]?
+    
     public init(stack: UINavigationController,
                 dependency: Dependency) {
         self.stack = stack
@@ -196,7 +198,7 @@ extension Coordinator {
         self.dependency.globalCaptureEntryWindow?.isForcedToHide = true
     }
     
-    public func showAttachmentPicker(coordinator: Coordinator? = nil, kind: Attachment.Kind, at: UIView?, location: CGPoint?, complete: @escaping (String) -> Void, cancel: @escaping () -> Void) {
+    public func showAttachmentPicker(from coordinator: Coordinator? = nil, kind: Attachment.Kind, at: UIView?, location: CGPoint?, accessoryData: [String: Any]? = nil, complete: @escaping (String) -> Void, cancel: @escaping () -> Void) {
         
         switch kind {
         case .video:
@@ -215,11 +217,13 @@ extension Coordinator {
         
         let attachmentCoordinator = AttachmentCoordinator(stack: navigationController,
                                                           dependency: self.dependency,
-                                                          kind: kind, at: at, location: location)
+                                                          kind: kind,
+                                                          at: at, location: location)
         attachmentCoordinator.onSaveAttachment = complete
         attachmentCoordinator.onCancel = cancel
         attachmentCoordinator.fromView = at
         attachmentCoordinator.fromLocation = location
+        attachmentCoordinator.accessoryData = accessoryData
         
         if let coordinator = coordinator {
             attachmentCoordinator.start(from: coordinator)

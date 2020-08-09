@@ -220,7 +220,25 @@ public class AgendaViewModel {
         })
     }
         
+    
+    private var _runningForHeadingChangeReload: Bool = false
     private func _setupObserver() {
+        self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
+                                                                    eventType: DocumentHeadingChangeEvent.self,
+                                                                    queue: .main) { [weak self] (event: DocumentHeadingChangeEvent) -> Void in
+                                                                        self?._shouldReloadData = true
+                                                                        
+                                                                        if isMacOrPad {
+                                                                            guard self?._runningForHeadingChangeReload == false else { return }
+                                                                            self?._runningForHeadingChangeReload = true
+                                                                            // this reload only run no more that once in 30 seconds
+                                                                            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 30) {
+                                                                                self?.loadData()
+                                                                                self?._runningForHeadingChangeReload = false
+                                                                            }
+                                                                        }
+        }
+        
         self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
                                                                     eventType: DocumentAgendaRelatedChangeEvent.self,
                                                                     queue: .main) { [weak self] (event: DocumentAgendaRelatedChangeEvent) -> Void in

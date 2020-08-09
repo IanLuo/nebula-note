@@ -188,9 +188,13 @@ public class DocumentEditorViewController: UIViewController {
                 
                 guard self.viewModel.isReadyToEdit else { return }
                 
-                guard self.view.window != nil else { return }
+                if (try? String(contentsOf: url.contentURL) ) == self.viewModel.string { return }
                 
-                guard (try? String(contentsOf: url)) != self.viewModel.string else { return }
+                guard self.view.window != nil else {
+                    // if the view is not showing, just reload the content
+                    self.viewModel.revertContent(shouldSaveBeforeRevert: false)
+                    return
+                }
                 
                 DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 15) {
                     if let lastState = self._lastState, !lastState.contains(.inConflict) {

@@ -8,6 +8,8 @@
 
 import Foundation
 import Interface
+import RxSwift
+import RxCocoa
 
 public enum SettingsError: Error {
     case  removePlanningFailed(String)
@@ -54,6 +56,8 @@ public enum SettingsError: Error {
     }
     @objc public static var shared: SettingsAccessor { return instance }
     
+    public let documentDidOpen: PublishSubject<URL> = PublishSubject()
+    
     public var customizedPlannings: [String]? {
         switch (self.customizedFinishedPlannings, self.customizedUnfinishedPlannings) {
         case let (lhs?, rhs?):
@@ -85,6 +89,8 @@ public enum SettingsError: Error {
         } else {
             Item.openedDocuments.set([url.documentRelativePath], completion: {})
         }
+        
+        documentDidOpen.onNext(url)
     }
     
     public func logCloseDocument(url: URL) {
