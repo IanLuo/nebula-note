@@ -27,9 +27,13 @@
 	<array>
 		<string>group.x3note.share</string>
 	</array>
+	<key>com.apple.security.assets.pictures.read-only</key>
+	<true/>
 	<key>com.apple.security.device.audio-input</key>
 	<true/>
 	<key>com.apple.security.device.camera</key>
+	<true/>
+	<key>com.apple.security.files.user-selected.read-only</key>
 	<true/>
 	<key>com.apple.security.network.client</key>
 	<true/>

@@ -38,70 +38,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "6E6B4EF2-6301-447E-BF54-D9678D34DFB1"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Core/Import/ShareExtensionItemHandler.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "208"
-            endingLineNumber = "208"
-            landmarkName = "_saveImage(attachment:completion:)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "6E6B4EF2-6301-447E-BF54-D9678D34DFB1 - 5a62b0f816ee7800"
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Core.ShareExtensionItemHandler.(_saveImage in _0E93CB3B343920EFD897EEA2D3E86D4F)(attachment: __C.NSItemProvider, completion: () -&gt; ()) -&gt; ()"
-                  moduleName = "Core"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/ianluo/Documents/x3/Iceberg/Core/Import/ShareExtensionItemHandler.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "208"
-                  endingLineNumber = "208"
-                  offsetFromSymbolStart = "144">
-               </Location>
-               <Location
-                  uuid = "6E6B4EF2-6301-447E-BF54-D9678D34DFB1 - f892adfe2ea0b892"
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 (Swift.Optional&lt;__C.NSSecureCoding&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in Core.ShareExtensionItemHandler.(_saveImage in _0E93CB3B343920EFD897EEA2D3E86D4F)(attachment: __C.NSItemProvider, completion: () -&gt; ()) -&gt; ()"
-                  moduleName = "Core"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/ianluo/Documents/x3/Iceberg/Core/Import/ShareExtensionItemHandler.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "206"
-                  endingLineNumber = "206"
-                  offsetFromSymbolStart = "188">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "4008C59F-0B75-4ACD-A110-9557272648E4"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Core/Import/ShareExtensionItemHandler.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "209"
-            endingLineNumber = "209"
-            landmarkName = "_saveImage(attachment:completion:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "3882CEF6-7490-46B6-BCF4-392D6691C02E"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
@@ -113,38 +49,6 @@
             endingLineNumber = "199"
             landmarkName = "viewDidLoad()"
             landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "3882CEF6-7490-46B6-BCF4-392D6691C02E - c259f6084f93a5a6"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #7 (Foundation.URL) -&gt; () in x3Note.DocumentEditorViewController.viewDidLoad() -&gt; ()"
-                  moduleName = "x3Note"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/ianluo/Documents/x3/Iceberg/Iceberg/Editor/DocumentEditorViewController.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "199"
-                  endingLineNumber = "199"
-                  offsetFromSymbolStart = "1926">
-               </Location>
-               <Location
-                  uuid = "3882CEF6-7490-46B6-BCF4-392D6691C02E - 63bc2bcd26788fde"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 () -&gt; () in closure #7 (Foundation.URL) -&gt; () in x3Note.DocumentEditorViewController.viewDidLoad() -&gt; ()"
-                  moduleName = "x3Note"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/ianluo/Documents/x3/Iceberg/Iceberg/Editor/DocumentEditorViewController.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "186"
-                  endingLineNumber = "186"
-                  offsetFromSymbolStart = "96">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy

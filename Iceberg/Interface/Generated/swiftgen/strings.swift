@@ -602,6 +602,8 @@ public enum L10n {
     public static let add = L10n.tr("Localizable", "imagePicker.add")
     /// Camera
     public static let camera = L10n.tr("Localizable", "imagePicker.camera")
+    /// Files
+    public static let files = L10n.tr("Localizable", "imagePicker.files")
     /// Photo library
     public static let library = L10n.tr("Localizable", "imagePicker.library")
   }

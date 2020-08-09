@@ -280,6 +280,7 @@
 // capture text
 "captureText.title" = "Add text";
 "captureText.text.title" = "text";
+"imagePicker.files" = "Files";
 
 // capture link
 "captureLink.title" = "Add link";

@@ -278,6 +278,7 @@
 "imagePicker.add" = "添加图片";
 "imagePicker.camera" = "相机";
 "imagePicker.library" = "相册";
+"imagePicker.files" = "文件";
 
 // capture text
 "captureText.title" = "添加文字";
