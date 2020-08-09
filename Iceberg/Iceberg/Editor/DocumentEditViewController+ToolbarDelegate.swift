@@ -131,11 +131,11 @@ extension DocumentEditorViewController: DocumentEditToolbarDelegate {
                                                  textView: self.textView)
                     commandCompletionActionMoveCursorMapTheLengthOfStringChange(oldSelectedRange)(result)
                 case .sourcecode:
-                    let result = self.viewModel.performAction(.codeBlock(self.textView.selectedRange.location),
+                    let result = self.viewModel.performAction(.codeBlock(self.textView.selectedRange),
                                                  textView: self.textView)
                     commandCompletionActionMoveCursorForBlock(result: result)
                 case .quote:
-                    let result = self.viewModel.performAction(.quoteBlock(self.textView.selectedRange.location),
+                    let result = self.viewModel.performAction(.quoteBlock(self.textView.selectedRange),
                                                  textView: self.textView)
                     commandCompletionActionMoveCursorForBlock(result: result)
                 case .moveUp:

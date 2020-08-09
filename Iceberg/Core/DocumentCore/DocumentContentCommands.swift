@@ -1133,41 +1133,47 @@ public class DecreaseIndentCommandComposer: DocumentContentCommandComposer {
 
 // MARK: - QuoteBlockCommandComposer
 public class QuoteBlockCommandComposer: DocumentContentCommandComposer {
-    public let location: Int
+    public let range: NSRange
     
-    public init(location: Int) {
-        self.location = location
+    public init(range: NSRange) {
+        self.range = range
     }
     
     public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
+        let selectedText = textStorage.string.nsstring.substring(with: self.range)
+        
         var stringToReplace = OutlineParser.Values.Character.linebreak
         stringToReplace.append(OutlineParser.Values.Block.Quote.begin)
         stringToReplace.append(OutlineParser.Values.Character.linebreak)
+        stringToReplace.append(selectedText)
         stringToReplace.append(OutlineParser.Values.Character.linebreak)
         stringToReplace.append(OutlineParser.Values.Block.Quote.end)
         stringToReplace.append(OutlineParser.Values.Character.linebreak)
         
-        return ReplaceTextCommand(range: NSRange(location: self.location, length: 0), textToReplace: stringToReplace, textStorage: textStorage)
+        return ReplaceTextCommand(range: self.range, textToReplace: stringToReplace, textStorage: textStorage)
     }
 }
 
 // MARK: -
 public class CodeBlockCommandComposer: DocumentContentCommandComposer {
-    public let location: Int
+    public let range: NSRange
     
-    public init(location: Int) {
-        self.location = location
+    public init(range: NSRange) {
+        self.range = range
     }
     
     public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
+        let selectedText = textStorage.string.nsstring.substring(with: self.range)
+        
         var stringToReplace = OutlineParser.Values.Character.linebreak
         stringToReplace.append(OutlineParser.Values.Block.Sourcecode.begin)
         stringToReplace.append(OutlineParser.Values.Character.linebreak)
+        stringToReplace.append(selectedText)
         stringToReplace.append(OutlineParser.Values.Character.linebreak)
         stringToReplace.append(OutlineParser.Values.Block.Sourcecode.end)
         stringToReplace.append(OutlineParser.Values.Character.linebreak)
         
-        return ReplaceTextCommand(range: NSRange(location: self.location, length: 0), textToReplace: stringToReplace, textStorage: textStorage)
+        return ReplaceTextCommand(range: self.range, textToReplace: stringToReplace, textStorage: textStorage)
     }
 }
 

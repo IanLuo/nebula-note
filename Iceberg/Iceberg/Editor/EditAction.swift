@@ -25,8 +25,8 @@ public enum EditAction {
     case textMark(OutlineParser.MarkType, NSRange)
     case increaseIndent(Int)
     case decreaseIndent(Int)
-    case quoteBlock(Int)
-    case codeBlock(Int)
+    case quoteBlock(NSRange)
+    case codeBlock(NSRange)
     case unorderedListSwitch(Int)
     case orderedListSwitch(Int)
     case checkboxSwitch(Int)
@@ -75,10 +75,10 @@ public enum EditAction {
             return IncreaseIndentCommandComposer(location: location)
         case .decreaseIndent(let location):
             return DecreaseIndentCommandComposer(location: location)
-        case .quoteBlock(let location):
-            return QuoteBlockCommandComposer(location: location)
-        case .codeBlock(let location):
-            return CodeBlockCommandComposer(location: location)
+        case .quoteBlock(let range):
+            return QuoteBlockCommandComposer(range: range)
+        case .codeBlock(let range):
+            return CodeBlockCommandComposer(range: range)
         case let .updateDateAndTime(location, dateAndTime):
             return UpdateDateAndTimeCommandComposer(location: location, dateAndTime: dateAndTime)
         case let .unorderedListSwitch(location):
