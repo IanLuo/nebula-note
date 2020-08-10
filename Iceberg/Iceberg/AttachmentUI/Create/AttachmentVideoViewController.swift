@@ -31,6 +31,7 @@ public class AttachmentVideoViewController: UIViewController, AttachmentViewCont
         imagePicker.mediaTypes = [(kUTTypeMovie as String)]
         imagePicker.delegate = self
         self.contentView.addSubview(imagePicker.view)
+        imagePicker.view.allSidesAnchors(to: self.contentView, edgeInset: 0)
         
         super.viewDidLoad()
     }

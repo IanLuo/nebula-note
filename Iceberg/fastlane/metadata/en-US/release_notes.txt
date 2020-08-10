@@ -1,3 +1,12 @@
-1. macOS version is released, now everything including documents, ideas and attachments will all be synced across iPhone, iPad and macOS version
-
-2. Fix some issues
+* New feature
+- Link to other document
+- Adding link now bring the selected text as default title
+- Now creating blocks, will bring selected text into them
+- Now picking image is able to add from files
+* Bug fix and improvments
+- Sometimes the file can not be deleted
+- Renaming and deleting file now will update the macOS version tabs correctly
+- Fix unneeded reload request whe writing
+- Fix the confirm UI layout
+- Fix the UI for creating link
+- Fix some animation glich

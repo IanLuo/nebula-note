@@ -19,7 +19,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
-	<string>191</string>
+	<string>197</string>
 	<key>NSExtension</key>
 	<dict>
 		<key>NSExtensionAttributes</key>
@@ -33,20 +33,20 @@
                         $extensionItem.attachments,
                         $attachment,
                         (
-                        ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO &quot;public.image&quot; ||
-                        ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO &quot;public.movie&quot; ||
-                        ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO &quot;public.audio&quot; ||
-                        ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO &quot;public.url&quot; ||
-                        ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO &quot;public.text&quot;
+                        ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "public.image" ||
+                        ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "public.movie" ||
+                        ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "public.audio" ||
+                        ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "public.url" ||
+                        ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "public.text"
                         )
                     ).@count == $extensionItem.attachments.@count
                 ).@count &gt;= 1
             </string>
 		</dict>
-		<key>NSExtensionPrincipalClass</key>
-		<string>ShareViewController</string>
 		<key>NSExtensionPointIdentifier</key>
 		<string>com.apple.share-services</string>
+		<key>NSExtensionPrincipalClass</key>
+		<string>ShareViewController</string>
 	</dict>
 </dict>
 </plist>
