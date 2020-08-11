@@ -186,6 +186,11 @@ public class EditorCoordinator: Coordinator {
             coor?.stop()
             completion(url)
         }
+        
+        coor.didCancelAction = { [weak coor] in
+            coor?.stop()
+        }
+        
         coor.start(from: self)
     }
     
