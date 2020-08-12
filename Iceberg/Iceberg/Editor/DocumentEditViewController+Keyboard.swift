@@ -11,6 +11,6 @@ import UIKit
 
 extension DocumentEditorViewController {
 //    public override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
-//        
+//        super.pressesBegan(presses, with: event)
 //    }
 }
