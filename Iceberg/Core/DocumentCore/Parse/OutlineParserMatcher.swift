@@ -264,7 +264,7 @@ extension OutlineParser {
                 public static let highlight =       "\(pre)(\\~([^\(ignoredCharacters)\\~]*)\\~)\(post)"
             }
             
-            public static let link = "\\[\\[(\(Values.Link.patternAll)\\:.*)\\]\\[(.*)\\]\\]"
+            public static let link = "\\[\\[(\(Values.Link.patternAll)\\:[^\\]\\[]*)\\]\\[([^\\]\\]]*)\\]\\]"
         }
     }
     
