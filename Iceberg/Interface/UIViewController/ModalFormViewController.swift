@@ -512,6 +512,10 @@ private class InputTextFieldCell: UITableViewCell, UITextFieldDelegate, Validata
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if string == "\n" {
+            return false
+        }
+        
         let value = (textField.text as NSString?)?.replacingCharacters(in: range, with: string)
         self.delegate?.didSetValue(title: self.validateKey, value: value)
         return true
