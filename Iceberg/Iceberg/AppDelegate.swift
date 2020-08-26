@@ -52,6 +52,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
     
+    @available(iOS 13.0, *)
+    override func buildMenu(with builder: UIMenuBuilder) {
+        builder.remove(menu: UIMenu.Identifier.file)
+        builder.remove(menu: UIMenu.Identifier.edit)
+        builder.remove(menu: UIMenu.Identifier.view)
+        builder.remove(menu: UIMenu.Identifier.window)
+        builder.remove(menu: UIMenu.Identifier.format)
+        builder.remove(menu: UIMenu.Identifier.help)
+    }
+    
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
         let sourceApp = (options[.sourceApplication] as? String) ?? ""
         return self.application.dependency.urlHandlerManager.handle(url: url, sourceApp: sourceApp)

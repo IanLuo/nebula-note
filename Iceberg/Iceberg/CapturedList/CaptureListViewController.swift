@@ -134,41 +134,41 @@ public class CaptureListViewController: UIViewController {
         self.tableView.sideAnchor(for: [.left, .bottom, .right], to: self.view, edgeInset: 0, considerSafeArea: true)
         
         if self.viewModel.context.coordinator?.isModal ?? false {
-            self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: Asset.Assets.down.image, style: .plain, target: self, action: #selector(cancel))
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: Asset.Assets.down.image, style: .plain, target: self, action: #selector(cancel))
         } else {
-            let refreshButton = UIButton()
-            refreshButton.interface { (me, theme) in
-                let button = me as! UIButton
-                button.setImage(Asset.Assets.refresh.image.fill(color: theme.color.interactive), for: .normal)
-            }
-            
-            refreshButton.rx.tap.subscribe(onNext: { [unowned refreshButton] in
-                let handler = self.viewModel.dependency.shareExtensionHandler
-                refreshButton.showProcessingAnimation()
-                
-                handler.harvestSharedItems(attachmentManager: self.viewModel.dependency.attachmentManager,
-                                           urlHandler: self.viewModel.dependency.urlHandlerManager,
-                                           captureService: self.viewModel.dependency.captureService) { ideasCount in
-                                            
-                                            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1) {
-                                                refreshButton.hideProcessingAnimation()
-                                            }
-                                            
-                                            if ideasCount > 0 {
-                                                self.viewModel.loadAllCapturedData()
-                                            }
-                }
+            let rightItem = UIBarButtonItem(title: L10n.General.help, style: .plain, target: nil, action: nil)
+            rightItem.rx.tap.subscribe(onNext: {
+                HelpPage.capture.open(from: self)
             }).disposed(by: self.disposeBag)
-            
-            let refreshItem = UIBarButtonItem(customView: refreshButton)
-            self.navigationItem.leftBarButtonItem = refreshItem
+            self.navigationItem.rightBarButtonItem = rightItem
         }
         
-        let rightItem = UIBarButtonItem(title: L10n.General.help, style: .plain, target: nil, action: nil)
-        rightItem.rx.tap.subscribe(onNext: {
-            HelpPage.capture.open(from: self)
+        let refreshButton = UIButton()
+        refreshButton.interface { (me, theme) in
+            let button = me as! UIButton
+            button.setImage(Asset.Assets.refresh.image.fill(color: theme.color.interactive), for: .normal)
+        }
+        
+        refreshButton.rx.tap.subscribe(onNext: { [unowned refreshButton] in
+            let handler = self.viewModel.dependency.shareExtensionHandler
+            refreshButton.showProcessingAnimation()
+            
+            handler.harvestSharedItems(attachmentManager: self.viewModel.dependency.attachmentManager,
+                                       urlHandler: self.viewModel.dependency.urlHandlerManager,
+                                       captureService: self.viewModel.dependency.captureService) { ideasCount in
+                                        
+                                        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1) {
+                                            refreshButton.hideProcessingAnimation()
+                                        }
+                                        
+                                        if ideasCount > 0 {
+                                            self.viewModel.loadAllCapturedData()
+                                        }
+            }
         }).disposed(by: self.disposeBag)
-        self.navigationItem.rightBarButtonItem = rightItem        
+        
+        let refreshItem = UIBarButtonItem(customView: refreshButton)
+        self.navigationItem.leftBarButtonItem = refreshItem
         
         if self.viewModel.mode == .manage {
             self.title = L10n.CaptureList.title

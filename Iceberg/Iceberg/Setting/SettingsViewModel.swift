@@ -92,7 +92,9 @@ public class SettingsViewModel: ViewModelProtocol {
     
     public func setInterfaceStyle(_ newStyle: SettingsAccessor.InterfaceStyle) {
         SettingsAccessor.Item.interfaceStyle.set(newStyle.rawValue) { [weak self] in
-            self?.delegate?.didSetInterfaceStyle(newStyle: newStyle)
+            DispatchQueue.runOnMainQueueSafely {
+                self?.delegate?.didSetInterfaceStyle(newStyle: newStyle)
+            }
         }
     }
 
@@ -112,7 +114,9 @@ public class SettingsViewModel: ViewModelProtocol {
     
     public func setLandingTabIndex(_ index: Int) {
         SettingsAccessor.Item.landingTabIndex.set(index) { [weak self] in
-            self?.delegate?.didSetLandingTabIndex(index: index)
+            DispatchQueue.runOnMainQueueSafely {
+                self?.delegate?.didSetLandingTabIndex(index: index)
+            }
         }
     }
     
@@ -122,7 +126,9 @@ public class SettingsViewModel: ViewModelProtocol {
     
     public func setFoldWhenOpen(_ unfold: Bool) {
         SettingsAccessor.Item.foldAllEntriesWhenOpen.set(unfold) { [weak self] in
-            self?.delegate?.didUpdateUnfoldWhenOpen(unfold: unfold)
+            DispatchQueue.runOnMainQueueSafely {
+                self?.delegate?.didUpdateUnfoldWhenOpen(unfold: unfold)
+            }
         }
     }
     
@@ -141,7 +147,10 @@ public class SettingsViewModel: ViewModelProtocol {
     public func addPlanning(_ planning: String, isForFinished: Bool, completion: @escaping () -> Void) {
         self.dependency.settingAccessor.addPlanning(planning, isForFinished: isForFinished) { result in
             switch result {
-            case .success: completion()
+            case .success:
+                DispatchQueue.runOnMainQueueSafely {
+                    completion()
+                }
             case .failure: break
             }
         }
@@ -150,7 +159,10 @@ public class SettingsViewModel: ViewModelProtocol {
     public func removePlanning(_ planning: String, completion: @escaping () -> Void) {
         self.dependency.settingAccessor.removePlanning(planning) { result in
             switch result {
-            case .success: completion()
+            case .success:
+                DispatchQueue.runOnMainQueueSafely {
+                    completion()
+                }
             case .failure: break
             }
         }

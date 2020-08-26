@@ -89,6 +89,12 @@ public class BrowserRecentViewModel: NSObject, ViewModelProtocol {
             }
         })
         
+        self.dependency.eventObserver.registerForEvent(on: self, eventType: AddDocumentEvent.self, queue: .main, action: { [weak self] (event: AddDocumentEvent) in
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1) {
+                self?.loadData()
+            }
+        })
+        
         self.dependency.settingAccessor.documentDidOpen.subscribe(onNext: { [weak self] _ in
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1) {
                 self?.loadData()

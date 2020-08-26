@@ -108,7 +108,7 @@ public class DocumentEditorViewController: UIViewController {
         if !self.viewModel.isTemp {
             self.viewModel.dependency.settingAccessor.logOpenDocument(url: self.viewModel.url)
         }
-        
+                
         self.topViewContainer.sideAnchor(for: [.left, .top, .right], to: self.view, edgeInset: 0)
         self.topViewContainer.bottomAnchor.constraint(equalTo: self.textView.topAnchor).isActive = true
         self.topViewContainer.bottomAnchor.constraint(equalTo: self.rightViewContainer.topAnchor).isActive = true
@@ -381,6 +381,10 @@ public class DocumentEditorViewController: UIViewController {
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 3) {
             self._shouldScrollWhenKeyboardDisapear = false
         }
+    }
+    
+    public override var keyCommands: [UIKeyCommand]? {
+        return self.initKeyCommands()
     }
 }
 

@@ -99,6 +99,14 @@ public class DesktopHomeViewController: UIViewController {
         self.setupRightPart()
     }
     
+    public override var keyCommands: [UIKeyCommand]? {
+        if #available(iOS 13.0, *) {
+            return [self.toggleLeftPartCommand, self.toggleMiddlePartCommand]
+        } else {
+            return nil
+        }
+    }
+    
     private func setupToolBar() {
         let stackView = UIStackView()
         stackView.distribution = .equalSpacing
