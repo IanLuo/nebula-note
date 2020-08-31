@@ -32,12 +32,12 @@ extension URL: Syncable {
     
     public var lastModifyTimeStamp: TimeInterval? {
         guard let resources = try? self.resourceValues(forKeys: [URLResourceKey.contentModificationDateKey, URLResourceKey.creationDateKey]) else { return nil }
-        return resources.contentModificationDate?.timeIntervalSince1970
+        return resources.contentModificationDate?.timeIntervalSince1970 ?? resources.creationDate?.timeIntervalSince1970
     }
     
     public var lastOpenedStamp: TimeInterval? {
-        guard let resources = try? self.resourceValues(forKeys: [URLResourceKey.contentAccessDateKey]) else { return nil }
-        return resources.contentAccessDate?.timeIntervalSince1970
+        guard let resources = try? self.resourceValues(forKeys: [URLResourceKey.contentAccessDateKey, .creationDateKey]) else { return nil }
+        return resources.contentAccessDate?.timeIntervalSince1970 ?? resources.creationDate?.timeIntervalSince1970
     }
 }
 

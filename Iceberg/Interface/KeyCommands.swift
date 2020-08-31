@@ -102,7 +102,7 @@ public struct KeyBindingMap {
         "ctl+cmd+4": .browserTab,
         "cmd+p": .paragraphMenu,
         "cmd+h": .headingMenu,
-        "cmd+": .statusMenu,
+        "cmd+s": .statusMenu,
         "9": .tagMenu,
         "10": .priorityMenu,
         "11": .bold,
