@@ -574,6 +574,7 @@ extension iCloudDocumentManager: NSMetadataQueryDelegate {
                 self.uploadingItemsCache[url] = url
             }
             
+            self.handleConflictIfNeeded(item: item)
         }
         
         self.allFilesInCloud.accept(items.compactMap { $0.url })
@@ -601,6 +602,8 @@ extension iCloudDocumentManager: NSMetadataQueryDelegate {
             
             self.downloadingItemsCache[url] = nil
             self.onDownloadingCompletes.onNext(url)
+            
+            self.handleConflictIfNeeded(item: item)
             
             log.info("** complete download: \(item.fileName ?? "") size:(\(item.fileSize ?? 0)) **")
             if url.pathExtension == Document.fileExtension {
@@ -642,6 +645,31 @@ extension iCloudDocumentManager: NSMetadataQueryDelegate {
             self.onDownloadingUpdates.accept(downloadingItems)
         }
                 
+    }
+    
+    private func handleConflictIfNeeded(item: NSMetadataItem) {
+        if item.isInConflict == true {
+            if let url = item.url {
+                // only handle plist
+                guard url.lastPathComponent == "\(CaptureService.plistFileName).plist" else { return }
+                
+                let version = NSFileVersion.currentVersionOfItem(at: url)
+                let name = url.deletingPathExtension().lastPathComponent
+                if let otherVersions = NSFileVersion.otherVersionsOfItem(at: url) {
+                    for v in otherVersions {
+                        let temp = mergePlistFiles(name: name, url1: url, url2: v.url)
+                        try? v.remove()
+                        do {
+                            _ = try FileManager.default.replaceItemAt(url, withItemAt: temp)
+                        } catch {
+                            print(error)
+                        }
+                    }
+                }
+                
+                version?.isResolved = true
+            }
+        }
     }
 }
 

@@ -137,9 +137,7 @@ public class ConflictResolverViewController: UIViewController, UITableViewDataSo
         let fileVersion = self.versions.value[indexPath.row]
         
         let text = (fileVersion.modificationDate?.shotDateAndTimeString ?? "") + " " + (fileVersion.localizedNameOfSavingComputer ?? "")
-        cell.textLabel?.text = text
-        
-        
+        cell.textLabel?.text = text        
         cell.accessoryType = .detailDisclosureButton
         
         return cell
