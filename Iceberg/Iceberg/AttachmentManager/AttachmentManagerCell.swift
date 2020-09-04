@@ -75,17 +75,12 @@ public class AttachmentManagerCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override var isSelected: Bool {
-        didSet {
-            self.checkmarkImageView.image = isSelected ? Asset.Assets.checkMark.image.fill(color: InterfaceTheme.Color.spotlitTitle).resize(upto: CGSize(width: 15, height: 15)) : nil
-            self.checkmarkImageView.backgroundColor = isSelected ? InterfaceTheme.Color.spotlight : InterfaceTheme.Color.background1
-        }
-    }
-    
     public func configure(cellModel: AttachmentManagerCellModel) {
         cellModel.image.subscribeOn(MainScheduler()).subscribe(onNext: { image in
-            self.imageView.image = image
-            self.contentView.hideProcessingAnimation()
+            DispatchQueue.runOnMainQueueSafely {
+                self.imageView.image = image
+                self.contentView.hideProcessingAnimation()
+            }
         }).disposed(by: self.reuseDisposeBag)
         
         switch cellModel.attachment.kind {
@@ -99,6 +94,11 @@ public class AttachmentManagerCell: UICollectionViewCell {
         if cellModel.image.value == nil {
             self.contentView.showProcessingAnimation()
         }
+        
+        cellModel.isChoosen.subscribe(onNext: { isSelected in
+            self.checkmarkImageView.image = isSelected ? Asset.Assets.checkMark.image.fill(color: InterfaceTheme.Color.spotlitTitle).resize(upto: CGSize(width: 15, height: 15)) : nil
+            self.checkmarkImageView.backgroundColor = isSelected ? InterfaceTheme.Color.spotlight : InterfaceTheme.Color.background1
+        }).disposed(by: self.reuseDisposeBag)
     }
     
     public override func prepareForReuse() {

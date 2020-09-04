@@ -96,7 +96,9 @@ public class AttachmentManagerViewController: UIViewController, UICollectionView
     
     private func clearSelection() {
         self.collectionView.indexPathsForSelectedItems?.forEach({ [unowned self] indexPath in
-            self.collectionView.deselectItem(at: indexPath, animated: false)
+            self.viewModel.self.output.attachments.value.first?.items.forEach {
+                $0.isChoosen.accept(false)
+            }
         })
     }
     
@@ -127,9 +129,12 @@ public class AttachmentManagerViewController: UIViewController, UICollectionView
     }
     
     private func deleteSelectedItems() {
-        let indexs = self.collectionView.indexPathsForSelectedItems?.map {
-            $0.row
-        } ?? []
+        var indexs: [Int] = []
+        for (index, item) in (self.viewModel.output.attachments.value.first?.items ?? []).enumerated() {
+            if item.isChoosen.value {
+                indexs.append(index)
+            }
+        }
         
         let confirmController = ConfirmViewController(contentText: L10n.Setting.ManageAttachment.Delete.title, onConfirm: { [weak self] viewController in
             viewController.dismiss(animated: true) {
@@ -144,8 +149,11 @@ public class AttachmentManagerViewController: UIViewController, UICollectionView
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if !self.isSelectMode.value {
-            collectionView.deselectItem(at: indexPath, animated: false)
+        collectionView.deselectItem(at: indexPath, animated: false)
+        if self.isSelectMode.value {
+            let isChoosent = self.viewModel.output.attachments.value.first?.items[indexPath.row].isChoosen.value == true
+            self.viewModel.output.attachments.value.first?.items[indexPath.row].isChoosen.accept(!isChoosent)
+        } else {
             if let attachment = self.viewModel.attachment(at: indexPath.row), let cell = collectionView.cellForItem(at: indexPath) {
                 self._showAttachmentView(attachment: attachment, index: indexPath.row, from: cell)
             }

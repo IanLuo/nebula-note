@@ -37,15 +37,9 @@ public class AttachmentManagerViewModel: ViewModelProtocol {
         public let attachments: BehaviorRelay<[AttachmentManagerSection]> = BehaviorRelay<[AttachmentManagerSection]>(value: [])
     }
     
-    public struct Input {
-        
-    }
-    
     public let output: Output = Output()
-    public let input: Input = Input()
     
     public func loadData() {
-        
         DispatchQueue.global(qos: DispatchQoS.QoSClass.userInteractive).async {
             let captureKeys = self.dependency.captureService.loadAllAttachmentNames()
             let cellModels = self.context.dependency.attachmentManager.allAttachmentsKeys.filter {

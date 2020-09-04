@@ -17,6 +17,8 @@ public class AttachmentManagerCellModel: IdentifiableType, Equatable {
     
     public typealias Identity = String
     
+    public var isChoosen: BehaviorRelay<Bool> = BehaviorRelay(value: false)
+    
     private let disposeBag = DisposeBag()
         
     public static func == (lhs: AttachmentManagerCellModel, rhs: AttachmentManagerCellModel) -> Bool {
