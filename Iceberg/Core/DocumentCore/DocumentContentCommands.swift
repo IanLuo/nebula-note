@@ -779,8 +779,8 @@ public class CheckboxStatusCommandComposer: DocumentContentCommandComposer {
             nextStatus = OutlineParser.Values.Checkbox.checked
         }
         
-        for case let token in textStorage.token(at: self.location) where token.name == OutlineParser.Key.Node.checkbox {
-            return ReplaceTextCommand(range: token.range, textToReplace: nextStatus, textStorage: textStorage)
+        for case let token in textStorage.token(at: self.location) where token is CheckboxToken {
+            return ReplaceTextCommand(range: (token as! CheckboxToken).status, textToReplace: nextStatus, textStorage: textStorage)
         }
         
         return NoChangeCommand()
@@ -1271,7 +1271,7 @@ public class CheckboxSwitchCommandComposer: DocumentContentCommandComposer {
         }
         
         for case let token in (textStorage.token(at: lineStart)) where token is CheckboxToken {
-            return ReplaceTextCommand(range: (token as! CheckboxToken).range, textToReplace: "", textStorage: textStorage)
+            return ReplaceTextCommand(range: (token as! CheckboxToken).status, textToReplace: "", textStorage: textStorage)
         }
         
         return InsertTextCommandComposer(location: lineStart, textToInsert: OutlineParser.Values.Checkbox.unchecked).compose(textStorage: textStorage)

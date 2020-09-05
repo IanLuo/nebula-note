@@ -210,8 +210,8 @@ public class OutlineParser {
                 .matches(in: str, options: [], range: totalRange)
                 .map { (result: NSTextCheckingResult) -> [String: NSRange] in
                     var comp: [String: NSRange] = [:]
-                    comp[Key.Node.checkbox] = result.range(at: 1)
-                    comp[Key.Element.Checkbox.status] = result.range(at: 2)
+                    comp[Key.Node.checkbox] = result.range(at: 0)
+                    comp[Key.Element.Checkbox.status] = result.range(at: 1)
                     return comp.filter { _, value in value.location != Int.max }
             }
             

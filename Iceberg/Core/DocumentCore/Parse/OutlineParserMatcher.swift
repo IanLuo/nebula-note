@@ -208,7 +208,7 @@ extension OutlineParser {
         public struct Node {
             public static let heading =         "^(\\*+) ([^\\n])*"
             public static let codeBlock =       "^[\\t ]*\\#\\+BEGIN\\_SRC( [\(character)\\.]*)?\\n([^\\#\\+END\\_SRC]*)\\n\\s*\\#\\+END\\_SRC[\\t ]*\\n"
-            public static let checkBox =        "^[\\t ]*(\\- \\[(X| |\\-)\\] )"
+            public static let checkBox =        "^[\\t ]*(\\- \\[(X| |\\-)\\] )[^\\[\\n]*"
             public static let unorderedList =   "^[\\t ]*([\\-\\+] )[^\\[\\n]+" //用于匹配有内容的 unordered list 避免与 checkbox 冲突
             public static let unorderedListHead = "^[\\t ]*([\\-\\+]\\ )$" // 用于匹配没有内容的 unordered list
             public static let orderedList =     "^[\\t ]*(([0-9a-zA-Z]){1,3}[\\.\\)\\>] ).*"

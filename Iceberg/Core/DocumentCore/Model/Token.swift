@@ -82,7 +82,9 @@ public class OrderedListToken: Token {
 }
 
 // MARK: - CheckboxToken
-public class CheckboxToken: Token {}
+public class CheckboxToken: Token {
+    public var status: NSRange { return range(for: OutlineParser.Key.Element.Checkbox.status) ?? NSRange(location: self.range.location, length: 0) }
+}
 
 // MARK: - LinkToken
 public class LinkToken: Token {

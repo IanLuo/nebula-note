@@ -116,6 +116,20 @@ extension DocumentEditorViewController {
             return false
         }
         
+        // checkbox, 自动添加 checkbox 前缀，如果真有前缀没有内容，则删除前缀
+        for case let token in self.viewModel.currentTokens where token is CheckboxToken {
+            if token.range.length == (token as! CheckboxToken).status.length {
+                let oldSelectedRange = textView.selectedRange
+                let result = self.viewModel.performAction(EditAction.replaceText((token as! CheckboxToken).status, ""), textView: self.textView)
+                textView.selectedRange = oldSelectedRange.offset(result.delta)
+            } else {
+                textView.replace(textView.textRange(from: currentPosition, to: currentPosition)!, withText: "\n")
+                let result = self.viewModel.performAction(EditAction.checkboxSwitch(textView.selectedRange.location), textView: self.textView)
+                textView.selectedRange = NSRange(location: result.range!.upperBound, length: 0)
+            }
+            return false
+        }
+        
         return true
     }
     

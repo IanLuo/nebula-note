@@ -528,19 +528,16 @@ extension OutlineTextStorage: OutlineParserDelegate {
             
             checkboxToken.decorationAttributesAction = { textStorage, token in
                 
-                if let checkboxRange = token.range(for: OutlineParser.Key.Node.checkbox) {
-                    textStorage.addAttribute(OutlineAttribute.checkbox, value: textStorage.string.nsstring.substring(with: checkboxRange), range: checkboxRange)
-                    
-                    if let statusRange = token.range(for: OutlineParser.Key.Node.checkbox)  {
-                        textStorage.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueDefault], range: checkboxRange.moveLeftBound(by: 1).moveRightBound(by: -1))
-                        let status = textStorage.string.nsstring.substring(with: statusRange)
-                        if status == OutlineParser.Values.Checkbox.checked {
-                            textStorage.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment,
-                                                       OutlineAttribute.showAttachment: OUTLINE_ATTRIBUTE_ATTACHMENT_CHECKBOX_CHECKED], range: checkboxRange.head(1))
-                        } else {
-                            textStorage.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment,
-                                                       OutlineAttribute.showAttachment: OUTLINE_ATTRIBUTE_ATTACHMENT_CHECKBOX_UNCHECKED], range: checkboxRange.head(1))
-                        }
+                if let checkboxToken = token as? CheckboxToken {
+                    textStorage.addAttribute(OutlineAttribute.checkbox, value: textStorage.string.nsstring.substring(with: checkboxToken.status), range: checkboxToken.status)
+                    textStorage.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueDefault], range: checkboxToken.status.moveLeftBound(by: 1).moveRightBound(by: -1))
+                    let status = textStorage.string.nsstring.substring(with: checkboxToken.status)
+                    if status == OutlineParser.Values.Checkbox.checked {
+                        textStorage.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment,
+                                                   OutlineAttribute.showAttachment: OUTLINE_ATTRIBUTE_ATTACHMENT_CHECKBOX_CHECKED], range: checkboxToken.status.head(1))
+                    } else {
+                        textStorage.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment,
+                                                   OutlineAttribute.showAttachment: OUTLINE_ATTRIBUTE_ATTACHMENT_CHECKBOX_UNCHECKED], range: checkboxToken.status.head(1))
                     }
                     
                 }

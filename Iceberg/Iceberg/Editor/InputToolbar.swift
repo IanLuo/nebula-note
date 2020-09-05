@@ -122,7 +122,6 @@ public class InputToolbar: UIView {
         layout.itemSize = CGSize(width: 44, height: 44)
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0
-        layout.scrollDirection = .horizontal
         
         self.mode = mode
         self._actions = mode._createActions(mode: mode)
@@ -144,6 +143,10 @@ public class InputToolbar: UIView {
         self._collectionView.register(ActionButtonCell.self, forCellWithReuseIdentifier: ActionButtonCell.reuseIdentifier)
         self._collectionView.register(GroupSeparator.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: GroupSeparator.reuseIdentifier)
         self._collectionView.decelerationRate = .fast
+        
+        if isPhone {
+            self._collectionView.showsHorizontalScrollIndicator = false
+        }
                 
         self._setupUI()
     }
@@ -260,6 +263,7 @@ private class ActionButtonCell: UICollectionViewCell {
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
+    
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
