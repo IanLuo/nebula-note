@@ -17,6 +17,7 @@ public enum KeyAction: String {
     case searchTab
     case ideaTab
     case browserTab
+    case captureIdea
     
     // editor
     case paragraphMenu
@@ -47,6 +48,14 @@ public enum KeyAction: String {
     case unfoldAll
     case outline
     case inspector
+    
+    var title: String {
+        return ""
+    }
+    
+    var image: UIImage? {
+        return nil
+    }
 }
 
 public struct KeyPair {
@@ -54,120 +63,111 @@ public struct KeyPair {
     let input: String
 }
 
-public struct KeyPairBinding {
-    let keyPair: KeyPair
-    let action: KeyAction
-}
-
-public struct Key: ExpressibleByStringLiteral, Hashable {
-    public static func == (lhs: Key, rhs: Key) -> Bool {
-        return lhs.value == rhs.value
-    }
+public struct KeyBinding {
+    public init() {}
     
-    public typealias StringLiteralType = String
-    public let value: String
-    
-    public init(stringLiteral value: String) {
-        self.value = value
-    }
-}
-
-func +(lhs: Key, rhs: Key) -> [Key] {
-    return [lhs, rhs]
-}
-
-func +(lhs: [Key], rhs: [Key]) -> [Key] {
-    return [lhs, rhs].flatMap{ $0 }
-}
-
-func +(lhs: Key, rhs: [Key]) -> [Key] {
-    var r = rhs
-    r.append(lhs)
-    return r
-}
-
-func +(lhs: [Key], rhs: Key) -> [Key] {
-    var l = lhs
-    l.append(rhs)
-    return l
-}
-
-public struct KeyBindingMap {
-    let keyBindingMap: [Key: KeyAction] = [
-        "ctl+shift+1": .toggleLeftPart,
-        "ctl+shift+2": .toggleMiddlePart,
-        "ctl+cmd+1": .agendaTab,
-        "ctl+cmd+2": .ideaTab,
-        "ctl+cmd+3": .searchTab,
-        "ctl+cmd+4": .browserTab,
-        "cmd+shift+p": .paragraphMenu,
-        "cmd+shift+h": .headingMenu,
-        "cmd+shift+s": .statusMenu,
-        "9": .tagMenu,
-        "10": .priorityMenu,
-        "11": .bold,
-        "12": .italic,
-        "13": .underscore,
-        "14": .strikeThrough,
-        "15": .highlight,
-        "16": .moveUp,
-        "17": .moveDown,
-        "18": .seperator,
-        "19": .codeBlock,
-        "20": .quoteBlock,
-        "21": .checkbox,
-        "22": .dateTimeMenu,
-        "23": .list,
-        "24": .orderedList,
-        "25": .fileLink,
-        "26": .pickIdeaMenu,
-        "27": .pickAttachmentMenu,
-        "28": .addAttachmentMenu,
-        "29": .toggleFullWidth,
-        "30": .foldAll,
-        "31": .unfoldAll,
-        "32": .outline,
-        "33": .inspector
+    let keyBindingMap: [KeyAction: String] = [
+        .toggleLeftPart: "ctl`shift`1",
+        .toggleMiddlePart: "ctl`shift`2",
+        .agendaTab: "ctl`cmd`1",
+        .ideaTab: "ctl`cmd`2",
+        .searchTab: "ctl`cmd`3",
+        .browserTab: "ctl`cmd`4",
+        .paragraphMenu: "ctl`cmd`p",
+        .headingMenu: "ctl`cmd`h",
+        .statusMenu: "ctl`cmd`s",
+        .tagMenu: "ctl`cmd`t",
+        .priorityMenu: "ctl`cmd`r",
+        .dateTimeMenu: "ctl`cmd`d",
+        .fileLink: "ctl`cmd`f",
+        .pickIdeaMenu: "ctl`cmd`i",
+        .pickAttachmentMenu: "ctl`cmd`a",
+        .addAttachmentMenu: "ctl`cmd`=",
+        .toggleFullWidth: "ctl`cmd`/",
+        .foldAll: "ctl`cmd`[",
+        .unfoldAll: "ctl`cmd`]",
+        .outline: "ctl`cmd`'",
+        .inspector: "ctl`cmd`;",
+        .captureIdea: "ctl`cmd`c",
+        .bold: "cmd`shift`b",
+        .italic: "cmd`shift`i",
+        .underscore: "cmd`shift`u",
+        .strikeThrough: "cmd`shift`s",
+        .highlight: "cmd`shift`h",
+        .moveUp: "cmd`shift`\(UIKeyCommand.inputUpArrow)",
+        .moveDown: "cmd`shift`\(UIKeyCommand.inputDownArrow)",
+        .seperator: "cmd`shift`-",
+        .codeBlock: "cmd`shift`c",
+        .quoteBlock: "cmd`shift`q",
+        .checkbox: "cmd`shift`c",
+        .list: "cmd`shift`l",
+        .orderedList: "cmd`shift`o"
     ]
     
-    public static let seperator: String = "-"
-    public static let ctr: Key = "ctr"
-    public static let cmd: Key = "cmd"
-    public static let alt: Key = "alt"
-    public static let shift: Key = "shift"
     
-    public static let modifierMap: [Key: UIKeyModifierFlags] = [
-        Self.ctr: .control,
-        Self.cmd: .command,
-        Self.alt: .alternate,
-        Self.shift: .shift,
+    public let modifierMap: [String: UIKeyModifierFlags] = [
+        "ctl": .control,
+        "cmd": .command,
+        "alt": .alternate,
+        "shift": .shift,
     ]
     
-    public func getModifier(with key: [Key]) -> UIKeyModifierFlags {
-        if key.count < 2 {
+    private func getModifier(with action: KeyAction) -> UIKeyModifierFlags {
+        let keys = self.keyBindingMap[action]!.components(separatedBy: "`")
+        if keys.count < 2 {
             return []
         } else {
-            return Self.modifierMap[key.last!] ?? []
+            let optionalSet: UIKeyModifierFlags = []
+            return keys.dropLast().map {
+                self.modifierMap[$0]!
+            }.reduce(optionalSet) { result, next in
+                return [result, next]
+            }
         }
     }
     
-    public func getInput(with key: [Key]) -> String {
-        if key.count > 0 {
-            return key.last!.value
-        } else {
-            return ""
-        }
+    private func getInput(with action: KeyAction) -> String {
+        let keys = self.keyBindingMap[action]!.components(separatedBy: "`")
+        return keys.last!
+    }
+    
+    public func create(for action: KeyAction, block: @escaping () -> Void) -> UIKeyCommand {
+        return UIKeyCommand(input: self.getInput(with: action), modifier: self.getModifier(with: action), block: block)
     }
 }
 
+private var key: Void?
+extension UIKeyCommand {
+    public convenience init(input: String, modifier: UIKeyModifierFlags, block: @escaping () -> Void) {
+        self.init(input: input, modifierFlags: modifier, action: #selector(UIWindow.onAction))
+        self.addAction(block)
+    }
+    
+    public func addAction(_ action: @escaping () -> Void) {
+        objc_setAssociatedObject(self, &key, action, .OBJC_ASSOCIATION_RETAIN)
+    }
+}
+
+extension UIWindow {
+    @objc fileprivate func onAction(command: UIKeyCommand) {
+        (objc_getAssociatedObject(command, &key) as? () -> Void)?()
+    }
+}
+
+private var commandKey: Void?
 extension UIViewController {
     @available(iOS 13.0, *)
     public var dismissKeyCommand: UIKeyCommand {
-        return UIKeyCommand(title: "esc", action: #selector(dismissPopover), input: UIKeyCommand.inputEscape)
+        let command = UIKeyCommand(title: "esc", action: #selector(UIWindow.dismissPopover), input: UIKeyCommand.inputEscape)
+        objc_setAssociatedObject(command, &commandKey, self, .OBJC_ASSOCIATION_ASSIGN)
+        return command
     }
-    
-    @objc private func dismissPopover() {
-        if let presentedViewController = self.presentedViewController, presentedViewController.modalPresentationStyle == .popover {
+}
+
+extension UIWindow {
+    @objc fileprivate func dismissPopover(command: UIKeyCommand) {
+        guard let viewController = objc_getAssociatedObject(command, &commandKey) as? UIViewController else { return }
+        if let presentedViewController = viewController.presentedViewController, presentedViewController.modalPresentationStyle == .popover {
             presentedViewController.dismiss(animated: true)
         }
     }

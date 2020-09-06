@@ -264,6 +264,18 @@ extension HomeCoordinator: DashboardViewControllerDelegate {
         (self.viewController as? DesktopHomeViewController)?.toggleMiddlePartVisiability(visiable: true)
     }
     
+    public func toggleLeftPart() {
+        if let desktopViewController = self.viewController as? DesktopHomeViewController {
+            desktopViewController.toggleLeftPartVisiability(visiable: !desktopViewController.isLeftPartVisiable, animated: true)
+        }
+    }
+    
+    public func toggleMiddlePart() {
+        if let desktopViewController = self.viewController as? DesktopHomeViewController {
+            desktopViewController.toggleMiddlePartVisiability(visiable: !desktopViewController.isMiddlePartVisiable, animated: true)
+        }
+    }
+    
     public func showHeadings(tag: String) {
         let agendaCoordinator = AgendaCoordinator(filterType: .tag(tag), stack: self.stack, dependency: self.dependency)
         agendaCoordinator.delegate = self

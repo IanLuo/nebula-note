@@ -97,14 +97,12 @@ public class DesktopHomeViewController: UIViewController {
         self.setupToolBar()
         self.setupLeftPart()
         self.setupRightPart()
-    }
-    
-    public override var keyCommands: [UIKeyCommand]? {
-        if #available(iOS 13.0, *) {
-            return [self.toggleLeftPartCommand, self.toggleMiddlePartCommand]
-        } else {
-            return nil
-        }
+        
+        self.coordinator?.globalNavigateKeyCommands.forEach({ [weak self] in
+            self?.addKeyCommand($0)
+        })
+        
+        self.addKeyCommand(self.dismissKeyCommand)
     }
     
     private func setupToolBar() {

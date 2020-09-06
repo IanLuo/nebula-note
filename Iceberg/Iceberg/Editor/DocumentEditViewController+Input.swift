@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import Core
+import Interface
 
 extension DocumentEditorViewController: UITextViewDelegate {
     public func textViewDidChange(_ textView: UITextView) {
@@ -236,6 +237,127 @@ extension DocumentEditorViewController {
         }
         
         return true
-    }    
+    }
+    
+    func createKeyBindings() {
+        guard isMacOrPad else { return }
+        
+        var commands: [UIKeyCommand] = []
+        let binding = KeyBinding()
+        
+        commands += binding.create(for: KeyAction.pickAttachmentMenu) {
+            self.didTriggerAction(NormalAction.allAttachments, from: self.textView)
+        }
+        
+        commands += binding.create(for: KeyAction.addAttachmentMenu) {
+            self.didTriggerAction(NormalAction.newAttachment, from: self.textView)
+        }
+        
+        commands += binding.create(for: KeyAction.paragraphMenu) {
+            self.didTriggerAction(NormalAction.paragraph, from: self.textView)
+        }
+        
+        commands += binding.create(for: KeyAction.headingMenu) {
+            self.didTriggerAction(NormalAction.heading, from: self.textView)
+        }
+        
+        commands += binding.create(for: KeyAction.statusMenu) {
+            self.didTriggerAction(NormalAction.planning, from: self.textView)
+        }
+        
+        commands += binding.create(for: KeyAction.tagMenu) {
+            self.didTriggerAction(NormalAction.tag, from: self.textView)
+        }
+        
+        commands += binding.create(for: KeyAction.priorityMenu) {
+            self.didTriggerAction(NormalAction.priority, from: self.textView)
+        }
+        
+        commands += binding.create(for: KeyAction.dateTimeMenu) {
+            self.didTriggerAction(NormalAction.dateAndTime, from: self.textView)
+        }
+        
+        commands += binding.create(for: KeyAction.fileLink) {
+            self.didTriggerAction(NormalAction.fileLink, from: self.textView)
+        }
+        
+        commands += binding.create(for: KeyAction.pickIdeaMenu) {
+            self.didTriggerAction(NormalAction.captured, from: self.textView)
+        }
+        
+        commands += binding.create(for: KeyAction.foldAll) {
+            self.viewModel.foldAll()
+        }
+        
+        commands += binding.create(for: KeyAction.unfoldAll) {
+            self.viewModel.unfoldAll()
+        }
+        
+        commands += binding.create(for: KeyAction.outline) {
+            self.showOutline(from: self.view)
+        }
+        
+        commands += binding.create(for: KeyAction.inspector) {
+            self.showInfo()
+        }
+        
+        commands += binding.create(for: KeyAction.bold) {
+            self.didTriggerAction(NormalAction.bold, from: self.textView)
+        }
+        
+        commands += binding.create(for: KeyAction.italic) {
+            self.didTriggerAction(NormalAction.italic, from: self.textView)
+        }
+        
+        commands += binding.create(for: KeyAction.underscore) {
+            self.didTriggerAction(NormalAction.underscore, from: self.textView)
+        }
+        
+        commands += binding.create(for: KeyAction.strikeThrough) {
+            self.didTriggerAction(NormalAction.strikethrough, from: self.textView)
+        }
+        
+        commands += binding.create(for: KeyAction.highlight) {
+            self.didTriggerAction(NormalAction.highlight, from: self.textView)
+        }
+        
+        commands += binding.create(for: KeyAction.moveUp) {
+            self.didTriggerAction(NormalAction.moveUp, from: self.textView)
+        }
+        
+        commands += binding.create(for: KeyAction.moveDown) {
+            self.didTriggerAction(NormalAction.moveDown, from: self.textView)
+        }
+        
+        commands += binding.create(for: KeyAction.seperator) {
+            self.didTriggerAction(NormalAction.seperator, from: self.textView)
+        }
+        
+        commands += binding.create(for: KeyAction.codeBlock) {
+            self.didTriggerAction(NormalAction.sourcecode, from: self.textView)
+        }
+        
+        commands += binding.create(for: KeyAction.quoteBlock) {
+            self.didTriggerAction(NormalAction.quote, from: self.textView)
+        }
+        
+        commands += binding.create(for: KeyAction.checkbox) {
+            self.didTriggerAction(NormalAction.checkbox, from: self.textView)
+        }
+        
+        commands += binding.create(for: KeyAction.list) {
+            self.didTriggerAction(NormalAction.list, from: self.textView)
+        }
+        
+        commands += binding.create(for: KeyAction.orderedList) {
+            self.didTriggerAction(NormalAction.orderedList, from: self.textView)
+        }
+        
+        commands += self.viewModel.context.coordinator?.globalNavigateKeyCommands ?? []
+        
+        commands.forEach {
+            self.addKeyCommand($0)
+        }
+    }
 }
 

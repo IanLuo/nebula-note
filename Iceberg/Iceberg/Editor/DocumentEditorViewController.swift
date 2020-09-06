@@ -124,7 +124,8 @@ public class DocumentEditorViewController: UIViewController {
 
         // temp is used for show only the content, can't edit, like conflict preview
         if !self.viewModel.isTemp {
-            
+            self.createKeyBindings()
+
             var closeButtonIcon = Asset.Assets.cross.image.fill(color: InterfaceTheme.Color.interactive)
             if self.viewModel.context.coordinator?.isModal == false {
                 closeButtonIcon = Asset.Assets.left.image.fill(color: InterfaceTheme.Color.interactive)
@@ -150,7 +151,7 @@ public class DocumentEditorViewController: UIViewController {
                 self._toolBar.sizeAnchor(width: 44)
                 
                 self.addToolbarButton(title: L10n.Document.Menu.fullScreen, icon: Asset.Assets.fullscreen.image) { [weak self] button in
-                    self?.viewModel.context.coordinator?.toggleFullScreen()
+                    self?.viewModel.context.coordinator?.toggleEditorFullScreen()
                 }
                 
                 self.addToolbarButton(title: L10n.Document.Menu.foldAll, icon: Asset.Assets.foldAll.image) { [weak self]  button in
@@ -384,7 +385,7 @@ public class DocumentEditorViewController: UIViewController {
     }
     
     public override var keyCommands: [UIKeyCommand]? {
-        return self.initKeyCommands()
+        return super.keyCommands
     }
 }
 

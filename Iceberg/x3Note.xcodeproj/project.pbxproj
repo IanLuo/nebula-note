@@ -40,7 +40,6 @@
 		E40F6EAC223B7B6C00FFF53F /* Size.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4CC0C5821EEF92900058E5D /* Size.swift */; };
 		E40F6EAD223B7B7300FFF53F /* Rect.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4BC264121F56DB900B0F2B9 /* Rect.swift */; };
 		E4130CBA24ED683C00EA08C0 /* KeyCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4130CB824ED643800EA08C0 /* KeyCommands.swift */; };
-		E4130CBD24F3FFDC00EA08C0 /* MenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4130CBB24F3F2AE00EA08C0 /* MenuController.swift */; };
 		E413AD82230AD356004D5E38 /* ShareExtensionItemHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = E413AD81230AD356004D5E38 /* ShareExtensionItemHandler.swift */; };
 		E4144EA32285492E00CB12FF /* DocumentEditViewController+Input.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4144EA22285492E00CB12FF /* DocumentEditViewController+Input.swift */; };
 		E4144EA522854A0B00CB12FF /* DocumentEditViewController+Menu.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4144EA422854A0B00CB12FF /* DocumentEditViewController+Menu.swift */; };
@@ -211,6 +210,7 @@
 		E4B331DD22432F9400A7F44F /* ConfirmViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B331DC22432F9400A7F44F /* ConfirmViewController.swift */; };
 		E4B802022200437A00AD5AD8 /* TextStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = E4BFD47021F711A2003C048C /* TextStorage.m */; };
 		E4B802042201704E00AD5AD8 /* TextStorage.h in Headers */ = {isa = PBXBuildFile; fileRef = E4BFD45521F71184003C048C /* TextStorage.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E4BA6B1A25048CEC00A19321 /* Coordinator+Navigate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4BA6B1925048CEC00A19321 /* Coordinator+Navigate.swift */; };
 		E4C268EB22436C90006FC68A /* SyncEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C268EA22436C90006FC68A /* SyncEvents.swift */; };
 		E4C3890923EC50180077B393 /* AttachmentManagerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C3890823EC50180077B393 /* AttachmentManagerViewController.swift */; };
 		E4C3890B23EC503C0077B393 /* AttachmentManagerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C3890A23EC503C0077B393 /* AttachmentManagerViewModel.swift */; };
@@ -420,7 +420,6 @@
 		E40F6E80223B78AE00FFF53F /* Interface.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Interface.h; sourceTree = "<group>"; };
 		E40F6E81223B78AE00FFF53F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E4130CB824ED643800EA08C0 /* KeyCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyCommands.swift; sourceTree = "<group>"; };
-		E4130CBB24F3F2AE00EA08C0 /* MenuController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuController.swift; sourceTree = "<group>"; };
 		E413AD81230AD356004D5E38 /* ShareExtensionItemHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareExtensionItemHandler.swift; sourceTree = "<group>"; };
 		E4144EA22285492E00CB12FF /* DocumentEditViewController+Input.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DocumentEditViewController+Input.swift"; sourceTree = "<group>"; };
 		E4144EA422854A0B00CB12FF /* DocumentEditViewController+Menu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DocumentEditViewController+Menu.swift"; sourceTree = "<group>"; };
@@ -611,6 +610,7 @@
 		E4B1BED42342304F00683E10 /* Label.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Label.swift; sourceTree = "<group>"; };
 		E4B1BED823424E9D00683E10 /* BrowserCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserCellModel.swift; sourceTree = "<group>"; };
 		E4B331DC22432F9400A7F44F /* ConfirmViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmViewController.swift; sourceTree = "<group>"; };
+		E4BA6B1925048CEC00A19321 /* Coordinator+Navigate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Coordinator+Navigate.swift"; sourceTree = "<group>"; };
 		E4BC264121F56DB900B0F2B9 /* Rect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rect.swift; sourceTree = "<group>"; };
 		E4BC264321F587BC00B0F2B9 /* FrameLayout+Shortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FrameLayout+Shortcuts.swift"; sourceTree = "<group>"; };
 		E4BFD45521F71184003C048C /* TextStorage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TextStorage.h; sourceTree = "<group>"; };
@@ -1129,8 +1129,8 @@
 				E4CBCD1E2370695500A0FFDB /* ActivityHandler.swift */,
 				E44825A2219722C300C17568 /* Application.swift */,
 				E4F885E9226D5BE700748868 /* Coordinator.swift */,
+				E4BA6B1925048CEC00A19321 /* Coordinator+Navigate.swift */,
 				E4A85B99239BEECD00A41EFD /* ViewModelProtocol.swift */,
-				E4130CBB24F3F2AE00EA08C0 /* MenuController.swift */,
 				E47400B0241C799D0071BF73 /* launchIcon.png */,
 				E4E7ABD523CE0576005628E6 /* LaunchScreen.storyboard */,
 				E49BA8F723F66B0C00CE25C3 /* Info.plist */,
@@ -2259,12 +2259,12 @@
 				E4CBCD1D236D914400A0FFDB /* EditAction.swift in Sources */,
 				E4A85B96239BAC4D00A41EFD /* TrashViewModel.swift in Sources */,
 				E49F3E4821B9183F003F468D /* SettingsCoordinator.swift in Sources */,
+				E4BA6B1A25048CEC00A19321 /* Coordinator+Navigate.swift in Sources */,
 				E498AAFF21BBE9B900D2A8EA /* CaptureListViewController.swift in Sources */,
 				E41CB16421D8899200EF0A3C /* HomeViewController.swift in Sources */,
 				E41CB15D21D8844000EF0A3C /* CaptureListCoordinator.swift in Sources */,
 				E4EA857721D3B0AC00DD92F9 /* EditorCoordinator.swift in Sources */,
 				E4C3890923EC50180077B393 /* AttachmentManagerViewController.swift in Sources */,
-				E4130CBD24F3FFDC00EA08C0 /* MenuController.swift in Sources */,
 				E41A538621D4C577002B11E9 /* AgendaTableCell.swift in Sources */,
 				E4A85B98239BB3AF00A41EFD /* TrashCell.swift in Sources */,
 				E4A85B94239BAC3200A41EFD /* TrashViewController.swift in Sources */,
