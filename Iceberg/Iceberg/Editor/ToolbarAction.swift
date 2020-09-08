@@ -14,19 +14,39 @@ import Core
 public protocol ToolbarActionProtocol {
     var icon: UIImage { get }
     var isMemberFunction: Bool { get }
+    
 }
 
 public extension ToolbarActionProtocol {
     var isMemberFunction: Bool { return false }
 }
 
-public protocol DocumentActon {}
+public protocol DocumentActon {
+    var title: String { get }
+}
 
 public protocol TextViewAction {
     func toggle(textView: UITextView, location: Int)
 }
 
-public enum NormalAction: ToolbarActionProtocol, DocumentActon {
+public enum OtherAction: String, DocumentActon {
+    public var title: String { return self.rawValue }
+    
+    case captureIdea
+    case toggleLeftPart
+    case toggleMiddlePart
+    case agendaTab
+    case searchTab
+    case ideaTab
+    case browserTab
+    case toggleFullWidth
+    case foldAll
+    case unfoldAll
+    case outline
+    case inspector
+}
+
+public enum NormalAction: String, ToolbarActionProtocol, DocumentActon {
     case paragraph
     case heading
     case increaseIndent
@@ -58,6 +78,8 @@ public enum NormalAction: ToolbarActionProtocol, DocumentActon {
     case allAttachments
     case newAttachment
     case fileLink
+    
+    public var title: String { return self.rawValue }
     
     public var icon: UIImage {
         switch self {
@@ -121,13 +143,15 @@ public enum NormalAction: ToolbarActionProtocol, DocumentActon {
     }
 }
 
-public enum AttachmentAction: ToolbarActionProtocol, DocumentActon {
+public enum AttachmentAction: String, ToolbarActionProtocol, DocumentActon {
     case image
     case audio
     case video
     case sketch
     case location
     case link
+    
+    public var title: String { return self.rawValue }
     
     public var AttachmentKind: Attachment.Kind {
         switch self {
@@ -159,11 +183,13 @@ public enum AttachmentAction: ToolbarActionProtocol, DocumentActon {
     }
 }
 
-public enum CursorAction: ToolbarActionProtocol, TextViewAction {
+public enum CursorAction: String, ToolbarActionProtocol, TextViewAction {
     case moveUp
     case moveDown
     case moveLeft
     case moveRight
+    
+    public var title: String { return self.rawValue }
     
     public var icon: UIImage {
         switch self {

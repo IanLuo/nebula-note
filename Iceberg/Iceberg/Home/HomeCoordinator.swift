@@ -133,6 +133,12 @@ public class HomeCoordinator: Coordinator {
         return self._viewModel.allTags
     }
     
+    public func isCommandAvailable(command: UICommand) -> Bool {
+        guard let desktopHome = self.viewController as? DesktopHomeViewController else { return false }
+        
+        return desktopHome.isCommandAvailable(command: command)
+    }
+    
     // MARK: - private -
     
     private func initializedDefaultOpeningDocuments() {

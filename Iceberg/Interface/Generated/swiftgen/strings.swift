@@ -608,6 +608,81 @@ public enum L10n {
     public static let library = L10n.tr("Localizable", "imagePicker.library")
   }
 
+  public enum Key {
+    public enum Command {
+      /// Insert New Attachment
+      public static let addAttachment = L10n.tr("Localizable", "key.command.addAttachment")
+      /// Show Agenda
+      public static let agendaTab = L10n.tr("Localizable", "key.command.agendaTab")
+      /// Bold Text
+      public static let boldText = L10n.tr("Localizable", "key.command.boldText")
+      /// Show Documents
+      public static let browserTab = L10n.tr("Localizable", "key.command.browserTab")
+      /// Capture Ideas
+      public static let captureTab = L10n.tr("Localizable", "key.command.captureTab")
+      /// Toggle Checkbox
+      public static let checkbox = L10n.tr("Localizable", "key.command.checkbox")
+      /// Insert Code Block
+      public static let codeBlock = L10n.tr("Localizable", "key.command.codeBlock")
+      /// Show Date And Time Menu
+      public static let dateAndTime = L10n.tr("Localizable", "key.command.dateAndTime")
+      /// Insert Document Link
+      public static let fileLink = L10n.tr("Localizable", "key.command.fileLink")
+      /// Fold All
+      public static let foldAll = L10n.tr("Localizable", "key.command.foldAll")
+      /// Show Headings Action
+      public static let headingMenu = L10n.tr("Localizable", "key.command.headingMenu")
+      /// Highlight Text
+      public static let highlightText = L10n.tr("Localizable", "key.command.highlightText")
+      /// Show Ideas
+      public static let ideaTab = L10n.tr("Localizable", "key.command.ideaTab")
+      /// Show Inspector
+      public static let inspector = L10n.tr("Localizable", "key.command.inspector")
+      /// Italic Text
+      public static let italicText = L10n.tr("Localizable", "key.command.italicText")
+      /// Toggle Bullet List
+      public static let list = L10n.tr("Localizable", "key.command.list")
+      /// Move Down
+      public static let moveDown = L10n.tr("Localizable", "key.command.moveDown")
+      /// Move Up
+      public static let moveUp = L10n.tr("Localizable", "key.command.moveUp")
+      /// Toggle Ordered List
+      public static let orderedList = L10n.tr("Localizable", "key.command.orderedList")
+      /// Show Outline
+      public static let outline = L10n.tr("Localizable", "key.command.outline")
+      /// Show Paragraph Action
+      public static let paragraphMenu = L10n.tr("Localizable", "key.command.paragraphMenu")
+      /// Picker From Attachments
+      public static let pickerAttachmentMenu = L10n.tr("Localizable", "key.command.pickerAttachmentMenu")
+      /// Insert From Ideas
+      public static let pickIdeaMenu = L10n.tr("Localizable", "key.command.pickIdeaMenu")
+      /// Show Priority Actions
+      public static let priorityMenu = L10n.tr("Localizable", "key.command.priorityMenu")
+      /// Insert Quote Block
+      public static let quoteBlock = L10n.tr("Localizable", "key.command.quoteBlock")
+      /// Show Search
+      public static let searchTab = L10n.tr("Localizable", "key.command.searchTab")
+      /// Insert Separator
+      public static let seperator = L10n.tr("Localizable", "key.command.seperator")
+      /// Show Status Actions
+      public static let statusMenu = L10n.tr("Localizable", "key.command.statusMenu")
+      /// Strike Through Text
+      public static let strikeThroughText = L10n.tr("Localizable", "key.command.strikeThroughText")
+      /// Show Tag Actions
+      public static let tagMenu = L10n.tr("Localizable", "key.command.tagMenu")
+      /// Toggle Full Width Editor
+      public static let toggleFullWidth = L10n.tr("Localizable", "key.command.toggleFullWidth")
+      /// Toggle Left Part
+      public static let toggleLeftPart = L10n.tr("Localizable", "key.command.toggleLeftPart")
+      /// Toggle Middle Part
+      public static let toggleMiddlePart = L10n.tr("Localizable", "key.command.toggleMiddlePart")
+      /// Underscore Text
+      public static let underscoreText = L10n.tr("Localizable", "key.command.underscoreText")
+      /// Unfold All
+      public static let unfoldAll = L10n.tr("Localizable", "key.command.unfoldAll")
+    }
+  }
+
   public enum Location {
     /// Current location
     public static let current = L10n.tr("Localizable", "location.current")

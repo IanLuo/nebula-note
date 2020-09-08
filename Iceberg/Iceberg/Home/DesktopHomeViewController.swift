@@ -74,6 +74,11 @@ public class DesktopHomeViewController: UIViewController {
     public func addDocuments(editorCoordinator: EditorCoordinator, souldSelect: Bool) {
         self.documentTabsContainerViewController.addTabs(editorCoordinator: editorCoordinator, shouldSelected: souldSelect)
     }
+    
+    public func isCommandAvailable(command: UICommand) -> Bool {
+        guard command.propertyList != nil else { return true }
+        return self.documentTabsContainerViewController.isCommandAvailable(command: command)
+    }
         
     private func setupUI() {
         self.toolBar.sizeAnchor(height: 100)
@@ -98,11 +103,18 @@ public class DesktopHomeViewController: UIViewController {
         self.setupLeftPart()
         self.setupRightPart()
         
-        self.coordinator?.globalNavigateKeyCommands.forEach({ [weak self] in
-            self?.addKeyCommand($0)
-        })
         
-        self.addKeyCommand(self.dismissKeyCommand)
+        if #available(iOS 13.0, *) {
+            self.coordinator?.enableGlobalNavigateKeyCommands()
+        }
+    }
+    
+    public override func buildMenu(with builder: UIMenuBuilder) {
+        super.buildMenu(with: builder)
+        
+        self.keyCommands?.forEach({ command in
+            builder.insertChild(UIMenu(title: command.title, image: nil, identifier: UIMenu.Identifier(command.title), options: .displayInline, children: [command]), atEndOfMenu: .file)
+        })
     }
     
     private func setupToolBar() {

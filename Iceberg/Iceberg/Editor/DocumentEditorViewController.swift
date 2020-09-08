@@ -124,7 +124,9 @@ public class DocumentEditorViewController: UIViewController {
 
         // temp is used for show only the content, can't edit, like conflict preview
         if !self.viewModel.isTemp {
-            self.createKeyBindings()
+            if #available(iOS 13.0, *) {
+                self.enableKeyBindings()
+            }
 
             var closeButtonIcon = Asset.Assets.cross.image.fill(color: InterfaceTheme.Color.interactive)
             if self.viewModel.context.coordinator?.isModal == false {
@@ -228,6 +230,8 @@ public class DocumentEditorViewController: UIViewController {
         if isPhone {
             self.viewModel.start()
         }
+        
+        self.view.becomeFirstResponder()
     }
     
     public override func viewDidDisappear(_ animated: Bool) {

@@ -364,3 +364,41 @@
 
 // user guide
 "guide.document.edit.headingEntry" = "Tap on heading button to create an heading entry";
+
+
+// key commnad
+"key.command.toggleLeftPart" = "Toggle Left Part";
+"key.command.toggleMiddlePart" = "Toggle Middle Part";
+"key.command.agendaTab" = "Show Agenda";
+"key.command.searchTab" = "Show Search";
+"key.command.ideaTab" = "Show Ideas";
+"key.command.browserTab" = "Show Documents";
+"key.command.captureTab" = "Capture Ideas";
+"key.command.paragraphMenu" = "Show Paragraph Action";
+"key.command.headingMenu" = "Show Headings Action";
+"key.command.statusMenu" = "Show Status Actions";
+"key.command.tagMenu" = "Show Tag Actions";
+"key.command.priorityMenu" = "Show Priority Actions";
+"key.command.boldText" = "Bold Text";
+"key.command.italicText" = "Italic Text";
+"key.command.underscoreText" = "Underscore Text";
+"key.command.strikeThroughText" = "Strike Through Text";
+"key.command.highlightText" = "Highlight Text";
+"key.command.moveUp" = "Move Up";
+"key.command.moveDown" = "Move Down";
+"key.command.seperator" = "Insert Separator";
+"key.command.codeBlock" = "Insert Code Block";
+"key.command.quoteBlock" = "Insert Quote Block";
+"key.command.checkbox" = "Toggle Checkbox";
+"key.command.dateAndTime" = "Show Date And Time Menu";
+"key.command.list" = "Toggle Bullet List";
+"key.command.orderedList" = "Toggle Ordered List";
+"key.command.fileLink" = "Insert Document Link";
+"key.command.pickIdeaMenu" = "Insert From Ideas";
+"key.command.pickerAttachmentMenu" = "Picker From Attachments";
+"key.command.addAttachment" = "Insert New Attachment";
+"key.command.toggleFullWidth" = "Toggle Full Width Editor";
+"key.command.foldAll" = "Fold All";
+"key.command.unfoldAll" = "Unfold All";
+"key.command.outline" = "Show Outline";
+"key.command.inspector" = "Show Inspector";

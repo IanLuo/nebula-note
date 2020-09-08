@@ -366,3 +366,41 @@
 
 // user guide
 "guide.document.edit.headingEntry" = "点击标题按钮，创建一个标题";
+
+
+// key commnad
+"key.command.toggleLeftPart" = "左边栏";
+"key.command.toggleMiddlePart" = "中间栏";
+"key.command.agendaTab" = "显示日程";
+"key.command.searchTab" = "显示搜索";
+"key.command.ideaTab" = "显示灵感";
+"key.command.browserTab" = "显示文档";
+"key.command.captureTab" = "抓取灵感";
+"key.command.paragraphMenu" = "显示段落操作";
+"key.command.headingMenu" = "显示标题操作";
+"key.command.statusMenu" = "显示状态操作";
+"key.command.tagMenu" = "显示标签操作";
+"key.command.priorityMenu" = "显示优先级操作";
+"key.command.boldText" = "粗体字";
+"key.command.italicText" = "斜体字";
+"key.command.underscoreText" = "下划线";
+"key.command.strikeThroughText" = "删除线";
+"key.command.highlightText" = "高亮文字";
+"key.command.moveUp" = "上移";
+"key.command.moveDown" = "下移";
+"key.command.seperator" = "插入分割线";
+"key.command.codeBlock" = "插入代码块";
+"key.command.quoteBlock" = "插入引用块";
+"key.command.checkbox" = "插入选择框";
+"key.command.dateAndTime" = "显示日期时间操作";
+"key.command.list" = "无序列表";
+"key.command.orderedList" = "有序列表";
+"key.command.fileLink" = "插入文档链接";
+"key.command.pickIdeaMenu" = "选择灵感";
+"key.command.pickerAttachmentMenu" = "选择附件";
+"key.command.addAttachment" = "插入新附件";
+"key.command.toggleFullWidth" = "全屏编辑器";
+"key.command.foldAll" = "全部折叠";
+"key.command.unfoldAll" = "全部展开";
+"key.command.outline" = "显示目录";
+"key.command.inspector" = "显示文件信息";

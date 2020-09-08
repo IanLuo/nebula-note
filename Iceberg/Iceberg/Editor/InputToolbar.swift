@@ -116,6 +116,18 @@ public class InputToolbar: UIView {
         }
     }
     
+    public func isActionAvailable(commandTitle: String) -> Bool {
+        for actionGroup in self._actions {
+            for ac in actionGroup.actions {
+                if commandTitle == (ac as? DocumentActon)?.title && actionGroup.isEnabled {
+                    return true
+                }
+            }
+        }
+        
+        return false
+    }
+    
     public init(mode: Mode) {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal

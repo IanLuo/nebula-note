@@ -30,6 +30,8 @@ public class DocumentTabContainerViewController: UIViewController {
     
     private var viewModel: DashboardViewModel!
     
+    public var currentEditorViewController: DocumentEditorViewController?
+    
     public convenience init(viewModel: DashboardViewModel) {
         self.init()
         self.viewModel = viewModel
@@ -101,6 +103,19 @@ public class DocumentTabContainerViewController: UIViewController {
         return self.openingViewControllers[url.documentRelativePath] != nil
     }
     
+    public func isCommandAvailable(command: UICommand) -> Bool {
+        guard let properties = command.propertyList as? [String: Any] else { return false }
+        
+        if (properties["is-global"] as? Bool) == true {
+            return true
+        }
+        
+        guard let currentEditor = self.currentEditorViewController else { return false }
+        guard currentEditor.textView.isFirstResponder == true else { return false }
+        
+        return currentEditor.inputbar.isActionAvailable(commandTitle: properties["title"] as? String ?? "")
+    }
+    
     public func selectTab(url: URL, location: Int) {
         self.viewModel.dependency.settingAccessor.logOpenDocument(url: url)
         
@@ -115,6 +130,8 @@ public class DocumentTabContainerViewController: UIViewController {
                 
                 // load content
                 viewController.start()
+                
+                self.currentEditorViewController = viewController                
             }
             
             if location > 0 {

@@ -294,21 +294,6 @@ extension ActionsViewController: UIGestureRecognizerDelegate {
     public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
         return touch.view == self.view
     }
-    
-    public override var keyCommands: [UIKeyCommand]? {
-        if var commands = super.keyCommands {
-            if #available(iOS 13.0, *) {
-                commands.append(contentsOf: [self.dismissKeyCommand])
-            }
-            return commands
-        } else {
-            if #available(iOS 13.0, *) {
-                return [self.dismissKeyCommand]
-            }
-        }
-        
-        return nil
-    }
 }
 
 extension ActionsViewController: UITableViewDataSource, UITableViewDelegate {

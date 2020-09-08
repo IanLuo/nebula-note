@@ -166,43 +166,40 @@ extension Coordinator {
         (self.rootCoordinator as? Application)?.homeCoordinator?.toggleMiddlePart()
     }
     
-    var globalNavigateKeyCommands: [UIKeyCommand] {
-        var commands: [UIKeyCommand] = []
+    func enableGlobalNavigateKeyCommands() {
         let binding = KeyBinding()
         
-        commands += binding.create(for: KeyAction.toggleLeftPart, block: {
+        binding.addAction(for: KeyAction.toggleLeftPart, on: self.viewController, block: {
             self.toggleDesktopLeftPart()
         })
         
-        commands += binding.create(for: KeyAction.toggleMiddlePart, block: {
+        binding.addAction(for: KeyAction.toggleMiddlePart, on: self.viewController, block: {
             self.toggleDesktopMiddlePart()
         })
         
-        commands += binding.create(for: KeyAction.toggleFullWidth, block: {
+        binding.addAction(for: KeyAction.toggleFullWidth, on: self.viewController, block: {
             self.toggleEditorFullScreen()
         })
         
-        commands += binding.create(for: KeyAction.captureIdea) {
+        binding.addAction(for: KeyAction.captureIdea, on: self.viewController) {
             self.showCaptureEntrance()
         }
         
-        commands += binding.create(for: KeyAction.agendaTab) {
+        binding.addAction(for: KeyAction.agendaTab, on: self.viewController) {
             (self.rootCoordinator as? Application)?.homeCoordinator?.selectTab(at: 0)
         }
         
-        commands += binding.create(for: KeyAction.ideaTab) {
+        binding.addAction(for: KeyAction.ideaTab, on: self.viewController) {
             (self.rootCoordinator as? Application)?.homeCoordinator?.selectTab(at: 1)
         }
         
-        commands += binding.create(for: KeyAction.searchTab) {
+        binding.addAction(for: KeyAction.searchTab, on: self.viewController) {
             (self.rootCoordinator as? Application)?.homeCoordinator?.selectTab(at: 2)
         }
         
-        commands += binding.create(for: KeyAction.browserTab) {
+        binding.addAction(for: KeyAction.browserTab, on: self.viewController) {
             (self.rootCoordinator as? Application)?.homeCoordinator?.selectTab(at: 3)
         }
-        
-        return commands
     }
 }
 

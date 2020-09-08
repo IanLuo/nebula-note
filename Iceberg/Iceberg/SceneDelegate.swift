@@ -40,6 +40,34 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         self.application = Application(window: window!)
         self.application.dependency.purchaseManager.initialize()
         self.application?.start(from: nil, animated: false)
+        
+        self.window?.addValidateHandler({ [weak self] (command) -> Bool in
+            return self?.application.homeCoordinator?.isCommandAvailable(command: command) ?? false
+        })
+
     }
     
+    @available(iOS 13.0, *)
+    override func buildMenu(with builder: UIMenuBuilder) {
+        super.buildMenu(with: builder)
+        builder.remove(menu: UIMenu.Identifier.file)
+        builder.remove(menu: UIMenu.Identifier.edit)
+        builder.remove(menu: UIMenu.Identifier.view)
+        builder.remove(menu: UIMenu.Identifier.window)
+        builder.remove(menu: UIMenu.Identifier.format)
+        builder.remove(menu: UIMenu.Identifier.help)
+        
+        let binding = KeyBinding()
+        binding.constructMenu(builder: builder)
+    }
+    
+    override func validate(_ command: UICommand) {
+        if application.homeCoordinator?.isCommandAvailable(command: command) ?? false {
+            command.state = .on
+        } else {
+            command.state = .off
+        }
+        
+        super.validate(command)
+    }
 }

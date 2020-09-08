@@ -239,125 +239,121 @@ extension DocumentEditorViewController {
         return true
     }
     
-    func createKeyBindings() {
+    @available(iOS 13.0, *)
+    func enableKeyBindings() {
         guard isMacOrPad else { return }
         
-        var commands: [UIKeyCommand] = []
         let binding = KeyBinding()
         
-        commands += binding.create(for: KeyAction.pickAttachmentMenu) {
+        binding.addAction(for: KeyAction.pickAttachmentMenu, on: self) {
             self.didTriggerAction(NormalAction.allAttachments, from: self.textView)
         }
         
-        commands += binding.create(for: KeyAction.addAttachmentMenu) {
+        binding.addAction(for: KeyAction.addAttachmentMenu, on: self) {
             self.didTriggerAction(NormalAction.newAttachment, from: self.textView)
         }
         
-        commands += binding.create(for: KeyAction.paragraphMenu) {
+        binding.addAction(for: KeyAction.paragraphMenu, on: self) {
             self.didTriggerAction(NormalAction.paragraph, from: self.textView)
         }
         
-        commands += binding.create(for: KeyAction.headingMenu) {
+        binding.addAction(for: KeyAction.headingMenu, on: self) {
             self.didTriggerAction(NormalAction.heading, from: self.textView)
         }
         
-        commands += binding.create(for: KeyAction.statusMenu) {
+        binding.addAction(for: KeyAction.statusMenu, on: self) {
             self.didTriggerAction(NormalAction.planning, from: self.textView)
         }
         
-        commands += binding.create(for: KeyAction.tagMenu) {
+        binding.addAction(for: KeyAction.tagMenu, on: self) {
             self.didTriggerAction(NormalAction.tag, from: self.textView)
         }
         
-        commands += binding.create(for: KeyAction.priorityMenu) {
+        binding.addAction(for: KeyAction.priorityMenu, on: self) {
             self.didTriggerAction(NormalAction.priority, from: self.textView)
         }
         
-        commands += binding.create(for: KeyAction.dateTimeMenu) {
+        binding.addAction(for: KeyAction.dateTimeMenu, on: self) {
             self.didTriggerAction(NormalAction.dateAndTime, from: self.textView)
         }
         
-        commands += binding.create(for: KeyAction.fileLink) {
+        binding.addAction(for: KeyAction.fileLink, on: self) {
             self.didTriggerAction(NormalAction.fileLink, from: self.textView)
         }
         
-        commands += binding.create(for: KeyAction.pickIdeaMenu) {
+        binding.addAction(for: KeyAction.pickIdeaMenu, on: self) {
             self.didTriggerAction(NormalAction.captured, from: self.textView)
         }
         
-        commands += binding.create(for: KeyAction.foldAll) {
+        binding.addAction(for: KeyAction.foldAll, on: self) {
             self.viewModel.foldAll()
         }
         
-        commands += binding.create(for: KeyAction.unfoldAll) {
+        binding.addAction(for: KeyAction.unfoldAll, on: self) {
             self.viewModel.unfoldAll()
         }
         
-        commands += binding.create(for: KeyAction.outline) {
+        binding.addAction(for: KeyAction.outline, on: self) {
             self.showOutline(from: self.view)
         }
         
-        commands += binding.create(for: KeyAction.inspector) {
+        binding.addAction(for: KeyAction.inspector, on: self) {
             self.showInfo()
         }
         
-        commands += binding.create(for: KeyAction.bold) {
+        binding.addAction(for: KeyAction.bold, on: self) {
             self.didTriggerAction(NormalAction.bold, from: self.textView)
         }
         
-        commands += binding.create(for: KeyAction.italic) {
+        binding.addAction(for: KeyAction.italic, on: self) {
             self.didTriggerAction(NormalAction.italic, from: self.textView)
         }
         
-        commands += binding.create(for: KeyAction.underscore) {
+        binding.addAction(for: KeyAction.underscore, on: self) {
             self.didTriggerAction(NormalAction.underscore, from: self.textView)
         }
         
-        commands += binding.create(for: KeyAction.strikeThrough) {
+        binding.addAction(for: KeyAction.strikeThrough, on: self) {
             self.didTriggerAction(NormalAction.strikethrough, from: self.textView)
         }
         
-        commands += binding.create(for: KeyAction.highlight) {
+        binding.addAction(for: KeyAction.highlight, on: self) {
             self.didTriggerAction(NormalAction.highlight, from: self.textView)
         }
         
-        commands += binding.create(for: KeyAction.moveUp) {
+        binding.addAction(for: KeyAction.moveUp, on: self) {
             self.didTriggerAction(NormalAction.moveUp, from: self.textView)
         }
         
-        commands += binding.create(for: KeyAction.moveDown) {
+        binding.addAction(for: KeyAction.moveDown, on: self) {
             self.didTriggerAction(NormalAction.moveDown, from: self.textView)
         }
         
-        commands += binding.create(for: KeyAction.seperator) {
+        binding.addAction(for: KeyAction.seperator, on: self) {
             self.didTriggerAction(NormalAction.seperator, from: self.textView)
         }
         
-        commands += binding.create(for: KeyAction.codeBlock) {
+        binding.addAction(for: KeyAction.codeBlock, on: self) {
             self.didTriggerAction(NormalAction.sourcecode, from: self.textView)
         }
         
-        commands += binding.create(for: KeyAction.quoteBlock) {
+        binding.addAction(for: KeyAction.quoteBlock, on: self) {
             self.didTriggerAction(NormalAction.quote, from: self.textView)
         }
         
-        commands += binding.create(for: KeyAction.checkbox) {
+        binding.addAction(for: KeyAction.checkbox, on: self) {
             self.didTriggerAction(NormalAction.checkbox, from: self.textView)
         }
         
-        commands += binding.create(for: KeyAction.list) {
+        binding.addAction(for: KeyAction.list, on: self) {
             self.didTriggerAction(NormalAction.list, from: self.textView)
         }
         
-        commands += binding.create(for: KeyAction.orderedList) {
+        binding.addAction(for: KeyAction.orderedList, on: self) {
             self.didTriggerAction(NormalAction.orderedList, from: self.textView)
         }
         
-        commands += self.viewModel.context.coordinator?.globalNavigateKeyCommands ?? []
-        
-        commands.forEach {
-            self.addKeyCommand($0)
-        }
+        self.viewModel.context.coordinator?.enableGlobalNavigateKeyCommands()
     }
 }
 
