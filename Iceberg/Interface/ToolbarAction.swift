@@ -8,8 +8,6 @@
 
 import Foundation
 import UIKit
-import Interface
-import Core
 
 public protocol ToolbarActionProtocol {
     var icon: UIImage { get }
@@ -44,6 +42,7 @@ public enum OtherAction: String, DocumentActon {
     case unfoldAll
     case outline
     case inspector
+    case cancel
 }
 
 public enum NormalAction: String, ToolbarActionProtocol, DocumentActon {
@@ -139,73 +138,6 @@ public enum NormalAction: String, ToolbarActionProtocol, DocumentActon {
             return Asset.Assets.add.image
         case .fileLink:
             return Asset.Assets.fileLink.image
-        }
-    }
-}
-
-public enum AttachmentAction: String, ToolbarActionProtocol, DocumentActon {
-    case image
-    case audio
-    case video
-    case sketch
-    case location
-    case link
-    
-    public var title: String { return self.rawValue }
-    
-    public var AttachmentKind: Attachment.Kind {
-        switch self {
-        case .image: return Attachment.Kind.image
-        case .audio: return Attachment.Kind.audio
-        case .video: return Attachment.Kind.video
-        case .sketch: return Attachment.Kind.sketch
-        case .location: return Attachment.Kind.location
-        case .link: return Attachment.Kind.link
-        }
-    }
-    
-    public var icon: UIImage {
-        switch self {
-        case .image: return Asset.Assets.imageLibrary.image
-        case .audio: return Asset.Assets.audio.image
-        case .video: return Asset.Assets.video.image
-        case .sketch: return Asset.Assets.sketch.image
-        case .location: return Asset.Assets.location.image
-        case .link: return Asset.Assets.link.image
-        }
-    }
-    
-    public var isMemberFunction: Bool {
-        switch self {
-        case .video, .location, .audio: return true
-        default: return false
-        }
-    }
-}
-
-public enum CursorAction: String, ToolbarActionProtocol, TextViewAction {
-    case moveUp
-    case moveDown
-    case moveLeft
-    case moveRight
-    
-    public var title: String { return self.rawValue }
-    
-    public var icon: UIImage {
-        switch self {
-        case .moveUp: return Asset.Assets.up.image
-        case .moveDown: return Asset.Assets.down.image
-        case .moveLeft: return Asset.Assets.left.image
-        case .moveRight: return Asset.Assets.right.image
-        }
-    }
-    
-    public func toggle(textView: UITextView, location: Int) {
-        switch self {
-        case .moveUp: MoveCursorCommand(locaton: location, direction: MoveCursorCommand.Direction.up).toggle(textView: textView)
-        case .moveDown: MoveCursorCommand(locaton: location, direction: MoveCursorCommand.Direction.down).toggle(textView: textView)
-        case .moveLeft: MoveCursorCommand(locaton: location, direction: MoveCursorCommand.Direction.left).toggle(textView: textView)
-        case .moveRight: MoveCursorCommand(locaton: location, direction: MoveCursorCommand.Direction.right).toggle(textView: textView)
         }
     }
 }

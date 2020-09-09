@@ -166,6 +166,7 @@ extension Coordinator {
         (self.rootCoordinator as? Application)?.homeCoordinator?.toggleMiddlePart()
     }
     
+    @available(iOS 13.0, *)
     func enableGlobalNavigateKeyCommands() {
         let binding = KeyBinding()
         
@@ -199,6 +200,18 @@ extension Coordinator {
         
         binding.addAction(for: KeyAction.browserTab, on: self.viewController) {
             (self.rootCoordinator as? Application)?.homeCoordinator?.selectTab(at: 3)
+        }
+        
+        binding.addAction(for: KeyAction.cancel, on: self.viewController) {
+            if self.rootCoordinator.topMostCoordinator.isModal == true {
+                if let topVC = self.topViewController, topVC.presentingViewController != nil {
+                    topVC.dismiss(animated: true)
+                } else {
+                    self.rootCoordinator.topMostCoordinator.stop()
+                }
+            } else if let topVC = self.topViewController, topVC.presentingViewController != nil {
+                topVC.dismiss(animated: true)
+            }
         }
     }
 }

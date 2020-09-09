@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import Core
+import Interface
 
 extension DocumentEditorViewController: DocumentEditToolbarDelegate {
     private func commandCompletionActionMoveCursorMapTheLengthOfStringChange(_ oldSelectedRange: NSRange) -> (DocumentContentCommandResult) -> Void {

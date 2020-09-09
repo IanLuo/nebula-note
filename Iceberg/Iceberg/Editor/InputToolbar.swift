@@ -302,3 +302,30 @@ private class ActionButtonCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 }
+
+public enum CursorAction: String, ToolbarActionProtocol, TextViewAction {
+    case moveUp
+    case moveDown
+    case moveLeft
+    case moveRight
+    
+    public var title: String { return self.rawValue }
+    
+    public var icon: UIImage {
+        switch self {
+        case .moveUp: return Asset.Assets.up.image
+        case .moveDown: return Asset.Assets.down.image
+        case .moveLeft: return Asset.Assets.left.image
+        case .moveRight: return Asset.Assets.right.image
+        }
+    }
+    
+    public func toggle(textView: UITextView, location: Int) {
+        switch self {
+        case .moveUp: MoveCursorCommand(locaton: location, direction: MoveCursorCommand.Direction.up).toggle(textView: textView)
+        case .moveDown: MoveCursorCommand(locaton: location, direction: MoveCursorCommand.Direction.down).toggle(textView: textView)
+        case .moveLeft: MoveCursorCommand(locaton: location, direction: MoveCursorCommand.Direction.left).toggle(textView: textView)
+        case .moveRight: MoveCursorCommand(locaton: location, direction: MoveCursorCommand.Direction.right).toggle(textView: textView)
+        }
+    }
+}

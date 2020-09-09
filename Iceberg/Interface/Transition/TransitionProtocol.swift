@@ -29,6 +29,10 @@ extension TransitionProtocol {
                 viewController.popoverPresentationController?.sourceView = viewController.fromView
                 let location = location ?? CGPoint(x: viewController.fromView!.bounds.midX, y: viewController.fromView!.bounds.midY)
                 viewController.popoverPresentationController?.sourceRect = CGRect(origin: location, size: .zero)
+                
+                if #available(iOS 13, *) {
+                    viewController.addKeyCommand(KeyBinding().create(for: KeyAction.cancel))
+                }
             }
             
             from.present(viewController, animated: true, completion: completion)

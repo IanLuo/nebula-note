@@ -103,6 +103,7 @@ public class DocumentTabContainerViewController: UIViewController {
         return self.openingViewControllers[url.documentRelativePath] != nil
     }
     
+    @available(iOS 13.0, *)
     public func isCommandAvailable(command: UICommand) -> Bool {
         guard let properties = command.propertyList as? [String: Any] else { return false }
         
@@ -124,6 +125,7 @@ public class DocumentTabContainerViewController: UIViewController {
             if !self.container.subviews.contains(where: { $0 == viewController.view}) {
                 self.container.subviews.forEach { $0.removeFromSuperview() }
                 self.container.addSubview(viewController.view)
+                self.addChild(viewController)
                 viewController.view.allSidesAnchors(to: self.container, edgeInset: 0)
                 
                 self.tabBar.selectDocument.onNext(url)

@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-public enum KeyAction: String {
+public enum KeyAction: String, CaseIterable {
     case captureIdea
     // view
     case toggleLeftPart
@@ -48,8 +48,9 @@ public enum KeyAction: String {
     case unfoldAll
     case outline
     case inspector
+    case cancel
     
-    var isGlobal: Bool {
+    public var isGlobal: Bool {
         switch self {
         case .captureIdea:
             return true
@@ -75,13 +76,16 @@ public enum KeyAction: String {
             return true
         case .inspector:
             return true
+        case .cancel:
+            return true
         default: return false
         }
     }
     
     var title: String {
         switch self {
-            
+        case .cancel:
+            return ""
         case .toggleLeftPart:
             return L10n.Key.Command.toggleLeftPart
         case .toggleMiddlePart:
@@ -161,7 +165,8 @@ public enum KeyAction: String {
     
     var documentAction: DocumentActon {
         switch self {
-            
+        case .cancel:
+            return OtherAction.cancel
         case .captureIdea:
             return OtherAction.captureIdea
         case .toggleLeftPart:
@@ -241,6 +246,7 @@ public struct KeyPair {
     let input: String
 }
 
+@available(iOS 13.0, *)
 public struct KeyBinding {
     public init() {}
     
@@ -279,7 +285,8 @@ public struct KeyBinding {
         .quoteBlock: "cmd`shift`q",
         .checkbox: "cmd`shift`x",
         .list: "cmd`shift`l",
-        .orderedList: "cmd`shift`o"
+        .orderedList: "cmd`shift`o",
+        .cancel: UIKeyCommand.inputEscape
     ]
     
     public func constructMenu(builder: UIMenuBuilder) {
@@ -447,12 +454,11 @@ public struct KeyBinding {
     
     @available(iOS 13.0, *)
     public func create(for action: KeyAction) -> UIKeyCommand {
-        let command = UIKeyCommand(title: action.title,
-                                   action: #selector(UIWindow.onAction),
-                                   input: self.getInput(with: action),
-                                   modifierFlags: self.getModifier(with: action),
-                                   propertyList: ["title": action.documentAction.title, "is-global": action.isGlobal])
-        return command
+        return UIKeyCommand(title: action.title,
+        action: #selector(UIWindow.onAction),
+        input: self.getInput(with: action),
+        modifierFlags: self.getModifier(with: action),
+        propertyList: ["title": action.documentAction.title, "is-global": action.isGlobal])
     }
     
     public func addAction(for action: KeyAction, on: UIViewController?, block: @escaping () -> Void) {
@@ -462,9 +468,10 @@ public struct KeyBinding {
 
 private var actionKey: Void?
 private var validatehandlerKey: Void?
+
 extension UIWindow {
     open override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
-        if action == #selector(UIWindow.onAction) {
+        if #available(iOS 13.0, *), action == #selector(UIWindow.onAction) {
             return true
         }
         
@@ -472,13 +479,14 @@ extension UIWindow {
     }
     
     open override func target(forAction action: Selector, withSender sender: Any?) -> Any? {
-        if action == #selector(UIWindow.onAction) {
+        if #available(iOS 13.0, *), action == #selector(UIWindow.onAction) {
             return self
         }
         
         return super.target(forAction: action, withSender: sender)
     }
     
+    @available(iOS 13.0, *)
     open override func validate(_ command: UICommand) {
         if (objc_getAssociatedObject(self, &validatehandlerKey) as? (UICommand) -> Bool)?(command) ?? true {
             command.attributes = []
@@ -487,10 +495,12 @@ extension UIWindow {
         }
     }
     
+    @available(iOS 13.0, *)
     public func addValidateHandler(_ handler: @escaping (UICommand) -> Bool) {
         objc_setAssociatedObject(self, &validatehandlerKey, handler, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
     }
     
+    @available(iOS 13.0, *)
     @objc fileprivate func onAction(command: UIKeyCommand) {
         if let map = objc_getAssociatedObject(self, &actionKey) as? [String: WeakObj] {
             map[command.title]?.block?()
@@ -519,25 +529,6 @@ extension UIWindow {
             objc_setAssociatedObject(self, &actionKey, map, .OBJC_ASSOCIATION_RETAIN)
         } else {
             objc_setAssociatedObject(self, &actionKey, [action.title: WeakObj(obj: obj, block: block)], .OBJC_ASSOCIATION_RETAIN)
-        }
-    }
-}
-
-private var commandKey: Void?
-extension UIViewController {
-    @available(iOS 13.0, *)
-    public var dismissKeyCommand: UIKeyCommand {
-        let command = UIKeyCommand(title: "", action: #selector(UIWindow.dismissPopover), input: UIKeyCommand.inputEscape)
-        objc_setAssociatedObject(command, &commandKey, self, .OBJC_ASSOCIATION_ASSIGN)
-        return command
-    }
-}
-
-extension UIWindow {
-    @objc fileprivate func dismissPopover(command: UIKeyCommand) {
-        guard let viewController = objc_getAssociatedObject(command, &commandKey) as? UIViewController else { return }
-        if let presentedViewController = viewController.presentedViewController, presentedViewController.modalPresentationStyle == .popover {
-            presentedViewController.dismiss(animated: true)
         }
     }
 }

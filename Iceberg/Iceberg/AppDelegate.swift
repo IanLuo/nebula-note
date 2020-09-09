@@ -9,6 +9,7 @@
 import UIKit
 import SwiftyBeaver
 import RxSwift
+import Interface
 //import Firebase
 #if DEBUG
 //import ShowTime
@@ -48,7 +49,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             
             self.window?.makeKeyAndVisible()
         }
-                                        
+        
         return true
     }
     

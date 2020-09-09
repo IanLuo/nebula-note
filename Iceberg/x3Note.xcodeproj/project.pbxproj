@@ -137,7 +137,6 @@
 		E462DB97223D251A00BF7AB4 /* DateAndTimeSelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E462DB96223D251A00BF7AB4 /* DateAndTimeSelectViewController.swift */; };
 		E462DB9A223D259F00BF7AB4 /* DateSelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E462DB99223D259F00BF7AB4 /* DateSelectViewController.swift */; };
 		E462DB9C223D264800BF7AB4 /* TimeSelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E462DB9B223D264800BF7AB4 /* TimeSelectViewController.swift */; };
-		E465F8792240E7CC00FA6E83 /* ToolbarAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = E465F8782240E7CC00FA6E83 /* ToolbarAction.swift */; };
 		E465F8802241FF6800FA6E83 /* TextViewCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = E465F87F2241FF6800FA6E83 /* TextViewCommand.swift */; };
 		E465F8822242269000FA6E83 /* DocumentEditViewController+ToolbarDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E465F8812242269000FA6E83 /* DocumentEditViewController+ToolbarDelegate.swift */; };
 		E466D186221D930A007F140B /* SeparaterAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = E466D185221D930A007F140B /* SeparaterAttachment.swift */; };
@@ -230,7 +229,8 @@
 		E4D31DEE227DA633001F5272 /* URLHandlerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D31DED227DA633001F5272 /* URLHandlerManager.swift */; };
 		E4D7B14524C349BA00503870 /* UIView+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D7B14424C349BA00503870 /* UIView+Convenience.swift */; };
 		E4E1B146224B27040061D327 /* KeyValueStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F870321902DB3006C4CDB /* KeyValueStore.swift */; };
-		E4E1E899250507F000366EAD /* KeyCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4130CB824ED643800EA08C0 /* KeyCommands.swift */; };
+		E4E1E89A25092E1B00366EAD /* KeyCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4130CB824ED643800EA08C0 /* KeyCommands.swift */; };
+		E4E1E89B25092ECA00366EAD /* ToolbarAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = E465F8782240E7CC00FA6E83 /* ToolbarAction.swift */; };
 		E4E7ABD123CE04DA005628E6 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E4E7ABD323CE04DA005628E6 /* Localizable.strings */; };
 		E4E7ABD623CE0576005628E6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E4E7ABD523CE0576005628E6 /* LaunchScreen.storyboard */; };
 		E4E7ABD923CE0E5E005628E6 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E4E7ABD323CE04DA005628E6 /* Localizable.strings */; };
@@ -819,8 +819,10 @@
 				E4A46A1D21AE6CF400FBDA04 /* Image+Generation.swift */,
 				E4B1BED32342304200683E10 /* Builder */,
 				E4CC0C5821EEF92900058E5D /* Size.swift */,
+				E4130CB824ED643800EA08C0 /* KeyCommands.swift */,
 				E479512023C09B76000CFDE3 /* Paragraph.swift */,
 				E4BC264121F56DB900B0F2B9 /* Rect.swift */,
+				E465F8782240E7CC00FA6E83 /* ToolbarAction.swift */,
 				E4F3029D21D750ED00BDE178 /* Autolayout+Shortcuts.swift */,
 				E4BC264321F587BC00B0F2B9 /* FrameLayout+Shortcuts.swift */,
 				E4CF20782465A83F005E38CE /* Misc.swift */,
@@ -1129,7 +1131,6 @@
 				E44825A2219722C300C17568 /* Application.swift */,
 				E4F885E9226D5BE700748868 /* Coordinator.swift */,
 				E4BA6B1925048CEC00A19321 /* Coordinator+Navigate.swift */,
-				E4130CB824ED643800EA08C0 /* KeyCommands.swift */,
 				E4A85B99239BEECD00A41EFD /* ViewModelProtocol.swift */,
 				E47400B0241C799D0071BF73 /* launchIcon.png */,
 				E4E7ABD523CE0576005628E6 /* LaunchScreen.storyboard */,
@@ -1399,7 +1400,6 @@
 				E465F8812242269000FA6E83 /* DocumentEditViewController+ToolbarDelegate.swift */,
 				E4144EA422854A0B00CB12FF /* DocumentEditViewController+Menu.swift */,
 				E47829FC222E683B0054513E /* InputToolbar.swift */,
-				E465F8782240E7CC00FA6E83 /* ToolbarAction.swift */,
 				E4EA856221D1F83800DD92F9 /* HeadingsOutlineViewController.swift */,
 				E465F87F2241FF6800FA6E83 /* TextViewCommand.swift */,
 				E4A46A2821B28ED800FBDA04 /* DocumentEditViewModel.swift */,
@@ -2066,6 +2066,8 @@
 				E40F6E90223B78DB00FFF53F /* Border.swift in Sources */,
 				E40F6EA1223B7A7200FFF53F /* ActionsViewController.swift in Sources */,
 				E4191B8823560B370003263C /* UIViewController+Empty.swift in Sources */,
+				E4E1E89B25092ECA00366EAD /* ToolbarAction.swift in Sources */,
+				E4E1E89A25092E1B00366EAD /* KeyCommands.swift in Sources */,
 				E40F6E99223B7A5300FFF53F /* assets.swift in Sources */,
 				E43FDAD2228B028600FA899B /* Alert.swift in Sources */,
 				E4AE275322D1E42600315CE6 /* LoadingViewController.swift in Sources */,
@@ -2224,7 +2226,6 @@
 				E41CB15921D87CD100EF0A3C /* BrowserCoordinator.swift in Sources */,
 				E41B893621E3497D009C5AD7 /* VideoAttachmentView.swift in Sources */,
 				E4144EA722854B5800CB12FF /* DocumentEditViewController+UserInteraction.swift in Sources */,
-				E465F8792240E7CC00FA6E83 /* ToolbarAction.swift in Sources */,
 				E4EA855C21D1DACE00DD92F9 /* AttachmentVideoViewController.swift in Sources */,
 				E428B89C2343A5900026AC1F /* BrowserViewController.swift in Sources */,
 				E41B892621E31B07009C5AD7 /* DashboardViewModel.swift in Sources */,
@@ -2263,7 +2264,6 @@
 				E41CB16421D8899200EF0A3C /* HomeViewController.swift in Sources */,
 				E41CB15D21D8844000EF0A3C /* CaptureListCoordinator.swift in Sources */,
 				E4EA857721D3B0AC00DD92F9 /* EditorCoordinator.swift in Sources */,
-				E4E1E899250507F000366EAD /* KeyCommands.swift in Sources */,
 				E4C3890923EC50180077B393 /* AttachmentManagerViewController.swift in Sources */,
 				E41A538621D4C577002B11E9 /* AgendaTableCell.swift in Sources */,
 				E4A85B98239BB3AF00A41EFD /* TrashCell.swift in Sources */,
@@ -2440,11 +2440,11 @@
 				CLANG_USE_OPTIMIZATION_PROFILE = NO;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 205;
+				CURRENT_PROJECT_VERSION = 206;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 26RSSM9Q9P;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 205;
+				DYLIB_CURRENT_VERSION = 206;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = Interface/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -2475,11 +2475,11 @@
 				CLANG_USE_OPTIMIZATION_PROFILE = NO;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 205;
+				CURRENT_PROJECT_VERSION = 206;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 26RSSM9Q9P;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 205;
+				DYLIB_CURRENT_VERSION = 206;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = Interface/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -2509,11 +2509,11 @@
 				CLANG_USE_OPTIMIZATION_PROFILE = NO;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 205;
+				CURRENT_PROJECT_VERSION = 206;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 26RSSM9Q9P;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 205;
+				DYLIB_CURRENT_VERSION = 206;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = Core/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -2551,11 +2551,11 @@
 				CLANG_USE_OPTIMIZATION_PROFILE = NO;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 205;
+				CURRENT_PROJECT_VERSION = 206;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 26RSSM9Q9P;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 205;
+				DYLIB_CURRENT_VERSION = 206;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = Core/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -2755,7 +2755,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 205;
+				CURRENT_PROJECT_VERSION = 206;
 				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = NO;
 				DEVELOPMENT_TEAM = 26RSSM9Q9P;
 				INFOPLIST_FILE = Info.plist;
@@ -2788,7 +2788,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 205;
+				CURRENT_PROJECT_VERSION = 206;
 				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = NO;
 				DEVELOPMENT_TEAM = 26RSSM9Q9P;
 				INFOPLIST_FILE = Info.plist;

@@ -182,6 +182,11 @@ public class Coordinator {
     open func start(from: Coordinator?, animated: Bool = true) {
         if let f = from {
             f.addChild(self)
+            
+            if #available(iOS 13, *) {
+                self.viewController?.addKeyCommand(KeyBinding().create(for: KeyAction.cancel))
+            }
+            
             self.moveIn(top: f.topViewController, animated: animated)
         }
     }
@@ -222,6 +227,24 @@ extension Coordinator {
         }
         
         return nil
+    }
+    
+    public var allCoordinatorsInBranch: [Coordinator] {
+        var allCoordinatorsInBranch: [Coordinator] = [self]
+        
+        for c in self.children {
+            allCoordinatorsInBranch.append(contentsOf: c.allCoordinatorsInBranch)
+        }
+        
+        return allCoordinatorsInBranch
+    }
+    
+    public var topMostCoordinator: Coordinator {
+        let sorted = self.rootCoordinator.allCoordinatorsInBranch.sorted { (c1: Coordinator, c2: Coordinator) -> Bool in
+            c1.level > c2.level
+        }
+        
+        return sorted.first ?? self
     }
     
     // find the top view controller in this coordinator

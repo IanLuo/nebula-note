@@ -75,6 +75,7 @@ public class DesktopHomeViewController: UIViewController {
         self.documentTabsContainerViewController.addTabs(editorCoordinator: editorCoordinator, shouldSelected: souldSelect)
     }
     
+    @available(iOS 13.0, *)
     public func isCommandAvailable(command: UICommand) -> Bool {
         guard command.propertyList != nil else { return true }
         return self.documentTabsContainerViewController.isCommandAvailable(command: command)
@@ -105,10 +106,18 @@ public class DesktopHomeViewController: UIViewController {
         
         
         if #available(iOS 13.0, *) {
+            let binding = KeyBinding()
+            if isPad {
+                KeyAction.allCases.filter({ $0.isGlobal }).forEach {
+                    self.addKeyCommand(binding.create(for: $0))
+                }
+            }
+
             self.coordinator?.enableGlobalNavigateKeyCommands()
         }
     }
     
+    @available(iOS 13.0, *)
     public override func buildMenu(with builder: UIMenuBuilder) {
         super.buildMenu(with: builder)
         

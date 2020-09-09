@@ -133,6 +133,7 @@ public class HomeCoordinator: Coordinator {
         return self._viewModel.allTags
     }
     
+    @available(iOS 13.0, *)
     public func isCommandAvailable(command: UICommand) -> Bool {
         guard let desktopHome = self.viewController as? DesktopHomeViewController else { return false }
         
