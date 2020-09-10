@@ -34,6 +34,16 @@ public class AttachmentLinkViewController: ModalFormViewController, AttachmentVi
         self.addTextFied(title: L10n.CaptureLink.Url.title, placeHoder: L10n.CaptureLink.Url.placeholder, defaultValue: self.defaultURL, keyboardType: .URL)
         self.title = L10n.CaptureLink.title
         
+        self.onValidating = { data in
+            if (data[L10n.CaptureLink.Title.title] as? String)?.count == 0 {
+                return [L10n.CaptureLink.Title.title: ""]
+            } else if (data[L10n.CaptureLink.Url.title] as? String)?.count == 0 {
+                return [L10n.CaptureLink.Url.title: ""]
+            }
+            
+            return [:]
+        }
+        
         self.makeFirstTextFieldFirstResponder()
     }
     

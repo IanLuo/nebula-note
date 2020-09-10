@@ -8,6 +8,8 @@
 
 import Foundation
 import UIKit
+import RxSwift
+import RxCocoa
 
 public protocol ModalFormViewControllerDelegate: class {
     func modalFormDidCancel(viewController: ModalFormViewController)
@@ -83,6 +85,8 @@ open class ModalFormViewController: TransitionViewController {
     public var onCancel: ((ModalFormViewController) -> Void)?
     
     public var onValidating: (([String: Codable]) -> [String: String])?
+    
+    private let disposeBag = DisposeBag()
     
     public weak var delegate: ModalFormViewControllerDelegate?
     
@@ -268,6 +272,7 @@ open class ModalFormViewController: TransitionViewController {
     }
     
     @objc private func save() {
+        guard self.performValidation(formData: self.formData) else { return }
         self.tableView.endEditing(true)
         self.delegate?.modalFormDidSave(viewController: self, formData: self.formData)
         self.onSaveValue?(self.formData, self)
@@ -280,7 +285,8 @@ open class ModalFormViewController: TransitionViewController {
     }
     
     // MARK: - validation -
-    private func performValidation(formData: [String: Codable]) {
+    @discardableResult
+    private func performValidation(formData: [String: Codable]) -> Bool {
         var validateResult: [String: String] = [:]
         if let onValidating = onValidating {
             validateResult = onValidating(formData)
@@ -291,6 +297,8 @@ open class ModalFormViewController: TransitionViewController {
         }
         
         self.showValidationResult(validateResult)
+        
+        return validateResult.count == 0
     }
     
     private func showValidationResult(_ result: [String: String]) {
@@ -299,7 +307,7 @@ open class ModalFormViewController: TransitionViewController {
         
         // 调用每个 cell 对应显示问题的方法
         for i in 0..<self.items.count {
-            if let validatable = tableView.cellForRow(at: IndexPath(row: i, section: 0)) as? Validatable {
+            if let validatable = tableView.cellForRow(at: IndexPath(row: i, section: 0)) as? FormCellProtocol {
                 if let p = result[validatable.validateKey] {
                     validatable.showValidationResult(p)
                 } else {
@@ -329,6 +337,13 @@ extension ModalFormViewController: UITableViewDataSource, UITableViewDelegate {
             let cell = tableView.dequeueReusableCell(withIdentifier: InputTextFieldCell.reuseIdentifier, for: indexPath) as! InputTextFieldCell
             cell.item = item
             cell.delegate = self
+            cell.onReturn.subscribe(onNext: {
+                if indexPath.row == self.items.count - 1 {
+                    self.delegate?.modalFormDidSave(viewController: self, formData: self.formData)
+                } else {
+                    self.save()
+                }
+            }).disposed(by: self.disposeBag)
             return cell
         case .textView:
             let cell = tableView.dequeueReusableCell(withIdentifier: InputTextViewCell.reuseIdentifier, for: indexPath) as! InputTextViewCell
@@ -349,9 +364,11 @@ extension ModalFormViewController: CellValueDelegate {
     }
 }
 
-fileprivate protocol Validatable {
+fileprivate protocol FormCellProtocol {
     func showValidationResult(_ problem: String?)
     var validateKey: String { get }
+    var onReturn: PublishSubject<Void> { get set }
+    var onNext: PublishSubject<Void> { get set }
 }
 
 //
@@ -359,11 +376,21 @@ fileprivate protocol Validatable {
 //
 
 // MARK: - InputTextViewCell
-private class InputTextViewCell: UITableViewCell, UITextViewDelegate, Validatable {
+private class InputTextViewCell: UITableViewCell, UITextViewDelegate, FormCellProtocol {
+    var onReturn: PublishSubject<Void> = PublishSubject()
+    
+    var onNext: PublishSubject<Void> = PublishSubject()
+    
     fileprivate static let reuseIdentifier = "InputTextViewCell"
     fileprivate static let height: CGFloat = 150
     
     weak var delegate: CellValueDelegate?
+    
+    var cellReuseBag: DisposeBag = DisposeBag()
+    
+    override func prepareForReuse() {
+        cellReuseBag = DisposeBag()
+    }
     
     fileprivate var item: ModalFormViewController.InputType? {
         didSet {
@@ -447,11 +474,21 @@ private class InputTextViewCell: UITableViewCell, UITextViewDelegate, Validatabl
 }
 
 // MARK: - InputTextFieldCell
-private class InputTextFieldCell: UITableViewCell, UITextFieldDelegate, Validatable{
+private class InputTextFieldCell: UITableViewCell, UITextFieldDelegate, FormCellProtocol{
+    var onReturn: PublishSubject<Void> = PublishSubject()
+    
+    var onNext: PublishSubject<Void> = PublishSubject()
+    
     fileprivate static let reuseIdentifier = "InputTextFieldCell"
     fileprivate static let height: CGFloat = 110
     
     weak var delegate: CellValueDelegate?
+    
+    var cellReuseBag: DisposeBag = DisposeBag()
+    
+    override func prepareForReuse() {
+        cellReuseBag = DisposeBag()
+    }
     
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -465,7 +502,7 @@ private class InputTextFieldCell: UITableViewCell, UITextFieldDelegate, Validata
         return self.textField.becomeFirstResponder()
     }
     
-    private let textField: TextField = {
+    private lazy var textField: TextField = {
         let textField = TextField()
         textField.font = InterfaceTheme.Font.body
         textField.textColor = InterfaceTheme.Color.interactive
@@ -474,6 +511,7 @@ private class InputTextFieldCell: UITableViewCell, UITextFieldDelegate, Validata
         textField.backgroundColor = InterfaceTheme.Color.background2
         textField.layer.cornerRadius = 8
         textField.layer.masksToBounds = true
+        textField.delegate = self
         
         return textField
     }()
@@ -513,6 +551,7 @@ private class InputTextFieldCell: UITableViewCell, UITextFieldDelegate, Validata
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         if string == "\n" {
+            self.onReturn.onNext(())
             return false
         }
         
