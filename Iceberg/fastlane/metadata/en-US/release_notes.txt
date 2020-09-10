@@ -1,12 +1,7 @@
 * New feature
-- Link to other document
-- Adding link now bring the selected text as default title
-- Now creating blocks, will bring selected text into them
-- Now picking image is able to add from files
+- Add keyboard binding
 * Bug fix and improvments
-- Sometimes the file can not be deleted
-- Renaming and deleting file now will update the macOS version tabs correctly
-- Fix unneeded reload request whe writing
-- Fix the confirm UI layout
-- Fix the UI for creating link
-- Fix some animation glich
+- Add refresh button in select idea view, now you can directly use any new idea from other app without close editor
+- Fix conflict when idea syncing
+- Fix attachment manager can't select multiple items on macOS version
+- Other small fixs

@@ -388,6 +388,8 @@
 "key.command.highlightText" = "高亮文字";
 "key.command.moveUp" = "上移";
 "key.command.moveDown" = "下移";
+"key.command.moveLeft" = "左移";
+"key.command.moveRight" = "右移";
 "key.command.seperator" = "插入分割线";
 "key.command.codeBlock" = "插入代码块";
 "key.command.quoteBlock" = "插入引用块";
@@ -404,3 +406,11 @@
 "key.command.unfoldAll" = "全部展开";
 "key.command.outline" = "显示目录";
 "key.command.inspector" = "显示文件信息";
+"key.command.group.action" = "操作";
+"key.command.group.attachment" = "附件";
+"key.command.group.text" = "文字";
+"key.command.group.insert" = "插入";
+"key.command.group.other" = "其他";
+"key.command.group.view" = "视图";
+"key.command.group.edit" = "编辑";
+"key.command.group.capture" = "灵感";

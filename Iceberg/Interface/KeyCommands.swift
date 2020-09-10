@@ -32,6 +32,8 @@ public enum KeyAction: String, CaseIterable {
     case highlight
     case moveUp
     case moveDown
+    case moveLeft
+    case moveRight
     case seperator
     case codeBlock
     case quoteBlock
@@ -156,6 +158,10 @@ public enum KeyAction: String, CaseIterable {
             return L10n.Key.Command.outline
         case .inspector:
             return L10n.Key.Command.inspector
+        case .moveLeft:
+            return L10n.Key.Command.moveLeft
+        case .moveRight:
+            return L10n.Key.Command.moveRight
         }
     }
     
@@ -205,6 +211,10 @@ public enum KeyAction: String, CaseIterable {
             return NormalAction.moveUp
         case .moveDown:
             return NormalAction.moveDown
+        case .moveLeft:
+            return NormalAction.increaseIndent
+        case .moveRight:
+            return NormalAction.decreaseIndent
         case .seperator:
             return NormalAction.seperator
         case .codeBlock:
@@ -251,8 +261,8 @@ public struct KeyBinding {
     public init() {}
     
     let keyBindingMap: [KeyAction: String] = [
-        .toggleLeftPart: "ctl`shift`1",
-        .toggleMiddlePart: "ctl`shift`2",
+        .toggleLeftPart: "cmd`shift`1",
+        .toggleMiddlePart: "cmd`shift`2",
         .agendaTab: "ctl`cmd`1",
         .ideaTab: "ctl`cmd`2",
         .searchTab: "ctl`cmd`3",
@@ -267,25 +277,27 @@ public struct KeyBinding {
         .pickIdeaMenu: "ctl`cmd`i",
         .pickAttachmentMenu: "ctl`cmd`a",
         .addAttachmentMenu: "ctl`cmd`=",
-        .toggleFullWidth: "ctl`cmd`/",
-        .foldAll: "ctl`cmd`[",
-        .unfoldAll: "ctl`cmd`]",
-        .outline: "ctl`cmd`'",
-        .inspector: "ctl`cmd`;",
+        .toggleFullWidth: "cmd`shift`0",
+        .foldAll: "cmd`[",
+        .unfoldAll: "cmd`]",
+        .outline: "cmd`'",
+        .inspector: "cmd`;",
         .captureIdea: "ctl`cmd`c",
-        .bold: "cmd`shift`b",
-        .italic: "cmd`shift`i",
-        .underscore: "cmd`shift`u",
-        .strikeThrough: "cmd`shift`s",
-        .highlight: "cmd`shift`h",
-        .moveUp: "cmd`shift`\(UIKeyCommand.inputUpArrow)",
-        .moveDown: "cmd`shift`\(UIKeyCommand.inputDownArrow)",
-        .seperator: "cmd`shift`-",
+        .bold: "cmd`b",
+        .highlight: "cmd`g",
+        .italic: "cmd`i",
+        .underscore: "cmd`u",
+        .strikeThrough: "cmd`ctl`k",
+        .moveUp: "cmd`\(UIKeyCommand.inputUpArrow)",
+        .moveDown: "cmd`\(UIKeyCommand.inputDownArrow)",
+        .seperator: "cmd`-",
         .codeBlock: "cmd`shift`c",
         .quoteBlock: "cmd`shift`q",
-        .checkbox: "cmd`shift`x",
-        .list: "cmd`shift`l",
-        .orderedList: "cmd`shift`o",
+        .checkbox: "cmd`ctl`x",
+        .list: "cmd`ctl`,",
+        .orderedList: "cmd`ctl`.",
+        .moveLeft: "cmd`\(UIKeyCommand.inputLeftArrow)",
+        .moveRight: "cmd`\(UIKeyCommand.inputRightArrow)",
         .cancel: UIKeyCommand.inputEscape
     ]
     
@@ -311,7 +323,7 @@ public struct KeyBinding {
             }
         }
         
-        builder.insertSibling(UIMenu(title: "View",
+        builder.insertSibling(UIMenu(title: L10n.Key.Command.Group.view,
                                      image: nil,
                                      identifier: Menu.panel.identifier,
                                      options: [],
@@ -332,17 +344,17 @@ public struct KeyBinding {
                               atEndOfMenu: Menu.panel.identifier)
         
         
-        builder.insertSibling(UIMenu(title: "Edit",
+        builder.insertSibling(UIMenu(title: L10n.Key.Command.Group.edit,
                                      identifier: Menu.editor.identifier),
                               afterMenu: Menu.panel.identifier)
         
-        builder.insertSibling(UIMenu(title: "Capture",
+        builder.insertSibling(UIMenu(title: L10n.Key.Command.Group.capture,
                                      identifier: Menu.capture.identifier,
                                      children: [KeyAction.captureIdea]
                                         .map { self.create(for: $0) }),
                               afterMenu: Menu.editor.identifier)
         
-        builder.insertChild(UIMenu(title: "Actions",
+        builder.insertChild(UIMenu(title: L10n.Key.Command.Group.action,
                                      image: nil,
                                      identifier: Menu.editorAction.identifier,
                                      options: [],
@@ -356,7 +368,7 @@ public struct KeyBinding {
                                         ].map { self.create(for: $0) }),
                               atStartOfMenu: Menu.editor.identifier)
         
-        builder.insertSibling(UIMenu(title: "Attachments",
+        builder.insertSibling(UIMenu(title: L10n.Key.Command.Group.attachment,
                                    image: nil,
                                    identifier: Menu.editorAttachment.identifier,
                                    options: [],
@@ -367,7 +379,7 @@ public struct KeyBinding {
                                     ].map { self.create(for: $0) }),
                             afterMenu: Menu.editorAction.identifier)
         
-        builder.insertSibling(UIMenu(title: "Text",
+        builder.insertSibling(UIMenu(title: L10n.Key.Command.Group.text,
                                    image: nil,
                                    identifier: Menu.editorText.identifier,
                                    options: [],
@@ -379,7 +391,7 @@ public struct KeyBinding {
                                     ].map { self.create(for: $0) }),
         afterMenu: Menu.editorAttachment.identifier)
         
-        builder.insertSibling(UIMenu(title: "Insert",
+        builder.insertSibling(UIMenu(title: L10n.Key.Command.Group.insert,
                                    image: nil,
                                    identifier: Menu.editorInsert.identifier,
                                    options: [],
@@ -393,7 +405,7 @@ public struct KeyBinding {
                                     ].map { self.create(for: $0) }),
         afterMenu: Menu.editorText.identifier)
         
-        builder.insertSibling(UIMenu(title: "Other",
+        builder.insertSibling(UIMenu(title: L10n.Key.Command.Group.other,
                                    image: nil,
                                    identifier: Menu.editorOther.identifier,
                                    options: [],
@@ -405,7 +417,7 @@ public struct KeyBinding {
                                     ].map { self.create(for: $0) }),
         afterMenu: Menu.editorInsert.identifier)
         
-        builder.insertSibling(UIMenu(title: "Other",
+        builder.insertSibling(UIMenu(title: "",
                                    image: nil,
                                    identifier: Menu.editorOther2.identifier,
                                    options: [.displayInline],
@@ -415,7 +427,7 @@ public struct KeyBinding {
                                     ].map { self.create(for: $0) }),
         afterMenu: Menu.editorOther.identifier)
         
-        builder.insertSibling(UIMenu(title: "Other",
+        builder.insertSibling(UIMenu(title: "",
                                    image: nil,
                                    identifier: Menu.editorOther3.identifier,
                                    options: [.displayInline],

@@ -1598,8 +1598,8 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = E434281E2121BF6000EC6DC3 /* Build configuration list for PBXNativeTarget "x3Note" */;
 			buildPhases = (
-				2321C1BB856E335423F37C5B /* [CP] Check Pods Manifest.lock */,
 				E465E4A2222392380014673D /* ShellScript */,
+				2321C1BB856E335423F37C5B /* [CP] Check Pods Manifest.lock */,
 				E43427F22121BF5B00EC6DC3 /* Sources */,
 				E43427F32121BF5B00EC6DC3 /* Frameworks */,
 				E43427F42121BF5B00EC6DC3 /* Resources */,

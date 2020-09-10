@@ -644,6 +644,10 @@ public enum L10n {
       public static let list = L10n.tr("Localizable", "key.command.list")
       /// Move Down
       public static let moveDown = L10n.tr("Localizable", "key.command.moveDown")
+      /// Move Left
+      public static let moveLeft = L10n.tr("Localizable", "key.command.moveLeft")
+      /// Move Right
+      public static let moveRight = L10n.tr("Localizable", "key.command.moveRight")
       /// Move Up
       public static let moveUp = L10n.tr("Localizable", "key.command.moveUp")
       /// Toggle Ordered List
@@ -680,6 +684,24 @@ public enum L10n {
       public static let underscoreText = L10n.tr("Localizable", "key.command.underscoreText")
       /// Unfold All
       public static let unfoldAll = L10n.tr("Localizable", "key.command.unfoldAll")
+      public enum Group {
+        /// Action
+        public static let action = L10n.tr("Localizable", "key.command.group.action")
+        /// Attachment
+        public static let attachment = L10n.tr("Localizable", "key.command.group.attachment")
+        /// Capture
+        public static let capture = L10n.tr("Localizable", "key.command.group.capture")
+        /// Edit
+        public static let edit = L10n.tr("Localizable", "key.command.group.edit")
+        /// Insert
+        public static let insert = L10n.tr("Localizable", "key.command.group.insert")
+        /// Other
+        public static let other = L10n.tr("Localizable", "key.command.group.other")
+        /// Text
+        public static let text = L10n.tr("Localizable", "key.command.group.text")
+        /// View
+        public static let view = L10n.tr("Localizable", "key.command.group.view")
+      }
     }
   }
 

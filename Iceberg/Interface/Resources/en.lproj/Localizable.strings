@@ -386,6 +386,8 @@
 "key.command.highlightText" = "Highlight Text";
 "key.command.moveUp" = "Move Up";
 "key.command.moveDown" = "Move Down";
+"key.command.moveLeft" = "Move Left";
+"key.command.moveRight" = "Move Right";
 "key.command.seperator" = "Insert Separator";
 "key.command.codeBlock" = "Insert Code Block";
 "key.command.quoteBlock" = "Insert Quote Block";
@@ -402,3 +404,11 @@
 "key.command.unfoldAll" = "Unfold All";
 "key.command.outline" = "Show Outline";
 "key.command.inspector" = "Show Inspector";
+"key.command.group.action" = "Action";
+"key.command.group.attachment" = "Attachment";
+"key.command.group.text" = "Text";
+"key.command.group.insert" = "Insert";
+"key.command.group.other" = "Other";
+"key.command.group.view" = "View";
+"key.command.group.edit" = "Edit";
+"key.command.group.capture" = "Capture";

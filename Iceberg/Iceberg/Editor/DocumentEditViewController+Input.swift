@@ -353,6 +353,14 @@ extension DocumentEditorViewController {
             self.didTriggerAction(NormalAction.orderedList, from: self.textView)
         }
         
+        binding.addAction(for: KeyAction.moveRight, on: self) {
+            self.didTriggerAction(NormalAction.increaseIndent, from: self.textView)
+        }
+        
+        binding.addAction(for: KeyAction.moveLeft, on: self) {
+            self.didTriggerAction(NormalAction.decreaseIndent, from: self.textView)
+        }
+        
         self.viewModel.context.coordinator?.enableGlobalNavigateKeyCommands()
     }
 }
