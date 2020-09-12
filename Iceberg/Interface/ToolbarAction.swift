@@ -77,6 +77,7 @@ public enum NormalAction: String, ToolbarActionProtocol, DocumentActon {
     case allAttachments
     case newAttachment
     case fileLink
+    case save
     
     public var title: String { return self.rawValue }
     
@@ -138,6 +139,8 @@ public enum NormalAction: String, ToolbarActionProtocol, DocumentActon {
             return Asset.Assets.add.image
         case .fileLink:
             return Asset.Assets.fileLink.image
+        case .save:
+            return Asset.Assets.save.image
         }
     }
 }

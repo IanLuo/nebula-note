@@ -361,6 +361,10 @@ extension DocumentEditorViewController {
             self.didTriggerAction(NormalAction.decreaseIndent, from: self.textView)
         }
         
+        binding.addAction(for: KeyAction.save, on: self) {
+            self.viewModel.save {}
+        }
+        
         self.viewModel.context.coordinator?.enableGlobalNavigateKeyCommands()
     }
 }

@@ -125,7 +125,7 @@ public class DocumentEditorViewController: UIViewController {
         // temp is used for show only the content, can't edit, like conflict preview
         if !self.viewModel.isTemp {
             if #available(iOS 13.0, *) {
-                if isPad {
+                if isPad || isPhone {
                     let binding = KeyBinding()
                     KeyAction.allCases.filter({ !$0.isGlobal }).forEach {
                         self.addKeyCommand(binding.create(for: $0))

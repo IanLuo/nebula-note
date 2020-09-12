@@ -20,7 +20,7 @@ public class InputToolbar: UIView {
     struct ActionGroup {
         let actions: [ToolbarActionProtocol]
         let isEnabled: Bool
-        let isAvailable: Bool
+        let isHidden: Bool
     }
     
     private static let paragraphActions = [NormalAction.paragraph]
@@ -31,51 +31,57 @@ public class InputToolbar: UIView {
     private static let undoAndRedo: [ToolbarActionProtocol] = [NormalAction.undo, NormalAction.redo]
     private static let insertSpecailContent: [ToolbarActionProtocol] = [NormalAction.seperator, NormalAction.sourcecode, NormalAction.quote, NormalAction.checkbox, NormalAction.dateAndTime, NormalAction.list, NormalAction.orderedList]
     private static let attachment: [ToolbarActionProtocol] = [NormalAction.fileLink, NormalAction.captured, NormalAction.allAttachments, NormalAction.newAttachment]
+    private static let file: [ToolbarActionProtocol] = [NormalAction.save]
     
-    private static let headless: [ActionGroup] = [ActionGroup(actions: paragraphActions, isEnabled: false, isAvailable: true),
-                                                  ActionGroup(actions: headingActions, isEnabled: true, isAvailable: true),
-                                                  ActionGroup(actions: textMark, isEnabled: true, isAvailable: true),
-                                                  ActionGroup(actions: undoAndRedo, isEnabled: true, isAvailable: true),
-                                                  ActionGroup(actions: moveCursor, isEnabled: true, isAvailable: !isMac),
-                                                  ActionGroup(actions: moveContent, isEnabled: true, isAvailable: true),
-                                                  ActionGroup(actions: insertSpecailContent, isEnabled: true, isAvailable: true),
-                                                  ActionGroup(actions: attachment, isEnabled: true, isAvailable: true)]
+    private static let headless: [ActionGroup] = [ActionGroup(actions: paragraphActions, isEnabled: false, isHidden: true),
+                                                  ActionGroup(actions: headingActions, isEnabled: true, isHidden: true),
+                                                  ActionGroup(actions: textMark, isEnabled: true, isHidden: true),
+                                                  ActionGroup(actions: undoAndRedo, isEnabled: true, isHidden: true),
+                                                  ActionGroup(actions: moveCursor, isEnabled: true, isHidden: !isMac),
+                                                  ActionGroup(actions: moveContent, isEnabled: true, isHidden: true),
+                                                  ActionGroup(actions: insertSpecailContent, isEnabled: true, isHidden: true),
+                                                  ActionGroup(actions: attachment, isEnabled: true, isHidden: true),
+                                                  ActionGroup(actions: file, isEnabled: true, isHidden: false)]
     
-    private static let actionsParagraph: [ActionGroup] = [ActionGroup(actions: paragraphActions, isEnabled: true, isAvailable: true),
-                                                          ActionGroup(actions: headingActions, isEnabled: true, isAvailable: true),
-                                                          ActionGroup(actions: textMark, isEnabled: true, isAvailable: true),
-                                                          ActionGroup(actions: undoAndRedo, isEnabled: true, isAvailable: true),
-                                                          ActionGroup(actions: moveCursor, isEnabled: true, isAvailable: !isMac),
-                                                          ActionGroup(actions: moveContent, isEnabled: true, isAvailable: true),
-                                                          ActionGroup(actions: insertSpecailContent, isEnabled: true, isAvailable: true),
-                                                          ActionGroup(actions: attachment, isEnabled: true, isAvailable: true)]
+    private static let actionsParagraph: [ActionGroup] = [ActionGroup(actions: paragraphActions, isEnabled: true, isHidden: true),
+                                                          ActionGroup(actions: headingActions, isEnabled: true, isHidden: true),
+                                                          ActionGroup(actions: textMark, isEnabled: true, isHidden: true),
+                                                          ActionGroup(actions: undoAndRedo, isEnabled: true, isHidden: true),
+                                                          ActionGroup(actions: moveCursor, isEnabled: true, isHidden: !isMac),
+                                                          ActionGroup(actions: moveContent, isEnabled: true, isHidden: true),
+                                                          ActionGroup(actions: insertSpecailContent, isEnabled: true, isHidden: true),
+                                                          ActionGroup(actions: attachment, isEnabled: true, isHidden: true),
+                                                          ActionGroup(actions: file, isEnabled: true, isHidden: false)]
     
-    private static let actionsHeading: [ActionGroup] = [ActionGroup(actions: paragraphActions, isEnabled: true, isAvailable: true),
-                                                        ActionGroup(actions: headingActions, isEnabled: true, isAvailable: true),
-                                                        ActionGroup(actions: textMark, isEnabled: false, isAvailable: true),
-                                                        ActionGroup(actions: undoAndRedo, isEnabled: true, isAvailable: true),
-                                                        ActionGroup(actions: moveCursor, isEnabled: true, isAvailable: !isMac),
-                                                        ActionGroup(actions: moveContent, isEnabled: true, isAvailable: true),
-                                                        ActionGroup(actions: insertSpecailContent, isEnabled: false, isAvailable: true),
-                                                        ActionGroup(actions: attachment, isEnabled: false, isAvailable: true)]
+    private static let actionsHeading: [ActionGroup] = [ActionGroup(actions: paragraphActions, isEnabled: true, isHidden: true),
+                                                        ActionGroup(actions: headingActions, isEnabled: true, isHidden: true),
+                                                        ActionGroup(actions: textMark, isEnabled: false, isHidden: true),
+                                                        ActionGroup(actions: undoAndRedo, isEnabled: true, isHidden: true),
+                                                        ActionGroup(actions: moveCursor, isEnabled: true, isHidden: !isMac),
+                                                        ActionGroup(actions: moveContent, isEnabled: true, isHidden: true),
+                                                        ActionGroup(actions: insertSpecailContent, isEnabled: false, isHidden: true),
+                                                        ActionGroup(actions: attachment, isEnabled: false, isHidden: true),
+                                                        ActionGroup(actions: file, isEnabled: true, isHidden: false)]
     
-    private static let quoteBlock: [ActionGroup] = [ActionGroup(actions: paragraphActions, isEnabled: true, isAvailable: true),
-                                                    ActionGroup(actions: headingActions, isEnabled: true, isAvailable: true),
-                                                    ActionGroup(actions: textMark, isEnabled: false, isAvailable: true),
-                                                    ActionGroup(actions: undoAndRedo, isEnabled: true, isAvailable: true),
-                                                    ActionGroup(actions: moveCursor, isEnabled: true, isAvailable: !isMac),
-                                                    ActionGroup(actions: moveContent, isEnabled: true, isAvailable: true),
-                                                    ActionGroup(actions: insertSpecailContent, isEnabled: false, isAvailable: true),
-                                                    ActionGroup(actions: attachment, isEnabled: false, isAvailable: true)]
+    private static let quoteBlock: [ActionGroup] = [ActionGroup(actions: paragraphActions, isEnabled: true, isHidden: true),
+                                                    ActionGroup(actions: headingActions, isEnabled: true, isHidden: true),
+                                                    ActionGroup(actions: textMark, isEnabled: false, isHidden: true),
+                                                    ActionGroup(actions: undoAndRedo, isEnabled: true, isHidden: true),
+                                                    ActionGroup(actions: moveCursor, isEnabled: true, isHidden: !isMac),
+                                                    ActionGroup(actions: moveContent, isEnabled: true, isHidden: true),
+                                                    ActionGroup(actions: insertSpecailContent, isEnabled: false, isHidden: true),
+                                                    ActionGroup(actions: attachment, isEnabled: false, isHidden: true),
+                                                    ActionGroup(actions: file, isEnabled: true, isHidden: false)]
     
-    private static let codeBlock: [ActionGroup] = [ActionGroup(actions: paragraphActions, isEnabled: true, isAvailable: true),
-                                                   ActionGroup(actions: headingActions, isEnabled: true, isAvailable: true),
-                                                   ActionGroup(actions: textMark, isEnabled: false, isAvailable: true),
-                                                   ActionGroup(actions: undoAndRedo, isEnabled: true, isAvailable: true),
-                                                   ActionGroup(actions: moveCursor, isEnabled: true, isAvailable: !isMac),
-                                                   ActionGroup(actions: moveContent, isEnabled: true, isAvailable: true),
-                                                   ActionGroup(actions: insertSpecailContent, isEnabled: false, isAvailable: true),
-                                                   ActionGroup(actions: attachment, isEnabled: false, isAvailable: true)]
+    private static let codeBlock: [ActionGroup] = [ActionGroup(actions: paragraphActions, isEnabled: true, isHidden: true),
+                                                   ActionGroup(actions: headingActions, isEnabled: true, isHidden: true),
+                                                   ActionGroup(actions: textMark, isEnabled: false, isHidden: true),
+                                                   ActionGroup(actions: undoAndRedo, isEnabled: true, isHidden: true),
+                                                   ActionGroup(actions: moveCursor, isEnabled: true, isHidden: !isMac),
+                                                   ActionGroup(actions: moveContent, isEnabled: true, isHidden: true),
+                                                   ActionGroup(actions: insertSpecailContent, isEnabled: false, isHidden: true),
+                                                   ActionGroup(actions: attachment, isEnabled: false, isHidden: true),
+                                                   ActionGroup(actions: file, isEnabled: true, isHidden: false)]
     
     public enum Mode {
         case  headless
@@ -183,7 +189,7 @@ public class InputToolbar: UIView {
 
 extension InputToolbar: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     private var actionGroups: [ActionGroup] {
-        return self._actions.filter{ $0.isAvailable }
+        return self._actions.filter{ $0.isHidden }
     }
     
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {

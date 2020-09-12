@@ -664,6 +664,8 @@ public enum L10n {
       public static let priorityMenu = L10n.tr("Localizable", "key.command.priorityMenu")
       /// Insert Quote Block
       public static let quoteBlock = L10n.tr("Localizable", "key.command.quoteBlock")
+      /// Save
+      public static let save = L10n.tr("Localizable", "key.command.save")
       /// Show Search
       public static let searchTab = L10n.tr("Localizable", "key.command.searchTab")
       /// Insert Separator

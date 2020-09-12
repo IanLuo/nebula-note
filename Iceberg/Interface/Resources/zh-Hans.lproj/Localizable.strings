@@ -369,6 +369,7 @@
 
 
 // key commnad
+"key.command.save" = "保存";
 "key.command.toggleLeftPart" = "左边栏";
 "key.command.toggleMiddlePart" = "中间栏";
 "key.command.agendaTab" = "显示日程";

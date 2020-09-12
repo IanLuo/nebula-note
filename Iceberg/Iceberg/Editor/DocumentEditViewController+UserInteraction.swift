@@ -87,8 +87,6 @@ extension DocumentEditorViewController: OutlineTextViewDelegate {
         
         let linkPath = linkStructure[OutlineParser.Key.Element.Link.url] as? String ?? ""
         let linkTitle = linkStructure[OutlineParser.Key.Element.Link.title] as? String ?? ""
-        let linkLength = linkStructure["length"] as? Int
-        let linkLocation = linkStructure["location"] as? Int
         let isDocumentLink = linkPath.hasPrefix(OutlineParser.Values.Link.x3)
         
         let openLinkText = isDocumentLink ? L10n.Document.Link.openDocumentLink : L10n.Document.Link.open
@@ -116,8 +114,8 @@ extension DocumentEditorViewController: OutlineTextViewDelegate {
                 let location = textView.rect(forStringRange: textView.selectedRange)?.center
                 
                 if isDocumentLink { // 编辑文档连接
-                    if let linkLocation = linkLocation, let linkLength = linkLength {
-                        self.showFileLinkChoose(location: characterIndex, linkRange: NSRange(location: linkLocation, length: linkLength))
+                    for case let linkToken in self.viewModel.tokens(at: characterIndex) where linkToken is LinkToken {
+                        self.showFileLinkChoose(location: characterIndex, linkRange: linkToken.range)
                     }
                 } else { // 编辑普通连接
                     self.viewModel.context.coordinator?.showLinkEditor(title: linkTitle, url: linkPath, from: self.textView, location: location, completeEdit: { [unowned self] linkString in

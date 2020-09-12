@@ -367,6 +367,7 @@
 
 
 // key commnad
+"key.command.save" = "Save";
 "key.command.toggleLeftPart" = "Toggle Left Part";
 "key.command.toggleMiddlePart" = "Toggle Middle Part";
 "key.command.agendaTab" = "Show Agenda";

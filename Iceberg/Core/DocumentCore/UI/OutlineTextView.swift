@@ -145,12 +145,13 @@ extension OutlineTextView: UIGestureRecognizerDelegate {
         if gestureRecognizer == self.tapGestureRecognizer {
             return self.tapped(gesture: self.tapGestureRecognizer)
         } else {
-            return true
+            return false
         }
     }
 }
 
 extension UITextView {
+    // avoid crash
     #if targetEnvironment(macCatalyst)
     @objc(_focusRingType)
     var focusRingType: UInt {
@@ -167,6 +168,10 @@ extension UITextView {
     /// - Parameter range: 文本范围
     /// - Returns: 文本范围所在的矩形范围
     public func rect(forStringRange range: NSRange) -> CGRect? {
+        var range = range
+        if range.location == self.text.count {
+            range = range.offset(-1)
+        }
         
         guard let start = self.position(from: self.beginningOfDocument, offset: range.location) else { return nil }
         guard let end = self.position(from: start, offset: range.length) else { return nil }

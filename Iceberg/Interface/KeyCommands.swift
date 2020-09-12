@@ -51,6 +51,7 @@ public enum KeyAction: String, CaseIterable {
     case outline
     case inspector
     case cancel
+    case save
     
     public var isGlobal: Bool {
         switch self {
@@ -162,6 +163,8 @@ public enum KeyAction: String, CaseIterable {
             return L10n.Key.Command.moveLeft
         case .moveRight:
             return L10n.Key.Command.moveRight
+        case .save:
+            return L10n.Key.Command.save
         }
     }
     
@@ -247,6 +250,8 @@ public enum KeyAction: String, CaseIterable {
             return OtherAction.outline
         case .inspector:
             return OtherAction.inspector
+        case .save:
+            return NormalAction.save
         }
     }
 }
@@ -278,27 +283,28 @@ public struct KeyBinding {
         .pickAttachmentMenu: "ctl`cmd`a",
         .addAttachmentMenu: "ctl`cmd`=",
         .toggleFullWidth: "cmd`shift`0",
-        .foldAll: "cmd`[",
-        .unfoldAll: "cmd`]",
-        .outline: "cmd`'",
-        .inspector: "cmd`;",
+        .foldAll: "cmd`ctl`[",
+        .unfoldAll: "cmd`ctl`]",
+        .outline: "cmd`ctl`'",
+        .inspector: "cmd`ctl`;",
         .captureIdea: "ctl`cmd`c",
         .bold: "cmd`b",
-        .highlight: "cmd`g",
+        .highlight: "cmd`l",
         .italic: "cmd`i",
         .underscore: "cmd`u",
-        .strikeThrough: "cmd`ctl`k",
+        .strikeThrough: "cmd`k",
         .moveUp: "cmd`\(UIKeyCommand.inputUpArrow)",
         .moveDown: "cmd`\(UIKeyCommand.inputDownArrow)",
-        .seperator: "cmd`-",
-        .codeBlock: "cmd`shift`c",
-        .quoteBlock: "cmd`shift`q",
+        .seperator: "cmd`ctl`-",
+        .codeBlock: "cmd`ctl`c",
+        .quoteBlock: "cmd`ctl`k",
         .checkbox: "cmd`ctl`x",
         .list: "cmd`ctl`,",
         .orderedList: "cmd`ctl`.",
         .moveLeft: "cmd`\(UIKeyCommand.inputLeftArrow)",
         .moveRight: "cmd`\(UIKeyCommand.inputRightArrow)",
-        .cancel: UIKeyCommand.inputEscape
+        .cancel: UIKeyCommand.inputEscape,
+        .save: "cmd`s"
     ]
     
     public func constructMenu(builder: UIMenuBuilder) {
@@ -331,7 +337,7 @@ public struct KeyBinding {
                                                 KeyAction.toggleMiddlePart,
                                         ].map { self.create(for: $0) }),
                               afterMenu: UIMenu.Identifier.application)
-        
+                
         builder.insertChild(UIMenu(title: "Tab",
                                      image: nil,
                                      identifier: Menu.tab.identifier,
@@ -345,7 +351,8 @@ public struct KeyBinding {
         
         
         builder.insertSibling(UIMenu(title: L10n.Key.Command.Group.edit,
-                                     identifier: Menu.editor.identifier),
+                                     identifier: Menu.editor.identifier,
+                                     children: [KeyAction.save].map { self.create(for: $0) }),
                               afterMenu: Menu.panel.identifier)
         
         builder.insertSibling(UIMenu(title: L10n.Key.Command.Group.capture,

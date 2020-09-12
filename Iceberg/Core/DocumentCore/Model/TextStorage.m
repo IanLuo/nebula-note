@@ -44,11 +44,11 @@ static NSMutableDictionary *attachmentMap;
         
         linkAttachment = [[NSTextAttachment alloc] init];
         linkAttachment.image = [UIImage imageNamed: @"link" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil];
-        linkAttachment.bounds = CGRectMake(0, 0, 15, 15);
+        linkAttachment.bounds = CGRectMake(0, -2, 15, 15);
         
         documentAttachment = [[NSTextAttachment alloc] init];
         documentAttachment.image = [UIImage imageNamed: @"document" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil];
-        documentAttachment.bounds = CGRectMake(0, 0, 15, 15);
+        documentAttachment.bounds = CGRectMake(0, -2, 15, 15);
         
         foldedAttachment = [[NSTextAttachment alloc] init];
         foldedAttachment.image = [[UIImage imageNamed: @"folded" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil] fillWithColor:[[InterfaceTheme Color]spotlight]];

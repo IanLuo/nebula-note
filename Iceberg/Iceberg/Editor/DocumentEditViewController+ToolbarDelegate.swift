@@ -171,6 +171,8 @@ extension DocumentEditorViewController: DocumentEditToolbarDelegate {
                     self.pickAttachment(selectedRange: self.textView.selectedRange)
                 case .fileLink:
                     self.showFileLinkChoose(location: currentLocation, linkRange: nil)
+                case .save:
+                    self.viewModel.save {}
                 }
             }
         }

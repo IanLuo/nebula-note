@@ -38,6 +38,10 @@ public class DocumentEditViewModel: ViewModelProtocol {
     
     public var currentTokens: [Token] = []
     
+    public func tokens(at location: Int) -> [Token] {
+        return self._editorService.tokens(at: location)
+    }
+    
     public var isReadyToEdit: Bool = false {
         didSet {
             if isReadyToEdit {
