@@ -37,7 +37,7 @@ public class PDFExporter: Exportable {
                 let webView = WKWebView(frame: CGRect(origin: .zero, size: CGSize(width: 10, height: 10)))
                 webView.navigationDelegate = self.tempDelegate
                 webView.loadFileURL(fileURL, allowingReadAccessTo: URL.directory(location: URLLocation.temporary))
-                UIApplication.shared.keyWindow?.addSubview(webView)
+                    UIApplication.shared.keyWindow?.addSubview(webView)
                 self.tempDelegate.didLoaded = {
                     completion(.file(self._createPDF(string: htmlString, printFormater: webView.viewPrintFormatter())))
                     self.keeper = nil

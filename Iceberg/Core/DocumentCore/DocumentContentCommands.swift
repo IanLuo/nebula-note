@@ -226,6 +226,7 @@ public class FoldingAndUnfoldingCommand: DocumentContentCommand {
         textStorage.removeAttribute(OutlineAttribute.showAttachment, range: heading.levelRange)
         textStorage.removeAttribute(OutlineAttribute.hidden, range: heading.levelRange)
         textStorage.removeAttribute(OutlineAttribute.hidden, range: heading.range)
+        textStorage.removeAttribute(OutlineAttribute.Link.title, range: range)
         
         range = range.length > 0 ? range : NSRange(location: range.location, length: 0)
         
@@ -267,6 +268,7 @@ public class FoldingAndUnfoldingCommand: DocumentContentCommand {
         textStorage.removeAttribute(OutlineAttribute.showAttachment, range: range)
         textStorage.removeAttribute(OutlineAttribute.showAttachment, range: heading.levelRange)
         textStorage.removeAttribute(OutlineAttribute.hidden, range: heading.levelRange)
+        textStorage.removeAttribute(OutlineAttribute.Link.title, range: range)
         
         textStorage.addAttributes([OutlineAttribute.tempHidden: OutlineAttribute.hiddenValueFolded,
                                    OutlineAttribute.tempShowAttachment: OutlineAttribute.Heading.folded],

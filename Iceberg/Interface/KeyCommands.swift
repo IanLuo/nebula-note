@@ -266,6 +266,7 @@ public struct KeyBinding {
     public init() {}
     
     let keyBindingMap: [KeyAction: String] = [
+        .captureIdea: "shift`cmd`c",
         .toggleLeftPart: "cmd`shift`1",
         .toggleMiddlePart: "cmd`shift`2",
         .agendaTab: "ctl`cmd`1",
@@ -287,7 +288,6 @@ public struct KeyBinding {
         .unfoldAll: "cmd`ctl`]",
         .outline: "cmd`ctl`'",
         .inspector: "cmd`ctl`;",
-        .captureIdea: "ctl`cmd`c",
         .bold: "cmd`b",
         .highlight: "cmd`l",
         .italic: "cmd`i",
@@ -431,6 +431,8 @@ public struct KeyBinding {
                                    children: [
                                     KeyAction.moveUp,
                                     KeyAction.moveDown,
+                                    KeyAction.moveLeft,
+                                    KeyAction.moveRight,
                                     ].map { self.create(for: $0) }),
         afterMenu: Menu.editorOther.identifier)
         

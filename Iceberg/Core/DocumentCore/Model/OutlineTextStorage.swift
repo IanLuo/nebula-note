@@ -439,8 +439,8 @@ extension OutlineTextStorage: OutlineParserDelegate {
                     textStorage.addAttributes([OutlineAttribute.hidden: 0, // 不隐藏
                         NSAttributedString.Key.foregroundColor: OutlineTheme.linkStyle.color,
                         NSAttributedString.Key.font: OutlineTheme.linkStyle.font,
-                        OutlineAttribute.Link.title: [OutlineParser.Key.Element.Link.title: text.nsstring.substring(with: titleRange),
-                                                      OutlineParser.Key.Element.Link.url: text.nsstring.substring(with: urlRange)]],
+                        OutlineAttribute.Link.title: [OutlineParser.Key.Element.Link.title: textStorage.string.nsstring.substring(with: titleRange),
+                                                      OutlineParser.Key.Element.Link.url: textStorage.string.nsstring.substring(with: urlRange)]],
                                               range: titleRange)
                     
                     let hiddenRange = urlRange.moveLeftBound(by: 1)

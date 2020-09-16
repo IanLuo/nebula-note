@@ -131,8 +131,6 @@ public class DocumentEditorViewController: UIViewController {
                         self.addKeyCommand(binding.create(for: $0))
                     }
                 }
-                
-                self.enableKeyBindings()
             }
 
             var closeButtonIcon = Asset.Assets.cross.image.fill(color: InterfaceTheme.Color.interactive)
@@ -239,6 +237,10 @@ public class DocumentEditorViewController: UIViewController {
         }
         
         self.view.becomeFirstResponder()
+        
+        if #available(iOS 13, *) {
+            self.enableKeyBindings()
+        }
     }
     
     public override func viewDidDisappear(_ animated: Bool) {
