@@ -41,6 +41,7 @@ public class Dependency {
     lazy var activityHandler: ActivityHandler = { ActivityHandler() }()
     lazy var purchaseManager: PurchaseManager = { PurchaseManager() }()
     lazy var userGuideService: UserGuideService = { UserGuideService() }()
+    lazy var publishFactory: PublishFactory = PublishFactory()
 }
 
 public class Coordinator {

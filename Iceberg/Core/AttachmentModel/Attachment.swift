@@ -230,6 +230,10 @@ public struct Attachment: Codable {
             return Disposables.create()
         }
     }
+    
+    public var serialize: String {
+        return OutlineParser.Values.Attachment.serialize(kind: self.kind.rawValue, value: self.key)
+    }
 }
 
 extension Attachment {

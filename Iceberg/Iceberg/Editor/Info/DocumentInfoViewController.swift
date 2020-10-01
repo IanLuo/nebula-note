@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import Interface
 import Core
+import RxSwift
 
 public class DocumentInfoViewController: TransitionViewController {
     public var contentView: UIView = {
@@ -19,6 +20,8 @@ public class DocumentInfoViewController: TransitionViewController {
     }()
     
     public var didCloseAction: (() -> Void)?
+    
+    private let disposeBag = DisposeBag()
     
     private lazy var _backButton: RoundButton = {
         let button = RoundButton()
@@ -79,20 +82,32 @@ public class DocumentInfoViewController: TransitionViewController {
         let exportViewController = ExportSelectViewController(exporterManager: self._viewModel.dependency.exportManager)
         exportViewController.delegate = self
         
+        let publishController = PublishSelectViewController(exporterManager: self._viewModel.dependency.exportManager, publishFactory: self._viewModel.dependency.publishFactory)
+        publishController.delegate = self
+        
         let basicInfoViewController = BasicInfoViewController(viewModel: self._viewModel)
 
         self.contentView.addSubview(exportViewController.view)
+        self.contentView.addSubview(publishController.view)
         self.contentView.addSubview(basicInfoViewController.view)
         
         self._backButton.columnAnchor(view: basicInfoViewController.view, space: 30, alignment: [])
         
         basicInfoViewController.view.sideAnchor(for: [.left, .right], to: self.contentView, edgeInset: 0)
         
-        basicInfoViewController.view.columnAnchor(view: exportViewController.view, space: 10)
+        basicInfoViewController.view.columnAnchor(view: publishController.view, space: 10)
+        
+        publishController.view.sideAnchor(for: [.left, .right], to: self.contentView, edgeInset: 0)
+        publishController.view.sizeAnchor(height: 120)
+        
+        publishController.view.columnAnchor(view: exportViewController.view, space: 10)
         
         exportViewController.view.sideAnchor(for: [.left, .right], to: self.contentView, edgeInset: 0)
         exportViewController.view.sideAnchor(for: .bottom, to: self.contentView, edgeInset: 10, considerSafeArea: true)
         exportViewController.view.sizeAnchor(height: 120)
+        
+        self.addChild(publishController)
+        publishController.didMove(toParent: self)
         
         self.addChild(exportViewController)
         exportViewController.didMove(toParent: self)
@@ -151,6 +166,24 @@ extension DocumentInfoViewController: ExportSelectViewControllerDelegate {
         }) { error in
             // TODO:
         }
+    }
+}
+
+extension DocumentInfoViewController: PublishSelectViewControllerDelegate {
+    public func didSelectPublisher(_ type: @escaping (UIViewController) -> Publishable) {
+        self._viewModel.dependency.exportManager.export(isMember: true, url: self._viewModel.url, type: .markdown) { url in
+            do {
+                type(self).publish(title: self._viewModel.url.packageName,
+                                   markdown: try String(contentsOf: url))
+                    .subscribe()
+                    .disposed(by: self.disposeBag)
+            } catch {
+                print(error)
+            }
+        } failure: { error in
+            print(error)
+        }
+
     }
 }
 

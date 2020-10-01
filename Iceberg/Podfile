@@ -26,6 +26,7 @@ target 'x3NoteTests' do
 end
 
 target 'Core' do
+  pod 'OAuthSwift'
   pod 'RxSwift', :git => 'git@github.com:ReactiveX/RxSwift.git', :tag => '5.1.0'
   pod 'RxCocoa', :git => 'git@github.com:ReactiveX/RxSwift.git', :tag => '5.1.0'
   pod 'SwiftyBeaver'

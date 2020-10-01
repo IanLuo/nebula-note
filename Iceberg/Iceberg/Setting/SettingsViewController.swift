@@ -499,6 +499,10 @@ public class SettingsViewController: UITableViewController {
             self._storeLocationButtonTapped(self.storeLocationButton)
         case (2, 1):
             self.viewModel.context.coordinator?.showAttachmentManager()
+        case (4, 1):
+            self.viewModel.clearAllTokens {
+                self.showAlert(title: "Clear complete", message: "All publish info reset")
+            }
         default: break
         }
     }

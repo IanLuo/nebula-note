@@ -5,6 +5,7 @@ PODS:
   - Haptico (1.0.2)
   - KDCalendar (1.6.5)
   - MHWebViewController (1.1.1)
+  - OAuthSwift (2.1.0)
   - PKHUD (5.3.0)
   - RxCocoa (5.1.0):
     - RxRelay (~> 5)
@@ -26,6 +27,7 @@ DEPENDENCIES:
   - Haptico
   - KDCalendar (~> 1.6.5)
   - MHWebViewController
+  - OAuthSwift
   - PKHUD (~> 5.0)
   - "RxCocoa (from `git@github.com:ReactiveX/RxSwift.git`, tag `5.1.0`)"
   - RxDataSources
@@ -42,6 +44,7 @@ SPEC REPOS:
     - Haptico
     - KDCalendar
     - MHWebViewController
+    - OAuthSwift
     - PKHUD
     - RxDataSources
     - RxRelay
@@ -77,6 +80,7 @@ SPEC CHECKSUMS:
   Haptico: ce38d1f993f3a0df9a6d7795a9dd2849648aa9d1
   KDCalendar: 15e74f37bd3d206bf7549c594fd08e0347c276f4
   MHWebViewController: 6269a80674e88744f345a0e96925e3dbf565acd6
+  OAuthSwift: ab1675598273e04355e0282459c328e65c9ddacd
   PKHUD: 98f3e4bc904b9c916f1c5bb6d765365b5357291b
   RxCocoa: 13d2a4d7546a34b8ececae8c281e4ea1dbb94f2b
   RxDataSources: efee07fa4de48477eca0a4611e6d11e2da9c1114
@@ -86,6 +90,6 @@ SPEC CHECKSUMS:
   SwiftyBeaver: d39e7c376bf15e9fffca8263b8fd1f42ea56aa2d
   SwiftyStoreKit: 555996ed1159bb57209e7ec251b2a775d4434a69
 
-PODFILE CHECKSUM: fd3b7880071c866ed4f6927892c1247190582be7
+PODFILE CHECKSUM: 3920b48c2e3a75e124ccd51ef5cb51af4783fb23
 
 COCOAPODS: 1.9.2

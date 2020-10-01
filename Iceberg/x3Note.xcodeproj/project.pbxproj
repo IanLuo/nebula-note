@@ -103,6 +103,9 @@
 		E42A7F8722DC679A0038A4DD /* PDFExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E42A7F8622DC679A0038A4DD /* PDFExporter.swift */; };
 		E42A87FD21CFC9B300151C90 /* AttachmentTextViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E42A87FC21CFC9B300151C90 /* AttachmentTextViewController.swift */; };
 		E42A87FF21CFCAC500151C90 /* AttachmentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E42A87FE21CFCAC500151C90 /* AttachmentViewModel.swift */; };
+		E43227132517ABF60032BB8B /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43227122517ABF60032BB8B /* AuthViewController.swift */; };
+		E432271C251A497B0032BB8B /* PublishSelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E432271B251A497B0032BB8B /* PublishSelectViewController.swift */; };
+		E4322725251F39A90032BB8B /* OneDrive.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4322724251F39A90032BB8B /* OneDrive.swift */; };
 		E43427FA2121BF5B00EC6DC3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43427F92121BF5B00EC6DC3 /* AppDelegate.swift */; };
 		E434280F2121BF5F00EC6DC3 /* IcelandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E434280E2121BF5F00EC6DC3 /* IcelandTests.swift */; };
 		E434281A2121BF6000EC6DC3 /* IcelandUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43428192121BF6000EC6DC3 /* IcelandUITests.swift */; };
@@ -130,6 +133,8 @@
 		E44825A3219722C300C17568 /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44825A2219722C300C17568 /* Application.swift */; };
 		E44E479A23D3038000D41AA2 /* Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44E479923D3037F00D41AA2 /* Array.swift */; };
 		E44E60F521E9F2C0005AC25F /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44E60F421E9F2C0005AC25F /* Location.swift */; };
+		E4537DDB25173F7400362DDF /* Medium.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4537DDA25173F7400362DDF /* Medium.swift */; };
+		E4537DE42517841200362DDF /* PublishFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4537DE32517841200362DDF /* PublishFactory.swift */; };
 		E45D74BC2329BA1D003C1BC2 /* BrowserRecentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45D74BB2329BA1D003C1BC2 /* BrowserRecentViewController.swift */; };
 		E45D74BE2329BA48003C1BC2 /* BrowserFolderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45D74BD2329BA47003C1BC2 /* BrowserFolderViewController.swift */; };
 		E45DCF8822AB646F007F34DB /* SimpleParserDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45DCF8722AB646F007F34DB /* SimpleParserDelegate.swift */; };
@@ -468,6 +473,9 @@
 		E42A7F8622DC679A0038A4DD /* PDFExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFExporter.swift; sourceTree = "<group>"; };
 		E42A87FC21CFC9B300151C90 /* AttachmentTextViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentTextViewController.swift; sourceTree = "<group>"; };
 		E42A87FE21CFCAC500151C90 /* AttachmentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentViewModel.swift; sourceTree = "<group>"; };
+		E43227122517ABF60032BB8B /* AuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewController.swift; sourceTree = "<group>"; };
+		E432271B251A497B0032BB8B /* PublishSelectViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublishSelectViewController.swift; sourceTree = "<group>"; };
+		E4322724251F39A90032BB8B /* OneDrive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneDrive.swift; sourceTree = "<group>"; };
 		E43427F62121BF5B00EC6DC3 /* x3Note.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = x3Note.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E43427F92121BF5B00EC6DC3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E43428002121BF5F00EC6DC3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -512,6 +520,8 @@
 		E44E60F421E9F2C0005AC25F /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 		E451B27A223A191B000BEA34 /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
 		E451B280223A1F80000BEA34 /* assets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = assets.swift; sourceTree = "<group>"; };
+		E4537DDA25173F7400362DDF /* Medium.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Medium.swift; sourceTree = "<group>"; };
+		E4537DE32517841200362DDF /* PublishFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublishFactory.swift; sourceTree = "<group>"; };
 		E457D51F230C342200B307C7 /* CaptureActionExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CaptureActionExtension.entitlements; sourceTree = "<group>"; };
 		E45D74BB2329BA1D003C1BC2 /* BrowserRecentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserRecentViewController.swift; sourceTree = "<group>"; };
 		E45D74BD2329BA47003C1BC2 /* BrowserFolderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserFolderViewController.swift; sourceTree = "<group>"; };
@@ -957,6 +967,7 @@
 		E41CB19C21D88D9300EF0A3C /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				E4537D4F25163C6B00362DDF /* Publish */,
 				E479514323CA0FF0000CFDE3 /* Storage */,
 				E479512423C4BE6C000CFDE3 /* UserGuide */,
 				E4CBCD19236D80C300A0FFDB /* Activities */,
@@ -1234,6 +1245,25 @@
 			path = Theme;
 			sourceTree = "<group>";
 		};
+		E4537D4F25163C6B00362DDF /* Publish */ = {
+			isa = PBXGroup;
+			children = (
+				E4537D5125163C8000362DDF /* Platforms */,
+			);
+			path = Publish;
+			sourceTree = "<group>";
+		};
+		E4537D5125163C8000362DDF /* Platforms */ = {
+			isa = PBXGroup;
+			children = (
+				E4537DDA25173F7400362DDF /* Medium.swift */,
+				E4322724251F39A90032BB8B /* OneDrive.swift */,
+				E4537DE32517841200362DDF /* PublishFactory.swift */,
+				E43227122517ABF60032BB8B /* AuthViewController.swift */,
+			);
+			path = Platforms;
+			sourceTree = "<group>";
+		};
 		E462DB98223D257100BF7AB4 /* DateAndTimeSelect */ = {
 			isa = PBXGroup;
 			children = (
@@ -1299,6 +1329,7 @@
 			children = (
 				E472FF99227092C1004C8495 /* DocumentInfoViewController.swift */,
 				E472FF9C2270A691004C8495 /* ExportSelectViewController.swift */,
+				E432271B251A497B0032BB8B /* PublishSelectViewController.swift */,
 				E4FB7CBD2285BBE500791F6F /* BasicInfoViewController.swift */,
 			);
 			path = Info;
@@ -1598,8 +1629,8 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = E434281E2121BF6000EC6DC3 /* Build configuration list for PBXNativeTarget "x3Note" */;
 			buildPhases = (
-				E465E4A2222392380014673D /* ShellScript */,
 				2321C1BB856E335423F37C5B /* [CP] Check Pods Manifest.lock */,
+				E465E4A2222392380014673D /* ShellScript */,
 				E43427F22121BF5B00EC6DC3 /* Sources */,
 				E43427F32121BF5B00EC6DC3 /* Frameworks */,
 				E43427F42121BF5B00EC6DC3 /* Resources */,
@@ -2100,10 +2131,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				E4CBCD1B236D80F500A0FFDB /* CreateDocumentActivity.swift in Sources */,
+				E4537DDB25173F7400362DDF /* Medium.swift in Sources */,
 				E4CBCD21237303E300A0FFDB /* CaptureActivity.swift in Sources */,
 				E4D0FD7B2348D774001C3BA2 /* PreviewManager.swift in Sources */,
 				E41CB1BC21D88DD100EF0A3C /* OutlineTextView.swift in Sources */,
 				E41CB1C121D88DD700EF0A3C /* OutlineParser.swift in Sources */,
+				E432271C251A497B0032BB8B /* PublishSelectViewController.swift in Sources */,
 				E44683FA2289B554005D5B73 /* UITextFieldClosure.swift in Sources */,
 				E43E7875222ACF780007EE4F /* OutlineTextTrimmer.swift in Sources */,
 				E41CB1BA21D88DCE00EF0A3C /* Document.swift in Sources */,
@@ -2114,6 +2147,7 @@
 				E4821DB122374C420063C0B2 /* WeakArray.swift in Sources */,
 				E4B802022200437A00AD5AD8 /* TextStorage.m in Sources */,
 				E43B90A8222903170008B44C /* Event.swift in Sources */,
+				E43227132517ABF60032BB8B /* AuthViewController.swift in Sources */,
 				E479512623C4BE91000CFDE3 /* UserGuideService.swift in Sources */,
 				E47FA900227026DB005AD0BA /* HTMLExporter.swift in Sources */,
 				E466D18D221E3E65007F140B /* RenderAttachment.swift in Sources */,
@@ -2132,12 +2166,14 @@
 				E4D31DEE227DA633001F5272 /* URLHandlerManager.swift in Sources */,
 				E4C7137F23ABCE8200DC38BE /* PurchaseManager.swift in Sources */,
 				E4D31DEC227D39A4001F5272 /* URLlHandler.swift in Sources */,
+				E4537DE42517841200362DDF /* PublishFactory.swift in Sources */,
 				E41CB1C921D88E2300EF0A3C /* Log.swift in Sources */,
 				E47FA8FD227025D6005AD0BA /* ImportManager.swift in Sources */,
 				E41B892921E34238009C5AD7 /* AudioRecorder.swift in Sources */,
 				E43B909C2227CBC60008B44C /* Token.swift in Sources */,
 				E41CB1C321D88DD700EF0A3C /* DocumentManager.swift in Sources */,
 				E45DCF8822AB646F007F34DB /* SimpleParserDelegate.swift in Sources */,
+				E4322725251F39A90032BB8B /* OneDrive.swift in Sources */,
 				E44E479A23D3038000D41AA2 /* Array.swift in Sources */,
 				E41CB1BF21D88DD400EF0A3C /* EditorController.swift in Sources */,
 				E43B909E2228EDA00008B44C /* EditorContext.swift in Sources */,

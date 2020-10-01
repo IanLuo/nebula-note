@@ -9,6 +9,7 @@
 import Foundation
 import Core
 import Interface
+import WebKit
 
 public protocol SettingsViewModelDelegate: class {
     func didSetIsSyncEnabled(_ enabled: Bool)
@@ -185,6 +186,18 @@ public class SettingsViewModel: ViewModelProtocol {
                     }
                 }
             }
+        }
+    }
+    
+    public func clearAllTokens(completion: @escaping () -> Void) {
+        HTTPCookieStorage.shared.removeCookies(since: Date.distantPast)
+        let dataStore = WKWebsiteDataStore.default()
+        dataStore.fetchDataRecords(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()) { [unowned dataStore] records in
+          dataStore.removeData(
+            ofTypes: WKWebsiteDataStore.allWebsiteDataTypes(),
+            for: records,
+            completionHandler: completion
+          )
         }
     }
 }

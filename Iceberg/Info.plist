@@ -38,14 +38,14 @@
 			<key>CFBundleTypeIconFiles</key>
 			<array/>
 			<key>CFBundleTypeName</key>
-			<string>icenote file</string>
+			<string>x3note file</string>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>LSHandlerRank</key>
 			<string>Owner</string>
 			<key>LSItemContentTypes</key>
 			<array>
-				<string>com.wod.document.icenote</string>
+				<string>com.wod.document.x3note</string>
 			</array>
 			<key>LSTypeIsPackage</key>
 			<true/>
@@ -54,7 +54,7 @@
 			<key>CFBundleTypeIconFiles</key>
 			<array/>
 			<key>CFBundleTypeName</key>
-			<string>icenote attachment</string>
+			<string>x3note attachment</string>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>LSHandlerRank</key>
@@ -95,10 +95,20 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>com.wod.icenote</string>
+			<string>com.wod.x3note</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>icenote</string>
+				<string>x3note</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.wod.x3note</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>oauth-x3note</string>
 			</array>
 		</dict>
 	</array>
@@ -182,16 +192,15 @@
 				<string>com.apple.package</string>
 			</array>
 			<key>UTTypeDescription</key>
-			<string>icenote file</string>
+			<string>x3note file</string>
 			<key>UTTypeIconFiles</key>
 			<array/>
 			<key>UTTypeIdentifier</key>
-			<string>com.wod.document.icenote</string>
+			<string>com.wod.document.x3note</string>
 			<key>UTTypeTagSpecification</key>
 			<dict>
 				<key>public.filename-extension</key>
 				<array>
-					<string>icenote</string>
 					<string>ice</string>
 				</array>
 			</dict>
@@ -206,7 +215,7 @@
 			<key>UTTypeIconFiles</key>
 			<array/>
 			<key>UTTypeIdentifier</key>
-			<string>com.wod.document.ice_attachment</string>
+			<string>com.wod.document.x3_attachment</string>
 			<key>UTTypeTagSpecification</key>
 			<dict>
 				<key>public.filename-extension</key>

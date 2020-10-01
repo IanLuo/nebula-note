@@ -130,6 +130,8 @@ public class Document: UIDocument {
     public override func save(to url: URL, for saveOperation: UIDocument.SaveOperation, completionHandler: ((Bool) -> Void)? = nil) {
         if self.hasUnsavedChanges {
             self.didUpdateDocumentContentAction?()
+        } else {
+            return
         }
         
         log.info("begin to save ... \(url)")

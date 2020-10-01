@@ -48,6 +48,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     }
     
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        guard let url = URLContexts.first?.url else {
+            return
+        }
+        
+        for context in URLContexts {
+            let sourceApp = context.options.sourceApplication ?? ""
+            _ = self.application.dependency.urlHandlerManager.handle(url: url, sourceApp: sourceApp)
+        }
+        
+    }
+    
     @available(iOS 13.0, *)
     override func buildMenu(with builder: UIMenuBuilder) {
         super.buildMenu(with: builder)
