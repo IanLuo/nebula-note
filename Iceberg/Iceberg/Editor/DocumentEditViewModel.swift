@@ -42,6 +42,18 @@ public class DocumentEditViewModel: ViewModelProtocol {
         return self._editorService.tokens(at: location)
     }
     
+    public var attachments: [Attachment] {
+        return self._editorService
+            .allTokens
+            .compactMap { attachmentToken in
+                if let keyRange = (attachmentToken as? AttachmentToken)?.keyRange {
+                    return self.dependency.attachmentManager.attachment(with: (self.string as NSString).substring(with: keyRange))
+                } else {
+                    return nil
+                }
+            }
+    }
+
     public var isReadyToEdit: Bool = false {
         didSet {
             if isReadyToEdit {

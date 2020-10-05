@@ -171,10 +171,18 @@ extension DocumentInfoViewController: ExportSelectViewControllerDelegate {
 
 extension DocumentInfoViewController: PublishSelectViewControllerDelegate {
     public func didSelectPublisher(_ type: @escaping (UIViewController) -> Publishable) {
-        self._viewModel.dependency.exportManager.export(isMember: true, url: self._viewModel.url, type: .markdown) { url in
+        self._viewModel.dependency.exportManager.export(isMember: true, url: self._viewModel.url, type: .markdown) { [unowned self] url in
             do {
-                type(self).publish(title: self._viewModel.url.packageName,
-                                   markdown: try String(contentsOf: url))
+                let attachments = self._viewModel.attachments
+                
+                let publishable = self._viewModel
+                    .dependency
+                    .publishFactory
+                    .createPublishBuilder(publisher: .medium,
+                                          uploader: .oneDrive,
+                                          from: self)
+                
+                publishable(url.packageName, try String(contentsOf: url), attachments)
                     .subscribe()
                     .disposed(by: self.disposeBag)
             } catch {
@@ -183,7 +191,6 @@ extension DocumentInfoViewController: PublishSelectViewControllerDelegate {
         } failure: { error in
             print(error)
         }
-
     }
 }
 

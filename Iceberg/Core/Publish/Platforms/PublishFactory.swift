@@ -89,6 +89,8 @@ public struct PublishFactory {
     public init() {}
 }
 
+// MARK: - Auth convenience functions
+
 extension OAuth2Swift {
     private func logon(obj: OAuth2Connectable) -> Observable<OAuthSwiftCredential> {
         return self.authorize(callbackURL: obj.callback, scope: obj.scope, state: obj.state)

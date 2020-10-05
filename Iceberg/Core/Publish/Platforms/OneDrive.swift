@@ -12,7 +12,7 @@ import RxSwift
 
 public struct OneDrive: Uploadable, OAuth2Connectable {
     public func upload(url: URL) -> Observable<String> {
-        return Observable.just("")
+        return self.uploadFile(url: url)
     }
     
     public var callback: String = "oauth-x3note://callback"
@@ -31,9 +31,12 @@ public struct OneDrive: Uploadable, OAuth2Connectable {
                                     responseType: "code")
     
     private func uploadFile(url: URL) -> Observable<String> {
-        return Observable.create { observer -> Disposable in
-            
-            return Disposables.create()
-        }
+        return self.oauth.tryAuthorize(obj: self).map { return "" }
+    }
+    
+    public init(from: UIViewController) {
+        self.from = from
+        let viewController = AuthViewController()
+        self.oauth.authorizeURLHandler = viewController
     }
 }

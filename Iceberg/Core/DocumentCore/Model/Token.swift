@@ -99,7 +99,9 @@ public class LinkToken: Token {
 
 // MARK: - AttachmentToken
 public class AttachmentToken: Token {
-    
+    public var keyRange: NSRange? {
+        return self.range(for: OutlineParser.Key.Element.Attachment.value)
+    }
 }
 
 // MARK: - SeparatorToken
