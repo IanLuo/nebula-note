@@ -61,9 +61,9 @@ extension AuthViewController: WKNavigationDelegate {
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         
         // here we handle internally the callback url and call method that call handleOpenURL (not app scheme used)
-        if let url = navigationAction.request.url , url.scheme == "oauth-x3note" {
+        if let url = navigationAction.request.url , ["msauth.com.wod.x3note://auth", "oauth-x3note"].contains(url.scheme) {
             decisionHandler(.cancel)
-
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
             self.dismissWebViewController()
             return
         }

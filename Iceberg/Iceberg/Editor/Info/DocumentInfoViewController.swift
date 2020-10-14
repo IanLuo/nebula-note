@@ -171,6 +171,8 @@ extension DocumentInfoViewController: ExportSelectViewControllerDelegate {
 
 extension DocumentInfoViewController: PublishSelectViewControllerDelegate {
     public func didSelectPublisher(_ type: @escaping (UIViewController) -> Publishable) {
+        self.view.showProcessingAnimation()
+        
         self._viewModel.dependency.exportManager.export(isMember: true, url: self._viewModel.url, type: .markdown) { [unowned self] url in
             do {
                 let attachments = self._viewModel.attachments
@@ -183,13 +185,19 @@ extension DocumentInfoViewController: PublishSelectViewControllerDelegate {
                                           from: self)
                 
                 publishable(url.packageName, try String(contentsOf: url), attachments)
+                    .do(onError: { error in
+                        self.showAlert(title: "fail", message: "\(error)")
+                        self.view.hideProcessingAnimation()
+                    })
                     .subscribe()
                     .disposed(by: self.disposeBag)
             } catch {
-                print(error)
+                self.showAlert(title: "fail", message: "\(error)")
+                self.view.hideProcessingAnimation()
             }
         } failure: { error in
-            print(error)
+            self.showAlert(title: "fail", message: "\(error)")
+            self.view.hideProcessingAnimation()
         }
     }
 }

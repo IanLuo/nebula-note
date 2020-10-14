@@ -24,10 +24,14 @@ public class URLHandlerManager {
     
     public func handle(url: URL, sourceApp: String) -> Bool {
 
-        if url.host == "oauth-x3note" {
+        if url.scheme == "oauth-x3note" {
             OAuthSwift.handle(url: url)
         }
         
+//        if MSALPublicClientApplication.handleMSALResponse(url, sourceApplication: sourceApp) {
+//            return true
+//        }
+//
         let urlSchemeHandler = URLSchemeHandler(sourceApp: sourceApp, url: url)
         
         if !urlSchemeHandler.execute(documentManager: self.documentManager, eventObserver: self.eventObserver) {

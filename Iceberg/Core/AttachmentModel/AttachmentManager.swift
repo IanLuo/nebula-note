@@ -211,7 +211,7 @@ public enum AttachmentError: Error {
         return AttachmentDocument.createAttachment(url: AttachmentManager.wrappterURL(key: key.unescaped))
     }
     
-    public func scanNotUsingAttachments() {
+    public func scanUnusedAttachments() {
         let searchManager = DocumentSearchManager()
         let captureService = CaptureService(attachmentManager: self)
         

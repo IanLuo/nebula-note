@@ -15,7 +15,7 @@ public protocol Publishable {
 }
 
 public protocol Uploadable {
-    func upload(url: URL) -> Observable<String>
+    func upload(attachment: Attachment) -> Observable<String>
 }
 
 public protocol OAuth2Connectable {
@@ -65,7 +65,7 @@ public struct PublishFactory {
             var content = content
             
             let uploadObservables = attachments?.map { attachment in
-                uploader.upload(url: attachment.url).do(onNext: { path in
+                uploader.upload(attachment: attachment).do(onNext: { path in
                     content = (content as NSString).replacingOccurrences(of: attachment.serialize, with: path)
                 })
             }
@@ -110,17 +110,23 @@ extension OAuth2Swift {
                         .map({ $0.oauthToken })).map { _ in }
     }
     
-    public func startAuthRequest(url: String, method: OAuthSwiftHTTPRequest.Method, parameters: ConfigParameters) -> Observable<OAuthSwiftResponse> {
+    public func startAuthRequest(url: String, method: OAuthSwiftHTTPRequest.Method, parameters: OAuthSwift.Parameters, headers: OAuthSwift.Headers? = nil, body: Data? = nil) -> Observable<OAuthSwiftResponse> {
         return Observable.create { observer -> Disposable in
             self.startAuthorizedRequest(url,
                                         method: method,
                                         parameters: parameters,
+                                        headers: headers,
+                                        body: body,
                                         completionHandler: { result in
                                             switch result {
                                             case .success(let response):
                                                 observer.onNext(response)
                                                 observer.onCompleted()
                                             case .failure(let error):
+                                                if let code = ((error as NSError).userInfo["error"] as? NSError)?.code, [400, 401, 403].contains(code) {
+                                                    self.removeSavedCredential(consumerKey: self.client.credential.consumerKey)
+                                                }
+                                                
                                                 observer.onError(error)
                                             }
                                         })
@@ -128,14 +134,46 @@ extension OAuth2Swift {
         }
     }
     
+    public func saveCrendential(_ credential: OAuthSwiftCredential) -> Result<Void, Error> {
+        let jsonEncoder = JSONEncoder()
+        
+        do {
+            let json = try jsonEncoder.encode(credential)
+            UserDefaults.standard.set(json, forKey: credential.consumerKey)
+            UserDefaults.standard.synchronize()
+            return Result.success(())
+        } catch {
+            return Result.failure(error)
+        }
+    }
+    
+    public func removeSavedCredential(consumerKey: String) {
+        UserDefaults.standard.set(nil, forKey: consumerKey)
+        UserDefaults.standard.synchronize()
+    }
+    
+    public func loadSavedCredential(consumerKey: String) -> Result<OAuthSwiftCredential?, Error> {
+        let jsonDecoder = JSONDecoder()
+        
+        do {
+            let credential = try UserDefaults.standard.data(forKey: consumerKey)
+                .map { try jsonDecoder.decode(OAuthSwiftCredential.self, from: $0) }
+            return Result.success(credential)
+        } catch {
+            return Result.failure(error)
+        }
+    }
+    
     public func authorize(callbackURL: String, scope: String, state: String) -> Observable<OAuthSwiftCredential> {
         return Observable.create { observer -> Disposable in
-            self.authorize(withCallbackURL: callbackURL, scope: scope, state: state) { result in
+            self.authorize(withCallbackURL: callbackURL, scope: scope, state: state) { [weak self] result in
                 switch result {
                 case .success(let (credential, _, _)):
+                    _ = self?.saveCrendential(credential)
                     observer.onNext(credential)
                     observer.onCompleted()
                 case .failure(let error):
+                    log.error(error)
                     observer.onError(error)
                 }
             }

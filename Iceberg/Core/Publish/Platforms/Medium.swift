@@ -26,6 +26,7 @@ public struct Medium: Publishable, OAuth2Connectable {
     public let oauth = OAuth2Swift(consumerKey: "ac8eb589ac0c",
                                     consumerSecret: "f2d4aeb61334ff373ff908127042c2a9542db5ef",
                                     authorizeUrl: "https://medium.com/m/oauth/authorize",
+                                    accessTokenUrl: "https://api.medium.com/v1/tokens",
                                     responseType: "code")
     
     public func publish(title: String, markdown: String) -> Observable<Void> {
@@ -45,6 +46,15 @@ public struct Medium: Publishable, OAuth2Connectable {
         self.from = from
         let viewController = AuthViewController()
         self.oauth.authorizeURLHandler = viewController
+        
+        switch oauth.loadSavedCredential(consumerKey: oauth.client.credential.consumerKey) {
+        case .success(let credential):
+            if let credential = credential {
+                self.oauth.client = OAuthSwiftClient(credential: credential)
+            }
+        case .failure(let error):
+            log.error(error)
+        }
     }
     
     private var authorId: Observable<String> {
@@ -52,7 +62,12 @@ public struct Medium: Publishable, OAuth2Connectable {
     }
     
     public func userDetail() -> Observable<OAuthSwiftResponse> {
-        return self.oauth.startAuthRequest(url: "https://api.medium.com/v1/me", method: OAuthSwiftHTTPRequest.Method.GET, parameters: [:])
+        return self.oauth.startAuthRequest(url: "https://api.medium.com/v1/me",
+                                           method: OAuthSwiftHTTPRequest.Method.GET,
+                                           parameters: [:],
+                                           headers: ["Content-Type": "application/json",
+                                                     "Accept": "application/json",
+                                                     "Accept-Charset": "utf-8"])
     }
     
     public func post(title: String, markdown: String, authorId: String) -> Observable<OAuthSwiftResponse> {
@@ -61,6 +76,7 @@ public struct Medium: Publishable, OAuth2Connectable {
                                            parameters: ["title": title,
                                                         "content": markdown,
                                                         "contentFormat": "markdown",
-                                                        "publishStatus": "public"])
+                                                        "publishStatus": "public"],
+                                           headers: ["Content-Type": "application/json"])
     }
 }
