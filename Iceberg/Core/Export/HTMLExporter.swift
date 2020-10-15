@@ -187,8 +187,9 @@ extension Token {
         } else if let unorderedList = self as? UnorderdListToken {
             return "<li>\(string.nsstring.substring(with: unorderedList.range).nsstring.replacingCharacters(in: unorderedList.prefix.offset(-unorderedList.range.location), with: ""))</li>"
         } else if let checkbox = self as? CheckboxToken {
-            let checkStatusString = string.nsstring.substring(with: checkbox.range(for: "checkbox")!) == OutlineParser.Values.Checkbox.checked ? "checked" : ""
-            return "<br><input type=\"checkbox\" \(checkStatusString)>"
+            let checkStatusString = string.nsstring.substring(with: checkbox.range(for: "status")!) == OutlineParser.Values.Checkbox.checked ? "checked" : ""
+            let statusString = "<br><input type=\"checkbox\" \(checkStatusString)>"
+            return string.nsstring.substring(with: checkbox.range(for: "checkbox")!).nsstring.replacingCharacters(in: checkbox.range(for: "status")!.offset(-checkbox.range.location), with: statusString)
         } else if let quoteBlock = self as? BlockBeginToken, quoteBlock.blockType == .quote {
             return "<br><div class=\"wrapper\"><blockquote class=\"quote\"><p>\(string.nsstring.substring(with: quoteBlock.contentRange!))</p></blockquote></div>"
         } else if let quoteBlock = self as? BlockBeginToken, quoteBlock.blockType == .sourceCode {

@@ -12,7 +12,8 @@ import RxSwift
 
 public struct Medium: Publishable, OAuth2Connectable {
     enum ErrorType: Error {
-        case failToFetchUserInfo
+        case failToFetchUserInfo(String)
+        case otherError(String)
     }
     
     public var callback: String = "oauth-x3note://callback"
@@ -32,15 +33,9 @@ public struct Medium: Publishable, OAuth2Connectable {
     public func publish(title: String, markdown: String) -> Observable<Void> {
         self.oauth
             .tryAuthorize(obj: self)
-            .flatMap({
-                self.authorId.ifEmpty(switchTo:
-                                        self.userDetail()
-                                        .map({ _ in "" }))
-            })
+            .flatMap({ self.userDetail() })
             .flatMap { post(title: title, markdown: markdown, authorId: $0).map { _ in } }
     }
-    
-    private var userId: String?
     
     public init(from: UIViewController) {
         self.from = from
@@ -57,17 +52,34 @@ public struct Medium: Publishable, OAuth2Connectable {
         }
     }
     
-    private var authorId: Observable<String> {
-        return self.userId == nil ? Observable.empty() : Observable.just(self.userId!)
-    }
-    
-    public func userDetail() -> Observable<OAuthSwiftResponse> {
+    public func userDetail() -> Observable<String> {
         return self.oauth.startAuthRequest(url: "https://api.medium.com/v1/me",
                                            method: OAuthSwiftHTTPRequest.Method.GET,
                                            parameters: [:],
                                            headers: ["Content-Type": "application/json",
                                                      "Accept": "application/json",
                                                      "Accept-Charset": "utf-8"])
+            .catchError { error in
+                let error = error as NSError
+                if error.code == 401 {
+                    return Observable.error(ErrorType.failToFetchUserInfo(error.localizedDescription))
+                } else {
+                    return Observable.error(ErrorType.otherError(error.localizedDescription))
+                }
+            }
+            .flatMap { response -> Observable<[String: Any]> in
+                do {
+                    if let json = try JSONSerialization.jsonObject(with: response.data, options: []) as? [String: Any] {
+                        return Observable.just(json)
+                    } else {
+                        return Observable.just([:])
+                    }
+                } catch {
+                    return Observable.error(error)
+                }
+            }.map { json in
+                return KeypathParser(String.self, key: "data.id")(json) ?? ""
+            }
     }
     
     public func post(title: String, markdown: String, authorId: String) -> Observable<OAuthSwiftResponse> {
@@ -77,6 +89,12 @@ public struct Medium: Publishable, OAuth2Connectable {
                                                         "content": markdown,
                                                         "contentFormat": "markdown",
                                                         "publishStatus": "public"],
-                                           headers: ["Content-Type": "application/json"])
+                                           headers: ["Content-Type": "application/json"]).catchError { error in
+                                            if let errorMessage = (error as NSError).userInfo["Response-Body"] as? String {
+                                                return Observable.error(ErrorType.otherError(errorMessage))
+                                            } else {
+                                                return Observable.error(error)
+                                            }
+                                           }
     }
 }

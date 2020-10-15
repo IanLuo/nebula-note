@@ -55,7 +55,11 @@ extension Token {
             return string.nsstring.substring(with: quoteBlock.contentRange!).components(separatedBy: "\n").map {
                 "> \($0)\n"
             }.joined(separator: "")
-        } else if let quoteBlock = self as? BlockBeginToken, quoteBlock.blockType == .sourceCode {
+        } else if let checkbox = self as? CheckboxToken {
+            let checkStatusString = string.nsstring.substring(with: checkbox.range(for: "status")!) == OutlineParser.Values.Checkbox.checked ? "[x]" : "[ ]"
+            let statusString = checkStatusString
+            return "\n" + string.nsstring.substring(with: checkbox.range(for: "checkbox")!).nsstring.replacingCharacters(in: checkbox.range(for: "status")!.offset(-checkbox.range.location), with: statusString)
+        }  else if let quoteBlock = self as? BlockBeginToken, quoteBlock.blockType == .sourceCode {
             return "\n```\n\(string.nsstring.substring(with: quoteBlock.contentRange!))\n```\n"
         } else if let link = self as? LinkToken {
             if let titleRange = link.range(for: OutlineParser.Key.Element.Link.title),

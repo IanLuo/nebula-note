@@ -15,7 +15,7 @@ public protocol Publishable {
 }
 
 public protocol Uploadable {
-    func upload(attachment: Attachment) -> Observable<String>
+    func upload(attachment: Attachment) -> Observable<(String, String)>
 }
 
 public protocol OAuth2Connectable {
@@ -62,22 +62,21 @@ public struct PublishFactory {
         let uploader = uploader.attachmentUploaderBuilder(from: from)
         
         return { (title: String, content: String, attachments: [Attachment]?) in
-            var content = content
             
             let uploadObservables = attachments?.map { attachment in
-                uploader.upload(attachment: attachment).do(onNext: { path in
-                    content = (content as NSString).replacingOccurrences(of: attachment.serialize, with: path)
-                })
+                uploader.upload(attachment: attachment)
             }
             
-            let publishObservable = publisher.publish(title: title, markdown: content)
-            
             if let uploadObservables = uploadObservables {
-                return Observable.combineLatest(uploadObservables).flatMap({ _ in
-                    publishObservable
+                return Observable.combineLatest(uploadObservables).flatMap({ paths -> Observable<Void> in
+                    var content = content
+                    for path in paths {
+                        content = (content as NSString).replacingOccurrences(of: path.1, with: path.0)
+                    }
+                    return publisher.publish(title: title, markdown: content)
                 })
             } else {
-                return publishObservable
+                return publisher.publish(title: title, markdown: content)
             }
         }
     }
@@ -127,7 +126,11 @@ extension OAuth2Swift {
                                                     self.removeSavedCredential(consumerKey: self.client.credential.consumerKey)
                                                 }
                                                 
-                                                observer.onError(error)
+                                                if let underlineError = error.underlyingError {
+                                                    observer.onError(underlineError)
+                                                } else {
+                                                    observer.onError(error)
+                                                }
                                             }
                                         })
             return Disposables.create()

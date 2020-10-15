@@ -15,12 +15,13 @@ enum UploadError: Error {
 }
 
 public struct OneDrive: Uploadable, OAuth2Connectable {
-    public func upload(attachment: Attachment) -> Observable<String> {
+    public func upload(attachment: Attachment) -> Observable<(String, String)> {
         return self.oauth
             .tryAuthorize(obj: self)
             .flatMap { createFolderIfNeeded() }
             .flatMap { uploadFile(url: attachment.url, kind: attachment.kind) }
             .flatMap { createShareLink(id: $0) }
+            .map { ($0, attachment.url.lastPathComponent) }
     }
     
     public var callback: String = "oauth-x3note://callback"
@@ -124,7 +125,8 @@ public struct OneDrive: Uploadable, OAuth2Connectable {
             .flatMap { response -> Observable<String> in
                 do {
                     if let json = try JSONSerialization.jsonObject(with: response.data, options: []) as? JSONDict,
-                       let url = KeypathParser(String.self, key: "link.webUrl")(json) {
+                       let images = KeypathParser([JSONDict].self, key: "value")(json)?.first,
+                       let url = KeypathParser(String.self, key: "large.url")(images) {
                         return Observable.just(url)
                     } else {
                         return Observable.error(UploadError.failToUpload)
@@ -157,6 +159,7 @@ private enum Endpoint {
         case .createLink:
             return [
                 "type": "embed",
+                "scope": "anonymous"
             ]
         }
     }
@@ -170,7 +173,7 @@ private enum Endpoint {
         case .createFolder(_):
             return .POST
         case .createLink:
-            return .POST
+            return .GET
         }
     }
     
@@ -183,7 +186,8 @@ private enum Endpoint {
         case .createFolder(_):
             return "/me/drive/root/children"
         case .createLink(let id):
-            return "/me/drive/items/\(id)/createLink"
+//            return "/me/drive/items/\(id)/createLink"
+            return "/me/drive/items/\(id)/thumbnails"
         }
     }
     

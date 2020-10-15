@@ -189,7 +189,10 @@ extension DocumentInfoViewController: PublishSelectViewControllerDelegate {
                         self.showAlert(title: "fail", message: "\(error)")
                         self.view.hideProcessingAnimation()
                     })
-                    .subscribe()
+                    .subscribe(onNext: {
+                        self.view.hideProcessingAnimation()
+                        self.showAlert(title: "Success", message: "\"\(self._viewModel.url.packageName)\" is published successfully")
+                    })
                     .disposed(by: self.disposeBag)
             } catch {
                 self.showAlert(title: "fail", message: "\(error)")
