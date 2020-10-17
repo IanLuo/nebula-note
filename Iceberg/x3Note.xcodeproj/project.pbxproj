@@ -103,9 +103,6 @@
 		E42A7F8722DC679A0038A4DD /* PDFExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E42A7F8622DC679A0038A4DD /* PDFExporter.swift */; };
 		E42A87FD21CFC9B300151C90 /* AttachmentTextViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E42A87FC21CFC9B300151C90 /* AttachmentTextViewController.swift */; };
 		E42A87FF21CFCAC500151C90 /* AttachmentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E42A87FE21CFCAC500151C90 /* AttachmentViewModel.swift */; };
-		E43227132517ABF60032BB8B /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43227122517ABF60032BB8B /* AuthViewController.swift */; };
-		E432271C251A497B0032BB8B /* PublishSelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E432271B251A497B0032BB8B /* PublishSelectViewController.swift */; };
-		E4322725251F39A90032BB8B /* OneDrive.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4322724251F39A90032BB8B /* OneDrive.swift */; };
 		E43427FA2121BF5B00EC6DC3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43427F92121BF5B00EC6DC3 /* AppDelegate.swift */; };
 		E434280F2121BF5F00EC6DC3 /* IcelandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E434280E2121BF5F00EC6DC3 /* IcelandTests.swift */; };
 		E434281A2121BF6000EC6DC3 /* IcelandUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43428192121BF6000EC6DC3 /* IcelandUITests.swift */; };
@@ -133,8 +130,6 @@
 		E44825A3219722C300C17568 /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44825A2219722C300C17568 /* Application.swift */; };
 		E44E479A23D3038000D41AA2 /* Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44E479923D3037F00D41AA2 /* Array.swift */; };
 		E44E60F521E9F2C0005AC25F /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44E60F421E9F2C0005AC25F /* Location.swift */; };
-		E4537DDB25173F7400362DDF /* Medium.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4537DDA25173F7400362DDF /* Medium.swift */; };
-		E4537DE42517841200362DDF /* PublishFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4537DE32517841200362DDF /* PublishFactory.swift */; };
 		E45D74BC2329BA1D003C1BC2 /* BrowserRecentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45D74BB2329BA1D003C1BC2 /* BrowserRecentViewController.swift */; };
 		E45D74BE2329BA48003C1BC2 /* BrowserFolderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45D74BD2329BA47003C1BC2 /* BrowserFolderViewController.swift */; };
 		E45DCF8822AB646F007F34DB /* SimpleParserDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45DCF8722AB646F007F34DB /* SimpleParserDelegate.swift */; };
@@ -143,6 +138,12 @@
 		E462DB9A223D259F00BF7AB4 /* DateSelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E462DB99223D259F00BF7AB4 /* DateSelectViewController.swift */; };
 		E462DB9C223D264800BF7AB4 /* TimeSelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E462DB9B223D264800BF7AB4 /* TimeSelectViewController.swift */; };
 		E464DF0C253474D400967B5E /* JsonParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = E464DF0B253474D400967B5E /* JsonParser.swift */; };
+		E464DF41253A95FC00967B5E /* PublishFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4537DE32517841200362DDF /* PublishFactory.swift */; };
+		E464DF42253A95FC00967B5E /* Wordpress.swift in Sources */ = {isa = PBXBuildFile; fileRef = E464DF14253A8E4800967B5E /* Wordpress.swift */; };
+		E464DF43253A95FC00967B5E /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43227122517ABF60032BB8B /* AuthViewController.swift */; };
+		E464DF44253A95FC00967B5E /* OneDrive.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4322724251F39A90032BB8B /* OneDrive.swift */; };
+		E464DF45253A95FC00967B5E /* Medium.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4537DDA25173F7400362DDF /* Medium.swift */; };
+		E464DF4D253A96AF00967B5E /* PublishSelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E432271B251A497B0032BB8B /* PublishSelectViewController.swift */; };
 		E465F8802241FF6800FA6E83 /* TextViewCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = E465F87F2241FF6800FA6E83 /* TextViewCommand.swift */; };
 		E465F8822242269000FA6E83 /* DocumentEditViewController+ToolbarDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E465F8812242269000FA6E83 /* DocumentEditViewController+ToolbarDelegate.swift */; };
 		E466D186221D930A007F140B /* SeparaterAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = E466D185221D930A007F140B /* SeparaterAttachment.swift */; };
@@ -533,6 +534,7 @@
 		E462DB9B223D264800BF7AB4 /* TimeSelectViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSelectViewController.swift; sourceTree = "<group>"; };
 		E464BBB021A69C9000D34C88 /* OutlineTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineTheme.swift; sourceTree = "<group>"; };
 		E464DF0B253474D400967B5E /* JsonParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JsonParser.swift; sourceTree = "<group>"; };
+		E464DF14253A8E4800967B5E /* Wordpress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Wordpress.swift; sourceTree = "<group>"; };
 		E465F8782240E7CC00FA6E83 /* ToolbarAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarAction.swift; sourceTree = "<group>"; };
 		E465F87F2241FF6800FA6E83 /* TextViewCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextViewCommand.swift; sourceTree = "<group>"; };
 		E465F8812242269000FA6E83 /* DocumentEditViewController+ToolbarDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DocumentEditViewController+ToolbarDelegate.swift"; sourceTree = "<group>"; };
@@ -969,7 +971,6 @@
 		E41CB19C21D88D9300EF0A3C /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				E4537D4F25163C6B00362DDF /* Publish */,
 				E479514323CA0FF0000CFDE3 /* Storage */,
 				E479512423C4BE6C000CFDE3 /* UserGuide */,
 				E4CBCD19236D80C300A0FFDB /* Activities */,
@@ -1126,6 +1127,7 @@
 			isa = PBXGroup;
 			children = (
 				E4C1933E2248A0CA00EF4C95 /* Iceberg.entitlements */,
+				E4537D4F25163C6B00362DDF /* Publish */,
 				E4FC35A623EC4D8B00A371D3 /* AttachmentManager */,
 				E4F823EF23E17D6000ADADCB /* UserGuide */,
 				E46DE4D623A91291008A24CA /* Membership */,
@@ -1251,6 +1253,7 @@
 		E4537D4F25163C6B00362DDF /* Publish */ = {
 			isa = PBXGroup;
 			children = (
+				E432271B251A497B0032BB8B /* PublishSelectViewController.swift */,
 				E4537D5125163C8000362DDF /* Platforms */,
 			);
 			path = Publish;
@@ -1260,6 +1263,7 @@
 			isa = PBXGroup;
 			children = (
 				E4537DDA25173F7400362DDF /* Medium.swift */,
+				E464DF14253A8E4800967B5E /* Wordpress.swift */,
 				E4322724251F39A90032BB8B /* OneDrive.swift */,
 				E4537DE32517841200362DDF /* PublishFactory.swift */,
 				E43227122517ABF60032BB8B /* AuthViewController.swift */,
@@ -1332,7 +1336,6 @@
 			children = (
 				E472FF99227092C1004C8495 /* DocumentInfoViewController.swift */,
 				E472FF9C2270A691004C8495 /* ExportSelectViewController.swift */,
-				E432271B251A497B0032BB8B /* PublishSelectViewController.swift */,
 				E4FB7CBD2285BBE500791F6F /* BasicInfoViewController.swift */,
 			);
 			path = Info;
@@ -2134,12 +2137,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				E4CBCD1B236D80F500A0FFDB /* CreateDocumentActivity.swift in Sources */,
-				E4537DDB25173F7400362DDF /* Medium.swift in Sources */,
 				E4CBCD21237303E300A0FFDB /* CaptureActivity.swift in Sources */,
 				E4D0FD7B2348D774001C3BA2 /* PreviewManager.swift in Sources */,
 				E41CB1BC21D88DD100EF0A3C /* OutlineTextView.swift in Sources */,
 				E41CB1C121D88DD700EF0A3C /* OutlineParser.swift in Sources */,
-				E432271C251A497B0032BB8B /* PublishSelectViewController.swift in Sources */,
 				E44683FA2289B554005D5B73 /* UITextFieldClosure.swift in Sources */,
 				E43E7875222ACF780007EE4F /* OutlineTextTrimmer.swift in Sources */,
 				E41CB1BA21D88DCE00EF0A3C /* Document.swift in Sources */,
@@ -2150,7 +2151,6 @@
 				E4821DB122374C420063C0B2 /* WeakArray.swift in Sources */,
 				E4B802022200437A00AD5AD8 /* TextStorage.m in Sources */,
 				E43B90A8222903170008B44C /* Event.swift in Sources */,
-				E43227132517ABF60032BB8B /* AuthViewController.swift in Sources */,
 				E479512623C4BE91000CFDE3 /* UserGuideService.swift in Sources */,
 				E47FA900227026DB005AD0BA /* HTMLExporter.swift in Sources */,
 				E466D18D221E3E65007F140B /* RenderAttachment.swift in Sources */,
@@ -2170,14 +2170,12 @@
 				E4D31DEE227DA633001F5272 /* URLHandlerManager.swift in Sources */,
 				E4C7137F23ABCE8200DC38BE /* PurchaseManager.swift in Sources */,
 				E4D31DEC227D39A4001F5272 /* URLlHandler.swift in Sources */,
-				E4537DE42517841200362DDF /* PublishFactory.swift in Sources */,
 				E41CB1C921D88E2300EF0A3C /* Log.swift in Sources */,
 				E47FA8FD227025D6005AD0BA /* ImportManager.swift in Sources */,
 				E41B892921E34238009C5AD7 /* AudioRecorder.swift in Sources */,
 				E43B909C2227CBC60008B44C /* Token.swift in Sources */,
 				E41CB1C321D88DD700EF0A3C /* DocumentManager.swift in Sources */,
 				E45DCF8822AB646F007F34DB /* SimpleParserDelegate.swift in Sources */,
-				E4322725251F39A90032BB8B /* OneDrive.swift in Sources */,
 				E44E479A23D3038000D41AA2 /* Array.swift in Sources */,
 				E41CB1BF21D88DD400EF0A3C /* EditorController.swift in Sources */,
 				E43B909E2228EDA00008B44C /* EditorContext.swift in Sources */,
@@ -2253,6 +2251,7 @@
 				E4C3890D23EC51890077B393 /* AttachmentManagerCellModel.swift in Sources */,
 				E41B893821E3497D009C5AD7 /* LocationAttachmentView.swift in Sources */,
 				E41B893921E3497D009C5AD7 /* AttachmentView.swift in Sources */,
+				E464DF4D253A96AF00967B5E /* PublishSelectViewController.swift in Sources */,
 				E4A85B9A239BEECD00A41EFD /* ViewModelProtocol.swift in Sources */,
 				E41CB15B21D87CDD00EF0A3C /* SearchCoordinator.swift in Sources */,
 				E41B893421E3497D009C5AD7 /* LinkAttachmentView.swift in Sources */,
@@ -2266,7 +2265,9 @@
 				E41CB15921D87CD100EF0A3C /* BrowserCoordinator.swift in Sources */,
 				E41B893621E3497D009C5AD7 /* VideoAttachmentView.swift in Sources */,
 				E4144EA722854B5800CB12FF /* DocumentEditViewController+UserInteraction.swift in Sources */,
+				E464DF45253A95FC00967B5E /* Medium.swift in Sources */,
 				E4EA855C21D1DACE00DD92F9 /* AttachmentVideoViewController.swift in Sources */,
+				E464DF44253A95FC00967B5E /* OneDrive.swift in Sources */,
 				E428B89C2343A5900026AC1F /* BrowserViewController.swift in Sources */,
 				E41B892621E31B07009C5AD7 /* DashboardViewModel.swift in Sources */,
 				E4EA855821D1DA8700DD92F9 /* AttachmentLinkViewController.swift in Sources */,
@@ -2288,10 +2289,12 @@
 				E46DE4D823A912A9008A24CA /* MembershipCoordinator.swift in Sources */,
 				E4EFA4632230C42F00611FF5 /* CaptureGlobalEntrance.swift in Sources */,
 				E49F3E4621B8EDC8003F468D /* AgendaViewModel.swift in Sources */,
+				E464DF41253A95FC00967B5E /* PublishFactory.swift in Sources */,
 				E4EFA45D222F681700611FF5 /* CaptureCoordinator.swift in Sources */,
 				E4144EA522854A0B00CB12FF /* DocumentEditViewController+Menu.swift in Sources */,
 				E462DB97223D251A00BF7AB4 /* DateAndTimeSelectViewController.swift in Sources */,
 				E42A87FF21CFCAC500151C90 /* AttachmentViewModel.swift in Sources */,
+				E464DF42253A95FC00967B5E /* Wordpress.swift in Sources */,
 				E4AB056522068C7D00F98BEB /* FilteredItemsViewController.swift in Sources */,
 				E46DE4DA23A912C1008A24CA /* MembershipViewController.swift in Sources */,
 				E465F8802241FF6800FA6E83 /* TextViewCommand.swift in Sources */,
@@ -2314,6 +2317,7 @@
 				E47400AF241A151D0071BF73 /* ConflictResolverViewController.swift in Sources */,
 				E45D74BE2329BA48003C1BC2 /* BrowserFolderViewController.swift in Sources */,
 				E465F8822242269000FA6E83 /* DocumentEditViewController+ToolbarDelegate.swift in Sources */,
+				E464DF43253A95FC00967B5E /* AuthViewController.swift in Sources */,
 				E47829FD222E683B0054513E /* InputToolbar.swift in Sources */,
 				E41F86C5218EF4E1006C4CDB /* AgendaCoordinator.swift in Sources */,
 				E428B89A23439F560026AC1F /* BrowserRecentViewModel.swift in Sources */,

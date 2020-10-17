@@ -110,6 +110,9 @@ public class OutlineTextStorage: TextStorage {
     private var _tempParsingTokenResult: [Token] = []
     // 某些范围要忽略掉文字的样式，比如 link 内的文字样式, only usefule during parsing
     private var _ignoreTextMarkRanges: [NSRange] = []
+    // 目前有 quote 和 source code
+    // 可以包含其他 token 的 token
+    private var _embedableTokenRanges: [NSRange] = []
 }
 
 // MARK: - Update Attributes
@@ -385,6 +388,8 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 
                 let textMarkToken: TextMarkToken = TextMarkToken(range: range, name: key, data: dict)
                 
+                self._checkMarkEmbeded(token: textMarkToken)
+                
                 textMarkToken.decorationAttributesAction = { textStorage, token in
                     let contentRange = token.range(for: OutlineParser.Key.Element.TextMark.content) ?? token.range
                     if textStorage.isReadingMode {
@@ -430,6 +435,8 @@ extension OutlineTextStorage: OutlineParserDelegate {
             let linkToken = LinkToken(range: range, name: OutlineParser.Key.Element.link, data: linkRangeData)
             self._tempParsingTokenResult.append(linkToken)
             
+            self._checkMarkEmbeded(token: linkToken)
+            
             linkToken.decorationAttributesAction = { textStorage, token in
                 textStorage.addAttribute(OutlineAttribute.hidden, value: OutlineAttribute.hiddenValueDefault, range: token.range)
                 
@@ -465,6 +472,8 @@ extension OutlineTextStorage: OutlineParserDelegate {
             let attachmentToken = AttachmentToken(range: rangeData[OutlineParser.Key.Node.attachment]!, name: OutlineParser.Key.Node.attachment, data: rangeData)
             self._tempParsingTokenResult.append(attachmentToken)
             self._ignoreTextMarkRanges.append(attachmentToken.range)
+            
+            self._checkMarkEmbeded(token: attachmentToken)
             
             attachmentToken.decorationAttributesAction = { textStorage, token in
                 
@@ -522,6 +531,8 @@ extension OutlineTextStorage: OutlineParserDelegate {
             
             let checkboxToken = CheckboxToken(range: checkboxRange, name: OutlineParser.Key.Node.checkbox, data: rangeData)
             
+            self._checkMarkEmbeded(token: checkboxToken)
+            
             self._tempParsingTokenResult.append(checkboxToken)
             
             checkboxToken.decorationAttributesAction = { textStorage, token in
@@ -551,6 +562,8 @@ extension OutlineTextStorage: OutlineParserDelegate {
             let orderedListToken = OrderedListToken(range: range, name: OutlineParser.Key.Node.ordedList, data: list)
             self._tempParsingTokenResult.append(orderedListToken)
             
+            self._checkMarkEmbeded(token: orderedListToken)
+            
             orderedListToken.decorationAttributesAction = { textStorage, token in
                 textStorage.addAttribute(OutlineAttribute.OrderedList.range, value: 1, range: token.range(for: OutlineParser.Key.Node.ordedList)!)
                 
@@ -573,6 +586,8 @@ extension OutlineTextStorage: OutlineParserDelegate {
             
             self._tempParsingTokenResult.append(unorderedListToken)
             
+            self._checkMarkEmbeded(token: unorderedListToken)
+            
             unorderedListToken.decorationAttributesAction = { textStorage, token in
                 if let prefix = token.range(for: OutlineParser.Key.Element.UnorderedList.prefix) {
                     textStorage.addAttributes([NSAttributedString.Key.font: OutlineTheme.unorderdedListStyle.font,
@@ -590,6 +605,8 @@ extension OutlineTextStorage: OutlineParserDelegate {
             guard let separatorRange = range[OutlineParser.Key.Node.seperator] else { return }
             
             let seperatorToken = SeparatorToken(range: separatorRange, name: OutlineParser.Key.Node.seperator, data: range)
+            
+            self._checkMarkEmbeded(token: seperatorToken)
             
             self._tempParsingTokenResult.append(seperatorToken)
             
@@ -710,6 +727,8 @@ extension OutlineTextStorage: OutlineParserDelegate {
             self._tempParsingTokenResult.append(token)
             self._ignoreTextMarkRanges.append(token.levelRange)
             
+            self._checkMarkEmbeded(token: token)
+            
             token.decorationAttributesAction = { textStorage, token in
                 if textStorage.isReadingMode {
                     guard let headingRange = token.range(for: OutlineParser.Key.Node.heading) else { return }
@@ -786,6 +805,8 @@ extension OutlineTextStorage: OutlineParserDelegate {
             
             let dateAndTimeToken = DateAndTimeToken(range: range, name: OutlineParser.Key.Element.dateAndTIme, data: data)
             self._tempParsingTokenResult.append(dateAndTimeToken)
+            
+            self._checkMarkEmbeded(token: dateAndTimeToken)
             
             dateAndTimeToken.decorationAttributesAction = { textStorage, token in
                 guard let range = token.range(for: OutlineParser.Key.Element.dateAndTIme) else { return }
@@ -943,6 +964,15 @@ extension OutlineTextStorage: OutlineParserDelegate {
         
         if newQuoteBlocks.count > 0 || removedQuoteBlockToken.count > 0 {
             self._figureOutBlocks(&self._quoteBlocks)
+        }
+        
+        // mark embeded tokens
+        for block in self._quoteBlocks {
+            for token in self.allTokens {
+                if block.range.intersection(token.range) != nil && !(token is BlockToken) {
+                    token.isEmbeded = true
+                }
+            }
         }
     }
     
@@ -1156,6 +1186,14 @@ extension OutlineTextStorage: OutlineParserDelegate {
         self.addAttributes(OutlineTheme.markStyle.attributes, range: range.head(1))
         
         self.addAttributes(OutlineTheme.markStyle.attributes, range: range.tail(1))
+    }
+    
+    private func _checkMarkEmbeded(token: Token) {
+        for embedable in self._embedableTokenRanges {
+            if token.range.intersection(embedable) != nil {
+                token.isEmbeded = true
+            }
+        }
     }
 
 }

@@ -9,9 +9,16 @@
 import Foundation
 import RxSwift
 import OAuthSwift
+import Core
+
+enum PublishErrorType: Error {
+    case failToFetchUserInfo(String)
+    case otherError(String)
+}
+
 
 public protocol Publishable {
-    func publish(title: String, markdown: String) -> Observable<Void>
+    func publish(title: String, content: String) -> Observable<Void>
 }
 
 public protocol Uploadable {
@@ -29,11 +36,14 @@ public protocol OAuth2Connectable {
 public struct PublishFactory {
     public enum Publisher: CaseIterable {
         case medium
+        case wordpress
         
         public var title: String {
             switch self {
             case .medium:
                 return "Mediumn"
+            case .wordpress:
+                return "Wordpress"
             }
         }
         
@@ -41,6 +51,17 @@ public struct PublishFactory {
             switch self {
             case .medium:
                 return Medium(from: from)
+            case .wordpress:
+                return Wordpress(from: from)
+            }
+        }
+        
+        public var exportFileType: ExportType {
+            switch self {
+            case .medium:
+                return .markdown
+            case .wordpress:
+                return .html
             }
         }
         
@@ -73,10 +94,10 @@ public struct PublishFactory {
                     for path in paths {
                         content = (content as NSString).replacingOccurrences(of: path.1, with: path.0)
                     }
-                    return publisher.publish(title: title, markdown: content)
+                    return publisher.publish(title: title, content: content)
                 })
             } else {
-                return publisher.publish(title: title, markdown: content)
+                return publisher.publish(title: title, content: content)
             }
         }
     }

@@ -8,6 +8,8 @@
 
 import Foundation
 
+private let tokenIgnore = "IGNORE"
+
 public struct MarkdownExporter: Exportable {
     public var url: URL
     
@@ -30,6 +32,10 @@ public struct MarkdownExporter: Exportable {
                 for token in service.allTokens.reversed() { // 从尾部开始替换，否则会导致 range 错误
                     let tokenString = token.render(string: string ?? "")
                     
+                    guard tokenString != tokenIgnore else { continue }
+                    
+                    guard !token.isEmbeded else { continue }
+                    
                     result = result.nsstring.replacingCharacters(in: token.range, with: tokenString)
                 }
                 
@@ -41,6 +47,10 @@ public struct MarkdownExporter: Exportable {
 
 extension Token {
     fileprivate func render(string: String) -> String {
+        if self is BlockBeginToken {
+            return tokenIgnore
+        }
+        
         if let heading = self as? HeadingToken {
             var headingMark = ""
             for _ in 0..<heading.level {
@@ -51,7 +61,7 @@ extension Token {
             return "- \(string.nsstring.substring(with: orderedList.range).nsstring.replacingCharacters(in: orderedList.prefix.offset(-orderedList.range.location), with: ""))\n"
         } else if let unorderedList = self as? UnorderdListToken {
             return "- \(string.nsstring.substring(with: unorderedList.range).nsstring.replacingCharacters(in: unorderedList.prefix.offset(-unorderedList.range.location), with: ""))\n"
-        } else if let quoteBlock = self as? BlockBeginToken, quoteBlock.blockType == .quote {
+        } else if let quoteBlock = self as? BlockEndToken, quoteBlock.blockType == .quote {
             return string.nsstring.substring(with: quoteBlock.contentRange!).components(separatedBy: "\n").map {
                 "> \($0)\n"
             }.joined(separator: "")
@@ -59,8 +69,8 @@ extension Token {
             let checkStatusString = string.nsstring.substring(with: checkbox.range(for: "status")!) == OutlineParser.Values.Checkbox.checked ? "[x]" : "[ ]"
             let statusString = checkStatusString
             return "\n" + string.nsstring.substring(with: checkbox.range(for: "checkbox")!).nsstring.replacingCharacters(in: checkbox.range(for: "status")!.offset(-checkbox.range.location), with: statusString)
-        }  else if let quoteBlock = self as? BlockBeginToken, quoteBlock.blockType == .sourceCode {
-            return "\n```\n\(string.nsstring.substring(with: quoteBlock.contentRange!))\n```\n"
+        }  else if let sourceblock = self as? BlockEndToken, sourceblock.blockType == .sourceCode {
+            return "\n```\n\(string.nsstring.substring(with: sourceblock.contentRange!))\n```\n"
         } else if let link = self as? LinkToken {
             if let titleRange = link.range(for: OutlineParser.Key.Element.Link.title),
                 let urlRange = link.range(for: OutlineParser.Key.Element.Link.url) {

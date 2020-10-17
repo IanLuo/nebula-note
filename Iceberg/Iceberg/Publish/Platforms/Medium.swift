@@ -9,12 +9,9 @@
 import Foundation
 import OAuthSwift
 import RxSwift
+import Core
 
 public struct Medium: Publishable, OAuth2Connectable {
-    enum ErrorType: Error {
-        case failToFetchUserInfo(String)
-        case otherError(String)
-    }
     
     public var callback: String = "oauth-x3note://callback"
     
@@ -30,11 +27,11 @@ public struct Medium: Publishable, OAuth2Connectable {
                                     accessTokenUrl: "https://api.medium.com/v1/tokens",
                                     responseType: "code")
     
-    public func publish(title: String, markdown: String) -> Observable<Void> {
+    public func publish(title: String, content: String) -> Observable<Void> {
         self.oauth
             .tryAuthorize(obj: self)
             .flatMap({ self.userDetail() })
-            .flatMap { post(title: title, markdown: markdown, authorId: $0).map { _ in } }
+            .flatMap { post(title: title, markdown: content, authorId: $0).map { _ in } }
     }
     
     public init(from: UIViewController) {
@@ -62,9 +59,9 @@ public struct Medium: Publishable, OAuth2Connectable {
             .catchError { error in
                 let error = error as NSError
                 if error.code == 401 {
-                    return Observable.error(ErrorType.failToFetchUserInfo(error.localizedDescription))
+                    return Observable.error(PublishErrorType.failToFetchUserInfo(error.localizedDescription))
                 } else {
-                    return Observable.error(ErrorType.otherError(error.localizedDescription))
+                    return Observable.error(PublishErrorType.otherError(error.localizedDescription))
                 }
             }
             .flatMap { response -> Observable<[String: Any]> in
@@ -91,7 +88,7 @@ public struct Medium: Publishable, OAuth2Connectable {
                                                         "publishStatus": "public"],
                                            headers: ["Content-Type": "application/json"]).catchError { error in
                                             if let errorMessage = (error as NSError).userInfo["Response-Body"] as? String {
-                                                return Observable.error(ErrorType.otherError(errorMessage))
+                                                return Observable.error(PublishErrorType.otherError(errorMessage))
                                             } else {
                                                 return Observable.error(error)
                                             }

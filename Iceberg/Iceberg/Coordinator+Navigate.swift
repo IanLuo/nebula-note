@@ -135,7 +135,7 @@ extension Coordinator {
         selector.onSelection = { index, viewController in
             viewController.dismiss(animated: true, completion: {
                 complete()
-                exportManager.export(isMember: self.dependency.purchaseManager.isMember.value, url: url, type:exportManager.exportMethods[index], completion: { url in
+                exportManager.export(isMember: self.dependency.purchaseManager.isMember.value, url: url, type:exportManager.exportMethods[index], useDefaultStyle: true, completion: { url in
                     let shareViewController = exportManager.createPreviewController(url: url)
                     self.viewController?.present(shareViewController, animated: true)
                 }, failure: { error in

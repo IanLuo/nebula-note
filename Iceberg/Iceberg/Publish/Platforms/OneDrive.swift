@@ -9,6 +9,7 @@
 import Foundation
 import OAuthSwift
 import RxSwift
+import Core
 
 enum UploadError: Error {
     case failToUpload

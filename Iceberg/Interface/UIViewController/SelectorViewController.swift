@@ -384,3 +384,19 @@ fileprivate class ActionCell: UITableViewCell {
     }
 }
 
+import RxSwift
+
+extension Reactive where Base: SelectorViewController {
+    public func selectable() -> Observable<Int> {
+        return Observable.create { observer in
+            self.base.onSelection = { (index: Int, controller: UIViewController) in
+                controller.dismiss(animated: true) {
+                    observer.onNext(index)
+                    observer.onCompleted()
+                }
+            }
+                        
+            return Disposables.create()
+        }
+    }
+}

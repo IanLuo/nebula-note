@@ -73,20 +73,6 @@ public class OutlineParser {
             }
         }
         
-        // MARK: 解析 date and time
-        if includeParsee.contains(.dateAndTime) {
-            let result: [[String: NSRange]] = Matcher.Element.DateAndTime.anyDateAndTime
-                .matches(in: str, options: [], range: totalRange)
-                .map { (result: NSTextCheckingResult) -> [String: NSRange] in
-                    return [OutlineParser.Key.Element.dateAndTIme: result.range]
-                }
-            
-            if result.count > 0 {
-                self.logResult(result)
-                self.delegate?.didFoundDateAndTime(text: str, rangesData: result)
-            }
-        }
-        
         // MARK: 解析 code block begin
         if includeParsee.contains(.codeBlockBegin) {
             let result: [[String: NSRange]] = Matcher.Node.codeBlockBegin
@@ -149,6 +135,20 @@ public class OutlineParser {
             if result.count > 0 {
                 self.logResult(result)
                 self.delegate?.didFoundQuoteBlockEnd(text: str, ranges: result)
+            }
+        }
+        
+        // MARK: 解析 date and time
+        if includeParsee.contains(.dateAndTime) {
+            let result: [[String: NSRange]] = Matcher.Element.DateAndTime.anyDateAndTime
+                .matches(in: str, options: [], range: totalRange)
+                .map { (result: NSTextCheckingResult) -> [String: NSRange] in
+                    return [OutlineParser.Key.Element.dateAndTIme: result.range]
+                }
+            
+            if result.count > 0 {
+                self.logResult(result)
+                self.delegate?.didFoundDateAndTime(text: str, rangesData: result)
             }
         }
         

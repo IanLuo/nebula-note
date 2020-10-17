@@ -9,6 +9,8 @@
 import Foundation
 import Interface
 
+private let tokenIgnore = "IGNORE"
+
 public struct HTMLExporter: Exportable {
     public var url: URL
     
@@ -16,7 +18,10 @@ public struct HTMLExporter: Exportable {
     
     private let _editorContext: EditorContext
     
-    public init(editorContext: EditorContext, url: URL) {
+    private let useDefaultStyle: Bool
+    
+    public init(editorContext: EditorContext, url: URL, useDefaultStyle: Bool = true) {
+        self.useDefaultStyle = useDefaultStyle
         self._editorContext = editorContext
         self.url = url
     }
@@ -54,8 +59,13 @@ public struct HTMLExporter: Exportable {
                 
                 var result = string ?? ""
                 for token in service.allTokens.reversed() { // 从尾部开始替换，否则会导致 range 错误
-                    var tokenString = token.render(string: string ?? "")
+                    var tokenString = token.render(string: string ?? "", useDefaultStyle: self.useDefaultStyle)
                     
+                    guard tokenString != tokenIgnore else { continue }
+                    
+                    guard !token.isEmbeded else { continue }
+                    
+                    // 是否导出段落序号
                     if let _ = token as? HeadingToken, SettingsAccessor.Item.exportShowIndex.get(Bool.self) ?? true {
                         if let indexs = headingIndexs.last {
                             let index = indexs.map { "\($0)" }.joined(separator: ".") + " "
@@ -64,7 +74,9 @@ public struct HTMLExporter: Exportable {
                         }
                     }
                     
-                    result = result.nsstring.replacingCharacters(in: token.range, with: tokenString)
+                    if result.nsstring.substring(with: token.range) != tokenString {
+                        result = result.nsstring.replacingCharacters(in: token.range, with: tokenString)
+                    }
                 }
                 
                 result = result.replacingOccurrences(of: "\n", with: "<br>").replacingOccurrences(of: "\t", with: "&ensp;&ensp;&ensp;&ensp;")
@@ -90,6 +102,8 @@ public struct HTMLExporter: Exportable {
     }
     
     var style: String {
+        guard self.useDefaultStyle else { return "" }
+        
         return """
         <style>
         body { background-color: \(InterfaceTheme.Color.background1.hex); color: \(InterfaceTheme.Color.descriptive.hex); padding-left: 30px; padding-right: 30px; padding-top: 120px; padding-bottom: 120px;height:100%; min-height:100%;}
@@ -136,6 +150,7 @@ public struct HTMLExporter: Exportable {
         </style>
 """
     }
+    
 }
 
 extension UIColor {
@@ -179,7 +194,19 @@ extension HTMLExporter {
 }
 
 extension Token {
-    fileprivate func render(string: String) -> String {
+    fileprivate func render(string: String, useDefaultStyle: Bool) -> String {
+        func style(_ style: String) -> String {
+            if useDefaultStyle {
+                return style
+            } else {
+                return ""
+            }
+        }
+        
+        if self is BlockBeginToken {
+            return tokenIgnore
+        }
+        
         if let heading = self as? HeadingToken {
             return "<h\(heading.level)>\(string.nsstring.substring(with: heading.headingTextRange))</h\(heading.level)>"
         } else if let orderedList = self as? OrderedListToken {
@@ -188,12 +215,12 @@ extension Token {
             return "<li>\(string.nsstring.substring(with: unorderedList.range).nsstring.replacingCharacters(in: unorderedList.prefix.offset(-unorderedList.range.location), with: ""))</li>"
         } else if let checkbox = self as? CheckboxToken {
             let checkStatusString = string.nsstring.substring(with: checkbox.range(for: "status")!) == OutlineParser.Values.Checkbox.checked ? "checked" : ""
-            let statusString = "<br><input type=\"checkbox\" \(checkStatusString)>"
+            let statusString = "<br><input type=\"checkbox\" \(checkStatusString)/>"
             return string.nsstring.substring(with: checkbox.range(for: "checkbox")!).nsstring.replacingCharacters(in: checkbox.range(for: "status")!.offset(-checkbox.range.location), with: statusString)
-        } else if let quoteBlock = self as? BlockBeginToken, quoteBlock.blockType == .quote {
-            return "<br><div class=\"wrapper\"><blockquote class=\"quote\"><p>\(string.nsstring.substring(with: quoteBlock.contentRange!))</p></blockquote></div>"
-        } else if let quoteBlock = self as? BlockBeginToken, quoteBlock.blockType == .sourceCode {
-            return "<br><div class=\"wrapper\"><blockquote class=\"quote\"><p>\(string.nsstring.substring(with: quoteBlock.contentRange!))</p></blockquote></div>"
+        } else if let quoteBlock = self as? BlockEndToken, quoteBlock.blockType == .quote {
+            return "<br><div \(style("class=\"wrapper\""))><blockquote \(style("class=\"quote\""))><p>\(string.nsstring.substring(with: quoteBlock.contentRange!))</p></blockquote></div>"
+        } else if let quoteBlock = self as? BlockEndToken, quoteBlock.blockType == .sourceCode {
+            return "<br><div \(style("class=\"wrapper\""))><blockquote \(style("class=\"quote\""))><p>\(string.nsstring.substring(with: quoteBlock.contentRange!))</p></blockquote></div>"
         } else if let attachmentToken = self as? AttachmentToken {
             guard let typeRange = attachmentToken.range(for: OutlineParser.Key.Element.Attachment.type) else { return ""}
             guard let valueRange = attachmentToken.range(for: OutlineParser.Key.Element.Attachment.value) else { return ""}
@@ -204,19 +231,19 @@ extension Token {
             if type == Attachment.Kind.image.rawValue, let url = AttachmentManager.attachmentFileURL(key: value) {
                 let tempURL = URL.directory(location: URLLocation.temporary).appendingPathComponent(url.lastPathComponent)
                 try? Data(contentsOf: url).write(to: tempURL)
-                return "<br><img src=\"\(tempURL.lastPathComponent)\" style=\"max-width:600px;width:100%\"/>"
+                return "<br><img src=\"\(tempURL.lastPathComponent)\" \(style("style=\"max-width:600px;width:100%\""))/>"
             } else if type == Attachment.Kind.sketch.rawValue, let url = AttachmentManager.attachmentFileURL(key: value) {
                 let tempURL = URL.directory(location: URLLocation.temporary).appendingPathComponent(url.lastPathComponent)
                 try? Data(contentsOf: url).write(to: tempURL)
-                return "<br><img src=\"\(tempURL.lastPathComponent)\" style=\"max-width:600px;width:100%\"/>"
+                return "<br><img src=\"\(tempURL.lastPathComponent)\" \(style("style=\"max-width:600px;width:100%\""))/>"
             } else if type == Attachment.Kind.audio.rawValue, let url = AttachmentManager.attachmentFileURL(key: value) {
                 let tempURL = URL.directory(location: URLLocation.temporary).appendingPathComponent(url.lastPathComponent)
                 try? Data(contentsOf: url).write(to: tempURL)
-                return "<br><audio controls style=\"max-width:600px;width:100%\" src=\"\(tempURL.lastPathComponent)\"></audio>"
+                return "<br><audio controls \(style("style=\"max-width:600px;width:100%\"")) src=\"\(tempURL.lastPathComponent)\"></audio>"
             } else if type == Attachment.Kind.video.rawValue, let url = AttachmentManager.attachmentFileURL(key: value) {
                 let tempURL = URL.directory(location: URLLocation.temporary).appendingPathComponent(url.lastPathComponent)
                 try? Data(contentsOf: url).write(to: tempURL)
-                return "<br><video src=\"\(tempURL.lastPathComponent)\" style=\"max-width:600px;width:100%\"></video>"
+                return "<br><video src=\"\(tempURL.lastPathComponent)\" \(style("style=\"max-width:600px;width:100%\""))></video>"
             } else {
                 return "<!--\(type):\(value)--!>"
             }
@@ -228,9 +255,9 @@ extension Token {
             case OutlineParser.Key.Element.TextMark.italic:
                 return "<i>\(content)</i>"
             case OutlineParser.Key.Element.TextMark.strikeThough:
-                return "<span style=\"text-decoration: line-through;\">\(content)</span>"
+                return "<span \(style("style=\"text-decoration: line-through;\""))>\(content)</span>"
             case OutlineParser.Key.Element.TextMark.underscore:
-                return "<span style=\"text-decoration: underline;\">\(content)</span>"
+                return "<span \(style("style=\"text-decoration: underline;\""))>\(content)</span>"
             case OutlineParser.Key.Element.TextMark.highlight:
                 return "<mark>\(content)</mark>"
             default: return string.nsstring.substring(with: self.range)

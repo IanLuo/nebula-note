@@ -33,6 +33,8 @@ public class Token {
         return self.range
     }
     
+    public var isEmbeded: Bool = false
+    
     public var name: String
     private var _rawData: [String: NSRange]
     
@@ -177,6 +179,15 @@ public class BlockEndToken: BlockToken {
     
     public override var tokenRange: NSRange {
         return super.range
+    }
+    
+    /// the range of the part exclude the block token
+    public var contentRange: NSRange? {
+        if let beginToken = self.beginToken {
+            return self.range.moveLeftBound(by: beginToken.tokenRange.length).moveRightBound(by: -self.tokenRange.length)
+        } else {
+            return nil
+        }
     }
 }
 

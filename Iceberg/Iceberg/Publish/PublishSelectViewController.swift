@@ -9,9 +9,10 @@
 import Foundation
 import UIKit
 import Interface
+import Core
 
 public protocol PublishSelectViewControllerDelegate: class {
-    func didSelectPublisher(_ type: @escaping (UIViewController) -> Publishable)
+    func didSelectPublisher(_ type: PublishFactory.Publisher)
 }
 
 public class PublishSelectViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
@@ -90,7 +91,7 @@ public class PublishSelectViewController: UIViewController, UICollectionViewDele
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        self.delegate?.didSelectPublisher(self._publishFactory.allPublishers[indexPath.row].publishableBuilder)
+        self.delegate?.didSelectPublisher(self._publishFactory.allPublishers[indexPath.row])
     }
 }
 

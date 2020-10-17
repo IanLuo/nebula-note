@@ -52,10 +52,10 @@ public enum ExportType: CaseIterable {
         }
     }
     
-    public func exportable(url: URL, exportManager: ExportManager) -> Exportable {
+    public func exportable(url: URL, exportManager: ExportManager, useDefaultStyle: Bool) -> Exportable {
         switch self {
         case .org: return OrgExporter(url: url)
-        case .html: return HTMLExporter(editorContext: exportManager._editorContext, url: url)
+        case .html: return HTMLExporter(editorContext: exportManager._editorContext, url: url, useDefaultStyle: useDefaultStyle)
         case .txt: return TxtExporter(editorContext: exportManager._editorContext, url: url)
         case .pdf: return PDFExporter(editorContext: exportManager._editorContext, url: url)
         case .jpg: return JPGExporter(editorContext: exportManager._editorContext, url: url)
@@ -74,11 +74,12 @@ public struct ExportManager {
     
     public func export(isMember: Bool,
                        url: URL,
-                       type: ExportType, 
+                       type: ExportType,
+                       useDefaultStyle: Bool,
                        completion: @escaping (URL) -> Void,
                        failure: @escaping (Error) -> Void) {
         
-        let exportable = type.exportable(url: url, exportManager: self)
+        let exportable = type.exportable(url: url, exportManager: self, useDefaultStyle: useDefaultStyle)
         let exportFileDir = URL.directory(location: URLLocation.temporary)
         exportFileDir.createDirectoryIfNeeded { error in
             

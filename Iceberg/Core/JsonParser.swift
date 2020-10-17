@@ -8,9 +8,9 @@
 
 import Foundation
 
-typealias JSONDict = [String : Any]
+public typealias JSONDict = [String : Any]
 
-func KeypathParser<T>(_ type: T.Type, key: String) -> (JSONDict) -> T? {
+public func KeypathParser<T>(_ type: T.Type, key: String) -> (JSONDict) -> T? {
     var comp = key.components(separatedBy: ".")
     
     if comp.count == 1 {
@@ -42,7 +42,7 @@ func KeypathParser<T>(_ type: T.Type, key: String) -> (JSONDict) -> T? {
 /// - Parameter key: Dictioanry key。
 /// - Parameter or: Default value when there's no value found
 /// - Returns : The parser。
-func Parser<Type>(_ type: Type.Type, key: String, or: Type) -> (JSONDict) -> Type {
+public func Parser<Type>(_ type: Type.Type, key: String, or: Type) -> (JSONDict) -> Type {
     return { map in
         if let value = map[key] as? Type {
             return value
@@ -53,7 +53,7 @@ func Parser<Type>(_ type: Type.Type, key: String, or: Type) -> (JSONDict) -> Typ
     }
 }
 
-func Parser<Type>(_ type: Type.Type, key: String) -> (JSONDict) -> Type? {
+public func Parser<Type>(_ type: Type.Type, key: String) -> (JSONDict) -> Type? {
     return { map in
         if let value = map[key] as? Type {
             return value
@@ -63,7 +63,7 @@ func Parser<Type>(_ type: Type.Type, key: String) -> (JSONDict) -> Type? {
     }
 }
 
-func JSONParserTestValue<Type: Comparable>(_ type: Type.Type, key: String, compareTo: Type) -> (JSONDict) -> Bool {
+public func JSONParserTestValue<Type: Comparable>(_ type: Type.Type, key: String, compareTo: Type) -> (JSONDict) -> Bool {
     return { map in
         if let value = map[key] as? Type {
             return value == compareTo
@@ -90,7 +90,7 @@ func JSONParserTestValue<Type: Comparable>(_ type: Type.Type, key: String, compa
 ///     let addressParser = JSONParser(JSONDict.self, key: "address", or: [:])
 ///     let streetParser =  JSONParser(String.self, key: "street", or: "")
 ///     print((innerParser >>> addressParser >>> streetParser)(data))
-func >>><Type>(lhs: @escaping (JSONDict) -> JSONDict, rhs: @escaping (JSONDict) -> Type) -> (JSONDict) -> Type {
+public func >>><Type>(lhs: @escaping (JSONDict) -> JSONDict, rhs: @escaping (JSONDict) -> Type) -> (JSONDict) -> Type {
     return { data in
         return rhs(lhs(data))
     }

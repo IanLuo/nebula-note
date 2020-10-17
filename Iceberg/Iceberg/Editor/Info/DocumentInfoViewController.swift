@@ -160,7 +160,7 @@ public class DocumentInfoViewController: TransitionViewController {
 
 extension DocumentInfoViewController: ExportSelectViewControllerDelegate {
     public func didSelectExportType(_ type: ExportType, exportManager: ExportManager) {
-        exportManager.export(isMember: self._viewModel.isMember, url: self._viewModel.url, type: type, completion: { [weak self] url in
+        exportManager.export(isMember: self._viewModel.isMember, url: self._viewModel.url, type: type, useDefaultStyle: true, completion: { [weak self] url in
             guard let strongSelf = self else { return }
             exportManager.preview(from: strongSelf, url: url)
         }) { error in
@@ -170,17 +170,17 @@ extension DocumentInfoViewController: ExportSelectViewControllerDelegate {
 }
 
 extension DocumentInfoViewController: PublishSelectViewControllerDelegate {
-    public func didSelectPublisher(_ type: @escaping (UIViewController) -> Publishable) {
+    public func didSelectPublisher(_ type: PublishFactory.Publisher) {
         self.view.showProcessingAnimation()
         
-        self._viewModel.dependency.exportManager.export(isMember: true, url: self._viewModel.url, type: .markdown) { [unowned self] url in
+        self._viewModel.dependency.exportManager.export(isMember: true, url: self._viewModel.url, type: type.exportFileType, useDefaultStyle: false) { [unowned self] url in
             do {
                 let attachments = self._viewModel.attachments
                 
                 let publishable = self._viewModel
                     .dependency
                     .publishFactory
-                    .createPublishBuilder(publisher: .medium,
+                    .createPublishBuilder(publisher: type,
                                           uploader: .oneDrive,
                                           from: self)
                 
