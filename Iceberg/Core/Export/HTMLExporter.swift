@@ -215,7 +215,7 @@ extension Token {
             return "<li>\(string.nsstring.substring(with: unorderedList.range).nsstring.replacingCharacters(in: unorderedList.prefix.offset(-unorderedList.range.location), with: ""))</li>"
         } else if let checkbox = self as? CheckboxToken {
             let checkStatusString = string.nsstring.substring(with: checkbox.range(for: "status")!) == OutlineParser.Values.Checkbox.checked ? "checked" : ""
-            let statusString = "<br><input type=\"checkbox\" \(checkStatusString)/>"
+            let statusString = "<br><input type=\"checkbox\" \(checkStatusString) disabled/> "
             return string.nsstring.substring(with: checkbox.range(for: "checkbox")!).nsstring.replacingCharacters(in: checkbox.range(for: "status")!.offset(-checkbox.range.location), with: statusString)
         } else if let quoteBlock = self as? BlockEndToken, quoteBlock.blockType == .quote {
             return "<br><div \(style("class=\"wrapper\""))><blockquote \(style("class=\"quote\""))><p>\(string.nsstring.substring(with: quoteBlock.contentRange!))</p></blockquote></div>"
