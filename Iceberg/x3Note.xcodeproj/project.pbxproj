@@ -39,11 +39,9 @@
 		E40F6EAB223B7ABF00FFF53F /* OutlineTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = E464BBB021A69C9000D34C88 /* OutlineTheme.swift */; };
 		E40F6EAC223B7B6C00FFF53F /* Size.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4CC0C5821EEF92900058E5D /* Size.swift */; };
 		E40F6EAD223B7B7300FFF53F /* Rect.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4BC264121F56DB900B0F2B9 /* Rect.swift */; };
-		E413AD82230AD356004D5E38 /* ShareExtensionItemHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = E413AD81230AD356004D5E38 /* ShareExtensionItemHandler.swift */; };
 		E4144EA32285492E00CB12FF /* DocumentEditViewController+Input.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4144EA22285492E00CB12FF /* DocumentEditViewController+Input.swift */; };
 		E4144EA522854A0B00CB12FF /* DocumentEditViewController+Menu.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4144EA422854A0B00CB12FF /* DocumentEditViewController+Menu.swift */; };
 		E4144EA722854B5800CB12FF /* DocumentEditViewController+UserInteraction.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4144EA622854B5800CB12FF /* DocumentEditViewController+UserInteraction.swift */; };
-		E414A664227493D000748964 /* OrgImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E414A663227493D000748964 /* OrgImporter.swift */; };
 		E4162EF72254EA4F00D3619E /* DateAndTimeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4162EF62254EA4F00D3619E /* DateAndTimeType.swift */; };
 		E4191B8823560B370003263C /* UIViewController+Empty.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4191B8723560B370003263C /* UIViewController+Empty.swift */; };
 		E4192A9923EE4AAB00F0E5DB /* AttachmentManagerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4192A9823EE4AAB00F0E5DB /* AttachmentManagerCell.swift */; };
@@ -103,7 +101,6 @@
 		E42A7F8722DC679A0038A4DD /* PDFExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E42A7F8622DC679A0038A4DD /* PDFExporter.swift */; };
 		E42A87FD21CFC9B300151C90 /* AttachmentTextViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E42A87FC21CFC9B300151C90 /* AttachmentTextViewController.swift */; };
 		E42A87FF21CFCAC500151C90 /* AttachmentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E42A87FE21CFCAC500151C90 /* AttachmentViewModel.swift */; };
-		E43427FA2121BF5B00EC6DC3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43427F92121BF5B00EC6DC3 /* AppDelegate.swift */; };
 		E434280F2121BF5F00EC6DC3 /* IcelandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E434280E2121BF5F00EC6DC3 /* IcelandTests.swift */; };
 		E434281A2121BF6000EC6DC3 /* IcelandUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43428192121BF6000EC6DC3 /* IcelandUITests.swift */; };
 		E4357B4A21A995DA006DDD72 /* CaptureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4357B4921A995DA006DDD72 /* CaptureTests.swift */; };
@@ -113,7 +110,6 @@
 		E43B90A8222903170008B44C /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43B90A7222903160008B44C /* Event.swift */; };
 		E43D4F4022C0BFAF00B2322B /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43D4F3F22C0BFAF00B2322B /* ShareViewController.swift */; };
 		E43D4F4722C0BFAF00B2322B /* CaptureIdeaExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = E43D4F3D22C0BFAF00B2322B /* CaptureIdeaExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		E43D4F4E22C0C0BF00B2322B /* ShareExtensionDataHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43D4F4D22C0C0BF00B2322B /* ShareExtensionDataHandler.swift */; };
 		E43E7875222ACF780007EE4F /* OutlineTextTrimmer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43E7874222ACF780007EE4F /* OutlineTextTrimmer.swift */; };
 		E43E7877222AD0C70007EE4F /* DocumentContentCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43E7876222AD0C70007EE4F /* DocumentContentCommands.swift */; };
 		E43FD50C2453E5E100D02394 /* DesktopHomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43FD50B2453E5E100D02394 /* DesktopHomeViewController.swift */; };
@@ -138,12 +134,6 @@
 		E462DB9A223D259F00BF7AB4 /* DateSelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E462DB99223D259F00BF7AB4 /* DateSelectViewController.swift */; };
 		E462DB9C223D264800BF7AB4 /* TimeSelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E462DB9B223D264800BF7AB4 /* TimeSelectViewController.swift */; };
 		E464DF0C253474D400967B5E /* JsonParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = E464DF0B253474D400967B5E /* JsonParser.swift */; };
-		E464DF41253A95FC00967B5E /* PublishFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4537DE32517841200362DDF /* PublishFactory.swift */; };
-		E464DF42253A95FC00967B5E /* Wordpress.swift in Sources */ = {isa = PBXBuildFile; fileRef = E464DF14253A8E4800967B5E /* Wordpress.swift */; };
-		E464DF43253A95FC00967B5E /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43227122517ABF60032BB8B /* AuthViewController.swift */; };
-		E464DF44253A95FC00967B5E /* OneDrive.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4322724251F39A90032BB8B /* OneDrive.swift */; };
-		E464DF45253A95FC00967B5E /* Medium.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4537DDA25173F7400362DDF /* Medium.swift */; };
-		E464DF4D253A96AF00967B5E /* PublishSelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E432271B251A497B0032BB8B /* PublishSelectViewController.swift */; };
 		E465F8802241FF6800FA6E83 /* TextViewCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = E465F87F2241FF6800FA6E83 /* TextViewCommand.swift */; };
 		E465F8822242269000FA6E83 /* DocumentEditViewController+ToolbarDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E465F8812242269000FA6E83 /* DocumentEditViewController+ToolbarDelegate.swift */; };
 		E466D186221D930A007F140B /* SeparaterAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = E466D185221D930A007F140B /* SeparaterAttachment.swift */; };
@@ -173,11 +163,24 @@
 		E479513023C624DB000CFDE3 /* Function List.org in Resources */ = {isa = PBXBuildFile; fileRef = E479512F23C624DB000CFDE3 /* Function List.org */; };
 		E479514523CA1013000CFDE3 /* SimpleKeyValueStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E479514423CA1013000CFDE3 /* SimpleKeyValueStorage.swift */; };
 		E47A9A5221F1F7690050ABC9 /* DateHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E47A9A5121F1F7690050ABC9 /* DateHelper.swift */; };
+		E47E0E01253BFA880085BAA9 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4820B4124AF679100D769D2 /* SceneDelegate.swift */; };
+		E47E0E22253BFB640085BAA9 /* ShareExtensionDataHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43D4F4D22C0C0BF00B2322B /* ShareExtensionDataHandler.swift */; };
+		E47E0E23253BFB640085BAA9 /* ShareExtensionItemHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = E413AD81230AD356004D5E38 /* ShareExtensionItemHandler.swift */; };
+		E47E0E24253BFB640085BAA9 /* ImportManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E47FA8FC227025D6005AD0BA /* ImportManager.swift */; };
+		E47E0E25253BFB640085BAA9 /* OrgImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E414A663227493D000748964 /* OrgImporter.swift */; };
+		E47E0E3B253BFB960085BAA9 /* URLlHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D31DEB227D39A4001F5272 /* URLlHandler.swift */; };
+		E47E0E3C253BFB960085BAA9 /* URLHandlerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D31DED227DA633001F5272 /* URLHandlerManager.swift */; };
+		E47E0E4C253BFBA90085BAA9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43427F92121BF5B00EC6DC3 /* AppDelegate.swift */; };
+		E47E0E54253BFC0A0085BAA9 /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43227122517ABF60032BB8B /* AuthViewController.swift */; };
+		E47E0E55253BFC0A0085BAA9 /* Dropbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = E47E0DDE253B43570085BAA9 /* Dropbox.swift */; };
+		E47E0E56253BFC0A0085BAA9 /* PublishSelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E432271B251A497B0032BB8B /* PublishSelectViewController.swift */; };
+		E47E0E57253BFC0A0085BAA9 /* OneDrive.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4322724251F39A90032BB8B /* OneDrive.swift */; };
+		E47E0E58253BFC0A0085BAA9 /* Wordpress.swift in Sources */ = {isa = PBXBuildFile; fileRef = E464DF14253A8E4800967B5E /* Wordpress.swift */; };
+		E47E0E59253BFC0A0085BAA9 /* PublishFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4537DE32517841200362DDF /* PublishFactory.swift */; };
+		E47E0E5A253BFC0A0085BAA9 /* Medium.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4537DDA25173F7400362DDF /* Medium.swift */; };
 		E47FA8FB227025B8005AD0BA /* ExportManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E47FA8FA227025B8005AD0BA /* ExportManager.swift */; };
-		E47FA8FD227025D6005AD0BA /* ImportManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E47FA8FC227025D6005AD0BA /* ImportManager.swift */; };
 		E47FA900227026DB005AD0BA /* HTMLExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E47FA8FF227026DB005AD0BA /* HTMLExporter.swift */; };
 		E47FA90222702717005AD0BA /* OrgExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E47FA90122702717005AD0BA /* OrgExporter.swift */; };
-		E4820B4224AF679100D769D2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4820B4124AF679100D769D2 /* SceneDelegate.swift */; };
 		E4821DB122374C420063C0B2 /* WeakArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4821DB022374C420063C0B2 /* WeakArray.swift */; };
 		E48329A0224A2ED1008B60ED /* SyncTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E483299F224A2ED1008B60ED /* SyncTests.swift */; };
 		E48C123E241FC37900E9E005 /* SettingsPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E48C123D241FC37900E9E005 /* SettingsPageViewController.swift */; };
@@ -232,8 +235,6 @@
 		E4D0BAE8240BA9CF000E991E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E4D0BAEA240BA9CF000E991E /* InfoPlist.strings */; };
 		E4D0BAEE240BAA3C000E991E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E4D0BAF0240BAA3C000E991E /* InfoPlist.strings */; };
 		E4D0FD7B2348D774001C3BA2 /* PreviewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D0FD7A2348D774001C3BA2 /* PreviewManager.swift */; };
-		E4D31DEC227D39A4001F5272 /* URLlHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D31DEB227D39A4001F5272 /* URLlHandler.swift */; };
-		E4D31DEE227DA633001F5272 /* URLHandlerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D31DED227DA633001F5272 /* URLHandlerManager.swift */; };
 		E4D7B14524C349BA00503870 /* UIView+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D7B14424C349BA00503870 /* UIView+Convenience.swift */; };
 		E4E1B146224B27040061D327 /* KeyValueStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F870321902DB3006C4CDB /* KeyValueStore.swift */; };
 		E4E1E89A25092E1B00366EAD /* KeyCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4130CB824ED643800EA08C0 /* KeyCommands.swift */; };
@@ -573,6 +574,7 @@
 		E479512F23C624DB000CFDE3 /* Function List.org */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Function List.org"; sourceTree = "<group>"; };
 		E479514423CA1013000CFDE3 /* SimpleKeyValueStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleKeyValueStorage.swift; sourceTree = "<group>"; };
 		E47A9A5121F1F7690050ABC9 /* DateHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateHelper.swift; sourceTree = "<group>"; };
+		E47E0DDE253B43570085BAA9 /* Dropbox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dropbox.swift; sourceTree = "<group>"; };
 		E47FA8FA227025B8005AD0BA /* ExportManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportManager.swift; sourceTree = "<group>"; };
 		E47FA8FC227025D6005AD0BA /* ImportManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportManager.swift; sourceTree = "<group>"; };
 		E47FA8FF227026DB005AD0BA /* HTMLExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLExporter.swift; sourceTree = "<group>"; };
@@ -971,12 +973,13 @@
 		E41CB19C21D88D9300EF0A3C /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				E4537D4F25163C6B00362DDF /* Publish */,
+				E4B54C4E2275E8B10073AE31 /* URLSchema */,
+				E47FA8FE227026B8005AD0BA /* Import */,
 				E479514323CA0FF0000CFDE3 /* Storage */,
 				E479512423C4BE6C000CFDE3 /* UserGuide */,
 				E4CBCD19236D80C300A0FFDB /* Activities */,
 				E44683F72289B554005D5B73 /* Delegate2Closure */,
-				E4B54C4E2275E8B10073AE31 /* URLSchema */,
-				E47FA8FE227026B8005AD0BA /* Import */,
 				E47FA8F92270258E005AD0BA /* Export */,
 				E43B90A4222902FC0008B44C /* Events */,
 				E41B892A21E34288009C5AD7 /* Audio */,
@@ -1127,7 +1130,6 @@
 			isa = PBXGroup;
 			children = (
 				E4C1933E2248A0CA00EF4C95 /* Iceberg.entitlements */,
-				E4537D4F25163C6B00362DDF /* Publish */,
 				E4FC35A623EC4D8B00A371D3 /* AttachmentManager */,
 				E4F823EF23E17D6000ADADCB /* UserGuide */,
 				E46DE4D623A91291008A24CA /* Membership */,
@@ -1141,9 +1143,9 @@
 				E41F86C0218EF4A7006C4CDB /* Agenda */,
 				E4F3028921D738D200BDE178 /* CapturedList */,
 				E41F86BF218EF4A0006C4CDB /* AttachmentUI */,
+				E4CBCD1E2370695500A0FFDB /* ActivityHandler.swift */,
 				E43427F92121BF5B00EC6DC3 /* AppDelegate.swift */,
 				E4820B4124AF679100D769D2 /* SceneDelegate.swift */,
-				E4CBCD1E2370695500A0FFDB /* ActivityHandler.swift */,
 				E44825A2219722C300C17568 /* Application.swift */,
 				E4F885E9226D5BE700748868 /* Coordinator.swift */,
 				E4BA6B1925048CEC00A19321 /* Coordinator+Navigate.swift */,
@@ -1262,9 +1264,8 @@
 		E4537D5125163C8000362DDF /* Platforms */ = {
 			isa = PBXGroup;
 			children = (
-				E4537DDA25173F7400362DDF /* Medium.swift */,
-				E464DF14253A8E4800967B5E /* Wordpress.swift */,
-				E4322724251F39A90032BB8B /* OneDrive.swift */,
+				E47E0DDD253B433E0085BAA9 /* Upload */,
+				E47E0DDC253B43350085BAA9 /* Publish */,
 				E4537DE32517841200362DDF /* PublishFactory.swift */,
 				E43227122517ABF60032BB8B /* AuthViewController.swift */,
 			);
@@ -1375,6 +1376,24 @@
 				E479514423CA1013000CFDE3 /* SimpleKeyValueStorage.swift */,
 			);
 			path = Storage;
+			sourceTree = "<group>";
+		};
+		E47E0DDC253B43350085BAA9 /* Publish */ = {
+			isa = PBXGroup;
+			children = (
+				E4537DDA25173F7400362DDF /* Medium.swift */,
+				E464DF14253A8E4800967B5E /* Wordpress.swift */,
+			);
+			path = Publish;
+			sourceTree = "<group>";
+		};
+		E47E0DDD253B433E0085BAA9 /* Upload */ = {
+			isa = PBXGroup;
+			children = (
+				E4322724251F39A90032BB8B /* OneDrive.swift */,
+				E47E0DDE253B43570085BAA9 /* Dropbox.swift */,
+			);
+			path = Upload;
 			sourceTree = "<group>";
 		};
 		E47FA8F92270258E005AD0BA /* Export */ = {
@@ -2142,6 +2161,10 @@
 				E41CB1BC21D88DD100EF0A3C /* OutlineTextView.swift in Sources */,
 				E41CB1C121D88DD700EF0A3C /* OutlineParser.swift in Sources */,
 				E44683FA2289B554005D5B73 /* UITextFieldClosure.swift in Sources */,
+				E47E0E56253BFC0A0085BAA9 /* PublishSelectViewController.swift in Sources */,
+				E47E0E22253BFB640085BAA9 /* ShareExtensionDataHandler.swift in Sources */,
+				E47E0E3C253BFB960085BAA9 /* URLHandlerManager.swift in Sources */,
+				E47E0E3B253BFB960085BAA9 /* URLlHandler.swift in Sources */,
 				E43E7875222ACF780007EE4F /* OutlineTextTrimmer.swift in Sources */,
 				E41CB1BA21D88DCE00EF0A3C /* Document.swift in Sources */,
 				E4162EF72254EA4F00D3619E /* DateAndTimeType.swift in Sources */,
@@ -2155,6 +2178,7 @@
 				E47FA900227026DB005AD0BA /* HTMLExporter.swift in Sources */,
 				E466D18D221E3E65007F140B /* RenderAttachment.swift in Sources */,
 				E40F6E94223B7A1000FFF53F /* Range.swift in Sources */,
+				E47E0E23253BFB640085BAA9 /* ShareExtensionItemHandler.swift in Sources */,
 				E495EB1623F0121B005CCEEA /* MarkdownExporter.swift in Sources */,
 				E41CB1D621D8921B00EF0A3C /* SettingsAccessor.swift in Sources */,
 				E41CB1C721D88DFD00EF0A3C /* AttachmentManager.swift in Sources */,
@@ -2163,27 +2187,28 @@
 				E4716E12238FDB6B00387C0F /* iCloudSyncManager.swift in Sources */,
 				E44683FB2289B554005D5B73 /* UIControlClosure.swift in Sources */,
 				E4716E10238E935500387C0F /* SyncCoordinator.swift in Sources */,
-				E413AD82230AD356004D5E38 /* ShareExtensionItemHandler.swift in Sources */,
 				E466D186221D930A007F140B /* SeparaterAttachment.swift in Sources */,
 				E41EC83022C4BFE3009ACFA4 /* TxtExporter.swift in Sources */,
 				E41B892C21E34297009C5AD7 /* AudioPlayer.swift in Sources */,
-				E4D31DEE227DA633001F5272 /* URLHandlerManager.swift in Sources */,
 				E4C7137F23ABCE8200DC38BE /* PurchaseManager.swift in Sources */,
-				E4D31DEC227D39A4001F5272 /* URLlHandler.swift in Sources */,
 				E41CB1C921D88E2300EF0A3C /* Log.swift in Sources */,
-				E47FA8FD227025D6005AD0BA /* ImportManager.swift in Sources */,
 				E41B892921E34238009C5AD7 /* AudioRecorder.swift in Sources */,
 				E43B909C2227CBC60008B44C /* Token.swift in Sources */,
+				E47E0E55253BFC0A0085BAA9 /* Dropbox.swift in Sources */,
+				E47E0E24253BFB640085BAA9 /* ImportManager.swift in Sources */,
 				E41CB1C321D88DD700EF0A3C /* DocumentManager.swift in Sources */,
 				E45DCF8822AB646F007F34DB /* SimpleParserDelegate.swift in Sources */,
+				E47E0E57253BFC0A0085BAA9 /* OneDrive.swift in Sources */,
+				E47E0E5A253BFC0A0085BAA9 /* Medium.swift in Sources */,
 				E44E479A23D3038000D41AA2 /* Array.swift in Sources */,
 				E41CB1BF21D88DD400EF0A3C /* EditorController.swift in Sources */,
 				E43B909E2228EDA00008B44C /* EditorContext.swift in Sources */,
+				E47E0E59253BFC0A0085BAA9 /* PublishFactory.swift in Sources */,
 				E43B90A6222903100008B44C /* EventObserver.swift in Sources */,
 				E4C932D52244B55100E3A176 /* AttachmentDocument.swift in Sources */,
-				E43D4F4E22C0C0BF00B2322B /* ShareExtensionDataHandler.swift in Sources */,
 				E41CB1B921D88DCE00EF0A3C /* OutlineAttribute.swift in Sources */,
 				E4E1B146224B27040061D327 /* KeyValueStore.swift in Sources */,
+				E47E0E58253BFC0A0085BAA9 /* Wordpress.swift in Sources */,
 				E4F9ECE121FECE5C009A08CD /* PathManager.swift in Sources */,
 				E479514523CA1013000CFDE3 /* SimpleKeyValueStorage.swift in Sources */,
 				E42A7F8722DC679A0038A4DD /* PDFExporter.swift in Sources */,
@@ -2192,10 +2217,11 @@
 				E4C7138123ADCD0A00DC38BE /* JPGExporter.swift in Sources */,
 				E43E7877222AD0C70007EE4F /* DocumentContentCommands.swift in Sources */,
 				E41CB1C621D88DFD00EF0A3C /* Attachment.swift in Sources */,
-				E414A664227493D000748964 /* OrgImporter.swift in Sources */,
 				E41CB1C221D88DD700EF0A3C /* iCloudDocumentManager.swift in Sources */,
+				E47E0E25253BFB640085BAA9 /* OrgImporter.swift in Sources */,
 				E44E60F521E9F2C0005AC25F /* Location.swift in Sources */,
 				E47A9A5221F1F7690050ABC9 /* DateHelper.swift in Sources */,
+				E47E0E54253BFC0A0085BAA9 /* AuthViewController.swift in Sources */,
 				E41CB1DB21D8953F00EF0A3C /* DocumentSearchManager.swift in Sources */,
 				E4C268EB22436C90006FC68A /* SyncEvents.swift in Sources */,
 				E47FA90222702717005AD0BA /* OrgExporter.swift in Sources */,
@@ -2230,6 +2256,7 @@
 				E4C7FB8521BA916D006E3CD8 /* AgendaCellModel.swift in Sources */,
 				E4EA855E21D1DAEB00DD92F9 /* AttachmentLocationViewController.swift in Sources */,
 				E44825A3219722C300C17568 /* Application.swift in Sources */,
+				E47E0E4C253BFBA90085BAA9 /* AppDelegate.swift in Sources */,
 				E4729BA82204160200F22885 /* DashboardViewController.swift in Sources */,
 				E41B893221E3497D009C5AD7 /* ImageAttachmentView.swift in Sources */,
 				E4B1BED02340E34C00683E10 /* BrowserFolderViewModel.swift in Sources */,
@@ -2240,7 +2267,6 @@
 				E4EA856021D1DB1400DD92F9 /* AttachmentSketchViewController.swift in Sources */,
 				E43FD50C2453E5E100D02394 /* DesktopHomeViewController.swift in Sources */,
 				E4EA855621D1DA3D00DD92F9 /* AttachmentImageViewController.swift in Sources */,
-				E43427FA2121BF5B00EC6DC3 /* AppDelegate.swift in Sources */,
 				E4F42989229F9C4F004700E0 /* ListViewController.swift in Sources */,
 				E4B1BED923424E9D00683E10 /* BrowserCellModel.swift in Sources */,
 				E4EFA45F222F684B00611FF5 /* CaptureViewController.swift in Sources */,
@@ -2251,7 +2277,6 @@
 				E4C3890D23EC51890077B393 /* AttachmentManagerCellModel.swift in Sources */,
 				E41B893821E3497D009C5AD7 /* LocationAttachmentView.swift in Sources */,
 				E41B893921E3497D009C5AD7 /* AttachmentView.swift in Sources */,
-				E464DF4D253A96AF00967B5E /* PublishSelectViewController.swift in Sources */,
 				E4A85B9A239BEECD00A41EFD /* ViewModelProtocol.swift in Sources */,
 				E41CB15B21D87CDD00EF0A3C /* SearchCoordinator.swift in Sources */,
 				E41B893421E3497D009C5AD7 /* LinkAttachmentView.swift in Sources */,
@@ -2265,16 +2290,13 @@
 				E41CB15921D87CD100EF0A3C /* BrowserCoordinator.swift in Sources */,
 				E41B893621E3497D009C5AD7 /* VideoAttachmentView.swift in Sources */,
 				E4144EA722854B5800CB12FF /* DocumentEditViewController+UserInteraction.swift in Sources */,
-				E464DF45253A95FC00967B5E /* Medium.swift in Sources */,
 				E4EA855C21D1DACE00DD92F9 /* AttachmentVideoViewController.swift in Sources */,
-				E464DF44253A95FC00967B5E /* OneDrive.swift in Sources */,
 				E428B89C2343A5900026AC1F /* BrowserViewController.swift in Sources */,
 				E41B892621E31B07009C5AD7 /* DashboardViewModel.swift in Sources */,
 				E4EA855821D1DA8700DD92F9 /* AttachmentLinkViewController.swift in Sources */,
 				E49FE990245EA61B005F634C /* DocumentTabContainerViewController.swift in Sources */,
 				E4192A9923EE4AAB00F0E5DB /* AttachmentManagerCell.swift in Sources */,
 				E4773BA821F7505E000F8F3F /* SearchTableCell.swift in Sources */,
-				E4820B4224AF679100D769D2 /* SceneDelegate.swift in Sources */,
 				E4EA855A21D1DAAF00DD92F9 /* AttachmentAudioViewController.swift in Sources */,
 				E45D74BC2329BA1D003C1BC2 /* BrowserRecentViewController.swift in Sources */,
 				E49F3E4A21B9186D003F468D /* SettingsViewController.swift in Sources */,
@@ -2289,18 +2311,17 @@
 				E46DE4D823A912A9008A24CA /* MembershipCoordinator.swift in Sources */,
 				E4EFA4632230C42F00611FF5 /* CaptureGlobalEntrance.swift in Sources */,
 				E49F3E4621B8EDC8003F468D /* AgendaViewModel.swift in Sources */,
-				E464DF41253A95FC00967B5E /* PublishFactory.swift in Sources */,
 				E4EFA45D222F681700611FF5 /* CaptureCoordinator.swift in Sources */,
 				E4144EA522854A0B00CB12FF /* DocumentEditViewController+Menu.swift in Sources */,
 				E462DB97223D251A00BF7AB4 /* DateAndTimeSelectViewController.swift in Sources */,
 				E42A87FF21CFCAC500151C90 /* AttachmentViewModel.swift in Sources */,
-				E464DF42253A95FC00967B5E /* Wordpress.swift in Sources */,
 				E4AB056522068C7D00F98BEB /* FilteredItemsViewController.swift in Sources */,
 				E46DE4DA23A912C1008A24CA /* MembershipViewController.swift in Sources */,
 				E465F8802241FF6800FA6E83 /* TextViewCommand.swift in Sources */,
 				E4A85B92239BAC1B00A41EFD /* TrashCoordinator.swift in Sources */,
 				E4CBCD1D236D914400A0FFDB /* EditAction.swift in Sources */,
 				E4A85B96239BAC4D00A41EFD /* TrashViewModel.swift in Sources */,
+				E47E0E01253BFA880085BAA9 /* SceneDelegate.swift in Sources */,
 				E49F3E4821B9183F003F468D /* SettingsCoordinator.swift in Sources */,
 				E4BA6B1A25048CEC00A19321 /* Coordinator+Navigate.swift in Sources */,
 				E498AAFF21BBE9B900D2A8EA /* CaptureListViewController.swift in Sources */,
@@ -2317,7 +2338,6 @@
 				E47400AF241A151D0071BF73 /* ConflictResolverViewController.swift in Sources */,
 				E45D74BE2329BA48003C1BC2 /* BrowserFolderViewController.swift in Sources */,
 				E465F8822242269000FA6E83 /* DocumentEditViewController+ToolbarDelegate.swift in Sources */,
-				E464DF43253A95FC00967B5E /* AuthViewController.swift in Sources */,
 				E47829FD222E683B0054513E /* InputToolbar.swift in Sources */,
 				E41F86C5218EF4E1006C4CDB /* AgendaCoordinator.swift in Sources */,
 				E428B89A23439F560026AC1F /* BrowserRecentViewModel.swift in Sources */,

@@ -9,11 +9,6 @@
 import Foundation
 import OAuthSwift
 import RxSwift
-import Core
-
-enum UploadError: Error {
-    case failToUpload
-}
 
 public struct OneDrive: Uploadable, OAuth2Connectable {
     public func upload(attachment: Attachment) -> Observable<(String, String)> {

@@ -9,13 +9,15 @@
 import Foundation
 import RxSwift
 import OAuthSwift
-import Core
 
 enum PublishErrorType: Error {
     case failToFetchUserInfo(String)
     case otherError(String)
 }
 
+enum UploadError: Error {
+    case failToUpload
+}
 
 public protocol Publishable {
     func publish(title: String, content: String) -> Observable<Void>
@@ -34,6 +36,11 @@ public protocol OAuth2Connectable {
 }
 
 public struct PublishFactory {
+    public static let callbacks: [String] = [
+        "https://x3note-callback",
+        "oauth-x3note://callback",
+    ]
+    
     public enum Publisher: CaseIterable {
         case medium
         case wordpress
@@ -72,10 +79,13 @@ public struct PublishFactory {
         case dropbox
         
         public func attachmentUploaderBuilder(from: UIViewController) -> Uploadable {
-            // TODO:
-            return OneDrive(from: from)
+            switch self {
+            case .dropbox:
+                return Dropbox(from: from)
+            case .oneDrive:
+                return OneDrive(from: from)
+            }
         }
-        
     }
     
     public func createPublishBuilder(publisher: Publisher, uploader: Uploader, from: UIViewController) -> (String, String, [Attachment]?) -> Observable<Void> {
@@ -143,7 +153,7 @@ extension OAuth2Swift {
                                                 observer.onNext(response)
                                                 observer.onCompleted()
                                             case .failure(let error):
-                                                if let code = ((error as NSError).userInfo["error"] as? NSError)?.code, [400, 401, 403].contains(code) {
+                                                if let code = ((error as NSError).userInfo["error"] as? NSError)?.code, [401, 403].contains(code) {
                                                     self.removeSavedCredential(consumerKey: self.client.credential.consumerKey)
                                                 }
                                                 

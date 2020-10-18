@@ -181,7 +181,7 @@ extension DocumentInfoViewController: PublishSelectViewControllerDelegate {
                     .dependency
                     .publishFactory
                     .createPublishBuilder(publisher: type,
-                                          uploader: .oneDrive,
+                                          uploader: .dropbox,
                                           from: self)
                 
                 publishable(url.packageName, try String(contentsOf: url), attachments)

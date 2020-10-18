@@ -1,5 +1,5 @@
 //
-//  Wordpress.swift
+//  Medium.swift
 //  Core
 //
 //  Created by ian luo on 2020/9/20.
@@ -9,29 +9,28 @@
 import Foundation
 import OAuthSwift
 import RxSwift
-import Interface
-import Core
 
-public struct Wordpress: Publishable, OAuth2Connectable {
+public struct Medium: Publishable, OAuth2Connectable {
+    
     public var callback: String = "oauth-x3note://callback"
     
     public var state: String = "x3"
     
-    public var scope: String = "global"
+    public var scope: String = "basicProfile,publishPost"
     
     public let from: UIViewController
     
-    public let oauth = OAuth2Swift(consumerKey: "70772",
-                                    consumerSecret: "84iMbydl4NBre2PYb1ED2o88CP3w7vOksUfVuvVDvJvNwgnWevuq6IvXtQC6lTQZ",
-                                    authorizeUrl: "https://public-api.wordpress.com/oauth2/authorize",
-                                    accessTokenUrl: "https://public-api.wordpress.com/oauth2/token",
+    public let oauth = OAuth2Swift(consumerKey: "ac8eb589ac0c",
+                                    consumerSecret: "f2d4aeb61334ff373ff908127042c2a9542db5ef",
+                                    authorizeUrl: "https://medium.com/m/oauth/authorize",
+                                    accessTokenUrl: "https://api.medium.com/v1/tokens",
                                     responseType: "code")
     
     public func publish(title: String, content: String) -> Observable<Void> {
         self.oauth
             .tryAuthorize(obj: self)
-            .flatMap({ self.getSite() })
-            .flatMap { post(title: title, markdown: content, siteId: $0).map { _ in } }
+            .flatMap({ self.userDetail() })
+            .flatMap { post(title: title, markdown: content, authorId: $0).map { _ in } }
     }
     
     public init(from: UIViewController) {
@@ -49,17 +48,24 @@ public struct Wordpress: Publishable, OAuth2Connectable {
         }
     }
     
-    public func getSite() -> Observable<String> {
-                
-        return self.oauth.startAuthRequest(url: "https://public-api.wordpress.com/rest/v1.1/me/sites",
+    public func userDetail() -> Observable<String> {
+        return self.oauth.startAuthRequest(url: "https://api.medium.com/v1/me",
                                            method: OAuthSwiftHTTPRequest.Method.GET,
                                            parameters: [:],
                                            headers: ["Content-Type": "application/json",
                                                      "Accept": "application/json",
                                                      "Accept-Charset": "utf-8"])
-            .flatMap { response -> Observable<JSONDict> in
+            .catchError { error in
+                let error = error as NSError
+                if error.code == 401 {
+                    return Observable.error(PublishErrorType.failToFetchUserInfo(error.localizedDescription))
+                } else {
+                    return Observable.error(PublishErrorType.otherError(error.localizedDescription))
+                }
+            }
+            .flatMap { response -> Observable<[String: Any]> in
                 do {
-                    if let json = try JSONSerialization.jsonObject(with: response.data, options: []) as? JSONDict {
+                    if let json = try JSONSerialization.jsonObject(with: response.data, options: []) as? [String: Any] {
                         return Observable.just(json)
                     } else {
                         return Observable.just([:])
@@ -67,30 +73,18 @@ public struct Wordpress: Publishable, OAuth2Connectable {
                 } catch {
                     return Observable.error(error)
                 }
-            }.flatMap { json -> Observable<String> in
-                let ids = (KeypathParser([JSONDict].self, key: "sites")(json) ?? []).compactMap { Parser(Int.self, key: "ID")($0) }.map { "\($0)" }
-                
-                if ids.count == 0 {
-                    return Observable.error(PublishErrorType.failToFetchUserInfo("no site found on wordpress"))
-                } else if ids.count < 2 {
-                    return Observable.just(ids[0])
-                } else {
-                    let selector = SelectorViewController()
-                    for item in ids {
-                        selector.addItem(title: item)
-                    }
-                    self.from.present(selector, animated: true)
-                    
-                    return selector.rx.selectable().map({ (index: Int) -> String in ids[index] })
-                }
+            }.map { json in
+                return KeypathParser(String.self, key: "data.id")(json) ?? ""
             }
     }
     
-    public func post(title: String, markdown: String, siteId: String) -> Observable<OAuthSwiftResponse> {
-        return self.oauth.startAuthRequest(url: "https://public-api.wordpress.com/rest/v1.2/sites/\(siteId)/posts/new",
+    public func post(title: String, markdown: String, authorId: String) -> Observable<OAuthSwiftResponse> {
+        return self.oauth.startAuthRequest(url: "https://api.medium.com/v1/users/\(authorId)/posts",
                                            method: OAuthSwiftHTTPRequest.Method.POST,
                                            parameters: ["title": title,
-                                                        "content": markdown],
+                                                        "content": markdown,
+                                                        "contentFormat": "markdown",
+                                                        "publishStatus": "public"],
                                            headers: ["Content-Type": "application/json"]).catchError { error in
                                             if let errorMessage = (error as NSError).userInfo["Response-Body"] as? String {
                                                 return Observable.error(PublishErrorType.otherError(errorMessage))

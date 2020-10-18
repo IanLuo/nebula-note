@@ -24,7 +24,7 @@ public class URLHandlerManager {
     
     public func handle(url: URL, sourceApp: String) -> Bool {
 
-        if url.scheme == "oauth-x3note" {
+        if PublishFactory.callbacks.contains(url.absoluteString) {
             OAuthSwift.handle(url: url)
         }
         
