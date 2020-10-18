@@ -681,7 +681,6 @@ extension DocumentEditorViewController {
                 } else {
                     self.viewModel.context.coordinator?.showMembership()
                 }
-                
             }
         }
         
