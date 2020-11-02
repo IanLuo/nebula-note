@@ -231,19 +231,19 @@ extension Token {
             if type == Attachment.Kind.image.rawValue, let url = AttachmentManager.attachmentFileURL(key: value) {
                 let tempURL = URL.directory(location: URLLocation.temporary).appendingPathComponent(url.lastPathComponent)
                 try? Data(contentsOf: url).write(to: tempURL)
-                return "<br><img src=\"\(tempURL.lastPathComponent)\" \(style("style=\"max-width:600px;width:100%\""))/>"
+                return "<br><img src=\"\(tempURL.lastPathComponent)\" style=\"max-width:600px;width:100%\"/>"
             } else if type == Attachment.Kind.sketch.rawValue, let url = AttachmentManager.attachmentFileURL(key: value) {
                 let tempURL = URL.directory(location: URLLocation.temporary).appendingPathComponent(url.lastPathComponent)
                 try? Data(contentsOf: url).write(to: tempURL)
-                return "<br><img src=\"\(tempURL.lastPathComponent)\" \(style("style=\"max-width:600px;width:100%\""))/>"
+                return "<br><img src=\"\(tempURL.lastPathComponent)\" style=\"max-width:600px;width:100%\"/>"
             } else if type == Attachment.Kind.audio.rawValue, let url = AttachmentManager.attachmentFileURL(key: value) {
                 let tempURL = URL.directory(location: URLLocation.temporary).appendingPathComponent(url.lastPathComponent)
                 try? Data(contentsOf: url).write(to: tempURL)
-                return "<br><audio controls \(style("style=\"max-width:600px;width:100%\"")) src=\"\(tempURL.lastPathComponent)\"></audio>"
+                return "<br><audio controls style=\"max-width:600px;width:100%\" src=\"\(tempURL.lastPathComponent)\"></audio>"
             } else if type == Attachment.Kind.video.rawValue, let url = AttachmentManager.attachmentFileURL(key: value) {
                 let tempURL = URL.directory(location: URLLocation.temporary).appendingPathComponent(url.lastPathComponent)
                 try? Data(contentsOf: url).write(to: tempURL)
-                return "<br><video src=\"\(tempURL.lastPathComponent)\" \(style("style=\"max-width:600px;width:100%\""))></video>"
+                return "<br><video controls src=\"\(tempURL.lastPathComponent)\" style=\"max-width:600px;width:100%\"></video>"
             } else {
                 return "<!--\(type):\(value)--!>"
             }

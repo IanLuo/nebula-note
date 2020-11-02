@@ -9,13 +9,14 @@
 import Foundation
 import OAuthSwift
 import RxSwift
+import MSGraphClientSDK
 
 public struct OneDrive: Uploadable, OAuth2Connectable {
     public func upload(attachment: Attachment) -> Observable<(String, String)> {
         return self.oauth
             .tryAuthorize(obj: self)
             .flatMap { createFolderIfNeeded() }
-            .flatMap { uploadFile(url: attachment.url, kind: attachment.kind) }
+            .flatMap { uploadFile(attachment: attachment) }
             .flatMap { createShareLink(id: $0) }
             .map { ($0, attachment.url.lastPathComponent) }
     }
@@ -37,6 +38,17 @@ public struct OneDrive: Uploadable, OAuth2Connectable {
                                     authorizeUrl: "https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize",
                                     accessTokenUrl: "https://login.microsoftonline.com/consumers/oauth2/v2.0/token",
                                     responseType: "code")
+    
+    class TokenProvider: NSObject, MSAuthenticationProvider {
+        let token: String
+        init(token: String) {
+            self.token = token
+        }
+        
+        func getAccessToken(for authProviderOptions: MSAuthenticationProviderOptions!, andCompletion completion: ((String?, Error?) -> Void)!) {
+            completion(self.token, nil)
+        }
+    }
     
     public init(from: UIViewController) {
         self.from = from
@@ -114,6 +126,81 @@ public struct OneDrive: Uploadable, OAuth2Connectable {
             }
     }
     
+    private func uploadFile(attachment: Attachment) -> Observable<String> {
+        let endpoint = Endpoint.upload(attachment.url, folderName, attachment.kind)
+        
+        if attachment.size / 1024 / 1024 >= 4 {
+            return uploadLargeFile(url: attachment.url)
+        } else {
+            return self.oauth.startAuthRequest(url: endpoint.url,
+                                               method: endpoint.method,
+                                               parameters: endpoint.parameter,
+                                               headers: endpoint.header,
+                                               body: endpoint.body)
+                .flatMap { response -> Observable<String> in
+                    do {
+                        if let json = try JSONSerialization.jsonObject(with: response.data, options: []) as? JSONDict,
+                           let id = Parser(String.self, key: "id")(json) {
+                            return Observable.just(id)
+                        } else {
+                            return Observable.error(UploadError.failToUpload)
+                        }
+                    } catch {
+                        return Observable.error(error)
+                    }
+                }
+        }
+        
+    }
+    
+    private func uploadLargeFile(url: URL) -> Observable<String> {
+        return Observable.create { observer in
+            do {
+                if let client = MSClientFactory.createHTTPClient(with: TokenProvider(token: self.oauth.client.credential.oauthToken)) {
+                    
+                    MSGraphOneDriveLargeFileUploadTask.createOneDriveLargeFileUploadTask(with: client,
+                                                                                         fileData: try Data(contentsOf: url),
+                                                                                         fileName: url.lastPathComponent,
+                                                                                         filePath: folderName.escapedSpace,
+                                                                                         andChunkSize: 320 * 1024) { (task, data, response, error) in
+                        if let error = error {
+                            observer.onError(error)
+                        }
+                        
+                        if let task = task {
+                            task.upload(completion: { (data, response, error) in
+                                if let error = error {
+                                    observer.onError(error)
+                                }
+                                
+                                if let data = data as? Data {
+                                    do {
+                                        if let json = try JSONSerialization.jsonObject(with: data, options: []) as? JSONDict,
+                                           let id = Parser(String.self, key: "id")(json) {
+                                            observer.onNext(id)
+                                        } else {
+                                            observer.onError(UploadError.failToUpload)
+                                        }
+                                    } catch {
+                                        observer.onError(error)
+                                    }
+                                } else {
+                                    observer.onError(UploadError.failToUpload)
+                                }
+                            })
+                        }
+                    }
+                } else {
+                    observer.onError(UploadError.failToUpload)
+                }
+            } catch {
+                observer.onError(error)
+            }
+            
+            return Disposables.create()
+        }
+    }
+    
     private func createShareLink(id: String) -> Observable<String> {
         let endpoint = Endpoint.createLink(id)
         
@@ -121,9 +208,8 @@ public struct OneDrive: Uploadable, OAuth2Connectable {
             .flatMap { response -> Observable<String> in
                 do {
                     if let json = try JSONSerialization.jsonObject(with: response.data, options: []) as? JSONDict,
-                       let images = KeypathParser([JSONDict].self, key: "value")(json)?.first,
-                       let url = KeypathParser(String.self, key: "large.url")(images) {
-                        return Observable.just(url)
+                       let url = KeypathParser(String.self, key: "link.webUrl")(json) {
+                        return Observable.just(url.replacingOccurrences(of: "embed", with: "download"))
                     } else {
                         return Observable.error(UploadError.failToUpload)
                     }
@@ -169,7 +255,7 @@ private enum Endpoint {
         case .createFolder(_):
             return .POST
         case .createLink:
-            return .GET
+            return .POST
         }
     }
     
@@ -182,8 +268,7 @@ private enum Endpoint {
         case .createFolder(_):
             return "/me/drive/root/children"
         case .createLink(let id):
-//            return "/me/drive/items/\(id)/createLink"
-            return "/me/drive/items/\(id)/thumbnails"
+            return "/me/drive/items/\(id)/createLink"
         }
     }
     

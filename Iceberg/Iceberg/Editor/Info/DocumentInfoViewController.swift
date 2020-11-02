@@ -181,10 +181,11 @@ extension DocumentInfoViewController: PublishSelectViewControllerDelegate {
                     .dependency
                     .publishFactory
                     .createPublishBuilder(publisher: type,
-                                          uploader: .dropbox,
+                                          uploader: .oneDrive,
                                           from: self)
                 
                 publishable(url.packageName, try String(contentsOf: url), attachments)
+                    .observeOn(MainScheduler())
                     .do(onError: { error in
                         self.showAlert(title: "fail", message: "\(error)")
                         self.view.hideProcessingAnimation()

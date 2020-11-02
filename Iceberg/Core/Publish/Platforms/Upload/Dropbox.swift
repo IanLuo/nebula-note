@@ -13,7 +13,7 @@ import RxSwift
 public struct Dropbox: Uploadable, OAuth2Connectable {
     public func upload(attachment: Attachment) -> Observable<(String, String)> {
         return self.oauth
-            .tryAuthorize(obj: self)
+            .tryAuthorize(obj: self, parameters: ["token_access_type": "offline"])
             .flatMap { createFolderIfNeeded() }
             .flatMap { uploadFile(url: attachment.url, kind: attachment.kind) }
             .flatMap { createShareLink(path: $0) }
@@ -37,6 +37,7 @@ public struct Dropbox: Uploadable, OAuth2Connectable {
                                     consumerSecret: "gif78p2xzv0fk4h",
                                     authorizeUrl: "https://www.dropbox.com/oauth2/authorize",
                                     accessTokenUrl: "https://api.dropboxapi.com/oauth2/token",
+
                                     responseType: "code")
     
     public init(from: UIViewController) {

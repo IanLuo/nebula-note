@@ -71,7 +71,6 @@ public struct PublishFactory {
                 return .html
             }
         }
-        
     }
     
     public enum Uploader: CaseIterable {
@@ -122,8 +121,8 @@ public struct PublishFactory {
 // MARK: - Auth convenience functions
 
 extension OAuth2Swift {
-    private func logon(obj: OAuth2Connectable) -> Observable<OAuthSwiftCredential> {
-        return self.authorize(callbackURL: obj.callback, scope: obj.scope, state: obj.state)
+    private func logon(obj: OAuth2Connectable, parameters: [String: Any] = [:]) -> Observable<OAuthSwiftCredential> {
+        return self.authorize(callbackURL: obj.callback, scope: obj.scope, state: obj.state, parameter: parameters)
     }
     
     public var getToken: Observable<String> {
@@ -134,9 +133,9 @@ extension OAuth2Swift {
         }
     }
     
-    public func tryAuthorize(obj: OAuth2Connectable) -> Observable<Void> {
+    public func tryAuthorize(obj: OAuth2Connectable, parameters: [String: Any] = [:]) -> Observable<Void> {
         return self.getToken
-            .ifEmpty(switchTo: self.logon(obj: obj)
+            .ifEmpty(switchTo: self.logon(obj: obj, parameters: parameters)
                         .map({ $0.oauthToken })).map { _ in }
     }
     
@@ -155,8 +154,10 @@ extension OAuth2Swift {
                                             case .failure(let error):
                                                 if let code = ((error as NSError).userInfo["error"] as? NSError)?.code, [401, 403].contains(code) {
                                                     self.removeSavedCredential(consumerKey: self.client.credential.consumerKey)
+                                                } else if error.description.contains(self.accessTokenUrl ?? "") {
+                                                    self.removeSavedCredential(consumerKey: self.client.credential.consumerKey)
                                                 }
-                                                
+                                                                                                
                                                 if let underlineError = error.underlyingError {
                                                     observer.onError(underlineError)
                                                 } else {
@@ -198,9 +199,9 @@ extension OAuth2Swift {
         }
     }
     
-    public func authorize(callbackURL: String, scope: String, state: String) -> Observable<OAuthSwiftCredential> {
+    public func authorize(callbackURL: String, scope: String, state: String, parameter: [String: Any] = [:]) -> Observable<OAuthSwiftCredential> {
         return Observable.create { observer -> Disposable in
-            self.authorize(withCallbackURL: callbackURL, scope: scope, state: state) { [weak self] result in
+            self.authorize(withCallbackURL: callbackURL, scope: scope, state: state, parameters: parameter) { [weak self] result in
                 switch result {
                 case .success(let (credential, _, _)):
                     _ = self?.saveCrendential(credential)

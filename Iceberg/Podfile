@@ -26,12 +26,15 @@ target 'x3NoteTests' do
 end
 
 target 'Core' do
-  pod 'OAuthSwift'
+  pod 'OAuthSwift', :git => 'https://github.com/OAuthSwift/OAuthSwift.git', :tag => '2.1.2'
   pod 'RxSwift', :git => 'git@github.com:ReactiveX/RxSwift.git', :tag => '5.1.0'
   pod 'RxCocoa', :git => 'git@github.com:ReactiveX/RxSwift.git', :tag => '5.1.0'
   pod 'SwiftyBeaver'
   pod 'SwiftyStoreKit', :git => 'git@github.com:bizz84/SwiftyStoreKit.git', :tag => '0.15.1'
   pod 'MHWebViewController'
+  pod 'SwiftyDropbox'
+  pod 'MSGraphClientSDK'
+#  pod 'MSGraphMSALAuthProvider'
 end
 
 target 'Interface' do

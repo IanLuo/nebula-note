@@ -3,13 +3,12 @@
 
 import Foundation
 
-// swiftlint:disable superfluous_disable_command
-// swiftlint:disable file_length
+// swiftlint:disable superfluous_disable_command file_length implicit_return
 
 // MARK: - Strings
 
 // swiftlint:disable explicit_type_interface function_parameter_count identifier_name line_length
-// swiftlint:disable nesting type_body_length type_name
+// swiftlint:disable nesting type_body_length type_name vertical_whitespace_opening_braces
 public enum L10n {
   /// Dashboard
   public static let dashboard = L10n.tr("Localizable", "dashboard")
@@ -85,28 +84,28 @@ public enum L10n {
 
   public enum Agenda {
     /// in %@ days
-    public static func daysAfter(_ p1: String) -> String {
-      return L10n.tr("Localizable", "agenda.daysAfter", p1)
+    public static func daysAfter(_ p1: Any) -> String {
+      return L10n.tr("Localizable", "agenda.daysAfter", String(describing: p1))
     }
     /// %@ days ago
-    public static func daysBefore(_ p1: String) -> String {
-      return L10n.tr("Localizable", "agenda.daysBefore", p1)
+    public static func daysBefore(_ p1: Any) -> String {
+      return L10n.tr("Localizable", "agenda.daysBefore", String(describing: p1))
     }
     /// Due today
     public static let dueToday = L10n.tr("Localizable", "agenda.dueToday")
     /// Overdue %@ days
-    public static func overdueDaysWihtPlaceHolder(_ p1: String) -> String {
-      return L10n.tr("Localizable", "agenda.overdueDaysWihtPlaceHolder", p1)
+    public static func overdueDaysWihtPlaceHolder(_ p1: Any) -> String {
+      return L10n.tr("Localizable", "agenda.overdueDaysWihtPlaceHolder", String(describing: p1))
     }
     /// Due yesterday
     public static let overdueYesterdayWihtPlaceHolder = L10n.tr("Localizable", "agenda.overdueYesterdayWihtPlaceHolder")
     /// Started %@ days ago
-    public static func startDaysAgoWithPlaceHodler(_ p1: String) -> String {
-      return L10n.tr("Localizable", "agenda.startDaysAgoWithPlaceHodler", p1)
+    public static func startDaysAgoWithPlaceHodler(_ p1: Any) -> String {
+      return L10n.tr("Localizable", "agenda.startDaysAgoWithPlaceHodler", String(describing: p1))
     }
     /// Start in %@ days
-    public static func startInDaysWithPlaceHolder(_ p1: String) -> String {
-      return L10n.tr("Localizable", "agenda.startInDaysWithPlaceHolder", p1)
+    public static func startInDaysWithPlaceHolder(_ p1: Any) -> String {
+      return L10n.tr("Localizable", "agenda.startInDaysWithPlaceHolder", String(describing: p1))
     }
     /// Start today
     public static let startToday = L10n.tr("Localizable", "agenda.startToday")
@@ -121,8 +120,8 @@ public enum L10n {
     /// Tomorrow
     public static let tomorrow = L10n.tr("Localizable", "agenda.tomorrow")
     /// Will due in %@ days
-    public static func willOverduInDaysWithPlaceHolder(_ p1: String) -> String {
-      return L10n.tr("Localizable", "agenda.willOverduInDaysWithPlaceHolder", p1)
+    public static func willOverduInDaysWithPlaceHolder(_ p1: Any) -> String {
+      return L10n.tr("Localizable", "agenda.willOverduInDaysWithPlaceHolder", String(describing: p1))
     }
     /// Will due tomorrow
     public static let willOverduTomorrowWithPlaceHolder = L10n.tr("Localizable", "agenda.willOverduTomorrowWithPlaceHolder")
@@ -238,8 +237,8 @@ public enum L10n {
       public static let title = L10n.tr("Localizable", "browser.actions.title")
       public enum Delete {
         /// Are you sure you want to delete '%@' and it's all child documents?
-        public static func confirm(_ p1: String) -> String {
-          return L10n.tr("Localizable", "browser.actions.delete.confirm", p1)
+        public static func confirm(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "browser.actions.delete.confirm", String(describing: p1))
         }
       }
     }
@@ -937,16 +936,25 @@ public enum L10n {
   }
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length
-// swiftlint:enable nesting type_body_length type_name
+// swiftlint:enable nesting type_body_length type_name vertical_whitespace_opening_braces
 
 // MARK: - Implementation Details
 
 extension L10n {
   private static func tr(_ table: String, _ key: String, _ args: CVarArg...) -> String {
-    // swiftlint:disable:next nslocalizedstring_key
-    let format = NSLocalizedString(key, tableName: table, bundle: Bundle(for: BundleToken.self), comment: "")
+    let format = BundleToken.bundle.localizedString(forKey: key, value: nil, table: table)
     return String(format: format, locale: Locale.current, arguments: args)
   }
 }
 
-private final class BundleToken {}
+// swiftlint:disable convenience_type
+private final class BundleToken {
+  static let bundle: Bundle = {
+    #if SWIFT_PACKAGE
+    return Bundle.module
+    #else
+    return Bundle(for: BundleToken.self)
+    #endif
+  }()
+}
+// swiftlint:enable convenience_type

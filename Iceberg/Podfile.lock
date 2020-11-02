@@ -1,10 +1,17 @@
 PODS:
+  - Alamofire (4.8.2)
   - Differentiator (4.0.1)
   - Doorbell (0.2.5)
-  - Drawsana (0.9.2)
+  - Drawsana (0.12.0)
   - Haptico (1.0.2)
   - KDCalendar (1.6.5)
-  - MHWebViewController (1.1.1)
+  - MHWebViewController (1.1.2)
+  - MSGraphClientSDK (1.0.0):
+    - MSGraphClientSDK/Authentication (= 1.0.0)
+    - MSGraphClientSDK/Common (= 1.0.0)
+  - MSGraphClientSDK/Authentication (1.0.0)
+  - MSGraphClientSDK/Common (1.0.0):
+    - MSGraphClientSDK/Authentication
   - OAuthSwift (2.1.0)
   - PKHUD (5.3.0)
   - RxCocoa (5.1.0):
@@ -17,8 +24,10 @@ PODS:
   - RxRelay (5.1.1):
     - RxSwift (~> 5)
   - RxSwift (5.1.0)
-  - SwiftGen (6.1.0)
-  - SwiftyBeaver (1.9.0)
+  - SwiftGen (6.4.0)
+  - SwiftyBeaver (1.9.2)
+  - SwiftyDropbox (6.0.3):
+    - Alamofire (~> 4.8.2)
   - SwiftyStoreKit (0.15.1)
 
 DEPENDENCIES:
@@ -27,31 +36,38 @@ DEPENDENCIES:
   - Haptico
   - KDCalendar (~> 1.6.5)
   - MHWebViewController
-  - OAuthSwift
+  - MSGraphClientSDK
+  - OAuthSwift (from `https://github.com/OAuthSwift/OAuthSwift.git`, tag `2.1.2`)
   - PKHUD (~> 5.0)
   - "RxCocoa (from `git@github.com:ReactiveX/RxSwift.git`, tag `5.1.0`)"
   - RxDataSources
   - "RxSwift (from `git@github.com:ReactiveX/RxSwift.git`, tag `5.1.0`)"
   - SwiftGen (~> 6.0)
   - SwiftyBeaver
+  - SwiftyDropbox
   - "SwiftyStoreKit (from `git@github.com:bizz84/SwiftyStoreKit.git`, tag `0.15.1`)"
 
 SPEC REPOS:
   trunk:
+    - Alamofire
     - Differentiator
     - Doorbell
     - Drawsana
     - Haptico
     - KDCalendar
     - MHWebViewController
-    - OAuthSwift
+    - MSGraphClientSDK
     - PKHUD
     - RxDataSources
     - RxRelay
     - SwiftGen
     - SwiftyBeaver
+    - SwiftyDropbox
 
 EXTERNAL SOURCES:
+  OAuthSwift:
+    :git: https://github.com/OAuthSwift/OAuthSwift.git
+    :tag: 2.1.2
   RxCocoa:
     :git: "git@github.com:ReactiveX/RxSwift.git"
     :tag: 5.1.0
@@ -63,6 +79,9 @@ EXTERNAL SOURCES:
     :tag: 0.15.1
 
 CHECKOUT OPTIONS:
+  OAuthSwift:
+    :git: https://github.com/OAuthSwift/OAuthSwift.git
+    :tag: 2.1.2
   RxCocoa:
     :git: "git@github.com:ReactiveX/RxSwift.git"
     :tag: 5.1.0
@@ -74,22 +93,25 @@ CHECKOUT OPTIONS:
     :tag: 0.15.1
 
 SPEC CHECKSUMS:
+  Alamofire: ae5c501addb7afdbb13687d7f2f722c78734c2d3
   Differentiator: 886080237d9f87f322641dedbc5be257061b0602
   Doorbell: 4de282e483060cfb80b788e761eda35ec5c7cf69
-  Drawsana: e6c738958804d69769b034019bc274fa58a56d10
+  Drawsana: 6e69c064ffb859fef968a0a50d3481849a48941c
   Haptico: ce38d1f993f3a0df9a6d7795a9dd2849648aa9d1
   KDCalendar: 15e74f37bd3d206bf7549c594fd08e0347c276f4
-  MHWebViewController: 6269a80674e88744f345a0e96925e3dbf565acd6
-  OAuthSwift: ab1675598273e04355e0282459c328e65c9ddacd
+  MHWebViewController: bc0c4be723b798260ccec01ce6b9e86c6543741e
+  MSGraphClientSDK: ffc07a58a838e0702c7bf2a856367035d4a335d7
+  OAuthSwift: b65415797d860d0a25c7d178250cfb8cec4b83bf
   PKHUD: 98f3e4bc904b9c916f1c5bb6d765365b5357291b
   RxCocoa: 13d2a4d7546a34b8ececae8c281e4ea1dbb94f2b
   RxDataSources: efee07fa4de48477eca0a4611e6d11e2da9c1114
   RxRelay: d77f7d771495f43c556cbc43eebd1bb54d01e8e9
   RxSwift: ad5874f24bb0dbffd1e9bb8443604e3578796c7a
-  SwiftGen: f872ca75cbd17bf7103c17f13dcfa0d9a15667b0
-  SwiftyBeaver: d39e7c376bf15e9fffca8263b8fd1f42ea56aa2d
+  SwiftGen: 67860cc7c3cfc2ed25b9b74cfd55495fc89f9108
+  SwiftyBeaver: b8239f6bfe9e1ea3303e6139abc8c24228081d84
+  SwiftyDropbox: 7e864f1e826bfc1b9b53a5edccef6c8d5fbe9e3b
   SwiftyStoreKit: 555996ed1159bb57209e7ec251b2a775d4434a69
 
-PODFILE CHECKSUM: f5d772226e20894e21853d8d05cf45d6e199bd8e
+PODFILE CHECKSUM: 3dbeebd5d8d7c834952a44bec31bfdb8d5159024
 
 COCOAPODS: 1.9.2
