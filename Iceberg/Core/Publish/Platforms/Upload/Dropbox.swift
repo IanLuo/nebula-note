@@ -9,14 +9,15 @@
 import Foundation
 import OAuthSwift
 import RxSwift
+import SwiftyDropbox
 
-public struct Dropbox: Uploadable, OAuth2Connectable {
+public class Dropbox: Uploadable, OAuth2Connectable {
     public func upload(attachment: Attachment) -> Observable<(String, String)> {
         return self.oauth
             .tryAuthorize(obj: self, parameters: ["token_access_type": "offline"])
-            .flatMap { createFolderIfNeeded() }
-            .flatMap { uploadFile(url: attachment.url, kind: attachment.kind) }
-            .flatMap { createShareLink(path: $0) }
+            .flatMap { self.createFolderIfNeeded() }
+            .flatMap { self.uploadFile(url: attachment.url, attachment: attachment) }
+            .flatMap { self.createShareLink(path: $0) }
             .map { $0.replacingOccurrences(of: "dl=0", with: "raw=1") }
             .map { ($0, attachment.url.lastPathComponent) }
     }
@@ -32,6 +33,8 @@ public struct Dropbox: Uploadable, OAuth2Connectable {
     private static let tenant: String = "consumers"
     
     private let folderName = "x3 note"
+    
+    var dropboxClient: DropboxClient?
     
     public let oauth = OAuth2Swift(consumerKey: "ltczw6l280yss4l",
                                     consumerSecret: "gif78p2xzv0fk4h",
@@ -56,11 +59,13 @@ public struct Dropbox: Uploadable, OAuth2Connectable {
     }
     
     private func createFolderIfNeeded() -> Observable<Void> {
-        return listAllFolders().flatMap { (folders: [String]) -> Observable<Void> in
-            if folders.contains(folderName) {
+        return listAllFolders().flatMap { [weak self] (folders: [String]) -> Observable<Void> in
+            guard let strongSelf = self else { return Observable.just(()) }
+            
+            if folders.contains(strongSelf.folderName) {
                 return Observable.just(())
             } else {
-                return createFolder()
+                return strongSelf.createFolder()
             }
         }.catchError { error -> Observable<()> in
             // igore for duplicate file name
@@ -101,8 +106,17 @@ public struct Dropbox: Uploadable, OAuth2Connectable {
             .map({ _ in })
     }
     
-    private func uploadFile(url: URL, kind: Attachment.Kind) -> Observable<String> {
-        let endpoint = Endpoint.upload(url, folderName, kind)
+    private func uploadFile(url: URL, attachment: Attachment) -> Observable<String> {
+        
+        if attachment.size / 1024 / 1024 >= 150 {
+            return uploadLargeFile(url: url)
+        } else {
+            return uploadSmallFile(url: url, attachment: attachment)
+        }
+    }
+    
+    private func uploadSmallFile(url: URL, attachment: Attachment) -> Observable<String> {
+        let endpoint = Endpoint.upload(url, folderName, attachment.kind)
         
         return self.oauth.startAuthRequest(url: endpoint.url,
                                            method: endpoint.method,
@@ -122,6 +136,67 @@ public struct Dropbox: Uploadable, OAuth2Connectable {
                 }
             }
     }
+    
+    
+    let chunkSize = 5 * 1024 * 1024 // 5MB
+    var offset = 0
+    var sessionId = ""
+    private func uploadLargeFile(url: URL) -> Observable<String> {
+        self.dropboxClient = DropboxClient(accessToken: self.oauth.client.credential.oauthToken)
+        
+        let data = NSData(contentsOf: url)!
+        
+        return Observable.create { observer -> Disposable in
+            
+            func uploadFirstChunk() {
+                let size = min(self.chunkSize, data.count)
+                self.dropboxClient!.files.uploadSessionStart(input: data.subdata(with: NSRange(location: 0, length: self.chunkSize)))
+                    .response { response, error in
+                        if let result = response {
+                            self.sessionId = result.sessionId
+                            self.offset += size
+                            print("So far \(self.offset) bytes have been uploaded.")
+                            uploadNextChunk()
+                        } else if let error = error {
+                            observer.onError(UploadError.failToUpload)
+                        }
+                    }
+            }
+            
+            func uploadNextChunk() {
+                if data.count - self.offset <= self.chunkSize {
+                    let size = data.count - self.offset
+                    self.dropboxClient!.files.uploadSessionFinish(
+                        cursor: Files.UploadSessionCursor(
+                            sessionId: self.sessionId, offset: UInt64(self.offset)),
+                        commit: Files.CommitInfo(path: "/\(self.folderName)/\(url.lastPathComponent)"),
+                        input: data.subdata(with: NSMakeRange(self.offset, size)))
+                        .response { response, error in
+                            if let error = error {
+                                observer.onError(UploadError.failToUpload)
+                            } else if let response = response {
+                                observer.onNext(response.id)
+                            }
+                        }
+                } else {
+                    self.dropboxClient!.files.uploadSessionAppendV2(cursor: Files.UploadSessionCursor(sessionId: self.sessionId, offset: UInt64(self.offset)), input: data.subdata(with: NSRange(location: self.offset, length: self.chunkSize))).response { response, error in
+                        if error != nil {
+                            
+                        } else {
+                            self.offset += self.chunkSize
+                            print("So far \(self.offset) bytes have been uploaded.")
+                            uploadNextChunk()
+                        }
+                    }
+                }
+            }
+        
+            uploadFirstChunk()
+            
+            return Disposables.create()
+        }
+    }
+    
     
     private func getFileSharedLink(path: String) -> Observable<String> {
         let endpoint = Endpoint.getShareLink(path)

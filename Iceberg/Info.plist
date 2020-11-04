@@ -126,7 +126,7 @@
         <string>msauthv3</string>
     </array>
 	<key>CFBundleVersion</key>
-	<string>218</string>
+	<string>219</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSApplicationCategoryType</key>
