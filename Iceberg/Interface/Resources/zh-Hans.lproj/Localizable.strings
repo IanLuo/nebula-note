@@ -415,3 +415,11 @@
 "key.command.group.view" = "视图";
 "key.command.group.edit" = "编辑";
 "key.command.group.capture" = "灵感";
+
+// publish
+"publish.title" = "发布";
+"publish.platform.pick" = "选择发布的平台";
+"publish.platform.description" = "发布平台将会展示你发布的文章，如果没有找到你想要发布的平台，请在论坛，或者应用内的反馈告诉我们。";
+"publish.attachment.storage-service" = "选择附件存储服务";
+// publish
+"publish.attachment.storage-service.description" = "如果文章中包含附件，比如图片，视频，音频，则需要选择一个文件保存服务来上传这些附件，否则文章中就无法显示这些附件内容。如果没有找到你喜欢的文件上传服务，请在论坛或者应用内反馈告诉我们。";

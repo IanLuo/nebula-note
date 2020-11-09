@@ -762,6 +762,25 @@ public enum L10n {
     }
   }
 
+  public enum Publish {
+    /// Publish
+    public static let title = L10n.tr("Localizable", "publish.title")
+    public enum Attachment {
+      /// Chosse Attachment Storage Service
+      public static let storageService = L10n.tr("Localizable", "publish.attachment.storage-service")
+      public enum StorageService {
+        /// If you have attachments used in your document that about to publish, there need a place to store the attachments, such as images, videos, audios, otherwise it will not be able to display in your article on that platform, if you want the attachment be visiable on those platforms, you should choose a service to use, and if you can't find the service you like, you can give us feedback on the forum or through the feedback in this app.
+        public static let description = L10n.tr("Localizable", "publish.attachment.storage-service.description")
+      }
+    }
+    public enum Platform {
+      /// Platform is where your article will be post to, more platforms will be added in the future, if you can't find the platform you are using, please try to feedback us on the forum or through the feedback
+      public static let description = L10n.tr("Localizable", "publish.platform.description")
+      /// Choose Platform
+      public static let pick = L10n.tr("Localizable", "publish.platform.pick")
+    }
+  }
+
   public enum Search {
     /// Search
     public static let title = L10n.tr("Localizable", "search.title")

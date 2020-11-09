@@ -97,7 +97,6 @@
 		E42574C32294DEF3008993BC /* InterfaceTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = E42574C22294DEF3008993BC /* InterfaceTheme.swift */; };
 		E428B89A23439F560026AC1F /* BrowserRecentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E428B89923439F560026AC1F /* BrowserRecentViewModel.swift */; };
 		E428B89C2343A5900026AC1F /* BrowserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E428B89B2343A5900026AC1F /* BrowserViewController.swift */; };
-		E428B89E234487180026AC1F /* UIView+Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = E428B89D234487180026AC1F /* UIView+Style.swift */; };
 		E42A7F8722DC679A0038A4DD /* PDFExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E42A7F8622DC679A0038A4DD /* PDFExporter.swift */; };
 		E42A87FD21CFC9B300151C90 /* AttachmentTextViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E42A87FC21CFC9B300151C90 /* AttachmentTextViewController.swift */; };
 		E42A87FF21CFCAC500151C90 /* AttachmentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E42A87FE21CFCAC500151C90 /* AttachmentViewModel.swift */; };
@@ -173,7 +172,6 @@
 		E47E0E4C253BFBA90085BAA9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43427F92121BF5B00EC6DC3 /* AppDelegate.swift */; };
 		E47E0E54253BFC0A0085BAA9 /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43227122517ABF60032BB8B /* AuthViewController.swift */; };
 		E47E0E55253BFC0A0085BAA9 /* Dropbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = E47E0DDE253B43570085BAA9 /* Dropbox.swift */; };
-		E47E0E56253BFC0A0085BAA9 /* PublishSelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E432271B251A497B0032BB8B /* PublishSelectViewController.swift */; };
 		E47E0E57253BFC0A0085BAA9 /* OneDrive.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4322724251F39A90032BB8B /* OneDrive.swift */; };
 		E47E0E58253BFC0A0085BAA9 /* Wordpress.swift in Sources */ = {isa = PBXBuildFile; fileRef = E464DF14253A8E4800967B5E /* Wordpress.swift */; };
 		E47E0E59253BFC0A0085BAA9 /* PublishFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4537DE32517841200362DDF /* PublishFactory.swift */; };
@@ -264,6 +262,8 @@
 		E4FC35A823EC4DCD00A371D3 /* AttachmentManagerCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4FC35A723EC4DCD00A371D3 /* AttachmentManagerCoordinator.swift */; };
 		E4FD88E9223DE3C3005514C5 /* TimeSelectViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E4FD88E8223DE3C3005514C5 /* TimeSelectViewController.xib */; };
 		E4FD88EB223DE67E005514C5 /* DateAndTimeSelectViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E4FD88EA223DE67E005514C5 /* DateAndTimeSelectViewController.xib */; };
+		E4FE2B302557AAEF0061E0CB /* PublishViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4FE2B2F2557AAEF0061E0CB /* PublishViewController.swift */; };
+		E4FE2B512557AC7C0061E0CB /* PublishSelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E432271B251A497B0032BB8B /* PublishSelectViewController.swift */; };
 		F85572EA76AC1CC4A957C1E4 /* Pods_Interface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7AD86DEC929199B246F94293 /* Pods_Interface.framework */; };
 /* End PBXBuildFile section */
 
@@ -472,7 +472,6 @@
 		E42574C22294DEF3008993BC /* InterfaceTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterfaceTheme.swift; sourceTree = "<group>"; };
 		E428B89923439F560026AC1F /* BrowserRecentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserRecentViewModel.swift; sourceTree = "<group>"; };
 		E428B89B2343A5900026AC1F /* BrowserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserViewController.swift; sourceTree = "<group>"; };
-		E428B89D234487180026AC1F /* UIView+Style.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Style.swift"; sourceTree = "<group>"; };
 		E42A7F8622DC679A0038A4DD /* PDFExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFExporter.swift; sourceTree = "<group>"; };
 		E42A87FC21CFC9B300151C90 /* AttachmentTextViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentTextViewController.swift; sourceTree = "<group>"; };
 		E42A87FE21CFCAC500151C90 /* AttachmentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentViewModel.swift; sourceTree = "<group>"; };
@@ -690,6 +689,7 @@
 		E4FC35A723EC4DCD00A371D3 /* AttachmentManagerCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentManagerCoordinator.swift; sourceTree = "<group>"; };
 		E4FD88E8223DE3C3005514C5 /* TimeSelectViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TimeSelectViewController.xib; sourceTree = "<group>"; };
 		E4FD88EA223DE67E005514C5 /* DateAndTimeSelectViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DateAndTimeSelectViewController.xib; sourceTree = "<group>"; };
+		E4FE2B2F2557AAEF0061E0CB /* PublishViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublishViewController.swift; sourceTree = "<group>"; };
 		E68A1109AE2343C161D810A1 /* Pods-Business.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Business.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Business/Pods-Business.debug.xcconfig"; sourceTree = "<group>"; };
 		EE7066485686E586B5DADB73 /* Pods-Interface.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Interface.release.xcconfig"; path = "Pods/Target Support Files/Pods-Interface/Pods-Interface.release.xcconfig"; sourceTree = "<group>"; };
 		FDCA0585533F2DF37A968E3E /* Pods-Interface.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Interface.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Interface/Pods-Interface.debug.xcconfig"; sourceTree = "<group>"; };
@@ -831,10 +831,10 @@
 				E41B893A21E4DCF1009C5AD7 /* Button */,
 				E4895FF421D91D5A00D2B19D /* UIViewController */,
 				E41CB1E021D8BD8400EF0A3C /* UIView */,
-				E41CB14A21D78E5B00EF0A3C /* Border.swift */,
-				E4A46A1D21AE6CF400FBDA04 /* Image+Generation.swift */,
 				E4B1BED32342304200683E10 /* Builder */,
 				E4CC0C5821EEF92900058E5D /* Size.swift */,
+				E4A46A1D21AE6CF400FBDA04 /* Image+Generation.swift */,
+				E41CB14A21D78E5B00EF0A3C /* Border.swift */,
 				E4130CB824ED643800EA08C0 /* KeyCommands.swift */,
 				E479512023C09B76000CFDE3 /* Paragraph.swift */,
 				E4BC264121F56DB900B0F2B9 /* Rect.swift */,
@@ -1039,7 +1039,6 @@
 			isa = PBXGroup;
 			children = (
 				E41CB1E121D8BD9B00EF0A3C /* UIView+Processing.swift */,
-				E428B89D234487180026AC1F /* UIView+Style.swift */,
 				E4D7B14424C349BA00503870 /* UIView+Convenience.swift */,
 			);
 			path = UIView;
@@ -1255,7 +1254,6 @@
 		E4537D4F25163C6B00362DDF /* Publish */ = {
 			isa = PBXGroup;
 			children = (
-				E432271B251A497B0032BB8B /* PublishSelectViewController.swift */,
 				E4537D5125163C8000362DDF /* Platforms */,
 			);
 			path = Publish;
@@ -1337,6 +1335,7 @@
 			children = (
 				E472FF99227092C1004C8495 /* DocumentInfoViewController.swift */,
 				E472FF9C2270A691004C8495 /* ExportSelectViewController.swift */,
+				E432271B251A497B0032BB8B /* PublishSelectViewController.swift */,
 				E4FB7CBD2285BBE500791F6F /* BasicInfoViewController.swift */,
 			);
 			path = Info;
@@ -1449,6 +1448,8 @@
 		E4A46A2221B0D9AC00FBDA04 /* Editor */ = {
 			isa = PBXGroup;
 			children = (
+				E472FF9B2270A630004C8495 /* Info */,
+				E462DB98223D257100BF7AB4 /* DateAndTimeSelect */,
 				E4EA857621D3B0AC00DD92F9 /* EditorCoordinator.swift */,
 				E41FA5742191569C001D8C63 /* DocumentEditorViewController.swift */,
 				E4144EA622854B5800CB12FF /* DocumentEditViewController+UserInteraction.swift */,
@@ -1460,9 +1461,8 @@
 				E465F87F2241FF6800FA6E83 /* TextViewCommand.swift */,
 				E4A46A2821B28ED800FBDA04 /* DocumentEditViewModel.swift */,
 				E4CBCD1C236D914400A0FFDB /* EditAction.swift */,
-				E462DB98223D257100BF7AB4 /* DateAndTimeSelect */,
-				E472FF9B2270A630004C8495 /* Info */,
 				E47400AE241A151C0071BF73 /* ConflictResolverViewController.swift */,
+				E4FE2B2F2557AAEF0061E0CB /* PublishViewController.swift */,
 			);
 			path = Editor;
 			sourceTree = "<group>";
@@ -2114,7 +2114,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				E4CF20792465A83F005E38CE /* Misc.swift in Sources */,
-				E428B89E234487180026AC1F /* UIView+Style.swift in Sources */,
 				E49FE98D245C1107005F634C /* UIViewController+Heirachy.swift in Sources */,
 				E40F6E9A223B7A5B00FFF53F /* TransitionProtocol.swift in Sources */,
 				E40F6EAC223B7B6C00FFF53F /* Size.swift in Sources */,
@@ -2161,7 +2160,6 @@
 				E41CB1BC21D88DD100EF0A3C /* OutlineTextView.swift in Sources */,
 				E41CB1C121D88DD700EF0A3C /* OutlineParser.swift in Sources */,
 				E44683FA2289B554005D5B73 /* UITextFieldClosure.swift in Sources */,
-				E47E0E56253BFC0A0085BAA9 /* PublishSelectViewController.swift in Sources */,
 				E47E0E22253BFB640085BAA9 /* ShareExtensionDataHandler.swift in Sources */,
 				E47E0E3C253BFB960085BAA9 /* URLHandlerManager.swift in Sources */,
 				E47E0E3B253BFB960085BAA9 /* URLlHandler.swift in Sources */,
@@ -2270,10 +2268,12 @@
 				E4F42989229F9C4F004700E0 /* ListViewController.swift in Sources */,
 				E4B1BED923424E9D00683E10 /* BrowserCellModel.swift in Sources */,
 				E4EFA45F222F684B00611FF5 /* CaptureViewController.swift in Sources */,
+				E4FE2B512557AC7C0061E0CB /* PublishSelectViewController.swift in Sources */,
 				E41FA5752191569C001D8C63 /* DocumentEditorViewController.swift in Sources */,
 				E4773BAA21F7507E000F8F3F /* SearchTabelCellModel.swift in Sources */,
 				E462DB9A223D259F00BF7AB4 /* DateSelectViewController.swift in Sources */,
 				E49F3E4C21B91885003F468D /* SettingsViewModel.swift in Sources */,
+				E4FE2B302557AAEF0061E0CB /* PublishViewController.swift in Sources */,
 				E4C3890D23EC51890077B393 /* AttachmentManagerCellModel.swift in Sources */,
 				E41B893821E3497D009C5AD7 /* LocationAttachmentView.swift in Sources */,
 				E41B893921E3497D009C5AD7 /* AttachmentView.swift in Sources */,

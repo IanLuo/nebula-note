@@ -37,6 +37,18 @@ public class DocumentInfoViewController: TransitionViewController {
         return button
     }()
     
+    private lazy var _publishButton: UIButton = {
+        let button = UIButton()
+        button.interface { (view, theme) in
+            let button = view as! UIButton
+            button.setBackgroundImage(UIImage.create(with: theme.color.background2, size: .singlePoint), for: .normal)
+            button.setTitleColor(theme.color.interactive, for: .normal)
+        }
+        button.setTitle("Publish", for: .normal)
+        button.roundConer(radius: 4)
+        return button
+    }()
+    
     public var fromView: UIView?
     
     private let transitionDelegate: UIViewControllerTransitioningDelegate = FadeBackgroundTransition(animator: MoveInAnimtor(from: MoveInAnimtor.From.right))
@@ -62,6 +74,11 @@ public class DocumentInfoViewController: TransitionViewController {
             self?.showHelpTopics()
         }
         
+        self._publishButton.rx.tap.subscribe(onNext: { [weak self] _ in
+            guard let strongSelf = self else { return }
+            self?._viewModel.context.coordinator?.showPublish(from: strongSelf, url: strongSelf._viewModel.url)
+        }).disposed(by: self.disposeBag)
+        
         self.setupUI()
     }
     
@@ -81,34 +98,26 @@ public class DocumentInfoViewController: TransitionViewController {
         
         let exportViewController = ExportSelectViewController(exporterManager: self._viewModel.dependency.exportManager)
         exportViewController.delegate = self
-        
-        let publishController = PublishSelectViewController(exporterManager: self._viewModel.dependency.exportManager, publishFactory: self._viewModel.dependency.publishFactory)
-        publishController.delegate = self
-        
+                
         let basicInfoViewController = BasicInfoViewController(viewModel: self._viewModel)
 
         self.contentView.addSubview(exportViewController.view)
-        self.contentView.addSubview(publishController.view)
+        self.contentView.addSubview(self._publishButton)
         self.contentView.addSubview(basicInfoViewController.view)
         
         self._backButton.columnAnchor(view: basicInfoViewController.view, space: 30, alignment: [])
         
         basicInfoViewController.view.sideAnchor(for: [.left, .right], to: self.contentView, edgeInset: 0)
         
-        basicInfoViewController.view.columnAnchor(view: publishController.view, space: 10)
+        basicInfoViewController.view.columnAnchor(view: self._publishButton, space: 10)
         
-        publishController.view.sideAnchor(for: [.left, .right], to: self.contentView, edgeInset: 0)
-        publishController.view.sizeAnchor(height: 120)
-        
-        publishController.view.columnAnchor(view: exportViewController.view, space: 10)
+        self._publishButton.sideAnchor(for: .left, to: self.contentView, edgeInset: Layout.edgeInsets.left)
+        self._publishButton.columnAnchor(view: exportViewController.view, space: 10)
         
         exportViewController.view.sideAnchor(for: [.left, .right], to: self.contentView, edgeInset: 0)
         exportViewController.view.sideAnchor(for: .bottom, to: self.contentView, edgeInset: 10, considerSafeArea: true)
         exportViewController.view.sizeAnchor(height: 120)
-        
-        self.addChild(publishController)
-        publishController.didMove(toParent: self)
-        
+                
         self.addChild(exportViewController)
         exportViewController.didMove(toParent: self)
         
@@ -181,7 +190,6 @@ extension DocumentInfoViewController: PublishSelectViewControllerDelegate {
                     .dependency
                     .publishFactory
                     .createPublishBuilder(publisher: type,
-                                          uploader: .dropbox,
                                           from: self)
                 
                 publishable(url.packageName, try String(contentsOf: url), attachments)

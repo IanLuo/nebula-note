@@ -395,6 +395,12 @@ extension Reactive where Base: SelectorViewController {
                     observer.onCompleted()
                 }
             }
+            
+            self.base.onCancel = {
+                $0.dismiss(animated: true) {
+                    observer.onNext(-1)
+                }
+            }
                         
             return Disposables.create()
         }

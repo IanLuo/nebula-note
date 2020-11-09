@@ -148,6 +148,13 @@ public class EditorCoordinator: Coordinator {
         attachmentLinkCoordinator.start(from: self)
     }
     
+    public func showPublish(from: UIViewController, url: URL) {
+        let viewController = PublishViewController(url: url, viewModel: self._viewModel)
+        let navigationController = Coordinator.createDefaultNavigationControlller(root: viewController, transparentBar: false)
+        navigationController.modalPresentationStyle = .currentContext
+        from.present(navigationController, animated: true)
+    }
+    
     public func loadAllTags() -> [String] {
         if let home = self.rootCoordinator.searchFirstCoordinator(type: HomeCoordinator.self) {
             return home.getAllTags()

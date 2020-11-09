@@ -9,6 +9,7 @@
 import Foundation
 import RxSwift
 import OAuthSwift
+import Interface
 
 enum PublishErrorType: Error {
     case failToFetchUserInfo(String)
@@ -17,6 +18,7 @@ enum PublishErrorType: Error {
 
 enum UploadError: Error {
     case failToUpload
+    case uploaderIsNotSet
 }
 
 public protocol Publishable {
@@ -77,6 +79,13 @@ public struct PublishFactory {
         case oneDrive
         case dropbox
         
+        public var title: String {
+            switch self {
+            case .dropbox: return "Dropbox"
+            case .oneDrive: return "One Drive"
+            }
+        }
+        
         public func attachmentUploaderBuilder(from: UIViewController) -> Uploadable {
             switch self {
             case .dropbox:
@@ -87,27 +96,47 @@ public struct PublishFactory {
         }
     }
     
-    public func createPublishBuilder(publisher: Publisher, uploader: Uploader, from: UIViewController) -> (String, String, [Attachment]?) -> Observable<Void> {
+    public func createPublishBuilder(publisher: Publisher , from: UIViewController) -> (String, String, [Attachment]?) -> Observable<Void> {
         let publisher = publisher.publishableBuilder(from: from)
-        let uploader = uploader.attachmentUploaderBuilder(from: from)
         
         return { (title: String, content: String, attachments: [Attachment]?) in
             
-            let uploadObservables = attachments?.map { attachment in
-                uploader.upload(attachment: attachment)
-            }
-            
-            if let uploadObservables = uploadObservables {
-                return Observable.combineLatest(uploadObservables).flatMap({ paths -> Observable<Void> in
-                    var content = content
-                    for path in paths {
-                        content = (content as NSString).replacingOccurrences(of: path.1, with: path.0)
+            // if there's attachments, choose a uploader first, then use that to upload the attachment, then replace the uploaded link in the document
+            if let attachments = attachments {
+                return self.getUploader(from: from).flatMap { uploader -> Observable<Void> in
+                    let uploadable = uploader.attachmentUploaderBuilder(from: from)
+                    
+                    let uploadObservables = attachments.map { attachment in
+                        uploadable.upload(attachment: attachment)
                     }
-                    return publisher.publish(title: title, content: content)
-                })
+                    
+                    return Observable.combineLatest(uploadObservables).flatMap({ paths -> Observable<Void> in
+                        var content = content
+                        for path in paths {
+                            content = (content as NSString).replacingOccurrences(of: path.1, with: path.0)
+                        }
+                        return publisher.publish(title: title, content: content)
+                    })
+                }
             } else {
                 return publisher.publish(title: title, content: content)
             }
+        }
+    }
+    
+    public func getUploader(from: UIViewController) -> Observable<Uploader> {
+        let selector = SelectorViewController()
+        
+        selector.title = "Pick a service to save your attachment"
+        
+        Uploader.allCases.forEach { uploader in
+            selector.addItem(title: uploader.title)
+        }
+        
+        from.present(selector, animated: true)
+        
+        return selector.rx.selectable().map { index -> PublishFactory.Uploader in
+            Uploader.allCases[index]
         }
     }
     
