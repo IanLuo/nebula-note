@@ -96,14 +96,14 @@ public struct PublishFactory {
         }
     }
     
-    public func createPublishBuilder(publisher: Publisher , from: UIViewController) -> (String, String, [Attachment]?) -> Observable<Void> {
+    public func createPublishBuilder(publisher: Publisher, uploader: Uploader?, from: UIViewController) -> (String, String, [Attachment]?) -> Observable<Void> {
         let publisher = publisher.publishableBuilder(from: from)
         
         return { (title: String, content: String, attachments: [Attachment]?) in
             
             // if there's attachments, choose a uploader first, then use that to upload the attachment, then replace the uploaded link in the document
             if let attachments = attachments {
-                return self.getUploader(from: from).flatMap { uploader -> Observable<Void> in
+                if let uploader = uploader {
                     let uploadable = uploader.attachmentUploaderBuilder(from: from)
                     
                     let uploadObservables = attachments.map { attachment in
@@ -117,6 +117,12 @@ public struct PublishFactory {
                         }
                         return publisher.publish(title: title, content: content)
                     })
+                } else {
+                    var content = content
+                    for attachment in attachments {
+                        content = (content as NSString).replacingOccurrences(of: attachment.serialize, with: "")
+                    }
+                    return publisher.publish(title: title, content: content)
                 }
             } else {
                 return publisher.publish(title: title, content: content)

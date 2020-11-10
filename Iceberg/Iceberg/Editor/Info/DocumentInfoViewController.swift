@@ -178,42 +178,6 @@ extension DocumentInfoViewController: ExportSelectViewControllerDelegate {
     }
 }
 
-extension DocumentInfoViewController: PublishSelectViewControllerDelegate {
-    public func didSelectPublisher(_ type: PublishFactory.Publisher) {
-        self.view.showProcessingAnimation()
-        
-        self._viewModel.dependency.exportManager.export(isMember: true, url: self._viewModel.url, type: type.exportFileType, useDefaultStyle: false) { [unowned self] url in
-            do {
-                let attachments = self._viewModel.attachments
-                
-                let publishable = self._viewModel
-                    .dependency
-                    .publishFactory
-                    .createPublishBuilder(publisher: type,
-                                          from: self)
-                
-                publishable(url.packageName, try String(contentsOf: url), attachments)
-                    .observeOn(MainScheduler())
-                    .do(onError: { error in
-                        self.showAlert(title: "fail", message: "\(error)")
-                        self.view.hideProcessingAnimation()
-                    })
-                    .subscribe(onNext: {
-                        self.view.hideProcessingAnimation()
-                        self.showAlert(title: "Success", message: "\"\(self._viewModel.url.packageName)\" is published successfully")
-                    })
-                    .disposed(by: self.disposeBag)
-            } catch {
-                self.showAlert(title: "fail", message: "\(error)")
-                self.view.hideProcessingAnimation()
-            }
-        } failure: { error in
-            self.showAlert(title: "fail", message: "\(error)")
-            self.view.hideProcessingAnimation()
-        }
-    }
-}
-
 extension DocumentInfoViewController: UIGestureRecognizerDelegate {
     public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
         return touch.view == self.view

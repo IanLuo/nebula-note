@@ -263,7 +263,6 @@
 		E4FD88E9223DE3C3005514C5 /* TimeSelectViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E4FD88E8223DE3C3005514C5 /* TimeSelectViewController.xib */; };
 		E4FD88EB223DE67E005514C5 /* DateAndTimeSelectViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E4FD88EA223DE67E005514C5 /* DateAndTimeSelectViewController.xib */; };
 		E4FE2B302557AAEF0061E0CB /* PublishViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4FE2B2F2557AAEF0061E0CB /* PublishViewController.swift */; };
-		E4FE2B512557AC7C0061E0CB /* PublishSelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E432271B251A497B0032BB8B /* PublishSelectViewController.swift */; };
 		F85572EA76AC1CC4A957C1E4 /* Pods_Interface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7AD86DEC929199B246F94293 /* Pods_Interface.framework */; };
 /* End PBXBuildFile section */
 
@@ -476,7 +475,6 @@
 		E42A87FC21CFC9B300151C90 /* AttachmentTextViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentTextViewController.swift; sourceTree = "<group>"; };
 		E42A87FE21CFCAC500151C90 /* AttachmentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentViewModel.swift; sourceTree = "<group>"; };
 		E43227122517ABF60032BB8B /* AuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewController.swift; sourceTree = "<group>"; };
-		E432271B251A497B0032BB8B /* PublishSelectViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublishSelectViewController.swift; sourceTree = "<group>"; };
 		E4322724251F39A90032BB8B /* OneDrive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneDrive.swift; sourceTree = "<group>"; };
 		E43427F62121BF5B00EC6DC3 /* x3Note.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = x3Note.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E43427F92121BF5B00EC6DC3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -1335,7 +1333,6 @@
 			children = (
 				E472FF99227092C1004C8495 /* DocumentInfoViewController.swift */,
 				E472FF9C2270A691004C8495 /* ExportSelectViewController.swift */,
-				E432271B251A497B0032BB8B /* PublishSelectViewController.swift */,
 				E4FB7CBD2285BBE500791F6F /* BasicInfoViewController.swift */,
 			);
 			path = Info;
@@ -2268,7 +2265,6 @@
 				E4F42989229F9C4F004700E0 /* ListViewController.swift in Sources */,
 				E4B1BED923424E9D00683E10 /* BrowserCellModel.swift in Sources */,
 				E4EFA45F222F684B00611FF5 /* CaptureViewController.swift in Sources */,
-				E4FE2B512557AC7C0061E0CB /* PublishSelectViewController.swift in Sources */,
 				E41FA5752191569C001D8C63 /* DocumentEditorViewController.swift in Sources */,
 				E4773BAA21F7507E000F8F3F /* SearchTabelCellModel.swift in Sources */,
 				E462DB9A223D259F00BF7AB4 /* DateSelectViewController.swift in Sources */,
@@ -2504,11 +2500,11 @@
 				CLANG_USE_OPTIMIZATION_PROFILE = NO;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 219;
+				CURRENT_PROJECT_VERSION = 220;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 26RSSM9Q9P;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 219;
+				DYLIB_CURRENT_VERSION = 220;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = Interface/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -2539,11 +2535,11 @@
 				CLANG_USE_OPTIMIZATION_PROFILE = NO;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 219;
+				CURRENT_PROJECT_VERSION = 220;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 26RSSM9Q9P;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 219;
+				DYLIB_CURRENT_VERSION = 220;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = Interface/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -2573,11 +2569,11 @@
 				CLANG_USE_OPTIMIZATION_PROFILE = NO;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 219;
+				CURRENT_PROJECT_VERSION = 220;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 26RSSM9Q9P;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 219;
+				DYLIB_CURRENT_VERSION = 220;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = Core/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -2615,11 +2611,11 @@
 				CLANG_USE_OPTIMIZATION_PROFILE = NO;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 219;
+				CURRENT_PROJECT_VERSION = 220;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 26RSSM9Q9P;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 219;
+				DYLIB_CURRENT_VERSION = 220;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = Core/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -2819,7 +2815,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 219;
+				CURRENT_PROJECT_VERSION = 220;
 				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = NO;
 				DEVELOPMENT_TEAM = 26RSSM9Q9P;
 				INFOPLIST_FILE = Info.plist;
@@ -2852,7 +2848,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 219;
+				CURRENT_PROJECT_VERSION = 220;
 				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = NO;
 				DEVELOPMENT_TEAM = 26RSSM9Q9P;
 				INFOPLIST_FILE = Info.plist;
@@ -2963,7 +2959,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = CaptureIdeaExtension/CaptureIdeaExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 219;
+				CURRENT_PROJECT_VERSION = 220;
 				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = NO;
 				DEVELOPMENT_TEAM = 26RSSM9Q9P;
 				INFOPLIST_FILE = CaptureIdeaExtension/Info.plist;
@@ -2990,7 +2986,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = CaptureIdeaExtension/CaptureIdeaExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 219;
+				CURRENT_PROJECT_VERSION = 220;
 				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = NO;
 				DEVELOPMENT_TEAM = 26RSSM9Q9P;
 				INFOPLIST_FILE = CaptureIdeaExtension/Info.plist;
@@ -3017,7 +3013,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = CaptureActionExtension/CaptureActionExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 219;
+				CURRENT_PROJECT_VERSION = 220;
 				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = NO;
 				DEVELOPMENT_TEAM = 26RSSM9Q9P;
 				INFOPLIST_FILE = CaptureActionExtension/Info.plist;
@@ -3044,7 +3040,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = CaptureActionExtension/CaptureActionExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 219;
+				CURRENT_PROJECT_VERSION = 220;
 				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = NO;
 				DEVELOPMENT_TEAM = 26RSSM9Q9P;
 				INFOPLIST_FILE = CaptureActionExtension/Info.plist;

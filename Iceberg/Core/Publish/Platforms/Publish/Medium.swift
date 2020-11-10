@@ -58,7 +58,11 @@ public struct Medium: Publishable, OAuth2Connectable {
             .catchError { error in
                 let error = error as NSError
                 if error.code == 401 {
-                    return Observable.error(PublishErrorType.failToFetchUserInfo(error.localizedDescription))
+                    if error.description.contains("User not found") {
+                        return Observable.error(PublishErrorType.failToFetchUserInfo("Your account may have problem"))
+                    } else {
+                        return Observable.error(PublishErrorType.failToFetchUserInfo(error.description))
+                    }
                 } else {
                     return Observable.error(PublishErrorType.otherError(error.localizedDescription))
                 }

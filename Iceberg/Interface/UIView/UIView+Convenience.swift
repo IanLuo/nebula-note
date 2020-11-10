@@ -49,6 +49,18 @@ public extension UILabel {
         self.textColor = color
         return self
     }
+    
+    @discardableResult
+    func numberOfLines(_ number: Int) -> Self {
+        self.numberOfLines = number
+        return self
+    }
+    
+    @discardableResult
+    func textAlignment(_ alignment: NSTextAlignment) -> Self {
+        self.textAlignment = alignment
+        return self
+    }
 }
 
 public extension UIButton {
