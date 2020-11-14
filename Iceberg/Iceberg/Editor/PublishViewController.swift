@@ -34,6 +34,10 @@ public class PublishViewController: UIViewController {
     public override func viewDidLoad() {
         self.view.backgroundColor = InterfaceTheme.Color.background1
         
+        if #available(iOS 13.0, *) {
+            self.isModalInPresentation = true
+        }
+        
         let closeButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.cancel, target: nil, action: nil)
         closeButton.rx.tap.subscribe(onNext: {
             self.dismiss(animated: true)
@@ -44,12 +48,12 @@ public class PublishViewController: UIViewController {
         let container: UIScrollView = UIScrollView()
         
         self.view.addSubview(container)
-        container.allSidesAnchors(to: self.view, edgeInset: 0)
+        container.allSidesAnchors(to: self.view, edgeInset: 0, considerSafeArea: true)
         
         let titleLabel = UILabel(text: L10n.Publish.title).font(InterfaceTheme.Font.largeTitle).textColor(InterfaceTheme.Color.interactive)
         
         container.addSubview(titleLabel)
-        titleLabel.sideAnchor(for: .top, to: container, edgeInset: Layout.innerViewEdgeInsets.top, considerSafeArea: true)
+        titleLabel.sideAnchor(for: .top, to: container, edgeInset: Layout.innerViewEdgeInsets.top)
         titleLabel.centerAnchors(position: .centerX, to: container)
         
         let choosePlatformLabel = UILabel(text: L10n.Publish.Platform.pick)
@@ -62,7 +66,7 @@ public class PublishViewController: UIViewController {
             .textAlignment(.center)
             .textColor(InterfaceTheme.Color.descriptive)
         
-        let choosePlatformButton = UIButton().roundConer(radius: 8)
+        let choosePlatformButton = UIButton().roundConer(radius: 8).titleColor(InterfaceTheme.Color.interactive, for: .normal)
         choosePlatformButton.sizeAnchor(width: 200, height: 80)
         
         let chooseUploadServiceLabel = UILabel(text: L10n.Publish.Attachment.storageService)
@@ -75,7 +79,7 @@ public class PublishViewController: UIViewController {
             .textAlignment(.center)
             .textColor(InterfaceTheme.Color.descriptive)
         
-        let chooseUploadServiceButton: UIButton = UIButton().roundConer(radius: 8)
+        let chooseUploadServiceButton: UIButton = UIButton().roundConer(radius: 8).titleColor(InterfaceTheme.Color.interactive, for: .normal)
         chooseUploadServiceButton.sizeAnchor(width: 200, height: 80)
         
         self.interface { (me, interface) in
@@ -87,31 +91,36 @@ public class PublishViewController: UIViewController {
         container.addSubview(choosePlatformDescriptionLabel)
         container.addSubview(choosePlatformButton)
         titleLabel.columnAnchor(view: choosePlatformLabel, space: 30, alignment: .centerX)
-        choosePlatformLabel.columnAnchor(view: choosePlatformDescriptionLabel, space: 12, alignment: .centerX)
-        choosePlatformDescriptionLabel.columnAnchor(view: choosePlatformButton, space: 12, alignment: .centerX)
+        choosePlatformLabel.columnAnchor(view: choosePlatformDescriptionLabel, space: 20, alignment: .centerX)
+        choosePlatformDescriptionLabel.columnAnchor(view: choosePlatformButton, space: 20, alignment: .centerX)
         choosePlatformDescriptionLabel.sideAnchor(for: [.left, .right], to: container, edgeInset: 50)
-        
-        container.addSubview(chooseUploadServiceLabel)
-        container.addSubview(chooseUploadServiceDescriptionLabel)
-        container.addSubview(chooseUploadServiceButton)
-        choosePlatformButton.columnAnchor(view: chooseUploadServiceLabel, space: 30, alignment: .centerX)
-        chooseUploadServiceLabel.columnAnchor(view: chooseUploadServiceDescriptionLabel, space: 30, alignment: .centerX)
-        chooseUploadServiceDescriptionLabel.columnAnchor(view: chooseUploadServiceButton, space: 12, alignment: .centerX)
-        chooseUploadServiceDescriptionLabel.sideAnchor(for: [.left, .right], to: container, edgeInset: 50)
         
         let submitButton: UIButton = UIButton(title: L10n.Publish.title, for: .normal)
             .roundConer(radius: 8)
             .backgroundImage(InterfaceTheme.Color.spotlight, for: .normal)
             .titleColor(InterfaceTheme.Color.spotlitTitle, for: .normal)
         container.addSubview(submitButton)
-        chooseUploadServiceButton.columnAnchor(view: submitButton, space: 50, alignment: .centerX)
-        submitButton.sideAnchor(for: .bottom, to: container, edgeInset: 0)
-        submitButton.sizeAnchor(width: 200, height: 60)
+        submitButton.sideAnchor(for: .bottom, to: container, edgeInset: 50)
+        submitButton.sizeAnchor(width: 300, height: 60)
+        
+        if self.viewModel.attachments.count > 0 {
+            container.addSubview(chooseUploadServiceLabel)
+            container.addSubview(chooseUploadServiceDescriptionLabel)
+            container.addSubview(chooseUploadServiceButton)
+            choosePlatformButton.columnAnchor(view: chooseUploadServiceLabel, space: 30, alignment: .centerX)
+            chooseUploadServiceLabel.columnAnchor(view: chooseUploadServiceDescriptionLabel, space: 30, alignment: .centerX)
+            chooseUploadServiceDescriptionLabel.columnAnchor(view: chooseUploadServiceButton, space: 20, alignment: .centerX)
+            chooseUploadServiceDescriptionLabel.sideAnchor(for: [.left, .right], to: container, edgeInset: 50)
+            chooseUploadServiceButton.columnAnchor(view: submitButton, space: 70, alignment: .centerX)
+        } else {
+            choosePlatformButton.columnAnchor(view: submitButton, space: 70, alignment: .centerX)
+        }
+        
         
         // -- observers
         submitButton.rx.tap.subscribe(onNext: { _ in
             guard let platform = self.platform.value else { return }
-            self.view.showProcessingAnimation()
+            self.view.showProcessingAnimation(true)
             
             self.viewModel.dependency.exportManager.export(isMember: true, url: self.viewModel.url, type: platform.exportFileType, useDefaultStyle: false) { [unowned self] url in
                 do {

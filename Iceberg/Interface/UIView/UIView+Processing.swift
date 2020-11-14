@@ -11,14 +11,10 @@ import UIKit
 
 private class ProcessingView: UIView {
     private let indicator: UIActivityIndicatorView = {
-        if #available(iOS 13.0, *) {
-            return UIActivityIndicatorView(style: UIActivityIndicatorView.Style.medium)
-        } else {
-            return UIActivityIndicatorView(style: UIActivityIndicatorView.Style.gray)
-        }
+        return UIActivityIndicatorView(style: UIActivityIndicatorView.Style.white)
     }()
 
-    public func start() {
+    public func start(block: Bool) {
         if indicator.superview == nil {
             self.addSubview(self.indicator)
             indicator.translatesAutoresizingMaskIntoConstraints = false
@@ -27,20 +23,22 @@ private class ProcessingView: UIView {
         
         self.backgroundColor = UIColor.black.withAlphaComponent(0.3)
         
-        self.isUserInteractionEnabled = false
+        self.isUserInteractionEnabled = block
         
         indicator.startAnimating()
     }
 }
 
 extension UIView {
-    public func showProcessingAnimation() {
+    public func showProcessingAnimation(_ blockInteractivity: Bool = false) {
         DispatchQueue.runOnMainQueueSafely {
             guard self.getPrecessingAnimationView() == nil else {
                 return
             }
             
             let view = self.createProcessingAnimationView()
+            
+            
             self.addSubview(view)
             view.allSidesAnchors(to: self, edgeInset: 0)
             view.alpha = 0
@@ -49,7 +47,7 @@ extension UIView {
                 view.alpha = 1
             }, completion: {
                 if $0 {
-                    view.start()
+                    view.start(block: blockInteractivity)
                 }
             })
         }

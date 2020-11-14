@@ -763,6 +763,8 @@ public enum L10n {
   }
 
   public enum Publish {
+    /// Clear saved publish related login info
+    public static let deleteSavedPublishInfo = L10n.tr("Localizable", "publish.delete-saved-publish-info")
     /// Publish
     public static let title = L10n.tr("Localizable", "publish.title")
     public enum Attachment {
@@ -772,6 +774,12 @@ public enum L10n {
         /// If you have attachments used in your document that about to publish, there need a place to store the attachments, such as images, videos, audios, otherwise it will not be able to display in your article on that platform, if you want the attachment be visiable on those platforms, you should choose a service to use, and if you can't find the service you like, you can give us feedback on the forum or through the feedback in this app.
         public static let description = L10n.tr("Localizable", "publish.attachment.storage-service.description")
       }
+    }
+    public enum DeleteSavedPublishInfo {
+      /// Clear all login info？
+      public static let confirm = L10n.tr("Localizable", "publish.delete-saved-publish-info.confirm")
+      /// All login info cleared
+      public static let feedback = L10n.tr("Localizable", "publish.delete-saved-publish-info.feedback")
     }
     public enum Platform {
       /// Platform is where your article will be post to, more platforms will be added in the future, if you can't find the platform you are using, please try to feedback us on the forum or through the feedback

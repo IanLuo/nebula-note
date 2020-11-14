@@ -347,6 +347,7 @@
                         <outlet property="planningUnfinishButton" destination="zYU-ai-oMe" id="H6E-CK-DDM"/>
                         <outlet property="planningUnfinishLabel" destination="qXa-H5-t0T" id="C4x-wn-QpP"/>
                         <outlet property="privacyButton" destination="FSy-HG-hIz" id="rdQ-oo-9Di"/>
+                        <outlet property="resetPublishLoginInfo" destination="5qJ-AD-fMr" id="3z7-Bc-C8l"/>
                         <outlet property="storeLocationButton" destination="1Db-LB-6Mb" id="5mU-1d-Lzo"/>
                         <outlet property="termsOfServiceButton" destination="0xX-09-J05" id="tnU-vR-hQc"/>
                     </connections>

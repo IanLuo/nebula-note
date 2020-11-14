@@ -8,6 +8,8 @@
 
 import Foundation
 import OAuthSwift
+import UIKit
+import Interface
 
 #if os(iOS)
     import UIKit
@@ -23,19 +25,38 @@ class AuthViewController: OAuthWebViewController {
 
     var targetURL: URL?
     let webView: WebView = WebView()
+    let toolbar = UIToolbar()
+    public var onCancel: (() -> Void)?
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         self.webView.frame = self.view.bounds
         self.webView.navigationDelegate = self
-        self.webView.translatesAutoresizingMaskIntoConstraints = false
+
+        self.view.addSubview(self.toolbar)
         self.view.addSubview(self.webView)
-        self.view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-0-[view]-0-|", options: [], metrics: nil, views: ["view":self.webView]))
-        self.view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[view]-0-|", options: [], metrics: nil, views: ["view":self.webView]))
+        
+        self.toolbar.size(height: 44)
+        self.toolbar.sideAnchor(for: [.top, .left, .right], to: self.view, edgeInset: 0)
+        self.toolbar.columnAnchor(view: self.webView)
+        self.webView.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 0)
+        
+        if #available(iOS 13.0, *) {
+            self.isModalInPresentation = true
+        }
+        
         #if os(iOS)
         loadAddressURL()
         #endif
+        
+        toolbar.items = [UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: nil, action: nil),
+                         UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.cancel, target: self, action: #selector(cancel))]
+    }
+    
+    @objc private func cancel() {
+        self.dismissWebViewController()
+        onCancel?()
     }
 
     override func handle(_ url: URL) {
@@ -74,6 +95,7 @@ extension AuthViewController: WKNavigationDelegate {
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
         print("\(error)")
         self.dismissWebViewController()
+        onCancel?()
         // maybe cancel request...
     }
 }

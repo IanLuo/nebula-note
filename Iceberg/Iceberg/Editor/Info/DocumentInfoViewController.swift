@@ -44,8 +44,8 @@ public class DocumentInfoViewController: TransitionViewController {
             button.setBackgroundImage(UIImage.create(with: theme.color.background2, size: .singlePoint), for: .normal)
             button.setTitleColor(theme.color.interactive, for: .normal)
         }
-        button.setTitle("Publish", for: .normal)
-        button.roundConer(radius: 4)
+        button.setTitle(L10n.Publish.title, for: .normal)
+        button.roundConer(radius: 8)
         return button
     }()
     
@@ -111,7 +111,8 @@ public class DocumentInfoViewController: TransitionViewController {
         
         basicInfoViewController.view.columnAnchor(view: self._publishButton, space: 10)
         
-        self._publishButton.sideAnchor(for: .left, to: self.contentView, edgeInset: Layout.edgeInsets.left)
+        self._publishButton.sideAnchor(for: [.left, .right], to: self.contentView, edgeInset: Layout.edgeInsets.left)
+        self._publishButton.sizeAnchor(height: 60)
         self._publishButton.columnAnchor(view: exportViewController.view, space: 10)
         
         exportViewController.view.sideAnchor(for: [.left, .right], to: self.contentView, edgeInset: 0)

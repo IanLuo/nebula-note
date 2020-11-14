@@ -415,6 +415,9 @@
 "key.command.group.capture" = "Capture";
 
 // publish
+"publish.delete-saved-publish-info" = "Clear saved publish related login info";
+"publish.delete-saved-publish-info.confirm" = "Clear all login info？";
+"publish.delete-saved-publish-info.feedback" = "All login info cleared";
 "publish.title" = "Publish";
 "publish.platform.pick" = "Choose Platform";
 "publish.platform.description" = "Platform is where your article will be post to, more platforms will be added in the future, if you can't find the platform you are using, please try to feedback us on the forum or through the feedback";

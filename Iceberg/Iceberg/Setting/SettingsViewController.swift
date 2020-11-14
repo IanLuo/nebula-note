@@ -48,6 +48,8 @@ public class SettingsViewController: UITableViewController {
     @IBOutlet weak var privacyButton: UIButton!
     @IBOutlet weak var termsOfServiceButton: UIButton!
     
+    @IBOutlet weak var resetPublishLoginInfo: UILabel!
+    
     private let disposeBag = DisposeBag()
     
     public override init(style: UITableView.Style) {
@@ -95,6 +97,8 @@ public class SettingsViewController: UITableViewController {
         self.exportShowIndexSwitch.isOn = self.viewModel.exportShowIndex
         
         self.attachmentManagerLabel.text = L10n.Setting.ManageAttachment.title
+        
+        self.resetPublishLoginInfo.text = L10n.Publish.deleteSavedPublishInfo
     }
     
     private func _setupUI() {
@@ -500,9 +504,17 @@ public class SettingsViewController: UITableViewController {
         case (2, 1):
             self.viewModel.context.coordinator?.showAttachmentManager()
         case (4, 1):
-            self.viewModel.clearAllTokens {
-                self.showAlert(title: "Clear complete", message: "All publish info reset")
+            let viewController = ConfirmViewController(contentText: L10n.Publish.DeleteSavedPublishInfo.confirm) { (viewController) in
+                viewController.dismiss(animated: true) {
+                    self.viewModel.clearAllTokens {
+                        self.showAlert(title: L10n.Publish.DeleteSavedPublishInfo.feedback, message: "")
+                    }
+                }
+            } onCancel: { viewController in
+                viewController.dismiss(animated: true)
             }
+                
+            viewController.present(from: self, at: cell, completion: nil)
         default: break
         }
     }

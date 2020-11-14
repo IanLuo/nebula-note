@@ -151,7 +151,6 @@ public class EditorCoordinator: Coordinator {
     public func showPublish(from: UIViewController, url: URL) {
         let viewController = PublishViewController(url: url, viewModel: self._viewModel)
         let navigationController = Coordinator.createDefaultNavigationControlller(root: viewController, transparentBar: false)
-        navigationController.modalPresentationStyle = .currentContext
         from.present(navigationController, animated: true)
     }
     

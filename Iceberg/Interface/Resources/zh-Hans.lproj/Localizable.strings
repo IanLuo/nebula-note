@@ -417,6 +417,9 @@
 "key.command.group.capture" = "灵感";
 
 // publish
+"publish.delete-saved-publish-info" = "清除已保存的发布用户登录信息";
+"publish.delete-saved-publish-info.confirm" = "清除所有登录数据？";
+"publish.delete-saved-publish-info.feedback" = "所有登录数据已清除";
 "publish.title" = "发布";
 "publish.platform.pick" = "选择发布的平台";
 "publish.platform.description" = "发布平台将会展示你发布的文章，如果没有找到你想要发布的平台，请在论坛，或者应用内的反馈告诉我们。";

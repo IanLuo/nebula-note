@@ -130,22 +130,6 @@ public struct PublishFactory {
         }
     }
     
-    public func getUploader(from: UIViewController) -> Observable<Uploader> {
-        let selector = SelectorViewController()
-        
-        selector.title = "Pick a service to save your attachment"
-        
-        Uploader.allCases.forEach { uploader in
-            selector.addItem(title: uploader.title)
-        }
-        
-        from.present(selector, animated: true)
-        
-        return selector.rx.selectable().map { index -> PublishFactory.Uploader in
-            Uploader.allCases[index]
-        }
-    }
-    
     public var allPublishers: [Publisher] {
         return Publisher.allCases
     }

@@ -169,7 +169,10 @@ public class AgendaViewModel {
     }
     
     // 加载 agenda 界面所有数据
+    private var isLoadingAgendaData: Bool = false
     public func loadAgendaData() {
+        
+        self.isLoadingAgendaData = true
         
         let finishedPlainings = SettingsAccessor.shared.finishedPlanning
         
@@ -208,15 +211,18 @@ public class AgendaViewModel {
                     DispatchQueue.runOnMainQueueSafely {
                         self?.dateOrderedData[date] = mappedCellModels._trim()._sort()
                         self?.delegate?.didCompleteLoadAllData()
+                        self?.isLoadingAgendaData = false
                     }
                 }
                     
             }, failure: { [weak self] (error) in
                 self?.delegate?.didFailed(error)
+                self?.isLoadingAgendaData = false
             })
             
         }, failure: { [weak self] (error) in
             self?.delegate?.didFailed(error)
+            self?.isLoadingAgendaData = false
         })
     }
         
@@ -229,13 +235,8 @@ public class AgendaViewModel {
                                                                         self?._shouldReloadData = true
                                                                         
                                                                         if isMacOrPad {
-                                                                            guard self?._runningForHeadingChangeReload == false else { return }
-                                                                            self?._runningForHeadingChangeReload = true
-                                                                            // this reload only run no more that once in 30 seconds
-                                                                            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 30) {
-                                                                                self?.loadData()
-                                                                                self?._runningForHeadingChangeReload = false
-                                                                            }
+                                                                            guard self?.isLoadingAgendaData == false else { return }
+                                                                            self?.loadData()
                                                                         }
         }
         
