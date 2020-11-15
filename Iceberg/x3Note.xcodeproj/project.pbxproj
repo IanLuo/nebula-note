@@ -223,6 +223,7 @@
 		E4C3890D23EC51890077B393 /* AttachmentManagerCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C3890C23EC51890077B393 /* AttachmentManagerCellModel.swift */; };
 		E4C7137F23ABCE8200DC38BE /* PurchaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C7137D23ABC9F400DC38BE /* PurchaseManager.swift */; };
 		E4C7138123ADCD0A00DC38BE /* JPGExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C7138023ADCD0A00DC38BE /* JPGExporter.swift */; };
+		E4C76B7F25616B6B0007AFA5 /* AppKitHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E4C76B7E25616B6B0007AFA5 /* AppKitHelper.m */; };
 		E4C7FB8521BA916D006E3CD8 /* AgendaCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C7FB8421BA916D006E3CD8 /* AgendaCellModel.swift */; };
 		E4C932D52244B55100E3A176 /* AttachmentDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C932D42244B55100E3A176 /* AttachmentDocument.swift */; };
 		E4CBCD1B236D80F500A0FFDB /* CreateDocumentActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4CBCD1A236D80F500A0FFDB /* CreateDocumentActivity.swift */; };
@@ -636,6 +637,7 @@
 		E4C46FE221EB311900F6374F /* ModalFormViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModalFormViewController.swift; sourceTree = "<group>"; };
 		E4C7137D23ABC9F400DC38BE /* PurchaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseManager.swift; sourceTree = "<group>"; };
 		E4C7138023ADCD0A00DC38BE /* JPGExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JPGExporter.swift; sourceTree = "<group>"; };
+		E4C76B7E25616B6B0007AFA5 /* AppKitHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppKitHelper.m; sourceTree = "<group>"; };
 		E4C7FB8421BA916D006E3CD8 /* AgendaCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgendaCellModel.swift; sourceTree = "<group>"; };
 		E4C932D42244B55100E3A176 /* AttachmentDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentDocument.swift; sourceTree = "<group>"; };
 		E4CBCD1A236D80F500A0FFDB /* CreateDocumentActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateDocumentActivity.swift; sourceTree = "<group>"; };
@@ -997,6 +999,7 @@
 				E46DE4DD23A921EE008A24CA /* DispatchQueue.swift */,
 				E464DF0B253474D400967B5E /* JsonParser.swift */,
 				E44E479923D3037F00D41AA2 /* Array.swift */,
+				E4C76B7E25616B6B0007AFA5 /* AppKitHelper.m */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -2185,6 +2188,7 @@
 				E466D186221D930A007F140B /* SeparaterAttachment.swift in Sources */,
 				E41EC83022C4BFE3009ACFA4 /* TxtExporter.swift in Sources */,
 				E41B892C21E34297009C5AD7 /* AudioPlayer.swift in Sources */,
+				E4C76B7F25616B6B0007AFA5 /* AppKitHelper.m in Sources */,
 				E4C7137F23ABCE8200DC38BE /* PurchaseManager.swift in Sources */,
 				E41CB1C921D88E2300EF0A3C /* Log.swift in Sources */,
 				E41B892921E34238009C5AD7 /* AudioRecorder.swift in Sources */,

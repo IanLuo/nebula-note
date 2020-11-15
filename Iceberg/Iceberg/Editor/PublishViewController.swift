@@ -38,7 +38,7 @@ public class PublishViewController: UIViewController {
             self.isModalInPresentation = true
         }
         
-        let closeButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.cancel, target: nil, action: nil)
+        let closeButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.done, target: nil, action: nil)
         closeButton.rx.tap.subscribe(onNext: {
             self.dismiss(animated: true)
         }).disposed(by: self.disposeBag)

@@ -236,7 +236,7 @@ public class DocumentEditorViewController: UIViewController {
             self.viewModel.start()
         }
         
-        self.view.becomeFirstResponder()
+        self.textView.becomeFirstResponder()
         
         if #available(iOS 13, *) {
             self.enableKeyBindings()
@@ -463,19 +463,21 @@ extension DocumentEditorViewController: DocumentEditViewModelDelegate {
     
     internal func scrollTo(location: Int, shouldScrollToZero: Bool = false) {
         if location > 0 {
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.3) {
+                if !self.textView.isFirstResponder {
+                    self.textView.becomeFirstResponder()
+                }
+            }
             self.textView.selectedRange = NSRange(location: location, length: 0)
-            if self.textView.isFirstResponder {
-                self.textView.scrollRangeToVisible(self.textView.selectedRange)
-            } else {
-                self.textView.becomeFirstResponder()
-            }
+            self.textView.scrollRangeToVisible(self.textView.selectedRange)
         } else if shouldScrollToZero && location == 0 {
-            self.textView.selectedRange = NSRange(location: 0, length: 0)
-            if self.textView.isFirstResponder {
-                self.textView.scrollRangeToVisible(self.textView.selectedRange)
-            } else {
-                self.textView.becomeFirstResponder()
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.3) {
+                if !self.textView.isFirstResponder {
+                    self.textView.becomeFirstResponder()
+                }
             }
+            self.textView.selectedRange = NSRange(location: 0, length: 0)
+            self.textView.scrollRangeToVisible(self.textView.selectedRange)
         }
     }
     
