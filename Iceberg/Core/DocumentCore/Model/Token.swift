@@ -97,6 +97,14 @@ public class LinkToken: Token {
             return false
         }
     }
+    
+    func isDocumentLink(string: String) -> Bool {
+        if let urlRange = self.range(for: OutlineParser.Key.Element.Link.url) {
+            return (string as NSString).substring(with: urlRange).hasPrefix(OutlineParser.Values.Link.x3)
+        } else {
+            return false
+        }
+    }
 }
 
 // MARK: - AttachmentToken
