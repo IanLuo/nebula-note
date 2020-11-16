@@ -20,7 +20,7 @@ public class DocumentTabContainerViewController: UIViewController {
     
     public weak var delegate: DesktopDocumentTabContainerViewControllerDelegate?
     
-    private var openingViewControllers: [String: DocumentEditorViewController] = [:]
+    private var openingViewControllers: [(String, DocumentEditorViewController)] = []
     
     private let tabBar: TabBar = TabBar()
     
@@ -61,14 +61,22 @@ public class DocumentTabContainerViewController: UIViewController {
     private func setupObservers() {
         self.tabBar.onCloseDocument
             .subscribe(onNext: { [weak self ] tab in
+                let index = self?.index(for: tab.url) ?? 0
                 self?.closeDocument(url: tab.url)
                 self?.viewModel.dependency.settingAccessor.logCloseDocument(url: tab.url)
                 
                 // if the closed document is currently openning, open another one
                 if try! tab.isSelected.value() {
-                    if let documentRelativePath = self?.openingViewControllers.keys.first {
-                        self?.selectTab(url: URL(documentRelativePath: documentRelativePath), location: 0)
+                    if self?.openingViewControllers.count == 1 || index == 0 {
+                        if let documentRelativePath = self?.openingViewControllers.first?.0 {
+                            self?.selectTab(url: URL(documentRelativePath: documentRelativePath), location: 0)
+                        }
+                    } else if index - 1 > 0 {
+                        if let documentRelativePath = self?.openingViewControllers[index - 1].0 {
+                            self?.selectTab(url: URL(documentRelativePath: documentRelativePath), location: 0)
+                        }
                     }
+                    
                 }
             }).disposed(by: self.disposeBag)
         
@@ -77,13 +85,10 @@ public class DocumentTabContainerViewController: UIViewController {
         }).disposed(by: self.disposeBag)
         
         self.viewModel.context.dependency.eventObserver.registerForEvent(on: self, eventType: RenameDocumentEvent.self, queue: .main) { (event: RenameDocumentEvent) -> Void in
-            let oldKey = event.oldUrl.documentRelativePath
-            let newKey = event.newUrl.documentRelativePath
-            
-            if let controller = self.openingViewControllers[oldKey] {
+            if let controller = self.viewController(for: event.oldUrl) {
                 self.tabBar.renameTab(with: event.oldUrl, to: event.newUrl)
-                self.openingViewControllers[newKey] = controller
-                self.openingViewControllers[oldKey] = nil
+                self.addPair(for: event.newUrl, viewController: controller)
+                self.removePair(for: event.oldUrl)
                 self.viewModel.context.dependency.settingAccessor.logCloseDocument(url: event.oldUrl)
                 self.viewModel.context.dependency.settingAccessor.logOpenDocument(url: event.newUrl)
             }
@@ -100,7 +105,7 @@ public class DocumentTabContainerViewController: UIViewController {
     }
     
     public func isDocumentAdded(url: URL) -> Bool {
-        return self.openingViewControllers[url.documentRelativePath] != nil
+        return self.viewController(for: url) != nil
     }
     
     @available(iOS 13.0, *)
@@ -120,7 +125,7 @@ public class DocumentTabContainerViewController: UIViewController {
     public func selectTab(url: URL, location: Int) {
         self.viewModel.dependency.settingAccessor.logOpenDocument(url: url)
         
-        if let viewController = self.openingViewControllers[url.documentRelativePath] {
+        if let viewController = self.viewController(for: url) {
             
             if !self.container.subviews.contains(where: { $0 == viewController.view}) {
                 self.container.subviews.forEach { $0.removeFromSuperview() }
@@ -143,9 +148,8 @@ public class DocumentTabContainerViewController: UIViewController {
     }
     
     public func addTabs(editorCoordinator: EditorCoordinator, shouldSelected: Bool) {
-        let documentRelativePath = editorCoordinator.url.documentRelativePath
-        if self.openingViewControllers[documentRelativePath] == nil, let viewController = editorCoordinator.viewController as? DocumentEditorViewController {
-            self.openingViewControllers[documentRelativePath] = viewController
+        if self.viewController(for: editorCoordinator.url) == nil, let viewController = editorCoordinator.viewController as? DocumentEditorViewController {
+            self.addPair(for: editorCoordinator.url, viewController: viewController)
             
             self.tabBar.addDocument.onNext((editorCoordinator.url, shouldSelected))
         }
@@ -158,13 +162,43 @@ public class DocumentTabContainerViewController: UIViewController {
     }
     
     public func closeDocument(url: URL) {
-        if let viewController = self.openingViewControllers[url.documentRelativePath] {
+        if let viewController = self.viewController(for: url) {
             viewController.removeFromParent()
             viewController.view.removeFromSuperview()
-            self.openingViewControllers[url.documentRelativePath] = nil
+            self.removePair(for: url)
             self.delegate?.didCloseDocument(url: url, editorViewController: viewController)
             self.viewModel.dependency.settingAccessor.logCloseDocument(url: url)
         }
+    }
+    
+    private func index(for url: URL) -> Int? {
+        for (index, pair) in self.openingViewControllers.enumerated() {
+            if pair.0 == url.documentRelativePath {
+                return index
+            }
+        }
+        return nil
+    }
+    
+    private func viewController(for url: URL) -> DocumentEditorViewController? {
+        for pair in self.openingViewControllers {
+            if pair.0 == url.documentRelativePath {
+                return pair.1
+            }
+        }
+        return nil
+    }
+    
+    private func removePair(for url: URL) {
+        for (index, pair) in self.openingViewControllers.enumerated() {
+            if pair.0 == url.documentRelativePath {
+                self.openingViewControllers.remove(at: index)
+            }
+        }
+    }
+    
+    private func addPair(for url: URL, viewController: DocumentEditorViewController) {
+        self.openingViewControllers.insert((url.documentRelativePath, viewController), at: 0)
     }
 }
 
