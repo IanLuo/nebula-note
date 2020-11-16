@@ -463,7 +463,13 @@ extension DocumentEditorViewController: DocumentEditViewModelDelegate {
     
     internal func scrollTo(location: Int, shouldScrollToZero: Bool = false) {
         if location > 0 {
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.3) {
+            if isMac {
+                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.3) {
+                    if !self.textView.isFirstResponder {
+                        self.textView.becomeFirstResponder()
+                    }
+                }
+            } else {
                 if !self.textView.isFirstResponder {
                     self.textView.becomeFirstResponder()
                 }
@@ -471,7 +477,13 @@ extension DocumentEditorViewController: DocumentEditViewModelDelegate {
             self.textView.selectedRange = NSRange(location: location, length: 0)
             self.textView.scrollRangeToVisible(self.textView.selectedRange)
         } else if shouldScrollToZero && location == 0 {
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.3) {
+            if isMac {
+                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.3) {
+                    if !self.textView.isFirstResponder {
+                        self.textView.becomeFirstResponder()
+                    }
+                }
+            } else {
                 if !self.textView.isFirstResponder {
                     self.textView.becomeFirstResponder()
                 }
