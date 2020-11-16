@@ -42,6 +42,19 @@ public class DocumentEditorViewController: UIViewController {
     // these two part is used for mac and ipad
     private let topViewContainer: UIView = UIView()
     private let rightViewContainer: UIView = UIView()
+    private let backlinkButton: UIButton = {
+        let button = UIButton()
+        
+        button.interface { (me, theme) in
+            let button = me as! UIButton
+            button.titleColor(theme.color.spotlitTitle, for: .normal)
+            button.backgroundImage(theme.color.spotlight, for: .normal)
+            button.contentEdgeInsets = UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 10)
+            button.roundConer(radius: 8)
+        }
+        
+        return button
+    }()
     
     public init(viewModel: DocumentEditViewModel) {
         self.viewModel = viewModel
@@ -98,6 +111,7 @@ public class DocumentEditorViewController: UIViewController {
         self.view.addSubview(self.textView)
         self.view.addSubview(self.rightViewContainer)
         self.view.addSubview(self._loadingIndicator)
+        self.view.addSubview(self.backlinkButton)
         
         if !self.viewModel.isReadyToEdit {
             self._loadingIndicator.startAnimating()
@@ -147,6 +161,10 @@ public class DocumentEditorViewController: UIViewController {
             
             self.inputbar.delegate = self
             
+            self.backlinkButton.isHidden = true
+            
+            self.backlinkButton.sizeAnchor(height: 20)
+            
             if isMacOrPad {
                 self.topViewContainer.addSubview(self.inputbar)
                 self.view.addSubview(self._toolBar)
@@ -176,9 +194,15 @@ public class DocumentEditorViewController: UIViewController {
                 self.addToolbarButton(title: "", icon: Asset.Assets.more.image) { [weak self]  button in
                     self?.showInfo()
                 }
+                
+                self.backlinkButton.topAnchor.constraint(equalTo: self.inputbar.bottomAnchor, constant: 10).isActive = true
+                self.backlinkButton.rightAnchor.constraint(equalTo: self.view.rightAnchor, constant: -20).isActive = true
             } else {
                 self.inputbar.frame = CGRect(origin: .zero, size: .init(width: self.view.bounds.width, height: 44))
                 self.textView.inputAccessoryView = self.inputbar
+                
+                self.backlinkButton.topAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 10).isActive = true
+                self.backlinkButton.rightAnchor.constraint(equalTo: self.view.rightAnchor, constant: -20).isActive = true
             }
             
             self.inputbar.mode = .paragraph
@@ -221,11 +245,40 @@ public class DocumentEditorViewController: UIViewController {
                 }
             }).disposed(by: self.disposeBag)
             
-            // disable global mode for now
+            self.viewModel
+                .backlinks
+                .asDriver()
+                .do(onNext: { [weak self] in
+                    if $0.count > 0 {
+                        self?.backlinkButton.title("\($0.count) backlinks", for: .normal)
+                        self?.backlinkButton.isHidden = false
+                    }
+                })
+                .drive()
+                .disposed(by: self.disposeBag)
+            
+            self.backlinkButton.rx.tap.subscribe(onNext: { [weak self] _ in
+                guard let strongSelf = self else { return }
+                let choose = SelectorViewController()
+                for link in strongSelf.viewModel.backlinks.value {
+                    choose.addItem(title: link.packageName)
+                }
+                choose.onSelection = { index, viewController in
+                    viewController.dismiss(animated: true) {
+                        self?.viewModel.dependency.eventObserver.emit(OpenDocumentEvent(url: strongSelf.viewModel.backlinks.value[index]))
+                    }
+                }
+                choose.present(from: strongSelf, at: strongSelf.backlinkButton)
+            }).disposed(by: self.disposeBag)
+            
+            // disable global edit mode for now
 //            self.viewModel.dependency.appContext.isReadingMode.subscribe(onNext: { [weak self] isReadingMode in
 //                self?.textView.isEditable = !isReadingMode && self?.viewModel.isTemp == false
 //                self?.textView.inputAccessoryView?.isHidden = isReadingMode
 //            }).disposed(by: self.disposeBag)
+            
+            // fire request to load backlinks
+            self.viewModel.loadBacklinks()
         }
     }
     

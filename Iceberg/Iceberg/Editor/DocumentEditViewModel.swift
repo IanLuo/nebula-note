@@ -10,6 +10,7 @@ import Foundation
 import Core
 import RxSwift
 import Interface
+import RxCocoa
 
 public protocol DocumentEditViewModelDelegate: class {
     func updateHeadingInfo(heading: HeadingToken?)
@@ -37,6 +38,8 @@ public class DocumentEditViewModel: ViewModelProtocol {
     private var _editorService: EditorService!
     
     public var currentTokens: [Token] = []
+    
+    public let backlinks: BehaviorRelay<[URL]> = BehaviorRelay(value: [])
     
     public func tokens(at location: Int) -> [Token] {
         return self._editorService.tokens(at: location)
@@ -209,6 +212,12 @@ public class DocumentEditViewModel: ViewModelProtocol {
         _editorService.save { _  in
             completion()
         }
+    }
+    
+    public func loadBacklinks() {
+        self.dependency.documentSearchManager.searchBacklink(url: self.url).subscribe(onNext: { [weak self] in
+            self?.backlinks.accept($0)
+        }).disposed(by: self.disposeBag)
     }
     
     public func close(completion: @escaping (Bool) -> Void) {

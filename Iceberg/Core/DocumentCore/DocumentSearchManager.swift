@@ -348,6 +348,28 @@ public class DocumentSearchManager {
         }
     }
     
+    public func searchBacklink(url: URL) -> Observable<[URL]> {
+        let linkString = OutlineParser.Values.Link.serializeFileLink(url: url)
+        
+        return Observable.create { observer -> Disposable in
+            DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
+                var result: [URL] = []
+                for file in self.loadAllFiles() {
+                    if let content = try? String(contentsOf: file) {
+                        if content.contains(linkString) {
+                            result.append(file)
+                        }
+                    }
+                }
+                
+                observer.onNext(result)
+                observer.onCompleted()
+            }
+            
+            return Disposables.create()
+        }
+    }
+    
     public func allHeadings(completion: @escaping ([DocumentHeadingSearchResult]) -> Void, failure: @escaping (Error) -> Void) {
         let operation = BlockOperation()
         

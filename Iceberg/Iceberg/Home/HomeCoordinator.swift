@@ -186,7 +186,6 @@ extension HomeCoordinator: SearchCoordinatorDelegate {
             self.selectOnDesktopContainerTab(url: url, location: location)
         } else {
             self.openDocument(url: url, location: location)
-            
         }
     }
     
