@@ -202,8 +202,12 @@ open class SelectorViewController: UIViewController {
     @objc private func cancel() {
         self.delegate?.SelectorDidCancel(viewController: self)
         
-        unowned let unownedSelf = self
-        self.onCancel?(unownedSelf)
+        if let onCancel = self.onCancel {
+            unowned let unownedSelf = self
+            onCancel(unownedSelf)
+        } else {
+            self.dismiss(animated: true)
+        }
     }
     
     public struct Item {

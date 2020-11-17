@@ -135,21 +135,28 @@ public class PublishViewController: UIViewController {
                     
                     publishable(url.packageName, try String(contentsOf: url), attachments)
                         .observeOn(MainScheduler())
-                        .do(onError: { error in
-                            self.showAlert(title: "fail", message: "\(error)")
-                            self.view.hideProcessingAnimation()
-                        })
                         .subscribe(onNext: {
                             self.view.hideProcessingAnimation()
-                            self.showAlert(title: "Success", message: "\"\(self.viewModel.url.packageName)\" is published successfully")
+                            self.showAlert(title: L10n.General.success, message: "\"\(self.viewModel.url.packageName)\" \(L10n.Publish.complete(platform.title))")
+                        }, onError: { error in
+                            var errorMessage = error.localizedDescription
+                            
+                            if errorMessage.contains("Network") {
+                                errorMessage = L10n.Fail.network
+                            } else if errorMessage.contains("failToUpload") {
+                                errorMessage = L10n.Fail.upload
+                            }
+                            
+                            self.showAlert(title: L10n.General.fail, message: "\(error)")
+                            self.view.hideProcessingAnimation()
                         })
                         .disposed(by: self.disposeBag)
                 } catch {
-                    self.showAlert(title: "fail", message: "\(error)")
+                    self.showAlert(title: L10n.General.fail, message: "\(error)")
                     self.view.hideProcessingAnimation()
                 }
             } failure: { error in
-                self.showAlert(title: "fail", message: "\(error)")
+                self.showAlert(title: L10n.General.fail, message: "\(error)")
                 self.view.hideProcessingAnimation()
             }
         }).disposed(by: self.disposeBag)

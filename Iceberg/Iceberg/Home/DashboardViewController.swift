@@ -422,14 +422,14 @@ private class TabView: UITableViewHeaderFooterView {
     
     lazy var titleButton: UIButton = {
         let button = UIButton()
-        if #available(iOS 14.0, *) {
-            self.backgroundConfiguration = UIBackgroundConfiguration.listPlainCell()
-        }
         button.interface({ (me, theme) in
             let button = me as! UIButton
+            #if targetEnvironment(macCatalyst)
+            #else
             if #available(iOS 14.0, *) {
                 self.backgroundConfiguration?.backgroundColor = theme.color.background1
             }
+            #endif
             button.titleLabel?.font = theme.font.title
             button.setTitleColor(theme.color.interactive, for: .normal)
             button.setTitleColor(theme.color.spotlitTitle, for: .selected)

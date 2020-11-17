@@ -210,6 +210,19 @@ public class EditorCoordinator: Coordinator {
             self.viewController?.showAlert(title: L10n.Browser.fileNotExisted, message: L10n.Browser.FileNotExisted.message)
         }
     }
+    
+    public func openDocument(url: URL) {
+        if FileManager.default.fileExists(atPath: url.path) {
+            if isMacOrPad {
+                self.dependency.eventObserver.emit(OpenDocumentEvent(url: url))
+            } else {
+                let editorCoor = EditorCoordinator(stack: self.stack, dependency: self.dependency, usage: .editor(url, 0))
+                editorCoor.start(from: self)
+            }
+        } else {
+            self.viewController?.showAlert(title: L10n.Browser.fileNotExisted, message: L10n.Browser.FileNotExisted.message)
+        }
+    }
 }
 
 extension EditorCoordinator: SearchCoordinatorDelegate {

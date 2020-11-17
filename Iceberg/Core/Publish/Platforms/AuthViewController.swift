@@ -33,6 +33,7 @@ class AuthViewController: OAuthWebViewController {
 
         self.webView.frame = self.view.bounds
         self.webView.navigationDelegate = self
+        self.webView.customUserAgent = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"
 
         self.view.addSubview(self.toolbar)
         self.view.addSubview(self.webView)

@@ -201,7 +201,7 @@ public class DocumentEditorViewController: UIViewController {
                 self.inputbar.frame = CGRect(origin: .zero, size: .init(width: self.view.bounds.width, height: 44))
                 self.textView.inputAccessoryView = self.inputbar
                 
-                self.backlinkButton.topAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 10).isActive = true
+                self.backlinkButton.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 10).isActive = true
                 self.backlinkButton.rightAnchor.constraint(equalTo: self.view.rightAnchor, constant: -20).isActive = true
             }
             
@@ -265,8 +265,12 @@ public class DocumentEditorViewController: UIViewController {
                 }
                 choose.onSelection = { index, viewController in
                     viewController.dismiss(animated: true) {
-                        self?.viewModel.dependency.eventObserver.emit(OpenDocumentEvent(url: strongSelf.viewModel.backlinks.value[index]))
+                        self?.viewModel.context.coordinator?.openDocument(url: strongSelf.viewModel.backlinks.value[index])
                     }
+                }
+                
+                choose.onCancel = {
+                    $0.dismiss(animated: true)
                 }
                 choose.present(from: strongSelf, at: strongSelf.backlinkButton)
             }).disposed(by: self.disposeBag)
@@ -289,7 +293,7 @@ public class DocumentEditorViewController: UIViewController {
             self.viewModel.start()
         }
         
-        self.textView.becomeFirstResponder()
+//        self.textView.becomeFirstResponder()
         
         if #available(iOS 13, *) {
             self.enableKeyBindings()

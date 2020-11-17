@@ -560,9 +560,20 @@ public enum L10n {
     }
   }
 
+  public enum Fail {
+    /// Network error, please try again
+    public static let network = L10n.tr("Localizable", "fail.network")
+    /// Upload error, please try again
+    public static let upload = L10n.tr("Localizable", "fail.upload")
+  }
+
   public enum General {
+    /// Fail
+    public static let fail = L10n.tr("Localizable", "general.fail")
     /// Help
     public static let help = L10n.tr("Localizable", "general.help")
+    /// Success
+    public static let success = L10n.tr("Localizable", "general.success")
     public enum Button {
       /// OK
       public static let ok = L10n.tr("Localizable", "general.button.ok")
@@ -763,6 +774,10 @@ public enum L10n {
   }
 
   public enum Publish {
+    /// Successflully published to %@
+    public static func complete(_ p1: Any) -> String {
+      return L10n.tr("Localizable", "publish.complete", String(describing: p1))
+    }
     /// Clear saved publish related login info
     public static let deleteSavedPublishInfo = L10n.tr("Localizable", "publish.delete-saved-publish-info")
     /// Publish
