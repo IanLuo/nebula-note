@@ -456,6 +456,11 @@ extension OutlineParser {
                 let path = url.documentRelativePath
                 return "[[\(x3)://\(path)][\(name)]]"
             }
+            
+            public static func serializeCustomizednameFileLink(name: String, url: URL) -> String {
+                let path = url.documentRelativePath
+                return "[[\(x3)://\(path)][\(name)]]"
+            }
         }
     }
 }

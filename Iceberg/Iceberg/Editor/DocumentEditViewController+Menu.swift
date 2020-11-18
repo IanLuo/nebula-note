@@ -707,4 +707,21 @@ extension DocumentEditorViewController {
             strongSelf.textView.selectedRange = NSRange(location: result.delta + location, length: 0)
         })
     }
+    
+    public func showDocumentLinkTitleEditor(title: String, link: String, from: UIView, location: CGPoint?, completion: @escaping (String?) -> Void) {
+        let url = URL.documentBaseURL.appendingPathComponent(OutlineParser.Values.Link.removeScheme(link: link))
+        let modalForm = ModalFormViewController()
+        modalForm.title = title
+        modalForm.addTextFied(title: L10n.CaptureLink.Title.title, placeHoder: L10n.Document.Edit.DocumentLink.title, defaultValue: title)
+        modalForm.onSaveValueAutoDismissed = { form in            
+            completion(OutlineParser.Values.Link.serializeCustomizednameFileLink(name: form[L10n.CaptureLink.Title.title] as? String ?? title, url: url))
+        }
+        modalForm.onCancel = {
+            $0.dismiss(animated: true) {
+                completion(nil)
+            }
+        }
+        modalForm.present(from: self, at: from, location: location)
+    }
+
 }

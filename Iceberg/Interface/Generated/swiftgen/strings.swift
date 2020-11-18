@@ -425,6 +425,10 @@ public enum L10n {
         /// All day
         public static let allDay = L10n.tr("Localizable", "document.edit.date.all-day")
       }
+      public enum DocumentLink {
+        /// Edit document link title
+        public static let title = L10n.tr("Localizable", "document.edit.document_link.title")
+      }
       public enum Image {
         /// Use as cover
         public static let useAsCover = L10n.tr("Localizable", "document.edit.image.use-as-cover")

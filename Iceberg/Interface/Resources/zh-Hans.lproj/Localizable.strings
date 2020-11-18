@@ -129,6 +129,7 @@
 "document.help.entrance" = "什么是标题入口";
 "document.help.more" = "更多帮助";
 "document.help.markSyntax" = "标记使用帮助";
+"document.edit.document_link.title" = "编辑文档链接标题";
 
 "document.edit.remote_editing_arrived_title" = "发现其他设备有更新的版本，是否重新加载?";
 "document.edit.remote_editing_arrived_message" = "选择需要保存的版本";

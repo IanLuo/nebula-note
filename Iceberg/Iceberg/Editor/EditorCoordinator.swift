@@ -147,7 +147,7 @@ public class EditorCoordinator: Coordinator {
         attachmentLinkCoordinator.fromLocation = location
         attachmentLinkCoordinator.start(from: self)
     }
-    
+        
     public func showPublish(from: UIViewController, url: URL) {
         let viewController = PublishViewController(url: url, viewModel: self._viewModel)
         let navigationController = Coordinator.createDefaultNavigationControlller(root: viewController, transparentBar: false)

@@ -81,7 +81,7 @@ extension DocumentEditorViewController: OutlineTextViewDelegate {
     }
     
     public func didTapOnLink(textView: UITextView, characterIndex: Int, linkStructure: [String : Any], point: CGPoint) {
-        let actionsController = ActionsViewController()
+        let actionsController: ActionsViewController = ActionsViewController()
         
         actionsController.title = linkStructure["url"] as? String
         
@@ -107,6 +107,25 @@ extension DocumentEditorViewController: OutlineTextViewDelegate {
                     }
                 }
             })
+        }
+        
+        if isDocumentLink {
+            actionsController.addAction(icon: Asset.Assets.edit.image, title: L10n.Document.Edit.DocumentLink.title) { viewController in
+                viewController.dismiss(animated: true) {
+                    let location = textView.rect(forStringRange: textView.selectedRange)?.center
+                    for case let linkToken in self.viewModel.tokens(at: characterIndex) where linkToken is LinkToken {
+                        self.showDocumentLinkTitleEditor(title: linkTitle, link: linkPath, from: self.textView, location: location) { [unowned self] in
+                            self.viewModel.dependency.globalCaptureEntryWindow?.show()
+                            
+                            if let newLinkString = $0 {
+                                let oldSelectedRange = textView.selectedRange
+                                let result = self.viewModel.performAction(EditAction.replaceText(linkToken.range, newLinkString), textView: self.textView)
+                                textView.selectedRange = oldSelectedRange.offset(result.delta)
+                            }
+                        }
+                    }
+                }
+            }
         }
         
         actionsController.addAction(icon: editLinkIcon, title: editLinkText) { viewController in
