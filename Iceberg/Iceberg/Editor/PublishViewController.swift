@@ -147,7 +147,7 @@ public class PublishViewController: UIViewController {
                                 errorMessage = L10n.Fail.upload
                             }
                             
-                            self.showAlert(title: L10n.General.fail, message: "\(error)")
+                            self.showAlert(title: L10n.General.fail, message: "\(errorMessage)")
                             self.view.hideProcessingAnimation()
                         })
                         .disposed(by: self.disposeBag)

@@ -74,8 +74,14 @@ public struct HTMLExporter: Exportable {
                         }
                     }
                     
-                    if result.nsstring.substring(with: token.range) != tokenString {
-                        result = result.nsstring.replacingCharacters(in: token.range, with: tokenString)
+                    if let orderedListToken = token as? OrderedListToken {
+                        result = result.nsstring.replacingCharacters(in: orderedListToken.prefix, with: tokenString)
+                    } else if let unorderedListToken = token as? UnorderdListToken {
+                        result = result.nsstring.replacingCharacters(in: unorderedListToken.prefix, with: tokenString)
+                    } else {
+                        if result.nsstring.substring(with: token.range) != tokenString {
+                            result = result.nsstring.replacingCharacters(in: token.range, with: tokenString)
+                        }
                     }
                 }
                 
@@ -210,9 +216,9 @@ extension Token {
         if let heading = self as? HeadingToken {
             return "<h\(heading.level)>\(string.nsstring.substring(with: heading.headingTextRange))</h\(heading.level)>"
         } else if let quoteBlock = self as? BlockEndToken, quoteBlock.blockType == .quote {
-            return "<br><div \(style("class=\"wrapper\""))><blockquote \(style("class=\"quote\""))><p>\(string.nsstring.substring(with: quoteBlock.contentRange!))</p></blockquote></div>"
+            return "<div \(style("class=\"wrapper\""))><blockquote \(style("class=\"quote\""))>\(string.nsstring.substring(with: quoteBlock.contentRange!))</blockquote></div>"
         } else if let quoteBlock = self as? BlockEndToken, quoteBlock.blockType == .sourceCode {
-            return "<br><div \(style("class=\"wrapper\""))><blockquote \(style("class=\"quote\""))><p>\(string.nsstring.substring(with: quoteBlock.contentRange!))</p></blockquote></div>"
+            return "<div \(style("class=\"wrapper\""))><blockquote \(style("class=\"quote\""))>\(string.nsstring.substring(with: quoteBlock.contentRange!))</blockquote></div>"
         } else if let link = self as? LinkToken {
             if let titleRange = link.range(for: OutlineParser.Key.Element.Link.title),
                 let urlRange = link.range(for: OutlineParser.Key.Element.Link.url) {
@@ -237,19 +243,19 @@ extension Token {
             if type == Attachment.Kind.image.rawValue, let url = AttachmentManager.attachmentFileURL(key: value) {
                 let tempURL = URL.directory(location: URLLocation.temporary).appendingPathComponent(url.lastPathComponent)
                 try? Data(contentsOf: url).write(to: tempURL)
-                return "<br><img src=\"\(tempURL.lastPathComponent)\" style=\"max-width:600px;width:100%\"/>"
+                return "<p><img src=\"\(tempURL.lastPathComponent)\" style=\"max-width:600px;width:100%\"/></p>"
             } else if type == Attachment.Kind.sketch.rawValue, let url = AttachmentManager.attachmentFileURL(key: value) {
                 let tempURL = URL.directory(location: URLLocation.temporary).appendingPathComponent(url.lastPathComponent)
                 try? Data(contentsOf: url).write(to: tempURL)
-                return "<br><img src=\"\(tempURL.lastPathComponent)\" style=\"max-width:600px;width:100%\"/>"
+                return "<p><img src=\"\(tempURL.lastPathComponent)\" style=\"max-width:600px;width:100%\"/></p>"
             } else if type == Attachment.Kind.audio.rawValue, let url = AttachmentManager.attachmentFileURL(key: value) {
                 let tempURL = URL.directory(location: URLLocation.temporary).appendingPathComponent(url.lastPathComponent)
                 try? Data(contentsOf: url).write(to: tempURL)
-                return "<br><audio controls style=\"max-width:600px;width:100%\" src=\"\(tempURL.lastPathComponent)\"></audio>"
+                return "<p><audio controls style=\"max-width:600px;width:100%\" src=\"\(tempURL.lastPathComponent)\"></audio></p>"
             } else if type == Attachment.Kind.video.rawValue, let url = AttachmentManager.attachmentFileURL(key: value) {
                 let tempURL = URL.directory(location: URLLocation.temporary).appendingPathComponent(url.lastPathComponent)
                 try? Data(contentsOf: url).write(to: tempURL)
-                return "<br><video controls src=\"\(tempURL.lastPathComponent)\" style=\"max-width:600px;width:100%\"></video>"
+                return "<p><video controls src=\"\(tempURL.lastPathComponent)\" style=\"max-width:600px;width:100%\"></video></p>"
             } else {
                 return "<!--\(type):\(value)--!>"
             }
@@ -271,9 +277,9 @@ extension Token {
         } else if self is SeparatorToken {
             return "<hr>"
         } else if let orderedList = self as? OrderedListToken {
-            return "<li>\(string.nsstring.substring(with: orderedList.range).nsstring.replacingCharacters(in: orderedList.prefix.offset(-orderedList.range.location), with: ""))</li>"
+            return "<li>"
         } else if let unorderedList = self as? UnorderdListToken {
-            return "<li>\(string.nsstring.substring(with: unorderedList.range).nsstring.replacingCharacters(in: unorderedList.prefix.offset(-unorderedList.range.location), with: ""))</li>"
+            return "<li>"
         } else if let checkbox = self as? CheckboxToken {
             let checkStatusString = string.nsstring.substring(with: checkbox.range(for: "status")!) == OutlineParser.Values.Checkbox.checked ? "checked" : ""
             let statusString = "<br><input type=\"checkbox\" \(checkStatusString) disabled/> "

@@ -92,7 +92,7 @@ extension AuthViewController: WKNavigationDelegate {
         
         decisionHandler(.allow)
     }
-
+    
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
         print("\(error)")
         self.dismissWebViewController()
