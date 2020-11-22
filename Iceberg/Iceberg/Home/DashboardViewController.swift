@@ -98,7 +98,7 @@ public class DashboardViewController: UIViewController {
         self.trashButton.sideAnchor(for: [.right, .bottom], to: self.view, edgeInsets: .init(top: 0, left: 0, bottom: -Layout.edgeInsets.bottom, right: -Layout.edgeInsets.right), considerSafeArea: true)
         
         self.membershipButton.bottomAnchor.constraint(equalTo: self.settingsButton.topAnchor, constant: -20).isActive = true
-        self.membershipButton.sideAnchor(for: .left, to: self.view, edgeInset: Layout.edgeInsets.left)
+        self.membershipButton.sideAnchor(for: .left, to: self.view, edgeInset: Layout.edgeInsets.left, considerSafeArea: true)
         self.membershipButton.sizeAnchor(height: 30)
         
         self.trashButton.tapped { [unowned self] _ in
@@ -424,12 +424,6 @@ private class TabView: UITableViewHeaderFooterView {
         let button = UIButton()
         button.interface({ (me, theme) in
             let button = me as! UIButton
-            #if targetEnvironment(macCatalyst)
-            #else
-            if #available(iOS 14.0, *) {
-                self.backgroundConfiguration?.backgroundColor = theme.color.background1
-            }
-            #endif
             button.titleLabel?.font = theme.font.title
             button.setTitleColor(theme.color.interactive, for: .normal)
             button.setTitleColor(theme.color.spotlitTitle, for: .selected)
@@ -480,6 +474,17 @@ private class TabView: UITableViewHeaderFooterView {
         self.titleButton.roundConer(radius: 8)
         self.titleButton.allSidesAnchors(to: self.contentView, edgeInsets: .init(top: 0, left: Layout.edgeInsets.left, bottom: 0, right: -Layout.edgeInsets.right))
         self.titleButton.contentEdgeInsets = UIEdgeInsets(top: 20, left: Layout.innerViewEdgeInsets.left + 20 + 20, bottom: 20, right: 0)
+        
+        #if targetEnvironment(macCatalyst)
+        #else
+        self.interface { (view, theme) in
+            let me = view as! TabView
+            if #available(iOS 14.0, *) {
+                me.backgroundConfiguration?.backgroundColor = theme.color.background1
+            }
+        }
+        #endif
+
     }
     
     required init?(coder aDecoder: NSCoder) {

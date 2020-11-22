@@ -58,7 +58,7 @@ public class BrowserViewController: UIViewController {
                 
         self.view.addSubview(self.recentViewController.view)
         self.recentViewController.view.sideAnchor(for: [.left, .top, .right], to: self.view, edgeInsets: .init(top: 20, left: 10, bottom: 0, right: -10), considerSafeArea: true)
-        self.recentViewController.view.sizeAnchor(height: 90)
+        self.recentViewController.view.sizeAnchor(height: 120)
         self.addChild(self.recentViewController)
         self.recentViewController.didMove(toParent: self)
         

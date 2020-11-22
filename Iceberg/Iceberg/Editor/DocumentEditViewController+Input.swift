@@ -178,9 +178,19 @@ extension DocumentEditorViewController {
             
             for case let blockMark in self.viewModel.currentTokens where blockMark is BlockToken {
                 guard self.textView.selectedRange.location != blockMark.range.location else { return true }
+
+                var anotherEndToken: BlockToken?
+                if let beginToken = blockMark as? BlockBeginToken {
+                    anotherEndToken = beginToken.endToken
+                } else if let endToken = blockMark as? BlockEndToken {
+                    anotherEndToken = endToken.beginToken
+                }
                 
                 if blockMark.tokenRange.contains(locationToDelete) || blockMark.tokenRange.lastCharacterLocation == locationToDelete {
                     textView.selectedRange = blockMark.range
+                    return false
+                } else if let anotherEndToken = anotherEndToken, anotherEndToken.tokenRange.contains(locationToDelete) || anotherEndToken.tokenRange.lastCharacterLocation == locationToDelete {
+                    textView.selectedRange = anotherEndToken.range
                     return false
                 }
             }

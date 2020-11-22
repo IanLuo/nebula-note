@@ -63,7 +63,6 @@ public class DocumentTabContainerViewController: UIViewController {
             .subscribe(onNext: { [weak self ] tab in
                 let index = self?.index(for: tab.url) ?? 0
                 self?.closeDocument(url: tab.url)
-                self?.viewModel.dependency.settingAccessor.logCloseDocument(url: tab.url)
                 
                 // if the closed document is currently openning, open another one
                 if try! tab.isSelected.value() {
