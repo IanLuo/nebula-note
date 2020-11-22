@@ -50,6 +50,10 @@ public class SettingsViewController: UITableViewController {
     
     @IBOutlet weak var resetPublishLoginInfo: UILabel!
     
+    @IBOutlet weak var feedbackLabel: UILabel!
+    @IBOutlet weak var feedbackButton: UIButton!
+    
+    
     private let disposeBag = DisposeBag()
     
     public override init(style: UITableView.Style) {
@@ -99,6 +103,9 @@ public class SettingsViewController: UITableViewController {
         self.attachmentManagerLabel.text = L10n.Setting.ManageAttachment.title
         
         self.resetPublishLoginInfo.text = L10n.Publish.deleteSavedPublishInfo
+        
+        self.feedbackLabel.text = L10n.Setting.feedback
+        self.feedbackButton.setTitle("", for: .normal)
     }
     
     private func _setupUI() {
@@ -137,6 +144,8 @@ public class SettingsViewController: UITableViewController {
             self?.exportShowIndexSwitch.onTintColor = theme.color.spotlight
             
             self?.attachmentManagerLabel.textColor = theme.color.interactive
+
+            self?.feedbackLabel.textColor = theme.color.interactive
         }
         
         let button = UIButton()
@@ -157,6 +166,10 @@ public class SettingsViewController: UITableViewController {
             button.setTitleColor(theme.color.spotlight, for: .normal)
         }
         
+        self.feedbackButton.rx.tap.subscribe(onNext: { [weak self] _ in
+            self?._showFeedbackOptions(from: button)
+        }).disposed(by: self.disposeBag)
+        
         self.termsOfServiceButton.setTitle(L10n.Setting.terms, for: .normal)
         self.termsOfServiceButton.rx.tap.subscribe(onNext: {
             HelpPage.termsOfService.open(from: self)
@@ -174,11 +187,11 @@ public class SettingsViewController: UITableViewController {
     
     public override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch section {
-        case 0: return L10n.Setting.General.title
-        case 1: return L10n.Setting.Planning.title
-        case 2: return L10n.Setting.Store.title
-        case 3: return L10n.Setting.Editor.title
-            case 4: return L10n.Setting.Export.title
+        case 1: return L10n.Setting.General.title
+        case 2: return L10n.Setting.Planning.title
+        case 3: return L10n.Setting.Store.title
+        case 4: return L10n.Setting.Editor.title
+            case 5: return L10n.Setting.Export.title
         default: return nil
         }
     }
@@ -314,12 +327,12 @@ public class SettingsViewController: UITableViewController {
     }
     
     /// user interface style
-    @objc private func _interfaceStyleButtonTapped(_ button: UIButton) {
+    @objc private func _interfaceStyleButtonTapped(_ view: UIView) {
         let selector = SelectorViewController()
         selector.title = L10n.Setting.InterfaceStyle.title
         let dependency = self.viewModel.dependency
         
-        selector.fromView = button.superview
+        selector.fromView = view
         
         let styles = [SettingsAccessor.InterfaceStyle.dark,
         SettingsAccessor.InterfaceStyle.light,
@@ -346,7 +359,7 @@ public class SettingsViewController: UITableViewController {
             self.interfaceStyleButton.setTitle(styles[index].localizedTitle, for: .normal)
         }
         
-        selector.present(from: self, at: button)
+        selector.present(from: self, at: view)
         dependency.globalCaptureEntryWindow?.hide()
     }
     
@@ -492,18 +505,20 @@ public class SettingsViewController: UITableViewController {
         
         switch (indexPath.section, indexPath.row) {
         case (0, 0):
-            self._showLandingTabNamesSelector(from: cell)
-        case (0, 1):
-            self._interfaceStyleButtonTapped(self.interfaceStyleButton)
+            self._showFeedbackOptions(from: cell)
         case (1, 0):
-            self._planningManageFinish(from: cell)
+            self._showLandingTabNamesSelector(from: cell)
         case (1, 1):
-            self._planningManageUnfinish(from: cell)
+            self._interfaceStyleButtonTapped(cell)
         case (2, 0):
-            self._storeLocationButtonTapped(self.storeLocationButton)
+            self._planningManageFinish(from: cell)
         case (2, 1):
+            self._planningManageUnfinish(from: cell)
+        case (3, 0):
+            self._storeLocationButtonTapped(self.storeLocationButton)
+        case (3, 1):
             self.viewModel.context.coordinator?.showAttachmentManager()
-        case (4, 1):
+        case (5, 1):
             let viewController = ConfirmViewController(contentText: L10n.Publish.DeleteSavedPublishInfo.confirm) { (viewController) in
                 viewController.dismiss(animated: true) {
                     self.viewModel.clearAllTokens {
