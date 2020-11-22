@@ -15,7 +15,7 @@ import Interface
 public class BrowserCell: UITableViewCell {
     public static let reuseIdentifier: String = "BrowserCell"
     
-    public let onPresentingModalViewController: PublishSubject<UIViewController> = PublishSubject()
+    public let onPresentingModalViewController: PublishSubject<(UIViewController, UIView)> = PublishSubject()
     public let onCreateSubDocument: PublishSubject<URL> = PublishSubject()
     public let onRenameDocument: PublishSubject<URL> = PublishSubject()
     public let onDuplicateDocument: PublishSubject<URL> = PublishSubject()
@@ -163,10 +163,10 @@ public class BrowserCell: UITableViewCell {
                 button.setBackgroundColor(theme.color.background2, for: .normal)
             }
         }
-        actionButton.tapped { [weak self] _ in
+        actionButton.tapped { [weak self] view in
             guard let strongSelf = self else { return }
             strongSelf.cellModel?.coordinator?.dependency.globalCaptureEntryWindow?.hide()
-            strongSelf.onPresentingModalViewController.onNext(strongSelf.actionViewController)
+            strongSelf.onPresentingModalViewController.onNext((strongSelf.actionViewController, view))
         }
         
         self.actionButton = actionButton
@@ -190,9 +190,9 @@ public class BrowserCell: UITableViewCell {
                 actionButton.setBackgroundColor(theme.color.background2, for: .normal)
             }
         }
-        actionButton.tapped { [weak self] _ in
+        actionButton.tapped { [weak self] view in
            guard let strongSelf = self else { return }
-            strongSelf.onPresentingModalViewController.onNext(strongSelf.actionViewController)
+            strongSelf.onPresentingModalViewController.onNext((strongSelf.actionViewController, view))
             strongSelf.cellModel?.coordinator?.dependency.globalCaptureEntryWindow?.hide()
         }
         
@@ -306,7 +306,7 @@ public class BrowserCell: UITableViewCell {
         }
     }
     
-    public func _createMoveActionItem(for  actionsViewController: ActionsViewController) {
+    public func _createMoveActionItem(for actionsViewController: ActionsViewController) {
         guard let cellModel = self.cellModel else { return }
         
         actionsViewController.addAction(icon: nil, title: L10n.Browser.Action.MoveTo.title) { viewController in
@@ -360,7 +360,7 @@ public class BrowserCell: UITableViewCell {
                         })
                     }
                     
-                    strongSelf.onPresentingModalViewController.onNext(selector)
+                    strongSelf.onPresentingModalViewController.onNext((selector, strongSelf))
                 })
             })
         }
@@ -406,7 +406,7 @@ public class BrowserCell: UITableViewCell {
                 cellModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
             }
             
-            self.onPresentingModalViewController.onNext(renameFormViewController)
+            self.onPresentingModalViewController.onNext((renameFormViewController, self))
         }
     }
     
@@ -414,9 +414,9 @@ public class BrowserCell: UITableViewCell {
         guard let cellModel = self.cellModel else { return }
         
         actionsViewController.addActionAutoDismiss(icon: nil, title: L10n.Browser.Actions.cover) { [weak self] in
+            guard let strongSelf = self else { return }
             let coverPicker = CoverPickerViewController()
             coverPicker.onSelecedCover = { cover in
-                guard let strongSelf = self else { return }
                 cellModel.updateCover(cover: cover)
                     .subscribe(onNext: { url in
                         strongSelf.onChangeCover.onNext(url)
@@ -429,7 +429,7 @@ public class BrowserCell: UITableViewCell {
                 cellModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
             }
             
-            self?.onPresentingModalViewController.onNext(coverPicker)
+            self?.onPresentingModalViewController.onNext((coverPicker, strongSelf))
         }
     }
     

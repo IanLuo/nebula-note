@@ -106,10 +106,10 @@ public class BrowserFolderViewController: UIViewController {
             cell.onPresentingModalViewController
                 .asObserver()
                 .observeOn(MainScheduler())
-                .subscribe(onNext: { [weak self, weak cell] viewController in
+                .subscribe(onNext: { [weak self] (viewController, view) in
                     guard let strongSelf = self else { return }
                     if let transitionController = viewController as? TransitionViewController {
-                        transitionController.present(from: strongSelf, at: cell)
+                        transitionController.present(from: strongSelf, at: view)
                     } else {
                         self?.present(viewController, animated: true)
                     }

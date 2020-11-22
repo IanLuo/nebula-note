@@ -70,8 +70,8 @@ public class DocumentInfoViewController: TransitionViewController {
             self?.cancel()
         }
         
-        self._helpButton.tapped { [weak self] _ in
-            self?.showHelpTopics()
+        self._helpButton.tapped { [weak self] view in
+            self?.showHelpTopics(view: view)
         }
         
         self._publishButton.rx.tap.subscribe(onNext: { [weak self] _ in
@@ -131,7 +131,7 @@ public class DocumentInfoViewController: TransitionViewController {
         self.didCloseAction?()
     }
     
-    @objc func showHelpTopics() {
+    @objc func showHelpTopics(view: UIView) {
         let actionsViewController = ActionsViewController()
         
         actionsViewController.title = L10n.General.help
@@ -164,7 +164,7 @@ public class DocumentInfoViewController: TransitionViewController {
             }
         }
         
-        actionsViewController.present(from: self, at: self.view)
+        actionsViewController.present(from: self, at: view)
     }
 }
 
