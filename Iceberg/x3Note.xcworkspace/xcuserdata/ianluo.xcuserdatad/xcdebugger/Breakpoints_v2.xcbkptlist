@@ -39,7 +39,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "98BDF13F-5BE1-4526-8B7A-6B8E4C979306"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Pods/OAuthSwift/Sources/OAuthSwiftURLHandlerType.swift"

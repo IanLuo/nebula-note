@@ -1,42 +1,50 @@
-Some people are different, they are curious, creative, always have fresh ideas, they don't think like others do, they don't see the world the same way as everybody does, they can feel what other people can't, to them the world is bigger, the sky is deeper, there are so much for them to explore, to share to others, to help people with their remarkable works, show them what the world can be, and how colorful life can be, they change the world for the better, you might be one of them.
+We design x3 Note to help students, bloggers, writers, and professionals to capture ideas, manage plans, and transform thoughts into organized articles.
 
-X3 is a note, which combines note taking, planning, and idea capturing together, with a mark-up syntax text based editor, supports various types of attachments, folding/unfoding paragraphs; use status, date and time to track tasks directly from text, and share anything that can be added as attachment from any app to X3 as editing resource.
+It won't write story or article for you, but x3 Note will gather your ideas from any source from your phone, mac or iPad, so every time you open x3 Note, your ideas will be there, waiting to inspire you.
 
-* Editor
-- Minimal design let you focusing on writing.
-- Lightweight markup launguage based rich text editor, supports various of attachments, such as image, sketch, audio, video, location, etc.
-- Supports text decorations: Bold, italic, underscore, strike through, highlight.
-- Support insert elements: link, checkbox, ordered list, unordered list, date and time, quote block, code block.
-- Folding and unfolding for sections.
-- Move sections freely in or between documents.
-- Outline.
+With the ability to generate work plan from the note content, it feels like there's a clever and busy house keeper, tracking all your work status and time, and show them to you in one place with well organized and easy to read format, tells you what is more urgent, and when you decide to start one, directly take you to the exact location, like you never left.
 
-* Capture ideas
-- Capture materials from any app that can share image, text, link, audio, video, or capture your idea with these forms by your self.
-- Manage ideas and delegate to any destination.
-- Choose and insert into document while editing.
+* Editor is in the center
+Our text editor is very clean and also very smart. 
+- Paragraphs can fold, so you can keep it clean, even when the document is very long, and focus on the current work.
+- Text decorations, like Bold, underscore, italic, strike though, hi-lightly.
+- Plenty of attachments, image, video, audio, location, sketch.
+- Paragraph can have sub paragraphs, help you to organize the contents.
+- And plenty of handy tools, such as list, checkbox, quote, source code, outline ext.
 
-* Planning
-- Automatically create tasks based on contents.
-- Pick up from where you left last time directly from agenda.
-- Status, priority, tags, automatically categorize by status, tags, schedule date, due date, etc.
+* Ideas floating around
+Captured ideas can be directly moved into the current editing location, all those ideas only one tap away, when you are working with one note, you can keep capturing new ideas, they all put in the same place, organized.
+- Share any kind of resource from any app, like images, links, texts, videos, audios, you can use share function from other app, or just take a screenshot and send to x3 Note.
+- All captured ideas can directly insert into your document.
 
-* Document management
-- Any depth of level of sub documents.
-- Organize them and move around freely. 
-- Note only the documents, but also the contents, can be moved around everywhere easily.
+* Pause and continue
+When you are writing something, you don't have to face the situation of finish now, or never. instead, you can mark the paragraph as 'TODO', and safe to close the app, then x3 Note will find this paragraph, and show it on the agenda, with the title of the paragraph, so you know where to continue, by tapping on it, it will open your document, and take you to where you left your work.
+- Add customizable status to paragraph
+- Add date and time to paragraph, which will calculate and show you which one is more urgent
+- Add priority to paragraph, so you manage your order by yourself
+- All unfinished paragraphs will be gathered and displayed in agenda, with a order taken everything into account.
+
+* Everything need to be well organized
+Or it will be no better than lost.
+- Documents can have unlimited level of sub documents
+- Paragraphs can apply to multiple tags, easy to group and search
+- Organize paragraphs by type of status, whether they are upcoming, overdue, or anything in between.
+- Move document around, works like folders.
+- Move paragraphs around, inside, or between documents.
+- If those don't work, just search it.
 
 * iCloud sync
-- Automatically sync to your iCloud account, keep your data safe, and keep all devices the same.
+Automatically sync to your iCloud account, keep your data safe, and keep all devices the same.
 
-* Export to other forms
+* Publish to blog platforms
+We support directly publish article to blog platforms, if the platform we have now didn't contain the one you are using, please let use know.
+
+And we can publish attachments too!
+
+* Export to other formats
 - HTML, txt, image, PDF, Markdown.
 
-* And more to come.
-
 More information about x3 note please visit http://forum.x3note.site.
-
-----
 
 Privacy policy: https://forum.x3note.site/t/32
 Terms of service: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

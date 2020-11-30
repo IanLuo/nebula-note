@@ -1,8 +1,9 @@
-* New feature
-- Add keyboard binding
-* Bug fix and improvments
-- Add refresh button in select idea view, now you can directly use any new idea from other app without close editor
-- Fix conflict when idea syncing
-- Fix attachment manager can't select multiple items on macOS version
-- Fix scrolling will change the selection range issue
-- Other small fixs
+* New features
+- Publish to blog platform
+- Backlink
+- Document link now can change title
+* Fixing and improvments
+- Bigger icon for recent documents
+- Improve cursor location when open document
+- Fix some export related issue
+- Fix some UI issue
