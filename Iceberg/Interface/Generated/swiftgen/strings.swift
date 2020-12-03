@@ -778,6 +778,8 @@ public enum L10n {
   }
 
   public enum Publish {
+    /// Choose
+    public static let choose = L10n.tr("Localizable", "publish.choose")
     /// Successflully published to %@
     public static func complete(_ p1: Any) -> String {
       return L10n.tr("Localizable", "publish.complete", String(describing: p1))

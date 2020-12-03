@@ -106,17 +106,29 @@ public struct PublishFactory {
                 if let uploader = uploader {
                     let uploadable = uploader.attachmentUploaderBuilder(from: from)
                     
-                    let uploadObservables = attachments.map { attachment in
+                    var uploadObservables = attachments.map { attachment in
                         uploadable.upload(attachment: attachment)
                     }
                     
-                    return Observable.combineLatest(uploadObservables).flatMap({ paths -> Observable<Void> in
-                        var content = content
-                        for path in paths {
+                    var content = content
+                    // upload the firest attachment, then others, incase presenting multiple view controller will crash
+                    if let first = uploadObservables.first {
+                        uploadObservables.removeFirst()
+                        
+                        return first.flatMap { (path: (String, String)) ->  Observable<Void> in
                             content = (content as NSString).replacingOccurrences(of: path.1, with: path.0)
+                            return Observable.just(())
+                        }.flatMap {
+                            return Observable.combineLatest(uploadObservables).flatMap({ paths -> Observable<Void> in
+                                for path in paths {
+                                    content = (content as NSString).replacingOccurrences(of: path.1, with: path.0)
+                                }
+                                return publisher.publish(title: title, content: content)
+                            })
                         }
+                    } else {
                         return publisher.publish(title: title, content: content)
-                    })
+                    }
                 } else {
                     var content = content
                     for attachment in attachments {

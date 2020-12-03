@@ -199,7 +199,7 @@ public class PublishViewController: UIViewController {
             if let publisher = publisher {
                 return publisher.title
             } else {
-                return "Choose"
+                return L10n.Publish.choose
             }
         }).bind(to: choosePlatformButton.rx.title(for: .normal)).disposed(by: self.disposeBag)
         
@@ -207,7 +207,7 @@ public class PublishViewController: UIViewController {
             if let uploader = uploader {
                 return uploader.title
             } else {
-                return "Choose"
+                return L10n.Publish.choose
             }
         }).bind(to: chooseUploadServiceButton.rx.title(for: .normal)).disposed(by: self.disposeBag)
         
