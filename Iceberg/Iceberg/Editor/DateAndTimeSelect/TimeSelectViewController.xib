@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17505"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="TimeSelectViewController" customModule="Iceland" customModuleProvider="target">
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="TimeSelectViewController" customModule="x3Note" customModuleProvider="target">
             <connections>
                 <outlet property="_allDayLabel" destination="zDU-Iw-yjQ" id="e6B-ka-8KU"/>
                 <outlet property="_datePicker" destination="8s7-lg-rfH" id="Pvd-jS-OaI"/>
@@ -41,14 +39,11 @@
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DMz-T5-kYc" userLabel="pickerContainer">
                     <rect key="frame" x="0.0" y="71" width="490" height="265"/>
                     <subviews>
-                        <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="8s7-lg-rfH">
+                        <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="1" style="wheels" translatesAutoresizingMaskIntoConstraints="NO" id="8s7-lg-rfH">
                             <rect key="frame" x="0.0" y="0.0" width="490" height="265"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="265" id="zA3-Wq-hBI"/>
                             </constraints>
-                            <date key="date" timeIntervalSinceReferenceDate="574567585.68828106">
-                                <!--2019-03-18 02:06:25 +0000-->
-                            </date>
                             <connections>
                                 <action selector="timeValueChangedWithDatePicker:" destination="-1" eventType="valueChanged" id="tC5-q1-CJF"/>
                             </connections>
