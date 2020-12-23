@@ -31,6 +31,7 @@ public class OutlineParser {
         let totalRange = range ?? NSRange(location: 0, length: str.count)
         
         self.delegate?.didStartParsing(text: str)
+        
         // MARK: heading， 并且找出 level, planning, priority 的 range
         if includeParsee.contains(.heading) {
             let result: [[String: NSRange]] = Matcher.Node.heading
@@ -70,6 +71,41 @@ public class OutlineParser {
             if result.count > 0 {
                 self.logResult(result)
                 self.delegate?.didFoundHeadings(text:str, headingDataRanges: result)
+            }
+        }
+        
+        // MARK: parse drawer block begin
+        if includeParsee.contains(.drawer) {
+            let result: [[String: NSRange]] = Matcher.Node.drawerBlockBegin
+                .matches(in: str,
+                         options: [],
+                         range: totalRange)
+                .map { (result: NSTextCheckingResult) -> [String: NSRange] in
+                    return [
+                        Key.Node.drawerBlockBegin: result.range,
+                        Key.Element.Drawer.drawerName: result.range(at: 1)]
+                }
+            
+            if result.count > 0 {
+                self.logResult(result)
+                self.delegate?.didFoundDrawerBegin(text: str, rangesData: result)
+            }
+        }
+        
+        // MARK: parse drawer block end
+        if includeParsee.contains(.drawer) {
+            let result: [[String: NSRange]] = Matcher.Node.drawerBlockEnd
+                .matches(in: str,
+                         options: [],
+                         range: totalRange)
+                .map { (result: NSTextCheckingResult) -> [String: NSRange] in
+                    return [
+                        Key.Node.drawerBlockEnd: result.range]
+                }
+            
+            if result.count > 0 {
+                self.logResult(result)
+                self.delegate?.didFoundDrawerEnd(text: str, rangesData: result)
             }
         }
         
@@ -325,6 +361,8 @@ public protocol OutlineParserDelegate: class {
     func didFoundLink(text: String, urlRanges: [[String: NSRange]])
     func didFoundTextMark(text: String, markRanges: [[String: NSRange]])
     func didFoundDateAndTime(text: String, rangesData: [[String: NSRange]])
+    func didFoundDrawerBegin(text: String, rangesData: [[String: NSRange]])
+    func didFoundDrawerEnd(text: String, rangesData: [[String: NSRange]])
     func didStartParsing(text: String)
     func didCompleteParsing(text: String)
 }
@@ -347,6 +385,8 @@ extension OutlineParserDelegate {
     public func didFoundLink(text: String, urlRanges: [[String : NSRange]]) {}
     public func didFoundTextMark(text: String, markRanges: [[String : NSRange]]) {}
     public func didFoundDateAndTime(text: String, rangesData: [[String: NSRange]]) {}
+    public func didFoundDrawerBegin(text: String, rangesData: [[String: NSRange]]) {}
+    public func didFoundDrawerEnd(text: String, rangesData: [[String: NSRange]]) {}
     public func didStartParsing(text: String) {}
     public func didCompleteParsing(text: String) {}
 }

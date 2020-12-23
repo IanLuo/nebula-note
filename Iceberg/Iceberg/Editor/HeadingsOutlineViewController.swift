@@ -22,13 +22,13 @@ public protocol HeadingsOutlineViewControllerDelegate: class {
 }
 
 public class HeadingsOutlineViewController: SelectorViewController {
-    private let viewModel: DocumentEditViewModel
+    private let viewModel: DocumentEditorViewModel
     
     public weak var outlineDelegate: HeadingsOutlineViewControllerDelegate?
     
     public var ignoredHeadingLocation: Int? = nil
     
-    public init(viewModel: DocumentEditViewModel) {
+    public init(viewModel: DocumentEditorViewModel) {
         self.viewModel = viewModel
         super.init(heightRatio: 0.8)
         self.delegate = self

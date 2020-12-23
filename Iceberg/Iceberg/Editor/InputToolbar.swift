@@ -24,7 +24,7 @@ public class InputToolbar: UIView {
     }
     
     private static let paragraphActions = [NormalAction.paragraph]
-    private static let headingActions = [NormalAction.heading, NormalAction.planning, NormalAction.tag, NormalAction.priority]
+    private static let headingActions = [NormalAction.heading, NormalAction.headingProperty, NormalAction.planning, NormalAction.tag, NormalAction.priority]
     private static let textMark = [NormalAction.bold, NormalAction.italic, NormalAction.underscore, NormalAction.strikethrough, NormalAction.highlight]
     private static let moveCursor: [ToolbarActionProtocol] = [CursorAction.moveUp, CursorAction.moveDown, CursorAction.moveLeft, CursorAction.moveRight]
     private static let moveContent: [ToolbarActionProtocol] = [NormalAction.increaseIndent, NormalAction.decreaseIndent, NormalAction.moveUp, NormalAction.moveDown]

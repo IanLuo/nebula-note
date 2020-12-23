@@ -13,7 +13,7 @@ import RxCocoa
 import Interface
 
 public class ConflictResolverViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
-    var viewModel: DocumentEditViewModel!
+    var viewModel: DocumentEditorViewModel!
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
@@ -44,7 +44,7 @@ public class ConflictResolverViewController: UIViewController, UITableViewDataSo
         return button
     }()
     
-    public convenience init(viewModel: DocumentEditViewModel) {
+    public convenience init(viewModel: DocumentEditorViewModel) {
         self.init()
         self.viewModel = viewModel
         if #available(iOS 13.0, *) {

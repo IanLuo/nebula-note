@@ -28,7 +28,7 @@ public class BasicInfoViewController: UIViewController, UITableViewDelegate, UIT
             }
         }
         
-        func value(viewModel: DocumentEditViewModel) -> String {
+        func value(viewModel: DocumentEditorViewModel) -> String {
             switch self {
             case .wordCount: return "\(viewModel.wordCount)"
             case .paragraphs: return "\(viewModel.paragraphCount)"
@@ -50,9 +50,9 @@ public class BasicInfoViewController: UIViewController, UITableViewDelegate, UIT
         return tableView
     }()
     
-    private var _viewModel: DocumentEditViewModel!
+    private var _viewModel: DocumentEditorViewModel!
     
-    public convenience init(viewModel: DocumentEditViewModel) {
+    public convenience init(viewModel: DocumentEditorViewModel) {
         self.init(nibName: nil, bundle: nil)
         
         self._viewModel = viewModel

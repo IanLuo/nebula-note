@@ -41,10 +41,8 @@ public class OutlineTextStorage: TextStorage {
     
     /// 用于 cache 已经找到的 heading
     private var _savedHeadings: [HeadingToken] = []
-    // cache parsed code block border line
-    private var _codeBlocks: [BlockToken] = []
-    // cache parsed quote block border line
-    private var _quoteBlocks: [BlockToken] = []
+    // cache parsed block border line
+    private var _blocks: [BlockToken] = []
     
     // refering to current heading, when use change selection, this value changes
     public weak var currentHeading: HeadingToken?
@@ -73,12 +71,8 @@ public class OutlineTextStorage: TextStorage {
         return self._savedHeadings
     }
     
-    public var codeBlocks: [BlockBeginToken] {
-        return self._pairedCodeBlocks
-    }
-    
-    public var quoteBlocks: [BlockBeginToken] {
-        return self._pairedQuoteBlocks
+    public var blocks: [BlockBeginToken] {
+        return self._pairedBlocks
     }
 
     /// 所有解析获得的 token, 对应当前的文档结构解析状态
@@ -106,6 +100,38 @@ public class OutlineTextStorage: TextStorage {
         return self.string.nsstring.substring(with: range)
     }
     
+    public func propertyContentForHeading(at location: Int) -> [String: String]? {
+        if let drawer = self.propertyForHeading(at: location) {
+            if let contentRange = drawer.contentRange {
+                let drawerContent = self.substring(contentRange).trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+                let pair = drawerContent.components(separatedBy: "\n")
+                let matcher = try! NSRegularExpression(pattern: "^\\:(.*)\\:[\\t ]*(.*)$", options: [.anchorsMatchLines])
+                
+                return pair.reduce([:]) { result, next in
+                    var result = result
+                    if let matched = matcher.firstMatch(in: next, options: [], range: NSRange(location: 0, length: next.count)) {
+                        let key = next.nsstring.substring(with: matched.range(at: 1))
+                        let value = next.nsstring.substring(with: matched.range(at: 2))
+                        result?[key] = value
+                    }
+                    return result
+                }
+            }
+        }
+
+        return nil
+    }
+    
+    public func propertyForHeading(at location: Int) -> BlockToken? {
+        for case let currentHeading in self.headingTokens where currentHeading.paragraphRange.contains(location) {
+            for case let drawer in self.blocks where drawer.isPropertyDrawer && currentHeading.paragraphRange.contains(drawer.range.location) {
+                return drawer
+            }
+        }
+        
+        return nil
+    }
+    
     // 用于解析过程中临时数据处理, only useful during parsing, 在开始解析的时候重置
     private var _tempParsingTokenResult: [Token] = []
     // 某些范围要忽略掉文字的样式，比如 link 内的文字样式, only usefule during parsing
@@ -127,8 +153,7 @@ extension OutlineTextStorage: ContentUpdatingProtocol {
             let deletionRange = NSRange(location: range.upperBound, length: -delta)
             _ = self._remove(in: deletionRange, from: &self.allTokens)
             _ = self._remove(in: deletionRange, from: &self._savedHeadings)
-            _ = self._remove(in: deletionRange, from: &self._codeBlocks)
-            _ = self._remove(in: deletionRange, from: &self._quoteBlocks)
+            _ = self._remove(in: deletionRange, from: &self._blocks)
         }
         
         // 更新 item 偏移
@@ -844,6 +869,54 @@ extension OutlineTextStorage: OutlineParserDelegate {
         }
     }
     
+    public func didFoundDrawerBegin(text: String, rangesData: [[String: NSRange]]) {
+        for data in rangesData {
+            guard let range = data[OutlineParser.Key.Node.drawerBlockBegin] else { return }
+            let token = BlockBeginToken(data: data, blockType: BlockType.drawer)
+            
+            self._tempParsingTokenResult.append(token)
+            
+            if let nameRange = token.range(for: OutlineParser.Key.Element.Drawer.drawerName) {
+                token.isPropertyDrawer = text.nsstring.substring(with: nameRange) == OutlineParser.Values.Block.Drawer.nameProperty
+            }
+            
+            token.decorationAttributesAction = { textStorage, t in
+                guard let drawer = t as? BlockToken else { return }
+                
+                if drawer.isPaired {
+                    textStorage.addAttributes(OutlineTheme.markStyle.attributes, range: range)
+                    
+                    if let nameRange = drawer.range(for: OutlineParser.Key.Element.Drawer.drawerName) {
+                        switch textStorage.substring(nameRange) {
+                        case OutlineParser.Values.Block.Drawer.nameProperty:
+                            textStorage.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueDefault], range: drawer.range)
+                        case OutlineParser.Values.Block.Drawer.nameLogbool:
+                            textStorage.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueDefault], range: drawer.range)
+                        default: break
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    public func didFoundDrawerEnd(text: String, rangesData: [[String: NSRange]]) {
+        for data in rangesData {
+            guard let range = data[OutlineParser.Key.Node.drawerBlockEnd] else { return }
+            let token = BlockEndToken(data: data, blockType: BlockType.drawer)
+            
+            self._tempParsingTokenResult.append(token)
+            
+            token.decorationAttributesAction = { textStorage, t in
+                guard let drawer = t as? BlockToken else { return }
+                
+                if drawer.isPaired {
+                    textStorage.addAttributes(OutlineTheme.markStyle.attributes, range: range)
+                }
+            }
+        }
+    }
+    
     public func didStartParsing(text: String) {
         self._tempParsingTokenResult = []
         self._ignoreTextMarkRanges = []
@@ -932,9 +1005,9 @@ extension OutlineTextStorage: OutlineParserDelegate {
             }
         }
         
-        // 更新 code block 缓存
+        // 更新 block 缓存
         let newCodeBlocks = newTokens.filter {
-            if let t = $0 as? BlockToken, t.blockType == .sourceCode {
+            if $0 is BlockToken {
                 return true
             } else {
                 return false
@@ -942,32 +1015,15 @@ extension OutlineTextStorage: OutlineParserDelegate {
         }
         .map { $0 as! BlockToken }
         
-        let removedCodeBlockToken = self._remove(in: currentParseRange, from: &self._codeBlocks)
-        self._insert(tokens: newCodeBlocks, into: &self._codeBlocks)
+        let removedblockToken = self._remove(in: currentParseRange, from: &self._blocks)
+        self._insert(tokens: newCodeBlocks, into: &self._blocks)
         
-        if newCodeBlocks.count > 0 || removedCodeBlockToken.count > 0 {
-            self._figureOutBlocks(&self._codeBlocks)
-        }
-        
-        // 更新 quote block 缓存
-        let newQuoteBlocks = newTokens.filter {
-            if let t = $0 as? BlockToken, t.blockType == .quote {
-                return true
-            } else {
-                return false
-            }
-        }
-        .map { $0 as! BlockToken }
-        
-        let removedQuoteBlockToken = self._remove(in: currentParseRange, from: &self._quoteBlocks)
-        self._insert(tokens: newQuoteBlocks, into: &self._quoteBlocks)
-        
-        if newQuoteBlocks.count > 0 || removedQuoteBlockToken.count > 0 {
-            self._figureOutBlocks(&self._quoteBlocks)
+        if newCodeBlocks.count > 0 || removedblockToken.count > 0 {
+            self._figureOutBlocks(&self._blocks)
         }
         
         // mark embeded tokens
-        for block in self._quoteBlocks {
+        for block in self._blocks {
             for token in self.allTokens {
                 if block.range.intersection(token.range) != nil && !(token is BlockToken) {
                     token.isEmbeded = true
@@ -986,7 +1042,13 @@ extension OutlineTextStorage: OutlineParserDelegate {
         }
     }
     
+    /// to check if the heading  is folded
+    /// for now, first check if there's mark in the token in memory, if so, simply return that, if not, whic mean the user never interacted with this heading, then returnt he folding status  in theattributes
     public func isHeadingFolded(heading: HeadingToken) -> Bool {
+        if let lastFoldMaker = heading.isFolded {
+            return lastFoldMaker
+        }
+        
         if heading.contentRange != nil {
             if let foldingTempAttachmentAttribute = self.attribute(OutlineAttribute.tempShowAttachment, at: heading.contentRange!.location, effectiveRange: nil) as? String {
                 return foldingTempAttachmentAttribute == OutlineAttribute.Heading.folded.rawValue
@@ -1011,7 +1073,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
     private func _addStylesForCodeBlock() {
         guard let currentRange = self.currentParseRange else { return }
         
-        for blockBeginToken in self._pairedCodeBlocks {
+        for blockBeginToken in self._pairedBlocks {
             // find current block range
             if blockBeginToken.range.intersection(currentRange) != nil {
                 if let contentRange = blockBeginToken.contentRange {
@@ -1038,19 +1100,8 @@ extension OutlineTextStorage: OutlineParserDelegate {
     }
     
     /// find pared code blocks, only return begin token, the end token is refered by begin token(weakly)
-    private var _pairedCodeBlocks: [BlockBeginToken] {
-        return self._codeBlocks.filter {
-            if let begin = $0 as? BlockBeginToken {
-                return begin.endToken != nil
-            } else {
-                return false
-            }
-            }.map { $0 as! BlockBeginToken }
-    }
-    
-    /// find pared code blocks, only return begin token, the end token is refered by begin token(weakly)
-    private var _pairedQuoteBlocks: [BlockBeginToken] {
-        return self._quoteBlocks.filter {
+    private var _pairedBlocks: [BlockBeginToken] {
+        return self._blocks.filter {
             if let begin = $0 as? BlockBeginToken {
                 return begin.endToken != nil
             } else {
@@ -1125,14 +1176,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
         newRange = NSRange(location: line1Start, length: line2End - tailCount - line1Start) // minus one, remove the last line break character
         
         // 如果范围在某个 item 内，并且小于这个 item 原来的范围，则扩大至这个 item 原来的范围
-        for item in self.codeBlocks {
-            if item.range.intersection(newRange) != nil || newRange.location == item.range.upperBound {
-                newRange = item.range.union(newRange)
-                break
-            }
-        }
-        
-        for item in self.quoteBlocks {
+        for item in self.blocks {
             if item.range.intersection(newRange) != nil || newRange.location == item.range.upperBound {
                 newRange = item.range.union(newRange)
                 break
@@ -1261,8 +1305,7 @@ extension OutlineTextStorage {
         return """
         length: \(self.string.nsstring.length)
         heading count: \(self._savedHeadings.count)
-        codeBlock count: \(self._codeBlocks.count)
-        quoteBlock count: \(self._quoteBlocks.count)
+        codeBlock count: \(self._blocks.count)
         items count: \(self.allTokens.count)
         """
     }

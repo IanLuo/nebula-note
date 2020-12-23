@@ -71,7 +71,9 @@ extension DocumentEditorViewController: DocumentEditToolbarDelegate {
                             self.showHeadingAdd(at: lineRange.location)
                         }
                     }
-                    
+                case .headingProperty:
+                    let location = self.textView.selectedRange.location
+                    self.showHeadingActionsView(at: location)
                 case .increaseIndent:
                     let outSelection = self.textView.selectedRange
                     let result = self.viewModel.performAction(EditAction.increaseIndent(self.textView.selectedRange.location),

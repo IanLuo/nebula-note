@@ -47,8 +47,9 @@ extension OutlineParser {
         public static let quoteBlockBegin: ParseeTypes = ParseeTypes(rawValue: 1 << 10)
         public static let quoteBlockEnd: ParseeTypes = ParseeTypes(rawValue: 1 << 11)
         public static let dateAndTime: ParseeTypes = ParseeTypes(rawValue: 1 << 12)
+        public static let drawer: ParseeTypes = ParseeTypes(rawValue: 1 << 13)
         
-        public static let all: ParseeTypes = [.heading, .checkbox, orderedList, unorderedList, seperator, attachment, link, .footnote, .codeBlockBegin, .codeBlockEnd, .quoteBlockBegin, .quoteBlockEnd, .dateAndTime]
+        public static let all: ParseeTypes = [.heading, .checkbox, orderedList, unorderedList, seperator, attachment, link, .footnote, .codeBlockBegin, .codeBlockEnd, .quoteBlockBegin, .quoteBlockEnd, .dateAndTime, .drawer]
         public static let onlyHeading: ParseeTypes = [.checkbox, orderedList, unorderedList, seperator, attachment, link, .footnote]
     }
     
@@ -72,6 +73,8 @@ extension OutlineParser {
             public static var codeBlockEnd = try! NSRegularExpression(pattern: RegexPattern.Element.CodeBlock.end, options: [.anchorsMatchLines])
             public static var quoteBlockBegin = try! NSRegularExpression(pattern: RegexPattern.Element.QuoteBlock.begin, options: [.anchorsMatchLines])
             public static var quoteBlockEnd = try! NSRegularExpression(pattern: RegexPattern.Element.QuoteBlock.end, options: [.anchorsMatchLines])
+            public static var drawerBlockBegin = try! NSRegularExpression(pattern: RegexPattern.Element.DrawerBlock.begin, options: [.anchorsMatchLines])
+            public static var drawerBlockEnd = try! NSRegularExpression(pattern: RegexPattern.Element.DrawerBlock.end, options: [.anchorsMatchLines])
         }
         
         public struct Element {
@@ -110,6 +113,7 @@ extension OutlineParser {
     }
     
     public struct Key {
+        public static let range = "range"
         public struct Node {
             public static let heading = "heading"
             public static let checkbox = "checkbox"
@@ -119,6 +123,8 @@ extension OutlineParser {
             public static let attachment = "attachment"
             public static let footnode = "footnode"
             public static let codeBlockBegin = "codeBlockBegin"
+            public static let drawerBlockBegin = "drawerBlockBegin"
+            public static let drawerBlockEnd = "drawerBlockEnd"
             public static let codeBlockEnd = "codeBlockEnd"
             public static let quoteBlockBegin = "quoteBlockBegin"
             public static let quoteBlockEnd = "quoteBlockEnd"
@@ -133,6 +139,11 @@ extension OutlineParser {
                 public static let closed = "closed" // 暂时没有使用
                 public static let tags = "tags"
                 public static let priority = "priority"
+            }
+            
+            public struct Drawer {
+                public static let content = "content"
+                public static let drawerName = "drawerName"
             }
             
             public static let dateAndTIme = "dateAndTime"
@@ -207,14 +218,12 @@ extension OutlineParser {
         
         public struct Node {
             public static let heading =         "^(\\*+) ([^\\n])*"
-            public static let codeBlock =       "^[\\t ]*\\#\\+BEGIN\\_SRC( [\(character)\\.]*)?\\n([^\\#\\+END\\_SRC]*)\\n\\s*\\#\\+END\\_SRC[\\t ]*\\n"
             public static let checkBox =        "^[\\t ]*(\\- \\[(X| |\\-)\\] )[^\\[\\n]*"
             public static let unorderedList =   "^[\\t ]*([\\-\\+] )[^\\[\\n]+" //用于匹配有内容的 unordered list 避免与 checkbox 冲突
             public static let unorderedListHead = "^[\\t ]*([\\-\\+]\\ )$" // 用于匹配没有内容的 unordered list
             public static let orderedList =     "^[\\t ]*(([0-9a-zA-Z]){1,3}[\\.\\)\\>] ).*"
             public static let seperator =       "^[\\t ]*(\\-{5,}[\\t ]*)"
             public static let attachment =      "\\#\\+ATTACHMENT\\:(image|video|audio|sketch|location)=([A-Z0-9\\-]+)" // like: #+ATTACHMENT:LKS-JDLF-JSDL-JFLSDF)
-            public static let quote =           "^[\\t ]*\\#\\+BEGIN\\_QUOTE\\n([^\\#\\+END\\_QUOTE]*)\\n\\s*\\#\\+END\\_QUOTE[\\t ]*\\n"
             public static let footnote =        "" // TODO: footnote regex pattern implementation
             public static let textAttachment =  "\\#\\+ATTACHMENT\\:(link|text)=([A-Z0-9\\-]+)"
         }
@@ -228,6 +237,11 @@ extension OutlineParser {
             public struct QuoteBlock {
                 public static let begin =           "^[\\t ]*\\#\\+BEGIN\\_QUOTE[\\t ]*"
                 public static let end =             "^[\\t ]*\\#\\+END\\_QUOTE[\\t ]*"
+            }
+            
+            public struct DrawerBlock {
+                public static let begin =           "^[\\t ]*\\:((?!\\END\\:)\\w+)\\:[\\t ]*$"
+                public static let end =             "^[\\t ]*\\:END\\:[\\t ]*$"
             }
             
             public struct Heading {
@@ -294,6 +308,11 @@ extension OutlineParser {
             public struct Sourcecode {
                 public static let begin = "#+BEGIN_SRC"
                 public static let end = "#+END_SRC"
+            }
+            
+            public struct Drawer {
+                public static let nameProperty = "PROPERTY"
+                public static let nameLogbool = "LOGBOOK"
             }
         }
         

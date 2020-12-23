@@ -72,6 +72,84 @@ public class ReplaceTextCommand: DocumentContentCommand {
     }
 }
 
+public class SetHeadingPropertyComposer: DocumentContentCommandComposer {
+    public init(location: Int, property: [String: String]) {
+        self.location = location
+        self.property = property
+    }
+    
+    public let location: Int
+    public let property: [String: String]
+    
+    public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
+        guard let heading = textStorage.heading(contains: self.location) else { return NoChangeCommand() }
+        
+        let propertyLocation = heading.range.moveRightBound(by: 1).upperBound
+        
+        
+        if var content = textStorage.propertyContentForHeading(at: self.location) {
+            for (key, value) in self.property {
+                content[key] = value
+            }
+            
+            return UpdateDrawerComposer(location: propertyLocation, name: OutlineParser.Values.Block.Drawer.nameProperty, content: content.map { ":\($0.key): \($0.value)" }.joined(separator: "\n")).compose(textStorage: textStorage)
+        } else {
+            var content = defaultHeadingProperty
+            for (key, value) in self.property {
+                content[key] = value
+            }
+            return AddDrawerComposer(location: propertyLocation, name: OutlineParser.Values.Block.Drawer.nameProperty, content: content.map { ":\($0.key): \($0.value)" }.joined(separator: "\n")).compose(textStorage: textStorage)
+        }
+    }
+    
+    private var defaultHeadingProperty: [String: String] {
+        return [
+            "CUSTOM_ID": UUID().uuidString,
+            "IS_FOLD": "false"
+        ]
+    }
+}
+
+public class AddDrawerComposer: DocumentContentCommandComposer {
+    public init(location: Int, name: String, content: String = "") {
+        self.location = location
+        self.name = name
+        self.content = content
+    }
+    
+    public let location: Int
+    public let name: String
+    public let content: String
+    
+    public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
+        let content = ":\(self.name):\n\(self.content)\n:END:\n"
+        return ReplaceTextCommand(range: NSRange(location: self.location, length: 0), textToReplace: content, textStorage: textStorage)
+    }
+}
+
+public class UpdateDrawerComposer: DocumentContentCommandComposer {
+    public init(location: Int, name: String, content: String = "") {
+        self.location = location
+        self.name = name
+        self.content = content
+    }
+    
+    public let location: Int
+    public let name: String
+    public let content: String
+    
+    public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
+        for case let token in textStorage.token(at: self.location) where token is BlockToken {
+            if (token as? BlockToken)?.blockType == .drawer {
+                let content = ":\(self.name):\n\(self.content)\n:END:"
+                return ReplaceTextCommand(range: token.range, textToReplace: content, textStorage: textStorage)
+            }
+        }
+        
+        return AddDrawerComposer(location: self.location, name: self.name, content: self.content).compose(textStorage: textStorage)
+    }
+}
+
 public class DeleteSectionCommpandComposer: DocumentContentCommandComposer {
     let location: Int
     public init(location: Int) { self.location = location }
@@ -383,6 +461,20 @@ public class UnfoldToLocationCommand: FoldingAndUnfoldingCommand {
     }
 }
 
+// MARK: - UnfoldToLocationCommand
+// 还有 bug FIXME: 折叠部分包含了大片空白
+public class FoldToLocationCommand: FoldingAndUnfoldingCommand {
+    public override func perform() -> DocumentContentCommandResult {
+        for heading in self.textStorage.headingTokens {
+            if heading.subheadingsRange.contains(self.location) || heading.range.location == self.location {
+                super._fold(heading: heading, textStorage: self.textStorage)
+            }
+        }
+        
+        return DocumentContentCommandResult.noChange
+    }
+}
+
 // MARK: - HeadingConvertCommandComposer
 public class ConvertLineToHeadingCommandComposer: DocumentContentCommandComposer {
     let location: Int
@@ -495,6 +587,15 @@ public class UnfoldToLocationCommandCompose: DocumentContentCommandComposer {
     public init(location: Int) { self.location = location }
     public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
         return UnfoldToLocationCommand(location: self.location, textStorage: textStorage)
+    }
+}
+
+// MARK: - UnfoldToLocationCommandComposer
+public class FoldToLocationCommandCompose: DocumentContentCommandComposer {
+    let location: Int
+    public init(location: Int) { self.location = location }
+    public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
+        return FoldToLocationCommand(location: self.location, textStorage: textStorage)
     }
 }
 

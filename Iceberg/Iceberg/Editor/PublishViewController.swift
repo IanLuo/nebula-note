@@ -16,12 +16,12 @@ import Core
 public class PublishViewController: UIViewController {
     public let url: URL
     private let disposeBag: DisposeBag = DisposeBag()
-    private let viewModel: DocumentEditViewModel
+    private let viewModel: DocumentEditorViewModel
     
     private let platform: BehaviorRelay<PublishFactory.Publisher?> = BehaviorRelay(value: nil)
     private let uploader: BehaviorRelay<PublishFactory.Uploader?> = BehaviorRelay(value: nil)
     
-    public init(url: URL, viewModel: DocumentEditViewModel) {
+    public init(url: URL, viewModel: DocumentEditorViewModel) {
         self.url = url
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)

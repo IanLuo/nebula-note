@@ -196,7 +196,7 @@
 		E4A168D222904F690040D909 /* MetadataItem+property.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A168D122904F690040D909 /* MetadataItem+property.swift */; };
 		E4A168D32291356B0040D909 /* CaptureService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F86C6218EF5D8006C4CDB /* CaptureService.swift */; };
 		E4A46A1721A9A26300FBDA04 /* AttachmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A1621A9A26300FBDA04 /* AttachmentTests.swift */; };
-		E4A46A2921B28ED800FBDA04 /* DocumentEditViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A2821B28ED800FBDA04 /* DocumentEditViewModel.swift */; };
+		E4A46A2921B28ED800FBDA04 /* DocumentEditorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A2821B28ED800FBDA04 /* DocumentEditorViewModel.swift */; };
 		E4A46A2B21B4109C00FBDA04 /* DocumentSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A2A21B4109C00FBDA04 /* DocumentSearchViewController.swift */; };
 		E4A46A2D21B410BE00FBDA04 /* DocumentSearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A2C21B410BE00FBDA04 /* DocumentSearchViewModel.swift */; };
 		E4A46A3E21B6605C00FBDA04 /* DocumentBrowserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A3D21B6605C00FBDA04 /* DocumentBrowserTests.swift */; };
@@ -601,7 +601,7 @@
 		E4A46A1F21AF90B200FBDA04 /* OutlineTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineTextView.swift; sourceTree = "<group>"; };
 		E4A46A2421B0DA1300FBDA04 /* OutlineAttribute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineAttribute.swift; sourceTree = "<group>"; };
 		E4A46A2621B0E2D500FBDA04 /* OutlineParserMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineParserMatcher.swift; sourceTree = "<group>"; };
-		E4A46A2821B28ED800FBDA04 /* DocumentEditViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentEditViewModel.swift; sourceTree = "<group>"; };
+		E4A46A2821B28ED800FBDA04 /* DocumentEditorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentEditorViewModel.swift; sourceTree = "<group>"; };
 		E4A46A2A21B4109C00FBDA04 /* DocumentSearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentSearchViewController.swift; sourceTree = "<group>"; };
 		E4A46A2C21B410BE00FBDA04 /* DocumentSearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentSearchViewModel.swift; sourceTree = "<group>"; };
 		E4A46A2F21B4150A00FBDA04 /* iCloudDocumentManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iCloudDocumentManager.swift; sourceTree = "<group>"; };
@@ -1459,7 +1459,7 @@
 				E47829FC222E683B0054513E /* InputToolbar.swift */,
 				E4EA856221D1F83800DD92F9 /* HeadingsOutlineViewController.swift */,
 				E465F87F2241FF6800FA6E83 /* TextViewCommand.swift */,
-				E4A46A2821B28ED800FBDA04 /* DocumentEditViewModel.swift */,
+				E4A46A2821B28ED800FBDA04 /* DocumentEditorViewModel.swift */,
 				E4CBCD1C236D914400A0FFDB /* EditAction.swift */,
 				E47400AE241A151C0071BF73 /* ConflictResolverViewController.swift */,
 				E4FE2B2F2557AAEF0061E0CB /* PublishViewController.swift */,
@@ -2285,7 +2285,7 @@
 				E46DE4DC23A912DC008A24CA /* MembershipViewModel.swift in Sources */,
 				E4B1BED22340EFF600683E10 /* BrowserCell.swift in Sources */,
 				E4EA857521D3AF0D00DD92F9 /* AgendaDateSelectView.swift in Sources */,
-				E4A46A2921B28ED800FBDA04 /* DocumentEditViewModel.swift in Sources */,
+				E4A46A2921B28ED800FBDA04 /* DocumentEditorViewModel.swift in Sources */,
 				E4F3029C21D74E8700BDE178 /* CaptureTableCellModel.swift in Sources */,
 				E41CB15921D87CD100EF0A3C /* BrowserCoordinator.swift in Sources */,
 				E41B893621E3497D009C5AD7 /* VideoAttachmentView.swift in Sources */,

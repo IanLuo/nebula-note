@@ -53,9 +53,9 @@ public class DocumentInfoViewController: TransitionViewController {
     
     private let transitionDelegate: UIViewControllerTransitioningDelegate = FadeBackgroundTransition(animator: MoveInAnimtor(from: MoveInAnimtor.From.right))
     
-    private var _viewModel: DocumentEditViewModel!
+    private var _viewModel: DocumentEditorViewModel!
     
-    public convenience init(viewModel: DocumentEditViewModel) {
+    public convenience init(viewModel: DocumentEditorViewModel) {
         self.init(nibName: nil, bundle: nil)
         
         self._viewModel = viewModel

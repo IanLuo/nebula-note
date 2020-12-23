@@ -14,7 +14,7 @@ import RxSwift
 
 public class DocumentEditorViewController: UIViewController {
     public let textView: OutlineTextView
-    internal let viewModel: DocumentEditViewModel
+    internal let viewModel: DocumentEditorViewModel
     
     private var _shouldScrollWhenKeyboardDisapear: Bool = false
     
@@ -56,7 +56,7 @@ public class DocumentEditorViewController: UIViewController {
         return button
     }()
     
-    public init(viewModel: DocumentEditViewModel) {
+    public init(viewModel: DocumentEditorViewModel) {
         self.viewModel = viewModel
         self.textView = OutlineTextView(frame: .zero,
                                         textContainer: viewModel.container)

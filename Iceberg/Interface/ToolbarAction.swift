@@ -48,6 +48,7 @@ public enum OtherAction: String, DocumentActon {
 public enum NormalAction: String, ToolbarActionProtocol, DocumentActon {
     case paragraph
     case heading
+    case headingProperty
     case increaseIndent
     case decreaseIndent
     case moveUp
@@ -141,6 +142,8 @@ public enum NormalAction: String, ToolbarActionProtocol, DocumentActon {
             return Asset.Assets.fileLink.image
         case .save:
             return Asset.Assets.save.image
+        case .headingProperty:
+            return Asset.Assets.settings.image
         }
     }
 }

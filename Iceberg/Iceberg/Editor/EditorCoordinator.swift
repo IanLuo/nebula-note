@@ -27,7 +27,7 @@ public class EditorCoordinator: Coordinator {
     
     let usage: Usage
     
-    private var _viewModel: DocumentEditViewModel!
+    private var _viewModel: DocumentEditorViewModel!
     
     public var didSelectOutlineSelectionAction: ((OutlineLocation) -> Void)?
     public var didCancelSelectionOutlineSelectionAction: (() -> Void)?
@@ -40,7 +40,7 @@ public class EditorCoordinator: Coordinator {
         
         switch usage {
         case .editor(let url, let location):
-            let viewModel = DocumentEditViewModel(editorService: dependency.editorContext.request(url: url), coordinator: self)
+            let viewModel = DocumentEditorViewModel(editorService: dependency.editorContext.request(url: url), coordinator: self)
             viewModel.onLoadingLocation = location
             self._viewModel = viewModel
             self.url = url
@@ -48,7 +48,7 @@ public class EditorCoordinator: Coordinator {
             viewController.title = url.packageName
             self.viewController = viewController
         case .outline(let url, let ignoredHeadingLocation):
-            let viewModel = DocumentEditViewModel(editorService: dependency.editorContext.request(url: url), coordinator: self)
+            let viewModel = DocumentEditorViewModel(editorService: dependency.editorContext.request(url: url), coordinator: self)
             self._viewModel = viewModel
             self.url = url
             let viewController = HeadingsOutlineViewController(viewModel: viewModel)
@@ -57,7 +57,7 @@ public class EditorCoordinator: Coordinator {
             viewController.title = url.packageName
             self.viewController = viewController
         case .temp(let url):
-            let viewModel = DocumentEditViewModel(editorService: dependency.editorContext.requestTemp(url: url), coordinator: self)
+            let viewModel = DocumentEditorViewModel(editorService: dependency.editorContext.requestTemp(url: url), coordinator: self)
             self._viewModel = viewModel
             self.url = url
             let viewController = DocumentEditorViewController(viewModel: viewModel)
@@ -162,7 +162,7 @@ public class EditorCoordinator: Coordinator {
         }
     }
     
-    public func showConfictResolverIfFoundConflictVersions(from: UIViewController, viewModel: DocumentEditViewModel) {
+    public func showConfictResolverIfFoundConflictVersions(from: UIViewController, viewModel: DocumentEditorViewModel) {
         guard viewModel.isResolvingConflict == false else { return }
         viewModel.isResolvingConflict = true
         let resolverViewController = ConflictResolverViewController(viewModel: viewModel)
@@ -238,7 +238,7 @@ extension EditorCoordinator: SearchCoordinatorDelegate {
         // ignore
     }
     
-    public func showDocumentInfo(viewModel: DocumentEditViewModel, completion: @escaping () -> Void) {
+    public func showDocumentInfo(viewModel: DocumentEditorViewModel, completion: @escaping () -> Void) {
         let documentInfoViewController = DocumentInfoViewController(viewModel: viewModel)
         documentInfoViewController.didCloseAction = completion
         self.viewController?.present(documentInfoViewController, animated: true, completion: nil)

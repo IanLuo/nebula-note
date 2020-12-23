@@ -11,6 +11,7 @@ import Foundation
 public enum BlockType {
     case quote
     case sourceCode
+    case drawer
 }
 
 public class Token {
@@ -128,6 +129,12 @@ public class BlockToken: Token {
         self.blockType = blockType
         super.init(range: range, name: name, data: data)
     }
+    
+    public var isPaired: Bool { return false }
+    
+    public var contentRange: NSRange? { return nil }
+    
+    public var isPropertyDrawer: Bool = false
 }
 
 /// if block is paired, BlockBeginToken means the whole block
@@ -139,8 +146,12 @@ public class BlockBeginToken: BlockToken {
             super.init(range: data[OutlineParser.Key.Node.quoteBlockBegin]!, name: OutlineParser.Key.Node.quoteBlockBegin, data: data, blockType: blockType)
         case .sourceCode:
             super.init(range: data[OutlineParser.Key.Node.codeBlockBegin]!, name: OutlineParser.Key.Node.codeBlockBegin, data: data, blockType: blockType)
+        case .drawer:
+            super.init(range: data[OutlineParser.Key.Node.drawerBlockBegin]!, name: OutlineParser.Key.Node.drawerBlockBegin, data: data, blockType: blockType)
         }
     }
+    
+    public override var isPaired: Bool { return self.endToken != nil }
     
     /// the range from first of begin token to last of end token
     public override var range: NSRange {
@@ -156,11 +167,19 @@ public class BlockBeginToken: BlockToken {
     }
     
     /// the range of the part exclude the block token
-    public var contentRange: NSRange? {
+    public override var contentRange: NSRange? {
         if let endToken = self.endToken {
             return self.range.moveLeftBound(by: self.tokenRange.length).moveRightBound(by: -endToken.tokenRange.length)
         } else {
             return nil
+        }
+    }
+    
+    public override func renderDecoration(textStorage: OutlineTextStorage) {
+        self.decorationAttributesAction?(textStorage, self)
+        
+        if let endToken = self.endToken {
+            endToken.decorationAttributesAction?(textStorage, endToken)
         }
     }
 }
@@ -173,8 +192,12 @@ public class BlockEndToken: BlockToken {
             super.init(range: data[OutlineParser.Key.Node.quoteBlockEnd]!, name: OutlineParser.Key.Node.quoteBlockEnd, data: data, blockType: blockType)
         case .sourceCode:
             super.init(range: data[OutlineParser.Key.Node.codeBlockEnd]!, name: OutlineParser.Key.Node.codeBlockEnd, data: data, blockType: blockType)
+        case .drawer:
+            super.init(range: data[OutlineParser.Key.Node.drawerBlockEnd]!, name: OutlineParser.Key.Node.drawerBlockEnd, data: data, blockType: blockType)
         }
     }
+    
+    public override var isPaired: Bool { return self.beginToken != nil }
     
     // the range from first of begin token to last of end token
     public override var range: NSRange {
@@ -190,18 +213,33 @@ public class BlockEndToken: BlockToken {
     }
     
     /// the range of the part exclude the block token
-    public var contentRange: NSRange? {
+    public override var contentRange: NSRange? {
         if let beginToken = self.beginToken {
             return self.range.moveLeftBound(by: beginToken.tokenRange.length).moveRightBound(by: -self.tokenRange.length)
         } else {
             return nil
         }
     }
+    
+    public override func renderDecoration(textStorage: OutlineTextStorage) {
+        self.decorationAttributesAction?(textStorage, self)
+        
+        if let beginToken = self.beginToken {
+            beginToken.decorationAttributesAction?(textStorage, beginToken)
+        }
+    }
 }
+
+public class Keywork: Token {
+    public var key: NSRange?
+    public var value: NSRange?
+}
+
 
 // MARK: - Heading
 
 public class HeadingToken: Token {
+    
     /// 当前的 heading 的 planning TODO|DONE|CANCELD 等
     public var planning: NSRange? {
         return self.range(for: OutlineParser.Key.Element.Heading.planning)
@@ -241,6 +279,8 @@ public class HeadingToken: Token {
         
         return range.upperBound
     }
+    
+    public var isFolded: Bool?
     
     public var headingTextRange: NSRange {
         let levelUpperBound = self.levelRange.upperBound

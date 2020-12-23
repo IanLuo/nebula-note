@@ -89,13 +89,14 @@ extension DocumentEditorViewController {
     
     func showOutline(from: UIView? = nil) {
         self.viewModel.context.coordinator?.showOutline(from: from, completion: { selection in
-            self.viewModel.unfoldAll()
             self.allowScrollContentWhenKeyboardDisapearTemporaily()
             
             switch selection {
             case .heading(let heading):
+                self.viewModel.unfold(location: heading.range.upperBound)
                 self.scrollTo(location: heading.range.upperBound, shouldScrollToZero: true)
             case .position(let location):
+                self.viewModel.unfold(location: location)
                 self.scrollTo(location: location, shouldScrollToZero: true)
             }
             
@@ -724,4 +725,7 @@ extension DocumentEditorViewController {
         modalForm.present(from: self, at: from, location: location)
     }
 
+    public func showHeadingActionsView(at location: Int) {
+        print(self.viewModel.getProperties(heading: location))
+    }
 }

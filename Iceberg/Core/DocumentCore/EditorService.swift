@@ -239,6 +239,10 @@ public class EditorService {
         self._editorController.textStorage.cursorLocation = cursorLocation
     }
     
+    public func getProperties(heading at: Int) -> [String: String]? {
+        return self._editorController.textStorage.propertyContentForHeading(at: at)
+    }
+    
     public func hiddenRange(location: Int) -> NSRange? {
         var range: NSRange = NSRange(location: 0, length: 0)
         if let value = self._editorController.textStorage.attribute(OutlineAttribute.hidden, at: location, effectiveRange: &range) as? NSNumber, value.intValue != 0 && value.intValue != 2 {

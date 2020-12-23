@@ -44,6 +44,7 @@ public enum EditAction {
     case addSubHeadingAfterCurrentHeading(Int)
     case deleteSection(Int)
     case addFileLink(NSRange, URL)
+    case setProperty(Int, [String: String])
     
     public var commandComposer: DocumentContentCommandComposer {
         switch self {
@@ -115,6 +116,8 @@ public enum EditAction {
             return DeleteSectionCommpandComposer(location: location)
         case .addFileLink(let range, let url):
             return AddDocumentLinkCommpandComposer(range: range, url: url)
+        case .setProperty(let location, let pair):
+            return SetHeadingPropertyComposer(location: location, property: pair)
         }
     }
 }
