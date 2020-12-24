@@ -134,6 +134,21 @@ public class DocumentEditorViewModel: ViewModelProtocol {
         return self._editorService.isTemp
     }
     
+    public func createHeadingIdIfNotExisted(textView: UITextView?) {
+        // add id for headings don't have a id
+        for heading in self._editorService.headings.reversed() {
+            if heading.id == nil {
+                let newId = "{id:\(UUID().uuidString)}"
+                let resut = self._editorService.toggleContentCommandComposer(composer: ReplaceContentCommandComposer(range: heading.levelRange.tail(0), textToReplace: newId)).perform()
+                
+                if let textView = textView {
+                    let oldSelection = textView.selectedRange
+                    textView.selectedRange = oldSelection.offset(resut.delta)
+                }
+            }
+        }
+    }
+    
     public var wordCount: Int {
         let chararacterSet = CharacterSet.whitespacesAndNewlines.union(.punctuationCharacters)
         let components = self.string.components(separatedBy: chararacterSet)

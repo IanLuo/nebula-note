@@ -1251,13 +1251,6 @@ extension OutlineTextStorage: NSTextStorageDelegate {
                             range editedRange: NSRange,
                             changeInLength delta: Int) {
         
-        // add id for headings don't have a id
-        for heading in self.headingTokens.reversed() {
-            if heading.id == nil {
-                let newId = "{id:\(UUID().uuidString)}"
-                textStorage.replaceCharacters(in: heading.levelRange.tail(0), with: newId)
-            }
-        }
     }
 }
 

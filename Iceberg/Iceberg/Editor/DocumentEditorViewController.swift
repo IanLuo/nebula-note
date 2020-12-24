@@ -275,6 +275,10 @@ public class DocumentEditorViewController: UIViewController {
                 choose.present(from: strongSelf, at: strongSelf.backlinkButton)
             }).disposed(by: self.disposeBag)
             
+            self.textView.rx.value.subscribe(onNext: { [weak self] _ in
+                self?.viewModel.createHeadingIdIfNotExisted(textView: self?.textView)
+            }).disposed(by: self.disposeBag)
+            
             // disable global edit mode for now
 //            self.viewModel.dependency.appContext.isReadingMode.subscribe(onNext: { [weak self] isReadingMode in
 //                self?.textView.isEditable = !isReadingMode && self?.viewModel.isTemp == false

@@ -103,10 +103,7 @@ public class SetHeadingPropertyComposer: DocumentContentCommandComposer {
     }
     
     private var defaultHeadingProperty: [String: String] {
-        return [
-            "CUSTOM_ID": UUID().uuidString,
-            "IS_FOLD": "false"
-        ]
+        return [:]
     }
 }
 
