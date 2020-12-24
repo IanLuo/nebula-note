@@ -358,16 +358,7 @@ public class DocumentEditorViewModel: ViewModelProtocol {
     }
     
     public func foldOrUnfold(location: Int) {
-        
-        if self._editorService.isHeadingFolded(at: location) {
-            _ = self._editorService.toggleContentCommandComposer(composer: SetHeadingPropertyComposer(location: location, property: ["IS_FOLD" : "true"])).perform()
-        } else {
-            _ = self._editorService.toggleContentCommandComposer(composer: SetHeadingPropertyComposer(location: location, property: ["IS_FOLD" : "false"])).perform()
-        }
-        
         _ = self._editorService.toggleContentCommandComposer(composer: FoldAndUnfoldCommandComposer(location: location)).perform()
-        
-        print(self.getProperties(heading: location))
     }
     
     public func unfoldExceptTo(location: Int) {
@@ -385,12 +376,10 @@ public class DocumentEditorViewModel: ViewModelProtocol {
     }
     
     public func unfold(location: Int) {
-        _ = self._editorService.toggleContentCommandComposer(composer: SetHeadingPropertyComposer(location: location, property: ["IS_FOLD" : "false"])).perform()
         _ = self._editorService.toggleContentCommandComposer(composer: UnfoldToLocationCommandCompose(location: location)).perform()
     }
     
     public func fold(location: Int) {
-        _ = self._editorService.toggleContentCommandComposer(composer: SetHeadingPropertyComposer(location: location, property: ["IS_FOLD" : "true"])).perform()
         _ =  self._editorService.toggleContentCommandComposer(composer: FoldToLocationCommandCompose(location: location)).perform()
     }
     

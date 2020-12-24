@@ -261,6 +261,19 @@ public class HeadingToken: Token {
         return self.range(for: OutlineParser.Key.Element.Heading.closed)
     }
     
+    public var id: NSRange? {
+        return self.range(for: OutlineParser.Key.Element.Heading.id)
+    }
+    
+    /// the heading after id and level
+    public var headingContent: NSRange? {
+        return self.range(for: OutlineParser.Key.Element.Heading.content)
+    }
+    
+    public var contentLocation: Int {
+        return (self.headingContent?.head(0) ?? self.id?.tail(0).offset(1) ?? self.range.tail(0)).location
+    }
+    
     public func tagsArray(string: String) -> [String] {
         if let tagRange = self.tags {
             return string.nsstring.substring(with: tagRange).components(separatedBy: ":").filter { $0.count > 0 }

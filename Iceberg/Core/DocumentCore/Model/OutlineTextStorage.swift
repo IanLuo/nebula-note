@@ -760,7 +760,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
                     textStorage.addAttributes(OutlineTheme.headingStyle(level: token.range(for: OutlineParser.Key.Element.Heading.level)?.length ?? 1).attributes, range: headingRange)
 
                     textStorage.addAttribute(OutlineAttribute.Heading.content, value: 1, range: headingRange)
-                    
+                
                     if let levelRange = token.range(for: OutlineParser.Key.Element.Heading.level) {
                         textStorage.addAttribute(OutlineAttribute.Heading.level, value: 1, range: levelRange)
                     }
@@ -781,6 +781,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
                     textStorage.addHeadingFoldingStatus(heading: token as! HeadingToken)
                 } else {
                     guard let headingRange = token.range(for: OutlineParser.Key.Node.heading) else { return }
+                    guard let headingToken = token as? HeadingToken else { return }
                     textStorage.addAttributes(OutlineTheme.headingStyle(level: token.range(for: OutlineParser.Key.Element.Heading.level)?.length ?? 1).attributes, range: headingRange)
                     
                     textStorage.addAttribute(OutlineAttribute.Heading.content, value: 1, range: headingRange)
@@ -813,6 +814,10 @@ extension OutlineTextStorage: OutlineParserDelegate {
                         textStorage._addButtonAttributes(range: planningRange, color: planningStyle.buttonColor)
                         
                         textStorage.addAttributes(planningStyle.textStyle.attributes, range: planningRange)
+                    }
+                    
+                    if let idRange = headingToken.id {
+                        textStorage.addAttribute(NSAttributedString.Key.font, value: UIFont.preferredFont(forTextStyle: UIFont.TextStyle.footnote), range: idRange)
                     }
                     
                     textStorage.addHeadingFoldingStatus(heading: token as! HeadingToken)
@@ -885,16 +890,6 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 
                 if drawer.isPaired {
                     textStorage.addAttributes(OutlineTheme.markStyle.attributes, range: range)
-                    
-                    if let nameRange = drawer.range(for: OutlineParser.Key.Element.Drawer.drawerName) {
-                        switch textStorage.substring(nameRange) {
-                        case OutlineParser.Values.Block.Drawer.nameProperty:
-                            textStorage.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueDefault], range: drawer.range)
-                        case OutlineParser.Values.Block.Drawer.nameLogbool:
-                            textStorage.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueDefault], range: drawer.range)
-                        default: break
-                        }
-                    }
                 }
             }
         }
@@ -1200,9 +1195,9 @@ extension OutlineTextStorage: OutlineParserDelegate {
         }
         
         // 不包含已经折叠的部分
-        if let folded = self.foldedRange(at: newRange.location) {
-            newRange = NSRange(location: folded.upperBound, length: max(0, newRange.upperBound - folded.upperBound))
-        }
+//        if let folded = self.foldedRange(at: newRange.location) {
+//            newRange = NSRange(location: folded.upperBound, length: max(0, newRange.upperBound - folded.upperBound))
+//        }
         
         return newRange
     }
@@ -1255,6 +1250,14 @@ extension OutlineTextStorage: NSTextStorageDelegate {
                             didProcessEditing editedMask: NSTextStorage.EditActions,
                             range editedRange: NSRange,
                             changeInLength delta: Int) {
+        
+        // add id for headings don't have a id
+        for heading in self.headingTokens.reversed() {
+            if heading.id == nil {
+                let newId = "{id:\(UUID().uuidString)}"
+                textStorage.replaceCharacters(in: heading.levelRange.tail(0), with: newId)
+            }
+        }
     }
 }
 

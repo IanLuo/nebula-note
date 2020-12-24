@@ -40,7 +40,13 @@ public class OutlineParser {
                     let headingRange = result.range(at: 0)
                     var comp: [String: NSRange] =
                         [Key.Node.heading: headingRange,
-                         Key.Element.Heading.level: result.range(at: 1)]
+                         Key.Element.Heading.level: result.range(at: 1),
+                         Key.Element.Heading.content: result.range(at: 3)
+                        ]
+                    
+                    if result.range(at: 2).length > 0 {
+                        comp[Key.Element.Heading.id] = result.range(at: 2)
+                    }
                     
                     // 分别对 heading 中的其他部分进行解析
                     let headingContentParse: [(NSRegularExpression?, (NSTextCheckingResult) -> Void)] = [

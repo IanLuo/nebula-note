@@ -392,19 +392,7 @@ public class FoldingAndUnfoldingCommand: DocumentContentCommand {
                 if command._isFolded(heading: heading, textStorage: textStorage) {
                     command._unFoldHeadingButFoldChildren(heading: heading, textStorage: textStorage)
                 } else {
-                    var isEveryChildrenUnfold: Bool = true
-                    for child in textStorage.subheadings(of: heading) {
-                        if command._isFolded(heading: child, textStorage: textStorage)
-                            && child.level - heading.level == 1 // 只展开第一层子 heading
-                        {
-                            isEveryChildrenUnfold = false
-                            toggleFoldAndUnfoldAction(textStorage, child, command)
-                        }
-                    }
-                    
-                    if isEveryChildrenUnfold {
-                        command._fold(heading: heading, textStorage: textStorage)
-                    }
+                    command._fold(heading: heading, textStorage: textStorage)
                 }
             }
             
@@ -992,7 +980,7 @@ public class PriorityCommandComposer: DocumentContentCommandComposer {
     public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
         guard let heading = textStorage.heading(contains: self.location) else { return NoChangeCommand() }
         
-        var priorityLocation: Int = heading.levelRange.upperBound + 1
+        var priorityLocation: Int = heading.contentLocation
         
         if let planning = heading.planning {
             priorityLocation = planning.upperBound + 1
@@ -1050,7 +1038,7 @@ public class PlanningCommandComposer: DocumentContentCommandComposer {
                 replacement = planning
             } else {
                 // 没有 planning， 则直接放在 level 之后添加
-                editRange = NSRange(location: heading.levelRange.upperBound + 1, length: 0)
+                editRange = NSRange(location: heading.contentLocation, length: 0)
                 replacement = planning + " " // 添加一个空格
             }
             

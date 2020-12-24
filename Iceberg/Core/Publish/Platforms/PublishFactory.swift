@@ -185,8 +185,6 @@ extension OAuth2Swift {
                                             case .failure(let error):
                                                 if let code = ((error as NSError).userInfo["error"] as? NSError)?.code, [401, 403].contains(code) {
                                                     self.removeSavedCredential(consumerKey: self.client.credential.consumerKey)
-                                                } else if error.description.contains(self.accessTokenUrl ?? "") {
-                                                    self.removeSavedCredential(consumerKey: self.client.credential.consumerKey)
                                                 }
                                                                                                 
                                                 if let underlineError = error.underlyingError {

@@ -139,6 +139,8 @@ extension OutlineParser {
                 public static let closed = "closed" // 暂时没有使用
                 public static let tags = "tags"
                 public static let priority = "priority"
+                public static let id = "id"
+                public static let content = "content"
             }
             
             public struct Drawer {
@@ -217,7 +219,7 @@ extension OutlineParser {
         public static let character = "\\w"
         
         public struct Node {
-            public static let heading =         "^(\\*+) ([^\\n])*"
+            public static let heading =         "^(\\*+)(\\{id:[\\w\\d\\-]*\\})? ([^\\n]*)"
             public static let checkBox =        "^[\\t ]*(\\- \\[(X| |\\-)\\] )[^\\[\\n]*"
             public static let unorderedList =   "^[\\t ]*([\\-\\+] )[^\\[\\n]+" //用于匹配有内容的 unordered list 避免与 checkbox 冲突
             public static let unorderedListHead = "^[\\t ]*([\\-\\+]\\ )$" // 用于匹配没有内容的 unordered list
