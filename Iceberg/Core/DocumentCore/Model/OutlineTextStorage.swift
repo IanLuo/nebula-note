@@ -818,6 +818,13 @@ extension OutlineTextStorage: OutlineParserDelegate {
                     
                     if let idRange = headingToken.id {
                         textStorage.addAttribute(NSAttributedString.Key.font, value: UIFont.preferredFont(forTextStyle: UIFont.TextStyle.footnote), range: idRange)
+                        
+                        textStorage.addAttributes([OutlineAttribute.onePiease: 1,
+                                                   OutlineAttribute.hidden: 0], range: NSRange(location: headingToken.range.location, length: idRange.length + headingToken.level))
+                        headingToken.identifier = textStorage.substring(idRange)
+                    } else {
+                        textStorage.addAttribute(OutlineAttribute.onePiease, value: 1, range: headingToken.levelRange)
+                        headingToken.identifier = UUID().uuidString
                     }
                     
                     textStorage.addHeadingFoldingStatus(heading: token as! HeadingToken)

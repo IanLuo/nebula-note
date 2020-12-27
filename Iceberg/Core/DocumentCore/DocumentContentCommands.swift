@@ -313,7 +313,7 @@ public class FoldingAndUnfoldingCommand: DocumentContentCommand {
         
         textStorage.setParagraphIndent(heading: heading)
         textStorage.allTokens.forEach {
-            if $0.range.intersection(range) != nil {
+            if $0.range.intersection(heading.paragraphWithSubRange) != nil {
                 $0.renderDecoration(textStorage: textStorage)
             }
         }

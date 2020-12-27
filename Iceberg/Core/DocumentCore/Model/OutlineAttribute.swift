@@ -70,4 +70,6 @@ public struct OutlineAttribute {
         public static let quote: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_BLOCK_QUOTE)
         public static let code: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_BLOCK_CODE)
     }
+    
+    public static let onePiease: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_ONE_PIEASE)
 }

@@ -225,6 +225,21 @@ extension DocumentEditorViewController {
                         return false
                     }
                 }
+                
+                // when backspace at in the prefix range, or the space after the prefix in heading, will select the whole prifix
+                if headingToken.prefix.contains(location) || headingToken.prefix.upperBound == location || headingToken.prefix.upperBound + 1 == location {
+                    guard self.textView.selectedRange.location != headingToken.prefix.location else { return true }
+                    
+                    textView.selectedRange = headingToken.prefix
+                    return false
+                }
+            }
+            
+            if let hiddenRange = self.viewModel.hiddenRange(at: locationToDelete) {
+                guard self.textView.selectedRange.location != hiddenRange.location else { return true }
+                
+                textView.selectedRange = hiddenRange
+                return false
             }
         }
         

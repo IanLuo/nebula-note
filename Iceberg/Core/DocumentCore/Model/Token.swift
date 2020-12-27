@@ -21,7 +21,7 @@ public class Token {
         }
     }
     
-    public let identifier: String
+    public var identifier: String
     private var _range: NSRange
     public var range: NSRange {
         get { return offset == 0 ? _range : _range.offset(self.offset) }
@@ -265,6 +265,15 @@ public class HeadingToken: Token {
         return self.range(for: OutlineParser.Key.Element.Heading.id)
     }
     
+    /// the prefix part, containing level and id
+    public var prefix: NSRange {
+        if let id = id {
+            return NSRange(location: self.range.location, length: self.level + id.length)
+        } else {
+            return self.levelRange
+        }
+    }
+    
     /// the heading after id and level
     public var headingContent: NSRange? {
         return self.range(for: OutlineParser.Key.Element.Heading.content)
@@ -296,17 +305,7 @@ public class HeadingToken: Token {
     public var isFolded: Bool?
     
     public var headingTextRange: NSRange {
-        let levelUpperBound = self.levelRange.upperBound
-        let planningUpperBound = self.planning?.upperBound ?? 0
-        let priorityUpperBound = self.priority?.upperBound ?? 0
-        
-        var lowerBound = max(levelUpperBound, max(planningUpperBound, priorityUpperBound))
-        if lowerBound > self.range.location {
-            lowerBound += 1 // 当 lowerbound 大于 heading 的开始位置时，+ 1 从空格之后开始计算
-        }
-        let upperBound = min(self.range.upperBound, self.tags?.location ?? self.range.upperBound)
-        
-        return NSRange(location: lowerBound, length: upperBound - lowerBound)
+        return self.headingContent ?? NSRange(location: self.contentLocation, length: 0)
     }
     
     public var levelRange: NSRange {
