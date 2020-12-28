@@ -40,7 +40,7 @@ public class Document: UIDocument {
     public var didUpdateDocumentContentAction: (() -> Void)?
     
     public private(set) var string: String = ""
-    public private(set) var logs: String = ""
+    public private(set) var logs: String = "{}"
     public private(set) var cover: UIImage?
     private var _wrapper: FileWrapper?
     
@@ -67,7 +67,7 @@ public class Document: UIDocument {
     }
     
     public func updateLogs(_ new: String) {
-        self.string = new
+        self.logs = new
         if let oldWrapper = self._wrapper?.fileWrappers?[Document.logsKey] {
             self._wrapper?.removeFileWrapper(oldWrapper)
         }
@@ -122,7 +122,11 @@ public class Document: UIDocument {
             }
             
             if let logsData = wrapper.fileWrappers?[Document.logsKey]?.regularFileContents {
-                self.logs = String(data: logsData, encoding: .utf8) ?? ""
+                self.logs = String(data: logsData, encoding: .utf8) ?? "{}"
+                
+                if self.logs == "" {
+                    self.logs = "{}"
+                }
             }
         }
     }

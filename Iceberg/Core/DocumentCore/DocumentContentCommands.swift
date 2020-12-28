@@ -290,69 +290,17 @@ public class FoldingAndUnfoldingCommand: DocumentContentCommand {
     }
     
     fileprivate func _markUnfold(heading: HeadingToken, textStorage: OutlineTextStorage) {
-        var range: NSRange = heading.subheadingsRange
-        if range.upperBound != textStorage.string.nsstring.length {
-            range = range.moveRightBound(by: -1)
-        }
+        textStorage.setAttributeForHeading(heading, isFolded: false)
         
-        textStorage.removeAttribute(OutlineAttribute.tempHidden, range: range)
-        textStorage.removeAttribute(OutlineAttribute.tempShowAttachment, range: range)
-        textStorage.removeAttribute(OutlineAttribute.hidden, range: range)
-        textStorage.removeAttribute(OutlineAttribute.showAttachment, range: heading.levelRange)
-        textStorage.removeAttribute(OutlineAttribute.hidden, range: heading.levelRange)
-        textStorage.removeAttribute(OutlineAttribute.hidden, range: heading.range)
-        textStorage.removeAttribute(OutlineAttribute.Link.title, range: range)
-        
-        range = range.length > 0 ? range : NSRange(location: range.location, length: 0)
-        
-        // 重新渲染折叠部分的 attribute
-        textStorage.setAttributes(nil, range: range)
-        // 设置文字默认样式
-        textStorage.addAttributes(OutlineTheme.paragraphStyle.attributes,
-                           range: range)
-        
-        textStorage.setParagraphIndent(heading: heading)
         textStorage.allTokens.forEach {
             if $0.range.intersection(heading.paragraphWithSubRange) != nil {
                 $0.renderDecoration(textStorage: textStorage)
             }
         }
-        
-        // 折叠状态图标
-        textStorage.addAttributes([OutlineAttribute.showAttachment: OutlineAttribute.Heading.foldingUnfolded,
-                                   OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment],
-                                  range: heading.levelRange.head(1))
-        textStorage.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueDefault], range: heading.levelRange.tail(heading.levelRange.length - 1))
     }
     
     fileprivate func _markFold(heading: HeadingToken, textStorage: OutlineTextStorage) {
-        var range: NSRange = heading.subheadingsRange
-        if range.upperBound != textStorage.string.nsstring.length {
-            range = range.moveRightBound(by: -1)
-        }
-        
-        textStorage.setParagraphIndent(heading: heading)
-        
-        guard range.length > 0 else { return }
-        
-        textStorage.removeAttribute(OutlineAttribute.tempHidden, range: range)
-        textStorage.removeAttribute(OutlineAttribute.hidden, range: range)
-        textStorage.removeAttribute(OutlineAttribute.tempShowAttachment, range: range)
-        textStorage.removeAttribute(OutlineAttribute.Attachment.type, range: range)
-        textStorage.removeAttribute(OutlineAttribute.Attachment.value, range: range)
-        textStorage.removeAttribute(OutlineAttribute.showAttachment, range: range)
-        textStorage.removeAttribute(OutlineAttribute.showAttachment, range: heading.levelRange)
-        textStorage.removeAttribute(OutlineAttribute.hidden, range: heading.levelRange)
-        textStorage.removeAttribute(OutlineAttribute.Link.title, range: range)
-        
-        textStorage.addAttributes([OutlineAttribute.tempHidden: OutlineAttribute.hiddenValueFolded,
-                                   OutlineAttribute.tempShowAttachment: OutlineAttribute.Heading.folded],
-                                  range: range)
-        
-        textStorage.addAttributes([OutlineAttribute.showAttachment: OutlineAttribute.Heading.foldingFolded,
-                                   OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment],
-                                  range: heading.levelRange.head(1))
-        textStorage.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueDefault], range: heading.levelRange.tail(heading.levelRange.length - 1))
+        textStorage.setAttributeForHeading(heading, isFolded: true)
     }
     
     fileprivate func _unFoldHeadingAndChildren(heading: HeadingToken, textStorage: OutlineTextStorage) {

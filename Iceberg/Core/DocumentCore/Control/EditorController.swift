@@ -12,6 +12,8 @@ import Foundation
 public protocol EditorControllerDelegate: class {
     func currentHeadingDidChange(heading: HeadingToken?)
     func headingChanged(newHeadings: [HeadingToken], oldHeadings:[HeadingToken])
+    func getLogs() -> DocumentLog?
+    func markFoldingState(heading: HeadingToken, isFolded: Bool)
 }
 
 public class EditorController: NSObject {
@@ -88,6 +90,14 @@ extension EditorController: OutlineTextStorageDelegate {
         if oldHeading?.range.location != newHeading?.range.location {
             self.delegate?.currentHeadingDidChange(heading: newHeading)
         }
+    }
+    
+    public func logs() -> DocumentLog? {
+        return self.delegate?.getLogs()
+    }
+    
+    public func markFoldingState(heading: HeadingToken, isFolded: Bool) {
+        self.delegate?.markFoldingState(heading: heading, isFolded: isFolded)
     }
 }
 

@@ -16,14 +16,32 @@ public enum EditorServiceError: Error {
     case fileIsNotReady
 }
 
+public class DocumentLog: Codable {
+    public struct Heading: Codable {
+        public var isFold: Bool
+        public let id: String
+    }
+    
+    public var headings: [String: Heading]
+    
+    enum keys: CodingKey {
+        case headings
+    }
+
+    public required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: keys.self)
+        self.headings = try container.decodeIfPresent([String: Heading].self, forKey: .headings) ?? [:]
+    }
+}
+
 public class EditorService {
-    private let _editorController: EditorController
-    fileprivate var _document: Document?
-    private lazy var _trimmer: OutlineTextTrimmer = OutlineTextTrimmer(parser: OutlineParser())
-    private let _eventObserver: EventObserver
-    private var _queue: DispatchQueue!
-    private let _url: URL
-    private let _settingsAccessor: SettingsAccessor
+    private let editorController: EditorController
+    fileprivate var document: Document?
+    private lazy var trimmer: OutlineTextTrimmer = OutlineTextTrimmer(parser: OutlineParser())
+    private let eventObserver: EventObserver
+    private var queue: DispatchQueue!
+    private let url: URL
+    private let settingsAccessor: SettingsAccessor
     
     // means the document it opens, is not stored on users document folder
     public let isTemp: Bool
@@ -31,27 +49,27 @@ public class EditorService {
     // MARK: -
     internal init(url: URL, queue: DispatchQueue, eventObserver: EventObserver, parser: OutlineParser, isTemp: Bool = false, settingsAccessor: SettingsAccessor) {
         log.info("creating editor service with url: \(url)")
-        self._url = url
+        self.url = url
         self.isTemp = isTemp
-        self._eventObserver = eventObserver
-        self._editorController = EditorController(parser: parser, attachmentManager: AttachmentManager())
-        self._queue = queue
-        self._settingsAccessor = settingsAccessor
+        self.eventObserver = eventObserver
+        self.editorController = EditorController(parser: parser, attachmentManager: AttachmentManager())
+        self.queue = queue
+        self.settingsAccessor = settingsAccessor
         
-        self._editorController.delegate = self
+        self.editorController.delegate = self
         
         queue.async { [weak self] in
             let document = Document(fileURL: url)
             DispatchQueue.runOnMainQueueSafely {
-                self?._document = document
+                self?.document = document
                 self?.isReadyToUse = true
             }
         }
     }
     
     deinit {
-        log.info("deiniting editor service with url: \(self._url)")
-        self._document?.close(completionHandler: nil)
+        log.info("deiniting editor service with url: \(self.url)")
+        self.document?.close(completionHandler: nil)
     }
 
     // MARK: - life cycle -
@@ -73,19 +91,19 @@ public class EditorService {
     }
     
     public var isOpen: Bool {
-        guard let document = self._document else { return false }
+        guard let document = self.document else { return false }
         return document.documentState == .normal
     }
     
     public func open(completion:((String?) -> Void)? = nil) {
-        log.info("open file: \(self._url)")
-        guard let document = self._document else {
-            log.error("can't initialize document with url: \(self._url)")
+        log.info("open file: \(self.url)")
+        guard let document = self.document else {
+            log.error("can't initialize document with url: \(self.url)")
             completion?(nil)
             return
         }
         
-        self._queue.async { [weak self] in
+        self.queue.async { [weak self] in
             if document.documentState == .normal {
                 // 如果文档已经打开，则直接返回
                 log.info("file already open, do nothing")
@@ -99,15 +117,19 @@ public class EditorService {
                                         
                     if isOpenSuccessfully {
                         
-                        log.info("open document success(\(strongSelf._url))")
+                        log.info("open document success(\(strongSelf.url))")
+                        
+                        self?.loadLogs()
                         
                         DispatchQueue.runOnMainQueueSafely {
-                            strongSelf._editorController.string = document.string // 触发解析
+                            strongSelf.editorController.string = document.string // 触发解析
                             completion?(document.string)
                         }
+                        
+                        // fill in logs for this document
                     } else {
                         DispatchQueue.runOnMainQueueSafely {
-                            log.error("fail to open document with url: \(strongSelf._url)")
+                            log.error("fail to open document with url: \(strongSelf.url)")
                             completion?(nil)
                         }
                     }
@@ -118,7 +140,7 @@ public class EditorService {
         
     private var isClosing: Bool = false
     public func close(completion:((Bool) -> Void)? = nil) {
-        guard let document = self._document else {
+        guard let document = self.document else {
             completion?(false)
             return
         }
@@ -128,7 +150,7 @@ public class EditorService {
         
         self.isClosing = true
         
-        self._queue.async { [weak self] in
+        self.queue.async { [weak self] in
             document.close {
                 completion?($0)
                 
@@ -140,114 +162,140 @@ public class EditorService {
     // MARK: -
     
     public var container: NSTextContainer {
-        return _editorController.textContainer
+        return editorController.textContainer
     }
     
     public var isReadingMode: Bool {
-        get { return _editorController.textStorage.isReadingMode }
-        set { _editorController.textStorage.isReadingMode = newValue }
+        get { return editorController.textStorage.isReadingMode }
+        set { editorController.textStorage.isReadingMode = newValue }
     }
     
     public func markAsContentUpdated() {
-        self._document?.updateContent(_editorController.string)
+        self.document?.updateContent(editorController.string)
     }
     
     public func toggleContentCommandComposer(composer: DocumentContentCommandComposer) -> DocumentContentCommand {
-        return self._editorController.toggleCommandComposer(composer: composer)
+        return self.editorController.toggleCommandComposer(composer: composer)
     }
     
     public var allTokens: [Token] {
-        return self._editorController.textStorage.allTokens
+        return self.editorController.textStorage.allTokens
     }
 
     public var documentState: UIDocument.State {
-        return self._document?.documentState ?? .closed
+        return self.document?.documentState ?? .closed
     }
     
     public var cover: UIImage? {
         set {
-            self._document?.updateCover(newValue)
+            self.document?.updateCover(newValue)
         }
-        get { return self._document?.cover }
+        get { return self.document?.cover }
+    }
+    
+    public var logs: DocumentLog?
+    
+    private func loadLogs() {
+        if let logs = self.document?.logs, let data = logs.data(using: .utf8) {
+            let decoder = JSONDecoder()
+            do {
+                self.logs = try decoder.decode(DocumentLog.self, from: data)
+            } catch {
+                print("Failed to load logs \(error)")
+            }
+        }
+    }
+    
+    public func updateLogs(_ logs: DocumentLog) {
+        self.logs = logs
+        
+        let json = JSONEncoder()
+        do {
+            if let string = String(data: try json.encode(logs), encoding: .utf8) {
+                self.document?.updateLogs(string)
+            }
+        } catch {
+            print("Error: \(error)")
+        }
     }
     
     public func trim(string: String, range: NSRange) -> String {
-        return self._trimmer.trim(string: string, range: range)
+        return self.trimmer.trim(string: string, range: range)
     }
     
     public var headings: [HeadingToken] {
-        return self._editorController.getParagraphs()
+        return self.editorController.getParagraphs()
     }
     
     public func foldedRange(at location: Int) -> NSRange? {
-        return self._editorController.textStorage.foldedRange(at: location)
+        return self.editorController.textStorage.foldedRange(at: location)
     }
     
     public var string: String {
-        get { return _editorController.string }
-        set { self.replace(text: newValue, range: NSRange(location: 0, length: _editorController.string.nsstring.length)) }
+        get { return editorController.string }
+        set { self.replace(text: newValue, range: NSRange(location: 0, length: editorController.string.nsstring.length)) }
     }
     
     public func revertContent(complete: ((Bool) -> Void)? = nil) {
-        guard let url = self._document?.fileURL else { return }
-        self._document?.revert(toContentsOf: url, completionHandler: { status in
-            if let string = self._document?.string {
-                self._editorController.string = string
+        guard let url = self.document?.fileURL else { return }
+        self.document?.revert(toContentsOf: url, completionHandler: { status in
+            if let string = self.document?.string {
+                self.editorController.string = string
             }
             complete?(status)
         })
     }
     
     public func replace(text: String, range: NSRange) {
-        self._editorController.replace(text: text, in: range)
+        self.editorController.replace(text: text, in: range)
         self.save()
     }
     
     public func isHeadingFolded(at location: Int) -> Bool {
-        guard let headingToken = self._editorController.textStorage.heading(contains: location) else { return false }
+        guard let headingToken = self.editorController.textStorage.heading(contains: location) else { return false }
         
-        return self._editorController.textStorage.isHeadingFolded(heading: headingToken)
+        return self.editorController.textStorage.isHeadingFolded(heading: headingToken)
     }
     
     public var fileURL: URL {
-        return _document?.fileURL ?? self._url
+        return document?.fileURL ?? self.url
     }
     
     public var deepestEntryLevel: Int {
-        self._editorController.textStorage.headingTokens.max { heading1, heading2 in
+        self.editorController.textStorage.headingTokens.max { heading1, heading2 in
             return heading1.level > heading2.level
         }?.level ?? 0
     }
     
     public func tokens(at location: Int) -> [Token] {
-        return self._editorController.textStorage.token(at: location)
+        return self.editorController.textStorage.token(at: location)
     }
     
     public func heading(at location: Int) -> HeadingToken? {
-        return self._editorController.textStorage.heading(contains: location)
+        return self.editorController.textStorage.heading(contains: location)
     }
     
     public func parentHeading(at location: Int) -> HeadingToken? {
-        return self._editorController.textStorage.parentHeading(contains: location)
+        return self.editorController.textStorage.parentHeading(contains: location)
     }
     
     public var currentCursorTokens: [Token] {
-        return self._editorController.textStorage.currentTokens
+        return self.editorController.textStorage.currentTokens
     }
     
     public func updateCurrentCursor(_ cursorLocation: Int) {
-        self._editorController.textStorage.cursorLocation = cursorLocation
+        self.editorController.textStorage.cursorLocation = cursorLocation
     }
     
     public func getProperties(heading at: Int) -> [String: String]? {
-        return self._editorController.textStorage.propertyContentForHeading(at: at)
+        return self.editorController.textStorage.propertyContentForHeading(at: at)
     }
     
     public func hiddenRange(location: Int) -> NSRange? {
         var range: NSRange = NSRange(location: 0, length: 0)
-        if let value = self._editorController.textStorage.attribute(OutlineAttribute.hidden, at: location, effectiveRange: &range) as? NSNumber, value.intValue != 2 {
+        if let value = self.editorController.textStorage.attribute(OutlineAttribute.hidden, at: location, effectiveRange: &range) as? NSNumber, value.intValue != 2 {
             return range
-        } else if let value = self._editorController.textStorage.attribute(OutlineAttribute.tempHidden, at: location, effectiveRange: &range) as? NSNumber, value.intValue != 0 && value.intValue != 2 {
+        } else if let value = self.editorController.textStorage.attribute(OutlineAttribute.tempHidden, at: location, effectiveRange: &range) as? NSNumber, value.intValue != 0 && value.intValue != 2 {
             return range
         }
         
@@ -277,27 +325,27 @@ public class EditorService {
     public func insert(content: String, headingLocation: Int) {
         guard let heading = self.heading(at: headingLocation) else { return }
         
-        _editorController.insertToParagraph(at: heading, content: content)
+        editorController.insertToParagraph(at: heading, content: content)
         
-        self._document?.updateContent(_editorController.string)
+        self.document?.updateContent(editorController.string)
     }
 
     public func rename(newTitle: String, completion: ((Error?) -> Void)? = nil) {
-        guard let document = self._document else {
+        guard let document = self.document else {
             completion?(EditorServiceError.fileIsNotReady)
             return
         }
         
         let newURL = document.fileURL.deletingLastPathComponent().appendingPathComponent(newTitle).appendingPathExtension(Document.fileExtension)
-        document.fileURL.rename(queue: self._queue, url: newURL, completion: completion)
+        document.fileURL.rename(queue: self.queue, url: newURL, completion: completion)
     }
     
     public func save(completion: ((Bool) -> Void)? = nil) {
-        guard let document = self._document else { return }
+        guard let document = self.document else { return }
         guard self.isOpen else { return }
         
-        _queue.async {
-            document.updateContent(self._editorController.string)
+        queue.async {
+            document.updateContent(self.editorController.string)
             document.save(to: document.fileURL, for: UIDocument.SaveOperation.forOverwriting) { success in
                 
                 DispatchQueue.runOnMainQueueSafely {
@@ -315,18 +363,18 @@ public class EditorService {
     }
     
     public func delete(completion: ((Error?) -> Void)? = nil) {
-        guard let document = self._document else {
+        guard let document = self.document else {
             completion?(EditorServiceError.fileIsNotReady)
             return
         }
         
-        document.fileURL.delete(queue: self._queue) {
+        document.fileURL.delete(queue: self.queue) {
             completion?($0)
         }
     }
     
     public func find(target: String, found: @escaping ([NSRange]) -> Void) throws {
-        guard let document = self._document else {
+        guard let document = self.document else {
             return
         }
         
@@ -349,19 +397,31 @@ public class EditorService {
     }
         
     internal func headingList() -> [HeadingToken] {
-        return self._editorController.getParagraphs()
+        return self.editorController.getParagraphs()
     }
 }
 
 extension EditorService: EditorControllerDelegate {
+    public func markFoldingState(heading: HeadingToken, isFolded: Bool) {
+        self.logs?.headings[heading.identifier] = DocumentLog.Heading(isFold: isFolded, id: heading.identifier)
+        
+        if let logs = self.logs {
+            self.updateLogs(logs)
+        }
+    }
+    
     public func currentHeadingDidChange(heading: HeadingToken?) {
         
     }
     
     public func headingChanged(newHeadings: [HeadingToken], oldHeadings: [HeadingToken]) {
         log.info("heading changed from file: \(self.fileURL)")
-        self._eventObserver.emit(DocumentHeadingChangeEvent(url: self.fileURL,
+        self.eventObserver.emit(DocumentHeadingChangeEvent(url: self.fileURL,
                                                            oldHeadings: oldHeadings,
                                                            newHeadings: newHeadings))
+    }
+    
+    public func getLogs() -> DocumentLog? {
+        return self.logs
     }
 }

@@ -301,9 +301,7 @@ public class HeadingToken: Token {
         
         return range.upperBound
     }
-    
-    public var isFolded: Bool?
-    
+        
     public var headingTextRange: NSRange {
         return self.headingContent ?? NSRange(location: self.contentLocation, length: 0)
     }

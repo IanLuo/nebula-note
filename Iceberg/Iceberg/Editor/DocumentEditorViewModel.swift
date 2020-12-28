@@ -25,6 +25,8 @@ public class DocumentEditorViewModel: ViewModelProtocol {
     
     public typealias CoordinatorType = EditorCoordinator
     
+    private var logs: DocumentLog?
+    
     public weak var delegate: DocumentEditViewModelDelegate? {
         didSet {
             if self.isReadyToEdit {
@@ -35,18 +37,18 @@ public class DocumentEditorViewModel: ViewModelProtocol {
     
     public var onLoadingLocation: Int = 0 // 打开文档的时候默认的位置
     
-    private var _editorService: EditorService!
+    private var editorService: EditorService!
     
     public var currentTokens: [Token] = []
     
     public let backlinks: BehaviorRelay<[URL]> = BehaviorRelay(value: [])
     
     public func tokens(at location: Int) -> [Token] {
-        return self._editorService.tokens(at: location)
+        return self.editorService.tokens(at: location)
     }
     
     public var attachments: [Attachment] {
-        return self._editorService
+        return self.editorService
             .allTokens
             .compactMap { attachmentToken in
                 if let keyRange = (attachmentToken as? AttachmentToken)?.keyRange {
@@ -70,14 +72,14 @@ public class DocumentEditorViewModel: ViewModelProtocol {
     public convenience init(editorService: EditorService, coordinator: EditorCoordinator) {
         self.init(coordinator: coordinator)
         
-        self._editorService = editorService
+        self.editorService = editorService
         
         self.addObservers()
     }
     
     private var isOpenning: Bool = false
     public func start() {
-        guard !self._editorService.isOpen else {
+        guard !self.editorService.isOpen else {
             
             // if the service is cached, new view model may not get the ready tag set
             if !self.isReadyToEdit {
@@ -90,10 +92,11 @@ public class DocumentEditorViewModel: ViewModelProtocol {
         
         self.isOpenning = true
         
-        self._editorService.onReadyToUse = { [weak self] service in
+        self.editorService.onReadyToUse = { [weak self] service in
             service.open {
                 self?.isReadyToEdit = $0 != nil
                 self?.isOpenning = false
+                self?.logs = self?.editorService.logs
             }
         }
     }
@@ -102,7 +105,7 @@ public class DocumentEditorViewModel: ViewModelProtocol {
         guard let usage = self.context.coordinator?.usage else { return }
         switch usage {
         case .editor:
-            self._editorService.close()
+            self.editorService.close()
             self.removeObservers()
         default: break
         }
@@ -111,35 +114,35 @@ public class DocumentEditorViewModel: ViewModelProtocol {
     private let disposeBag = DisposeBag()
     
     public var url: URL {
-        return self._editorService.fileURL
+        return self.editorService.fileURL
     }
     
     public var string: String {
-        return self._editorService.string
+        return self.editorService.string
     }
     
     public func revertContent(shouldSaveBeforeRevert: Bool = true) {
         if shouldSaveBeforeRevert {
-            self._editorService.save { [weak self] isTrue in
+            self.editorService.save { [weak self] isTrue in
                 if isTrue && self?.isReadyToEdit == true {                    
-                    self?._editorService.revertContent()
+                    self?.editorService.revertContent()
                 }
             }
         } else {
-            self._editorService.revertContent()
+            self.editorService.revertContent()
         }
     }
     
     var isTemp: Bool {
-        return self._editorService.isTemp
+        return self.editorService.isTemp
     }
     
     public func createHeadingIdIfNotExisted(textView: UITextView?) {
         // add id for headings don't have a id
-        for heading in self._editorService.headings.reversed() {
+        for heading in self.editorService.headings.reversed() {
             if heading.id == nil {
                 let newId = "{id:\(UUID().uuidString)}"
-                let resut = self._editorService.toggleContentCommandComposer(composer: ReplaceContentCommandComposer(range: heading.levelRange.tail(0), textToReplace: newId)).perform()
+                let resut = self.editorService.toggleContentCommandComposer(composer: ReplaceContentCommandComposer(range: heading.levelRange.tail(0), textToReplace: newId)).perform()
                 
                 if let textView = textView {
                     let oldSelection = textView.selectedRange
@@ -164,7 +167,7 @@ public class DocumentEditorViewModel: ViewModelProtocol {
     }
     
     public var editeDate: String {
-        let attriutes = try? FileManager.default.attributesOfItem(atPath: self._editorService.fileURL.path)
+        let attriutes = try? FileManager.default.attributesOfItem(atPath: self.editorService.fileURL.path)
         let date = (attriutes?[FileAttributeKey.modificationDate] as? Date) ?? Date()
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy/MM/dd HH:mm"
@@ -172,7 +175,7 @@ public class DocumentEditorViewModel: ViewModelProtocol {
     }
     
     public var createDate: String {
-        let attriutes = try? FileManager.default.attributesOfItem(atPath: self._editorService.fileURL.path)
+        let attriutes = try? FileManager.default.attributesOfItem(atPath: self.editorService.fileURL.path)
         let date = (attriutes?[FileAttributeKey.creationDate] as? Date) ?? Date()
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy/MM/dd HH:mm"
@@ -180,60 +183,60 @@ public class DocumentEditorViewModel: ViewModelProtocol {
     }
     
     public var container: NSTextContainer {
-        return self._editorService.container
+        return self.editorService.container
     }
     
     public var cover: UIImage? {
-        get { return self._editorService.cover }
-        set { self._editorService.cover = newValue }
+        get { return self.editorService.cover }
+        set { self.editorService.cover = newValue }
     }
     
     public var headings: [HeadingToken] {
-        return self._editorService.headings
+        return self.editorService.headings
     }
     
     public var isReadingModel: Bool {
-        get { return self._editorService.isReadingMode }
+        get { return self.editorService.isReadingMode }
         set {
-            self._editorService.isReadingMode = newValue
+            self.editorService.isReadingMode = newValue
             self.revertContent()
         }
     }
     
     public func hiddenRange(at location: Int) -> NSRange? {
-        return self._editorService.hiddenRange(location: location)
+        return self.editorService.hiddenRange(location: location)
     }
     
     public func cursorLocationChanged(_ newLocation: Int) {
-        self._editorService.updateCurrentCursor(newLocation)
-        self.delegate?.didEnterTokens(self._editorService.currentCursorTokens)
+        self.editorService.updateCurrentCursor(newLocation)
+        self.delegate?.didEnterTokens(self.editorService.currentCursorTokens)
     }
     
     public func paragraphWithSubRange(at location: Int) -> NSRange? {
-        return self._editorService.heading(at: location)?.paragraphWithSubRange
+        return self.editorService.heading(at: location)?.paragraphWithSubRange
     }
     
     public func foldedRange(at location: Int) -> NSRange? {
-        return self._editorService.foldedRange(at: location)
+        return self.editorService.foldedRange(at: location)
     }
     
     public func isSectionFolded(at location: Int) -> Bool {
-        return self._editorService.isHeadingFolded(at: location)
+        return self.editorService.isHeadingFolded(at: location)
     }
     
     public func save(completion: @escaping () -> Void) {
         guard self.isReadyToEdit else { return }
         
-        _editorService.save { _  in
+        editorService.save { _  in
             completion()
         }
     }
-    
+        
     public func getProperties(heading at: Int) -> [String: String] {
-        if let content = self._editorService.getProperties(heading: at) {
+        if let content = self.editorService.getProperties(heading: at) {
             return content
         } else {
-            _ = self._editorService
+            _ = self.editorService
                 .toggleContentCommandComposer(composer: EditAction.setProperty(at, [:]).commandComposer)
                 .perform()
             return getProperties(heading: at)
@@ -247,43 +250,43 @@ public class DocumentEditorViewModel: ViewModelProtocol {
     }
     
     public func close(completion: @escaping (Bool) -> Void) {
-        self._editorService.close(completion: completion)
+        self.editorService.close(completion: completion)
 //        self.coordinator?.dependency.editorContext.end(with: self._editorService.fileURL)
     }
     
     public func headingString(index: Int) -> String {
         let headingTextRange = self.headings[index].headingTextRange
-        return self._editorService.string.nsstring.substring(with: headingTextRange)
+        return self.editorService.string.nsstring.substring(with: headingTextRange)
     }
     
     /// get the heading at the index of the heading array
     public func documentHeading(at index: Int) -> DocumentHeading {
-        return DocumentHeading(documentString: self._editorService.string, headingToken: self.headings[index], url: self._editorService.fileURL)
+        return DocumentHeading(documentString: self.editorService.string, headingToken: self.headings[index], url: self.editorService.fileURL)
     }
     
     public func tags(at location: Int) -> [String] {
-        return self._editorService.heading(at: location)?.tagsArray(string: self._editorService.string) ?? []
+        return self.editorService.heading(at: location)?.tagsArray(string: self.editorService.string) ?? []
     }
     
     public func heading(at location: Int) -> HeadingToken? {
-        return self._editorService.heading(at: location)
+        return self.editorService.heading(at: location)
     }
     
     public func parentHeading(at location: Int) -> HeadingToken? {
-        return self._editorService.parentHeading(at: location)
+        return self.editorService.parentHeading(at: location)
     }
     
     public func priority(at location: Int) -> String? {
-        if let priorityRange = self._editorService.heading(at: location)?.priority {
-            return self._editorService.string.nsstring.substring(with: priorityRange)
+        if let priorityRange = self.editorService.heading(at: location)?.priority {
+            return self.editorService.string.nsstring.substring(with: priorityRange)
         } else {
             return nil
         }
     }
     
     public func planning(at location: Int) -> String? {
-        if let planningRange = self._editorService.heading(at: location)?.planning {
-            return self._editorService.string.nsstring.substring(with: planningRange)
+        if let planningRange = self.editorService.heading(at: location)?.planning {
+            return self.editorService.string.nsstring.substring(with: planningRange)
         } else {
             return nil
         }
@@ -294,11 +297,11 @@ public class DocumentEditorViewModel: ViewModelProtocol {
             service.open(completion: { string in
                 guard let strongSelf = self else { return }
                 
-                guard let heading = strongSelf._editorService.heading(at: location) else { return }
+                guard let heading = strongSelf.editorService.heading(at: location) else { return }
                 
                 var text = heading.paragraphWithSubRange.location == 0
-                    ? strongSelf._editorService.string.nsstring.substring(with: heading.paragraphWithSubRange) + "\n"
-                    : strongSelf._editorService.string.nsstring.substring(with: heading.paragraphWithSubRange)
+                    ? strongSelf.editorService.string.nsstring.substring(with: heading.paragraphWithSubRange) + "\n"
+                    : strongSelf.editorService.string.nsstring.substring(with: heading.paragraphWithSubRange)
                 
                 DispatchQueue.runOnMainQueueSafely {
                     // 1. 删除当前的段落
@@ -314,7 +317,7 @@ public class DocumentEditorViewModel: ViewModelProtocol {
                                 text = text + "\n"
                             }
                         } else if location == service.string.count {
-                            if !strongSelf._editorService.string.hasSuffix("\n") {
+                            if !strongSelf.editorService.string.hasSuffix("\n") {
                                 text = "\n" + text
                             }
                         }
@@ -333,13 +336,13 @@ public class DocumentEditorViewModel: ViewModelProtocol {
             })
         }
     }
-    
+
     public func moveParagraph(contains location: Int, to outlineLocation: OutlineLocation, textView: UITextView) -> DocumentContentCommandResult {
-        guard let currentHeading = self._editorService.heading(at: location) else { return DocumentContentCommandResult.noChange }
+        guard let currentHeading = self.editorService.heading(at: location) else { return DocumentContentCommandResult.noChange }
         
-        var text = currentHeading.paragraphWithSubRange.upperBound == self._editorService.string.nsstring.length // 当前行为最后一行，插入前在会后一行加上换行符
-            ? self._editorService.string.nsstring.substring(with: currentHeading.paragraphWithSubRange) + "\n"
-            : self._editorService.string.nsstring.substring(with: currentHeading.paragraphWithSubRange)
+        var text = currentHeading.paragraphWithSubRange.upperBound == self.editorService.string.nsstring.length // 当前行为最后一行，插入前在会后一行加上换行符
+            ? self.editorService.string.nsstring.substring(with: currentHeading.paragraphWithSubRange) + "\n"
+            : self.editorService.string.nsstring.substring(with: currentHeading.paragraphWithSubRange)
         
         // 1. 删除旧的段落
         _ = self.performAction(EditAction.removeParagraph(location), textView: textView)
@@ -362,8 +365,8 @@ public class DocumentEditorViewModel: ViewModelProtocol {
                 if !text.hasSuffix("\n") {
                     text = text + "\n"
                 }
-            } else if toLocation == self._editorService.string.count {
-                if !self._editorService.string.hasSuffix("\n") {
+            } else if toLocation == self.editorService.string.count {
+                if !self.editorService.string.hasSuffix("\n") {
                     text = "\n" + text
                 }
             }
@@ -373,29 +376,29 @@ public class DocumentEditorViewModel: ViewModelProtocol {
     }
     
     public func foldOrUnfold(location: Int) {
-        _ = self._editorService.toggleContentCommandComposer(composer: FoldAndUnfoldCommandComposer(location: location)).perform()
+        _ = self.editorService.toggleContentCommandComposer(composer: FoldAndUnfoldCommandComposer(location: location)).perform()
     }
     
     public func unfoldExceptTo(location: Int) {
         self.foldAll()
         
-        _ = self._editorService.toggleContentCommandComposer(composer: UnfoldToLocationCommandCompose(location: location)).perform()
+        _ = self.editorService.toggleContentCommandComposer(composer: UnfoldToLocationCommandCompose(location: location)).perform()
     }
     
     public func foldAll() {
-        _ = self._editorService.toggleContentCommandComposer(composer: FoldAllCommandComposer()).perform()
+        _ = self.editorService.toggleContentCommandComposer(composer: FoldAllCommandComposer()).perform()
     }
     
     public func unfoldAll() {
-        _ = self._editorService.toggleContentCommandComposer(composer: UnfoldAllCommandComposer()).perform()
+        _ = self.editorService.toggleContentCommandComposer(composer: UnfoldAllCommandComposer()).perform()
     }
     
     public func unfold(location: Int) {
-        _ = self._editorService.toggleContentCommandComposer(composer: UnfoldToLocationCommandCompose(location: location)).perform()
+        _ = self.editorService.toggleContentCommandComposer(composer: UnfoldToLocationCommandCompose(location: location)).perform()
     }
     
     public func fold(location: Int) {
-        _ =  self._editorService.toggleContentCommandComposer(composer: FoldToLocationCommandCompose(location: location)).perform()
+        _ =  self.editorService.toggleContentCommandComposer(composer: FoldToLocationCommandCompose(location: location)).perform()
     }
     
     public func performAction(_ action: EditAction, textView: UITextView) -> DocumentContentCommandResult {
@@ -403,7 +406,7 @@ public class DocumentEditorViewModel: ViewModelProtocol {
     }
     
     public func performCommandComposer(_ commandComposer: DocumentContentCommandComposer, textView: UITextView) -> DocumentContentCommandResult {
-        let command = self._editorService.toggleContentCommandComposer(composer: commandComposer)
+        let command = self.editorService.toggleContentCommandComposer(composer: commandComposer)
         
         if let replaceCommand = command as? ReplaceTextCommand {
             
@@ -417,7 +420,7 @@ public class DocumentEditorViewModel: ViewModelProtocol {
         let result = command.perform()
         
         if result.isModifiedContent {
-            self._editorService.markAsContentUpdated()
+            self.editorService.markAsContentUpdated()
         }
         
         return result
@@ -428,11 +431,11 @@ public class DocumentEditorViewModel: ViewModelProtocol {
     }
     
     public func rename(newTitle: String, completion: ((Error?) -> Void)? = nil) {
-        self._editorService.rename(newTitle: newTitle, completion: completion)
+        self.editorService.rename(newTitle: newTitle, completion: completion)
     }
     
     public func delete(completion: ((Error?) -> Void)? = nil) {
-        self._editorService.delete(completion: completion)
+        self.editorService.delete(completion: completion)
         
         // remove file from openning list
         self.dependency.settingAccessor.logCloseDocument(url: self.url)
@@ -463,7 +466,7 @@ public class DocumentEditorViewModel: ViewModelProtocol {
         for case let version in conflictVersions where version.url == choosen {
             try version.replaceItem(at: self.url, options: [.init(rawValue: 0)])
             try NSFileVersion.removeOtherVersionsOfItem(at: self.url)
-            self._editorService.revertContent { status in
+            self.editorService.revertContent { status in
                 isResolved = true
                 completeResolving()
                 return
@@ -475,10 +478,9 @@ public class DocumentEditorViewModel: ViewModelProtocol {
         
     }
 
-    
     public func find(target: String, found: @escaping ([NSRange]) -> Void) {
         do {
-            try self._editorService.find(target: target, found: found)
+            try self.editorService.find(target: target, found: found)
         }
         catch {
             log.error("\(error)")
@@ -486,7 +488,7 @@ public class DocumentEditorViewModel: ViewModelProtocol {
     }
     
     public func didUpdate() {
-        self._editorService.markAsContentUpdated()
+        self.editorService.markAsContentUpdated()
     }
 }
 
