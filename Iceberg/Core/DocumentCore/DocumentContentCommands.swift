@@ -687,6 +687,7 @@ public class MoveHeadingUpCommandComposer: DocumentContentCommandComposer {
             (command as? ReplaceTextCommand)?.resultMap = { _ in
                 return DocumentContentCommandResult(isModifiedContent: true, range: nil, content: nil, delta: delta)
             }
+            
             return command
         } else {
             let textToReplace = textStorage.substring(heading.paragraphWithSubRange).appending(textStorage.substring(lastHeading.paragraphWithSubRange))

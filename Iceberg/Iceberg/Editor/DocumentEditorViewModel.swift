@@ -403,7 +403,17 @@ public class DocumentEditorViewModel: ViewModelProtocol {
     }
     
     public func performAction(_ action: EditAction, textView: UITextView) -> DocumentContentCommandResult {
-        return performCommandComposer(action.commandComposer, textView: textView)
+        let result = performCommandComposer(action.commandComposer, textView: textView)
+        
+        switch action {
+        case .moveLineUp:
+            self.editorService.syncFoldingStatus()
+        case .moveLineDown:
+            self.editorService.syncFoldingStatus()
+        default: break
+        }
+        
+        return result
     }
     
     public func performCommandComposer(_ commandComposer: DocumentContentCommandComposer, textView: UITextView) -> DocumentContentCommandResult {
