@@ -767,7 +767,6 @@ extension OutlineTextStorage: OutlineParserDelegate {
             token.decorationAttributesAction = { textStorage, token in
                 guard let headingRange = token.range(for: OutlineParser.Key.Node.heading) else { return }
                 guard let headingToken = token as? HeadingToken else { return }
-                textStorage.addAttributes(OutlineTheme.headingStyle(level: token.range(for: OutlineParser.Key.Element.Heading.level)?.length ?? 1).attributes, range: headingRange)
                 
                 textStorage.addAttribute(OutlineAttribute.Heading.content, value: 1, range: headingRange)
                 
@@ -775,6 +774,8 @@ extension OutlineTextStorage: OutlineParserDelegate {
                     textStorage.addAttribute(OutlineAttribute.Heading.level, value: 1, range: levelRange)
                 }
                 
+                textStorage.addAttributes(OutlineTheme.headingStyle(level: token.range(for: OutlineParser.Key.Element.Heading.level)?.length ?? 1).attributes, range: headingRange)
+                                
                 if let tagsRange = token.range(for: OutlineParser.Key.Element.Heading.tags) {
                     textStorage.addAttribute(OutlineAttribute.Heading.tags, value: textStorage.string.nsstring.substring(with: tagsRange).components(separatedBy: ":").filter { $0.count > 0 }, range: tagsRange)
                     textStorage._addButtonAttributes(range: tagsRange, color: OutlineTheme.tagStyle.buttonColor)
@@ -800,12 +801,12 @@ extension OutlineTextStorage: OutlineParserDelegate {
                     
                     textStorage.addAttributes(planningStyle.textStyle.attributes, range: planningRange)
                 }
-                
+                                
                 if let idRange = headingToken.id {
                     textStorage.addAttribute(NSAttributedString.Key.font, value: UIFont.preferredFont(forTextStyle: UIFont.TextStyle.footnote), range: idRange)
                     
                     textStorage.addAttributes([OutlineAttribute.onePiease: 1,
-                                               OutlineAttribute.hidden: 0], range: NSRange(location: headingToken.range.location, length: idRange.length + headingToken.level))
+                                               OutlineAttribute.hidden: OutlineAttribute.hiddenValueDefault], range: NSRange(location: headingToken.range.location, length: idRange.length + headingToken.level))
                     headingToken.identifier = textStorage.substring(idRange)
                 } else {
                     textStorage.addAttribute(OutlineAttribute.onePiease, value: 1, range: headingToken.levelRange)
@@ -813,6 +814,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 }
                 
                 textStorage.addHeadingFoldingStatus(heading: headingToken)
+
             }
             
         }
@@ -1047,15 +1049,13 @@ extension OutlineTextStorage: OutlineParserDelegate {
     
     public func addHeadingFoldingStatus(heading: HeadingToken) {
         let isFolded = self.outlineDelegate?.logs()?.headings[heading.identifier]?.isFold
-        
+                
         if isFolded == true {
             self.addAttribute(OutlineAttribute.showAttachment, value: OutlineAttribute.Heading.foldingFolded, range: heading.levelRange)
-            self.setAttributeForHeading(heading, isFolded: true)
         } else {
             self.addAttribute(OutlineAttribute.showAttachment, value: OutlineAttribute.Heading.foldingUnfolded, range: heading.levelRange)
-            self.setAttributeForHeading(heading, isFolded: false)
         }
-        
+                
         self.addAttribute(OutlineAttribute.hidden, value: OutlineAttribute.hiddenValueWithAttachment, range: heading.levelRange.head(1))
         self.addAttribute(OutlineAttribute.hidden, value: OutlineAttribute.hiddenValueDefault, range: heading.levelRange.tail(heading.levelRange.length - 1))
     }
@@ -1332,7 +1332,6 @@ extension OutlineTextStorage {
             self.removeAttribute(OutlineAttribute.hidden, range: range)
             self.removeAttribute(OutlineAttribute.showAttachment, range: heading.levelRange)
             self.removeAttribute(OutlineAttribute.hidden, range: heading.levelRange)
-            self.removeAttribute(OutlineAttribute.hidden, range: heading.range)
             self.removeAttribute(OutlineAttribute.Link.title, range: range)
             
             range = range.length > 0 ? range : NSRange(location: range.location, length: 0)

@@ -313,9 +313,7 @@ public class FoldingAndUnfoldingCommand: DocumentContentCommand {
     fileprivate func _unFoldHeadingButFoldChildren(heading: HeadingToken, textStorage: OutlineTextStorage) {
         self._markUnfold(heading: heading, textStorage: textStorage)
         for child in textStorage.subheadings(of: heading) {
-            if !self._isFolded(heading: child, textStorage: textStorage) {
-                self._fold(heading: child, textStorage: textStorage)
-            }
+            self._fold(heading: child, textStorage: textStorage)
         }
     }
     

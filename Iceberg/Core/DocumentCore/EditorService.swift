@@ -206,6 +206,16 @@ public class EditorService {
         }
     }
     
+    public func syncFoldingStatus() {
+        if let logs = self.logs {
+            for (headingId, _) in logs.headings.filter({ $0.value.isFold == true }) {
+                if let heading = editorController.textStorage.heading(id: headingId) {
+                    self.editorController.textStorage.setAttributeForHeading(heading, isFolded: true)
+                }
+            }
+        }
+    }
+    
     public func updateLogs(_ logs: DocumentLog) {
         self.logs = logs
         
