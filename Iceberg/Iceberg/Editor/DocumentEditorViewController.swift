@@ -524,6 +524,7 @@ extension DocumentEditorViewController: DocumentEditViewModelDelegate {
     
     internal func scrollTo(location: Int, shouldScrollToZero: Bool = false) {
         if location > 0 {
+            self.viewModel.unfold(location: location)
             if isMac {
                 DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.3) {
                     if !self.textView.isFirstResponder {
