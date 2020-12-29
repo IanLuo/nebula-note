@@ -144,6 +144,7 @@ public class DocumentEditorViewModel: ViewModelProtocol {
             if heading.id == nil {
                 let newId = "{id:\(UUID().uuidString)}"
                 let resut = self.editorService.toggleContentCommandComposer(composer: ReplaceContentCommandComposer(range: heading.levelRange.tail(0), textToReplace: newId)).perform()
+                self.editorService.markAsContentUpdated()
                 
                 if let textView = textView {
                     let oldSelection = textView.selectedRange
