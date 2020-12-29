@@ -228,7 +228,16 @@ extension DocumentEditorViewController {
                 
                 // when backspace at in the prefix range, or the space after the prefix in heading, will select the whole prifix
                 if headingToken.prefix.contains(location) || headingToken.prefix.upperBound == location || headingToken.prefix.upperBound + 1 == location {
-                    guard self.textView.selectedRange.location != headingToken.prefix.location else { return true }
+                    
+                    if self.textView.selectedRange.location == headingToken.prefix.location {
+                        if locationToDelete - 1 > 0 {
+                            _ = self.viewModel.performAction(EditAction.replaceText(NSRange(location: locationToDelete - 1, length: 1), ""), textView: self.textView)
+                            self.textView.selectedRange = NSRange(location: locationToDelete - 1, length: 0)
+                        } else {
+                            return true
+                        }
+                        return false
+                    }
                     
                     textView.selectedRange = headingToken.prefix
                     return false
