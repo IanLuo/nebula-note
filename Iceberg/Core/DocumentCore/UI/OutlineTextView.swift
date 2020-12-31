@@ -24,7 +24,6 @@ public protocol OutlineTextViewDelegate: class {
 
 public class OutlineTextView: UITextView {
     public weak var outlineDelegate: OutlineTextViewDelegate?
-    private let tapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer()
     
     public override init(frame: CGRect, textContainer: NSTextContainer?) {
         super.init(frame: frame, textContainer: textContainer)
@@ -36,9 +35,6 @@ public class OutlineTextView: UITextView {
     }
     
     private func setup() {
-        self.tapGestureRecognizer.addTarget(self, action: #selector(tapped(gesture:)))
-        self.tapGestureRecognizer.delegate = self
-        self.addGestureRecognizer(self.tapGestureRecognizer)
         self.alwaysBounceVertical = true
         self.autocapitalizationType = .sentences
         self.autocorrectionType = .no
@@ -55,6 +51,7 @@ public class OutlineTextView: UITextView {
             textView.typingAttributes = [NSAttributedString.Key.font: interface.font.body,
                                      NSAttributedString.Key.foregroundColor: interface.color.interactive]
             
+            // work around for cursor coloring on mac
             if isMac {
                 let textInputTraits = self.value(forKey: "textInputTraits") as? NSObject
                 textInputTraits?.setValue(interface.color.spotlight, forKey: "insertionPointColor")
@@ -62,17 +59,11 @@ public class OutlineTextView: UITextView {
         }
     }
     
-    private var lastTap: (CGPoint, Bool) = (.zero, true)
+    private var lastTap: (CGPoint, Bool, Double) = (.zero, true, 0)
     
-    @objc private func tapped(gesture: UITapGestureRecognizer) -> Bool {
-        guard gesture.state == .ended else { return true }
-        guard self.text.count > 0 else { return true }
-        
-        let location = gesture.view!.convert(gesture.location(in: self).applying(CGAffineTransform(translationX: 0,
-                                                                                                   y: -self.textContainerInset.top)),
-                                             to: self)
-        
-        guard location.x != lastTap.0.x else { return lastTap.1 }
+    @objc private func tapped(location: CGPoint, event: UIEvent?) -> Bool {
+        // handle multiple entrance
+        guard location.x != lastTap.0.x || (CFAbsoluteTimeGetCurrent() - lastTap.2 > 0.5) else { return lastTap.1 }
         
         var fraction: CGFloat = 0
         let characterIndex = self.layoutManager.characterIndex(for: location,
@@ -82,6 +73,8 @@ public class OutlineTextView: UITextView {
         if let outlineTextStorage = self.textStorage as? OutlineTextStorage {
             outlineTextStorage.updateCurrentInfo(at: characterIndex)
         }
+        
+        guard let event = event, event.type == .touches else { return true }
         
         let attributes = self.textStorage.attributes(at: characterIndex, effectiveRange: nil)
         
@@ -119,7 +112,7 @@ public class OutlineTextView: UITextView {
             shouldPassTapToOtherGuestureRecognizers = true
         }
         
-        lastTap = (location, shouldPassTapToOtherGuestureRecognizers)
+        lastTap = (location, shouldPassTapToOtherGuestureRecognizers, CFAbsoluteTimeGetCurrent())
         
         return shouldPassTapToOtherGuestureRecognizers
     }
@@ -137,15 +130,12 @@ public class OutlineTextView: UITextView {
         rect.size.height = max(height, rect.size.height - 10)
         return rect
     }
-}
-
-extension OutlineTextView: UIGestureRecognizerDelegate {
-    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        // 拦截 textView 中点击到需要与用户交互的 tap, 比如折叠，checkbox，link 等
-        if gestureRecognizer == self.tapGestureRecognizer {
-            return self.tapped(gesture: self.tapGestureRecognizer)
+    
+    public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        if self.tapped(location: point, event: event) {
+            return self
         } else {
-            return false
+            return nil
         }
     }
 }

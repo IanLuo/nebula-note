@@ -162,15 +162,17 @@ extension DocumentEditorViewController: OutlineTextViewDelegate {
         self.viewModel.foldOrUnfold(location: chracterIndex)
         
         if self.textView.isFirstResponder {
-            if let heading = self.viewModel.heading(at: chracterIndex) {
-                self.textView.selectedRange = heading.range.tail(0)
-            }
+            self.textView.resignFirstResponder()
         }
     }
     
     public func didTapOnCheckbox(textView: UITextView, characterIndex: Int, checkbox: String, point: CGPoint) {
+        let oldSelection = textView.selectedRange
         let _ = self.viewModel.performAction(.toggleCheckboxStatus(characterIndex, checkbox),
                                              textView: self.textView)
+        
+        // recover the selection position
+        textView.selectedRange = oldSelection
     }
     
     private func _showAttachmentView(attachment: Attachment, atCharactor: Int) {
