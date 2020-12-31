@@ -50,7 +50,11 @@ public class UpdateDocumentEvent: Event {
 
 public class OpenDocumentEvent: Event {
     public let url: URL
-    public init(url: URL) { self.url = url }
+    public let location: Int
+    public init(url: URL, location: Int = 0) {
+        self.url = url
+        self.location = location
+    }
 }
 
 public class RecentDocumentRenamedEvent: RenameDocumentEvent {

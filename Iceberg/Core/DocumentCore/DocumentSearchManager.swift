@@ -23,6 +23,7 @@ public struct DocumentHeading {
     public let paragraphRange: NSRange
     public let paragraphWithSubRange: NSRange
     public var upperBoundWithoutLineBreak: Int
+    public let id: String
     
     public init(documentString: String, headingToken: HeadingToken, url: URL) {
         self.range = headingToken.range
@@ -50,6 +51,12 @@ public struct DocumentHeading {
             self.priority = documentString.nsstring.substring(with: priority)
         } else {
             self.priority = nil
+        }
+        
+        if let idRange = headingToken.id {
+            self.id = documentString.nsstring.substring(with: idRange)
+        } else {
+            self.id = ""
         }
         
         self.text = documentString.nsstring.substring(with: headingToken.headingTextRange)

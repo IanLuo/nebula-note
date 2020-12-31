@@ -23,14 +23,20 @@ public class DocumentLog: Codable {
     }
     
     public var headings: [String: Heading]
+    public var id: String?
+    public var tags: String?
     
     enum keys: CodingKey {
         case headings
+        case id
+        case tags
     }
 
     public required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: keys.self)
         self.headings = try container.decodeIfPresent([String: Heading].self, forKey: .headings) ?? [:]
+        self.id = try container.decodeIfPresent(String.self, forKey: .id)
+        self.tags = try container.decodeIfPresent(String.self, forKey: .tags)
     }
 }
 

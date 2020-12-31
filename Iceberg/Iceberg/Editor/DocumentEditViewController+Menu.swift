@@ -699,13 +699,18 @@ extension DocumentEditorViewController {
     }
     
     public func showFileLinkChoose(location: Int, linkRange: NSRange?) {
-        self.viewModel.context.coordinator?.showDocumentBrowser(completion: { [weak self] url in
-            guard let strongSelf = self else { return }
-            
+        self.viewModel.context.coordinator?.showDocumentHeadingPicker(completion: { (url, outlineLocation) in
+            var resolvedURL: URL!
+            switch outlineLocation {
+            case .heading(let heading):
+                resolvedURL = url.appendingPathComponent(heading.id).appendingPathComponent(heading.text)
+            case .position(let location):
+                resolvedURL = url.appendingPathComponent("\(location)")
+            }
+                        
             let range = linkRange ?? NSRange(location: location, length: 0)
-            
-            let result = strongSelf.viewModel.performAction(EditAction.addFileLink(range, url), textView: strongSelf.textView)
-            strongSelf.textView.selectedRange = NSRange(location: result.delta + location, length: 0)
+            let result = self.viewModel.performAction(EditAction.addFileLink(range, resolvedURL), textView: self.textView)
+            self.textView.selectedRange = NSRange(location: result.delta + location, length: 0)
         })
     }
     

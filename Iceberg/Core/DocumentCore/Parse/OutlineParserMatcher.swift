@@ -473,7 +473,18 @@ extension OutlineParser {
             }
             
             public static func serializeFileLink(url: URL) -> String {
-                let name = url.packageName
+                var name = url.packageName
+                
+                if url.pathExtension == "" {
+                    // means the url contains id
+                    if try! NSRegularExpression(pattern: "(\\{.*\\})", options: []).firstMatch(in: url.path, options: [], range: NSRange(location: 0, length: url.path.count)) != nil {
+                        name = url.lastPathComponent
+                    } else // means the url contains location
+                    {
+                        name = url.deletingLastPathComponent().packageName
+                    }
+                }
+                
                 let path = url.documentRelativePath
                 return "[[\(x3)://\(path)][\(name)]]"
             }

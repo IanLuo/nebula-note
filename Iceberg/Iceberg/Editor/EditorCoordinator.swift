@@ -89,11 +89,12 @@ public class EditorCoordinator: Coordinator {
     public func showDocumentHeadingPicker(completion: @escaping (URL, OutlineLocation) -> Void) {
         let navigationController = Coordinator.createDefaultNavigationControlller()
         
+            
         let documentCoord = BrowserCoordinator(stack: navigationController,
                                                dependency: super.dependency,
                                                usage: .chooseHeader)
         
-        documentCoord.didSelectOutlineAction = { [weak documentCoord]  url, outlineLocation in
+        documentCoord.didSelectOutlineAction = { [weak documentCoord] url, outlineLocation in
             documentCoord?.stop()
             completion(url, outlineLocation)
         }
@@ -199,15 +200,45 @@ public class EditorCoordinator: Coordinator {
     public func openDocumentLink(link: String) {
         let url = URL.documentBaseURL.appendingPathComponent(OutlineParser.Values.Link.removeScheme(link: link))
         
-        if FileManager.default.fileExists(atPath: url.path) {
-            if isMacOrPad {
-                self.dependency.eventObserver.emit(OpenDocumentEvent(url: url))
-            } else {
-                let editorCoor = EditorCoordinator(stack: self.stack, dependency: self.dependency, usage: .editor(url, 0))
-                editorCoor.start(from: self)
+        if let idMatchResult = try! NSRegularExpression(pattern: "(\\{.*\\})", options: []).firstMatch(in: url.path, options: [], range: NSRange(location: 0, length: url.path.count)) {
+            let idRange = idMatchResult.range(at: 1)
+            let id = url.path.nsstring.substring(with: idRange).trimmingCharacters(in: CharacterSet(charactersIn: "{}"))
+            
+            self.dependency.documentSearchManager.search(contain: id, cancelOthers: true) { results in
+                if let firstResult = results.first {
+                    let documentInfo = firstResult.documentInfo
+                    let url = documentInfo.url
+                    
+                    let offset = firstResult.heading?.range.upperBound ?? 0
+                    
+                    if isMacOrPad {
+                        self.dependency.eventObserver.emit(OpenDocumentEvent(url: url, location: offset))
+                    } else {
+                        let editorCoor = EditorCoordinator(stack: self.stack, dependency: self.dependency, usage: .editor(url, offset))
+                        editorCoor.start(from: self)
+                    }
+                }
+            } failed: { error in
+                print(error)
             }
         } else {
-            self.viewController?.showAlert(title: L10n.Browser.fileNotExisted, message: L10n.Browser.FileNotExisted.message)
+            var location = 0
+            var url = url
+            if url.pathExtension == "" {
+                location = Int(url.lastPathComponent) ?? 0
+                url = url.deletingLastPathComponent()
+            }
+            
+            if FileManager.default.fileExists(atPath: url.path) {
+                if isMacOrPad {
+                    self.dependency.eventObserver.emit(OpenDocumentEvent(url: url, location: location))
+                } else {
+                    let editorCoor = EditorCoordinator(stack: self.stack, dependency: self.dependency, usage: .editor(url, location))
+                    editorCoor.start(from: self)
+                }
+            } else {
+                self.viewController?.showAlert(title: L10n.Browser.fileNotExisted, message: L10n.Browser.FileNotExisted.message)
+            }
         }
     }
     

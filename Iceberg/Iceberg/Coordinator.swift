@@ -156,6 +156,12 @@ public class Coordinator {
                     self.stack.pushViewController(viewController,animated: false)
                     self.stack.modalPresentationStyle = viewController.modalPresentationStyle
                     self.stack.transitioningDelegate = viewController.transitioningDelegate
+                    self.stack.preferredContentSize = viewController.preferredContentSize
+                    
+                    if let sourceRect = viewController.popoverPresentationController?.sourceRect {
+                        self.stack.popoverPresentationController?.sourceRect = sourceRect
+                    }
+                    self.stack.popoverPresentationController?.sourceView = viewController.popoverPresentationController?.sourceView
                     top?.present(self.stack, animated: animated, completion: {
                         self.didMoveIn()
                     })
