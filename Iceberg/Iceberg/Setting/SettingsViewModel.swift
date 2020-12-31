@@ -121,18 +121,6 @@ public class SettingsViewModel: ViewModelProtocol {
         }
     }
     
-    public var foldWhenOpen: Bool {
-        SettingsAccessor.Item.foldAllEntriesWhenOpen.get(Bool.self) ?? false
-    }
-    
-    public func setFoldWhenOpen(_ unfold: Bool) {
-        SettingsAccessor.Item.foldAllEntriesWhenOpen.set(unfold) { [weak self] in
-            DispatchQueue.runOnMainQueueSafely {
-                self?.delegate?.didUpdateUnfoldWhenOpen(unfold: unfold)
-            }
-        }
-    }
-    
     public var currentLandigTabIndex: Int {
         return SettingsAccessor.Item.landingTabIndex.get(Int.self) ?? 3
     }

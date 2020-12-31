@@ -39,9 +39,6 @@ public class SettingsViewController: UITableViewController {
     @IBOutlet var planningUnfinishLabel: UILabel!
     @IBOutlet var planningUnfinishButton: UIButton!
     
-    @IBOutlet var editorFoldLabel: UILabel!
-    @IBOutlet var editorFoldSwitch: UISwitch!
-    
     @IBOutlet var exportShowIndexLabel: UILabel!
     @IBOutlet var exportShowIndexSwitch: UISwitch!
     
@@ -94,9 +91,6 @@ public class SettingsViewController: UITableViewController {
         self.planningUnfinishLabel.text = L10n.Setting.Planning.Unfinish.title
         self.planningUnfinishButton.setTitle(self.viewModel.getPlanning(isForFinished: false).joined(separator: ","), for: .normal)
         
-        self.editorFoldLabel.text = L10n.Setting.Editor.foldAllWhenOpen
-        self.editorFoldSwitch.isOn = self.viewModel.foldWhenOpen
-        
         self.exportShowIndexLabel.text = L10n.Setting.Export.showIndex
         self.exportShowIndexSwitch.isOn = self.viewModel.exportShowIndex
         
@@ -136,9 +130,6 @@ public class SettingsViewController: UITableViewController {
             self?.planningFinishButton.setTitleColor(theme.color.descriptive, for: .normal)
             self?.planningUnfinishLabel.textColor = theme.color.interactive
             self?.planningUnfinishButton.setTitleColor(theme.color.descriptive, for: .normal)
-            
-            self?.editorFoldLabel.textColor = theme.color.interactive
-            self?.editorFoldSwitch.onTintColor = theme.color.spotlight
             
             self?.exportShowIndexLabel.textColor = theme.color.interactive
             self?.exportShowIndexSwitch.onTintColor = theme.color.spotlight
@@ -190,8 +181,7 @@ public class SettingsViewController: UITableViewController {
         case 1: return L10n.Setting.General.title
         case 2: return L10n.Setting.Planning.title
         case 3: return L10n.Setting.Store.title
-        case 4: return L10n.Setting.Editor.title
-            case 5: return L10n.Setting.Export.title
+        case 4: return L10n.Setting.Export.title
         default: return nil
         }
     }
@@ -402,10 +392,6 @@ public class SettingsViewController: UITableViewController {
         self._planningManage(isFinish: false, from: from)
     }
     
-    @IBAction func editorFoldWhenOpen(_ sender: UISwitch) {
-        self.viewModel.setFoldWhenOpen(sender.isOn)
-    }
-    
     @IBAction func exportShowIndex(_ sender: UISwitch) {
         self.viewModel.setExportShowIndex(sender.isOn) {}
     }
@@ -518,7 +504,7 @@ public class SettingsViewController: UITableViewController {
             self._storeLocationButtonTapped(self.storeLocationButton)
         case (3, 1):
             self.viewModel.context.coordinator?.showAttachmentManager()
-        case (5, 1):
+        case (4, 1):
             let viewController = ConfirmViewController(contentText: L10n.Publish.DeleteSavedPublishInfo.confirm) { (viewController) in
                 viewController.dismiss(animated: true) {
                     self.viewModel.clearAllTokens {

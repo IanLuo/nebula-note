@@ -503,11 +503,7 @@ extension DocumentEditorViewController: DocumentEditViewModelDelegate {
         if self.viewModel.onLoadingLocation > 0 {
             self.allowScrollContentWhenKeyboardDisapearTemporaily()
             self.scrollTo(location: self.viewModel.onLoadingLocation)
-        } else {
-            if (SettingsAccessor.Item.foldAllEntriesWhenOpen.get(Bool.self) ?? false) && !self.viewModel.isTemp {
-                self.viewModel.foldAll()
-            }
-            
+        } else {            
             if self.viewModel.string.count == 0 { // if there's no content, add an entry, and show keyboard
                 DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.3) {
                     let result = self.viewModel.performAction(EditAction.convertToHeading(0), textView: self.textView)

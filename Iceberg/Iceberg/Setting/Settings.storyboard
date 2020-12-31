@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="154-Ln-0Qk">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="154-Ln-0Qk">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17505"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -229,45 +229,10 @@
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
-                            <tableViewSection headerTitle="Editor" id="SUc-wx-WNb">
-                                <cells>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="66" id="7MJ-Ks-LaK" userLabel="icloud">
-                                        <rect key="frame" x="0.0" y="684" width="414" height="66"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="7MJ-Ks-LaK" id="VNY-Vv-3xj">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="66"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OsI-x5-0UW">
-                                                    <rect key="frame" x="20" y="22.5" width="42" height="21"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="l13-3P-OHb">
-                                                    <rect key="frame" x="345" y="17.5" width="51" height="31"/>
-                                                    <connections>
-                                                        <action selector="editorFoldWhenOpen:" destination="154-Ln-0Qk" eventType="valueChanged" id="Mmw-yP-x2y"/>
-                                                    </connections>
-                                                </switch>
-                                            </subviews>
-                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                            <constraints>
-                                                <constraint firstAttribute="trailingMargin" secondItem="l13-3P-OHb" secondAttribute="trailing" id="1Ty-D0-OMu"/>
-                                                <constraint firstItem="OsI-x5-0UW" firstAttribute="centerY" secondItem="VNY-Vv-3xj" secondAttribute="centerY" id="M9L-HD-BKG"/>
-                                                <constraint firstItem="l13-3P-OHb" firstAttribute="centerY" secondItem="VNY-Vv-3xj" secondAttribute="centerY" id="Qn5-9o-9fv"/>
-                                                <constraint firstItem="l13-3P-OHb" firstAttribute="centerY" secondItem="VNY-Vv-3xj" secondAttribute="centerY" id="h2X-tD-JJx"/>
-                                                <constraint firstItem="OsI-x5-0UW" firstAttribute="leading" secondItem="VNY-Vv-3xj" secondAttribute="leadingMargin" id="sgJ-l5-4sE"/>
-                                            </constraints>
-                                        </tableViewCellContentView>
-                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                    </tableViewCell>
-                                </cells>
-                            </tableViewSection>
                             <tableViewSection headerTitle="Export" id="Uid-TP-Q5K">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="66" id="0cN-dq-w2j" userLabel="export file">
-                                        <rect key="frame" x="0.0" y="806" width="414" height="66"/>
+                                        <rect key="frame" x="0.0" y="684" width="414" height="66"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="0cN-dq-w2j" id="09n-FW-led">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="66"/>
@@ -298,14 +263,14 @@
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" accessoryType="disclosureIndicator" indentationWidth="10" rowHeight="66" id="vFb-B9-pOd" userLabel="publish">
-                                        <rect key="frame" x="0.0" y="872" width="414" height="66"/>
+                                        <rect key="frame" x="0.0" y="750" width="414" height="66"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="vFb-B9-pOd" id="bCh-M1-Qi6">
                                             <rect key="frame" x="0.0" y="0.0" width="383" height="66"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Reset All Publish Accounts" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5qJ-AD-fMr">
-                                                    <rect key="frame" x="20" y="22.5" width="202" height="21"/>
+                                                    <rect key="frame" x="8" y="22.5" width="202" height="21"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -324,7 +289,7 @@
                             <tableViewSection headerTitle="" id="DvC-8y-ZaT" userLabel="privacy">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="66" id="27X-eJ-nac" userLabel="privacy and terms">
-                                        <rect key="frame" x="0.0" y="978" width="414" height="66"/>
+                                        <rect key="frame" x="0.0" y="856" width="414" height="66"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="27X-eJ-nac" id="4fh-YS-VDV">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="66"/>
@@ -366,8 +331,6 @@
                     <connections>
                         <outlet property="attachmentManagerLabel" destination="W4R-zj-xyU" id="cU7-de-HN9"/>
                         <outlet property="chooseLandingTabButton" destination="dnp-Uh-dnX" id="PRC-gg-q7c"/>
-                        <outlet property="editorFoldLabel" destination="OsI-x5-0UW" id="tf9-RY-Zfn"/>
-                        <outlet property="editorFoldSwitch" destination="l13-3P-OHb" id="W4D-4K-D7S"/>
                         <outlet property="exportShowIndexLabel" destination="Na4-t8-FPr" id="NDp-Ty-Boq"/>
                         <outlet property="exportShowIndexSwitch" destination="pbA-Do-osX" id="1lo-ai-U9E"/>
                         <outlet property="feedbackButton" destination="2X3-NA-ivb" id="rJX-zK-Xlc"/>
