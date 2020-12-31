@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import Interface
+import RxSwift
 
 public protocol OutlineTextViewDelegate: class {
     func didTapOnLevel(textView: UITextView, chracterIndex: Int, point: CGPoint)
@@ -24,6 +25,8 @@ public protocol OutlineTextViewDelegate: class {
 
 public class OutlineTextView: UITextView {
     public weak var outlineDelegate: OutlineTextViewDelegate?
+    
+    private let disposeBag = DisposeBag()
     
     public override init(frame: CGRect, textContainer: NSTextContainer?) {
         super.init(frame: frame, textContainer: textContainer)
@@ -57,11 +60,53 @@ public class OutlineTextView: UITextView {
                 textInputTraits?.setValue(interface.color.spotlight, forKey: "insertionPointColor")
             }
         }
+        
+        // update character border
+        self.rx.value.subscribe(onNext: {
+            if let string = $0 {
+                if string.count == 0 {
+                    self.characterBorder = (.zero, .zero)
+                } else {
+                    let begin = self.layoutManager.boundingRect(forGlyphRange: NSRange(location: 0, length: 1), in: self.textContainer)
+                    let end = self.layoutManager.boundingRect(forGlyphRange: self.layoutManager.glyphRange(forCharacterRange: NSRange(location: self.text.count - 1, length: 1), actualCharacterRange: nil), in: self.textContainer)
+                    self.characterBorder = (begin, end)
+                }
+            }
+        }).disposed(by: self.disposeBag)
     }
     
     private var lastTap: (CGPoint, Bool, Double) = (.zero, true, 0)
     
+    private var characterBorder: (begin: CGRect, end: CGRect) = (.zero, .zero)
+    
+    private let isPointInBorder: (CGPoint, (begin: CGRect, end: CGRect)) -> Bool = { point, border in
+        
+        // same row, let side of first character
+        if point.x < border.begin.origin.x && point.y < border.begin.origin.y + border.begin.size.height {
+            return false
+        }
+        
+        // above first row
+        if point.y < border.begin.origin.y {
+            return false
+        }
+        
+        // same row, right side of last character
+        if point.y > border.end.origin.y + border.end.size.height && point.x > border.end.origin.x {
+            return false
+        }
+        
+        // below last row
+        if point.y > border.end.origin.y + border.end.size.height {
+            return false
+        }
+        
+        return true
+    }
+    
     @objc private func tapped(location: CGPoint, event: UIEvent?) -> Bool {
+        guard let event = event, event.type == .touches else { return true }
+        
         // handle multiple entrance
         guard location.x != lastTap.0.x || (CFAbsoluteTimeGetCurrent() - lastTap.2 > 0.5) else { return lastTap.1 }
         
@@ -70,11 +115,13 @@ public class OutlineTextView: UITextView {
                                                                in: self.textContainer,
                                                                fractionOfDistanceBetweenInsertionPoints: &fraction)
         
+        
+        // check if the character is with range of all characters
+        guard isPointInBorder(location, self.characterBorder) else { return true }
+        
         if let outlineTextStorage = self.textStorage as? OutlineTextStorage {
             outlineTextStorage.updateCurrentInfo(at: characterIndex)
         }
-        
-        guard let event = event, event.type == .touches else { return true }
         
         let attributes = self.textStorage.attributes(at: characterIndex, effectiveRange: nil)
         

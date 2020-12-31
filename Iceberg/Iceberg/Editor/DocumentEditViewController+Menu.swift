@@ -386,9 +386,9 @@ extension DocumentEditorViewController {
             }
         }
         
-        if current != nil {
+        if let current = current {
             actionsController.addAction(icon: Asset.Assets.cross.image.fill(color: InterfaceTheme.Color.warning),
-                                        title: L10n.General.Button.Title.delete,
+                                        title: L10n.General.Button.Title.delete + " \"\(current)\"",
                                         style: .warning) { viewController in
                                             let oldSelectedRange = self.textView.selectedRange
                                             let result = self.viewModel.performAction(EditAction.removePlanning(location),
