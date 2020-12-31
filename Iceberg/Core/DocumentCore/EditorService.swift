@@ -308,6 +308,8 @@ public class EditorService {
     }
     
     public func hiddenRange(location: Int) -> NSRange? {
+        guard location < self.string.count else { return nil }
+        
         var range: NSRange = NSRange(location: 0, length: 0)
         if let value = self.editorController.textStorage.attribute(OutlineAttribute.hidden, at: location, effectiveRange: &range) as? NSNumber, value.intValue != 2 {
             return range

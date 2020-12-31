@@ -54,6 +54,29 @@ extension DocumentEditorViewController: UITextViewDelegate {
     }
     
     public func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        // ignore when cursor in hidden range
+        if let hiddenRange = self.viewModel.hiddenRange(at: range.location) {
+            if hiddenRange.location <= range.location && hiddenRange.upperBound >= range.upperBound {
+                return false
+            }
+        }
+        
+        // handle inupt at end of folded paragraph
+        if textView.text.count > 0 {
+            let lastPosition = range.location - 1
+            if let heading = self.viewModel.heading(at: lastPosition) {
+                var paragraphContentRange: NSRange = heading.subheadingsRange
+                if paragraphContentRange.upperBound != textView.text.nsstring.length {
+                    paragraphContentRange = paragraphContentRange.moveRightBound(by: -1)
+                }
+
+                if paragraphContentRange.upperBound == range.location && viewModel.isSectionFolded(at: lastPosition) {
+                    self.viewModel.unfoldExceptTo(location: lastPosition)
+                    return false
+                }
+            }
+        }
+        
         if text == "\n" { // 换行
             return self._handleLineBreak(textView)
         } else if text == "" { // 删除
@@ -229,10 +252,10 @@ extension DocumentEditorViewController {
                 // when backspace at in the prefix range, or the space after the prefix in heading, will select the whole prifix
                 if headingToken.prefix.contains(location) || headingToken.prefix.upperBound == location || headingToken.prefix.upperBound + 1 == location {
                     
+                    // if user backspace at begining of a heading, just move the cursor back, dont' delete the '\n', otherwise will break the heading
                     if self.textView.selectedRange.location == headingToken.prefix.location {
                         if locationToDelete - 1 > 0 {
-                            _ = self.viewModel.performAction(EditAction.replaceText(NSRange(location: locationToDelete - 1, length: 1), ""), textView: self.textView)
-                            self.textView.selectedRange = NSRange(location: locationToDelete - 1, length: 0)
+                            self.textView.selectedRange = NSRange(location: locationToDelete, length: 0)
                         } else {
                             return true
                         }
