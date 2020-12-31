@@ -303,7 +303,15 @@ public class HeadingToken: Token {
     }
         
     public var headingTextRange: NSRange {
-        return self.headingContent ?? NSRange(location: self.contentLocation, length: 0)
+        return self.headingContent ?? NSRange(location: self.contentLocation, length: self.range.upperBound - self.contentLocation)
+    }
+    
+    public var headingTextWithoutOtherTags: NSRange {
+        let planningUpperBound = self.planning?.upperBound ?? 0
+        let prioerityUpperBound = self.priority?.upperBound ?? 0
+        let otherTagsLocation = max(planningUpperBound, prioerityUpperBound)
+        let location = max(self.headingTextRange.location, otherTagsLocation)
+        return NSRange(location: location, length: self.headingTextRange.upperBound - location)
     }
     
     public var levelRange: NSRange {

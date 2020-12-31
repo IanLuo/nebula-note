@@ -103,6 +103,7 @@ extension HeadingsOutlineViewController: DocumentEditViewModelDelegate {
     }
     
     public func didReadyToEdit() {
+        self.viewModel.createHeadingIdIfNotExisted(textView: nil)
         self.loadData()
     }
     
