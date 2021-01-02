@@ -54,13 +54,6 @@ extension DocumentEditorViewController: UITextViewDelegate {
     }
     
     public func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        // ignore when cursor in hidden range
-        if let hiddenRange = self.viewModel.hiddenRange(at: range.location) {
-            if hiddenRange.location <= range.location && hiddenRange.upperBound >= range.upperBound {
-                return false
-            }
-        }
-        
         // handle inupt at end of folded paragraph
         if textView.text.count > 0 {
             let lastPosition = range.location - 1
@@ -70,7 +63,7 @@ extension DocumentEditorViewController: UITextViewDelegate {
                     paragraphContentRange = paragraphContentRange.moveRightBound(by: -1)
                 }
 
-                if paragraphContentRange.upperBound == range.location && viewModel.isSectionFolded(at: lastPosition) {
+                if paragraphContentRange.length > 0 && paragraphContentRange.upperBound == range.location && viewModel.isSectionFolded(at: lastPosition) {
                     self.viewModel.unfoldExceptTo(location: lastPosition)
                     return false
                 }

@@ -1149,6 +1149,11 @@ extension OutlineTextStorage: OutlineParserDelegate {
                     self.addAttributes([NSAttributedString.Key.paragraphStyle: paragraphStyle], range: inclosingRange)
                 }
         }
+        
+        // make sure the end of document have correctly indent
+        if self.substring(applyingRange.tail(1)) == "\n" {
+            self.addAttributes([NSAttributedString.Key.paragraphStyle: paragraphStyle], range: applyingRange.tail(1))
+        }
     }
     
     internal func _adjustParseRange(_ range: NSRange) -> NSRange {
@@ -1289,10 +1294,6 @@ extension OutlineTextStorage {
     public func setAttributeForHeading(_ heading: HeadingToken, isFolded: Bool) {
         let currentFoldingState = self.outlineDelegate?.logs()?.headings[heading.identifier]?.isFold
         
-        if isFolded != currentFoldingState {
-            self.outlineDelegate?.markFoldingState(heading: heading, isFolded: isFolded)
-        }
-        
         if isFolded == true {
             var range: NSRange = heading.subheadingsRange
             if range.upperBound != self.string.nsstring.length {
@@ -1320,7 +1321,11 @@ extension OutlineTextStorage {
             self.addAttributes([OutlineAttribute.showAttachment: OutlineAttribute.Heading.foldingFolded,
                                        OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment],
                                       range: heading.levelRange.head(1))
-            self.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueDefault], range: heading.levelRange.tail(heading.levelRange.length - 1))
+            if heading.levelRange.length > 1 {
+                self.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueDefault], range: heading.levelRange.tail(heading.levelRange.length - 1))
+            }
+            
+            self.outlineDelegate?.markFoldingState(heading: heading, isFolded: isFolded)
         } else {
             var range: NSRange = heading.subheadingsRange
             if range.upperBound != self.string.nsstring.length {
@@ -1348,7 +1353,11 @@ extension OutlineTextStorage {
             self.addAttributes([OutlineAttribute.showAttachment: OutlineAttribute.Heading.foldingUnfolded,
                                        OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment],
                                       range: heading.levelRange.head(1))
-            self.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueDefault], range: heading.levelRange.tail(heading.levelRange.length - 1))
+            if heading.levelRange.length > 1 {
+                self.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueDefault], range: heading.levelRange.tail(heading.levelRange.length - 1))
+            }
+            
+            self.outlineDelegate?.markFoldingState(heading: heading, isFolded: isFolded)
         }
     }
 }

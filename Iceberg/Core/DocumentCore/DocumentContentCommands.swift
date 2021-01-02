@@ -328,7 +328,7 @@ public class FoldingAndUnfoldingCommand: DocumentContentCommand {
     public func perform() -> DocumentContentCommandResult {
         if let heading = textStorage.heading(contains: location) {
             
-            guard heading.contentRange != nil else { return DocumentContentCommandResult.noChange }
+//            guard heading.contentRange != nil else { return DocumentContentCommandResult.noChange }
             
             var toggleFoldAndUnfoldAction: ((OutlineTextStorage, HeadingToken, FoldingAndUnfoldingCommand) -> Void)!
             toggleFoldAndUnfoldAction = { textStorage, heading, command in
