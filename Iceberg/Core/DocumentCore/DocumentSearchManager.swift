@@ -356,7 +356,7 @@ public class DocumentSearchManager {
     }
     
     public func searchBacklink(url: URL) -> Observable<[URL]> {
-        let linkString = OutlineParser.Values.Link.x3 + "://" + url.packageName
+        let linkString = OutlineParser.Values.Link.x3 + "://" + url.documentRelativePath
         
         return Observable.create { observer -> Disposable in
             DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
