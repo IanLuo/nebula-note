@@ -185,6 +185,22 @@ public class OutlineTextView: UITextView {
             return nil
         }
     }
+    
+    public func flashLine(location: Int) {
+        var effectiveRange: NSRange = NSRange(location: 0, length: 0)
+        let rect = self.layoutManager.lineFragmentRect(forGlyphAt: location, effectiveRange: &effectiveRange)
+        
+        let view: UIView = UIView()
+        view.backgroundColor = InterfaceTheme.Color.spotlight
+        view.frame = rect
+        self.insertSubview(view, at: 0)
+        
+        UIView.animate(withDuration: 1.5) {
+            view.alpha = 0
+        } completion: { _ in
+            view.removeFromSuperview()
+        }
+    }
 }
 
 extension UITextView {

@@ -534,6 +534,7 @@ extension DocumentEditorViewController: DocumentEditViewModelDelegate {
             }
             self.textView.selectedRange = NSRange(location: location, length: 0)
             self.textView.scrollRangeToVisible(self.textView.selectedRange)
+            self.textView.flashLine(location: location)
         } else if shouldScrollToZero && location == 0 {
             if isMac {
                 DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.3) {
