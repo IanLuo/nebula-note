@@ -262,6 +262,7 @@ extension DateSelectViewController: CalendarViewDelegate {
     public func calendar(_ calendar: CalendarView, didSelectDate date: Date, withEvents events: [CalendarEvent]) {
         self.delegate?.didSelect(date: date)
         self.currentDate = date
+        self.monthLabel.text = date.monthStringLong
     }
     
     public func calendar(_ calendar: CalendarView, canSelectDate date: Date) -> Bool {

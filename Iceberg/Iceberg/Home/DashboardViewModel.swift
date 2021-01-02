@@ -188,13 +188,13 @@ public class DashboardViewModel: ViewModelProtocol {
                         if notice.daysCount == 0 {
                             todayData.append(result)
                         } else if dateAndTime.isDue {
-                            if notice.daysCount <= 3 {
+                            if notice.daysCount <= 3 && notice.daysCount > 0{
                                 overdueSoon.append(result)
                             } else {
                                 overdue.append(result)
                             }
                         } else {
-                            if notice.daysCount <= 3 {
+                            if notice.daysCount <= 3 && notice.daysCount > 0 {
                                 startSoon.append(result)
                             } else {
                                 scheduled.append(result)

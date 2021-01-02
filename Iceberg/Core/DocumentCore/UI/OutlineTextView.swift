@@ -180,7 +180,7 @@ public class OutlineTextView: UITextView {
     
     public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         if self.tapped(location: point, event: event) {
-            return self
+            return super.hitTest(point, with: event)
         } else {
             return nil
         }
