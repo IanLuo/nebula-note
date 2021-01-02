@@ -191,12 +191,19 @@ public class OutlineTextView: UITextView {
         let rect = self.layoutManager.lineFragmentRect(forGlyphAt: location, effectiveRange: &effectiveRange)
         
         let view: UIView = UIView()
-        view.backgroundColor = InterfaceTheme.Color.spotlight
+        view.backgroundColor = UIColor.lightGray.withAlphaComponent(0.5)
+        view.alpha = 0
         view.frame = rect
         self.insertSubview(view, at: 0)
         
-        UIView.animate(withDuration: 1.5) {
-            view.alpha = 0
+        UIView.animateKeyframes(withDuration: 1.3, delay: 0, options: []) {
+            UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.4) {
+                view.alpha = 1
+            }
+            
+            UIView.addKeyframe(withRelativeStartTime: 0.4, relativeDuration: 0.6) {
+                view.alpha = 0
+            }
         } completion: { _ in
             view.removeFromSuperview()
         }

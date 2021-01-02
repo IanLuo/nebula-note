@@ -103,6 +103,10 @@ public class EditorCoordinator: Coordinator {
             documentCoord?.stop()
         }
         
+        if #available(macOS 11, *) {
+            documentCoord.viewController?.modalPresentationStyle = .fullScreen
+        }
+        
         documentCoord.start(from: self)
     }
     

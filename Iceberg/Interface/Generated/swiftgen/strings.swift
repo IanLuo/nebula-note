@@ -353,6 +353,8 @@ public enum L10n {
       }
     }
     public enum Edit {
+      /// Backlink
+      public static let backlink = L10n.tr("Localizable", "document.edit.backlink")
       /// Keep this one
       public static let remoteEditingArrivedKeepThisOne = L10n.tr("Localizable", "document.edit.remote_editing_arrived_keep_this_one")
       /// Which version do you want to keep?

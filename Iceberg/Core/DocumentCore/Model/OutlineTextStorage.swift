@@ -1291,9 +1291,7 @@ extension NSRange {
 }
 
 extension OutlineTextStorage {
-    public func setAttributeForHeading(_ heading: HeadingToken, isFolded: Bool) {
-        let currentFoldingState = self.outlineDelegate?.logs()?.headings[heading.identifier]?.isFold
-        
+    public func setAttributeForHeading(_ heading: HeadingToken, isFolded: Bool) {        
         if isFolded == true {
             var range: NSRange = heading.subheadingsRange
             if range.upperBound != self.string.nsstring.length {

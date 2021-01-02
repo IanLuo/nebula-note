@@ -137,6 +137,7 @@
 "document.help.more" = "More help topics";
 "document.help.markSyntax" = "Marks syntax help";
 "document.edit.document_link.title" = "Edit document link title";
+"document.edit.backlink" = "Backlink";
 
 "document.edit.remote_editing_arrived_title" = "Found newer version from another device, reload?";
 "document.edit.remote_editing_arrived_message" = "Which version do you want to keep?";

@@ -63,7 +63,7 @@ extension DocumentEditorViewController: UITextViewDelegate {
                     paragraphContentRange = paragraphContentRange.moveRightBound(by: -1)
                 }
 
-                if paragraphContentRange.length > 0 && paragraphContentRange.upperBound == range.location && viewModel.isSectionFolded(at: lastPosition) {
+                if paragraphContentRange.length > 0 && paragraphContentRange.upperBound == range.location {
                     self.viewModel.unfoldExceptTo(location: lastPosition)
                     return false
                 }

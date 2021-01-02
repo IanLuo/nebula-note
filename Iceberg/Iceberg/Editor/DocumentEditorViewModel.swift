@@ -62,7 +62,11 @@ public class DocumentEditorViewModel: ViewModelProtocol {
     public var isReadyToEdit: Bool = false {
         didSet {
             if isReadyToEdit {
-                self.editorService.syncFoldingStatus()
+                switch self.context.coordinator?.usage {
+                case .editor:
+                    self.editorService.syncFoldingStatus()
+                default: break
+                }
                 self.delegate?.didReadyToEdit()
             }
         }

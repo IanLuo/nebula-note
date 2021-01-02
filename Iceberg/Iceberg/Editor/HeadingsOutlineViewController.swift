@@ -38,6 +38,7 @@ public class HeadingsOutlineViewController: SelectorViewController {
     
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        
         self.viewModel.start()
     }
     
