@@ -10,6 +10,7 @@ import Foundation
 import Interface
 import Core
 import UIKit
+import RxSwift
 
 public protocol DateAndTimeSelectViewControllerDelegate: class {
     func didSelect(dateAndTime: DateAndTimeType, viewController: DateAndTimeSelectViewController)
@@ -28,6 +29,8 @@ public class DateAndTimeSelectViewController: TransitionViewController {
     public var didCancelAction:(() -> Void)?
     public var didDeleteAction:(() -> Void)?
     
+    private let disposeBag = DisposeBag()
+    
     public weak var delegate: DateAndTimeSelectViewControllerDelegate?
     
     @IBOutlet var _closeButton: UIButton!
@@ -41,10 +44,11 @@ public class DateAndTimeSelectViewController: TransitionViewController {
     private var _selectedDate: Date?
     private var _selectTime: (Int, Int, Int)?
     private var _isEnabledSelectTime: Bool = false
+    private var repeatType: DateAndTimeType.RepeatMode = .none
+    
     @IBOutlet var _contentView: UIScrollView!
     
     private let _dateSelectViewController: DateSelectViewController = DateSelectViewController()
-    private let _timeSelectViewController: TimeSelectViewController = TimeSelectViewController()
     
     private lazy var _transitionDelegate: FadeBackgroundTransition = {
         return FadeBackgroundTransition(animator: MoveInAnimtor())
@@ -54,7 +58,8 @@ public class DateAndTimeSelectViewController: TransitionViewController {
         didSet {
             if let dateAndTime = passInDateAndTime {
                 self._selectedDate = dateAndTime.date
-                
+                self.repeatType = dateAndTime.repeateMode
+                self._isEnabledSelectTime = dateAndTime.includeTime
                 if dateAndTime.includeTime {
                     let calendar = Calendar.current
                     let components = calendar.dateComponents([.hour, .minute, .second], from: dateAndTime.date)
@@ -96,15 +101,16 @@ public class DateAndTimeSelectViewController: TransitionViewController {
         self.view.addGestureRecognizer(tap)
         
         self.view.layoutIfNeeded()
+        
+        self._dateSelectViewController.repeatType.subscribe(onNext: { type in
+            self.repeatType = type
+        }).disposed(by: self.disposeBag)
     }
     
     private func _initValues() {
         self._dateSelectViewController.currentDate = self._selectedDate ?? Date()
-        
-        if let time = self._selectTime {
-            self._timeSelectViewController.time = time
-        }
-        
+        self._dateSelectViewController.includeTime = _isEnabledSelectTime
+        self._dateSelectViewController.repeatType.accept(self.repeatType)
         self._titleLabel.text = self.title
     }
     
@@ -112,10 +118,6 @@ public class DateAndTimeSelectViewController: TransitionViewController {
         self.addChild(self._dateSelectViewController)
         self._dateSelectViewController.delegate = self
         self._dateSelectViewController.didMove(toParent: self)
-        
-        self.addChild(self._timeSelectViewController)
-        self._timeSelectViewController.delegate = self
-        self._timeSelectViewController.didMove(toParent: self)
     }
     
     private func _setupUI() {
@@ -134,13 +136,8 @@ public class DateAndTimeSelectViewController: TransitionViewController {
         self._calendarContainer.addSubview(self._dateSelectViewController.view)
         self._dateSelectViewController.view.allSidesAnchors(to: self._calendarContainer, edgeInset: 0)
         
-        self._timeContainer.addSubview(self._timeSelectViewController.view)
-        self._timeSelectViewController.view.allSidesAnchors(to: self._timeContainer, edgeInset: 0)
-        
         self._saveButton.setTitle(L10n.General.Button.Title.save, for: .normal)
         self._deleteButton.setTitle(L10n.General.Button.Title.delete, for: .normal)
-        
-        self._timeSelectViewController.switch.isOn = self._selectTime == nil
         
         // hide time selector for now for Mac
         if isMac {
@@ -168,6 +165,7 @@ public class DateAndTimeSelectViewController: TransitionViewController {
             
             dateAndTime.isDue = self.passInDateAndTime?.isDue ?? false
             dateAndTime.isSchedule = self.passInDateAndTime?.isSchedule ?? false
+            dateAndTime.repeateMode = self.repeatType
             
             self.delegate?.didSelect(dateAndTime: dateAndTime,
                                      viewController: self)
@@ -177,6 +175,7 @@ public class DateAndTimeSelectViewController: TransitionViewController {
                                               includeTime: self._isEnabledSelectTime)
             dateAndTime.isDue = self.passInDateAndTime?.isDue ?? false
             dateAndTime.isSchedule = self.passInDateAndTime?.isSchedule ?? false
+            dateAndTime.repeateMode = self.repeatType
             
             self.delegate?.didSelect(dateAndTime: dateAndTime,
                                      viewController: self)
@@ -204,20 +203,15 @@ extension DateAndTimeSelectViewController: UIGestureRecognizerDelegate {
 }
 
 extension DateAndTimeSelectViewController: DateSelectViewControllerDelegate {
-    public func didSelect(date: Date) {
-        self._selectedDate = date
-    }
-}
-
-extension DateAndTimeSelectViewController: TimeSelectViewControllerDelegate {
-    public func didEnableSelectTime(_ enabled: Bool) {
-        self._isEnabledSelectTime = enabled
-        UIView.animate(withDuration: 0.25) {
-            self.view.layoutIfNeeded()
-        }
+    public func didSelectRepeatType(_ type: DateAndTimeType.RepeatMode) {
+        self.repeatType = type
     }
     
-    public func didSelectTime(hour: Int, minute: Int, second: Int) {
-        self._selectTime = (hour, minute, second)
+    public func didSelectTime(_ time: (hour: Int, minute: Int, second: Int)?) {
+        self._selectTime = time
+        self._isEnabledSelectTime = time != nil
+    }
+    public func didSelect(date: Date) {
+        self._selectedDate = date
     }
 }

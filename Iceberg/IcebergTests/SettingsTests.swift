@@ -8,7 +8,7 @@
 
 import Foundation
 import XCTest
-@testable import Iceberg
+@testable import x3Note
 import Core
 
 public class SettingsTests: XCTestCase {

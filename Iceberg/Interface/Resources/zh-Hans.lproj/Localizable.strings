@@ -41,6 +41,14 @@
 "document.dateAndTime.update" = "更新日期和时间";
 "document.dateAndTime.schedule"= "开始日期";
 "document.dateAndTime.due" = "截止日期";
+"document.dateAndTime.repeat.daily" = "天";
+"document.dateAndTime.repeat.weekly" = "周";
+"document.dateAndTime.repeat.monthly" = "月";
+"document.dateAndTime.repeat.quarterly" = "季度";
+"document.dateAndTime.repeat.yearly" = "年";
+"document.dateAndTime.repeat.none" = "不重复";
+"document.dateAndTime.repeat.title" = "重复";
+
 
 "document.priority.title" = "优先级";
 "document.priority.remove" = "删除优先级";

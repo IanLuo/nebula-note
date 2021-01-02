@@ -314,7 +314,7 @@ DEADLINE: <2018-12-05 Wed>
                 XCTAssertEqual(2, markRanges.filter { $0.keys.first == OutlineParser.Key.Element.TextMark.italic }.count)
                 XCTAssertEqual(2, markRanges.filter { $0.keys.first == OutlineParser.Key.Element.TextMark.underscore }.count)
                 XCTAssertEqual(1, markRanges.filter { $0.keys.first == OutlineParser.Key.Element.TextMark.strikeThough }.count)
-                XCTAssertEqual(4, markRanges.filter { $0.keys.first == OutlineParser.Key.Element.TextMark.code }.count)
+                XCTAssertEqual(4, markRanges.filter { $0.keys.first == OutlineParser.Key.Element.TextMark.highlight }.count)
                 XCTAssertEqual(3, markRanges.filter { $0.keys.first == OutlineParser.Key.Element.TextMark.verbatim }.count)
                 
                 didHit = true

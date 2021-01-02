@@ -65,7 +65,6 @@
 		E41CB16221D8897400EF0A3C /* HomeCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41CB16121D8897400EF0A3C /* HomeCoordinator.swift */; };
 		E41CB16421D8899200EF0A3C /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41CB16321D8899200EF0A3C /* HomeViewController.swift */; };
 		E41CB1A421D88D9400EF0A3C /* Core.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E41CB19B21D88D9300EF0A3C /* Core.framework */; };
-		E41CB1AB21D88D9400EF0A3C /* BusinessTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41CB1AA21D88D9400EF0A3C /* BusinessTests.swift */; };
 		E41CB1AD21D88D9400EF0A3C /* Core.h in Headers */ = {isa = PBXBuildFile; fileRef = E41CB19D21D88D9300EF0A3C /* Core.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E41CB1B021D88D9400EF0A3C /* Core.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E41CB19B21D88D9300EF0A3C /* Core.framework */; };
 		E41CB1B121D88D9400EF0A3C /* Core.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E41CB19B21D88D9300EF0A3C /* Core.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -195,6 +194,7 @@
 		E49FE990245EA61B005F634C /* DocumentTabContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49FE98E245DB2B5005F634C /* DocumentTabContainerViewController.swift */; };
 		E4A168D222904F690040D909 /* MetadataItem+property.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A168D122904F690040D909 /* MetadataItem+property.swift */; };
 		E4A168D32291356B0040D909 /* CaptureService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F86C6218EF5D8006C4CDB /* CaptureService.swift */; };
+		E4A25B8325A0017700D0C36C /* DateAndTimeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A25B8225A0017700D0C36C /* DateAndTimeTests.swift */; };
 		E4A46A1721A9A26300FBDA04 /* AttachmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A1621A9A26300FBDA04 /* AttachmentTests.swift */; };
 		E4A46A2921B28ED800FBDA04 /* DocumentEditorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A2821B28ED800FBDA04 /* DocumentEditorViewModel.swift */; };
 		E4A46A2B21B4109C00FBDA04 /* DocumentSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A46A2A21B4109C00FBDA04 /* DocumentSearchViewController.swift */; };
@@ -456,7 +456,6 @@
 		E41CB19D21D88D9300EF0A3C /* Core.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Core.h; sourceTree = "<group>"; };
 		E41CB19E21D88D9300EF0A3C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E41CB1A321D88D9400EF0A3C /* BusinessTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BusinessTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		E41CB1AA21D88D9400EF0A3C /* BusinessTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusinessTests.swift; sourceTree = "<group>"; };
 		E41CB1AC21D88D9400EF0A3C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E41CB1C821D88E2200EF0A3C /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		E41CB1E121D8BD9B00EF0A3C /* UIView+Processing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Processing.swift"; sourceTree = "<group>"; };
@@ -595,6 +594,7 @@
 		E49FE98E245DB2B5005F634C /* DocumentTabContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentTabContainerViewController.swift; sourceTree = "<group>"; };
 		E49FF46321A429F9003A5B3C /* OutlineStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineStorageTests.swift; sourceTree = "<group>"; };
 		E4A168D122904F690040D909 /* MetadataItem+property.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MetadataItem+property.swift"; sourceTree = "<group>"; };
+		E4A25B8225A0017700D0C36C /* DateAndTimeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateAndTimeTests.swift; sourceTree = "<group>"; };
 		E4A46A1621A9A26300FBDA04 /* AttachmentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentTests.swift; sourceTree = "<group>"; };
 		E4A46A1821AA8E9F00FBDA04 /* OutlineTextStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineTextStorage.swift; sourceTree = "<group>"; };
 		E4A46A1D21AE6CF400FBDA04 /* Image+Generation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Image+Generation.swift"; sourceTree = "<group>"; };
@@ -1010,7 +1010,6 @@
 				E44825AA219AE47000C17568 /* ParseOutlineTests.swift */,
 				E4A46A3321B4F36800FBDA04 /* DocumentEditTests.swift */,
 				E49FF46321A429F9003A5B3C /* OutlineStorageTests.swift */,
-				E41CB1AA21D88D9400EF0A3C /* BusinessTests.swift */,
 				E41CB1AC21D88D9400EF0A3C /* Info.plist */,
 				E483299F224A2ED1008B60ED /* SyncTests.swift */,
 			);
@@ -1171,6 +1170,7 @@
 				E4A46A3D21B6605C00FBDA04 /* DocumentBrowserTests.swift */,
 				E4B19AAF21C5363A00ED3463 /* SettingsTests.swift */,
 				E41FCABA23937BFE00608112 /* SyncTests.swift */,
+				E4A25B8225A0017700D0C36C /* DateAndTimeTests.swift */,
 			);
 			path = IcebergTests;
 			sourceTree = "<group>";
@@ -2239,7 +2239,6 @@
 				E41CB1D721D894DC00EF0A3C /* DocumentEditTests.swift in Sources */,
 				E41CB1D821D894DC00EF0A3C /* ParseOutlineTests.swift in Sources */,
 				E48329A0224A2ED1008B60ED /* SyncTests.swift in Sources */,
-				E41CB1AB21D88D9400EF0A3C /* BusinessTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2356,6 +2355,7 @@
 				E4B19AB021C5363A00ED3463 /* SettingsTests.swift in Sources */,
 				E41FCABB23937BFE00608112 /* SyncTests.swift in Sources */,
 				E4A46A3E21B6605C00FBDA04 /* DocumentBrowserTests.swift in Sources */,
+				E4A25B8325A0017700D0C36C /* DateAndTimeTests.swift in Sources */,
 				E4357B4A21A995DA006DDD72 /* CaptureTests.swift in Sources */,
 				E41CB1DF21D896A300EF0A3C /* DocumentSearchTests.swift in Sources */,
 				E4A46A1721A9A26300FBDA04 /* AttachmentTests.swift in Sources */,

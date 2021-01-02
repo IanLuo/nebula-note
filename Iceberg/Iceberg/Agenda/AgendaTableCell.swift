@@ -228,80 +228,8 @@ public class AgendaTableCell: UITableViewCell {
 
 extension DateAndTimeType {
     public func agendaLabel(today: Date) -> NSAttributedString? {
-        
-        var text: String? = ""
-        var color: UIColor = InterfaceTheme.Color.finished
-        
-        if self.isSchedule {
-            if today.isSameDay(self.date) {
-                text = L10n.Agenda.startToday
-                color = InterfaceTheme.Color.unfinished
-            } else if today.dayEnd.timeIntervalSince1970 > self.date.dayEnd.timeIntervalSince1970 {
-                let daysBeforeDate = today.dayBegin.daysFrom(self.date)
-                if daysBeforeDate == 1 {
-                    text = L10n.Agenda.startYesterdayWithPlaceHodlerYesterday
-                    color = InterfaceTheme.Color.warning
-                } else {
-                    text = L10n.Agenda.startDaysAgoWithPlaceHodler("\(today.daysFrom(self.date))")
-                    color = InterfaceTheme.Color.warning
-                }
-            } else {
-                let daysFromToday = self.date.dayBegin.daysFrom(today)
-                if daysFromToday == 1 {
-                    text = L10n.Agenda.startTomorrowWithPlaceHolder
-                    color = InterfaceTheme.Color.unfinished
-                } else {
-                    text = L10n.Agenda.startInDaysWithPlaceHolder("\(daysFromToday)")
-                    color = InterfaceTheme.Color.finished
-                }
-            }
-        } else if self.isDue {
-            if today.isSameDay(self.date) {
-                text = L10n.Agenda.dueToday
-                color = InterfaceTheme.Color.unfinished
-            } else if today.dayEnd.timeIntervalSince1970 > self.date.dayEnd.timeIntervalSince1970 {
-                let dateFromToday = today.daysFrom(self.date)
-                if dateFromToday == 1 {
-                    text = L10n.Agenda.overdueYesterdayWihtPlaceHolder
-                    color = InterfaceTheme.Color.warning
-                } else {
-                    text = L10n.Agenda.overdueDaysWihtPlaceHolder("\(dateFromToday)")
-                    color = InterfaceTheme.Color.warning
-                }
-            } else {
-                let daysAfterToday = self.date.daysFrom(today)
-                if daysAfterToday == 1 {
-                    text = L10n.Agenda.willOverduTomorrowWithPlaceHolder
-                    color = InterfaceTheme.Color.unfinished
-                } else {
-                    text = L10n.Agenda.willOverduInDaysWithPlaceHolder("\(daysAfterToday)")
-                    color = InterfaceTheme.Color.finished
-                }
-            }
-        } else {
-            if today.isSameDay(self.date) {
-                text = L10n.Agenda.today
-                color = InterfaceTheme.Color.unfinished
-            } else {
-                let dateFromToday = self.date.daysFrom(today)
-                if dateFromToday == 1 { // tomorrow
-                    text = L10n.Agenda.tomorrow
-                    color = InterfaceTheme.Color.unfinished
-                } else if dateFromToday == -1 { // yesterday
-                    text = L10n.Agenda.yesterday
-                    color = InterfaceTheme.Color.warning
-                } else if dateFromToday > 1 { // after tomorrow
-                    text = L10n.Agenda.daysAfter("\(dateFromToday)")
-                    color = InterfaceTheme.Color.finished
-                } else { // before yesterday
-                    text = L10n.Agenda.daysBefore("\(-dateFromToday)")
-                    color = InterfaceTheme.Color.warning
-                }
-            }
-        }
-        
-        if let text = text {
-            return NSAttributedString(string: text, attributes: [NSAttributedString.Key.foregroundColor : color])
+        if let notice = self.checkNotice(relative: today) {
+            return NSAttributedString(string: notice.message, attributes: [NSAttributedString.Key.foregroundColor : notice.alertLevel.color])
         } else {
             return nil
         }

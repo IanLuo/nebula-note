@@ -842,7 +842,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 // render date and time interactive attributes
                 let dataAndTimeString = textStorage.substring(range)
                 let dateAndTime = DateAndTimeType(dataAndTimeString)
-                let datesFromToday = dateAndTime?.date.daysFrom(Date()) ?? 4 // 默认为 4 天, normal 颜色
+                let datesFromToday = dateAndTime?.closestDate(to: Date(), after: true).daysFrom(Date()) ?? 4 // 默认为 4 天, normal 颜色®
                 let dateAndTimeStyle = OutlineTheme.dateAndTimeStyle(datesFromToday: datesFromToday)
                 textStorage.addAttributes([OutlineAttribute.dateAndTime: dataAndTimeString], range: range)
                 

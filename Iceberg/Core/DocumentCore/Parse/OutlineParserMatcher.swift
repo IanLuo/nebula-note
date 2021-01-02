@@ -254,7 +254,7 @@ extension OutlineParser {
             
             public struct DateAndTime {
                 internal static let timePattern =                 "[0-9]{1,2}\\:[0-9]{1,2}"
-                internal static let dateAndTimeRepeatPattern =          " \\+([0-9])+(d|w|m|y){1}"
+                internal static let dateAndTimeRepeatPattern =          " \\+([0-9])+(d|w|m|y|q){1}"
                 internal static let weekdayPattern =             " [A-Z]{1}[a-z]{2}"
                 internal static let timeRangePartPattern =          "\(timePattern)\\-\(timePattern)"
                 

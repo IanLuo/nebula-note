@@ -32,7 +32,7 @@ public class AgendaCellModel {
         self.headingText = searchResult.heading.text.trimmingCharacters(in: CharacterSet.whitespaces)
         self.planning = searchResult.heading.planning
         self.tags = searchResult.heading.tags
-        self.currentDate = Date().dayEnd // default to today
+        self.currentDate = Date() // default to today
         
         if let planning = searchResult.heading.planning {
             self.isFinished = SettingsAccessor.shared.finishedPlanning.contains(planning)

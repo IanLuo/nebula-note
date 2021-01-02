@@ -184,27 +184,21 @@ public class DashboardViewModel: ViewModelProtocol {
                 }
                 
                 if let dateAndTime = result.dateAndTime {
-                    let daysFromToday = dateAndTime.date.daysFrom(today) // date from the date to today
-                    
-                    if dateAndTime.date.isToday() {
-                        todayData.append(result)
-                    } else if dateAndTime.isDue {
-                        if daysFromToday < 0 {
-                            overdue.append(result)
-                        } else if daysFromToday <= 3 {
-                            overdueSoon.append(result)
-                        }
-                    } else if dateAndTime.isSchedule {
-                        if daysFromToday <= 3 && daysFromToday > 0 {
-                            startSoon.append(result)
+                    if let notice = dateAndTime.checkNotice(relative: today) {
+                        if notice.daysCount == 0 {
+                            todayData.append(result)
+                        } else if dateAndTime.isDue {
+                            if notice.daysCount <= 3 {
+                                overdueSoon.append(result)
+                            } else {
+                                overdue.append(result)
+                            }
                         } else {
-                            scheduled.append(result)
-                        }
-                    } else {
-                        if daysFromToday <= 3 && daysFromToday > 0 {
-                            startSoon.append(result)
-                        } else {
-                            scheduled.append(result)
+                            if notice.daysCount <= 3 {
+                                startSoon.append(result)
+                            } else {
+                                scheduled.append(result)
+                            }
                         }
                     }
                 }

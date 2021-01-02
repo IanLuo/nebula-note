@@ -51,9 +51,10 @@ public class AgendaViewModel {
     
     private func generateDates() -> [Date] {
         var dates: [Date] = []
-        let today = Date()
-        for i in 0..<30 {
-            dates.append(today.dayAfter(i))
+        let today = Date() // current date and time
+        dates.append(today)
+        for i in 1..<30 {
+            dates.append(today.dayAfter(i).dayEnd) // after today use day end time
         }
 
         return dates
@@ -191,18 +192,10 @@ public class AgendaViewModel {
                         if let planning = cellModel.planning, finishedPlainings.contains(planning) {
                             return false
                         }
-                            // only for item that has date and time
+                        
+                        // only for item that has date and time
                         else if let dateAndTime = cellModel.dateAndTime {
-                            if dateAndTime.isSchedule || dateAndTime.isDue {
-                                if dateAndTime.date.dayEnd <= date.dayEnd {
-                                    return true
-                                } else if dateAndTime.date.dayEnd.timeIntervalSince1970 > date.timeIntervalSince1970 {
-                                    return dateAndTime.date.daysFrom(date) <= 3
-                                } else {
-                                    return dateAndTime.date.dayEnd.isSameDay(date.dayEnd)
-                                }
-                            }
-                            return dateAndTime.date.isSameDay(date)
+                            return dateAndTime.checkNotice(relative: date) != nil
                         } else {
                             return true
                         }

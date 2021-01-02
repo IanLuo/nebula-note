@@ -41,6 +41,13 @@
 "document.dateAndTime.update" = "Update date and time";
 "document.dateAndTime.schedule"= "Schedule";
 "document.dateAndTime.due" = "Due";
+"document.dateAndTime.repeat.daily" = "Day";
+"document.dateAndTime.repeat.weekly" = "Week";
+"document.dateAndTime.repeat.monthly" = "Month";
+"document.dateAndTime.repeat.quarterly" = "Quarter";
+"document.dateAndTime.repeat.yearly" = "Year";
+"document.dateAndTime.repeat.none" = "Dont‘s Repeat";
+"document.dateAndTime.repeat.title" = "Repeat";
 
 "document.priority.title" = "Priority";
 "document.priority.remove" = "Remove priority";

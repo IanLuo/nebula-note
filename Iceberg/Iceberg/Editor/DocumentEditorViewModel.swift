@@ -103,6 +103,7 @@ public class DocumentEditorViewModel: ViewModelProtocol {
     }
     
     deinit {
+        self.editorService.save()
         guard let usage = self.context.coordinator?.usage else { return }
         switch usage {
         case .editor:

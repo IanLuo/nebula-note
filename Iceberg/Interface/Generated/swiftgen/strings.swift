@@ -335,6 +335,22 @@ public enum L10n {
       public static let title = L10n.tr("Localizable", "document.dateAndTime.title")
       /// Update date and time
       public static let update = L10n.tr("Localizable", "document.dateAndTime.update")
+      public enum Repeat {
+        /// Day
+        public static let daily = L10n.tr("Localizable", "document.dateAndTime.repeat.daily")
+        /// Month
+        public static let monthly = L10n.tr("Localizable", "document.dateAndTime.repeat.monthly")
+        /// Dont‘s Repeat
+        public static let `none` = L10n.tr("Localizable", "document.dateAndTime.repeat.none")
+        /// Quarter
+        public static let quarterly = L10n.tr("Localizable", "document.dateAndTime.repeat.quarterly")
+        /// Repeat
+        public static let title = L10n.tr("Localizable", "document.dateAndTime.repeat.title")
+        /// Week
+        public static let weekly = L10n.tr("Localizable", "document.dateAndTime.repeat.weekly")
+        /// Year
+        public static let yearly = L10n.tr("Localizable", "document.dateAndTime.repeat.yearly")
+      }
     }
     public enum Edit {
       /// Keep this one
