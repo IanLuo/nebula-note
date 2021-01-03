@@ -1,3 +1,4 @@
+---- 1.2.6 ----
 [x] move paragraph without expand folded paragraph
 [x] choose paragraph without unfold other paragraph
 [x] close other parapraphs excpet the one on the path
@@ -11,3 +12,5 @@
   [x] tap the same position, don't ignore the tap 
 [x] date and time repeating
 [ ] optimize key binding
+[x] flash when scroll to a position
+[x] move backlink into document info
