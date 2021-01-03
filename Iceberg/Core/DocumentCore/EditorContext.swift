@@ -29,9 +29,9 @@ public class EditorContext {
         OutlineParser.Matcher.reloadPlanning()
     }
     
-    public func requestTemp(url: URL) -> EditorService {
-        return EditorService(url: url, queue: self._editingQueue, eventObserver: self._eventObserver, parser: OutlineParser(), isTemp: true, settingsAccessor: self._settingsAccessor)
-    }
+//    public func requestTemp(url: URL) -> EditorService {
+//        return EditorService(url: url, queue: self._editingQueue, eventObserver: self._eventObserver, parser: OutlineParser(), isTemp: true, settingsAccessor: self._settingsAccessor)
+//    }
     
     public func request(url: URL) -> EditorService {
         log.info("requesing editor service with url: \(url)")
@@ -51,10 +51,10 @@ public class EditorContext {
     private func _getCachedService(with url: URL) -> EditorService {
         if let editorInstance = _tryGetCachedService(with: url) {
             log.info("load editor service from cache: \(url)")
-            
+
             // if load from cache successfully, add cache reference count
             self._serviceReferenceCounter.increase(url: url)
-            
+
             return editorInstance
         } else {
             log.info("no editor service found in cache, creating a new one")
@@ -114,9 +114,11 @@ public class EditorContext {
         if let service = self._tryGetCachedService(with: url) {
             
             if service.documentState != .closed {
-                service.close { _ in
-                    self._removeCachedService(with: url)
-                    complete()
+                service.save { _ in
+                    service.close { _ in
+                        self._removeCachedService(with: url)
+                        complete()
+                    }
                 }
             } else {
                 complete()

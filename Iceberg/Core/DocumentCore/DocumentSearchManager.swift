@@ -357,11 +357,13 @@ public class DocumentSearchManager {
     
     public func searchBacklink(url: URL) -> Observable<[URL]> {
         let linkString = OutlineParser.Values.Link.x3 + "://" + url.documentRelativePath
+        let containingWrapperURL = url.wrapperURL
         
         return Observable.create { observer -> Disposable in
             DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
                 var result: [URL] = []
                 for file in self.loadAllFiles() {
+                    guard file.wrapperURL != containingWrapperURL else { continue }
                     if let content = try? String(contentsOf: file) {
                         if content.contains(linkString) {
                             result.append(file)

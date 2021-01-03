@@ -122,7 +122,7 @@ public class BrowserCell: UITableViewCell {
         self.cellModel = cellModel
         
         self.titleLabel.text = cellModel.url.packageName
-        self.iconView.image = cellModel.cover
+        self.iconView.image = cellModel.cover ?? Asset.Assets.smallIcon.image
         self.lastModifiedDateLabel.text = cellModel.updateDate.format(DateFormatter.Style.short, timeStyle: DateFormatter.Style.short)
         
         self._loadActionsView()

@@ -242,8 +242,6 @@ public class DocumentEditorViewController: UIViewController {
             self.viewModel.start()
         }
         
-//        self.textView.becomeFirstResponder()
-        
         if #available(iOS 13, *) {
             self.enableKeyBindings()
         }

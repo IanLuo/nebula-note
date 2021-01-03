@@ -25,8 +25,6 @@ public class DocumentEditorViewModel: ViewModelProtocol {
     
     public typealias CoordinatorType = EditorCoordinator
     
-    private var logs: DocumentLog?
-    
     public weak var delegate: DocumentEditViewModelDelegate? {
         didSet {
             if self.isReadyToEdit {
@@ -101,20 +99,13 @@ public class DocumentEditorViewModel: ViewModelProtocol {
             service.open {
                 self?.isReadyToEdit = $0 != nil
                 self?.isOpenning = false
-                self?.logs = self?.editorService.logs
             }
         }
     }
     
     deinit {
-        self.editorService.save()
-        guard let usage = self.context.coordinator?.usage else { return }
-        switch usage {
-        case .editor:
-            self.editorService.close()
-            self.removeObservers()
-        default: break
-        }
+        self.removeObservers()
+        self.context.dependency.editorContext.closeIfOpen(url: self.url, complete: {})
     }
     
     private let disposeBag = DisposeBag()
@@ -256,11 +247,6 @@ public class DocumentEditorViewModel: ViewModelProtocol {
         }).disposed(by: self.disposeBag)
     }
     
-    public func close(completion: @escaping (Bool) -> Void) {
-        self.editorService.close(completion: completion)
-//        self.coordinator?.dependency.editorContext.end(with: self._editorService.fileURL)
-    }
-    
     public func headingString(index: Int) -> String {
         let headingTextRange = self.headings[index].headingTextRange
         return self.editorService.string.nsstring.substring(with: headingTextRange)
@@ -331,14 +317,11 @@ public class DocumentEditorViewModel: ViewModelProtocol {
                         _ = service.toggleContentCommandComposer(composer: InsertTextCommandComposer(location: location, textToInsert: text)).perform()
                     }
                     
-                    service.save(completion: { service, _ in
-                        service.close(completion: { _ in
-                            DispatchQueue.runOnMainQueueSafely {
-                                completion(result)
-                            }
-                        })
+                    self?.dependency.editorContext.closeIfOpen(url: url, complete: {
+                        DispatchQueue.runOnMainQueueSafely {
+                            completion(result)
+                        }
                     })
-                    
                 }
             })
         }
@@ -391,10 +374,16 @@ public class DocumentEditorViewModel: ViewModelProtocol {
     }
     
     public func foldAll() {
+        self.editorService.logs?.headings.forEach({ _, log in
+            log.isFold = true
+        })
         _ = self.editorService.toggleContentCommandComposer(composer: FoldAllCommandComposer()).perform()
     }
     
     public func unfoldAll() {
+        self.editorService.logs?.headings.forEach({ _, log in
+            log.isFold = false
+        })
         _ = self.editorService.toggleContentCommandComposer(composer: UnfoldAllCommandComposer()).perform()
     }
     

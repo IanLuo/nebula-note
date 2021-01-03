@@ -17,7 +17,12 @@ public enum EditorServiceError: Error {
 }
 
 public class DocumentLog: Codable {
-    public struct Heading: Codable {
+    public class Heading: Codable {
+        internal init(isFold: Bool, id: String) {
+            self.isFold = isFold
+            self.id = id
+        }
+        
         public var isFold: Bool
         public let id: String
     }
@@ -145,7 +150,7 @@ public class EditorService {
     }
         
     private var isClosing: Bool = false
-    public func close(completion:((Bool) -> Void)? = nil) {
+    func close(completion:((Bool) -> Void)? = nil) {
         guard let document = self.document else {
             completion?(false)
             return
@@ -168,7 +173,7 @@ public class EditorService {
     // MARK: -
     
     public var container: NSTextContainer {
-        return editorController.textContainer
+        return editorController.creatTextContainer()
     }
     
     public var isReadingMode: Bool {

@@ -57,17 +57,13 @@ public class EditorCoordinator: Coordinator {
             viewController.title = url.packageName
             self.viewController = viewController
         case .temp(let url):
-            let viewModel = DocumentEditorViewModel(editorService: dependency.editorContext.requestTemp(url: url), coordinator: self)
+            let viewModel = DocumentEditorViewModel(editorService: dependency.editorContext.request(url: url), coordinator: self)
             self._viewModel = viewModel
             self.url = url
             let viewController = DocumentEditorViewController(viewModel: viewModel)
             viewController.title = url.packageName
             self.viewController = viewController
         }
-    }
-    
-    deinit {
-        self.dependency.editorContext.end(with: self.url)
     }
     
     public func showOutline(ignoredHeadingLocation: Int? = nil, from: UIView? = nil, completion: @escaping (OutlineLocation) -> Void) {

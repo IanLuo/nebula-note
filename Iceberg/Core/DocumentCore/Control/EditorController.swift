@@ -18,7 +18,7 @@ public protocol EditorControllerDelegate: class {
 
 public class EditorController: NSObject {
     
-    private let _layoutManager: NSLayoutManager
+    private let layoutManager: NSLayoutManager
     
     internal let textContainer: NSTextContainer
     
@@ -30,7 +30,7 @@ public class EditorController: NSObject {
         self.textStorage = OutlineTextStorage(attachmentManager: attachmentManager)
         self.textContainer = NSTextContainer(size: CGSize(width: UIScreen.main.bounds.size.width, height: CGFloat(Int.max)))
         self.textContainer.widthTracksTextView = true
-        self._layoutManager = OutlineLayoutManager()
+        self.layoutManager = OutlineLayoutManager()
         
         super.init()
         
@@ -40,15 +40,26 @@ public class EditorController: NSObject {
         
         self.textStorage.delegate = self.textStorage
         self.textStorage.outlineDelegate = self
-        self.textStorage.addLayoutManager(self._layoutManager)
-        self._layoutManager.delegate = self.textStorage
-        self._layoutManager.allowsNonContiguousLayout = true
-        self._layoutManager.addTextContainer(self.textContainer)
-        self._layoutManager.showsInvisibleCharacters = false
+//        self.textStorage.addLayoutManager(self.layoutManager)
+//        self.layoutManager.delegate = self.textStorage
+//        self.layoutManager.allowsNonContiguousLayout = true
+//        self.layoutManager.addTextContainer(self.textContainer)
+//        self.layoutManager.showsInvisibleCharacters = false
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    public func creatTextContainer() -> NSTextContainer {
+        let layoutManager = OutlineLayoutManager()
+        let container = NSTextContainer()
+        layoutManager.addTextContainer(container)
+        layoutManager.delegate = self.textStorage
+        layoutManager.allowsNonContiguousLayout = true
+        layoutManager.showsInvisibleCharacters = false
+        self.textStorage.addLayoutManager(layoutManager)
+        return container
     }
 }
 

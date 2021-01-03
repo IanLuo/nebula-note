@@ -33,6 +33,10 @@ public class OutlineTextView: UITextView {
         self.setup()
     }
     
+    deinit {
+        self.textStorage.removeLayoutManager(self.layoutManager)
+    }
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -91,10 +95,10 @@ public class OutlineTextView: UITextView {
             return false
         }
         
-        // same row, right side of last character
-        if point.y > border.end.origin.y + border.end.size.height && point.x > border.end.origin.x {
-            return false
-        }
+//        // same row, right side of last character
+//        if point.y > border.end.origin.y + border.end.size.height && point.x > border.end.origin.x {
+//            return false
+//        }
         
         // below last row
         if point.y > border.end.origin.y + border.end.size.height {

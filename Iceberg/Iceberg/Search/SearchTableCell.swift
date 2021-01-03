@@ -24,7 +24,11 @@ public class SearchTableCell: UITableViewCell {
     private let fileNameLabel: UILabel = {
         let label = UILabel()
         label.font = InterfaceTheme.Font.footnote
-        label.textColor = InterfaceTheme.Color.descriptive
+        
+        label.interface { (view, theme) in
+            let label = view as! UILabel
+            label.textColor = theme.color.descriptive
+        }
         return label
     }()
     
@@ -32,7 +36,10 @@ public class SearchTableCell: UITableViewCell {
         let label = UILabel()
         label.font = InterfaceTheme.Font.body
         label.numberOfLines = 0
-        label.textColor = InterfaceTheme.Color.interactive
+        label.interface { (view, theme) in
+            let label = view as! UILabel
+            label.textColor = theme.color.interactive
+        }
         return label
     }()
     

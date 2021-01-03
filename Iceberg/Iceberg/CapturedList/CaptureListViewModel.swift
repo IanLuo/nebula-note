@@ -119,11 +119,9 @@ public class CaptureListViewModel: ViewModelProtocol {
                     self.delegate?.didCompleteRefile(index: index, attachment: attachment)
                 }
                 
-                    service.save { _ in
-                        service.close { _ in
-                            DispatchQueue.runOnMainQueueSafely {
-                                completion()
-                            }
+                self.dependency.editorContext.closeIfOpen(url: service.fileURL) {
+                    DispatchQueue.runOnMainQueueSafely {
+                        completion()
                     }
                 }
             }
