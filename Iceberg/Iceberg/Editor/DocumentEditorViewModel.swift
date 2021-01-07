@@ -394,7 +394,7 @@ public class DocumentEditorViewModel: ViewModelProtocol {
     }
     
     public func unfold(location: Int) {
-        _ = self.editorService.toggleContentCommandComposer(composer: UnfoldToLocationCommandCompose(location: location)).perform()
+        self.unfoldExceptTo(location: location)
     }
     
     public func fold(location: Int) {
