@@ -111,21 +111,8 @@ public class EditorContext {
     }
     
     public func closeIfOpen(url: URL, complete: @escaping () -> Void) {
-        if let service = self._tryGetCachedService(with: url) {
-            
-            if service.documentState != .closed {
-                service.save { _ in
-                    service.close { _ in
-                        self._removeCachedService(with: url)
-                        complete()
-                    }
-                }
-            } else {
-                complete()
-            }
-        } else {
-            complete()
-        }
+        self._removeCachedService(with: url)
+        complete()
     }
     
     public func closeIfOpen(dir: URL, complete: @escaping () -> Void) {
@@ -137,16 +124,8 @@ public class EditorContext {
             for (key, service) in EditorContext._cachedServiceInstances {
                 dispatchGroup.enter()
                 if key.contains(relatePath) {
-                    if service.documentState != .closed {
-                        DispatchQueue.runOnMainQueueSafely {
-                            service.close { _ in
-                                queue.async {
-                                    self._removeCachedService(with: service.fileURL)
-                                    dispatchGroup.leave()
-                                }
-                            }
-                        }
-                    } else {
+                    DispatchQueue.runOnMainQueueSafely {
+                        self._removeCachedService(with: service.fileURL)
                         dispatchGroup.leave()
                     }
                 } else {
