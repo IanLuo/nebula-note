@@ -11,11 +11,12 @@ import SwiftyBeaver
 import RxSwift
 import Interface
 
+//#if os(iOS)
 //import Firebase
+//#endif
 #if DEBUG
 //import ShowTime
 #endif
-//import Firebase
 
 internal let log = SwiftyBeaver.self
 
@@ -29,7 +30,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
-//        FirebaseApp.configure()
+//        if !isMac {
+//            FirebaseApp.configure()
+//        }
         #if DEBUG
 //        ShowTime.enabled = .never
         console.minLevel = .info

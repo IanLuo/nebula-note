@@ -1291,6 +1291,15 @@ extension NSRange {
 }
 
 extension OutlineTextStorage {
+    public func flushTokens() {
+        for token in self.allTokens {
+            if token.needsRender {
+                token.renderDecoration(textStorage: self)
+                token.needsRender = false
+            }
+        }
+    }
+    
     public func setAttributeForHeading(_ heading: HeadingToken, isFolded: Bool) {        
         if isFolded == true {
             var range: NSRange = heading.subheadingsRange
@@ -1353,6 +1362,12 @@ extension OutlineTextStorage {
                                       range: heading.levelRange.head(1))
             if heading.levelRange.length > 1 {
                 self.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueDefault], range: heading.levelRange.tail(heading.levelRange.length - 1))
+            }
+            
+            for token in self.allTokens {
+                if heading.paragraphWithSubRange.contains(token.range.location) {
+                    token.needsRender = true
+                }
             }
             
             self.outlineDelegate?.markFoldingState(heading: heading, isFolded: isFolded)

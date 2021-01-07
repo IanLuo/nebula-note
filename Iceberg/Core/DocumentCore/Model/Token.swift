@@ -15,6 +15,8 @@ public enum BlockType {
 }
 
 public class Token {
+    public var needsRender: Bool = false
+    
     public var offset: Int = 0 {
         didSet {
             log.verbose("offset did set: \(offset)")

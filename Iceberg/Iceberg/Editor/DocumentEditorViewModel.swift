@@ -204,7 +204,7 @@ public class DocumentEditorViewModel: ViewModelProtocol {
     public func hiddenRange(at location: Int) -> NSRange? {
         return self.editorService.hiddenRange(location: location)
     }
-    
+
     public func cursorLocationChanged(_ newLocation: Int) {
         self.editorService.updateCurrentCursor(newLocation)
         self.delegate?.didEnterTokens(self.editorService.currentCursorTokens)
@@ -370,7 +370,13 @@ public class DocumentEditorViewModel: ViewModelProtocol {
     }
     
     public func unfoldExceptTo(location: Int) {
-        _ = self.editorService.toggleContentCommandComposer(composer: UnfoldToLocationCommandCompose(location: location)).perform()
+        for heading in self.headings {
+            if heading.paragraphWithSubRange.contains(location) {
+                self.editorService.markFoldingState(heading: heading, isFolded: false)
+            }
+        }
+        
+        self.editorService.syncFoldingStatus()
     }
     
     public func foldAll() {
