@@ -662,6 +662,10 @@ public enum L10n {
       public static let fileLink = L10n.tr("Localizable", "key.command.fileLink")
       /// Fold All
       public static let foldAll = L10n.tr("Localizable", "key.command.foldAll")
+      /// Toggle Fold/Unfold
+      public static let foldOrUnfoldHeading = L10n.tr("Localizable", "key.command.foldOrUnfoldHeading")
+      /// Fold Others
+      public static let foldOthersExcpet = L10n.tr("Localizable", "key.command.foldOthersExcpet")
       /// Show Headings Action
       public static let headingMenu = L10n.tr("Localizable", "key.command.headingMenu")
       /// Highlight Text

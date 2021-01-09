@@ -426,6 +426,8 @@
 "key.command.group.view" = "View";
 "key.command.group.edit" = "Edit";
 "key.command.group.capture" = "Capture";
+"key.command.foldOrUnfoldHeading" = "Toggle Fold/Unfold";
+"key.command.foldOthersExcpet" = "Fold Others";
 
 // publish
 "publish.delete-saved-publish-info" = "Clear saved publish related login info";

@@ -290,16 +290,27 @@ public class FoldingAndUnfoldingCommand: DocumentContentCommand {
     }
     
     fileprivate func _markUnfold(heading: HeadingToken, textStorage: OutlineTextStorage) {
+        guard textStorage.isFolded(location: heading.range.location) == true else { return }
+        
         textStorage.setAttributeForHeading(heading, isFolded: false)
         
-        textStorage.allTokens.forEach {
-            if $0.range.intersection(heading.paragraphWithSubRange) != nil {
-                $0.renderDecoration(textStorage: textStorage)
+        for subHeading in textStorage.subheadings(of: heading) {
+            // rerender all sub heading headers
+            subHeading.needsRender = true
+            
+            // and also make the line break work
+            let lastCharactorRange = subHeading.paragraphWithSubRange.tail(1)
+            if textStorage.substring(lastCharactorRange) == "\n" {
+                textStorage.setAttributes(nil, range: lastCharactorRange)
             }
         }
+        
+        textStorage.flushTokens()
+        textStorage.setParagraphIndent(heading: heading, for: heading.paragraphWithSubRange)
     }
     
     fileprivate func _markFold(heading: HeadingToken, textStorage: OutlineTextStorage) {
+        guard textStorage.isFolded(location: heading.range.location) == false else { return }
         textStorage.setAttributeForHeading(heading, isFolded: true)
     }
     
@@ -308,17 +319,6 @@ public class FoldingAndUnfoldingCommand: DocumentContentCommand {
         for child in textStorage.subheadings(of: heading) {
             textStorage.setParagraphIndent(heading: child)
         }
-    }
-    
-    fileprivate func _unFoldHeadingButFoldChildren(heading: HeadingToken, textStorage: OutlineTextStorage) {
-        self._markUnfold(heading: heading, textStorage: textStorage)
-        for child in textStorage.subheadings(of: heading) {
-            self._fold(heading: child, textStorage: textStorage)
-        }
-    }
-    
-    fileprivate func _fold(heading: HeadingToken, textStorage: OutlineTextStorage) {
-        self._markFold(heading: heading, textStorage: textStorage)
     }
     
     fileprivate func _isFolded(heading: HeadingToken, textStorage: OutlineTextStorage) -> Bool {
@@ -333,9 +333,9 @@ public class FoldingAndUnfoldingCommand: DocumentContentCommand {
             var toggleFoldAndUnfoldAction: ((OutlineTextStorage, HeadingToken, FoldingAndUnfoldingCommand) -> Void)!
             toggleFoldAndUnfoldAction = { textStorage, heading, command in
                 if command._isFolded(heading: heading, textStorage: textStorage) {
-                    command._unFoldHeadingButFoldChildren(heading: heading, textStorage: textStorage)
+                    command._markUnfold(heading: heading, textStorage: textStorage)
                 } else {
-                    command._fold(heading: heading, textStorage: textStorage)
+                    command._markFold(heading: heading, textStorage: textStorage)
                 }
             }
             
@@ -356,22 +356,7 @@ public class FoldAllCommand: FoldingAndUnfoldingCommand {
     
     public override func perform() -> DocumentContentCommandResult {
         for heading in textStorage.topLevelHeadings {
-            super._fold(heading: heading, textStorage: textStorage)
-        }
-        
-        return DocumentContentCommandResult.noChange
-    }
-}
-
-// MARK: UnFoldAllCommand
-public class UnFoldAllCommand: FoldingAndUnfoldingCommand {
-    public init(textStorage: OutlineTextStorage) {
-        super.init(location: 0, textStorage: textStorage)
-    }
-    
-    public override func perform() -> DocumentContentCommandResult {
-        for heading in textStorage.topLevelHeadings {
-            super._unFoldHeadingAndChildren(heading: heading, textStorage: textStorage)
+            super._markFold(heading: heading, textStorage: textStorage)
         }
         
         return DocumentContentCommandResult.noChange
@@ -382,25 +367,31 @@ public class UnFoldAllCommand: FoldingAndUnfoldingCommand {
 // 还有 bug FIXME: 折叠部分包含了大片空白
 public class UnfoldToLocationCommand: FoldingAndUnfoldingCommand {
     public override func perform() -> DocumentContentCommandResult {
+        textStorage.beginEditing()
+        
         for heading in self.textStorage.headingTokens {
             if heading.subheadingsRange.contains(self.location) || heading.range.location == self.location {
-                super._unFoldHeadingButFoldChildren(heading: heading, textStorage: self.textStorage)
+                super._markUnfold(heading: heading, textStorage: self.textStorage)
             }
         }
+        
+        textStorage.endEditing()
         
         return DocumentContentCommandResult.noChange
     }
 }
 
-// MARK: - UnfoldToLocationCommand
+// MARK: - FoldToLocationCommand
 // 还有 bug FIXME: 折叠部分包含了大片空白
 public class FoldToLocationCommand: FoldingAndUnfoldingCommand {
     public override func perform() -> DocumentContentCommandResult {
-        for heading in self.textStorage.headingTokens {
-            if heading.subheadingsRange.contains(self.location) || heading.range.location == self.location {
-                super._fold(heading: heading, textStorage: self.textStorage)
-            }
+        self.textStorage.beginEditing()
+        
+        if let heading = self.textStorage.heading(contains: self.location) {
+            super._markFold(heading: heading, textStorage: self.textStorage)
         }
+        
+        self.textStorage.endEditing()
         
         return DocumentContentCommandResult.noChange
     }
@@ -487,7 +478,7 @@ public class ReplaceContentCommandComposer: DocumentContentCommandComposer {
     }
 }
 
-// MARK: - FoldCommandComposer
+// MARK: - FoldAndUnfoldCommandComposer
 public class FoldAndUnfoldCommandComposer: DocumentContentCommandComposer {
     let location: Int
     public init(location: Int) { self.location = location }
@@ -501,14 +492,6 @@ public class FoldAllCommandComposer: DocumentContentCommandComposer {
     public init(){}
     public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
         return FoldAllCommand(textStorage: textStorage)
-    }
-}
-
-// MARK: - UnfoldAllCommandComposer
-public class UnfoldAllCommandComposer: DocumentContentCommandComposer {
-    public init(){}
-    public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
-        return UnFoldAllCommand(textStorage: textStorage)
     }
 }
 

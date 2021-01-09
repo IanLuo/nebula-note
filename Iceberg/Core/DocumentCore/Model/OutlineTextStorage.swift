@@ -1032,13 +1032,16 @@ extension OutlineTextStorage: OutlineParserDelegate {
     /// to check if the heading  is folded
     /// for now, first check if there's mark in the token in memory, if so, simply return that, if not, whic mean the user never interacted with this heading, then returnt he folding status  in theattributes
     public func isHeadingFolded(heading: HeadingToken) -> Bool {
-        if let lastFoldMaker = self.outlineDelegate?.logs()?.headings[heading.identifier]?.isFold {
-            return lastFoldMaker
-        }
-        
+//        if let lastFoldMaker = self.outlineDelegate?.logs()?.headings[heading.identifier]?.isFold {
+//            return lastFoldMaker
+//        }
+//
         if heading.contentRange != nil {
-            if let foldingTempAttachmentAttribute = self.attribute(OutlineAttribute.tempShowAttachment, at: heading.contentRange!.location, effectiveRange: nil) as? String {
+            var effectiveRange: NSRange = NSRange(location: 0, length: 0)
+            if let foldingTempAttachmentAttribute = self.attribute(OutlineAttribute.tempShowAttachment, at: heading.contentRange!.location, effectiveRange: &effectiveRange) as? String {
                 return foldingTempAttachmentAttribute == OutlineAttribute.Heading.folded.rawValue
+            } else if let folded = self.attribute(OutlineAttribute.hidden, at: heading.contentRange!.location, effectiveRange: nil) as? NSNumber {
+                return folded.intValue == OutlineAttribute.hiddenValueFolded.intValue
             } else {
                 return false
             }
@@ -1303,6 +1306,8 @@ extension OutlineTextStorage {
     public func setAttributeForHeading(_ heading: HeadingToken, isFolded: Bool) {        
         if isFolded == true {
             var range: NSRange = heading.subheadingsRange
+            
+            // keep the last line break
             if range.upperBound != self.string.nsstring.length {
                 range = range.moveRightBound(by: -1)
             }
@@ -1311,66 +1316,38 @@ extension OutlineTextStorage {
             
             guard range.length > 0 else { return }
             
-            self.removeAttribute(OutlineAttribute.tempHidden, range: range)
-            self.removeAttribute(OutlineAttribute.hidden, range: range)
-            self.removeAttribute(OutlineAttribute.tempShowAttachment, range: range)
-            self.removeAttribute(OutlineAttribute.Attachment.type, range: range)
-            self.removeAttribute(OutlineAttribute.Attachment.value, range: range)
-            self.removeAttribute(OutlineAttribute.showAttachment, range: range)
-            self.removeAttribute(OutlineAttribute.showAttachment, range: heading.levelRange)
-            self.removeAttribute(OutlineAttribute.hidden, range: heading.levelRange)
-            self.removeAttribute(OutlineAttribute.Link.title, range: range)
+            self.setAttributes(nil, range: range)
             
             self.addAttributes([OutlineAttribute.tempHidden: OutlineAttribute.hiddenValueFolded,
                                        OutlineAttribute.tempShowAttachment: OutlineAttribute.Heading.folded],
                                       range: range)
             
-            self.addAttributes([OutlineAttribute.showAttachment: OutlineAttribute.Heading.foldingFolded,
-                                       OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment],
-                                      range: heading.levelRange.head(1))
-            if heading.levelRange.length > 1 {
-                self.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueDefault], range: heading.levelRange.tail(heading.levelRange.length - 1))
-            }
-            
-            self.outlineDelegate?.markFoldingState(heading: heading, isFolded: isFolded)
-        } else {
-            var range: NSRange = heading.subheadingsRange
-            if range.upperBound != self.string.nsstring.length {
-                range = range.moveRightBound(by: -1)
-            }
-            
-            self.removeAttribute(OutlineAttribute.tempHidden, range: range)
-            self.removeAttribute(OutlineAttribute.tempShowAttachment, range: range)
-            self.removeAttribute(OutlineAttribute.hidden, range: range)
             self.removeAttribute(OutlineAttribute.showAttachment, range: heading.levelRange)
-            self.removeAttribute(OutlineAttribute.hidden, range: heading.levelRange)
-            self.removeAttribute(OutlineAttribute.Link.title, range: range)
+
+            self.addAttribute(OutlineAttribute.showAttachment, value: OutlineAttribute.Heading.foldingFolded, range: heading.levelRange.head(1))
+        } else {
+            let range: NSRange = heading.paragraphRange
             
-            range = range.length > 0 ? range : NSRange(location: range.location, length: 0)
-            
-            // 重新渲染折叠部分的 attribute
             self.setAttributes(nil, range: range)
-            // 设置文字默认样式
-            self.addAttributes(OutlineTheme.paragraphStyle.attributes,
-                               range: range)
             
-            self.setParagraphIndent(heading: heading)
+            // 设置文字默认样式
+            self.setAttributes(OutlineTheme.paragraphStyle.attributes,
+                               range: range)
             
             // 折叠状态图标
             self.addAttributes([OutlineAttribute.showAttachment: OutlineAttribute.Heading.foldingUnfolded,
                                        OutlineAttribute.hidden: OutlineAttribute.hiddenValueWithAttachment],
                                       range: heading.levelRange.head(1))
+            
             if heading.levelRange.length > 1 {
                 self.addAttributes([OutlineAttribute.hidden: OutlineAttribute.hiddenValueDefault], range: heading.levelRange.tail(heading.levelRange.length - 1))
             }
             
             for token in self.allTokens {
-                if heading.paragraphWithSubRange.contains(token.range.location) {
+                if heading.paragraphRange.contains(token.range.location) {
                     token.needsRender = true
                 }
             }
-            
-            self.outlineDelegate?.markFoldingState(heading: heading, isFolded: isFolded)
         }
     }
 }

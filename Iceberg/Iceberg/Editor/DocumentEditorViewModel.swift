@@ -366,12 +366,36 @@ public class DocumentEditorViewModel: ViewModelProtocol {
     }
     
     public func foldOrUnfold(location: Int) {
-        _ = self.editorService.toggleContentCommandComposer(composer: FoldAndUnfoldCommandComposer(location: location)).perform()
+        let shouldFold = !self.isSectionFolded(at: location)
+        
+        if shouldFold {
+            self.fold(location: location)
+        } else {
+            self.unfold(location: location)
+        }
+        
+        self.editorService.syncFoldingStatus()
+    }
+        
+    public func foldAll() {
+        for heading in self.headings {
+            self.editorService.markFoldingState(heading: heading, isFolded: true)
+        }
+
+        self.editorService.syncFoldingStatus()
     }
     
-    public func unfoldExceptTo(location: Int) {
+    public func unfoldAll() {
         for heading in self.headings {
-            if heading.paragraphWithSubRange.contains(location) {
+            self.editorService.markFoldingState(heading: heading, isFolded: false)
+        }
+        
+        self.revertContent()
+    }
+    
+    public func unfold(location: Int) {
+        for heading in self.headings {
+            if heading.paragraphWithSubRange.contains(location) || heading.range.location == location {
                 self.editorService.markFoldingState(heading: heading, isFolded: false)
             }
         }
@@ -379,26 +403,26 @@ public class DocumentEditorViewModel: ViewModelProtocol {
         self.editorService.syncFoldingStatus()
     }
     
-    public func foldAll() {
-        self.editorService.logs?.headings.forEach({ _, log in
-            log.isFold = true
-        })
-        _ = self.editorService.toggleContentCommandComposer(composer: FoldAllCommandComposer()).perform()
-    }
-    
-    public func unfoldAll() {
-        self.editorService.logs?.headings.forEach({ _, log in
-            log.isFold = false
-        })
-        _ = self.editorService.toggleContentCommandComposer(composer: UnfoldAllCommandComposer()).perform()
-    }
-    
-    public func unfold(location: Int) {
-        self.unfoldExceptTo(location: location)
+    public func foldOtherHeadings(except location: Int) {
+        for heading in self.headings {
+            let range = heading.paragraphWithSubRange
+            let shouldOpen = range.contains(location) || range.location == location
+            self.editorService.markFoldingState(heading: heading, isFolded: !shouldOpen)
+        }
+        
+        self.editorService.syncFoldingStatus()
     }
     
     public func fold(location: Int) {
-        _ =  self.editorService.toggleContentCommandComposer(composer: FoldToLocationCommandCompose(location: location)).perform()
+        if let heading = self.heading(at: location) {
+            self.editorService.markFoldingState(heading: heading, isFolded: true)
+            
+            for subHeading in self.editorService.subHeading(for: heading) {
+                self.editorService.markFoldingState(heading: subHeading, isFolded: true)
+            }
+        }
+        
+        self.editorService.syncFoldingStatus()
     }
     
     public func performAction(_ action: EditAction, textView: UITextView) -> DocumentContentCommandResult {

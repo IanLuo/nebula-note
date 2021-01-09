@@ -52,6 +52,8 @@ public enum KeyAction: String, CaseIterable {
     case inspector
     case cancel
     case save
+    case foldOrUnfoldHeading
+    case foldOthersExcept
     
     public var isGlobal: Bool {
         switch self {
@@ -165,6 +167,10 @@ public enum KeyAction: String, CaseIterable {
             return L10n.Key.Command.moveRight
         case .save:
             return L10n.Key.Command.save
+        case .foldOrUnfoldHeading:
+            return L10n.Key.Command.foldOrUnfoldHeading
+        case .foldOthersExcept:
+            return L10n.Key.Command.foldOthersExcpet
         }
     }
     
@@ -252,6 +258,10 @@ public enum KeyAction: String, CaseIterable {
             return OtherAction.inspector
         case .save:
             return NormalAction.save
+        case .foldOrUnfoldHeading:
+            return NormalAction.toggleFoldOrUnfold
+        case .foldOthersExcept:
+            return NormalAction.foldOthersExcept
         }
     }
 }
@@ -304,7 +314,9 @@ public struct KeyBinding {
         .moveLeft: "cmd`\(UIKeyCommand.inputLeftArrow)",
         .moveRight: "cmd`\(UIKeyCommand.inputRightArrow)",
         .cancel: UIKeyCommand.inputEscape,
-        .save: "cmd`s"
+        .save: "cmd`s",
+        .foldOrUnfoldHeading: "cmd`f",
+        .foldOthersExcept: "cmd`shift`f"
     ]
     
     public func constructMenu(builder: UIMenuBuilder) {
@@ -442,6 +454,8 @@ public struct KeyBinding {
                                    options: [.displayInline],
                                    children: [
                                     KeyAction.toggleFullWidth,
+                                    KeyAction.foldOrUnfoldHeading,
+                                    KeyAction.foldOthersExcept
                                     ].map { self.create(for: $0) }),
         afterMenu: Menu.editorOther2.identifier)
     }

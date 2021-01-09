@@ -11,6 +11,7 @@ import UIKit
 import Interface
 import Core
 import RxSwift
+import RxCocoa
 
 public protocol DesktopDocumentTabContainerViewControllerDelegate: class {
     func didCloseDocument(url: URL, editorViewController: DocumentEditorViewController)
@@ -65,7 +66,7 @@ public class DocumentTabContainerViewController: UIViewController {
                 self?.closeDocument(url: tab.url)
                 
                 // if the closed document is currently openning, open another one
-                if try! tab.isSelected.value() {
+                if tab.isSelected.value {
                     if self?.openingViewControllers.count == 1 || index == 0 {
                         if let documentRelativePath = self?.openingViewControllers.first?.0 {
                             self?.selectTab(url: URL(documentRelativePath: documentRelativePath), location: 0)
@@ -256,11 +257,11 @@ private class TabBar: UIScrollView {
             
             strongSelf.stackView.arrangedSubviews.forEach {
                 if let tab = $0 as? Tab {
-                    if (try? tab.isSelected.value()) == false, tab.url.isSameDocument(another: url) {
-                        tab.isSelected.onNext(true)
+                    if tab.isSelected.value == false, tab.url.isSameDocument(another: url) {
+                        tab.isSelected.accept(true)
                         strongSelf.srollToIfNeeded(tab: tab)
-                    } else if (try? tab.isSelected.value()) == true, !tab.url.isSameDocument(another: url) {
-                        tab.isSelected.onNext(false)
+                    } else if tab.isSelected.value == true, !tab.url.isSameDocument(another: url) {
+                        tab.isSelected.accept(false)
                     }
                 }
             }
@@ -278,10 +279,10 @@ private class TabBar: UIScrollView {
                 }
             }
 
-            guard (try? tab?.isSelected.value()) != true else { return }
+            guard tab?.isSelected.value != true else { return }
             
             let newTab = Tab(url: url)
-            newTab.isSelected.onNext(shouldSelect)
+            newTab.isSelected.accept(shouldSelect)
             strongSelf.stackView.insertArrangedSubview(newTab, at: 0)
             newTab.sizeAnchor(height: 44)
             
@@ -291,21 +292,35 @@ private class TabBar: UIScrollView {
                 newTab.removeFromSuperview()
             }).disposed(by: strongSelf.disposeBag)
             
+            newTab.onCloseOthersTapped.subscribe(onNext: { [weak newTab] url in
+                guard let newTab = newTab else { return }
+                
+                self?.stackView.arrangedSubviews.forEach({ view in
+                    if let tab = view as? Tab, tab.url.documentRelativePath != newTab.url.documentRelativePath {
+                        self?.onCloseDocument.onNext(tab)
+                        tab.removeFromSuperview()
+                    }
+                })
+                
+                self?.onSelectDocument.onNext(newTab.url)
+            }).disposed(by: strongSelf.disposeBag)
+            
             newTab.onSelect.subscribe(onNext: { url in
                 strongSelf.onSelectDocument.onNext(url)
                 
                 strongSelf.stackView.arrangedSubviews.forEach {
                     if let tab = $0 as? Tab {
                         if  tab.url.isSameDocument(another: url) {
-                            tab.isSelected.onNext(true)
+                            tab.isSelected.accept(true)
                         } else {
-                            tab.isSelected.onNext(false)
+                            tab.isSelected.accept(false)
                         }
                     }
                 }
             }).disposed(by: strongSelf.disposeBag)
             
         }).disposed(by: self.disposeBag)
+        
     }
     
     private func srollToIfNeeded(tab: Tab) {
@@ -319,8 +334,10 @@ private class Tab: UIView {
     
     let onCloseTapped: PublishSubject<URL> = PublishSubject()
     let onSelect: PublishSubject<URL> = PublishSubject()
-    let isSelected: BehaviorSubject<Bool> = BehaviorSubject(value: false)
+    let isSelected: BehaviorRelay<Bool> = BehaviorRelay(value: false)
     let titleButton = UIButton()
+    
+    let onCloseOthersTapped: PublishSubject<URL> = PublishSubject()
     
     private let disposeBag: DisposeBag = DisposeBag()
     
@@ -380,5 +397,37 @@ private class Tab: UIView {
             self?.titleButton.setTitleColor(isSelected ? InterfaceTheme.Color.spotlitTitle : InterfaceTheme.Color.interactive, for: .normal)
             closeButton.setImage(Asset.Assets.cross.image.fill(color: isSelected ? InterfaceTheme.Color.spotlitTitle : InterfaceTheme.Color.interactive).resize(upto: CGSize(width: 10, height: 10)), for: .normal)
         }).disposed(by: self.disposeBag)
+        
+        
+        self.addContextualMenu()
+    }
+    
+    private func addContextualMenu() {
+        let interaction = UIContextMenuInteraction(delegate: self)
+        self.addInteraction(interaction)
+    }
+}
+
+@available(iOS 13, *)
+extension Tab: UIContextMenuInteractionDelegate {
+    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
+        return UIContextMenuConfiguration(identifier: nil,
+                                          previewProvider: nil,
+                                          actionProvider: { sugestedAction in
+                                            let closeTab = UIAction(title: "Close Tab", image: nil,
+                                                                    identifier: nil) { action in
+                                                if let url = self.url {
+                                                    self.onCloseTapped.onNext(url)
+                                                }
+                                            }
+                                            
+                                            let closeOtherTabs = UIAction(title: "Close Other Tabs") { action in
+                                                if let url = self.url {
+                                                    self.onCloseOthersTapped.onNext(url)
+                                                }
+                                            }
+                                            
+                                            return UIMenu(title: "", children: [closeTab, closeOtherTabs])
+                                          })
     }
 }

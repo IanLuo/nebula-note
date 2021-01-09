@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Interface
 
 public enum BlockType {
     case quote
@@ -69,6 +70,10 @@ public class Token {
     }
     
     public func renderDecoration(textStorage: OutlineTextStorage) {
+        textStorage.setAttributes(nil, range: self.range)
+        // 设置文字默认样式
+        textStorage.addAttributes(OutlineTheme.paragraphStyle.attributes,
+                           range: self.range)
         self.decorationAttributesAction?(textStorage, self)
     }
 }

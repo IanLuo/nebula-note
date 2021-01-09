@@ -66,7 +66,7 @@ extension DocumentEditorViewController: UITextViewDelegate {
                 if paragraphContentRange.length > 0
                     && paragraphContentRange.upperBound == range.location
                     && self.viewModel.foldedRange(at: lastPosition) != nil {
-                    self.viewModel.unfoldExceptTo(location: lastPosition)
+                    self.viewModel.unfold(location: lastPosition)
                     return false
                 }
             }
@@ -415,6 +415,14 @@ extension DocumentEditorViewController {
         
         binding.addAction(for: KeyAction.save, on: self) {
             self.viewModel.save {}
+        }
+        
+        binding.addAction(for: KeyAction.foldOrUnfoldHeading, on: self) {
+            self.viewModel.foldOrUnfold(location: self.textView.selectedRange.location)
+        }
+        
+        binding.addAction(for: KeyAction.foldOthersExcept, on: self) {
+            self.viewModel.foldOtherHeadings(except: self.textView.selectedRange.location)
         }
         
         self.viewModel.context.coordinator?.enableGlobalNavigateKeyCommands()

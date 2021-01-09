@@ -79,6 +79,8 @@ public enum NormalAction: String, ToolbarActionProtocol, DocumentActon {
     case newAttachment
     case fileLink
     case save
+    case toggleFoldOrUnfold
+    case foldOthersExcept
     
     public var title: String { return self.rawValue }
     
@@ -144,6 +146,10 @@ public enum NormalAction: String, ToolbarActionProtocol, DocumentActon {
             return Asset.Assets.save.image
         case .headingProperty:
             return Asset.Assets.settings.image
+        case .toggleFoldOrUnfold:
+            return Asset.Assets.folded.image // not using on toolbar, the the icon is wrong
+        case .foldOthersExcept:
+            return Asset.Assets.folded.image // not using on toolbar, the the icon is wrong
         }
     }
 }

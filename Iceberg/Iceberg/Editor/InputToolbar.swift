@@ -24,7 +24,7 @@ public class InputToolbar: UIView {
     }
     
     private static let paragraphActions = [NormalAction.paragraph]
-    private static let headingActions = [NormalAction.heading, NormalAction.headingProperty, NormalAction.planning, NormalAction.tag, NormalAction.priority]
+    private static let headingActions = [NormalAction.heading, NormalAction.planning, NormalAction.tag, NormalAction.priority]
     private static let textMark = [NormalAction.bold, NormalAction.italic, NormalAction.underscore, NormalAction.strikethrough, NormalAction.highlight]
     private static let moveCursor: [ToolbarActionProtocol] = [CursorAction.moveUp, CursorAction.moveDown, CursorAction.moveLeft, CursorAction.moveRight]
     private static let moveContent: [ToolbarActionProtocol] = [NormalAction.increaseIndent, NormalAction.decreaseIndent, NormalAction.moveUp, NormalAction.moveDown]
@@ -123,6 +123,12 @@ public class InputToolbar: UIView {
     }
     
     public func isActionAvailable(commandTitle: String) -> Bool {
+        if commandTitle == NormalAction.toggleFoldOrUnfold.rawValue {
+            return true
+        } else if commandTitle == NormalAction.foldOthersExcept.rawValue {
+            return true
+        }
+        
         for actionGroup in self._actions {
             for ac in actionGroup.actions {
                 if commandTitle == (ac as? DocumentActon)?.title && actionGroup.isEnabled {

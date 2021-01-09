@@ -221,7 +221,12 @@ public class EditorService {
         if let headingLogs = self.logs?.headings {
             for heading in self.editorController.textStorage.headingTokens {
                 let foldingStatus = headingLogs[heading.identifier]?.isFold ?? false
-                self.editorController.textStorage.setAttributeForHeading(heading, isFolded: foldingStatus)
+                if foldingStatus {
+                    _ = self.toggleContentCommandComposer(composer: FoldToLocationCommandCompose(location: heading.range.location)).perform()
+                } else {
+                    _ = self.toggleContentCommandComposer(composer: UnfoldToLocationCommandCompose(location: heading.range.location)).perform()
+                }
+
             }
         }
         
@@ -247,6 +252,14 @@ public class EditorService {
     
     public var headings: [HeadingToken] {
         return self.editorController.getParagraphs()
+    }
+    
+    public var topLevelHeadings: [HeadingToken] {
+        return self.editorController.textStorage.topLevelHeadings
+    }
+    
+    public func subHeading(for heading: HeadingToken) -> [HeadingToken] {
+        return self.editorController.textStorage.subheadings(of: heading)
     }
     
     public func foldedRange(at location: Int) -> NSRange? {

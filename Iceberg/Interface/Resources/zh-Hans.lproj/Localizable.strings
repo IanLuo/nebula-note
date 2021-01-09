@@ -429,6 +429,8 @@
 "key.command.group.view" = "视图";
 "key.command.group.edit" = "编辑";
 "key.command.group.capture" = "灵感";
+"key.command.foldOrUnfoldHeading" = "折叠/展开";
+"key.command.foldOthersExcpet" = "折叠其他段落";
 
 // publish
 "publish.delete-saved-publish-info" = "清除已保存的发布用户登录信息";
