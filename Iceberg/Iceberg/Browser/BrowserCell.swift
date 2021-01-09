@@ -114,6 +114,10 @@ public class BrowserCell: UITableViewCell {
         self.iconView.rowAnchor(view: self.lastModifiedDateLabel, space: 10, alignment: .bottom)
         self.titleLabel.columnAnchor(view: self.lastModifiedDateLabel, space: 8, alignment: .leading)
         self.lastModifiedDateLabel.sizeAnchor(height: 14)
+        
+
+        self.container.roundConer(radius: Layout.cornerRadius)
+        self.enableHover(on: self.container)
     }
     
     public func configure(cellModel: BrowserCellModel) {

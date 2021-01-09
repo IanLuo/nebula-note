@@ -339,8 +339,6 @@ fileprivate class ActionCell: UITableViewCell {
         }
     }
     
-    private let disposeBag = DisposeBag()
-    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
@@ -366,18 +364,8 @@ fileprivate class ActionCell: UITableViewCell {
         self.descriptionLabel.sideAnchor(for: .right, to: self.contentView, edgeInset: 20)
         self.descriptionLabel.centerAnchors(position: .centerY, to: self.contentView)
         
-        let hover = UIHoverGestureRecognizer()
-        self.addGestureRecognizer(hover)
-        
-        // hover
-        hover.rx.event.subscribe(onNext: { event in
-            switch event.state {
-            case .began, .changed:
-                self.backgroundColor = InterfaceTheme.Color.spotlight
-            case .ended, .cancelled, .failed, .possible:
-                self.backgroundColor = InterfaceTheme.Color.background2
-            }
-        }).disposed(by: self.disposeBag)
+        self.contentView.roundConer(radius: Layout.cornerRadius)
+        self.enableHover(on: self.contentView)
     }
     
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {

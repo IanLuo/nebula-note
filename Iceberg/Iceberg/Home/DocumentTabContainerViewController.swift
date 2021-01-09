@@ -345,6 +345,8 @@ private class Tab: UIView {
         self.init(frame: .zero)
         self.url = url
         self.setup()
+        
+        self.enableHover(on: self, hoverColor: InterfaceTheme.Color.background3)
     }
     
     func replaceUrl(to newUrl: URL) {
@@ -399,9 +401,12 @@ private class Tab: UIView {
         }).disposed(by: self.disposeBag)
         
         
-        self.addContextualMenu()
+        if #available(iOS 13, *) {
+            self.addContextualMenu()
+        }
     }
     
+    @available(iOS 13, *)
     private func addContextualMenu() {
         let interaction = UIContextMenuInteraction(delegate: self)
         self.addInteraction(interaction)

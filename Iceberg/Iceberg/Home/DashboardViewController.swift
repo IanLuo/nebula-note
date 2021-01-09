@@ -485,6 +485,13 @@ private class TabView: UITableViewHeaderFooterView {
         }
         #endif
 
+        self.titleButton.enableHover { [weak self] isHoving in
+            if isHoving {
+                self?.titleButton.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.background3, size: .singlePoint), for: .normal)
+            } else {
+                self?.titleButton.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.background1, size: .singlePoint), for: .normal)
+            }
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -579,6 +586,8 @@ private class SubtabCell: UITableViewCell {
         self.subtitleLabel.setContentHuggingPriority(UILayoutPriority.defaultHigh, for: NSLayoutConstraint.Axis.horizontal)
         self.detailIconView.sideAnchor(for: .right, to: self.innerContentView, edgeInset: Layout.edgeInsets.right)
         self.detailIconView.sizeAnchor(width: 10, height: 10)
+        
+        self.enableHover(on: self.innerContentView, hoverColor: InterfaceTheme.Color.background3)
     }
     
     required init?(coder aDecoder: NSCoder) {

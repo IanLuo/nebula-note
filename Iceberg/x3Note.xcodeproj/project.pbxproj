@@ -150,6 +150,7 @@
 		E472FF9D2270A691004C8495 /* ExportSelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E472FF9C2270A691004C8495 /* ExportSelectViewController.swift */; };
 		E47400AF241A151D0071BF73 /* ConflictResolverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E47400AE241A151C0071BF73 /* ConflictResolverViewController.swift */; };
 		E47400B1241C799D0071BF73 /* launchIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = E47400B0241C799D0071BF73 /* launchIcon.png */; };
+		E474A8FD25A9DCAD00EBA504 /* UIView+Hover.swift in Sources */ = {isa = PBXBuildFile; fileRef = E474A8FC25A9DCAD00EBA504 /* UIView+Hover.swift */; };
 		E4773BA821F7505E000F8F3F /* SearchTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4773BA721F7505E000F8F3F /* SearchTableCell.swift */; };
 		E4773BAA21F7507E000F8F3F /* SearchTabelCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4773BA921F7507E000F8F3F /* SearchTabelCellModel.swift */; };
 		E47829FD222E683B0054513E /* InputToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = E47829FC222E683B0054513E /* InputToolbar.swift */; };
@@ -559,6 +560,7 @@
 		E472FF9C2270A691004C8495 /* ExportSelectViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportSelectViewController.swift; sourceTree = "<group>"; };
 		E47400AE241A151C0071BF73 /* ConflictResolverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConflictResolverViewController.swift; sourceTree = "<group>"; };
 		E47400B0241C799D0071BF73 /* launchIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = launchIcon.png; sourceTree = "<group>"; };
+		E474A8FC25A9DCAD00EBA504 /* UIView+Hover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Hover.swift"; sourceTree = "<group>"; };
 		E4773BA721F7505E000F8F3F /* SearchTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTableCell.swift; sourceTree = "<group>"; };
 		E4773BA921F7507E000F8F3F /* SearchTabelCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTabelCellModel.swift; sourceTree = "<group>"; };
 		E4773BAB21F9A203000F8F3F /* CoverPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverPickerViewController.swift; sourceTree = "<group>"; };
@@ -835,6 +837,7 @@
 				E4CC0C5821EEF92900058E5D /* Size.swift */,
 				E4A46A1D21AE6CF400FBDA04 /* Image+Generation.swift */,
 				E41CB14A21D78E5B00EF0A3C /* Border.swift */,
+				E474A8FC25A9DCAD00EBA504 /* UIView+Hover.swift */,
 				E4130CB824ED643800EA08C0 /* KeyCommands.swift */,
 				E479512023C09B76000CFDE3 /* Paragraph.swift */,
 				E4BC264121F56DB900B0F2B9 /* Rect.swift */,
@@ -2144,6 +2147,7 @@
 				E42574C32294DEF3008993BC /* InterfaceTheme.swift in Sources */,
 				E40F6EA4223B7A7200FFF53F /* CoverPickerViewController.swift in Sources */,
 				E4D7B14524C349BA00503870 /* UIView+Convenience.swift in Sources */,
+				E474A8FD25A9DCAD00EBA504 /* UIView+Hover.swift in Sources */,
 				E40F6E9B223B7A5E00FFF53F /* FadeBackgroundTransition.swift in Sources */,
 				E40F6EA0223B7A6D00FFF53F /* SquareButton.swift in Sources */,
 				E40F6E8D223B78DB00FFF53F /* Image+Generation.swift in Sources */,
