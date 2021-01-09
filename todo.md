@@ -1,3 +1,7 @@
+---- 1.2.7 ----
+[x] fix folding issues
+[x] add 'fold other' function
+[ ] add remove tab/others
 ---- 1.2.6 ----
 [x] move paragraph without expand folded paragraph
 [x] choose paragraph without unfold other paragraph
