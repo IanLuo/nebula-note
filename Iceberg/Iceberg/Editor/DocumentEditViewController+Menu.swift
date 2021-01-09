@@ -28,6 +28,10 @@ extension DocumentEditorViewController {
         self.viewModel.hideGlobalCaptureEntry()
     }
     
+    @objc public func showOutlook() {
+        
+    }
+    
     @objc public func showMenu() {
         let actionsController = ActionsViewController()
         
@@ -57,14 +61,18 @@ extension DocumentEditorViewController {
             })
         }
         
-        let modeTitle = viewModel.isReadingModel ? L10n.Document.Menu.enableEditingMode : L10n.Document.Menu.enableReadingMode
-        actionsController.addAction(icon: nil, title: modeTitle) { [unowned self] viewController in
-            viewController.dismiss(animated: true, completion: {
-                self.viewModel.isReadingModel = !self.viewModel.isReadingModel
-                self.textView.isEditable = !self.viewModel.isReadingModel
-                self.textView.inputAccessoryView?.isHidden = self.viewModel.isReadingModel
-//                self.viewModel.dependency.appContext.isReadingMode.accept(!self.viewModel.isReadingModel) // trigger global status change
-            })
+//        let modeTitle = viewModel.isReadingModel ? L10n.Document.Menu.enableEditingMode : L10n.Document.Menu.enableReadingMode
+//        actionsController.addAction(icon: nil, title: modeTitle) { [unowned self] viewController in
+//            viewController.dismiss(animated: true, completion: {
+//                self.viewModel.isReadingModel = !self.viewModel.isReadingModel
+//                self.textView.isEditable = !self.viewModel.isReadingModel
+//                self.textView.inputAccessoryView?.isHidden = self.viewModel.isReadingModel
+////                self.viewModel.dependency.appContext.isReadingMode.accept(!self.viewModel.isReadingModel) // trigger global status change
+//            })
+//        }
+        
+        actionsController.addActionAutoDismiss(icon: nil, title: L10n.Document.Menu.info) {
+            self.showInfo()
         }
         
         actionsController.addAction(icon: Asset.Assets.inspiration.image,
@@ -87,7 +95,7 @@ extension DocumentEditorViewController {
         self.viewModel.hideGlobalCaptureEntry()
     }
     
-    func showOutline(from: UIView? = nil) {
+    @objc func showOutline(from: UIView? = nil) {
         self.viewModel.context.coordinator?.showOutline(from: from, completion: { selection in
             self.allowScrollContentWhenKeyboardDisapearTemporaily()
             
@@ -491,6 +499,10 @@ extension DocumentEditorViewController {
                 self.viewModel.showGlobalCaptureEntry()
                 self.viewModel.foldOrUnfold(location: location)
             })
+        }
+        
+        actionsController.addActionAutoDismiss(icon: nil, title: L10n.Key.Command.foldOthersExcpet) {
+            self.viewModel.foldOtherHeadings(except: self.textView.selectedRange.location)
         }
         
         actionsController.addAction(icon: nil, title: L10n.Document.Heading.moveTo) { viewController in

@@ -95,6 +95,7 @@
 "document.menu.unfoldAll" = "全部展开";
 "document.menu.outline" = "显示大纲";
 "document.menu.capture" = "采集灵感";
+"document.menu.info" = "文件信息";
 "document.menu.enableReadingMode" = "进入阅读模式";
 "document.menu.enableEditingMode" = "进入编辑模式";
 "document.menu.fullScreen" = "全屏";

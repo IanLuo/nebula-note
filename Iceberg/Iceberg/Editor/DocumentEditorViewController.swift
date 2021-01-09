@@ -141,9 +141,13 @@ public class DocumentEditorViewController: UIViewController {
             self.navigationItem.leftBarButtonItem = closeButton
             
             let menuButton = UIBarButtonItem(image: Asset.Assets.more.image.fill(color: InterfaceTheme.Color.interactive), style: .plain, target: self, action: #selector(showMenu))
-            let infoButton = UIBarButtonItem(image: Asset.Assets.document.image.fill(color: InterfaceTheme.Color.interactive), style: .plain, target: self, action: #selector(showInfo))
+            let outlookButton = UIBarButtonItem(image: Asset.Assets.list.image.fill(color: InterfaceTheme.Color.interactive), style: .plain, target: nil, action: nil)
+            outlookButton.rx.tap.subscribe(onNext: { _ in
+                self.showOutline(from: nil)
+            }).disposed(by: self.disposeBag)
+
             
-            self.navigationItem.rightBarButtonItems = [menuButton, infoButton]
+            self.navigationItem.rightBarButtonItems = [menuButton, outlookButton]
             
             self.inputbar.delegate = self
             

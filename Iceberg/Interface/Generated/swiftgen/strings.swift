@@ -555,6 +555,8 @@ public enum L10n {
       public static let foldAll = L10n.tr("Localizable", "document.menu.foldAll")
       /// Full screen
       public static let fullScreen = L10n.tr("Localizable", "document.menu.fullScreen")
+      /// Document Info
+      public static let info = L10n.tr("Localizable", "document.menu.info")
       /// Show outline
       public static let outline = L10n.tr("Localizable", "document.menu.outline")
       /// Menu
