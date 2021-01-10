@@ -359,7 +359,7 @@
 
 // membership
 "membership.title" = "会员计划";
-"membership.letter" = "觉得好用的话，请考虑加入 x3 笔记会员，解锁所有高级功能，支持产品持续改进，带来更多更强大的新功能。";
+"membership.letter" = "加入我们的会员计划，解锁所有高级功能，支持我们持续改进产品，带来更多更强大的新功能。";
 "membership.monthly.title" = "按月订阅会员";
 "membership.monthly.description" = "(赠送一星期) 无限制使用所有高级功能";
 "membership.yearly.title" = "按年订阅会员";

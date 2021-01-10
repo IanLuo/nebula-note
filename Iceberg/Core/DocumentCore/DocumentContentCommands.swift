@@ -370,7 +370,7 @@ public class UnfoldToLocationCommand: FoldingAndUnfoldingCommand {
         textStorage.beginEditing()
         
         for heading in self.textStorage.headingTokens {
-            if heading.subheadingsRange.contains(self.location) || heading.range.location == self.location {
+            if heading.contentWithSubHeadingsRange.contains(self.location) || heading.range.location == self.location {
                 super._markUnfold(heading: heading, textStorage: self.textStorage)
             }
         }

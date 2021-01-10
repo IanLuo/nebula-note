@@ -58,7 +58,7 @@ extension DocumentEditorViewController: UITextViewDelegate {
         if textView.text.count > 0 {
             let lastPosition = range.location - 1
             if let heading = self.viewModel.heading(at: lastPosition) {
-                var paragraphContentRange: NSRange = heading.subheadingsRange
+                var paragraphContentRange: NSRange = heading.contentWithSubHeadingsRange
                 if paragraphContentRange.upperBound != textView.text.nsstring.length {
                     paragraphContentRange = paragraphContentRange.moveRightBound(by: -1)
                 }

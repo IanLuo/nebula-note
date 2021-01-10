@@ -340,13 +340,13 @@ public class HeadingToken: Token {
         return self.outlineTextStorage?.parangraphsRange(at: self.range.location) ?? self.range
     }
     
-    public var subheadingsRange: NSRange {
+    public var contentWithSubHeadingsRange: NSRange {
         let lastChild = self.outlineTextStorage?.subheadings(of: self).last ?? self
         return NSRange(location: self.range.upperBound, length: lastChild.paragraphRange.upperBound - self.range.upperBound)
     }
     
     public var paragraphWithSubRange: NSRange {
-        return self.range.union(self.subheadingsRange)
+        return self.range.union(self.contentWithSubHeadingsRange)
     }
     
     public var upperBoundWithoutLineBreak: Int {

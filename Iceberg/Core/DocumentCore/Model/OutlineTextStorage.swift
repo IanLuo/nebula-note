@@ -1068,7 +1068,7 @@ extension OutlineTextStorage: OutlineParserDelegate {
         let isFolded = self.outlineDelegate?.logs()?.headings[heading.identifier]?.isFold
                 
         // only if the heading have content, can show the folded status icon
-        if isFolded == true && heading.range.location != heading.paragraphWithSubRange.location {
+        if isFolded == true && heading.contentWithSubHeadingsRange.length > 1 {
             self.addAttribute(OutlineAttribute.showAttachment, value: OutlineAttribute.Heading.foldingFolded, range: heading.levelRange)
         } else {
             self.addAttribute(OutlineAttribute.showAttachment, value: OutlineAttribute.Heading.foldingUnfolded, range: heading.levelRange)
@@ -1317,7 +1317,7 @@ extension OutlineTextStorage {
     
     public func setAttributeForHeading(_ heading: HeadingToken, isFolded: Bool) {        
         if isFolded == true {
-            var range: NSRange = heading.subheadingsRange
+            var range: NSRange = heading.contentWithSubHeadingsRange
             
             // keep the last line break
             if range.upperBound != self.string.nsstring.length {
