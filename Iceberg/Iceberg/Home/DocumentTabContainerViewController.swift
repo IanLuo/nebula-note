@@ -419,14 +419,14 @@ extension Tab: UIContextMenuInteractionDelegate {
         return UIContextMenuConfiguration(identifier: nil,
                                           previewProvider: nil,
                                           actionProvider: { sugestedAction in
-                                            let closeTab = UIAction(title: "Close Tab", image: nil,
+                                            let closeTab = UIAction(title: L10n.Browser.Tab.close, image: nil,
                                                                     identifier: nil) { action in
                                                 if let url = self.url {
                                                     self.onCloseTapped.onNext(url)
                                                 }
                                             }
                                             
-                                            let closeOtherTabs = UIAction(title: "Close Other Tabs") { action in
+                                            let closeOtherTabs = UIAction(title: L10n.Browser.Tab.closeOthers) { action in
                                                 if let url = self.url {
                                                     self.onCloseOthersTapped.onNext(url)
                                                 }

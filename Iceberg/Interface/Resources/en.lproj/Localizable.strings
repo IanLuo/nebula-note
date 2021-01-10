@@ -241,6 +241,8 @@
 "browser.help" = "Document management help";
 "browser.file-not-existed" = "File not exists";
 "browser.file-not-existed.message" = "Please check if the file is renamed or moved";
+"browser.tab.close" = "Close Tab";
+"browser.tab.closeOthers" = "Close Other Tabs";
 
 // agenda
 "agenda.title" = "Agenda";

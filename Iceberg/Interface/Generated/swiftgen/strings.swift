@@ -252,6 +252,12 @@ public enum L10n {
       /// Document ending
       public static let endOfDocument = L10n.tr("Localizable", "browser.outline.endOfDocument")
     }
+    public enum Tab {
+      /// Close Tab
+      public static let close = L10n.tr("Localizable", "browser.tab.close")
+      /// Close Other Tabs
+      public static let closeOthers = L10n.tr("Localizable", "browser.tab.closeOthers")
+    }
     public enum Title {
       /// Copy
       public static let copyExt = L10n.tr("Localizable", "browser.title.copyExt")
@@ -753,7 +759,7 @@ public enum L10n {
   }
 
   public enum Membership {
-    /// If you enjoy using x3 note, please consider joining membership, to unlock all advanced functions, support the continuous development, and bring you more powerfurl and useful functions.
+    /// Join our membership, to unlock all advanced functions, and support us keep improving product, bring you more powerfurl and useful functions.
     public static let letter = L10n.tr("Localizable", "membership.letter")
     /// About member subscription
     public static let moreHelp = L10n.tr("Localizable", "membership.moreHelp")
