@@ -419,13 +419,14 @@ extension OutlineTextStorage: OutlineParserDelegate {
                 // ignore when key is content, this part is looking for different font style key
                 guard key != OutlineParser.Key.Element.TextMark.content else { continue }
 
-                self._addMarkTokenAttributes(range: range)
                 
                 let textMarkToken: TextMarkToken = TextMarkToken(range: range, name: key, data: dict)
                 
                 self.checkMarkEmbeded(token: textMarkToken)
                 
-                textMarkToken.decorationAttributesAction = { textStorage, token in
+                textMarkToken.decorationAttributesAction = { [weak self] textStorage, token in
+                    self?._addMarkTokenAttributes(range: token.range)
+                    
                     let contentRange = token.range(for: OutlineParser.Key.Element.TextMark.content) ?? token.range
                     if textStorage.isReadingMode {
                         textStorage.addAttribute(OutlineAttribute.hidden, value: 1, range: token.range.head(1))
@@ -1009,11 +1010,19 @@ extension OutlineTextStorage: OutlineParserDelegate {
             self._figureOutBlocks(&self._blocks)
         }
         
-        // mark embeded tokens
+        // remove tokens inside block
         for block in self._blocks {
-            for token in self.allTokens {
-                if block.range.intersection(token.range) != nil && !(token is BlockToken) {
-                    token.isEmbeded = true
+            var count = self.allTokens.count
+            for (index, token) in self.allTokens.reversed().enumerated() {
+                if !(token is LinkToken) && block.range.intersection(token.range) != nil && !(token is BlockToken) {
+                    self.allTokens.remove(at: count - 1 - index)
+                }
+            }
+            
+            count = self.tempParsingTokenResult.count
+            for (index, token) in self.tempParsingTokenResult.reversed().enumerated() {
+                if !(token is LinkToken) && block.range.intersection(token.range) != nil && !(token is BlockToken) {
+                    self.tempParsingTokenResult.remove(at: count - 1 - index)
                 }
             }
         }
@@ -1051,16 +1060,19 @@ extension OutlineTextStorage: OutlineParserDelegate {
     }
     
     public func addHeadingFoldingStatus(heading: HeadingToken) {
+        
+        
+        self.addAttribute(OutlineAttribute.hidden, value: OutlineAttribute.hiddenValueWithAttachment, range: heading.levelRange.head(1))
+        self.addAttribute(OutlineAttribute.hidden, value: OutlineAttribute.hiddenValueDefault, range: heading.levelRange.tail(heading.levelRange.length - 1))
+        
         let isFolded = self.outlineDelegate?.logs()?.headings[heading.identifier]?.isFold
                 
-        if isFolded == true {
+        // only if the heading have content, can show the folded status icon
+        if isFolded == true && heading.range.location != heading.paragraphWithSubRange.location {
             self.addAttribute(OutlineAttribute.showAttachment, value: OutlineAttribute.Heading.foldingFolded, range: heading.levelRange)
         } else {
             self.addAttribute(OutlineAttribute.showAttachment, value: OutlineAttribute.Heading.foldingUnfolded, range: heading.levelRange)
         }
-                
-        self.addAttribute(OutlineAttribute.hidden, value: OutlineAttribute.hiddenValueWithAttachment, range: heading.levelRange.head(1))
-        self.addAttribute(OutlineAttribute.hidden, value: OutlineAttribute.hiddenValueDefault, range: heading.levelRange.tail(heading.levelRange.length - 1))
     }
     
     private func _addStylesForCodeBlock() {

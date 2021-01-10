@@ -335,7 +335,7 @@ public class HeadingToken: Token {
             return calculatedContentRange
         }
     }
-    
+        
     public var paragraphRange: NSRange {
         return self.outlineTextStorage?.parangraphsRange(at: self.range.location) ?? self.range
     }
