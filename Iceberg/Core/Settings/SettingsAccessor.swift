@@ -38,6 +38,7 @@ public enum SettingsError: Error {
         case isFirstLaunchApp
         case didShowUserGuide
         case openedDocuments
+        case pinedDocuments
         
         public func set(_ value: Any, completion: @escaping () -> Void) {
             Constants.store.set(value: value, key: self.rawValue, completion: completion)

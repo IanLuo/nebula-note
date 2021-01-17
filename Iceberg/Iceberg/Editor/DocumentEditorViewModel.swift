@@ -122,11 +122,15 @@ public class DocumentEditorViewModel: ViewModelProtocol {
         if shouldSaveBeforeRevert {
             self.editorService.save { [weak self] isTrue in
                 if isTrue && self?.isReadyToEdit == true {                    
-                    self?.editorService.revertContent()
+                    self?.editorService.revertContent() { _ in
+                        self?.editorService.syncFoldingStatus()
+                    }
                 }
             }
         } else {
-            self.editorService.revertContent()
+            self.editorService.revertContent() { _ in
+                self.editorService.syncFoldingStatus()
+            }
         }
     }
     

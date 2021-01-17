@@ -1,7 +1,11 @@
 ---- 1.2.7 ----
 [x] fix folding issues
 [x] add 'fold other' function
-[ ] add remove tab/others
+[x] add remove tab/others
+[x] move outline from 2nd level menu to 1st level on iOS version
+[x] add hover effect on macos and iPad version
+[x] add close/close others for macos and iPad version
+[x] fix tokens inside a block
 ---- 1.2.6 ----
 [x] move paragraph without expand folded paragraph
 [x] choose paragraph without unfold other paragraph

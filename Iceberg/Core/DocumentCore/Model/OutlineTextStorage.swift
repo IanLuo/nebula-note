@@ -327,6 +327,7 @@ extension OutlineTextStorage {
     public func subheadings(of heading: HeadingToken) -> [HeadingToken] {
         var subheadings: [HeadingToken] = []
         var mark: Bool = false // mark is the current heading is found
+        var firstSubHeadingLevel: Int? // the first subheading's level should be the sub heading's level, lower than than should be ignored, which should be long to the sub' sub heading
         
         for h in self.headingTokens {
             if heading.identifier == h.identifier
@@ -334,6 +335,10 @@ extension OutlineTextStorage {
                 mark = true
             } else if mark {
                 if h.level > heading.level {
+                    if firstSubHeadingLevel == nil { firstSubHeadingLevel = h.level }
+                    
+                    guard h.level == firstSubHeadingLevel else { continue }
+                        
                     subheadings.append(h)
                 } else {
                     break
