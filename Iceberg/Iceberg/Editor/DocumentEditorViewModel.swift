@@ -139,7 +139,7 @@ public class DocumentEditorViewModel: ViewModelProtocol {
     }
     
     public func createHeadingIdIfNotExisted(textView: UITextView?) {
-        // add id for headings don't have a id
+        // add id for headings which don't have an id yet
         for heading in self.editorService.headings.reversed() {
             if heading.id == nil {
                 let newId = "{id:\(UUID().uuidString)}"
@@ -202,6 +202,37 @@ public class DocumentEditorViewModel: ViewModelProtocol {
         set {
             self.editorService.isReadingMode = newValue
             self.revertContent()
+        }
+    }
+    
+    public var isFavorite: Bool {
+        get {
+            return (self.dependency
+                        .settingAccessor
+                        .getSetting(item: SettingsAccessor.Item.favoriteDocuments,
+                                    type: [String].self) ?? []).contains(where: {
+                                        $0 == self.editorService.id
+                                    })
+        }
+        
+        set {
+            var favoriteDocuments = self.dependency
+                .settingAccessor
+                .getSetting(item: SettingsAccessor.Item.favoriteDocuments,
+                            type: [String].self) ?? []
+                
+            guard let id = self.editorService.id else { return }
+            if newValue == true {
+                if !favoriteDocuments.contains(id) {
+                    favoriteDocuments.append(id)
+                    self.dependency.settingAccessor.setSetting(item: SettingsAccessor.Item.favoriteDocuments, value: favoriteDocuments)
+                }
+            } else {
+                for case let (index, documentId) in favoriteDocuments.enumerated() where documentId == id {
+                    favoriteDocuments.remove(at: index)
+                    self.dependency.settingAccessor.setSetting(item: SettingsAccessor.Item.favoriteDocuments, value: favoriteDocuments)
+                }
+            }
         }
     }
     

@@ -12,7 +12,7 @@ xcassets:
         - Interface/Resources/Assets.xcassets
         - Interface/Resources/Colors.xcassets
     outputs:
-        - templateName: swift4
+        - templateName: swift5
           output: Interface/Generated/swiftgen/assets.swift
           params:
             publicAccess: true

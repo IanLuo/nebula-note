@@ -51,15 +51,21 @@ public class HomeCoordinator: Coordinator {
         browserCoordinator.delegate = self
         self.addPersistentCoordinator(browserCoordinator)
         
+        let favoriteCoordinator = BrowserCoordinator(stack: self.stack, dependency: self.dependency, usage: .favoriate)
+        favoriteCoordinator.delegate = self
+        self.addPersistentCoordinator(favoriteCoordinator)
+        
         let tabs = [Coordinator.createDefaultNavigationControlller(root: agendaCoordinator.viewController!),
                     Coordinator.createDefaultNavigationControlller(root: captureCoordinator.viewController!),
                     Coordinator.createDefaultNavigationControlller(root: searchCoordinator.viewController!),
-                    Coordinator.createDefaultNavigationControlller(root: browserCoordinator.viewController!)]
+                    Coordinator.createDefaultNavigationControlller(root: browserCoordinator.viewController!),
+                    Coordinator.createDefaultNavigationControlller(root: favoriteCoordinator.viewController!)]
         
         dashboardViewController.addTab(tabs: [DashboardViewController.TabType.agenda(tabs[0], 0),
                                               DashboardViewController.TabType.captureList(tabs[1], 1),
                                               DashboardViewController.TabType.search(tabs[2], 2),
-                                              DashboardViewController.TabType.documents(tabs[3], 3)])
+                                              DashboardViewController.TabType.documents(tabs[3], 3),
+                                              DashboardViewController.TabType.favorite(tabs[4], 4)])
         
         if isMacOrPad {
             self.viewController = DesktopHomeViewController(dashboardViewController: dashboardViewController, coordinator: self, documentTabsContainerViewController: DocumentTabContainerViewController(viewModel: viewModel))

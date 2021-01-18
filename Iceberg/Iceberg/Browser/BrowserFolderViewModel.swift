@@ -38,9 +38,10 @@ public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
     public enum Mode {
         case chooser
         case browser
+        case favorite
         
         public var showActions: Bool {
-            return self == .browser
+            return self == .browser || self == .favorite
         }
         
         public var showChooseIndicator: Bool {
@@ -118,11 +119,44 @@ public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
     }
     
     public func reload() {
+        // when loading data, for root page, laoding favorite list for favorite, others load from root directory
+        if self.isRoot {
+            switch self.mode {
+            case .favorite:
+                self.loadFavorites().subscribe(onNext: { [weak self] in
+                    self?.output.documents.accept([BrowserDocumentSection(items: $0)])
+                }).disposed(by: self.disposeBag)
+                return
+            case .browser, .chooser: break
+            }
+        }
+        
         self._loadFolderData(url: self.url)
             .subscribe(onNext: { [weak self] in
                 self?.output.documents.accept([BrowserDocumentSection(items: $0)])
             })
             .disposed(by: self.disposeBag)
+    }
+    
+    private func loadFavorites() -> Observable<[BrowserCellModel]> {
+        guard let favorites = self.dependency.settingAccessor.getSetting(item: .favoriteDocuments, type: [String].self) else {
+            return Observable.just([])
+        }
+        
+        let searchManager = self.dependency.documentSearchManager
+        
+        let allSearchs: [Observable<URL>] = favorites
+            .map { searchManager.searchLog(containing: $0, onlyTakeFirst: true).compactMap { $0.first } }
+        
+        return Observable.merge(allSearchs).toArray().asObservable().map { urls in
+            return urls.map {
+                let cellModel = BrowserCellModel(url: $0)
+                cellModel.shouldShowActions = self.mode.showActions
+                cellModel.shouldShowChooseHeadingIndicator = self.mode.showChooseIndicator
+                cellModel.coordinator = self.context.coordinator
+                return cellModel
+            }
+        }
     }
     
     public func indexPath(for url: URL) -> IndexPath? {

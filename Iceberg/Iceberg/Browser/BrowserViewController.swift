@@ -34,14 +34,34 @@ public class BrowserViewController: UIViewController {
         return button
     }()
     
+    private var shouldShowRecentView: Bool!
+    private var shouldShowHelpButton: Bool!
+    
     public convenience init(recentViewController: BrowserRecentViewController,
-                            browserFolderViewController: BrowserFolderViewController) {
+                            browserFolderViewController: BrowserFolderViewController,
+                            coordinator: BrowserCoordinator) {
         self.init()
+        
+        switch coordinator.usage {
+        case .browseDocument, .chooseHeader:
+            self.shouldShowRecentView = true
+            self.shouldShowHelpButton = true
+        case .favoriate:
+            self.shouldShowRecentView = false
+            self.shouldShowHelpButton = false
+        }
+        
         self.recentViewController = recentViewController
         self.browserFolderViewController = browserFolderViewController
         
-        self.title = L10n.Browser.title
-        self.tabBarItem = UITabBarItem(title: "", image: Asset.Assets.document.image, tag: 0)
+        switch coordinator.usage {
+        case .favoriate:
+            self.title = L10n.Browser.Favorite.title
+            self.tabBarItem = UITabBarItem(title: "", image: Symbols.star.image, tag: 0)
+        default:
+            self.title = L10n.Browser.title
+            self.tabBarItem = UITabBarItem(title: "", image: Asset.Assets.document.image, tag: 0)
+        }
     }
     
     public override func viewDidLoad() {
@@ -57,16 +77,18 @@ public class BrowserViewController: UIViewController {
         }
                 
         self.view.addSubview(self.recentViewController.view)
-        self.recentViewController.view.sideAnchor(for: [.left, .top, .right], to: self.view, edgeInsets: .init(top: 20, left: 10, bottom: 0, right: -10), considerSafeArea: true)
-        self.recentViewController.view.sizeAnchor(height: 120)
+        self.recentViewController.view.sideAnchor(for: [.left, .top, .right], to: self.view, edgeInsets: .init(top: self.shouldShowRecentView ? 20 : 0, left: 10, bottom: 0, right: -10), considerSafeArea: true)
+        self.recentViewController.view.sizeAnchor(height: self.shouldShowRecentView ? 120 : 0)
         self.addChild(self.recentViewController)
         self.recentViewController.didMove(toParent: self)
+        
+        self.recentViewController.view.isHidden = !self.shouldShowRecentView
         
         let nav = Coordinator.createDefaultNavigationControlller()
         nav.pushViewController(self.browserFolderViewController, animated: false)
         self.view.addSubview(nav.view)
         nav.view.sideAnchor(for: [.left, .bottom, .right], to: self.view, edgeInset: 0)
-        self.recentViewController.view.columnAnchor(view: nav.view, space: 20, alignment: .centerX)
+        self.recentViewController.view.columnAnchor(view: nav.view, space: self.shouldShowRecentView ? 20 : 0, alignment: .centerX)
         self.addChild(nav)
         nav.didMove(toParent: self)
                 
@@ -95,6 +117,9 @@ public class BrowserViewController: UIViewController {
         rightItem.rx.tap.subscribe(onNext: {
             HelpPage.documentManagement.open(from: self)
         }).disposed(by: self.disposeBag)
-        self.navigationItem.rightBarButtonItem = rightItem
+        
+        if self.shouldShowHelpButton {
+            self.navigationItem.rightBarButtonItem = rightItem
+        }
     }
 }

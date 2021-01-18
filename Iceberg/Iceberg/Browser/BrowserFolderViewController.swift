@@ -65,6 +65,8 @@ public class BrowserFolderViewController: UIViewController {
         self.view.addSubview(self.tableView)
         self.tableView.allSidesAnchors(to: self.view, edgeInset: 0)
         
+        switch viewModel.mode {
+        case .browser, .chooser:
         // bind add document button
         let rightBarButtonItem = UIBarButtonItem(image: Asset.Assets.newDocument.image, style: .plain, target: nil, action: nil)
         rightBarButtonItem.rx
@@ -77,6 +79,9 @@ public class BrowserFolderViewController: UIViewController {
         self.interface { (me, theme) in
             rightBarButtonItem.tintColor = theme.color.spotlight
         }
+        case .favorite: break
+        }
+        
                 
         self._setupObserver()
         

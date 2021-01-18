@@ -244,6 +244,8 @@
 "browser.tab.close" = "Close Tab";
 "browser.tab.closeOthers" = "Close Other Tabs";
 
+"browser.favorite.title" = "Favorites";
+
 // agenda
 "agenda.title" = "Agenda";
 "agenda.startToday" = "Start today";

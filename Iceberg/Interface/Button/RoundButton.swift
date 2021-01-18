@@ -65,7 +65,10 @@ public class RoundButton: UIView {
         }
     }
     
-    public var isSelected: Bool = false
+    public var isSelected: Bool {
+        get { return self.button.isSelected }
+        set { self.button.isSelected = newValue }
+    }
     
     public func setButtonRadius(_ radius: CGFloat) {
         self.button.sizeAnchor(width: radius * 2, height: radius * 2)

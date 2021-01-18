@@ -23,16 +23,17 @@ public class DocumentInfoViewController: TransitionViewController {
     
     private let disposeBag = DisposeBag()
     
-    private lazy var _backButton: RoundButton = {
+    private lazy var favoriteButton: RoundButton = {
         let button = RoundButton()
-        button.setIcon(Asset.Assets.right.image.fill(color: InterfaceTheme.Color.interactive), for: .normal)
+        button.setIcon(Symbols.star.image.fill(color: InterfaceTheme.Color.interactive), for: .normal)
+        button.setIcon(Symbols.star_fill.image.fill(color: InterfaceTheme.Color.spotlight), for: .selected)
         button.setBackgroundColor(InterfaceTheme.Color.background2, for: .normal)
         return button
     }()
     
     private lazy var _helpButton: RoundButton = {
         let button = RoundButton()
-        button.setIcon(Asset.Assets.infomation.image.fill(color: InterfaceTheme.Color.interactive), for: .normal)
+        button.setIcon(Symbols.info.image.fill(color: InterfaceTheme.Color.interactive), for: .normal)
         button.setBackgroundColor(InterfaceTheme.Color.background2, for: .normal)
         return button
     }()
@@ -66,8 +67,9 @@ public class DocumentInfoViewController: TransitionViewController {
         tap.delegate = self
         self.view.addGestureRecognizer(tap)
         
-        self._backButton.tapped { [weak self] _ in
-            self?.cancel()
+        self.favoriteButton.tapped { [weak self] _ in
+            self?._viewModel.isFavorite = self?._viewModel.isFavorite == false
+            self?.favoriteButton.isSelected = self?._viewModel.isFavorite == true
         }
         
         self._helpButton.tapped { [weak self] view in
@@ -80,6 +82,8 @@ public class DocumentInfoViewController: TransitionViewController {
         }).disposed(by: self.disposeBag)
         
         self.setupUI()
+        
+        self.favoriteButton.isSelected = viewModel.isFavorite
     }
     
     private func setupUI() {
@@ -88,9 +92,9 @@ public class DocumentInfoViewController: TransitionViewController {
         self.contentView.sideAnchor(for: [.top, .bottom, .right], to: self.view, edgeInsets: UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0))
         self.contentView.sizeAnchor(width: 240)
         
-        self.contentView.addSubview(self._backButton)
-        self._backButton.sideAnchor(for: [.traling, .top], to: self.contentView, edgeInsets: UIEdgeInsets(top: 0, left: 0, bottom: 0, right: -Layout.edgeInsets.right), considerSafeArea: true)
-        self._backButton.sizeAnchor(width: 44)
+        self.contentView.addSubview(self.favoriteButton)
+        self.favoriteButton.sideAnchor(for: [.traling, .top], to: self.contentView, edgeInsets: UIEdgeInsets(top: 0, left: 0, bottom: 0, right: -Layout.edgeInsets.right), considerSafeArea: true)
+        self.favoriteButton.sizeAnchor(width: 44)
         
         self.contentView.addSubview(self._helpButton)
         self._helpButton.sideAnchor(for: [.leading, .top], to: self.contentView, edgeInsets: UIEdgeInsets(top: 0, left: Layout.edgeInsets.left, bottom: 0, right: 0), considerSafeArea: true)
@@ -105,7 +109,7 @@ public class DocumentInfoViewController: TransitionViewController {
         self.contentView.addSubview(self._publishButton)
         self.contentView.addSubview(basicInfoViewController.view)
         
-        self._backButton.columnAnchor(view: basicInfoViewController.view, space: 30, alignment: [])
+        self.favoriteButton.columnAnchor(view: basicInfoViewController.view, space: 30, alignment: [])
         
         basicInfoViewController.view.sideAnchor(for: [.left, .right], to: self.contentView, edgeInset: 0)
         

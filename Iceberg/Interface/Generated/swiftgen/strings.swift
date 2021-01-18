@@ -242,6 +242,10 @@ public enum L10n {
         }
       }
     }
+    public enum Favorite {
+      /// Favorites
+      public static let title = L10n.tr("Localizable", "browser.favorite.title")
+    }
     public enum FileNotExisted {
       /// Please check if the file is renamed or moved
       public static let message = L10n.tr("Localizable", "browser.file-not-existed.message")

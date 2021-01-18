@@ -22,11 +22,13 @@ public class BrowserCoordinator: Coordinator {
     public enum Usage {
         case browseDocument
         case chooseHeader
+        case favoriate
         
         var browserFolderMode: BrowserFolderViewModel.Mode {
             switch self {
             case .browseDocument: return .browser
             case .chooseHeader: return .chooser
+            case .favoriate: return .favorite
             }
         }
     }
@@ -51,14 +53,15 @@ public class BrowserCoordinator: Coordinator {
         let browseRecentViewController = BrowserRecentViewController(viewModel: browseRecentViewModel)
         
         let browseViewController = BrowserViewController(recentViewController: browseRecentViewController,
-                                                         browserFolderViewController: browserFolderViewController)
-                
+                                                         browserFolderViewController: browserFolderViewController,
+                                                         coordinator: self)
+        
         self.viewController = browseViewController
         
         // binding
         browserFolderViewController.output.onSelectDocument.subscribe(onNext: { [unowned self] url in
             switch self.usage {
-            case .browseDocument:
+            case .browseDocument, .favoriate:
                 self.delegate?.didSelectDocument(url: url, coordinator: self)
                 self.didSelectDocumentAction?(url)
             case .chooseHeader:
@@ -78,6 +81,7 @@ public class BrowserCoordinator: Coordinator {
                 self.didSelectDocumentAction?(url)
             case .chooseHeader:
                 self.showOutlineHeadings(url: url)
+            default: break
             }
         }).disposed(by: self.disposeBag)
     }

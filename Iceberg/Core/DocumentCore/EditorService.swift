@@ -211,10 +211,20 @@ public class EditorService {
             let decoder = JSONDecoder()
             do {
                 self.logs = try decoder.decode(DocumentLog.self, from: data)
+                
+                // if documentId is empty, set it
+                if self.logs?.id == nil {
+                    self.logs?.id = "documentID:{\(UUID().uuidString)}"
+                    self.updateLogs(self.logs!)
+                }
             } catch {
                 print("Failed to load logs \(error)")
             }
         }
+    }
+    
+    public var id: String? {
+        return self.logs?.id
     }
     
     public func syncFoldingStatus() {

@@ -127,6 +127,7 @@ public class DocumentSearchManager {
     private let _headingChangeObservingQueue: OperationQueue
     private let _trashSearchOperationQueue: OperationQueue
     private let _documentSearchOperationQueue: OperationQueue
+    private let _logSearchOperationQueue: OperationQueue
     
     public init() {
         self._headingSearchOperationQueue = OperationQueue()
@@ -134,12 +135,14 @@ public class DocumentSearchManager {
         self._headingChangeObservingQueue = OperationQueue()
         self._trashSearchOperationQueue = OperationQueue()
         self._documentSearchOperationQueue = OperationQueue()
+        self._logSearchOperationQueue = OperationQueue()
         
         self._headingSearchOperationQueue.underlyingQueue = DispatchQueue.global(qos: DispatchQoS.QoSClass.userInteractive)
         self._contentSearchOperationQueue.underlyingQueue = DispatchQueue.global(qos: DispatchQoS.QoSClass.userInteractive)
         self._headingChangeObservingQueue.underlyingQueue = DispatchQueue.global(qos: DispatchQoS.QoSClass.background)
         self._trashSearchOperationQueue.underlyingQueue = DispatchQueue.global(qos: DispatchQoS.QoSClass.background)
         self._documentSearchOperationQueue.underlyingQueue = DispatchQueue.global(qos: DispatchQoS.QoSClass.userInteractive)
+        self._logSearchOperationQueue.underlyingQueue = DispatchQueue.global(qos: DispatchQoS.QoSClass.userInteractive)
     }
     
     public func searchAttachment(string: String, completion: @escaping ([[String: NSRange]]) -> Void) {
@@ -151,6 +154,35 @@ public class DocumentSearchManager {
             
             parser.parse(str: string)
             completion(parseDelegate.attachments)
+        }
+    }
+    
+    public func searchLog(containing: String, onlyTakeFirst: Bool = false) -> Observable<[URL]> {
+        return Observable.create { observer -> Disposable in
+            
+            var founds: [URL] = []
+            
+            self._logSearchOperationQueue.addOperation { [weak self] in
+                guard let strongSelf = self else { return }
+                
+                for url in strongSelf.loadAllFiles() {
+                    let documentURL = url.wrapperURL
+                    if let logContent = try? String(contentsOf: documentURL.logURL), logContent.contains(containing) {
+                        founds.append(documentURL)
+                        
+                        if onlyTakeFirst {
+                            observer.onNext(founds)
+                            observer.onCompleted()
+                            return
+                        }
+                    }
+                }
+                
+                observer.onNext(founds)
+                observer.onCompleted()
+            }
+            
+            return Disposables.create()
         }
     }
     

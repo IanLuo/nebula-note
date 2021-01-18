@@ -38,7 +38,7 @@ public enum SettingsError: Error {
         case isFirstLaunchApp
         case didShowUserGuide
         case openedDocuments
-        case pinedDocuments
+        case favoriteDocuments
         
         public func set(_ value: Any, completion: @escaping () -> Void) {
             Constants.store.set(value: value, key: self.rawValue, completion: completion)
@@ -55,6 +55,14 @@ public enum SettingsError: Error {
         NSFileCoordinator.addFilePresenter(self)
     }
     @objc public static var shared: SettingsAccessor { return instance }
+    
+    public func getSetting<T>(item: Item, type: T.Type) -> T? {
+        return item.get(T.self)
+    }
+    
+    public func setSetting<T>(item: Item, value: T) {
+        item.set(value, completion: {})
+    }
     
     public let documentDidOpen: PublishSubject<URL> = PublishSubject()
     

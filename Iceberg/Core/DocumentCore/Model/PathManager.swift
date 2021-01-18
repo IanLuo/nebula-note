@@ -376,6 +376,10 @@ extension URL {
         return self.appendingPathComponent(Document.coverKey)
     }
     
+    public var logURL: URL {
+        return self.appendingPathComponent(Document.logsKey)
+    }
+    
     public var contentURL: URL {
         return self.appendingPathComponent(Document.contentKey)
     }
