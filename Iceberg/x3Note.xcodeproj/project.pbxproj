@@ -130,7 +130,6 @@
 		E45DCF8A22AB6649007F34DB /* String+Conenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45DCF8922AB6649007F34DB /* String+Conenience.swift */; };
 		E462DB97223D251A00BF7AB4 /* DateAndTimeSelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E462DB96223D251A00BF7AB4 /* DateAndTimeSelectViewController.swift */; };
 		E462DB9A223D259F00BF7AB4 /* DateSelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E462DB99223D259F00BF7AB4 /* DateSelectViewController.swift */; };
-		E462DB9C223D264800BF7AB4 /* TimeSelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E462DB9B223D264800BF7AB4 /* TimeSelectViewController.swift */; };
 		E464DF0C253474D400967B5E /* JsonParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = E464DF0B253474D400967B5E /* JsonParser.swift */; };
 		E465F8802241FF6800FA6E83 /* TextViewCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = E465F87F2241FF6800FA6E83 /* TextViewCommand.swift */; };
 		E465F8822242269000FA6E83 /* DocumentEditViewController+ToolbarDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E465F8812242269000FA6E83 /* DocumentEditViewController+ToolbarDelegate.swift */; };
@@ -263,7 +262,6 @@
 		E4F9ECE121FECE5C009A08CD /* PathManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4F9ECE021FECE5C009A08CD /* PathManager.swift */; };
 		E4FB7CBE2285BBE500791F6F /* BasicInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4FB7CBD2285BBE500791F6F /* BasicInfoViewController.swift */; };
 		E4FC35A823EC4DCD00A371D3 /* AttachmentManagerCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4FC35A723EC4DCD00A371D3 /* AttachmentManagerCoordinator.swift */; };
-		E4FD88E9223DE3C3005514C5 /* TimeSelectViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E4FD88E8223DE3C3005514C5 /* TimeSelectViewController.xib */; };
 		E4FD88EB223DE67E005514C5 /* DateAndTimeSelectViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E4FD88EA223DE67E005514C5 /* DateAndTimeSelectViewController.xib */; };
 		E4FE2B302557AAEF0061E0CB /* PublishViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4FE2B2F2557AAEF0061E0CB /* PublishViewController.swift */; };
 		F85572EA76AC1CC4A957C1E4 /* Pods_Interface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7AD86DEC929199B246F94293 /* Pods_Interface.framework */; };
@@ -531,7 +529,6 @@
 		E45DCF8922AB6649007F34DB /* String+Conenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Conenience.swift"; sourceTree = "<group>"; };
 		E462DB96223D251A00BF7AB4 /* DateAndTimeSelectViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateAndTimeSelectViewController.swift; sourceTree = "<group>"; };
 		E462DB99223D259F00BF7AB4 /* DateSelectViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateSelectViewController.swift; sourceTree = "<group>"; };
-		E462DB9B223D264800BF7AB4 /* TimeSelectViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSelectViewController.swift; sourceTree = "<group>"; };
 		E464BBB021A69C9000D34C88 /* OutlineTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineTheme.swift; sourceTree = "<group>"; };
 		E464DF0B253474D400967B5E /* JsonParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JsonParser.swift; sourceTree = "<group>"; };
 		E464DF14253A8E4800967B5E /* Wordpress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Wordpress.swift; sourceTree = "<group>"; };
@@ -691,7 +688,6 @@
 		E4F9ECE021FECE5C009A08CD /* PathManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathManager.swift; sourceTree = "<group>"; };
 		E4FB7CBD2285BBE500791F6F /* BasicInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicInfoViewController.swift; sourceTree = "<group>"; };
 		E4FC35A723EC4DCD00A371D3 /* AttachmentManagerCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentManagerCoordinator.swift; sourceTree = "<group>"; };
-		E4FD88E8223DE3C3005514C5 /* TimeSelectViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TimeSelectViewController.xib; sourceTree = "<group>"; };
 		E4FD88EA223DE67E005514C5 /* DateAndTimeSelectViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DateAndTimeSelectViewController.xib; sourceTree = "<group>"; };
 		E4FE2B2F2557AAEF0061E0CB /* PublishViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublishViewController.swift; sourceTree = "<group>"; };
 		E68A1109AE2343C161D810A1 /* Pods-Business.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Business.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Business/Pods-Business.debug.xcconfig"; sourceTree = "<group>"; };
@@ -1282,8 +1278,6 @@
 				E4FD88EA223DE67E005514C5 /* DateAndTimeSelectViewController.xib */,
 				E462DB96223D251A00BF7AB4 /* DateAndTimeSelectViewController.swift */,
 				E462DB99223D259F00BF7AB4 /* DateSelectViewController.swift */,
-				E462DB9B223D264800BF7AB4 /* TimeSelectViewController.swift */,
-				E4FD88E8223DE3C3005514C5 /* TimeSelectViewController.xib */,
 			);
 			path = DateAndTimeSelect;
 			sourceTree = "<group>";
@@ -1882,7 +1876,6 @@
 				E440322D240B6D5400CCAEEE /* InfoPlist.strings in Resources */,
 				E4965FA5243E09330042CFA6 /* GoogleService-Info.plist in Resources */,
 				E4E7ABD923CE0E5E005628E6 /* Localizable.strings in Resources */,
-				E4FD88E9223DE3C3005514C5 /* TimeSelectViewController.xib in Resources */,
 				E44683F6228997CA005D5B73 /* Settings.storyboard in Resources */,
 				E47400B1241C799D0071BF73 /* launchIcon.png in Resources */,
 				E4E7ABD623CE0576005628E6 /* LaunchScreen.storyboard in Resources */,
@@ -2288,7 +2281,6 @@
 				E41CB15B21D87CDD00EF0A3C /* SearchCoordinator.swift in Sources */,
 				E41B893421E3497D009C5AD7 /* LinkAttachmentView.swift in Sources */,
 				E42A87FD21CFC9B300151C90 /* AttachmentTextViewController.swift in Sources */,
-				E462DB9C223D264800BF7AB4 /* TimeSelectViewController.swift in Sources */,
 				E46DE4DC23A912DC008A24CA /* MembershipViewModel.swift in Sources */,
 				E4B1BED22340EFF600683E10 /* BrowserCell.swift in Sources */,
 				E4EA857521D3AF0D00DD92F9 /* AgendaDateSelectView.swift in Sources */,
@@ -2512,11 +2504,11 @@
 				CLANG_USE_OPTIMIZATION_PROFILE = NO;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 251;
+				CURRENT_PROJECT_VERSION = 256;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 26RSSM9Q9P;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 251;
+				DYLIB_CURRENT_VERSION = 256;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = Interface/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -2547,11 +2539,11 @@
 				CLANG_USE_OPTIMIZATION_PROFILE = NO;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 251;
+				CURRENT_PROJECT_VERSION = 256;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 26RSSM9Q9P;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 251;
+				DYLIB_CURRENT_VERSION = 256;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = Interface/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -2581,11 +2573,11 @@
 				CLANG_USE_OPTIMIZATION_PROFILE = NO;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 251;
+				CURRENT_PROJECT_VERSION = 256;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 26RSSM9Q9P;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 251;
+				DYLIB_CURRENT_VERSION = 256;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = Core/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -2623,11 +2615,11 @@
 				CLANG_USE_OPTIMIZATION_PROFILE = NO;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 251;
+				CURRENT_PROJECT_VERSION = 256;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 26RSSM9Q9P;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 251;
+				DYLIB_CURRENT_VERSION = 256;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = Core/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -2827,7 +2819,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 251;
+				CURRENT_PROJECT_VERSION = 256;
 				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = NO;
 				DEVELOPMENT_TEAM = 26RSSM9Q9P;
 				INFOPLIST_FILE = Info.plist;
@@ -2836,7 +2828,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.7;
+				MARKETING_VERSION = 1.2.8;
 				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -D DEBUG=1";
 				PRODUCT_BUNDLE_IDENTIFIER = com.wod.x3note;
 				PRODUCT_NAME = x3Note;
@@ -2860,7 +2852,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 251;
+				CURRENT_PROJECT_VERSION = 256;
 				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = NO;
 				DEVELOPMENT_TEAM = 26RSSM9Q9P;
 				INFOPLIST_FILE = Info.plist;
@@ -2869,7 +2861,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.7;
+				MARKETING_VERSION = 1.2.8;
 				PRODUCT_BUNDLE_IDENTIFIER = com.wod.x3note;
 				PRODUCT_NAME = x3Note;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2971,7 +2963,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = CaptureIdeaExtension/CaptureIdeaExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 251;
+				CURRENT_PROJECT_VERSION = 256;
 				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = NO;
 				DEVELOPMENT_TEAM = 26RSSM9Q9P;
 				INFOPLIST_FILE = CaptureIdeaExtension/Info.plist;
@@ -2981,7 +2973,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.2.7;
+				MARKETING_VERSION = 1.2.8;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.wod.x3note.CaptureIdeaExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2998,7 +2990,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = CaptureIdeaExtension/CaptureIdeaExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 251;
+				CURRENT_PROJECT_VERSION = 256;
 				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = NO;
 				DEVELOPMENT_TEAM = 26RSSM9Q9P;
 				INFOPLIST_FILE = CaptureIdeaExtension/Info.plist;
@@ -3008,7 +3000,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.2.7;
+				MARKETING_VERSION = 1.2.8;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.wod.x3note.CaptureIdeaExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -3025,7 +3017,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = CaptureActionExtension/CaptureActionExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 251;
+				CURRENT_PROJECT_VERSION = 256;
 				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = NO;
 				DEVELOPMENT_TEAM = 26RSSM9Q9P;
 				INFOPLIST_FILE = CaptureActionExtension/Info.plist;
@@ -3035,7 +3027,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.2.7;
+				MARKETING_VERSION = 1.2.8;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.wod.x3note.CaptureActionExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -3052,7 +3044,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = CaptureActionExtension/CaptureActionExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 251;
+				CURRENT_PROJECT_VERSION = 256;
 				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = NO;
 				DEVELOPMENT_TEAM = 26RSSM9Q9P;
 				INFOPLIST_FILE = CaptureActionExtension/Info.plist;
@@ -3062,7 +3054,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.2.7;
+				MARKETING_VERSION = 1.2.8;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.wod.x3note.CaptureActionExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";

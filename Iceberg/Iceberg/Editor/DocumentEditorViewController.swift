@@ -76,7 +76,7 @@ public class DocumentEditorViewController: UIViewController {
     
     public let inputbar = InputToolbar(mode: .paragraph)
     
-    private let _toolBar: UIStackView = {
+    private let toolBar: UIStackView = {
         let view = UIStackView()
         view.axis = .vertical
         view.distribution = .equalSpacing
@@ -153,13 +153,13 @@ public class DocumentEditorViewController: UIViewController {
             
             if isMacOrPad {
                 self.topViewContainer.addSubview(self.inputbar)
-                self.view.addSubview(self._toolBar)
+                self.view.addSubview(self.toolBar)
                 
                 self.inputbar.allSidesAnchors(to: self.topViewContainer, edgeInsets: .init(top: 0, left: Layout.innerViewEdgeInsets.left, bottom: 0, right: -50))
                 self.inputbar.sizeAnchor(height: 60)
-                self.topViewContainer.columnAnchor(view: self._toolBar, space: 50, alignment: .none)
-                self._toolBar.sideAnchor(for: .right, to: self.view, edgeInsets: .init(top: 0, left: 0, bottom: 0, right: -Layout.innerViewEdgeInsets.right))
-                self._toolBar.sizeAnchor(width: 44)
+                self.topViewContainer.columnAnchor(view: self.toolBar, space: 50, alignment: .none)
+                self.toolBar.sideAnchor(for: .right, to: self.view, edgeInsets: .init(top: 0, left: 0, bottom: 0, right: -Layout.innerViewEdgeInsets.right))
+                self.toolBar.sizeAnchor(width: 44)
                 
                 self.addToolbarButton(title: L10n.Document.Menu.fullScreen, icon: Asset.Assets.fullscreen.image) { [weak self] button in
                     self?.viewModel.context.coordinator?.toggleEditorFullScreen()
@@ -173,7 +173,7 @@ public class DocumentEditorViewController: UIViewController {
                     self?.viewModel.unfoldAll()
                 }
                 
-                self.addToolbarButton(title: L10n.Document.Menu.outline, icon: Asset.SFSymbols.listBullet.image) { [weak self]  button in
+                self.addToolbarButton(title: L10n.Document.Menu.outline, icon: Asset.SFSymbols.filemenuAndSelection.image) { [weak self]  button in
                     self?.showOutline(from: button)
                 }
                 
@@ -264,6 +264,10 @@ public class DocumentEditorViewController: UIViewController {
         }
     }
     
+    public override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+    }
+    
     public override var preferredStatusBarStyle: UIStatusBarStyle {
         return InterfaceTheme.statusBarStyle
     }
@@ -291,11 +295,11 @@ public class DocumentEditorViewController: UIViewController {
         button.tapped { action($0) }
         button.setButtonRadius(20)
         
-        self._toolBar.addArrangedSubview(button)
+        self.toolBar.addArrangedSubview(button)
     }
     
     private func setToolbarEnabled(_ enable: Bool) {
-        self._toolBar.arrangedSubviews.forEach {
+        self.toolBar.arrangedSubviews.forEach {
             ($0 as? UIButton)?.isEnabled = enable
         }
     }

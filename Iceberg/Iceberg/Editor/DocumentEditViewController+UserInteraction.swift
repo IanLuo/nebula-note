@@ -91,9 +91,9 @@ extension DocumentEditorViewController: OutlineTextViewDelegate {
         
         let openLinkText = isDocumentLink ? L10n.Document.Link.openDocumentLink : L10n.Document.Link.open
         let editLinkText = isDocumentLink ? L10n.Document.Link.editDocumentLink : L10n.Document.Link.edit
-        let editLinkIcon = isDocumentLink ? Asset.Assets.fileLink.image.fill(color: InterfaceTheme.Color.descriptive) : Asset.SFSymbols.pencilCircle.image.fill(color: InterfaceTheme.Color.descriptive)
+        let editLinkIcon = isDocumentLink ? Asset.SFSymbols.docTextMagnifyingglass.image.fill(color: InterfaceTheme.Color.descriptive) : Asset.SFSymbols.pencilCircle.image.fill(color: InterfaceTheme.Color.descriptive)
         
-        actionsController.addAction(icon: Asset.SFSymbols.chevronRight.image.fill(color: InterfaceTheme.Color.descriptive), title: openLinkText) { viewController in
+        actionsController.addAction(icon: Asset.SFSymbols.arrowRight.image.fill(color: InterfaceTheme.Color.descriptive), title: openLinkText) { viewController in
             viewController.dismiss(animated: true, completion: {
                 
                 if let link = linkStructure[OutlineParser.Key.Element.Link.url] as? String {
@@ -110,7 +110,7 @@ extension DocumentEditorViewController: OutlineTextViewDelegate {
         }
         
         if isDocumentLink {
-            actionsController.addAction(icon: Asset.SFSymbols.pencilCircle.image, title: L10n.Document.Edit.DocumentLink.title) { viewController in
+            actionsController.addAction(icon: Asset.SFSymbols.pencilCircle.image.fill(color: InterfaceTheme.Color.descriptive), title: L10n.Document.Edit.DocumentLink.title) { viewController in
                 viewController.dismiss(animated: true) {
                     let location = textView.rect(forStringRange: textView.selectedRange)?.center
                     for case let linkToken in self.viewModel.tokens(at: characterIndex) where linkToken is LinkToken {

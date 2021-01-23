@@ -36,21 +36,21 @@ extension DocumentEditorViewController {
         let actionsController = ActionsViewController()
         
         actionsController.title = L10n.Document.Menu.title
-        actionsController.addAction(icon: Asset.SFSymbols.chevronDown.image, title: L10n.Document.Menu.foldAll) { [unowned self] viewController in
+        actionsController.addAction(icon: Asset.Assets.foldAll.image.fill(color: InterfaceTheme.Color.descriptive), title: L10n.Document.Menu.foldAll) { [unowned self] viewController in
             viewController.dismiss(animated: true, completion: {
                 self.viewModel.foldAll()
                 self.viewModel.showGlobalCaptureEntry()
             })
         }
         
-        actionsController.addAction(icon: Asset.SFSymbols.chevronUp.image, title: L10n.Document.Menu.unfoldAll) { [unowned self] viewController in
+        actionsController.addAction(icon: Asset.Assets.unfoldAll.image.fill(color: InterfaceTheme.Color.descriptive), title: L10n.Document.Menu.unfoldAll) { [unowned self] viewController in
             viewController.dismiss(animated: true, completion: {
                 self.viewModel.unfoldAll()
                 self.viewModel.showGlobalCaptureEntry()
             })
         }
         
-        actionsController.addAction(icon: Asset.Assets.master.image, title: L10n.Document.Menu.outline) { [unowned self] viewController in
+        actionsController.addAction(icon: Asset.SFSymbols.filemenuAndSelection.image.fill(color: InterfaceTheme.Color.descriptive), title: L10n.Document.Menu.outline) { [unowned self] viewController in
             viewController.dismiss(animated: true, completion: {
                 self.showOutline()
             })
@@ -71,11 +71,11 @@ extension DocumentEditorViewController {
 //            })
 //        }
         
-        actionsController.addActionAutoDismiss(icon: nil, title: L10n.Document.Menu.info) {
+        actionsController.addActionAutoDismiss(icon: Asset.SFSymbols.info.image.fill(color: InterfaceTheme.Color.descriptive), title: L10n.Document.Menu.info) {
             self.showInfo()
         }
         
-        actionsController.addAction(icon: Asset.SFSymbols.lightbulb.image,
+        actionsController.addAction(icon: Asset.SFSymbols.lightbulb.image.fill(color: InterfaceTheme.Color.spotlight),
                                     title: L10n.Document.Menu.capture,
                                     style: .highlight) { viewController in
                                         viewController.dismiss(animated: true) { [unowned self] in

@@ -39,35 +39,35 @@ static NSMutableDictionary *attachmentMap;
 + (void)initialize {
     if ([self class] == [TextStorage class]) {
         foldingAttachment = [[NSTextAttachment alloc] init];
-        foldingAttachment.image = [[[[UIImage imageNamed:@"ellipsis" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil] fillWithColor:[[InterfaceTheme Color] descriptive]] insets:UIEdgeInsetsMake(3, 3, 3, 3)] translationWithOffset:CGPointMake(0, -3)];
-        foldingAttachment.bounds = CGRectMake(0, ([[SettingsAccessor shared] lineHeight] - 15) / 2, 28, 15);
+        foldingAttachment.image = [[[UIImage imageNamed:@"ellipsis" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil] fillWithColor:[[InterfaceTheme Color] descriptive]] insets:UIEdgeInsetsMake(3, 3, 3, 3)];
+        foldingAttachment.bounds = CGRectMake(0, ([[SettingsAccessor shared] lineHeight] - 18) / 2, 28, 18);
         
         linkAttachment = [[NSTextAttachment alloc] init];
-        linkAttachment.image = [UIImage imageNamed: @"link" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil];
-        linkAttachment.bounds = CGRectMake(0, -2, 15, 15);
+        linkAttachment.image = [[UIImage imageNamed: @"link" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil] fillWithColor:[[InterfaceTheme Color]descriptive]];
+        linkAttachment.bounds = CGRectMake(0, -2, 13, 15);
         
         documentAttachment = [[NSTextAttachment alloc] init];
-        documentAttachment.image = [UIImage imageNamed: @"doc" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil];
-        documentAttachment.bounds = CGRectMake(0, -2, 15, 15);
+        documentAttachment.image = [[[UIImage imageNamed: @"doc" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil] fillWithColor:[[InterfaceTheme Color]descriptive]] translationWithOffset:CGPointMake(0, -2)];
+        documentAttachment.bounds = CGRectMake(0, -2, 11, 15);
         
         foldedAttachment = [[NSTextAttachment alloc] init];
         foldedAttachment.image = [[[[UIImage imageNamed: @"plus" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil] fillWithColor:[[InterfaceTheme Color]spotlight]] insets:UIEdgeInsetsMake(5, 5, 5, 5)] translationWithOffset: CGPointMake(0, -3)];
         foldedAttachment.bounds = CGRectMake(0, ([[SettingsAccessor shared] lineHeight] - 22) / 2, 24, 20);
         
         unfoldedAttachment = [[NSTextAttachment alloc] init];
-        unfoldedAttachment.image = [[[[UIImage imageNamed: @"minus" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil] fillWithColor:[[InterfaceTheme Color]spotlight]] insets:UIEdgeInsetsMake(5, 5, 5, 5)] translationWithOffset:CGPointMake(0, -3)];
+        unfoldedAttachment.image = [[[[UIImage imageNamed: @"minus" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil] fillWithColor:[[InterfaceTheme Color] spotlight]] insets:UIEdgeInsetsMake(5, 5, 5, 5)] translationWithOffset:CGPointMake(0, -3)];
         unfoldedAttachment.bounds = CGRectMake(0, ([[SettingsAccessor shared] lineHeight] - 20) / 2, 24, 17);
         
         scheduleAttachment = [[NSTextAttachment alloc] init];
-        scheduleAttachment.image = [UIImage imageNamed: @"calendar.badge.clock" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil];
+        scheduleAttachment.image = [[UIImage imageNamed: @"calendar.badge.clock" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil] fillWithColor:[[InterfaceTheme Color]spotlight]];
         scheduleAttachment.bounds = CGRectMake(0, 0, 10, 10);
         
         dueAttachment = [[NSTextAttachment alloc] init];
-        dueAttachment.image = [UIImage imageNamed: @"calendar.badge.exclamationmark" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil];
+        dueAttachment.image = [[UIImage imageNamed: @"calendar.badge.exclamationmark" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil] fillWithColor:[[InterfaceTheme Color]spotlight]];
         dueAttachment.bounds = CGRectMake(0, 0, 10, 10);
         
         tagAttachment = [[NSTextAttachment alloc] init];
-        tagAttachment.image = [UIImage imageNamed: @"tag" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil];
+        tagAttachment.image = [[UIImage imageNamed: @"tag" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil] fillWithColor:[[InterfaceTheme Color]spotlight]];
         tagAttachment.bounds = CGRectMake(0, 0, 10, 10);
         
         unavailableAttachment = [[NSTextAttachment alloc] init];

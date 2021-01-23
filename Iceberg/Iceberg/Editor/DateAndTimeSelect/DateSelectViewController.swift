@@ -145,6 +145,9 @@ public class DateSelectViewController: UIViewController {
         if #available(iOS 13.4, *) {
             timePicker.preferredDatePickerStyle = .wheels
         }
+        
+        timePicker.tintColor = InterfaceTheme.Color.interactive
+        
         timePicker.rx.date.skip(1).subscribe(onNext: { date in
             let components = Calendar.current.dateComponents([.hour, .minute, .second], from: date)
             button.setTitle(date.timeString, for: .normal)
@@ -154,14 +157,15 @@ public class DateSelectViewController: UIViewController {
         }).disposed(by: self.disposeBag)
         timePicker.datePickerMode = .time
         timePicker.sizeAnchor(height: 300)
-        
+        timePicker.setValue(InterfaceTheme.Color.interactive, forKey: "textColor");
+
         timeAction.accessoryView = timePicker
         timeAction.addActionAutoDismiss(icon: nil, title: L10n.Document.Edit.Date.allDay) {
             button.setTitle(L10n.Document.Edit.Date.allDay, for: .normal)
             self.delegate?.didSelectTime(nil)
         }
         
-        timeAction.present(from: self)
+        timeAction.present(from: self, at: button)
     }
     
     private func showRepeatTypePicker(button: UIButton) {
@@ -169,7 +173,7 @@ public class DateSelectViewController: UIViewController {
         
         let textView = UITextField()
         let number = UIStepper()
-        let repeatTypeLabel = UILabel()
+        let repeatTypeLabel = UILabel().textColor(InterfaceTheme.Color.interactive)
         
         _ = self.repeatType.takeUntil(actionsController.rx.deallocated).subscribe(onNext: { type in
             switch type {
@@ -198,6 +202,7 @@ public class DateSelectViewController: UIViewController {
         number.minimumValue = 1
         number.maximumValue = Double.greatestFiniteMagnitude
         number.stepValue = 1
+        number.tintColor = InterfaceTheme.Color.interactive
         number.rx.value.skip(1).subscribe(onNext: { newValue in
             switch self.repeatType.value {
             case .none:
@@ -209,6 +214,8 @@ public class DateSelectViewController: UIViewController {
         }).disposed(by: self.disposeBag)
         
         textView.keyboardType = .numberPad
+        textView.textColor = InterfaceTheme.Color.interactive
+        textView.tintColor = InterfaceTheme.Color.interactive
         textView.textAlignment = .right
         textView.rx.text.subscribe(onNext: { text in
             number.value = Double(Int(text ?? "1") ?? 0)
@@ -246,7 +253,7 @@ public class DateSelectViewController: UIViewController {
             self.repeatType.accept(DateAndTimeType.RepeatMode.none)
         }
         
-        actionsController.present(from: self)
+        actionsController.present(from: self, at: button)
     }
     
     private func updateRepeatType(_ repeatType: DateAndTimeType.RepeatMode) {
