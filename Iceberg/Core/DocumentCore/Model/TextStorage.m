@@ -39,7 +39,7 @@ static NSMutableDictionary *attachmentMap;
 + (void)initialize {
     if ([self class] == [TextStorage class]) {
         foldingAttachment = [[NSTextAttachment alloc] init];
-        foldingAttachment.image = [UIImage imageNamed:@"unfold-button" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil];
+        foldingAttachment.image = [[[[UIImage imageNamed:@"ellipsis" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil] fillWithColor:[[InterfaceTheme Color] descriptive]] insets:UIEdgeInsetsMake(2, 2, 2, 2)] translationWithOffset:CGPointMake(5, -3)];
         foldingAttachment.bounds = CGRectMake(0, ([[SettingsAccessor shared] lineHeight] - 20) / 2, 30, 20);
         
         linkAttachment = [[NSTextAttachment alloc] init];
@@ -47,23 +47,23 @@ static NSMutableDictionary *attachmentMap;
         linkAttachment.bounds = CGRectMake(0, -2, 15, 15);
         
         documentAttachment = [[NSTextAttachment alloc] init];
-        documentAttachment.image = [UIImage imageNamed: @"document" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil];
+        documentAttachment.image = [UIImage imageNamed: @"doc" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil];
         documentAttachment.bounds = CGRectMake(0, -2, 15, 15);
         
         foldedAttachment = [[NSTextAttachment alloc] init];
-        foldedAttachment.image = [[UIImage imageNamed: @"folded" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil] fillWithColor:[[InterfaceTheme Color]spotlight]];
+        foldedAttachment.image = [[[[UIImage imageNamed: @"plus" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil] fillWithColor:[[InterfaceTheme Color]spotlight]] insets:UIEdgeInsetsMake(2, 2, 2, 2)] translationWithOffset: CGPointMake(0, -3)];
         foldedAttachment.bounds = CGRectMake(0, ([[SettingsAccessor shared] lineHeight] - 20) / 2, 20, 20);
         
         unfoldedAttachment = [[NSTextAttachment alloc] init];
-        unfoldedAttachment.image = [[UIImage imageNamed: @"unfolded" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil] fillWithColor:[[InterfaceTheme Color]spotlight]];
+        unfoldedAttachment.image = [[[[UIImage imageNamed: @"minus" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil] fillWithColor:[[InterfaceTheme Color]spotlight]] insets:UIEdgeInsetsMake(2, 2, 2, 2)] translationWithOffset:CGPointMake(0, -3)];
         unfoldedAttachment.bounds = CGRectMake(0, ([[SettingsAccessor shared] lineHeight] - 20) / 2, 20, 20);
         
         scheduleAttachment = [[NSTextAttachment alloc] init];
-        scheduleAttachment.image = [UIImage imageNamed: @"scheduled" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil];
+        scheduleAttachment.image = [UIImage imageNamed: @"calendar.badge.clock" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil];
         scheduleAttachment.bounds = CGRectMake(0, 0, 10, 10);
         
         dueAttachment = [[NSTextAttachment alloc] init];
-        dueAttachment.image = [UIImage imageNamed: @"due" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil];
+        dueAttachment.image = [UIImage imageNamed: @"calendar.badge.exclamationmark" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil];
         dueAttachment.bounds = CGRectMake(0, 0, 10, 10);
         
         tagAttachment = [[NSTextAttachment alloc] init];
@@ -71,15 +71,15 @@ static NSMutableDictionary *attachmentMap;
         tagAttachment.bounds = CGRectMake(0, 0, 10, 10);
         
         unavailableAttachment = [[NSTextAttachment alloc] init];
-        unavailableAttachment.image = [UIImage imageNamed: @"cross" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil];
+        unavailableAttachment.image = [UIImage imageNamed: @"xmark" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil];
         unavailableAttachment.bounds = CGRectMake(0, 0, 10, 10);
         
         checkboxCheckedAttachment = [[NSTextAttachment alloc] init];
-        checkboxCheckedAttachment.image = [[UIImage imageNamed: @"checkbox-checked" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil] fillWithColor:[[InterfaceTheme Color]spotlight]];
+        checkboxCheckedAttachment.image = [[[UIImage imageNamed: @"checkmark.square" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil] fillWithColor:[[InterfaceTheme Color]spotlight]] insets:UIEdgeInsetsMake(-3, -3, -3, -3)];
         checkboxCheckedAttachment.bounds = CGRectMake(0, ([[SettingsAccessor shared] lineHeight] - 17) / 2, 20, 20);
         
         checkboxUncheckedAttachment = [[NSTextAttachment alloc] init];
-        checkboxUncheckedAttachment.image = [[UIImage imageNamed: @"checkbox-unchecked" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil] fillWithColor:[[InterfaceTheme Color]spotlight]];
+        checkboxUncheckedAttachment.image = [[UIImage imageNamed: @"square" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil] fillWithColor:[[InterfaceTheme Color]spotlight]];
         checkboxUncheckedAttachment.bounds = CGRectMake(0, ([[SettingsAccessor shared] lineHeight] - 17) / 2, 20, 20);
         
         attachmentMap = [@{

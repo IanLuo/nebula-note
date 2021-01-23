@@ -106,7 +106,7 @@ private class _CaptureGlobalEntranceViewController: UIViewController {
                                                      size: self.view.bounds.size,
                                                      style: UIImageStyle.circle),
                                       for: .normal)
-            me.setImage(Asset.Assets.inspiration.image.fill(color: InterfaceTheme.Color.spotlitTitle), for: .normal)
+            me.setImage(Asset.SFSymbols.lightbulb.image.fill(color: InterfaceTheme.Color.spotlitTitle), for: .normal)
         })
         button.addTarget(self, action: #selector(_didTap), for: .touchUpInside)
         return button

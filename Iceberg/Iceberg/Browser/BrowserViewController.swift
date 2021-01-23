@@ -28,7 +28,7 @@ public class BrowserViewController: UIViewController {
         
         button.interface { (me, theme) in
             guard let button = me as? UIButton else { return }
-            button.setImage(Asset.Assets.down.image.fill(color: theme.color.interactive), for: .normal)
+            button.setImage(Asset.SFSymbols.chevronDown.image.fill(color: theme.color.interactive), for: .normal)
         }
         
         return button
@@ -57,10 +57,10 @@ public class BrowserViewController: UIViewController {
         switch coordinator.usage {
         case .favoriate:
             self.title = L10n.Browser.Favorite.title
-            self.tabBarItem = UITabBarItem(title: "", image: Symbols.star.image, tag: 0)
+            self.tabBarItem = UITabBarItem(title: "", image: Asset.SFSymbols.star.image, tag: 0)
         default:
             self.title = L10n.Browser.title
-            self.tabBarItem = UITabBarItem(title: "", image: Asset.Assets.document.image, tag: 0)
+            self.tabBarItem = UITabBarItem(title: "", image: Asset.SFSymbols.doc.image, tag: 0)
         }
     }
     
@@ -68,7 +68,7 @@ public class BrowserViewController: UIViewController {
         let shouldShowCloseButton = self.presentingViewController != nil
         
         if shouldShowCloseButton {
-            let closeItem =  UIBarButtonItem(image: Asset.Assets.down.image, style: .plain, target: nil, action: nil)
+            let closeItem =  UIBarButtonItem(image: Asset.SFSymbols.chevronDown.image, style: .plain, target: nil, action: nil)
             closeItem.rx.tap.subscribe(onNext: { [weak self] _ in
                 self?.output.canceld.onNext(())
             }).disposed(by: self.disposeBag)

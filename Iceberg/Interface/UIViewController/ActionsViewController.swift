@@ -206,7 +206,7 @@ open class ActionsViewController: UIViewController, TransitionProtocol {
     private let cancelButton: RoundButton = {
         let button = RoundButton()
         button.setBorder(color: nil)
-        button.setIcon(Asset.Assets.cross.image.resize(upto: CGSize(width: 10, height: 10)).fill(color: InterfaceTheme.Color.interactive), for: .normal)
+        button.setIcon(Asset.SFSymbols.xmark.image.resize(upto: CGSize(width: 10, height: 10)).fill(color: InterfaceTheme.Color.interactive), for: .normal)
         button.setBackgroundColor(InterfaceTheme.Color.background3, for: .normal)
         return button
     }()

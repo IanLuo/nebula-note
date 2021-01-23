@@ -92,7 +92,7 @@ public class DocumentSearchViewController: UIViewController {
         viewModel.delegate = self
         
         self.title = L10n.Search.title
-        self.tabBarItem = UITabBarItem(title: "", image: Asset.Assets.zoom.image, tag: 0)
+        self.tabBarItem = UITabBarItem(title: "", image: Asset.SFSymbols.magnifyingglass.image, tag: 0)
     }
     
     public override func viewDidLoad() {
@@ -231,7 +231,7 @@ private class SearchInputView: UIView, UITextFieldDelegate {
         
         icon.interface({ (me, theme) in
             let icon = me as! UIButton
-            icon.setImage(Asset.Assets.zoom.image.withRenderingMode(.alwaysTemplate), for: .normal)
+            icon.setImage(Asset.SFSymbols.magnifyingglass.image.withRenderingMode(.alwaysTemplate), for: .normal)
         })
         return icon
     }()
@@ -266,7 +266,7 @@ private class SearchInputView: UIView, UITextFieldDelegate {
         clearButton.interface({ (me, theme) in
             let clearButton = me as! UIButton
             clearButton.setBackgroundImage(UIImage.create(with: theme.color.background2, size: .singlePoint), for: .normal)
-            clearButton.setImage(Asset.Assets.cross.image.resize(upto: CGSize(width: 10, height: 10)).fill(color: theme.color.interactive), for: .normal)
+            clearButton.setImage(Asset.SFSymbols.xmark.image.resize(upto: CGSize(width: 10, height: 10)).fill(color: theme.color.interactive), for: .normal)
         })
         clearButton.imageView?.contentMode = .center
         clearButton.addTarget(self, action: #selector(clear), for: .touchUpInside)

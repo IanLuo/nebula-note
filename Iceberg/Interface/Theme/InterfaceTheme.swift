@@ -10,52 +10,13 @@ import Foundation
 import UIKit
 import RxSwift
 import RxCocoa
+import JAMSVGImage
 
 public struct Layout {
     public static let cornerRadius: CGFloat = 8
     public static let edgeInsets: UIEdgeInsets = UIEdgeInsets(top: 12, left: 12, bottom: 12, right: 12)
     public static let innerViewEdgeInsets: UIEdgeInsets = UIEdgeInsets(top: 30, left: 30, bottom: 30, right: 30)
     public static let backButtonSize: CGSize = CGSize(width: 40, height: 40)
-}
-
-public enum Symbols: String {
-    case arrow_down_to_line
-    case arrow_left
-    case arrow_left_to_line
-    case arrow_right
-    case arrow_right_to_line
-    case arrow_up_to_line
-    case arrow_uturn_left
-    case arrow_uturn_right
-    case bold
-    case chevron_compact_down
-    case chevron_compact_left
-    case chevron_compact_right
-    case chevron_compact_up
-    case chevron_down
-    case chevron_left
-    case chevron_right
-    case chevron_up_chevron_down
-    case chevron_up
-    case info
-    case italic
-    case lightbulb
-    case list_bullet
-    case list_number
-    case magnifyingglass
-    case paragraph
-    case star_fill
-    case star
-    case strikethrough
-    case underline
-    
-    public var image: UIImage {
-        if #available(iOS 13.0, *) {
-            return UIImage(named: self.rawValue.replacingOccurrences(of: "_", with: "."), in: Bundle(for: InterfaceTheme.self), with: nil)!
-        } else {
-            return UIImage(named: self.rawValue.replacingOccurrences(of: "_", with: "."), in: Bundle(for: InterfaceTheme.self), compatibleWith: nil)!
-        }
-    }
 }
 
 @objc public protocol InterfaceThemeProtocol: class {

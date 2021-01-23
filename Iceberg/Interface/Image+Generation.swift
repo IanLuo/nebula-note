@@ -83,6 +83,14 @@ extension UIImage {
         return image!
     }
     
+    @objc public func insets(_ insects: UIEdgeInsets) -> UIImage {
+        UIGraphicsBeginImageContextWithOptions(size, false, 0)
+        draw(in: CGRect(x: insects.left, y: insects.top, width: self.size.width - insects.left - insects.right, height: self.size.height - insects.top -  insects.bottom))
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return image!
+    }
+    
     public func addSubImage(_ image: UIImage) -> UIImage {
         var newImage: UIImage!
         

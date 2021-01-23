@@ -59,7 +59,7 @@ public class TrashViewController: UIViewController, UITableViewDelegate {
         
         self.navigationItem.rightBarButtonItem = removeAllButtonItem
         
-        let cancelButtonItem = UIBarButtonItem(image: Asset.Assets.down.image, style: .plain, target: nil, action: nil)
+        let cancelButtonItem = UIBarButtonItem(image: Asset.SFSymbols.chevronDown.image, style: .plain, target: nil, action: nil)
         cancelButtonItem.rx.tap.subscribe(onNext: { [weak self] in
             self?.viewModel.context.coordinator?.stop()
         }).disposed(by: self.disposeBag)

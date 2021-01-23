@@ -87,69 +87,69 @@ public enum NormalAction: String, ToolbarActionProtocol, DocumentActon {
     public var icon: UIImage {
         switch self {
         case .paragraph:
-            return Asset.Assets.paragraph.image
+            return Asset.SFSymbols.paragraph.image
         case .heading:
             return Asset.Assets.heading.image
         case .increaseIndent:
-            return Asset.Assets.tapAdd.image
+            return Asset.SFSymbols.arrowRightToLine.image
         case .decreaseIndent:
-            return Asset.Assets.tapMinus.image
+            return Asset.SFSymbols.arrowLeftToLine.image
         case .moveUp:
-            return Asset.Assets.moveUp.image
+            return Asset.SFSymbols.arrowUpToLine.image
         case .moveDown:
-            return Asset.Assets.moveDown.image
+            return Asset.SFSymbols.arrowDownToLine.image
         case .undo:
-            return Asset.Assets.undo.image
+            return Asset.SFSymbols.arrowUturnLeft.image
         case .redo:
-            return Asset.Assets.redo.image
+            return Asset.SFSymbols.arrowUturnRight.image
         case .bold:
-            return Asset.Assets.bold.image
+            return Asset.SFSymbols.bold.image
         case .italic:
-            return Asset.Assets.italic.image
+            return Asset.SFSymbols.italic.image
         case .underscore:
-            return Asset.Assets.underline.image
+            return Asset.SFSymbols.underline.image
         case .strikethrough:
-            return Asset.Assets.strikethrough.image
+            return Asset.SFSymbols.strikethrough.image
         case .highlight:
             return Asset.Assets.markerPen.image
         case .verbatim:
-            return Asset.Assets.code.image
+            return Asset.SFSymbols.chevronLeftSlashChevronRight.image
         case .checkbox:
-            return Asset.Assets.checkboxChecked.image
+            return Asset.SFSymbols.textBadgeCheckmark.image
         case .list:
-            return Asset.Assets.list.image
+            return Asset.SFSymbols.listBullet.image
         case .orderedList:
-            return Asset.Assets.orderedList.image
+            return Asset.SFSymbols.listNumber.image
         case .quote:
-            return Asset.Assets.quote.image
+            return Asset.SFSymbols.textQuote.image
         case .sourcecode:
-            return Asset.Assets.sourcecode.image
+            return Asset.SFSymbols.chevronLeftSlashChevronRight.image
         case .dateAndTime:
-            return Asset.Assets.calendar.image
+            return Asset.SFSymbols.calendar.image
         case .planning:
             return Asset.Assets.planning.image
         case .tag:
-            return Asset.Assets.tag.image
+            return Asset.SFSymbols.tag.image
         case .priority:
-            return Asset.Assets.priority.image
+            return Asset.SFSymbols.exclamationmark.image
         case .captured:
-            return Asset.Assets.inspiration.image
+            return Asset.SFSymbols.lightbulb.image
         case .allAttachments:
-            return Asset.Assets.attachment.image
+            return Asset.SFSymbols.paperclip.image
         case .seperator:
-            return Asset.Assets.seperator.image
+            return Asset.Assets.separator.image
         case .newAttachment:
-            return Asset.Assets.add.image
+            return Asset.SFSymbols.plus.image
         case .fileLink:
             return Asset.Assets.fileLink.image
         case .save:
-            return Asset.Assets.save.image
+            return Asset.SFSymbols.squareAndArrowDown.image
         case .headingProperty:
-            return Asset.Assets.settings.image
+            return Asset.SFSymbols.sliderHorizontal3.image
         case .toggleFoldOrUnfold:
-            return Asset.Assets.folded.image // not using on toolbar, the the icon is wrong
+            return Asset.SFSymbols.star.image // not using on toolbar, the the icon is wrong
         case .foldOthersExcept:
-            return Asset.Assets.folded.image // not using on toolbar, the the icon is wrong
+            return Asset.SFSymbols.star.image // not using on toolbar, the the icon is wrong
         }
     }
 }

@@ -204,25 +204,25 @@ public struct Attachment: Codable {
                 do {
                     let img = try assetImgGenerate.copyCGImage(at: time, actualTime: nil)
                     let thumbnail = UIImage(cgImage: img).resize(upto: CGSize(width: UIScreen.main.bounds.width * 0.7, height: UIScreen.main.bounds.width * 0.7))
-                    let topImage = Asset.Assets.video.image.fill(color: InterfaceTheme.Color.descriptive).fill(color: InterfaceTheme.Color.interactive)
+                    let topImage = Asset.SFSymbols.video.image.fill(color: InterfaceTheme.Color.descriptive).fill(color: InterfaceTheme.Color.interactive)
                     observer.onNext(thumbnail.addSubImage(topImage))
                 } catch {
-                    observer.onNext(Asset.Assets.video.image.fill(color: InterfaceTheme.Color.descriptive).fill(color: InterfaceTheme.Color.interactive))
+                    observer.onNext(Asset.SFSymbols.video.image.fill(color: InterfaceTheme.Color.descriptive).fill(color: InterfaceTheme.Color.interactive))
                 }
             case .image, .sketch:
                 let image = UIImage(contentsOfFile: self.url.path)?.resize(upto: CGSize(width: UIScreen.main.bounds.width * 0.7, height: UIScreen.main.bounds.width * 0.7))
                 observer.onNext(image)
             case .location:
-                let image = Asset.Assets.location.image.fill(color: InterfaceTheme.Color.descriptive).fill(color: InterfaceTheme.Color.interactive)
+                let image = Asset.SFSymbols.location.image.fill(color: InterfaceTheme.Color.descriptive).fill(color: InterfaceTheme.Color.interactive)
                 observer.onNext(image)
             case .audio:
-                let image = Asset.Assets.audio.image.fill(color: InterfaceTheme.Color.descriptive).fill(color: InterfaceTheme.Color.interactive)
+                let image = Asset.SFSymbols.mic.image.fill(color: InterfaceTheme.Color.descriptive).fill(color: InterfaceTheme.Color.interactive)
                 observer.onNext(image)
             case .link:
-                let image = Asset.Assets.link.image.fill(color: InterfaceTheme.Color.descriptive).fill(color: InterfaceTheme.Color.interactive)
+                let image = Asset.SFSymbols.link.image.fill(color: InterfaceTheme.Color.descriptive).fill(color: InterfaceTheme.Color.interactive)
                 observer.onNext(image)
             case .text:
-                let image = Asset.Assets.text.image.fill(color: InterfaceTheme.Color.descriptive).fill(color: InterfaceTheme.Color.interactive)
+                let image = Asset.SFSymbols.docPlaintext.image.fill(color: InterfaceTheme.Color.descriptive).fill(color: InterfaceTheme.Color.interactive)
                 observer.onNext(image)
             }
             observer.onCompleted()

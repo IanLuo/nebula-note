@@ -191,7 +191,7 @@ public class SettingsViewModel: ViewModelProtocol {
 }
 
 enum LandingTab: CaseIterable {
-    case agenda, captureList, search, browser
+    case agenda, captureList, search, browser, favorite
     
     var name: String {
         switch self {
@@ -199,15 +199,17 @@ enum LandingTab: CaseIterable {
         case .captureList: return L10n.CaptureList.title
         case .search: return L10n.Search.title
         case .browser: return L10n.Browser.title
+        case .favorite: return L10n.Browser.Favorite.title
         }
     }
     
     var icon: UIImage {
         switch self {
-        case .agenda: return Asset.Assets.agenda.image.fill(color: InterfaceTheme.Color.interactive)
-        case .captureList: return Asset.Assets.inspiration.image.fill(color: InterfaceTheme.Color.interactive)
-        case .search: return Asset.Assets.zoom.image.fill(color: InterfaceTheme.Color.interactive)
-        case .browser: return Asset.Assets.document.image.fill(color: InterfaceTheme.Color.interactive)
+        case .agenda: return Asset.SFSymbols.calendar.image.fill(color: InterfaceTheme.Color.interactive)
+        case .captureList: return Asset.SFSymbols.lightbulb.image.fill(color: InterfaceTheme.Color.interactive)
+        case .search: return Asset.SFSymbols.magnifyingglass.image.fill(color: InterfaceTheme.Color.interactive)
+        case .browser: return Asset.SFSymbols.doc.image.fill(color: InterfaceTheme.Color.interactive)
+        case .favorite: return Asset.SFSymbols.star.image.fill(color: InterfaceTheme.Color.interactive)
         }
     }
 }

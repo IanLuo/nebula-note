@@ -29,7 +29,7 @@ public class DashboardViewController: UIViewController {
         let button = RoundButton()
         
         button.interface({ (me, theme) in
-            (me as? RoundButton)?.setIcon(Asset.Assets.settings.image.fill(color: theme.color.interactive), for: .normal)
+            (me as? RoundButton)?.setIcon(Asset.SFSymbols.gear.image.fill(color: theme.color.interactive), for: .normal)
             (me as? RoundButton)?.setBackgroundColor(theme.color.background2, for: .normal)
         })
         return button
@@ -39,7 +39,7 @@ public class DashboardViewController: UIViewController {
         let button = RoundButton()
         
         button.interface({ (me, theme) in
-            (me as? RoundButton)?.setIcon(Asset.Assets.trash.image.fill(color: theme.color.interactive), for: .normal)
+            (me as? RoundButton)?.setIcon(Asset.SFSymbols.trash.image.fill(color: theme.color.interactive), for: .normal)
             (me as? RoundButton)?.setBackgroundColor(theme.color.background2, for: .normal)
         })
         return button
@@ -296,18 +296,18 @@ extension DashboardViewModel.DahsboardItemData {
     
     var icon: UIImage? {
         switch self {
-        case .allTags(_): return Asset.Assets.tag.image
+        case .allTags(_): return Asset.SFSymbols.tag.image
         case .allStatus(_): return Asset.Assets.planning.image
-        case .scheduled: return Asset.Assets.scheduled.image
-        case .overdue: return Asset.Assets.due.image
+        case .scheduled: return Asset.SFSymbols.calendarBadgePlus.image
+        case .overdue: return Asset.SFSymbols.calendarBadgeExclamationmark.image
         default: return nil
         }
     }
     
     var detailIcon: UIImage? {
         switch self {
-        case .allTags(_): return Asset.Assets.right.image.resize(upto: CGSize(width: 10, height: 10))
-        case .allStatus(_): return Asset.Assets.right.image.resize(upto: CGSize(width: 10, height: 10))
+        case .allTags(_): return Asset.SFSymbols.chevronRight.image.resize(upto: CGSize(width: 10, height: 10))
+        case .allStatus(_): return Asset.SFSymbols.chevronRight.image.resize(upto: CGSize(width: 10, height: 10))
         default: return nil
         }
     }

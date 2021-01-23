@@ -50,14 +50,14 @@ open class ModalFormViewController: TransitionViewController {
     
     private lazy var cancelButton: RoundButton = {
         let button = RoundButton()
-        button.setIcon(Asset.Assets.cross.image.resize(upto: CGSize(width: 10, height: 10)).fill(color: InterfaceTheme.Color.interactive), for: .normal)
+        button.setIcon(Asset.SFSymbols.xmark.image.resize(upto: CGSize(width: 10, height: 10)).fill(color: InterfaceTheme.Color.interactive), for: .normal)
         button.setBackgroundColor(InterfaceTheme.Color.background2, for: .normal)
         return button
     }()
     
     private lazy var saveButton: RoundButton = {
         let button = RoundButton()
-        button.setIcon(Asset.Assets.checkMark.image.resize(upto: CGSize(width: 15, height: 15)).fill(color: InterfaceTheme.Color.spotlight), for: .normal)
+        button.setIcon(Asset.SFSymbols.checkmark.image.resize(upto: CGSize(width: 15, height: 15)).fill(color: InterfaceTheme.Color.spotlight), for: .normal)
         button.setBackgroundColor(InterfaceTheme.Color.background2, for: .normal)
         return button
     }()

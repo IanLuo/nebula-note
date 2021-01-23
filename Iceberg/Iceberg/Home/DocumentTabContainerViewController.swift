@@ -369,7 +369,7 @@ private class Tab: UIView {
         let closeButton = UIButton()
         closeButton.interface { (me, theme) in
             let button = me as! UIButton
-            button.setImage(Asset.Assets.cross.image.fill(color: theme.color.interactive).resize(upto: CGSize(width: 10, height: 10)), for: .normal)
+            button.setImage(Asset.SFSymbols.xmark.image.fill(color: theme.color.interactive).resize(upto: CGSize(width: 10, height: 10)), for: .normal)
             button.setTitleColor(theme.color.interactive, for: .normal)
             self.backgroundColor = theme.color.background2
         }
@@ -397,7 +397,7 @@ private class Tab: UIView {
         isSelected.subscribe(onNext: { [weak self] isSelected in
             self?.backgroundColor = isSelected ? InterfaceTheme.Color.spotlight : InterfaceTheme.Color.background2
             self?.titleButton.setTitleColor(isSelected ? InterfaceTheme.Color.spotlitTitle : InterfaceTheme.Color.interactive, for: .normal)
-            closeButton.setImage(Asset.Assets.cross.image.fill(color: isSelected ? InterfaceTheme.Color.spotlitTitle : InterfaceTheme.Color.interactive).resize(upto: CGSize(width: 10, height: 10)), for: .normal)
+            closeButton.setImage(Asset.SFSymbols.xmark.image.fill(color: isSelected ? InterfaceTheme.Color.spotlitTitle : InterfaceTheme.Color.interactive).resize(upto: CGSize(width: 10, height: 10)), for: .normal)
         }).disposed(by: self.disposeBag)
         
         

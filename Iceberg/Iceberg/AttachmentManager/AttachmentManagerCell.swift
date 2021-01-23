@@ -96,7 +96,7 @@ public class AttachmentManagerCell: UICollectionViewCell {
         }
         
         cellModel.isChoosen.subscribe(onNext: { isSelected in
-            self.checkmarkImageView.image = isSelected ? Asset.Assets.checkMark.image.fill(color: InterfaceTheme.Color.spotlitTitle).resize(upto: CGSize(width: 15, height: 15)) : nil
+            self.checkmarkImageView.image = isSelected ? Asset.SFSymbols.checkmark.image.fill(color: InterfaceTheme.Color.spotlitTitle).resize(upto: CGSize(width: 15, height: 15)) : nil
             self.checkmarkImageView.backgroundColor = isSelected ? InterfaceTheme.Color.spotlight : InterfaceTheme.Color.background1
         }).disposed(by: self.reuseDisposeBag)
     }

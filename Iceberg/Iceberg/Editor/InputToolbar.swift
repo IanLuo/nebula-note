@@ -325,10 +325,10 @@ public enum CursorAction: String, ToolbarActionProtocol, TextViewAction {
     
     public var icon: UIImage {
         switch self {
-        case .moveUp: return Asset.Assets.up.image
-        case .moveDown: return Asset.Assets.down.image
-        case .moveLeft: return Asset.Assets.left.image
-        case .moveRight: return Asset.Assets.right.image
+        case .moveUp: return Asset.SFSymbols.chevronUp.image
+        case .moveDown: return Asset.SFSymbols.chevronDown.image
+        case .moveLeft: return Asset.SFSymbols.chevronLeft.image
+        case .moveRight: return Asset.SFSymbols.chevronRight.image
         }
     }
     

@@ -163,7 +163,7 @@ public class BrowserCell: UITableViewCell {
         actionButton.isHidden = self.cellModel?.shouldShowActions == false
         actionButton.interface { (me, theme) in
             if let button = me as? RoundButton {
-                button.setIcon(Asset.Assets.more.image.fill(color: theme.color.descriptive), for: .normal)
+                button.setIcon(Asset.SFSymbols.ellipsis.image.fill(color: theme.color.descriptive), for: .normal)
                 button.setBackgroundColor(theme.color.background2, for: .normal)
             }
         }
@@ -190,7 +190,7 @@ public class BrowserCell: UITableViewCell {
         actionButton.isHidden = self.cellModel?.shouldShowActions == false
         actionButton.interface { (me, theme) in
             if let button = me as? RoundButton {
-                actionButton.setIcon(Asset.Assets.more.image.fill(color: theme.color.descriptive), for: .normal)
+                actionButton.setIcon(Asset.SFSymbols.ellipsis.image.fill(color: theme.color.descriptive), for: .normal)
                 actionButton.setBackgroundColor(theme.color.background2, for: .normal)
             }
         }
@@ -206,7 +206,7 @@ public class BrowserCell: UITableViewCell {
         enterButton.interface { (me, theme) in
             if let button = me as? UIButton {
                 button.setBackgroundImage(UIImage.create(with: theme.color.background3, size: .singlePoint), for: .normal)
-                button.setImage(Asset.Assets.next.image.fill(color: theme.color.interactive), for: .normal)
+                button.setImage(Asset.SFSymbols.arrowRight.image.fill(color: theme.color.interactive), for: .normal)
             }
         }
         

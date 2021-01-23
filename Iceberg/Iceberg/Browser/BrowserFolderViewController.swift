@@ -46,7 +46,7 @@ public class BrowserFolderViewController: UIViewController {
         
         button.interface { (me, theme) in
             guard let button = me as? UIButton else { return }
-            button.setImage(Asset.Assets.add.image.fill(color: theme.color.interactive), for: .normal)
+            button.setImage(Asset.SFSymbols.plus.image.fill(color: theme.color.interactive), for: .normal)
         }
         
         return button
@@ -68,7 +68,7 @@ public class BrowserFolderViewController: UIViewController {
         switch viewModel.mode {
         case .browser, .chooser:
         // bind add document button
-        let rightBarButtonItem = UIBarButtonItem(image: Asset.Assets.newDocument.image, style: .plain, target: nil, action: nil)
+        let rightBarButtonItem = UIBarButtonItem(image: Asset.SFSymbols.docBadgePlus.image, style: .plain, target: nil, action: nil)
         rightBarButtonItem.rx
             .tap
             .map { _ in L10n.Browser.Title.untitled } // use default documentname

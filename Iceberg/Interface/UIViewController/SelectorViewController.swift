@@ -74,7 +74,7 @@ open class SelectorViewController: UIViewController {
     
     private lazy var closeButton: RoundButton = {
         let button = RoundButton()
-        button.setIcon(Asset.Assets.cross.image.resize(upto: CGSize(width: 10, height: 10)).fill(color: InterfaceTheme.Color.interactive), for: .normal)
+        button.setIcon(Asset.SFSymbols.xmark.image.resize(upto: CGSize(width: 10, height: 10)).fill(color: InterfaceTheme.Color.interactive), for: .normal)
         button.setBackgroundColor(InterfaceTheme.Color.background3, for: .normal)
         button.tapped { [weak self] _ in
             self?.cancel()

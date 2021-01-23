@@ -70,7 +70,7 @@ public class AgendaTableCell: UITableViewCell {
         
         imageView.interface({ (me, theme) in
             let me = me as! UIImageView
-            me.image = Asset.Assets.tag.image.fill(color: theme.color.descriptive)
+            me.image = Asset.SFSymbols.tag.image.fill(color: theme.color.descriptive)
         })
 
         return imageView

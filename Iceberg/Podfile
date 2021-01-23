@@ -42,6 +42,7 @@ target 'Interface' do
   pod 'RxCocoa', :git => 'git@github.com:ReactiveX/RxSwift.git', :tag => '5.1.0'
   pod 'SwiftyBeaver'
   pod 'PKHUD', '~> 5.0'
+  pod 'JAMSVGImage'
 end
 
 target 'CaptureIdeaExtension' do

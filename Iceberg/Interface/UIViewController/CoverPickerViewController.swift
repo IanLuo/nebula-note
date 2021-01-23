@@ -44,16 +44,16 @@ public class CoverPickerViewController: ActionsViewController {
         self.title = L10n.ImagePicker.add
         
         if UIImagePickerController.isSourceTypeAvailable(UIImagePickerController.SourceType.camera) {
-            self.addAction(icon: Asset.Assets.camera.image.fill(color: InterfaceTheme.Color.descriptive), title: L10n.ImagePicker.camera, action: { vc in
+            self.addAction(icon: Asset.SFSymbols.camera.image.fill(color: InterfaceTheme.Color.descriptive), title: L10n.ImagePicker.camera, action: { vc in
                 self.showCamera()
             })
         }
         
-        self.addAction(icon: Asset.Assets.imageLibrary.image.fill(color: InterfaceTheme.Color.descriptive), title: L10n.ImagePicker.library, action: { vc in
-            self.showImageLibrary()
-        })
+//        self.addAction(icon: Asset.SFSymbols.pho.image.fill(color: InterfaceTheme.Color.descriptive), title: L10n.ImagePicker.library, action: { vc in
+//            self.showImageLibrary()
+//        })
         
-        self.addAction(icon: Asset.Assets.document.image.fill(color: InterfaceTheme.Color.descriptive), title: L10n.ImagePicker.files, action: { vc in
+        self.addAction(icon: Asset.SFSymbols.docText.image.fill(color: InterfaceTheme.Color.descriptive), title: L10n.ImagePicker.files, action: { vc in
             self.showDocumentPicker()
         })
     }

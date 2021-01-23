@@ -54,7 +54,7 @@ public class AgendaViewController: UIViewController {
         viewModel.delegate = self
         
         self.title = L10n.Agenda.title
-        self.tabBarItem = UITabBarItem(title: L10n.Agenda.title, image: Asset.Assets.agenda.image, tag: 0)
+        self.tabBarItem = UITabBarItem(title: L10n.Agenda.title, image: Asset.SFSymbols.calendar.image, tag: 0)
     }
     
     public required init?(coder aDecoder: NSCoder) {

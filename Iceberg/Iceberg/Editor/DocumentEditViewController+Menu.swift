@@ -36,14 +36,14 @@ extension DocumentEditorViewController {
         let actionsController = ActionsViewController()
         
         actionsController.title = L10n.Document.Menu.title
-        actionsController.addAction(icon: Asset.Assets.down.image, title: L10n.Document.Menu.foldAll) { [unowned self] viewController in
+        actionsController.addAction(icon: Asset.SFSymbols.chevronDown.image, title: L10n.Document.Menu.foldAll) { [unowned self] viewController in
             viewController.dismiss(animated: true, completion: {
                 self.viewModel.foldAll()
                 self.viewModel.showGlobalCaptureEntry()
             })
         }
         
-        actionsController.addAction(icon: Asset.Assets.up.image, title: L10n.Document.Menu.unfoldAll) { [unowned self] viewController in
+        actionsController.addAction(icon: Asset.SFSymbols.chevronUp.image, title: L10n.Document.Menu.unfoldAll) { [unowned self] viewController in
             viewController.dismiss(animated: true, completion: {
                 self.viewModel.unfoldAll()
                 self.viewModel.showGlobalCaptureEntry()
@@ -75,7 +75,7 @@ extension DocumentEditorViewController {
             self.showInfo()
         }
         
-        actionsController.addAction(icon: Asset.Assets.inspiration.image,
+        actionsController.addAction(icon: Asset.SFSymbols.lightbulb.image,
                                     title: L10n.Document.Menu.capture,
                                     style: .highlight) { viewController in
                                         viewController.dismiss(animated: true) { [unowned self] in
@@ -242,7 +242,7 @@ extension DocumentEditorViewController {
         var location = location
         
         for tag in tags {
-            actionsViewController.addAction(icon: Asset.Assets.cross.image.fill(color: InterfaceTheme.Color.warning), title: tag) { actionViewController in
+            actionsViewController.addAction(icon: Asset.SFSymbols.xmark.image.fill(color: InterfaceTheme.Color.warning), title: tag) { actionViewController in
                 
                 let oldSelectedRange = self.textView.selectedRange
                 let result = self.viewModel.performAction(EditAction.removeTag(tag, location), textView: self.textView)
@@ -262,7 +262,7 @@ extension DocumentEditorViewController {
         }
         
         // 选择一个已经存在的标签
-        actionsViewController.addAction(icon: Asset.Assets.tag.image.fill(color: InterfaceTheme.Color.interactive), title: L10n.Document.Edit.Tag.choose, style: .highlight) { viewController in
+        actionsViewController.addAction(icon: Asset.SFSymbols.tag.image.fill(color: InterfaceTheme.Color.interactive), title: L10n.Document.Edit.Tag.choose, style: .highlight) { viewController in
             viewController.dismiss(animated: true, completion: {
                 let selector = SelectorViewController()
                 selector.title = L10n.Document.Edit.Tag.title
@@ -300,7 +300,7 @@ extension DocumentEditorViewController {
         }
         
         // 添加新的标签
-        actionsViewController.addAction(icon: Asset.Assets.add.image.fill(color: InterfaceTheme.Color.interactive), title: L10n.Document.Edit.Tag.add, style: .highlight) { actionViewController in
+        actionsViewController.addAction(icon: Asset.SFSymbols.plus.image.fill(color: InterfaceTheme.Color.interactive), title: L10n.Document.Edit.Tag.add, style: .highlight) { actionViewController in
             actionViewController.dismiss(animated: true, completion: {
                 let formController = ModalFormViewController()
                 formController.addTextFied(title: L10n.Document.Edit.Tag.add, placeHoder: L10n.Document.Edit.Tag.placeHolder, defaultValue: nil)
@@ -395,7 +395,7 @@ extension DocumentEditorViewController {
         }
         
         if let current = current {
-            actionsController.addAction(icon: Asset.Assets.cross.image.fill(color: InterfaceTheme.Color.warning),
+            actionsController.addAction(icon: Asset.SFSymbols.xmark.image.fill(color: InterfaceTheme.Color.warning),
                                         title: L10n.General.Button.Title.delete + " \"\(current)\"",
                                         style: .warning) { viewController in
                                             let oldSelectedRange = self.textView.selectedRange
@@ -493,7 +493,7 @@ extension DocumentEditorViewController {
         
         let isFolded = self.viewModel.isSectionFolded(at: location)
         let foldTitle = isFolded ? L10n.Document.Heading.unfold : L10n.Document.Heading.fold
-        let icon = isFolded ? Asset.Assets.up.image : Asset.Assets.down.image
+        let icon = isFolded ? Asset.SFSymbols.chevronUp.image : Asset.SFSymbols.chevronDown.image
         actionsController.addAction(icon: icon, title: foldTitle) { viewController in
             viewController.dismiss(animated: true, completion: {
                 self.viewModel.showGlobalCaptureEntry()

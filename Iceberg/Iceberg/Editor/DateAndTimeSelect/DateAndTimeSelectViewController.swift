@@ -130,7 +130,7 @@ public class DateAndTimeSelectViewController: TransitionViewController {
             self?._deleteButton.setBackgroundImage(UIImage.create(with: theme.color.background2, size: .singlePoint), for: .normal)
             self?._deleteButton.tintColor = theme.color.warning
             self?._cancelButton.tintColor = theme.color.interactive
-            self?._cancelButton.setImage(Asset.Assets.cross.image.withRenderingMode(.alwaysTemplate), for: .normal)
+            self?._cancelButton.setImage(Asset.SFSymbols.xmark.image.withRenderingMode(.alwaysTemplate), for: .normal)
         }
         
         self._calendarContainer.addSubview(self._dateSelectViewController.view)

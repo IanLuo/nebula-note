@@ -55,7 +55,7 @@ public class AttachmentManagerViewController: UIViewController, UICollectionView
         }
         
         if self.viewModel.context.coordinator?.usage == .pick {
-            let closeButton = UIBarButtonItem(image: Asset.Assets.down.image, style: .plain, target: nil, action: nil)
+            let closeButton = UIBarButtonItem(image: Asset.SFSymbols.chevronDown.image, style: .plain, target: nil, action: nil)
             closeButton.rx.tap.subscribe(onNext: { [weak self] in
                 self?.dismiss(animated: true)
             }).disposed(by: self.disposeBag)

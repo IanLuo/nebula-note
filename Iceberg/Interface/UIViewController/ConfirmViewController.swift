@@ -107,13 +107,13 @@ public class ConfirmViewController: TransitionViewController {
         let yesButton = UIButton()
         yesButton.tintColor = InterfaceTheme.Color.spotlight
         yesButton.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.background3, size: .singlePoint), for: .normal)
-        yesButton.setImage(Asset.Assets.checkMark.image.withRenderingMode(.alwaysTemplate), for: .normal)
+        yesButton.setImage(Asset.SFSymbols.checkmark.image.withRenderingMode(.alwaysTemplate), for: .normal)
         yesButton.addTarget(self, action: #selector(_confirm), for: .touchUpInside)
         
         let noButton = UIButton()
         noButton.tintColor = InterfaceTheme.Color.warning
         noButton.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.background3, size: .singlePoint), for: .normal)
-        noButton.setImage(Asset.Assets.cross.image.withRenderingMode(.alwaysTemplate), for: .normal)
+        noButton.setImage(Asset.SFSymbols.xmark.image.withRenderingMode(.alwaysTemplate), for: .normal)
         noButton.addTarget(self, action: #selector(_cancel), for: .touchUpInside)
 
         self.contentView.addSubview(yesButton)

@@ -25,13 +25,13 @@ public class CaptureListViewController: UIViewController {
     private lazy var filterSegmentedControl: UISegmentedControl = {
         let seg = UISegmentedControl(items: [
             L10n.Attachment.Kind.all,
-            Asset.Assets.text.image,
-            Asset.Assets.link.image,
-            Asset.Assets.imageLibrary.image,
-            Asset.Assets.location.image,
-            Asset.Assets.audio.image,
-            Asset.Assets.video.image,
-            Asset.Assets.sketch.image.resize(upto: CGSize(width: 15, height: 15))
+            Asset.SFSymbols.docPlaintext.image,
+            Asset.SFSymbols.link.image,
+            Asset.SFSymbols.photoOnRectangle.image,
+            Asset.SFSymbols.location.image,
+            Asset.SFSymbols.mic.image,
+            Asset.SFSymbols.video.image,
+            Asset.SFSymbols.scribble.image.resize(upto: CGSize(width: 15, height: 15))
             ])
         
         seg.selectedSegmentIndex = 0
@@ -69,7 +69,7 @@ public class CaptureListViewController: UIViewController {
     private lazy var cancelButton: UIButton = {
         let button = UIButton()
         button.addTarget(self, action: #selector(cancel), for: .touchUpInside)
-        button.setImage(Asset.Assets.cross.image.withRenderingMode(.alwaysTemplate), for: .normal)
+        button.setImage(Asset.SFSymbols.xmark.image.withRenderingMode(.alwaysTemplate), for: .normal)
         button.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.background1, size: .singlePoint), for: .normal)
         button.setTitleColor(InterfaceTheme.Color.interactive, for: .normal)
         return button
@@ -79,7 +79,7 @@ public class CaptureListViewController: UIViewController {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
         viewModel.delegate = self
-        self.tabBarItem = UITabBarItem(title: "", image: Asset.Assets.inspiration.image, tag: 0)
+        self.tabBarItem = UITabBarItem(title: "", image: Asset.SFSymbols.lightbulb.image, tag: 0)
         
         self.title = L10n.CaptureList.title
     }
@@ -134,7 +134,7 @@ public class CaptureListViewController: UIViewController {
         self.tableView.sideAnchor(for: [.left, .bottom, .right], to: self.view, edgeInset: 0, considerSafeArea: true)
         
         if self.viewModel.context.coordinator?.isModal ?? false {
-            self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: Asset.Assets.down.image, style: .plain, target: self, action: #selector(cancel))
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: Asset.SFSymbols.chevronDown.image, style: .plain, target: self, action: #selector(cancel))
         } else {
             let rightItem = UIBarButtonItem(title: L10n.General.help, style: .plain, target: nil, action: nil)
             rightItem.rx.tap.subscribe(onNext: {
@@ -146,7 +146,7 @@ public class CaptureListViewController: UIViewController {
         let refreshButton = UIButton()
         refreshButton.interface { (me, theme) in
             let button = me as! UIButton
-            button.setImage(Asset.Assets.refresh.image.fill(color: theme.color.interactive), for: .normal)
+            button.setImage(Asset.SFSymbols.arrowClockwise.image.fill(color: theme.color.interactive), for: .normal)
         }
         
         refreshButton.rx.tap.subscribe(onNext: { [unowned refreshButton] in

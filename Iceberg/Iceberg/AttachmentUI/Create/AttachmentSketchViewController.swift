@@ -32,7 +32,7 @@ public class AttachmentSketchViewController: UIViewController, AttachmentViewCon
     
     private let undoButton: UIButton = {
         let button = UIButton()
-        button.setImage(Asset.Assets.undo.image.fill(color: InterfaceTheme.Color.interactive), for: .normal)
+        button.setImage(Asset.SFSymbols.arrowUturnLeft.image.fill(color: InterfaceTheme.Color.interactive), for: .normal)
         button.titleLabel?.font = InterfaceTheme.Font.title
         button.setTitleColor(InterfaceTheme.Color.interactive, for: .normal)
         button.addTarget(self, action: #selector(undo), for: .touchUpInside)
@@ -41,7 +41,7 @@ public class AttachmentSketchViewController: UIViewController, AttachmentViewCon
     
     private let redoButton: UIButton = {
         let button = UIButton()
-        button.setImage(Asset.Assets.redo.image.fill(color: InterfaceTheme.Color.interactive), for: .normal)
+        button.setImage(Asset.SFSymbols.arrowUturnRight.image.fill(color: InterfaceTheme.Color.interactive), for: .normal)
         button.titleLabel?.font = InterfaceTheme.Font.title
         button.setTitleColor(InterfaceTheme.Color.interactive, for: .normal)
         button.addTarget(self, action: #selector(redo), for: .touchUpInside)
@@ -51,7 +51,7 @@ public class AttachmentSketchViewController: UIViewController, AttachmentViewCon
     private lazy var exitButton: UIButton = {
         let button = UIButton()
         button.addTarget(self, action: #selector(cancel), for: .touchUpInside)
-        button.setImage(Asset.Assets.down.image.fill(color: InterfaceTheme.Color.interactive), for: .normal)
+        button.setImage(Asset.SFSymbols.chevronDown.image.fill(color: InterfaceTheme.Color.interactive), for: .normal)
         return button
     }()
     

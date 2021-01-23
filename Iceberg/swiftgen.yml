@@ -9,8 +9,9 @@ strings:
             publicAccess: true
 xcassets:
     inputs:
-        - Interface/Resources/Assets.xcassets
         - Interface/Resources/Colors.xcassets
+        - Interface/Resources/Assets.xcassets
+        - Interface/Resources/SFSymbols.xcassets
     outputs:
         - templateName: swift5
           output: Interface/Generated/swiftgen/assets.swift

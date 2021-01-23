@@ -108,7 +108,7 @@ public class SettingsViewController: UITableViewController {
         
         self.tableView.separatorStyle = .none
         
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: Asset.Assets.down.image,
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: Asset.SFSymbols.chevronDown.image,
                                                                  style: .plain,
                                                                  target: self,
                                                                  action: #selector(self._cancel))
@@ -406,7 +406,7 @@ public class SettingsViewController: UITableViewController {
         
         for planning in plannings {
             let canDelete = !self.viewModel.defaultPlannings.contains(planning)
-            let icon =  canDelete ? Asset.Assets.cross.image.fill(color: InterfaceTheme.Color.warning) : nil
+            let icon =  canDelete ? Asset.SFSymbols.xmark.image.fill(color: InterfaceTheme.Color.warning) : nil
             actionsViewController.addAction(icon: icon, title: planning) { viewController in
                 if canDelete {
                     self.viewModel.removePlanning(planning, completion: {
@@ -428,7 +428,7 @@ public class SettingsViewController: UITableViewController {
         
         let addTitle = isFinish ? L10n.Setting.Planning.Finish.add :  L10n.Setting.Planning.Unfinish.add
 
-        let icon = self.viewModel.isMember ? Asset.Assets.add.image.fill(color: InterfaceTheme.Color.spotlight) : Asset.Assets.proLabel.image
+        let icon = self.viewModel.isMember ? Asset.SFSymbols.plus.image.fill(color: InterfaceTheme.Color.spotlight) : Asset.Assets.proLabel.image
         actionsViewController.addAction(icon: icon, title: addTitle, style: .highlight) { [unowned self] viewController in
             viewController.dismiss(animated: true, completion: {
                 

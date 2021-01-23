@@ -133,15 +133,15 @@ public class DocumentEditorViewController: UIViewController {
                 }
             }
 
-            var closeButtonIcon = Asset.Assets.cross.image.fill(color: InterfaceTheme.Color.interactive)
+            var closeButtonIcon = Asset.SFSymbols.xmark.image.fill(color: InterfaceTheme.Color.interactive)
             if self.viewModel.context.coordinator?.isModal == false {
-                closeButtonIcon = Asset.Assets.left.image.fill(color: InterfaceTheme.Color.interactive)
+                closeButtonIcon = Asset.SFSymbols.chevronLeft.image.fill(color: InterfaceTheme.Color.interactive)
             }
             let closeButton = UIBarButtonItem(image: closeButtonIcon, style: .plain, target: self, action: #selector(cancel(_:)))
             self.navigationItem.leftBarButtonItem = closeButton
             
-            let menuButton = UIBarButtonItem(image: Asset.Assets.more.image.fill(color: InterfaceTheme.Color.interactive), style: .plain, target: self, action: #selector(showMenu))
-            let outlookButton = UIBarButtonItem(image: Asset.Assets.list.image.fill(color: InterfaceTheme.Color.interactive), style: .plain, target: nil, action: nil)
+            let menuButton = UIBarButtonItem(image: Asset.SFSymbols.ellipsis.image.fill(color: InterfaceTheme.Color.interactive), style: .plain, target: self, action: #selector(showMenu))
+            let outlookButton = UIBarButtonItem(image: Asset.SFSymbols.filemenuAndSelection.image.fill(color: InterfaceTheme.Color.interactive), style: .plain, target: nil, action: nil)
             outlookButton.rx.tap.subscribe(onNext: { _ in
                 self.showOutline(from: nil)
             }).disposed(by: self.disposeBag)
@@ -173,11 +173,11 @@ public class DocumentEditorViewController: UIViewController {
                     self?.viewModel.unfoldAll()
                 }
                 
-                self.addToolbarButton(title: L10n.Document.Menu.outline, icon: Asset.Assets.list.image) { [weak self]  button in
+                self.addToolbarButton(title: L10n.Document.Menu.outline, icon: Asset.SFSymbols.listBullet.image) { [weak self]  button in
                     self?.showOutline(from: button)
                 }
                 
-                self.addToolbarButton(title: "", icon: Asset.Assets.more.image) { [weak self]  button in
+                self.addToolbarButton(title: "", icon: Asset.SFSymbols.ellipsis.image) { [weak self]  button in
                     self?.showInfo()
                 }
             } else {

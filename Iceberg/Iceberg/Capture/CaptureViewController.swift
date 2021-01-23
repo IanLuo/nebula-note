@@ -63,7 +63,7 @@ public class CaptureViewController: UIViewController, TransitionProtocol {
         
         button.interface({ (me, theme) in
             let me = me as! RoundButton
-            me.setIcon(Asset.Assets.cross.image.fill(color: theme.color.interactive), for: .normal)
+            me.setIcon(Asset.SFSymbols.xmark.image.fill(color: theme.color.interactive), for: .normal)
             me.setBackgroundColor(theme.color.background2, for: .normal)
         })
         button.setBorder(color: nil)
@@ -146,13 +146,13 @@ extension CaptureViewController: UITableViewDelegate, UITableViewDataSource {
 extension Attachment.Kind {
     var icon: UIImage {
         switch self {
-        case .audio: return Asset.Assets.audio.image.fill(color: InterfaceTheme.Color.descriptive)
-        case .video: return Asset.Assets.video.image.fill(color: InterfaceTheme.Color.descriptive)
-        case .link: return Asset.Assets.link.image.fill(color: InterfaceTheme.Color.descriptive)
-        case .location: return Asset.Assets.location.image.fill(color: InterfaceTheme.Color.descriptive)
-        case .sketch: return Asset.Assets.sketch.image.fill(color: InterfaceTheme.Color.descriptive)
-        case .text: return Asset.Assets.text.image.fill(color: InterfaceTheme.Color.descriptive)
-        case .image: return Asset.Assets.imageLibrary.image.fill(color: InterfaceTheme.Color.descriptive)
+        case .audio: return Asset.SFSymbols.mic.image.fill(color: InterfaceTheme.Color.descriptive)
+        case .video: return Asset.SFSymbols.video.image.fill(color: InterfaceTheme.Color.descriptive)
+        case .link: return Asset.SFSymbols.link.image.fill(color: InterfaceTheme.Color.descriptive)
+        case .location: return Asset.SFSymbols.location.image.fill(color: InterfaceTheme.Color.descriptive)
+        case .sketch: return Asset.SFSymbols.scribble.image.fill(color: InterfaceTheme.Color.descriptive)
+        case .text: return Asset.SFSymbols.docPlaintext.image.fill(color: InterfaceTheme.Color.descriptive)
+        case .image: return Asset.SFSymbols.photoOnRectangle.image.fill(color: InterfaceTheme.Color.descriptive)
         }
     }
     

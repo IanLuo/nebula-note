@@ -173,7 +173,7 @@ public class MembershipViewController: UIViewController {
             me.view.backgroundColor = theme.color.background1
         }
         
-        let cancelBarButtonItem = UIBarButtonItem(image: Asset.Assets.down.image, style: .plain, target: nil, action: nil)
+        let cancelBarButtonItem = UIBarButtonItem(image: Asset.SFSymbols.chevronDown.image, style: .plain, target: nil, action: nil)
         cancelBarButtonItem.rx.tap.subscribe(onNext: { [unowned self] _ in
             self.dismiss(animated: true)
         }).disposed(by:self.disposeBag)

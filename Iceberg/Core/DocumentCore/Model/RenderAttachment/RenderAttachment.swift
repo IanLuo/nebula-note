@@ -85,11 +85,11 @@ private class AttachmentThumbnailView: UIView {
         case .audio:
             self.title.text = attachment.durationString
             self.icon.contentMode = .center
-            self.icon.image = Asset.Assets.audio.image.fill(color: InterfaceTheme.Color.descriptive).fill(color: InterfaceTheme.Color.interactive)
+            self.icon.image = Asset.SFSymbols.mic.image.fill(color: InterfaceTheme.Color.descriptive).fill(color: InterfaceTheme.Color.interactive)
         case .location:
             self.title.text = "location"
             self.icon.contentMode = .center
-            self.icon.image = Asset.Assets.location.image.fill(color: InterfaceTheme.Color.descriptive).fill(color: InterfaceTheme.Color.interactive)
+            self.icon.image = Asset.SFSymbols.location.image.fill(color: InterfaceTheme.Color.descriptive).fill(color: InterfaceTheme.Color.interactive)
         default: break
         }
     }

@@ -105,21 +105,21 @@ public class Application: Coordinator {
             }
         }).disposed(by: self.disposeBag)
         
-        dependency.documentManager.getFileLocationComplete { [weak self] url in
+        dependency.documentManager.getFileLocationComplete { url in
             guard let url = url else { return }
-            guard let strongSelf = self else { return }
             
             log.info("using \(url) as root")
-
-            // UI complete loading
-            strongSelf.dependency.appContext.uiStackReady.accept(true)
-            strongSelf.dependency.eventObserver.emit(UIStackReadyEvent())
         }
         
-        self.homeCoordinator?.start(from: self, animated: animated)
+        self.homeCoordinator?.start(from: self, animated: false)
         
         // 设置 iCloud
         self._setupiCloud()
+        
+        DispatchQueue.main.async {
+            self.dependency.appContext.uiStackReady.accept(true)
+            self.dependency.eventObserver.emit(UIStackReadyEvent())
+        }
     }
     
     private var _isHandlingSharedIdeas: Bool = false
@@ -203,7 +203,10 @@ public class Application: Coordinator {
                     })
                 }
                 
-                confirmViewController.present(from: self.stack, at: self.stack.view)
+                self.dependency.appContext.uiStackReady.subscribe(onNext: {
+                    guard $0 else { return }
+                    confirmViewController.present(from: self.stack, at: self.stack.view)
+                }).disposed(by: self.disposeBag)
             } else if iCloudDocumentManager.status == .on {
                 
                 self.dependency.syncManager.geticloudContainerURL(completion: { [unowned self] url in
@@ -234,8 +237,8 @@ extension Coordinator {
             let navigationController = me as! UINavigationController
             navigationController.navigationBar.tintColor = theme.color.interactive
             navigationController.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: theme.color.interactive]
-            navigationController.navigationBar.backIndicatorImage = Asset.Assets.left.image.fill(color: theme.color.descriptive)
-            navigationController.navigationBar.backIndicatorTransitionMaskImage = Asset.Assets.left.image
+            navigationController.navigationBar.backIndicatorImage = Asset.SFSymbols.chevronLeft.image.fill(color: theme.color.descriptive)
+            navigationController.navigationBar.backIndicatorTransitionMaskImage = Asset.SFSymbols.chevronLeft.image
             navigationController.navigationBar.barTintColor = theme.color.background1
             
             if InterfaceTheme.isDartMode {
