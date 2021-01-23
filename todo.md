@@ -1,3 +1,7 @@
+---- 1.2.8 ----
+[x] add favorite function
+[x] update icons
+[x] fix some issue that causes unspected folding behavior
 ---- 1.2.7 ----
 [x] fix folding issues
 [x] add 'fold other' function
