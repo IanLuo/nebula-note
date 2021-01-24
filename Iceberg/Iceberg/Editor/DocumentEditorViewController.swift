@@ -145,7 +145,6 @@ public class DocumentEditorViewController: UIViewController {
             outlookButton.rx.tap.subscribe(onNext: { _ in
                 self.showOutline(from: nil)
             }).disposed(by: self.disposeBag)
-
             
             self.navigationItem.rightBarButtonItems = [menuButton, outlookButton]
             

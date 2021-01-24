@@ -3,6 +3,39 @@ PODS:
   - Differentiator (4.0.1)
   - Doorbell (0.2.5)
   - Drawsana (0.12.0)
+  - Firebase/CoreOnly (7.4.0):
+    - FirebaseCore (= 7.4.0)
+  - Firebase/Crashlytics (7.4.0):
+    - Firebase/CoreOnly
+    - FirebaseCrashlytics (~> 7.4.0)
+  - FirebaseCore (7.4.0):
+    - FirebaseCoreDiagnostics (~> 7.4)
+    - GoogleUtilities/Environment (~> 7.0)
+    - GoogleUtilities/Logger (~> 7.0)
+  - FirebaseCoreDiagnostics (7.4.0):
+    - GoogleDataTransport (~> 8.0)
+    - GoogleUtilities/Environment (~> 7.0)
+    - GoogleUtilities/Logger (~> 7.0)
+    - nanopb (~> 2.30907.0)
+  - FirebaseCrashlytics (7.4.0):
+    - FirebaseCore (~> 7.0)
+    - FirebaseInstallations (~> 7.0)
+    - GoogleDataTransport (~> 8.0)
+    - nanopb (~> 2.30907.0)
+    - PromisesObjC (~> 1.2)
+  - FirebaseInstallations (7.4.0):
+    - FirebaseCore (~> 7.0)
+    - GoogleUtilities/Environment (~> 7.0)
+    - GoogleUtilities/UserDefaults (~> 7.0)
+    - PromisesObjC (~> 1.2)
+  - GoogleDataTransport (8.2.0):
+    - nanopb (~> 2.30907.0)
+  - GoogleUtilities/Environment (7.2.0):
+    - PromisesObjC (~> 1.2)
+  - GoogleUtilities/Logger (7.2.0):
+    - GoogleUtilities/Environment
+  - GoogleUtilities/UserDefaults (7.2.0):
+    - GoogleUtilities/Logger
   - Haptico (1.0.2)
   - JAMSVGImage (1.6.1)
   - KDCalendar (1.6.5)
@@ -13,8 +46,14 @@ PODS:
   - MSGraphClientSDK/Authentication (1.0.0)
   - MSGraphClientSDK/Common (1.0.0):
     - MSGraphClientSDK/Authentication
+  - nanopb (2.30907.0):
+    - nanopb/decode (= 2.30907.0)
+    - nanopb/encode (= 2.30907.0)
+  - nanopb/decode (2.30907.0)
+  - nanopb/encode (2.30907.0)
   - OAuthSwift (2.1.0)
   - PKHUD (5.3.0)
+  - PromisesObjC (1.2.12)
   - RxCocoa (5.1.0):
     - RxRelay (~> 5)
     - RxSwift (~> 5)
@@ -34,6 +73,7 @@ PODS:
 DEPENDENCIES:
   - Doorbell
   - Drawsana
+  - Firebase/Crashlytics
   - Haptico
   - JAMSVGImage
   - KDCalendar (~> 1.6.5)
@@ -55,12 +95,21 @@ SPEC REPOS:
     - Differentiator
     - Doorbell
     - Drawsana
+    - Firebase
+    - FirebaseCore
+    - FirebaseCoreDiagnostics
+    - FirebaseCrashlytics
+    - FirebaseInstallations
+    - GoogleDataTransport
+    - GoogleUtilities
     - Haptico
     - JAMSVGImage
     - KDCalendar
     - MHWebViewController
     - MSGraphClientSDK
+    - nanopb
     - PKHUD
+    - PromisesObjC
     - RxDataSources
     - RxRelay
     - SwiftGen
@@ -100,13 +149,22 @@ SPEC CHECKSUMS:
   Differentiator: 886080237d9f87f322641dedbc5be257061b0602
   Doorbell: 4de282e483060cfb80b788e761eda35ec5c7cf69
   Drawsana: 6e69c064ffb859fef968a0a50d3481849a48941c
+  Firebase: 09fb40287b6dfc8ee65f726fa0b788719d3f2a07
+  FirebaseCore: 99c06e5a1e8d6952e75cb1f0a6d0b23c0f5ccdcf
+  FirebaseCoreDiagnostics: 3770093ac4f2be4590fa03cfa1d3a6e5602d4557
+  FirebaseCrashlytics: ef6b0947ab6819b5cb335f8c0a7677cd57d544c5
+  FirebaseInstallations: 30646fc9a61c6f4ee3cd7a8b7231721842b40c95
+  GoogleDataTransport: 1024b1a4dfbd7a0e92cb20d7e0a6f1fb66b449a4
+  GoogleUtilities: d866834472f1324d080496bc67ab3ce5d0d46027
   Haptico: ce38d1f993f3a0df9a6d7795a9dd2849648aa9d1
   JAMSVGImage: 7aa966a310ddf5f53de295d5ce5b930df8ff1eb2
   KDCalendar: 15e74f37bd3d206bf7549c594fd08e0347c276f4
   MHWebViewController: bc0c4be723b798260ccec01ce6b9e86c6543741e
   MSGraphClientSDK: ffc07a58a838e0702c7bf2a856367035d4a335d7
+  nanopb: 59221d7f958fb711001e6a449489542d92ae113e
   OAuthSwift: b65415797d860d0a25c7d178250cfb8cec4b83bf
   PKHUD: 98f3e4bc904b9c916f1c5bb6d765365b5357291b
+  PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
   RxCocoa: 13d2a4d7546a34b8ececae8c281e4ea1dbb94f2b
   RxDataSources: efee07fa4de48477eca0a4611e6d11e2da9c1114
   RxRelay: d77f7d771495f43c556cbc43eebd1bb54d01e8e9
@@ -116,6 +174,6 @@ SPEC CHECKSUMS:
   SwiftyDropbox: 7e864f1e826bfc1b9b53a5edccef6c8d5fbe9e3b
   SwiftyStoreKit: 555996ed1159bb57209e7ec251b2a775d4434a69
 
-PODFILE CHECKSUM: 35706bc6fa202ba80ae1c032831821a29ea8fa47
+PODFILE CHECKSUM: 1064992de6a32370a66bab412237eac7d2497a06
 
 COCOAPODS: 1.10.0

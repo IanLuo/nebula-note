@@ -99,15 +99,14 @@ public class DocumentEditorViewModel: ViewModelProtocol {
             service.open {
                 self?.isReadyToEdit = $0 != nil
                 self?.isOpenning = false
+                self?.isFavorite.accept((self?.dependency
+                                            .settingAccessor
+                                            .getSetting(item: SettingsAccessor.Item.favoriteDocuments,
+                                                        type: [String].self) ?? []).contains(where: {
+                                                            $0 == self?.editorService.id
+                                                        }))
             }
         }
-        
-        self.isFavorite.accept((self.dependency
-                                    .settingAccessor
-                                    .getSetting(item: SettingsAccessor.Item.favoriteDocuments,
-                                                type: [String].self) ?? []).contains(where: {
-                                                    $0 == self.editorService.id
-                                                }))
     }
     
     deinit {
@@ -224,17 +223,28 @@ public class DocumentEditorViewModel: ViewModelProtocol {
         if isFavorite == true {
             if !favoriteDocuments.contains(id) {
                 favoriteDocuments.append(id)
-                self.dependency.settingAccessor.setSetting(item: SettingsAccessor.Item.favoriteDocuments, value: favoriteDocuments) {
-                    self.isFavorite.accept(true)
+                self.dependency.settingAccessor.setSetting(item: SettingsAccessor.Item.favoriteDocuments, value: favoriteDocuments) { [weak self] in
+                    guard let strongSelf = self else { return }
+                    strongSelf.isFavorite.accept(true)
+                    strongSelf.dependency.eventObserver.emit(DocumentFavoriteChangedEvent(url: strongSelf.url, isFavorite: isFavorite))
                 }
+            } else {
+                self.isFavorite.accept(true)
+                self.dependency.eventObserver.emit(DocumentFavoriteChangedEvent(url: self.url, isFavorite: isFavorite))
             }
         } else {
             for case let (index, documentId) in favoriteDocuments.enumerated() where documentId == id {
                 favoriteDocuments.remove(at: index)
-                self.dependency.settingAccessor.setSetting(item: SettingsAccessor.Item.favoriteDocuments, value: favoriteDocuments) {
-                    self.isFavorite.accept(false)
+                self.dependency.settingAccessor.setSetting(item: SettingsAccessor.Item.favoriteDocuments, value: favoriteDocuments) { [weak self] in
+                    guard let strongSelf = self else { return }
+                    strongSelf.dependency.eventObserver.emit(DocumentFavoriteChangedEvent(url: strongSelf.url, isFavorite: isFavorite))
+                    strongSelf.isFavorite.accept(false)
                 }
+                return
             }
+            
+            self.isFavorite.accept(false)
+            self.dependency.eventObserver.emit(DocumentFavoriteChangedEvent(url: self.url, isFavorite: isFavorite))
         }
     }
     

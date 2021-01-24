@@ -69,6 +69,7 @@ public class DocumentInfoViewController: TransitionViewController {
         
         self.favoriteButton.tapped { [weak self] button in
             button.showProcessingAnimation()
+            button.isEnabled = false
             self?.viewModel.setIsFavorite(self?.viewModel.isFavorite.value != true)
         }
         

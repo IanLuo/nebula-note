@@ -25,13 +25,13 @@ public class CaptureListViewController: UIViewController {
     private lazy var filterSegmentedControl: UISegmentedControl = {
         let seg = UISegmentedControl(items: [
             L10n.Attachment.Kind.all,
-            Asset.SFSymbols.docPlaintext.image,
-            Asset.SFSymbols.link.image,
-            Asset.SFSymbols.photoOnRectangle.image,
-            Asset.SFSymbols.location.image,
-            Asset.SFSymbols.mic.image,
-            Asset.SFSymbols.video.image,
-            Asset.SFSymbols.scribble.image.resize(upto: CGSize(width: 15, height: 15))
+            Asset.SFSymbols.docPlaintext.image.resize(upto: CGSize(width: 20, height: 20)),
+            Asset.SFSymbols.link.image.resize(upto: CGSize(width: 20, height: 20)),
+            Asset.SFSymbols.photoOnRectangle.image.resize(upto: CGSize(width: 20, height: 20)),
+            Asset.SFSymbols.location.image.resize(upto: CGSize(width: 20, height: 20)),
+            Asset.SFSymbols.mic.image.resize(upto: CGSize(width: 20, height: 20)),
+            Asset.SFSymbols.video.image.resize(upto: CGSize(width: 20, height: 20)),
+            Asset.SFSymbols.scribble.image.resize(upto: CGSize(width: 20, height: 20))
             ])
         
         seg.selectedSegmentIndex = 0

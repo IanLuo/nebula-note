@@ -109,7 +109,7 @@ public class BrowserCell: UITableViewCell {
         self.titleLabel.rowAnchor(view: self.actionsContainerView, space: 10, alignment: .top)
         self.actionsContainerView.sideAnchor(for: [.top, .bottom, .right],
                                              to: self.container,
-                                             edgeInsets: .init(top: 10, left: 0, bottom: 0, right: 0))
+                                             edgeInsets: .init(top: 10, left: 0, bottom: 0, right: -10))
         
         self.iconView.rowAnchor(view: self.lastModifiedDateLabel, space: 10, alignment: .bottom)
         self.titleLabel.columnAnchor(view: self.lastModifiedDateLabel, space: 8, alignment: .leading)

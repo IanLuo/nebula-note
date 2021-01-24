@@ -93,6 +93,18 @@ public class DocumentAgendaRelatedChangeEvent: Event {
 
 // MARK: -
 
+public class DocumentFavoriteChangedEvent: Event {
+    public let url: URL
+    public let isFavorite: Bool
+
+    public init(url: URL, isFavorite: Bool) {
+        self.url = url
+        self.isFavorite = isFavorite
+    }
+}
+
+// MARK: -
+
 public class AttachmentAddedEvent: Event {
     let attachmentId: String
     
