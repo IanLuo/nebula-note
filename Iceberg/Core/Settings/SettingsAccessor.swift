@@ -60,8 +60,8 @@ public enum SettingsError: Error {
         return item.get(T.self)
     }
     
-    public func setSetting<T>(item: Item, value: T) {
-        item.set(value, completion: {})
+    public func setSetting<T>(item: Item, value: T, completion: @escaping () -> Void) {
+        item.set(value, completion: completion)
     }
     
     public let documentDidOpen: PublishSubject<URL> = PublishSubject()

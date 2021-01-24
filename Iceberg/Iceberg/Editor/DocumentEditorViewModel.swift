@@ -101,6 +101,13 @@ public class DocumentEditorViewModel: ViewModelProtocol {
                 self?.isOpenning = false
             }
         }
+        
+        self.isFavorite.accept((self.dependency
+                                    .settingAccessor
+                                    .getSetting(item: SettingsAccessor.Item.favoriteDocuments,
+                                                type: [String].self) ?? []).contains(where: {
+                                                    $0 == self.editorService.id
+                                                }))
     }
     
     deinit {
@@ -205,32 +212,27 @@ public class DocumentEditorViewModel: ViewModelProtocol {
         }
     }
     
-    public var isFavorite: Bool {
-        get {
-            return (self.dependency
-                        .settingAccessor
-                        .getSetting(item: SettingsAccessor.Item.favoriteDocuments,
-                                    type: [String].self) ?? []).contains(where: {
-                                        $0 == self.editorService.id
-                                    })
-        }
-        
-        set {
-            var favoriteDocuments = self.dependency
-                .settingAccessor
-                .getSetting(item: SettingsAccessor.Item.favoriteDocuments,
-                            type: [String].self) ?? []
-                
-            guard let id = self.editorService.id else { return }
-            if newValue == true {
-                if !favoriteDocuments.contains(id) {
-                    favoriteDocuments.append(id)
-                    self.dependency.settingAccessor.setSetting(item: SettingsAccessor.Item.favoriteDocuments, value: favoriteDocuments)
+    public let isFavorite: BehaviorRelay<Bool> = BehaviorRelay(value: false)
+    
+    public func setIsFavorite(_ isFavorite: Bool) {
+        var favoriteDocuments = self.dependency
+            .settingAccessor
+            .getSetting(item: SettingsAccessor.Item.favoriteDocuments,
+                        type: [String].self) ?? []
+            
+        guard let id = self.editorService.id else { return }
+        if isFavorite == true {
+            if !favoriteDocuments.contains(id) {
+                favoriteDocuments.append(id)
+                self.dependency.settingAccessor.setSetting(item: SettingsAccessor.Item.favoriteDocuments, value: favoriteDocuments) {
+                    self.isFavorite.accept(true)
                 }
-            } else {
-                for case let (index, documentId) in favoriteDocuments.enumerated() where documentId == id {
-                    favoriteDocuments.remove(at: index)
-                    self.dependency.settingAccessor.setSetting(item: SettingsAccessor.Item.favoriteDocuments, value: favoriteDocuments)
+            }
+        } else {
+            for case let (index, documentId) in favoriteDocuments.enumerated() where documentId == id {
+                favoriteDocuments.remove(at: index)
+                self.dependency.settingAccessor.setSetting(item: SettingsAccessor.Item.favoriteDocuments, value: favoriteDocuments) {
+                    self.isFavorite.accept(false)
                 }
             }
         }

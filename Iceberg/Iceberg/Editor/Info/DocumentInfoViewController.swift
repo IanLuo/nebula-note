@@ -67,9 +67,9 @@ public class DocumentInfoViewController: TransitionViewController {
         tap.delegate = self
         self.view.addGestureRecognizer(tap)
         
-        self.favoriteButton.tapped { [weak self] _ in
-            self?.viewModel.isFavorite = self?.viewModel.isFavorite == false
-            self?.favoriteButton.isSelected = self?.viewModel.isFavorite == true
+        self.favoriteButton.tapped { [weak self] button in
+            button.showProcessingAnimation()
+            self?.viewModel.setIsFavorite(self?.viewModel.isFavorite.value != true)
         }
         
         self.helpButton.tapped { [weak self] view in
@@ -83,7 +83,11 @@ public class DocumentInfoViewController: TransitionViewController {
         
         self.setupUI()
         
-        self.favoriteButton.isSelected = viewModel.isFavorite
+        self.viewModel.isFavorite.asDriver().drive(onNext: { [weak self] isFavorite in
+            self?.favoriteButton.isSelected = isFavorite
+            self?.favoriteButton.isEnabled = true
+            self?.favoriteButton.hideProcessingAnimation()
+        }).disposed(by: self.disposeBag)
     }
     
     private func setupUI() {
