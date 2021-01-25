@@ -196,7 +196,7 @@ private class RecentFileCell: UICollectionViewCell {
         self.titleLabel.sideAnchor(for: [.left, .right], to: self.contentView, edgeInset: 5)
         self.titleLabel.sideAnchor(for: [.top, .bottom], to: self.contentView, edgeInset: 2)
         
-        self.enableHover(on: self.contentView)
+        self.enableHover(on: self.contentView, hoverColor: InterfaceTheme.Color.background3)
     }
 }
 

@@ -70,6 +70,8 @@ public class CaptureTableCell: UITableViewCell {
         self.setupUI()
         
         self.selectionStyle = .none
+        
+        self.enableHover(on: self.attachmentContentView, hoverColor: InterfaceTheme.Color.background3)
     }
 
     required init?(coder aDecoder: NSCoder) {

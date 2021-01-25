@@ -46,7 +46,7 @@ extension Coordinator {
         attachmentCoordinator.onSaveAttachment = complete
         attachmentCoordinator.onCancel = cancel
         attachmentCoordinator.fromView = at
-        attachmentCoordinator.fromLocation = location
+//        attachmentCoordinator.fromLocation = location
         attachmentCoordinator.accessoryData = accessoryData
         
         if let coordinator = coordinator {

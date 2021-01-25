@@ -141,6 +141,8 @@ private class DateCell: UICollectionViewCell {
         self.contentView.addSubview(self.todayLabel)
         self.contentView.addSubview(self.titleLabel)
         
+        self.enableHover(on: self.background, hoverColor: InterfaceTheme.Color.background3)
+        
         self.background.allSidesAnchors(to: self.contentView, edgeInset: 5)
 
         self.titleLabel.allSidesAnchors(to: self.contentView, edgeInset: 0)

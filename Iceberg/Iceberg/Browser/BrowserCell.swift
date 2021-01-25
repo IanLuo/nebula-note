@@ -28,7 +28,7 @@ public class BrowserCell: UITableViewCell {
         let imageView = UIImageView()
 
         imageView.interface { (me, theme) in
-            me.backgroundColor = theme.color.background3
+            me.backgroundColor = theme.color.background2
         }
         
         imageView.roundConer(radius: Layout.cornerRadius)
@@ -117,7 +117,7 @@ public class BrowserCell: UITableViewCell {
         
 
         self.container.roundConer(radius: Layout.cornerRadius)
-        self.enableHover(on: self.container)
+        self.enableHover(on: self.container, hoverColor: isMac ? InterfaceTheme.Color.background3 : InterfaceTheme.Color.background2)
     }
     
     public func configure(cellModel: BrowserCellModel) {
@@ -205,7 +205,12 @@ public class BrowserCell: UITableViewCell {
         let enterButton = UIButton()
         enterButton.interface { (me, theme) in
             if let button = me as? UIButton {
-                button.setBackgroundImage(UIImage.create(with: theme.color.background3, size: .singlePoint), for: .normal)
+                if isMac {
+                    button.setBackgroundImage(UIImage.create(with: theme.color.background2, size: .singlePoint), for: .normal)
+                } else {
+                    button.setBackgroundImage(UIImage.create(with: theme.color.background3, size: .singlePoint), for: .normal)
+                }
+
                 button.setImage(Asset.SFSymbols.arrowRight.image.fill(color: theme.color.interactive), for: .normal)
             }
         }

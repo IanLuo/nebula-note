@@ -291,7 +291,7 @@ private class DateSectionView: UITableViewHeaderFooterView {
         
         self.contentView.addSubview(self.dateLabel)
         self.contentView.addSubview(self.weekdayLabel)
-        
+                
         self.weekdayLabel.sideAnchor(for: [.top, .left, .right],
                                      to: self.contentView,
                                      edgeInset: Layout.edgeInsets.left)

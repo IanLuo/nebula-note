@@ -56,6 +56,8 @@ public class SearchTableCell: UITableViewCell {
         self.contentView.addSubview(self.fileNameLabel)
         self.contentView.addSubview(self.foundTextLabel)
         
+        self.enableHover(on: self.contentView, hoverColor: InterfaceTheme.Color.background3)
+        
         self.fileNameLabel.sideAnchor(for: [.left, .top, .right], to: self.contentView, edgeInsets: .init(top: 10, left: 30, bottom: 0, right: -30))
         self.fileNameLabel.columnAnchor(view: self.foundTextLabel, space: 10)
         self.foundTextLabel.sideAnchor(for: [.left, .bottom, .right], to: self.contentView, edgeInsets: .init(top: 0, left: 30, bottom: -20, right: -30))

@@ -346,7 +346,7 @@ private class Tab: UIView {
         self.url = url
         self.setup()
         
-        self.enableHover(on: self, hoverColor: InterfaceTheme.Color.background3)
+        self.enableHover(on: self, hoverColor: InterfaceTheme.Color.spotlight.withAlphaComponent(0.7))
     }
     
     func replaceUrl(to newUrl: URL) {

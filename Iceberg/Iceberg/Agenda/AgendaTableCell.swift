@@ -109,6 +109,7 @@ public class AgendaTableCell: UITableViewCell {
         self.setupUI()
         
         self._actionButton.addTarget(self, action: #selector(_didTapActionButton), for: .touchUpInside)
+        
     }
     
     private func setupUI() {
@@ -122,6 +123,7 @@ public class AgendaTableCell: UITableViewCell {
                 me.updateUI(cellModel: cellModel) // update the theme
             }
         }
+        self.enableHover(on: self.infoView, hoverColor: InterfaceTheme.Color.background3)
         
         self.contentView.addSubview(self.infoView)
         self.infoView.sideAnchor(for: [.left, .top, .bottom, .right],
