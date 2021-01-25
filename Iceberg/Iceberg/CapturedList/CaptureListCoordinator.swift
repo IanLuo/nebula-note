@@ -40,6 +40,10 @@ public class CaptureListCoordinator: Coordinator {
                                                dependency: super.dependency,
                                                usage: .chooseHeader)
         
+        if #available(macOS 11, *) {
+            documentCoord.viewController?.modalPresentationStyle = .fullScreen
+        }
+        
         documentCoord.didSelectOutlineAction = { [weak documentCoord]  url, outlineLocation in
             documentCoord?.stop()
             completion(url, outlineLocation)

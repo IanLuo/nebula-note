@@ -508,7 +508,10 @@ extension DocumentEditorViewController {
         actionsController.addAction(icon: nil, title: L10n.Document.Heading.moveTo) { viewController in
             viewController.dismiss(animated: true, completion: {
                 self.viewModel.showGlobalCaptureEntry()
-                self.viewModel.context.coordinator?.showOutline(ignoredHeadingLocation: location, completion: { [unowned self] outlineLocation in
+                self.viewModel.context.coordinator?.showOutline(ignoredHeadingLocation: location,
+                                                                from: self.view,
+                                                                point: self.textView.rect(forStringRange: self.textView.selectedRange)?.origin,
+                                                                completion: { [unowned self] outlineLocation in
                     let oldLocation = self.textView.selectedRange.location
                     
                     let result = self.viewModel.moveParagraph(contains: oldLocation, to: outlineLocation, textView: self.textView)
@@ -574,7 +577,9 @@ extension DocumentEditorViewController {
                         viewController.dismiss(animated: true)
                     }
                     
-                    comfirm.present(from: self)
+                    comfirm.present(from: self,
+                                    at: self.view,
+                                    location: self.textView.rect(forStringRange: self.textView.selectedRange)?.origin)
                 })
             }
         } else {

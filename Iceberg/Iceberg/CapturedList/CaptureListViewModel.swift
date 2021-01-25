@@ -119,9 +119,11 @@ public class CaptureListViewModel: ViewModelProtocol {
                     self.delegate?.didCompleteRefile(index: index, attachment: attachment)
                 }
                 
-                self.dependency.editorContext.closeIfOpen(url: service.fileURL) {
-                    DispatchQueue.runOnMainQueueSafely {
-                        completion()
+                service.save { [unowned service] _ in
+                    self.dependency.editorContext.closeIfOpen(url: service.fileURL) {
+                        DispatchQueue.runOnMainQueueSafely {
+                            completion()
+                        }
                     }
                 }
             }
@@ -178,13 +180,19 @@ public class CaptureListViewModel: ViewModelProtocol {
         
         for (indexInTotal, dataToRemove) in self.data.enumerated() {
             if dataToRemove.url == removedCellModel.url {
-                self.data.remove(at: indexInTotal)
-                self.currentFilteredData.remove(at: index)
-                self.service.delete(key: dataToRemove.key)
-                self.delegate?.didDeleteCapture(index: index)
-                
-                if alsoDeleteAttachment {
-                    self.dependency.attachmentManager.delete(key: dataToRemove.key, completion: { }, failure: { _ in })
+                self.service.delete(key: dataToRemove.key) {
+                    self.data.remove(at: indexInTotal)
+                    self.currentFilteredData.remove(at: index)
+                    
+                    DispatchQueue.runOnMainQueueSafely {
+                        self.delegate?.didDeleteCapture(index: index)
+                    }
+                    
+                    if alsoDeleteAttachment {
+                        self.dependency.attachmentManager.delete(key: dataToRemove.key,
+                                                                 completion: {},
+                                                                 failure: { _ in })
+                    }
                 }
                 
                 if index == self.currentIndex {

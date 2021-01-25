@@ -53,19 +53,33 @@ fileprivate class PlistStore: NSObject, KeyValueStore {
         case let .custom(fileName):
             self._url = URL.file(directory: URL.keyValueStoreURL, name: fileName, extension: "plist")
             
-            self._url?.read(completion: { [weak self] data in
-                guard let strongSelf = self else { return }
-                
-                do {
-                    strongSelf._store = try PropertyListSerialization.propertyList(from: data, options: [], format: nil) as? NSMutableDictionary ?? NSMutableDictionary(dictionary: [PlistStore.storeVersionKey: 1])
-                    log.verbose("created key value store with url: \(strongSelf._url!)")
-                } catch {
+            URL.keyValueStoreURL.createDirectoryIfNeeded(completion: { [weak self] error in
+                if let error = error {
                     log.error(error)
                 }
+                
+                if let url = self?._url, FileManager.default.fileExists(atPath: url.path) == false {
+                    do {
+                        try "{}".write(to: url, atomically: false, encoding: .utf8)
+                    } catch {
+                        log.error(error)
+                    }
+                }
+                
+                self?._url?.read(completion: {  data in
+                    guard let strongSelf = self else { return }
+                    
+                    do {
+                        strongSelf._store = try PropertyListSerialization.propertyList(from: data, options: [], format: nil) as? NSMutableDictionary ?? NSMutableDictionary(dictionary: [PlistStore.storeVersionKey: 1])
+                        log.verbose("created key value store with url: \(strongSelf._url!)")
+                    } catch {
+                        log.error(error)
+                    }
+                })
             })
+            
         default: break
         }
-        
     }
     
     public func get<T>(key: String, type: T.Type) -> T? {

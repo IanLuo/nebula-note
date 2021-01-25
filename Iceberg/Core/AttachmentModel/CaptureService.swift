@@ -12,7 +12,7 @@ import UIKit.UIImage
 public protocol CaptureServiceProtocol {
     func save(key: String, completion: @escaping () -> Void)
     func loadAll(completion: @escaping ([Attachment]) -> Void, failure: @escaping (Error) -> Void)
-    func delete(key: String)
+    func delete(key: String, completion: @escaping () -> Void)
     func load(id: String, completion: @escaping (Attachment) -> Void, failure: @escaping (Error) -> Void)
 }
 
@@ -46,10 +46,10 @@ public struct CaptureService: CaptureServiceProtocol {
     }
     
     /// 删除 capture 中的 attachment
-    public func delete(key: String) {
+    public func delete(key: String, completion: @escaping () -> Void) {
         let plist = KeyValueStoreFactory.store(type: .plist(.custom(CaptureService.plistFileName)))
         log.info("successfully deleted capture idea for key: \(key)")
-        plist.remove(key: key) {}
+        plist.remove(key: key, completion: completion)
     }
     
     /// 删除 capture 中的 attachment，并且删除磁盘上的 attachment

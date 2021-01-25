@@ -92,8 +92,6 @@ public class CaptureListViewController: UIViewController {
     
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
-        self.viewModel.loadAllCapturedData()
     }
     
     public override func viewDidLoad() {
