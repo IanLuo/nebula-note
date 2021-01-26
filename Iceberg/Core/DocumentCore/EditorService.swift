@@ -281,13 +281,19 @@ public class EditorService {
         set { self.replace(text: newValue, range: NSRange(location: 0, length: editorController.string.nsstring.length)) }
     }
     
+    private var isReverting: Bool = false
     public func revertContent(complete: ((Bool) -> Void)? = nil) {
         guard let url = self.document?.fileURL else { return }
-        self.document?.revert(toContentsOf: url, completionHandler: { status in
-            if let string = self.document?.string {
-                self.editorController.string = string
+        guard !isReverting else { return }
+        
+        isReverting = true
+        self.document?.revert(toContentsOf: url, completionHandler: { [weak self] status in
+            if let string = self?.document?.string {
+                self?.editorController.string = string
             }
             complete?(status)
+            
+            self?.isReverting = false
         })
     }
     
