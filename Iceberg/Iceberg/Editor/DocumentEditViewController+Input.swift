@@ -51,24 +51,43 @@ extension DocumentEditorViewController: UITextViewDelegate {
                 log.info("adjust to \(textView.selectedRange)")
             }
         }
+        
+        // when selection at the space after the heading prefix (* or the id string)
+        if let heading = self.viewModel.heading(at: location), heading.prefix.upperBound == location {
+            if (lastLocation ?? 0) > location {
+                textView.selectedRange = NSRange(location: heading.range.location, length: 0)
+            } else {
+                textView.selectedRange = NSRange(location: heading.prefix.upperBound + 1, length: 0)
+            }
+        }
     }
     
     public func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        // handle inupt at end of folded paragraph
-        if textView.text.count > 0 {
-            let lastPosition = range.location - 1
-            if let heading = self.viewModel.heading(at: lastPosition) {
-                var paragraphContentRange: NSRange = heading.contentWithSubHeadingsRange
-                if paragraphContentRange.upperBound != textView.text.nsstring.length {
-                    paragraphContentRange = paragraphContentRange.moveRightBound(by: -1)
+        /// if the input is inside a heading prefix, __ignore backspace__
+        if let heading = self.viewModel.heading(at: textView.selectedRange.location), text.count > 0 {
+            if range.location == heading.prefix.upperBound || heading.prefix.contains(range.location) {
+                let result = self.viewModel.performAction(EditAction.replaceText(NSRange(location: heading.contentLocation, length: range.length), text), textView: textView)
+                if let range = result.range {
+                    textView.selectedRange = range
                 }
-
-                if paragraphContentRange.length > 0
-                    && paragraphContentRange.upperBound == range.location
-                    && self.viewModel.foldedRange(at: lastPosition) != nil {
-                    self.viewModel.unfold(location: lastPosition)
-                    return false
-                }
+                return false
+            }
+        }
+        
+        
+        /// handle inupt at end of folded paragraph 1 -->
+        let lastPosition = range.location - 1
+        if let heading = self.viewModel.heading(at: lastPosition) {
+            var paragraphContentRange: NSRange = heading.contentWithSubHeadingsRange
+            if paragraphContentRange.upperBound != textView.text.nsstring.length {
+                paragraphContentRange = paragraphContentRange.moveRightBound(by: -1)
+            }
+            
+            if paragraphContentRange.length > 0
+                && paragraphContentRange.upperBound == range.location
+                && self.viewModel.foldedRange(at: lastPosition) != nil {
+                self.viewModel.unfold(location: lastPosition)
+                return false
             }
         }
         
@@ -78,6 +97,14 @@ extension DocumentEditorViewController: UITextViewDelegate {
             return self._handelBackspace(textView)
         } else if text == "\t" { // tab
             return self._handleTab(textView)
+        }
+        
+        /// handle input at the begining of a paragraph
+        /// do it after special characters, because backspace and line break should be handled differently
+        if let heading = self.viewModel.heading(at: textView.selectedRange.location) {
+            if range.location == heading.range.location {
+                return false
+            }
         }
         
         return true

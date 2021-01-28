@@ -1,7 +1,1 @@
-1. Add date and time repeating, now agenda can correctly calcualte repeatable tasks and show them relatively.
-2. Now folding status will be remembered after document closed
-3. Adding a document link, now you can pick a specific heading of that document, or the bigining/ending of it.
-4. Now moving paragraph up/down will not unfoled that paragraph, if it was folded.
-5. Now tap on the interactive token inside document behaves more nature
-6. Pick from outline of the document now won't unfoled everything.
-7. When open document from Agenda, search, and outline, will scroll to the posion, and flash the current line, in case use can't find the cursor.
+fixed a problem that might misrender the heading

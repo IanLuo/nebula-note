@@ -86,12 +86,18 @@ public class DocumentEditorViewController: UIViewController {
     
     private var _keyboardHeight: CGFloat = 0
     
+    private var isInitTheme: Bool = true
     public override func viewDidLoad() {
         super.viewDidLoad()
         self.interface { [weak self] (me, theme) in
             me.view.backgroundColor = InterfaceTheme.Color.background1
             self?.setNeedsStatusBarAppearanceUpdate()
-            self?.viewModel.revertContent()
+            
+            if self?.isInitTheme == false {
+                self?.viewModel.revertContent()
+            }
+            
+            self?.isInitTheme = false
         }
 
         self.view.addSubview(self.topViewContainer)

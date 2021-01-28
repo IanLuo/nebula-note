@@ -88,7 +88,7 @@ public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
         
         self.bind()
         
-        self._setupObservers()
+        self.setupObservers()
     }
     
     deinit {
@@ -131,7 +131,7 @@ public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
             }
         }
         
-        self._loadFolderData(url: self.url)
+        self.loadFolderData(url: self.url)
             .subscribe(onNext: { [weak self] in
                 self?.output.documents.accept([BrowserDocumentSection(items: $0)])
             })
@@ -149,7 +149,9 @@ public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
             .map { searchManager.searchLog(containing: $0, onlyTakeFirst: true).compactMap { $0.first } }
         
         return Observable.merge(allSearchs).toArray().asObservable().map { urls in
-            return urls.map {
+            return urls.sorted(by: { (url1, url2) -> Bool in
+                url1.lastModifyOrCreateTimeStamp > url2.lastModifyOrCreateTimeStamp
+            }).map {
                 let cellModel = BrowserCellModel(url: $0)
                 cellModel.shouldShowActions = self.mode.showActions
                 cellModel.shouldShowChooseHeadingIndicator = self.mode.showChooseIndicator
@@ -168,7 +170,7 @@ public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
         return nil
     }
     
-    private func _loadFolderData(url: URL) -> Observable<[BrowserCellModel]> {
+    private func loadFolderData(url: URL) -> Observable<[BrowserCellModel]> {
         return Observable.create { observer -> Disposable in
             var cellModels: [BrowserCellModel] = []
             
@@ -217,7 +219,7 @@ public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
     }
     
     /// convenienct variable to access table data for rxDataSource
-    private var _tableDocuments: [BrowserCellModel] {
+    private var tableDocuments: [BrowserCellModel] {
         get {
             return self.output.documents.value.first?.items ?? []
         }
@@ -227,7 +229,7 @@ public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
         }
     }
     
-    private func _setupObservers() {
+    private func setupObservers() {
         
         let eventObserver = self.dependency.eventObserver
         
