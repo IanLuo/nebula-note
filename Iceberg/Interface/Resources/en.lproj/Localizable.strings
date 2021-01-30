@@ -97,7 +97,7 @@
 "document.menu.enableReadingMode" = "Reading mode";
 "document.menu.enableEditingMode" = "Editing mode";
 "document.menu.info" = "Document Info";
-"document.menu.fullScreen" = "Full screen";
+"document.menu.fullScreen" = "Full width";
 
 "document.edit.date.all-day" = "All day";
 
