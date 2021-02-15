@@ -39,11 +39,11 @@ public class DesktopHomeViewController: UIViewController {
     private let toggleMiddlePartButton = UIButton()
     
     private var dashboardViewController: DashboardViewController!
-    private var documentTabsContainerViewController: DocumentTabContainerViewController!
+    private var documentTabsContainerViewController: TabContainerViewController!
     
     private weak var coordinator: HomeCoordinator?
     
-    convenience init(dashboardViewController: DashboardViewController, coordinator: HomeCoordinator, documentTabsContainerViewController: DocumentTabContainerViewController) {
+    convenience init(dashboardViewController: DashboardViewController, coordinator: HomeCoordinator, documentTabsContainerViewController: TabContainerViewController) {
         self.init()
         self.dashboardViewController = dashboardViewController
         self.documentTabsContainerViewController = documentTabsContainerViewController

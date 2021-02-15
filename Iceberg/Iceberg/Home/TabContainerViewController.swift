@@ -13,13 +13,13 @@ import Core
 import RxSwift
 import RxCocoa
 
-public protocol DesktopDocumentTabContainerViewControllerDelegate: class {
+public protocol TabContainerViewControllerDelegate: class {
     func didCloseDocument(url: URL, editorViewController: DocumentEditorViewController)
 }
 
-public class DocumentTabContainerViewController: UIViewController {
+public class TabContainerViewController: UIViewController {
     
-    public weak var delegate: DesktopDocumentTabContainerViewControllerDelegate?
+    public weak var delegate: TabContainerViewControllerDelegate?
     
     private var openingViewControllers: [(String, DocumentEditorViewController)] = []
     

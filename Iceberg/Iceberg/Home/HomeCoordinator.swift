@@ -68,7 +68,7 @@ public class HomeCoordinator: Coordinator {
                                               DashboardViewController.TabType.favorite(tabs[4], 4)])
         
         if isMacOrPad {
-            self.viewController = DesktopHomeViewController(dashboardViewController: dashboardViewController, coordinator: self, documentTabsContainerViewController: DocumentTabContainerViewController(viewModel: viewModel))
+            self.viewController = DesktopHomeViewController(dashboardViewController: dashboardViewController, coordinator: self, documentTabsContainerViewController: TabContainerViewController(viewModel: viewModel))
         } else {
             let homeViewController = HomeViewController(masterViewController: navigationController)
             self.viewController = homeViewController
@@ -336,7 +336,7 @@ extension HomeCoordinator {
     }
 }
 
-extension HomeCoordinator: DesktopDocumentTabContainerViewControllerDelegate {
+extension HomeCoordinator: TabContainerViewControllerDelegate {
     public func didCloseDocument(url: URL, editorViewController: DocumentEditorViewController) {
         self.children.forEach {
             if let editor = $0 as? EditorCoordinator {

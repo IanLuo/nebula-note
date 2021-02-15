@@ -1,3 +1,10 @@
+---- 1.2.9 ----
+[ ] import improvement
+[ ] improve close tab performance
+[ ] search in editor
+[ ] fast open document
+[ ] new document view for big icon
+[ ] change capture interface
 ---- 1.2.8 ----
 [x] add favorite function
 [x] update icons
@@ -17,7 +24,7 @@
 [x] to that purpose, need to enable drawer
 [x] select heading when adding document link
 [x] remember the folding status when opening document
-[ ] remember window status
+[x] remember window status
 [ ] crash when puhing in modal window on big sur
 [x] optimize cursor and touch on text view
   [x] on mac, don't change cursor position when tap something interactive

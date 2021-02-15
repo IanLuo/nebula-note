@@ -191,7 +191,7 @@
 		E49F3E4A21B9186D003F468D /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49F3E4921B9186D003F468D /* SettingsViewController.swift */; };
 		E49F3E4C21B91885003F468D /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49F3E4B21B91885003F468D /* SettingsViewModel.swift */; };
 		E49FE98D245C1107005F634C /* UIViewController+Heirachy.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49FE98C245C1107005F634C /* UIViewController+Heirachy.swift */; };
-		E49FE990245EA61B005F634C /* DocumentTabContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49FE98E245DB2B5005F634C /* DocumentTabContainerViewController.swift */; };
+		E49FE990245EA61B005F634C /* TabContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49FE98E245DB2B5005F634C /* TabContainerViewController.swift */; };
 		E4A168D222904F690040D909 /* MetadataItem+property.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A168D122904F690040D909 /* MetadataItem+property.swift */; };
 		E4A168D32291356B0040D909 /* CaptureService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F86C6218EF5D8006C4CDB /* CaptureService.swift */; };
 		E4A25B8325A0017700D0C36C /* DateAndTimeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A25B8225A0017700D0C36C /* DateAndTimeTests.swift */; };
@@ -591,7 +591,7 @@
 		E49F3E4921B9186D003F468D /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		E49F3E4B21B91885003F468D /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		E49FE98C245C1107005F634C /* UIViewController+Heirachy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Heirachy.swift"; sourceTree = "<group>"; };
-		E49FE98E245DB2B5005F634C /* DocumentTabContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentTabContainerViewController.swift; sourceTree = "<group>"; };
+		E49FE98E245DB2B5005F634C /* TabContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabContainerViewController.swift; sourceTree = "<group>"; };
 		E49FF46321A429F9003A5B3C /* OutlineStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineStorageTests.swift; sourceTree = "<group>"; };
 		E4A168D122904F690040D909 /* MetadataItem+property.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MetadataItem+property.swift"; sourceTree = "<group>"; };
 		E4A25B8225A0017700D0C36C /* DateAndTimeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateAndTimeTests.swift; sourceTree = "<group>"; };
@@ -961,7 +961,7 @@
 			isa = PBXGroup;
 			children = (
 				E41CB16121D8897400EF0A3C /* HomeCoordinator.swift */,
-				E49FE98E245DB2B5005F634C /* DocumentTabContainerViewController.swift */,
+				E49FE98E245DB2B5005F634C /* TabContainerViewController.swift */,
 				E41CB16321D8899200EF0A3C /* HomeViewController.swift */,
 				E43FD50B2453E5E100D02394 /* DesktopHomeViewController.swift */,
 				E4729BA72204160200F22885 /* DashboardViewController.swift */,
@@ -2293,7 +2293,7 @@
 				E428B89C2343A5900026AC1F /* BrowserViewController.swift in Sources */,
 				E41B892621E31B07009C5AD7 /* DashboardViewModel.swift in Sources */,
 				E4EA855821D1DA8700DD92F9 /* AttachmentLinkViewController.swift in Sources */,
-				E49FE990245EA61B005F634C /* DocumentTabContainerViewController.swift in Sources */,
+				E49FE990245EA61B005F634C /* TabContainerViewController.swift in Sources */,
 				E4192A9923EE4AAB00F0E5DB /* AttachmentManagerCell.swift in Sources */,
 				E4773BA821F7505E000F8F3F /* SearchTableCell.swift in Sources */,
 				E4EA855A21D1DAAF00DD92F9 /* AttachmentAudioViewController.swift in Sources */,
