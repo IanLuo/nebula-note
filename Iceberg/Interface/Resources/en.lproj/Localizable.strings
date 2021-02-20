@@ -246,6 +246,9 @@
 
 "browser.favorite.title" = "Favorites";
 
+"browser.mode.list" = "List";
+"browser.mode.icon" = "Icon";
+
 // agenda
 "agenda.title" = "Agenda";
 "agenda.startToday" = "Start today";

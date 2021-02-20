@@ -250,6 +250,12 @@ public enum L10n {
       /// Please check if the file is renamed or moved
       public static let message = L10n.tr("Localizable", "browser.file-not-existed.message")
     }
+    public enum Mode {
+      /// Icon
+      public static let icon = L10n.tr("Localizable", "browser.mode.icon")
+      /// List
+      public static let list = L10n.tr("Localizable", "browser.mode.list")
+    }
     public enum Outline {
       /// Document begining
       public static let beginingOfDocument = L10n.tr("Localizable", "browser.outline.beginingOfDocument")

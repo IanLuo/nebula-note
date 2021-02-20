@@ -180,18 +180,24 @@ public class InterfaceThemeSelector {
 }
 
 extension UIViewController {
-    public func interface(_ action: @escaping (UIViewController, InterfaceThemeProtocol) -> Void) {
+    @discardableResult
+    public func interface(_ action: @escaping (UIViewController, InterfaceThemeProtocol) -> Void) -> Self {
         InterfaceThemeSelector.shared.register(observer: self) { [unowned self] theme in
             action(self, theme)
         }
+        
+        return self
     }
 }
 
 extension UIView {
-    public func interface(_ action: @escaping (UIView, InterfaceThemeProtocol) -> Void) {
+    @discardableResult
+    public func interface(_ action: @escaping (UIView, InterfaceThemeProtocol) -> Void) -> Self {
         InterfaceThemeSelector.shared.register(observer: self) { [unowned self] theme in
             action(self, theme)
         }
+        
+        return self
     }
 }
 

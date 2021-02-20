@@ -12,6 +12,10 @@ import Core
 import RxCocoa
 import RxDataSources
 
+public enum DataMode {
+    case browser, recent
+}
+
 public struct BrowserDocumentSection {
     public var items: [BrowserCellModel]
     public var identity: String = UUID().uuidString
@@ -57,6 +61,7 @@ public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
         public let documents: BehaviorRelay<[BrowserDocumentSection]> = BehaviorRelay(value: [])
         public let onCreatededDocument: PublishSubject<URL> = PublishSubject()
         public let onCreatingDocumentFailed: PublishSubject<String> = PublishSubject()
+        public let recentDocuments: BehaviorRelay<[RecentDocumentSection]> = BehaviorRelay(value: [])
     }
     
     private var _documentRelativePath: String = ""
@@ -65,26 +70,39 @@ public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
             ? URL.documentBaseURL.appendingPathComponent(self._documentRelativePath)
             : URL.documentBaseURL
     }
-    public var title: BehaviorRelay<String>!
+    public var title: BehaviorRelay<String> = BehaviorRelay(value: "")
     public var mode: Mode = .browser
-    public var isRoot: Bool!
-    public var levelsToRoot: Int!
-    
+    public var isRoot: Bool = false
+    public var levelsToRoot: Int = 0
+    public var dataMode: DataMode!
+
     private let disposeBag = DisposeBag()
     
     public let input: Input = Input()
     public let output: Output = Output()
+    private var allLoadedDocuments: BehaviorRelay<[BrowserCellModel]> = BehaviorRelay(value: [])
     
     override public required init() {}
     
-    public convenience init(url: URL, mode: Mode, coordinator: BrowserCoordinator) {
+    public convenience init(coordinator: BrowserCoordinator,
+                            dataMode: DataMode) {
+        self.init(coordinator: coordinator)
+        self.dataMode = dataMode
+        self.setupObservers()
+    }
+    
+    public convenience init(url: URL,
+                            mode: Mode,
+                            coordinator: BrowserCoordinator,
+                            dataMode: DataMode) {
         self.init(coordinator: coordinator)
         
+        self.dataMode = dataMode
         self._documentRelativePath = url.documentRelativePath
         self.mode = mode
         self.isRoot = url.levelsToRoot == 0
         self.levelsToRoot = url.levelsToRoot
-        self.title = BehaviorRelay(value: self.isRoot ? "" : url.packageName)
+        self.title.accept(self.isRoot ? "" : url.packageName)
         
         self.bind()
         
@@ -118,24 +136,77 @@ public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
         }
     }
     
-    public func reload() {
-        // when loading data, for root page, laoding favorite list for favorite, others load from root directory
-        if self.isRoot {
-            switch self.mode {
-            case .favorite:
-                self.loadFavorites().subscribe(onNext: { [weak self] in
-                    self?.output.documents.accept([BrowserDocumentSection(items: $0)])
-                }).disposed(by: self.disposeBag)
-                return
-            case .browser, .chooser: break
-            }
+    public func udpateSearchString(_ string: String) {
+        guard string.count > 0 else {
+            return self.output.documents.accept([])
         }
         
-        self.loadFolderData(url: self.url)
-            .subscribe(onNext: { [weak self] in
-                self?.output.documents.accept([BrowserDocumentSection(items: $0)])
-            })
-            .disposed(by: self.disposeBag)
+        var allItems: [BrowserCellModel] = self.allLoadedDocuments.value
+        
+        // if the mode is browse or choose, and data mode is browser, search from all files
+        switch self.mode {
+        case .favorite: break
+        default:
+            switch self.dataMode! {
+            case .browser:
+                allItems = self.allFiles.map {
+                    let cellModel = BrowserCellModel(url: $0)
+                    cellModel.shouldShowActions = self.mode.showActions
+                    cellModel.shouldShowChooseHeadingIndicator = self.mode.showChooseIndicator
+                    cellModel.coordinator = self.context.coordinator
+                    return cellModel
+                }
+            default: break
+            }
+        }
+                
+        let s = string.uppercased()
+        self.output.documents.accept([BrowserDocumentSection(items: allItems.filter({ cellModel -> Bool in
+            string.count == 0 || cellModel.url.packageName.uppercased().contains(s)
+        }))])
+    }
+    
+    public func reload() {
+        switch self.dataMode! {
+        case .browser:
+            // when loading data, for root page, loading favorite list for favorite, others load from root directory
+            if self.isRoot {
+                switch self.mode {
+                case .favorite:
+                    self.loadFavorites().subscribe(onNext: { [weak self] in
+                        self?.allLoadedDocuments.accept($0)
+                    }).disposed(by: self.disposeBag)
+                    return
+                case .browser, .chooser: break
+                }
+            }
+            
+            self.loadFolderData(url: self.url)
+                .subscribe(onNext: { [weak self] in
+                    self?.allLoadedDocuments.accept($0)
+                })
+                .disposed(by: self.disposeBag)
+        case .recent:
+            self.allLoadedDocuments.accept(self.loadRecent())
+        }
+    }
+    
+    private var allFiles: [URL] {
+        if iCloudDocumentManager.status == .on {
+            return self.dependency.syncManager.allFilesInCloud.value.filter { url in
+                url.path.hasSuffix(Document.fileExtension) && !url.path.contains(SyncCoordinator.Prefix.deleted.rawValue)
+            }
+        } else {
+            return self.dependency.syncManager.allFilesLocal.filter { url in
+                url.path.hasSuffix(Document.fileExtension) && !url.path.contains(SyncCoordinator.Prefix.deleted.rawValue)
+            }
+        }
+    }
+    
+    private func loadRecent() -> [BrowserCellModel] {
+        return allFiles.filter { $0.lastOpenedStamp != nil && $0.path.hasSuffix(Document.fileExtension) && !$0.path.contains(SyncCoordinator.Prefix.deleted.rawValue) }
+            .sorted(by: { $0.lastOpenedStamp! > $1.lastOpenedStamp! })
+            .map { BrowserCellModel(url: $0) }
     }
     
     private func loadFavorites() -> Observable<[BrowserCellModel]> {
@@ -230,6 +301,9 @@ public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
     }
     
     private func setupObservers() {
+        self.allLoadedDocuments.subscribe(onNext: { [weak self] in
+            self?.output.documents.accept([BrowserDocumentSection(items: $0)])
+        }).disposed(by: self.disposeBag)
         
         let eventObserver = self.dependency.eventObserver
         

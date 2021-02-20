@@ -21,7 +21,6 @@ public class BrowserRecentViewController: UIViewController {
     
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .horizontal
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.delegate = self
@@ -31,9 +30,9 @@ public class BrowserRecentViewController: UIViewController {
             collectionView.backgroundColor = InterfaceTheme.Color.background1
         })
         
-        collectionView.register(RecentFileCell.self, forCellWithReuseIdentifier: RecentFileCell.reuseIdentifier)
+        collectionView.register(BrowserCellIcon.self, forCellWithReuseIdentifier: BrowserCellIcon.reuseIdentifier)
         collectionView.register(RecentDocumentsHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header")
-        collectionView.contentInset = UIEdgeInsets(top: 0, left: Layout.edgeInsets.left, bottom: 0, right: Layout.edgeInsets.right)
+        collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 100, right: 0)
         
         return collectionView
     }()
@@ -60,8 +59,14 @@ public class BrowserRecentViewController: UIViewController {
         }
         
         let dataSource = RxCollectionViewSectionedReloadDataSource<RecentDocumentSection>(configureCell: { (dataSource, collectionView, indexPath, cellModel) -> UICollectionViewCell in
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RecentFileCell.reuseIdentifier, for: indexPath) as! RecentFileCell
-            cell.configure(cellModel: cellModel)
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BrowserCellIcon.reuseIdentifier, for: indexPath) as! BrowserCell
+            
+            if let cell = cell as? BrowserCellProtocol {
+                cell.configure(cellModel: cellModel)
+            }
+            
+            
+            
             return cell
         }, configureSupplementaryView: { dataSource, collectionView, string, indexPath in
             let header = collectionView.dequeueReusableSupplementaryView(ofKind: string, withReuseIdentifier: "header", for: indexPath) as! RecentDocumentsHeader
@@ -130,9 +135,7 @@ class RecentDocumentsHeader: UICollectionReusableView {
 
 extension BrowserRecentViewController: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let height = collectionView.bounds.height - 20
-        let width = height * 2 / 3
-        return CGSize(width: width, height: height)
+        return CGSize(width: 120, height: 140)
     }
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {

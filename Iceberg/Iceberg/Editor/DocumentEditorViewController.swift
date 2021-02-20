@@ -148,8 +148,8 @@ public class DocumentEditorViewController: UIViewController {
             
             let menuButton = UIBarButtonItem(image: Asset.SFSymbols.ellipsis.image.fill(color: InterfaceTheme.Color.interactive), style: .plain, target: self, action: #selector(showMenu))
             let outlookButton = UIBarButtonItem(image: Asset.SFSymbols.filemenuAndSelection.image.fill(color: InterfaceTheme.Color.interactive), style: .plain, target: nil, action: nil)
-            outlookButton.rx.tap.subscribe(onNext: { _ in
-                self.showOutline(from: nil)
+            outlookButton.rx.tap.subscribe(onNext: { [weak self] _ in
+                self?.showOutline(from: nil)
             }).disposed(by: self.disposeBag)
             
             self.navigationItem.rightBarButtonItems = [menuButton, outlookButton]

@@ -239,6 +239,8 @@
 		E4E1B146224B27040061D327 /* KeyValueStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41F870321902DB3006C4CDB /* KeyValueStore.swift */; };
 		E4E1E89A25092E1B00366EAD /* KeyCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4130CB824ED643800EA08C0 /* KeyCommands.swift */; };
 		E4E1E89B25092ECA00366EAD /* ToolbarAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = E465F8782240E7CC00FA6E83 /* ToolbarAction.swift */; };
+		E4E6973725DBD09F007D2D0D /* BrowserListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4E6973625DBD09F007D2D0D /* BrowserListCell.swift */; };
+		E4E6974025DD060A007D2D0D /* BrowserCellIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4E6973F25DD060A007D2D0D /* BrowserCellIcon.swift */; };
 		E4E7ABD123CE04DA005628E6 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E4E7ABD323CE04DA005628E6 /* Localizable.strings */; };
 		E4E7ABD623CE0576005628E6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E4E7ABD523CE0576005628E6 /* LaunchScreen.storyboard */; };
 		E4E7ABD923CE0E5E005628E6 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E4E7ABD323CE04DA005628E6 /* Localizable.strings */; };
@@ -655,6 +657,8 @@
 		E4D31DEB227D39A4001F5272 /* URLlHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLlHandler.swift; sourceTree = "<group>"; };
 		E4D31DED227DA633001F5272 /* URLHandlerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLHandlerManager.swift; sourceTree = "<group>"; };
 		E4D7B14424C349BA00503870 /* UIView+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Convenience.swift"; sourceTree = "<group>"; };
+		E4E6973625DBD09F007D2D0D /* BrowserListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserListCell.swift; sourceTree = "<group>"; };
+		E4E6973F25DD060A007D2D0D /* BrowserCellIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserCellIcon.swift; sourceTree = "<group>"; };
 		E4E7ABD223CE04DA005628E6 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		E4E7ABD423CE0519005628E6 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		E4E7ABD523CE0576005628E6 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -940,6 +944,8 @@
 				E45D74BD2329BA47003C1BC2 /* BrowserFolderViewController.swift */,
 				E4B1BECF2340E34C00683E10 /* BrowserFolderViewModel.swift */,
 				E4B1BED12340EFF600683E10 /* BrowserCell.swift */,
+				E4E6973625DBD09F007D2D0D /* BrowserListCell.swift */,
+				E4E6973F25DD060A007D2D0D /* BrowserCellIcon.swift */,
 				E4B1BED823424E9D00683E10 /* BrowserCellModel.swift */,
 			);
 			path = Browser;
@@ -2255,6 +2261,7 @@
 				E4C7FB8521BA916D006E3CD8 /* AgendaCellModel.swift in Sources */,
 				E4EA855E21D1DAEB00DD92F9 /* AttachmentLocationViewController.swift in Sources */,
 				E44825A3219722C300C17568 /* Application.swift in Sources */,
+				E4E6973725DBD09F007D2D0D /* BrowserListCell.swift in Sources */,
 				E47E0E4C253BFBA90085BAA9 /* AppDelegate.swift in Sources */,
 				E4729BA82204160200F22885 /* DashboardViewController.swift in Sources */,
 				E41B893221E3497D009C5AD7 /* ImageAttachmentView.swift in Sources */,
@@ -2286,6 +2293,7 @@
 				E4EA857521D3AF0D00DD92F9 /* AgendaDateSelectView.swift in Sources */,
 				E4A46A2921B28ED800FBDA04 /* DocumentEditorViewModel.swift in Sources */,
 				E4F3029C21D74E8700BDE178 /* CaptureTableCellModel.swift in Sources */,
+				E4E6974025DD060A007D2D0D /* BrowserCellIcon.swift in Sources */,
 				E41CB15921D87CD100EF0A3C /* BrowserCoordinator.swift in Sources */,
 				E41B893621E3497D009C5AD7 /* VideoAttachmentView.swift in Sources */,
 				E4144EA722854B5800CB12FF /* DocumentEditViewController+UserInteraction.swift in Sources */,

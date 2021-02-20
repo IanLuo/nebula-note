@@ -14,6 +14,17 @@ import RxDataSources
 import Interface
 import Core
 
+fileprivate enum ViewMode {
+    case listSmall, icon
+    
+    var title: String {
+        switch self {
+        case .listSmall: return L10n.Browser.Mode.list
+        case .icon: return L10n.Browser.Mode.icon
+        }
+    }
+}
+
 public class BrowserFolderViewController: UIViewController {
     
     public struct Output {
@@ -22,23 +33,36 @@ public class BrowserFolderViewController: UIViewController {
     
     public var viewModel: BrowserFolderViewModel!
     public let output: Output = Output()
+    
     public convenience init(viewModel: BrowserFolderViewModel) {
         self.init()
         self.viewModel = viewModel
     }
     
-    public let tableView: UITableView = {
-        let tableView = UITableView()
-        tableView.register(BrowserCell.self, forCellReuseIdentifier: BrowserCell.reuseIdentifier)
-        tableView.register(BrowserCellWithSubFolder.self, forCellReuseIdentifier: BrowserCellWithSubFolder.reuseIdentifierForBrowserCellWithSubFolder)
-        tableView.tableFooterView = UIView()
-        tableView.separatorStyle = .none
-        tableView.contentInset = .init(top: 0, left: 0, bottom: 120, right: 0)
-        tableView.interface { (me, theme) in
-            let tableView = me as! UITableView
-            tableView.backgroundColor = theme.color.background1
+    private let collectionMode: BehaviorRelay<ViewMode> = BehaviorRelay(value: .icon)
+    
+    public lazy var collectionView: UICollectionView = {
+        let flowLayout = UICollectionViewFlowLayout()
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
+        collectionView.register(BrowserListCell.self, forCellWithReuseIdentifier: BrowserListCell.reuseIdentifier)
+        collectionView.register(BrowserCellIcon.self, forCellWithReuseIdentifier: BrowserCellIcon.reuseIdentifier)
+        collectionView.register(UICollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header")
+        collectionView.delegate = self
+        collectionView.interface { (view, theme) in
+            view.backgroundColor = theme.color.background1
         }
-        return tableView
+        
+        return collectionView
+    }()
+    
+    private lazy var searchController: UISearchController = {
+        let searchController = UISearchController(searchResultsController: nil)
+        searchController.hidesNavigationBarDuringPresentation = false
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.definesPresentationContext = true
+        searchController.searchResultsUpdater = self
+        searchController.searchBar.delegate = self
+        return searchController
     }()
     
     public let addDocumentButton: UIButton = {
@@ -52,6 +76,15 @@ public class BrowserFolderViewController: UIViewController {
         return button
     }()
     
+    var reuseIdentifier: String {
+        switch self.collectionMode.value {
+        case .listSmall:
+            return BrowserListCell.reuseIdentifier
+        case .icon:
+            return BrowserCellIcon.reuseIdentifier
+        }
+    }
+    
 //    private let present: PublishSubject<UIViewController> = PublishSubject()
     private let tableCellMoved: PublishSubject<(URL, URL)> = PublishSubject()
     private let tableCellUpdate: PublishSubject<URL> = PublishSubject()
@@ -62,52 +95,71 @@ public class BrowserFolderViewController: UIViewController {
     private let disposeBag = DisposeBag()
     
     public override func viewDidLoad() {
-        self.view.addSubview(self.tableView)
-        self.tableView.allSidesAnchors(to: self.view, edgeInset: 0)
+        self.view.addSubview(self.collectionView)
+        self.collectionView.allSidesAnchors(to: self.view, edgeInset: 0)
+        
+        self.navigationItem.searchController = self.searchController
         
         switch viewModel.mode {
         case .browser, .chooser:
         // bind add document button
-        let rightBarButtonItem = UIBarButtonItem(image: Asset.SFSymbols.docBadgePlus.image, style: .plain, target: nil, action: nil)
-        rightBarButtonItem.rx
+        let createDocumentBarButtonItem = UIBarButtonItem(image: Asset.SFSymbols.docBadgePlus.image, style: .plain, target: nil, action: nil)
+        createDocumentBarButtonItem.rx
             .tap
             .map { _ in L10n.Browser.Title.untitled } // use default documentname
             .bind(to: self.viewModel.input.addDocument)
             .disposed(by: self.disposeBag)
-        self.navigationItem.rightBarButtonItem = rightBarButtonItem
+            
+            let actionsBarButton = UIButton().interface { (me, theme) in
+                let button = me as! UIButton
+                button.image(Asset.SFSymbols.ellipsis.image.fill(color: theme.color.spotlight), for: .normal)
+            }
+            let actionsBarButtonItem = UIBarButtonItem(customView: actionsBarButton)
+            actionsBarButton.rx.tap.subscribe(onNext: { [unowned actionsBarButton] in
+                self.showActions(from: actionsBarButton)
+            }).disposed(by: self.disposeBag)
+            
+            
+            switch self.viewModel.dataMode! {
+            case .browser:
+                self.navigationItem.rightBarButtonItems = [actionsBarButtonItem, createDocumentBarButtonItem]
+            case .recent:
+                self.navigationItem.rightBarButtonItems = [actionsBarButtonItem]
+            }
         
         self.interface { (me, theme) in
-            rightBarButtonItem.tintColor = theme.color.spotlight
+            createDocumentBarButtonItem.tintColor = theme.color.spotlight
         }
         case .favorite: break
         }
-        
                 
         self._setupObserver()
         
         self.viewModel.reload()
     }
     
-    public override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        // make sure it's refreshed
-        self.viewModel.reload()
-    }
-        
     private func _setupObserver() {
-        // bind title from foldler name
-        self.viewModel.title.asDriver(onErrorJustReturn: "").drive(self.rx.title).disposed(by: self.disposeBag)
+        switch self.viewModel.dataMode! {
+        case .browser:
+            // bind title from foldler name
+            self.viewModel.title.asDriver(onErrorJustReturn: "").drive(self.rx.title).disposed(by: self.disposeBag)
+        case .recent:
+            break
+        }
 
-        //bind table view
-        let dataSource = RxTableViewSectionedReloadDataSource<BrowserDocumentSection>(configureCell: { [unowned self] (dataSource, tableView, indexPath, cellModel) -> UITableViewCell in
-            var cell = tableView.dequeueReusableCell(withIdentifier: BrowserCell.reuseIdentifier, for: indexPath) as! BrowserCell
+        let configureCell: RxCollectionViewSectionedAnimatedDataSource<BrowserDocumentSection>.ConfigureCell = { (datasource, collectionView, indexPath, cellModel) -> UICollectionViewCell in
+            var cell = collectionView.dequeueReusableCell(withReuseIdentifier: self.reuseIdentifier, for: indexPath) as! BrowserCell
             
             if cellModel.hasSubDocuments {
-                cell = tableView.dequeueReusableCell(withIdentifier: BrowserCellWithSubFolder.reuseIdentifierForBrowserCellWithSubFolder, for: indexPath) as! BrowserCell
+                cell = collectionView.dequeueReusableCell(withReuseIdentifier: self.reuseIdentifier, for: indexPath) as! BrowserCell
             }
             
-            cell.configure(cellModel: cellModel)
+            cell.cellModel = cellModel
+            
+            if let cell = cell as? BrowserCellProtocol {
+                cell.configure(cellModel: cellModel)
+            }
+                        
             cell.onPresentingModalViewController
                 .asObserver()
                 .observeOn(MainScheduler())
@@ -130,8 +182,10 @@ public class BrowserFolderViewController: UIViewController {
             cell.onEnter.bind(to: self.enter).disposed(by: cell.reuseDisposeBag)
             
             return cell
-        })
-
+        }
+        
+        let datasource = RxCollectionViewSectionedAnimatedDataSource<BrowserDocumentSection>(configureCell: configureCell)
+        
         self.viewModel
             .output
             .documents
@@ -139,10 +193,10 @@ public class BrowserFolderViewController: UIViewController {
             .do(onNext: { [weak self] in
                 self?.showEmptyContentImage($0.first?.items.count == 0)
             })
-            .drive(self.tableView.rx.items(dataSource: dataSource))
+            .drive(self.collectionView.rx.items(dataSource: datasource))
             .disposed(by: self.disposeBag)
         
-        self.tableView
+        self.collectionView
             .rx
             .modelSelected(BrowserCellModel.self)
             .subscribe(onNext: { [weak self] cellModel in
@@ -150,11 +204,11 @@ public class BrowserFolderViewController: UIViewController {
             })
             .disposed(by: self.disposeBag)
         
-        self.tableView
+        self.collectionView
             .rx
             .itemSelected
             .subscribe(onNext: { [weak self] indexPath in
-                self?.tableView.deselectRow(at: indexPath, animated: true)
+                self?.collectionView.deselectItem(at: indexPath, animated: true)
             }).disposed(by: self.disposeBag)
         
         self.tableCellUpdate
@@ -176,16 +230,16 @@ public class BrowserFolderViewController: UIViewController {
         self.viewModel
             .output
             .onCreatededDocument
-            .subscribe(onNext: { [unowned self] url in
-                if let indexPath = self.viewModel.indexPath(for: url) {
-                    self.tableView.scrollToRow(at: indexPath, at: .middle, animated: true)
+            .subscribe(onNext: { [weak self] url in
+                if let indexPath = self?.viewModel.indexPath(for: url) {
+                    self?.collectionView.scrollToItem(at: indexPath, at: .top, animated: true)
                 }
             })
             .disposed(by: self.disposeBag)
                 
         self.enter
-            .subscribe(onNext: { [unowned self] url in
-                self.enterChild(url: url)
+            .subscribe(onNext: { [weak self] url in
+                self?.enterChild(url: url)
             })
             .disposed(by: self.disposeBag)
         
@@ -199,14 +253,76 @@ public class BrowserFolderViewController: UIViewController {
 //        }).disposed(by: self.disposeBag)
     }
     
+    private func showActions(from: UIView) {
+        let selector = SelectorViewController()
+        
+        selector.addItem(title: ViewMode.listSmall.title)
+        selector.addItem(title: ViewMode.icon.title)
+        selector.currentTitle = self.collectionMode.value.title
+        
+        selector.onSelection = { index, viewController in
+            viewController.dismiss(animated: true) {
+                switch index {
+                case 0: self.collectionMode.accept(.listSmall)
+                case 1: self.collectionMode.accept(.icon)
+                default: break
+                }
+                
+                self.collectionView.reloadData()
+                self.viewModel.showGlobalCaptureEntry()
+            }
+        }
+                    
+        self.viewModel.hideGlobalCaptureEntry()
+        
+        selector.present(from: self, at: from)
+    }
+    
     private func enterChild(url: URL) {
-        let viewModel = BrowserFolderViewModel(url: url, mode: self.viewModel.mode, coordinator: self.viewModel.context.coordinator!)
+        let viewModel = BrowserFolderViewModel(url: url, mode: self.viewModel.mode, coordinator: self.viewModel.context.coordinator!, dataMode: .browser)
         let viewController = BrowserFolderViewController(viewModel: viewModel)
+        
+        viewController.collectionMode.accept(self.collectionMode.value)
         
         // pass selection to parent
         viewController.output.onSelectDocument.bind(to: self.output.onSelectDocument).disposed(by: viewController.disposeBag)
         
         self.navigationController?.pushViewController(viewController, animated: true)
+    }
+}
+
+extension BrowserFolderViewController: UISearchResultsUpdating, UISearchBarDelegate {
+    public func updateSearchResults(for searchController: UISearchController) {
+        if searchController.searchBar.isFirstResponder {
+            self.viewModel.udpateSearchString(searchController.searchBar.text ?? "")
+        }
+    }
+    
+    public func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        self.viewModel.reload()
+    }
+}
+
+extension BrowserFolderViewController: UICollectionViewDelegateFlowLayout, UICollectionViewDelegate {
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        switch self.collectionMode.value {
+        case .listSmall:
+            return CGSize(width: collectionView.frame.width, height: 130)
+        case .icon:
+            return CGSize(width: 100, height: 130)
+        }
+    }
+        
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 0
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 0
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 0, left: Layout.edgeInsets.left, bottom: 150, right: Layout.edgeInsets.right)
     }
 }
 
@@ -220,6 +336,6 @@ extension BrowserFolderViewController: EmptyContentPlaceHolderProtocol {
     }
     
     public var viewToShowImage: UIView {
-        return self.tableView
+        return self.collectionView
     }
 }

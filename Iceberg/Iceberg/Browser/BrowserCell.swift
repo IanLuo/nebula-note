@@ -12,9 +12,11 @@ import RxSwift
 import Core
 import Interface
 
-public class BrowserCell: UITableViewCell {
-    public static let reuseIdentifier: String = "BrowserCell"
-    
+public protocol BrowserCellProtocol: class {
+    func configure(cellModel: BrowserCellModel)
+}
+
+public class BrowserCell: UICollectionViewCell {
     public let onPresentingModalViewController: PublishSubject<(UIViewController, UIView)> = PublishSubject()
     public let onCreateSubDocument: PublishSubject<URL> = PublishSubject()
     public let onRenameDocument: PublishSubject<URL> = PublishSubject()
@@ -24,227 +26,61 @@ public class BrowserCell: UITableViewCell {
     public let onChangeCover: PublishSubject<URL> = PublishSubject()
     public let onEnter: PublishSubject<URL> = PublishSubject()
     
-    public let iconView: UIImageView = {
-        let imageView = UIImageView()
-
-        imageView.interface { (me, theme) in
-            me.backgroundColor = theme.color.background2
-        }
-        
-        imageView.roundConer(radius: Layout.cornerRadius)
-        
-        imageView.clipsToBounds = true
-        imageView.contentMode = .center
-        return imageView
-    }()
-    
-    public let titleLabel: UILabel = {
-        let label = LabelStyle.title.create()
-        label.numberOfLines = 0
-        return label
-    }()
-    
-    public let lastModifiedDateLabel: UILabel = {
-        let label = LabelStyle.description.create()
-        return label
-    }()
-    
-    public var actionButton: RoundButton = RoundButton()
-//    public let enterChildButton: RoundButton = RoundButton()
-    public let actionsContainerView: UIView = UIView()
     public let container: UIView = {
         let view = UIView()
         view.roundConer(radius: Layout.cornerRadius)
         return view
     }()
     
-    private var cellModel: BrowserCellModel?
+    var cellModel: BrowserCellModel?
     
-    private let disposeBag = DisposeBag()
+    let disposeBag = DisposeBag()
     
     public var reuseDisposeBag = DisposeBag()
     
-    public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    public override init(frame: CGRect) {
+        super.init(frame: frame)
         
-        self._setupUI()
+        self.contentView.addSubview(self.container)
+        self.container.allSidesAnchors(to: self.contentView,
+                                       edgeInsets: .init(top: Layout.edgeInsets.top,
+                                                         left: Layout.edgeInsets.left,
+                                                         bottom: 0,
+                                                         right: -Layout.edgeInsets.right))
+        
+        self.contentView.insertSubview(self.subFolderIndicatorView, at: 0)
+        
+        self.subFolderIndicatorView.allSidesAnchors(to: self.contentView, edgeInsets: .init(top: Layout.edgeInsets.top + 5,
+                                                                                            left: Layout.edgeInsets.left + 5,
+                                                                                            bottom: 5,
+                                                                                            right: -(Layout.edgeInsets.right)))
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func _setupUI() {
-        self.contentView.addSubview(self.container)
+    func showAsFolder(_ bool: Bool) {
         
-        self.container.allSidesAnchors(to: self.contentView, edgeInsets: .init(top: Layout.edgeInsets.top, left: Layout.edgeInsets.left, bottom: 0, right: -Layout.edgeInsets.right))
+        self.subFolderIndicatorView.isHidden = !bool
         
-        self.container.addSubview(self.iconView)
-        self.container.addSubview(self.titleLabel)
-        self.container.addSubview(self.actionsContainerView)
-        self.container.addSubview(self.lastModifiedDateLabel)
-        
-        self.interface { [weak self] (me, theme) in
-            let cell = me as! BrowserCell
-            cell.backgroundColor = theme.color.background1
-            cell.titleLabel.textColor = theme.color.interactive
-            cell.titleLabel.font = theme.font.title
-            cell.contentView.backgroundColor = theme.color.background1
-            self?.container.backgroundColor = theme.color.background2
-            self?.lastModifiedDateLabel.textColor = theme.color.descriptive
-            self?.lastModifiedDateLabel.font = theme.font.footnote
-        }
-        
-        self.iconView.sideAnchor(for: [.left, .top, .bottom],
-                                 to: self.container,
-                                 edgeInsets: .init(top: 10, left: 10, bottom: -10, right: 0))
-        self.iconView.ratioAnchor(2.0 / 3)
-        self.iconView.sizeAnchor(height: 100)
-        
-        self.iconView.rowAnchor(view: self.titleLabel, space: 10, alignment: .top)
-        self.titleLabel.sideAnchor(for: [.top],
-                                   to: self.container,
-                                   edgeInsets: .init(top: 10, left: 0, bottom: -10, right: 0))
-        
-        self.titleLabel.rowAnchor(view: self.actionsContainerView, space: 10, alignment: .top)
-        self.actionsContainerView.sideAnchor(for: [.top, .bottom, .right],
-                                             to: self.container,
-                                             edgeInsets: .init(top: 10, left: 0, bottom: 0, right: -10))
-        
-        self.iconView.rowAnchor(view: self.lastModifiedDateLabel, space: 10, alignment: .bottom)
-        self.titleLabel.columnAnchor(view: self.lastModifiedDateLabel, space: 8, alignment: .leading)
-        self.lastModifiedDateLabel.sizeAnchor(height: 14)
-        
-
-        self.container.roundConer(radius: Layout.cornerRadius)
-        self.enableHover(on: self.container, hoverColor: isMac ? InterfaceTheme.Color.background3 : InterfaceTheme.Color.background2)
-    }
-    
-    public func configure(cellModel: BrowserCellModel) {
-        self.reuseDisposeBag = DisposeBag() // this line is important, if missed, the cell might bind multiple times
-        
-        self.cellModel = cellModel
-        
-        self.titleLabel.text = cellModel.url.packageName
-        self.iconView.image = cellModel.cover ?? Asset.Assets.smallIcon.image
-        self.lastModifiedDateLabel.text = cellModel.updateDate.format(DateFormatter.Style.short, timeStyle: DateFormatter.Style.short)
-        
-        self._loadActionsView()
-        
-        if self.cellModel?.shouldShowChooseHeadingIndicator == true {
-            self.accessoryType = .disclosureIndicator
-        } else {
-            self.accessoryType = .none
-        }
-        
-        if cellModel.downloadingProcess < 100 {
-            self.iconView.showProcessingAnimation()
-        } else {
-            self.iconView.hideProcessingAnimation()
+        if let rightConstraint = self.container.constraint(for: Position.right) {
+            self.contentView.removeConstraint(rightConstraint)
+            self.container.sideAnchor(for: Position.right, to: self.contentView, edgeInset: bool ? Layout.edgeInsets.right + 5 : Layout.edgeInsets.right)
         }
     }
     
-    private func _loadActionsView() {
-        self.actionsContainerView.subviews.forEach { $0.removeFromSuperview() }
-        
-        if self.cellModel?.hasSubDocuments == true {
-            self.actionsContainerView.addSubview(self._actionsViewWithTwoButtons)
-            self._actionsViewWithTwoButtons.allSidesAnchors(to: self.actionsContainerView, edgeInset: 0)
-        } else {
-            self.actionsContainerView.addSubview(self._actionsViewWithOneButton)
-            self._actionsViewWithOneButton.allSidesAnchors(to: self.actionsContainerView, edgeInset: 0)
-        }
-    }
-    
-    private lazy var _actionsViewWithOneButton: UIView = {
-        let view = UIView()
-        
-        let actionButton = RoundButton()
-        actionButton.isHidden = self.cellModel?.shouldShowActions == false
-        actionButton.interface { (me, theme) in
-            if let button = me as? RoundButton {
-                button.setIcon(Asset.SFSymbols.ellipsis.image.fill(color: theme.color.descriptive), for: .normal)
-                button.setBackgroundColor(theme.color.background2, for: .normal)
-            }
-        }
-        actionButton.tapped { [weak self] view in
-            guard let strongSelf = self else { return }
-            strongSelf.cellModel?.coordinator?.dependency.globalCaptureEntryWindow?.hide()
-            strongSelf.onPresentingModalViewController.onNext((strongSelf.actionViewController, view))
-        }
-        
-        self.actionButton = actionButton
-        
-        view.addSubview(actionButton)
-        actionButton.sizeAnchor(width: 44)
-        view.sizeAnchor(width: 44)
-        actionButton.centerAnchors(position: [.centerX, .centerY], to: view)
-        
-        return view
-    }()
-    
-    private lazy var _actionsViewWithTwoButtons: UIView = {
-        let view = UIView()
-        
-        let actionButton = RoundButton()
-        actionButton.isHidden = self.cellModel?.shouldShowActions == false
-        actionButton.interface { (me, theme) in
-            if let button = me as? RoundButton {
-                actionButton.setIcon(Asset.SFSymbols.ellipsis.image.fill(color: theme.color.descriptive), for: .normal)
-                actionButton.setBackgroundColor(theme.color.background2, for: .normal)
-            }
-        }
-        actionButton.tapped { [weak self] view in
-           guard let strongSelf = self else { return }
-            strongSelf.onPresentingModalViewController.onNext((strongSelf.actionViewController, view))
-            strongSelf.cellModel?.coordinator?.dependency.globalCaptureEntryWindow?.hide()
-        }
-        
-        self.actionButton = actionButton
-
-        let enterButton = UIButton()
-        enterButton.interface { (me, theme) in
-            if let button = me as? UIButton {
-                if isMac {
-                    button.setBackgroundImage(UIImage.create(with: theme.color.background2, size: .singlePoint), for: .normal)
-                } else {
-                    button.setBackgroundImage(UIImage.create(with: theme.color.background3, size: .singlePoint), for: .normal)
-                }
-
-                button.setImage(Asset.SFSymbols.arrowRight.image.fill(color: theme.color.interactive), for: .normal)
-            }
-        }
-        
-        enterButton.roundConer(radius: 10)
-        
-        enterButton.rx.tap.subscribe(onNext: { [weak self] in
-            if let cellModel = self?.cellModel {
-                self?.onEnter.onNext(cellModel.url)
-            }
-        }).disposed(by: self.disposeBag)
-        
-        view.addSubview(actionButton)
-        view.addSubview(enterButton)
-        actionButton.sideAnchor(for: [.left, .top, .right], to: view, edgeInset: 0)
-        actionButton.sizeAnchor(width: 49)
-        actionButton.columnAnchor(view: enterButton)
-        enterButton.sideAnchor(for: [.left, .bottom, .right], to: view, edgeInsets: .init(top: 0, left: 0, bottom: -5, right: -5))
-        enterButton.sizeAnchor(width: 44, height: 44)
-        return view
-    }()
-    
-    private var actionViewController: UIViewController {
+    var actionViewController: ActionsViewController {
         let actionsViewController = ActionsViewController()
         actionsViewController.title = L10n.Browser.Actions.title
-        actionsViewController.fromView = self.actionButton
         
-        self._createNewDocumentActionItem(for: actionsViewController)
-        self._createRenameActionItem(for: actionsViewController)
-        self._createMoveActionItem(for: actionsViewController)
-        self._createDuplicateActionItem(for: actionsViewController)
-        self._createEditCoverActionItem(for: actionsViewController)
-        self._createExportActionItem(for: actionsViewController)
-        self._createDeleteActionItem(for: actionsViewController)
+        self.createNewDocumentActionItem(for: actionsViewController)
+        self.createRenameActionItem(for: actionsViewController)
+        self.createMoveActionItem(for: actionsViewController)
+        self.createDuplicateActionItem(for: actionsViewController)
+        self.createEditCoverActionItem(for: actionsViewController)
+        self.createExportActionItem(for: actionsViewController)
+        self.createDeleteActionItem(for: actionsViewController)
         
         actionsViewController.setCancel { [weak self] viewController in
             viewController.dismiss(animated: true, completion: nil)
@@ -254,7 +90,19 @@ public class BrowserCell: UITableViewCell {
         return actionsViewController
     }
     
-    private func _createNewDocumentActionItem(for actionsViewController: ActionsViewController) {
+    private let subFolderIndicatorView: UIView = {
+       let view = UIView()
+        view.roundConer(radius: 8)
+        view.layer.borderWidth = 1
+        view.interface { (me, interface) in
+            me.layer.borderColor = interface.color.background2.cgColor
+            me.backgroundColor = interface.color.background1
+        }
+        
+        return view
+    }()
+    
+    func createNewDocumentActionItem(for actionsViewController: ActionsViewController) {
         if (self.cellModel?.coordinator?.dependency.purchaseManager.isMember.value ?? true) || (self.cellModel?.url.levelsToRoot ?? 0) < 2 {
             actionsViewController.addActionAutoDismiss(icon: nil, title: L10n.Browser.Actions.newSub) { [weak self] in
                 guard let strongSelf = self else { return }
@@ -276,7 +124,7 @@ public class BrowserCell: UITableViewCell {
         }
     }
     
-    private func _createDeleteActionItem(for actionsViewController: ActionsViewController) {
+    func createDeleteActionItem(for actionsViewController: ActionsViewController) {
         actionsViewController.addAction(icon: nil, title: L10n.Browser.Actions.delete, style: .warning) { [weak self] (viewController: UIViewController, view: UIView) -> Void in
             guard let strongSelf = self else { return }
             guard let cellModel = strongSelf.cellModel else { return }
@@ -305,7 +153,7 @@ public class BrowserCell: UITableViewCell {
         }
     }
     
-    public func _createDuplicateActionItem(for actionsViewController: ActionsViewController) {
+    public func createDuplicateActionItem(for actionsViewController: ActionsViewController) {
         guard let cellModel = self.cellModel else { return }
         
         actionsViewController.addActionAutoDismiss(icon: nil, title: L10n.Browser.Actions.duplicate) {
@@ -315,7 +163,7 @@ public class BrowserCell: UITableViewCell {
         }
     }
     
-    public func _createMoveActionItem(for actionsViewController: ActionsViewController) {
+    public func createMoveActionItem(for actionsViewController: ActionsViewController) {
         guard let cellModel = self.cellModel else { return }
         
         actionsViewController.addAction(icon: nil, title: L10n.Browser.Action.MoveTo.title) { viewController in
@@ -375,7 +223,7 @@ public class BrowserCell: UITableViewCell {
         }
     }
     
-    private func _createRenameActionItem(for actionsViewController: ActionsViewController) {
+    func createRenameActionItem(for actionsViewController: ActionsViewController) {
         guard let cellModel = self.cellModel else { return }
         
         actionsViewController.addActionAutoDismiss(icon: nil, title: L10n.Browser.Actions.rename) {
@@ -419,7 +267,7 @@ public class BrowserCell: UITableViewCell {
         }
     }
     
-    private func _createEditCoverActionItem(for  actionsViewController: ActionsViewController) {
+    func createEditCoverActionItem(for  actionsViewController: ActionsViewController) {
         guard let cellModel = self.cellModel else { return }
         
         actionsViewController.addActionAutoDismiss(icon: nil, title: L10n.Browser.Actions.cover) { [weak self] in
@@ -442,7 +290,7 @@ public class BrowserCell: UITableViewCell {
         }
     }
     
-    private func _createExportActionItem(for actionsViewController: ActionsViewController) {
+    func createExportActionItem(for actionsViewController: ActionsViewController) {
         actionsViewController.addActionAutoDismiss(icon: nil, title: L10n.Attachment.share) { [weak self] in
             
             guard let cellModel = self?.cellModel else { return }
@@ -456,56 +304,23 @@ public class BrowserCell: UITableViewCell {
 }
 
 extension BrowserCell {
-    override public func setHighlighted(_ highlighted: Bool, animated: Bool) {
-        if highlighted {
-            self.backgroundColor = InterfaceTheme.Color.background2
-        } else {
-            self.backgroundColor = InterfaceTheme.Color.background1
+    public override var isHighlighted: Bool {
+        didSet {
+            if isHighlighted {
+                self.container.backgroundColor = InterfaceTheme.Color.background3
+            } else {
+                self.container.backgroundColor = InterfaceTheme.Color.background2
+            }
         }
     }
     
-    override public func setSelected(_ selected: Bool, animated: Bool) {
-        if selected {
-            self.backgroundColor = InterfaceTheme.Color.background2
-        } else {
-            self.backgroundColor = InterfaceTheme.Color.background1
+    public override var isSelected: Bool {
+        didSet {
+            if isSelected {
+                self.container.backgroundColor = InterfaceTheme.Color.background3
+            } else {
+                self.container.backgroundColor = InterfaceTheme.Color.background2
+            }
         }
-    }
-}
-
-
-public class BrowserCellWithSubFolder: BrowserCell {
-    public  static let reuseIdentifierForBrowserCellWithSubFolder = "BrowserCellWithSubFolder"
-    
-    private let _subFolderIndicatorView: UIView = {
-       let view = UIView()
-        view.roundConer(radius: 8)
-        view.layer.borderWidth = 1
-        view.interface { (me, interface) in
-            me.layer.borderColor = interface.color.background2.cgColor
-            me.backgroundColor = interface.color.background1
-        }
-        
-        return view
-    }()
-    
-    public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
-        self.contentView.insertSubview(self._subFolderIndicatorView, at: 0)
-        
-        self._subFolderIndicatorView.allSidesAnchors(to: self.contentView, edgeInsets: .init(top: Layout.edgeInsets.top + 5,
-                                                                                             left: Layout.edgeInsets.left + 5,
-                                                                                             bottom: 5,
-                                                                                             right: -(Layout.edgeInsets.right)))
-        
-        if let rightConstraint = self.container.constraint(for: Position.right) {
-            self.contentView.removeConstraint(rightConstraint)
-            self.container.sideAnchor(for: Position.right, to: self.contentView, edgeInset: Layout.edgeInsets.right + 5)
-        }
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 }

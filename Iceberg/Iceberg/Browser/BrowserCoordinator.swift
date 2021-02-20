@@ -46,11 +46,10 @@ public class BrowserCoordinator: Coordinator {
         self.usage = usage
         super.init(stack: stack, dependency: dependency)
         
-        let browserFolderViewModel = BrowserFolderViewModel(url: URL.documentBaseURL, mode: usage.browserFolderMode, coordinator: self)
+        let browserFolderViewModel = BrowserFolderViewModel(url: URL.documentBaseURL, mode: usage.browserFolderMode, coordinator: self, dataMode: DataMode.browser)
         let browserFolderViewController = BrowserFolderViewController(viewModel: browserFolderViewModel)
         
-        let browseRecentViewModel = BrowserRecentViewModel(coordinator: self)
-        let browseRecentViewController = BrowserRecentViewController(viewModel: browseRecentViewModel)
+        let browseRecentViewController = BrowserFolderViewController(viewModel: BrowserFolderViewModel(coordinator: self, dataMode: .recent))
         
         let browseViewController = BrowserViewController(recentViewController: browseRecentViewController,
                                                          browserFolderViewController: browserFolderViewController,
@@ -74,7 +73,7 @@ public class BrowserCoordinator: Coordinator {
             self.didCancelAction?()
         }).disposed(by: self.disposeBag)
         
-        browseRecentViewController.output.choosenDocument.subscribe(onNext: { [unowned self] url in
+        browseRecentViewController.output.onSelectDocument.subscribe(onNext: { [unowned self] url in
             switch self.usage {
             case .browseDocument:
                 self.delegate?.didSelectDocument(url: url, coordinator: self)

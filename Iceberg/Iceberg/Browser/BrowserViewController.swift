@@ -10,7 +10,21 @@ import Foundation
 import UIKit
 import Interface
 import RxSwift
+import RxCocoa
 import Core
+
+fileprivate enum ViewType {
+    case recent, documents
+}
+
+fileprivate struct Model {
+    var viewType: BehaviorRelay<ViewType>
+    var browserFolderViewController: UIViewController
+    var recentViewController: UIViewController
+    var shouldShowRecentView: Bool
+    var shouldShowHelpButton: Bool
+    var usage: BrowserCoordinator.Usage
+}
 
 public class BrowserViewController: UIViewController {
     
@@ -18,10 +32,37 @@ public class BrowserViewController: UIViewController {
         public let canceld: PublishSubject<Void> = PublishSubject()
     }
     
-    private var recentViewController: BrowserRecentViewController!
+    private var recentViewController: BrowserFolderViewController!
     private var browserFolderViewController: BrowserFolderViewController!
     public let output: Output = Output()
     private let disposeBag = DisposeBag()
+    
+    private var model: Model!
+    
+    private lazy var viewTypeSegmented: UISegmentedControl = {
+        let seg = UISegmentedControl()
+        seg.insertSegment(withTitle: "Recent", at: 0, animated: false)
+        seg.insertSegment(withTitle: "Documents", at: 1, animated: false)
+        seg.selectedSegmentIndex = 1
+        
+        seg.interface { (view, theme) in
+            let seg = view as! UISegmentedControl
+            if #available(iOS 13.0, *) {
+                seg.setTitleTextAttributes([NSAttributedString.Key.foregroundColor : theme.color.spotlitTitle], for: .selected)
+                seg.setTitleTextAttributes([NSAttributedString.Key.foregroundColor : theme.color.interactive], for: .normal)
+                seg.selectedSegmentTintColor = theme.color.spotlight
+            } else {
+                seg.setTitleTextAttributes([NSAttributedString.Key.foregroundColor : theme.color.spotlight], for: .normal)
+            }
+        }
+        
+        seg.rx.value.asDriver().drive(onNext: { selectedIndex in
+            let newValue = selectedIndex == 0 ? ViewType.recent : ViewType.documents
+            self.model.viewType.accept(newValue)
+        }).disposed(by: self.disposeBag)
+    
+        return seg
+    }()
     
     private lazy var closeButton: UIButton = {
         let button = UIButton()
@@ -34,21 +75,26 @@ public class BrowserViewController: UIViewController {
         return button
     }()
     
-    private var shouldShowRecentView: Bool!
-    private var shouldShowHelpButton: Bool!
-    
-    public convenience init(recentViewController: BrowserRecentViewController,
+    public convenience init(recentViewController: BrowserFolderViewController,
                             browserFolderViewController: BrowserFolderViewController,
                             coordinator: BrowserCoordinator) {
+        
         self.init()
+        
+        self.model = Model(viewType: BehaviorRelay<ViewType>(value: .documents),
+                           browserFolderViewController: Coordinator.createDefaultNavigationControlller(root: browserFolderViewController, transparentBar: true),
+                           recentViewController: Coordinator.createDefaultNavigationControlller(root: recentViewController, transparentBar: true),
+                           shouldShowRecentView: true,
+                           shouldShowHelpButton: true,
+                           usage: coordinator.usage)
         
         switch coordinator.usage {
         case .browseDocument, .chooseHeader:
-            self.shouldShowRecentView = true
-            self.shouldShowHelpButton = true
+            self.model.shouldShowRecentView = true
+            self.model.shouldShowHelpButton = true
         case .favoriate:
-            self.shouldShowRecentView = false
-            self.shouldShowHelpButton = false
+            self.model.shouldShowRecentView = false
+            self.model.shouldShowHelpButton = false
         }
         
         self.recentViewController = recentViewController
@@ -60,6 +106,7 @@ public class BrowserViewController: UIViewController {
             self.tabBarItem = UITabBarItem(title: "", image: Asset.SFSymbols.star.image, tag: 0)
         default:
             self.title = L10n.Browser.title
+            self.navigationItem.titleView = self.viewTypeSegmented
             self.tabBarItem = UITabBarItem(title: "", image: Asset.SFSymbols.doc.image, tag: 0)
         }
     }
@@ -75,28 +122,11 @@ public class BrowserViewController: UIViewController {
             
             self.navigationItem.leftBarButtonItem = closeItem
         }
-                
-        self.view.addSubview(self.recentViewController.view)
-        self.recentViewController.view.sideAnchor(for: [.left, .top, .right], to: self.view, edgeInsets: .init(top: self.shouldShowRecentView ? 20 : 0, left: 10, bottom: 0, right: -10), considerSafeArea: true)
-        self.recentViewController.view.sizeAnchor(height: self.shouldShowRecentView ? 120 : 0)
-        self.addChild(self.recentViewController)
-        self.recentViewController.didMove(toParent: self)
         
-        self.recentViewController.view.isHidden = !self.shouldShowRecentView
-        
-        let nav = Coordinator.createDefaultNavigationControlller()
-        nav.pushViewController(self.browserFolderViewController, animated: false)
-        self.view.addSubview(nav.view)
-        nav.view.sideAnchor(for: [.left, .bottom, .right], to: self.view, edgeInset: 0)
-        self.recentViewController.view.columnAnchor(view: nav.view, space: self.shouldShowRecentView ? 20 : 0, alignment: .centerX)
-        self.addChild(nav)
-        nav.didMove(toParent: self)
-                
-        self.interface { [weak self] (me, theme) in
-            self?.view.backgroundColor = theme.color.background1
-            nav.navigationBar.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.background1, size: .singlePoint), for: .default)
+        self.interface { (vc, theme) in
+            vc.view.backgroundColor = theme.color.background1
         }
-        
+                                
         NotificationCenter.default
         .rx
         .notification(UIDocument.stateChangedNotification)
@@ -108,6 +138,20 @@ public class BrowserViewController: UIViewController {
         })
         .disposed(by: self.disposeBag)
         
+        self.model.viewType.subscribe(onNext: { [weak self] mode in
+            guard let strongSelf = self else { return }
+            strongSelf.view.subviews.forEach { $0.removeFromSuperview() }
+            
+            switch mode {
+            case .documents:
+                strongSelf.view.addSubview(strongSelf.model.browserFolderViewController.view)
+                strongSelf.model.browserFolderViewController.view.allSidesAnchors(to: strongSelf.view, edgeInset: 0, considerSafeArea: true)
+            case .recent:
+                strongSelf.view.addSubview(strongSelf.model.recentViewController.view)
+                strongSelf.model.recentViewController.view.allSidesAnchors(to: strongSelf.view, edgeInset: 0, considerSafeArea: true)
+            }
+        }).disposed(by: self.disposeBag)
+        
         // add activity
         let activity = Document.createDocumentActivity()
         self.userActivity = activity
@@ -118,7 +162,7 @@ public class BrowserViewController: UIViewController {
             HelpPage.documentManagement.open(from: self)
         }).disposed(by: self.disposeBag)
         
-        if self.shouldShowHelpButton {
+        if self.model.shouldShowHelpButton {
             self.navigationItem.rightBarButtonItem = rightItem
         }
     }

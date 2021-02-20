@@ -249,6 +249,9 @@
 
 "browser.favorite.title" = "收藏";
 
+"browser.mode.list" = "列表";
+"browser.mode.icon" = "图标";
+
 // agenda
 "agenda.title" = "日程表";
 "agenda.startToday" = "今天开始";
