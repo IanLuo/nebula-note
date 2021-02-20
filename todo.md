@@ -5,6 +5,8 @@
 [ ] fast open document
 [ ] new document view for big icon
 [ ] change capture interface
+[ ] use tab for iPhone version
+[ ] for desktop, the parts icon, move with the parts opens
 ---- 1.2.8 ----
 [x] add favorite function
 [x] update icons
