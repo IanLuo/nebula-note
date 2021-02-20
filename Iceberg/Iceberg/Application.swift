@@ -243,8 +243,14 @@ extension Coordinator {
             
             if InterfaceTheme.isDartMode {
                 navigationController.navigationBar.barStyle = .black
+                if #available(iOS 13.0, *) {
+                    navigationController.overrideUserInterfaceStyle = .dark
+                }
             } else {
                 navigationController.navigationBar.barStyle = .default
+                if #available(iOS 13.0, *) {
+                    navigationController.overrideUserInterfaceStyle = .light
+                }
             }
         }
         

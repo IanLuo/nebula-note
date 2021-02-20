@@ -141,10 +141,6 @@ public class InterfaceThemeSelector {
     public func changeTheme(_ theme: InterfaceThemeProtocol) {
         InterfaceThemeSelector.shared.currentTheme = theme
         
-//        for key in self._registerMap.keyEnumerator().allObjects {
-//            (self._registerMap.object(forKey: key as AnyObject) as? (InterfaceThemeProtocol) -> Void)?(theme)
-//        }
-        
         self._themeObservable.onNext(theme)
     }
     
