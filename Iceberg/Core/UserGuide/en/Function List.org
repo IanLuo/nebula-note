@@ -1,5 +1,5 @@
 * Editor
-x3 note's goal is to build a professional, comfortable to use editor, provides functions like basic text editing, rich text marks, insert multiple types of attachments, etc. And many more to be added.
+Delta Note's goal is to build a professional, comfortable to use editor, provides functions like basic text editing, rich text marks, insert multiple types of attachments, etc. And many more to be added.
 ** Text marks
 Supports *Bold*, _Underscore_, /Italic/, and ~Highlight~ effects.
 ** Attachment
@@ -36,10 +36,10 @@ When moving at paragraph content, you are moving the current line of text.
 ** Organize paragraphs
 You can move a paragraph to another paragraph, as its sub paragraph, or move to beginning/ending of the document, and keeping the paragraph level, and the move can be inside one documents, or to another document.
 * Capture inspiration
-** Inside x3 note
-You access *Capture inspiration* at every page inside x3 note. When you are editing a document, you can find it by tapping the action button, other places, the button is floating at bottom right bottom of the screen.
-** Share to x3 note
-Any app that can share content, can share to x3 note, and kept in *Ideas*
+** Inside Delta Note
+You access *Capture inspiration* at every page inside Delta Note. When you are editing a document, you can find it by tapping the action button, other places, the button is floating at bottom right bottom of the screen.
+** Share to Delta Note
+Any app that can share content, can share to Delta Note, and kept in *Ideas*
 ** Refile
 When you are managing the captured ideas, you can choose a place, then move that idea to the place of document you choose.
 * Agenda management
@@ -58,6 +58,6 @@ You can choose an image as the cover of a document.
 ** Duplicate
 Make a copy of the chosen document.
 ** Import
-Import other file into x3 note, use its content to create a new document, now we support *org* file, if you want to import a org file to x3 note, you can open it with x3 note, or share to x3 note.
+Import other file into Delta Note, use its content to create a new document, now we support *org* file, if you want to import a org file to Delta Note, you can open it with Delta Note, or share to Delta Note.
 ** iCloud synchornize
 Save you document on iCloud, then it will synchronize across all your devices, free of charge.

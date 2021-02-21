@@ -12,16 +12,16 @@ import Interface
 import MHWebViewController
 
 public enum HelpPage: String {
-    case allUserGuide = "https://forum.x3note.site/c/5"
-    case editor = "https://forum.x3note.site/t/12"
-    case capture = "https://forum.x3note.site/t/13"
-    case documentManagement = "https://forum.x3note.site/t/14"
-    case entrance = "https://forum.x3note.site/t/15"
-    case dateAndTime = "https://forum.x3note.site/t/16"
-    case agenda = "https://forum.x3note.site/t/17"
-    case membership = "https://forum.x3note.site/t/19";
-    case syntax = "https://forum.x3note.site/t/18";
-    case privacyPolicy = "https://forum.x3note.site/t/32";
+    case allUserGuide = "https://forum.deltanote.ink/c/5"
+    case editor = "https://forum.deltanote.ink/t/12"
+    case capture = "https://forum.deltanote.ink/t/13"
+    case documentManagement = "https://forum.deltanote.ink/t/14"
+    case entrance = "https://forum.deltanote.ink/t/15"
+    case dateAndTime = "https://forum.deltanote.ink/t/16"
+    case agenda = "https://forum.deltanote.ink/t/17"
+    case membership = "https://forum.deltanote.ink/t/19";
+    case syntax = "https://forum.deltanote.ink/t/18";
+    case privacyPolicy = "https://forum.deltanote.ink/t/32";
     case termsOfService = "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/";
     
 //    public func open() {

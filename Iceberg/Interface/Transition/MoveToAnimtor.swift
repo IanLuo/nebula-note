@@ -42,7 +42,7 @@ public class MoveToAnimtor: NSObject, Animator {
                 let animatableView = UIImageView(frame: startRect)
                 animatableView.contentMode = .center
                 
-                if !isMac {
+                if !isMac && transitionViewController.contentView.bounds != CGRect.zero {
                     let toImage = transitionViewController.contentView.snapshot
                     animatableView.image = toImage
                 }
@@ -68,7 +68,11 @@ public class MoveToAnimtor: NSObject, Animator {
         } else {
             if let transitionViewController = from as? TransitionViewController {
                 let toView = transitionViewController.fromView
-                guard let fromImage = transitionViewController.contentView.snapshot else { return }
+                
+                var fromImage: UIImage? = UIImage()
+                if transitionViewController.contentView.bounds != CGRect.zero {
+                    fromImage = transitionViewController.contentView.snapshot
+                }
                 
                 transitionViewController.contentView.alpha = 0
                 let startRect = transitionViewController.contentView.frame
@@ -84,6 +88,7 @@ public class MoveToAnimtor: NSObject, Animator {
                 animatableView.backgroundColor = InterfaceTheme.Color.background2
                 animatableView.clipsToBounds = true
                 animatableView.image = fromImage
+                
                 
                 containner.addSubview(animatableView)
                 

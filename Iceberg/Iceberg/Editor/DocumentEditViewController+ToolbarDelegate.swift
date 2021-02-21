@@ -58,7 +58,7 @@ extension DocumentEditorViewController: DocumentEditToolbarDelegate {
                 switch normalAction {
                 case .heading:
                     if self.inputbar.mode == .heading {
-                        self.showHeadingEdit(at: lineRange.location)
+                        self.showHeadingActions(at: lineRange.location, isHeading: true)
                     } else {
                         let lineContent = self.textView.text.nsstring.substring(with: lineRange).trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
                         if lineContent.count == 0 {
@@ -68,7 +68,7 @@ extension DocumentEditorViewController: DocumentEditToolbarDelegate {
                             self.textView.selectedRange = lastSelectedRange.offset(result.delta)
                         } else {
                             // 含有文字，显示菜单
-                            self.showHeadingAdd(at: lineRange.location)
+                            self.showHeadingActions(at: lineRange.location, isHeading: false)
                         }
                     }
                 case .headingProperty:

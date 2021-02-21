@@ -34,6 +34,9 @@ public class SettingsViewController: UITableViewController {
     @IBOutlet var chooseLandingTabButton: UIButton!
     @IBOutlet var landingTabRow: UITableViewCell!
     
+    @IBOutlet weak var browserStyleLabel: UILabel!
+    @IBOutlet weak var browserStyleButton: UIButton!
+    
     @IBOutlet var planningFinishLabel: UILabel!
     @IBOutlet var planningFinishButton: UIButton!
     @IBOutlet var planningUnfinishLabel: UILabel!
@@ -86,6 +89,9 @@ public class SettingsViewController: UITableViewController {
         self.interfaceStyleLabel.text = L10n.Setting.InterfaceStyle.title
         self.interfaceStyleButton.setTitle(self.viewModel.interfaceStyle.localizedTitle, for: .normal)
         
+        self.browserStyleLabel.text = L10n.Setting.Browser.Style.title
+        self.browserStyleButton.setTitle(self.viewModel.currentBrowserStyle, for: .normal)
+        
         self.planningFinishLabel.text = L10n.Setting.Planning.Finish.title
         self.planningFinishButton.setTitle(self.viewModel.getPlanning(isForFinished: true).joined(separator: ","), for: .normal)
         self.planningUnfinishLabel.text = L10n.Setting.Planning.Unfinish.title
@@ -122,6 +128,9 @@ public class SettingsViewController: UITableViewController {
             self?.interfaceStyleLabel.textColor = theme.color.interactive
             self?.interfaceStyleButton.setTitleColor(theme.color.descriptive, for: .normal)
             
+            self?.browserStyleLabel.textColor = theme.color.interactive
+            self?.browserStyleButton.setTitleColor(theme.color.descriptive, for: .normal)
+            
             self?.landingTabTitleLabel.textColor = theme.color.interactive
             self?.chooseLandingTabButton.setTitleColor(theme.color.descriptive, for: .normal)
             self?.landingTabRow.tintColor = theme.color.descriptive
@@ -156,6 +165,12 @@ public class SettingsViewController: UITableViewController {
             let button = view as! UIButton
             button.setTitleColor(theme.color.spotlight, for: .normal)
         }
+        
+        self.browserStyleButton.rx.tap.subscribe(onNext: { [weak self] in
+            if let strongSelf = self {
+                strongSelf.showBrowserStyleSelector(from: strongSelf.browserStyleButton)
+            }
+        }).disposed(by: self.disposeBag)
         
         self.feedbackButton.rx.tap.subscribe(onNext: { [weak self] _ in
             self?._showFeedbackOptions(from: button)
@@ -211,7 +226,7 @@ public class SettingsViewController: UITableViewController {
                     viewController.present(activityVC, animated: true, completion: nil)
                 }
             case 2:
-                UIApplication.shared.open(URL(string: "https://forum.x3note.site/")!, options: [:], completionHandler: nil)
+                UIApplication.shared.open(URL(string: "https://forum.deltanote.ink/")!, options: [:], completionHandler: nil)
             case 3:
                 let appId = "11641"
                 let appKey = "k2q6pHh2ekAbQjELagm2VZ3rHJFHEj3bl1GI529FjaDO29hfwLcn5sJ9jBSVA24Q"
@@ -351,6 +366,44 @@ public class SettingsViewController: UITableViewController {
         
         selector.present(from: self, at: view)
         dependency.globalCaptureEntryWindow?.hide()
+    }
+    
+    private func showBrowserStyleSelector(from: UIView) {
+        let selector = SelectorViewController()
+        
+        selector.addItem(title: BrowserViewModel.listSmall.title)
+        selector.addItem(title: BrowserViewModel.icon.title)
+        selector.currentTitle = self.viewModel.currentBrowserStyle
+        
+        selector.onCancel = {
+            $0.dismiss(animated: true) {
+                self.viewModel.showGlobalCaptureEntry()
+            }
+        }
+        
+        selector.onSelection = { index, viewController in
+            viewController.dismiss(animated: true) {
+                switch index {
+                case 0: self.viewModel.dependency.settingAccessor.setSetting(item: .browserCellMode, value: BrowserViewModel.listSmall.title, completion: { [weak self] in
+                    DispatchQueue.main.async {
+                        self?.browserStyleButton.setTitle(BrowserViewModel.listSmall.title, for: .normal)
+                    }
+                })
+                case 1: self.viewModel.dependency.settingAccessor.setSetting(item: .browserCellMode, value: BrowserViewModel.icon.title, completion: { [weak self] in
+                    DispatchQueue.main.async {
+                        self?.browserStyleButton.setTitle(BrowserViewModel.icon.title, for: .normal)
+                    }
+                })
+                default: break
+                }
+                
+                self.viewModel.showGlobalCaptureEntry()
+            }
+        }
+                    
+        self.viewModel.hideGlobalCaptureEntry()
+        
+        selector.present(from: self, at: from)
     }
     
     @objc private func _showLandingTabNamesSelector(from: UIView) {
@@ -496,6 +549,8 @@ public class SettingsViewController: UITableViewController {
             self._showLandingTabNamesSelector(from: cell)
         case (1, 1):
             self._interfaceStyleButtonTapped(cell)
+        case (1, 2):
+            self.showBrowserStyleSelector(from: cell)
         case (2, 0):
             self._planningManageFinish(from: cell)
         case (2, 1):

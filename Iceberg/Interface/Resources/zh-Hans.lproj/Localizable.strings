@@ -60,6 +60,8 @@
 "document.heading.addHeadingAboveIt" = "在上方新建段落";
 "document.heading.addHeadingBelowIt" = "在下方新建段落";
 "document.heading.addSubHeadingBelow" = "新建子段落";
+"document.heading.addNewEntryAtBegining" = "插入新段落";
+"document.heading.addNewEntryAtEnd" = "追加新段落";
 "document.heading.toHeading" = "转为标题";
 "document.heading.unfold" = "展开这个段落";
 "document.heading.fold" = "折叠这个段落";
@@ -199,6 +201,8 @@
 "setting.planning.add.error.nameTaken" = "状态名已经被占用";
 "setting.planning.unfinish.title" = "未完成";
 "setting.planning.finish.title" = "已完成";
+
+"setting.browser.style.title" = "默认文档列表风格";
 
 "setting.editor.title" = "编辑器";
 "setting.editor.foldAllWhenOpen" = "打开文档时折叠所有段落";

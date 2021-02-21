@@ -102,7 +102,7 @@ public struct HTMLExporter: Exportable {
     var footer: String {
         """
         <div class=\"footer\">
-        <span style=\"vertical-align: middle;\">Create with x3 note</span> <img style=\"width:50px;height:50px\" src='https://forum.x3note.site/uploads/default/original/1X/45488f32835fad7e6401d391b89392d3a4498610.png'")></img>
+        <span style=\"vertical-align: middle;\">Create with Delta Note</span> <img style=\"width:50px;height:50px\" src='https://forum.x3note.site/uploads/default/original/1X/45488f32835fad7e6401d391b89392d3a4498610.png'")></img>
         </div>
         """
     }

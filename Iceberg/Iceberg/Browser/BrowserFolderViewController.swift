@@ -14,7 +14,7 @@ import RxDataSources
 import Interface
 import Core
 
-fileprivate enum ViewMode {
+public enum BrowserViewModel: CaseIterable {
     case listSmall, icon
     
     var title: String {
@@ -39,7 +39,7 @@ public class BrowserFolderViewController: UIViewController {
         self.viewModel = viewModel
     }
     
-    private let collectionMode: BehaviorRelay<ViewMode> = BehaviorRelay(value: .icon)
+    private let collectionMode: BehaviorRelay<BrowserViewModel> = BehaviorRelay(value: .icon)
     
     public lazy var collectionView: UICollectionView = {
         let flowLayout = UICollectionViewFlowLayout()
@@ -95,6 +95,12 @@ public class BrowserFolderViewController: UIViewController {
     private let disposeBag = DisposeBag()
     
     public override func viewDidLoad() {
+        if let defaultStyle = self.viewModel.dependency.settingAccessor.getSetting(item: .browserCellMode, type: String.self) {
+            if BrowserViewModel.listSmall.title == defaultStyle {
+                collectionMode.accept(.listSmall)
+            }
+        }
+        
         self.view.addSubview(self.collectionView)
         self.collectionView.allSidesAnchors(to: self.view, edgeInset: 0)
         
@@ -256,8 +262,8 @@ public class BrowserFolderViewController: UIViewController {
     private func showActions(from: UIView) {
         let selector = SelectorViewController()
         
-        selector.addItem(title: ViewMode.listSmall.title)
-        selector.addItem(title: ViewMode.icon.title)
+        selector.addItem(title: BrowserViewModel.listSmall.title)
+        selector.addItem(title: BrowserViewModel.icon.title)
         selector.currentTitle = self.collectionMode.value.title
         
         selector.onSelection = { index, viewController in
@@ -309,7 +315,8 @@ extension BrowserFolderViewController: UICollectionViewDelegateFlowLayout, UICol
         case .listSmall:
             return CGSize(width: collectionView.frame.width, height: 130)
         case .icon:
-            return CGSize(width: 100, height: 130)
+            let width = (min(collectionView.bounds.width, collectionView.bounds.height) - Layout.edgeInsets.left - Layout.edgeInsets.right) / 3
+            return CGSize(width: width, height: width * 1.2)
         }
     }
         

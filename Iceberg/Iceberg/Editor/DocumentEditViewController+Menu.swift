@@ -424,69 +424,6 @@ extension DocumentEditorViewController {
         self.viewModel.hideGlobalCaptureEntry()
     }
     
-    /// 在 heading 里面点击 heading 按钮
-    public func showHeadingEdit(at location: Int) {
-        let actionsController = ActionsViewController()
-        actionsController.title = L10n.Document.Heading.title
-        
-        actionsController.addAction(icon: nil, title: L10n.Document.Heading.toParagraphContent) { viewController in
-            viewController.dismiss(animated: true, completion: {
-                self.viewModel.showGlobalCaptureEntry()
-                let lastSelectedRange = self.textView.selectedRange
-                let result = self.viewModel.performAction(EditAction.convertHeadingToParagraph(location), textView: self.textView)
-                self.textView.selectedRange = lastSelectedRange.offset(result.delta)
-            })
-        }
-        
-        if self.viewModel.isMember {
-            actionsController.addAction(icon: nil, title: L10n.Document.Heading.addHeadingAboveIt) { viewController in
-                viewController.dismiss(animated: true) {
-                    self.viewModel.showGlobalCaptureEntry()
-                    let result = self.viewModel.performAction(EditAction.addSameLevelHeadingAbove(location), textView: self.textView)
-                    self.textView.selectedRange = NSRange(location: result.range!.upperBound - 1, length: 0)
-                }
-            }
-        } else {
-            actionsController.addAction(icon: Asset.Assets.proLabel.image, title: L10n.Document.Heading.addHeadingAboveIt) { viewController in
-                viewController.dismiss(animated: true) {
-                    self.viewModel.showGlobalCaptureEntry()
-                    self.viewModel.context.coordinator?.showMembership()
-                }
-            }
-        }
-        
-        actionsController.addAction(icon: nil, title: L10n.Document.Heading.addHeadingBelowIt) { viewController in
-            viewController.dismiss(animated: true) {
-                self.viewModel.showGlobalCaptureEntry()
-                let result = self.viewModel.performAction(EditAction.addSameLevelHeadingAfterCurrentHeading(location), textView: self.textView)
-                self.textView.selectedRange = NSRange(location: result.range!.upperBound - 1, length: 0) // move one position back, so user can start type heading text
-            }
-        }
-        
-        actionsController.addAction(icon: nil, title: L10n.Document.Heading.addSubHeadingBelow) { viewController in
-            viewController.dismiss(animated: true) {
-                self.viewModel.showGlobalCaptureEntry()
-                let result = self.viewModel.performAction(EditAction.addSubHeadingAfterCurrentHeading(location), textView: self.textView)
-                self.textView.selectedRange = NSRange(location: result.range!.upperBound - 1, length: 0) // move one position back, so user can start type heading text
-            }
-        }
-        
-        actionsController.setCancel { viewController in
-            viewController.dismiss(animated: true, completion: nil)
-            self.viewModel.showGlobalCaptureEntry()
-        }
-        
-        if let location = self.textView.rect(forStringRange: self.textView.selectedRange) {
-            actionsController.present(from: self, at: self.textView, location: location.center)
-        } else if let headingRange = self.viewModel.heading(at: location)?.range, let location = self.textView.rect(forStringRange: headingRange){
-            actionsController.present(from: self, at: self.textView, location: location.center)
-        } else {
-            actionsController.present(from: self)
-        }
-        
-        self.viewModel.hideGlobalCaptureEntry()
-    }
-    
     public func showParagraphActions(at location: Int) {
         let actionsController = ActionsViewController()
         actionsController.title = L10n.Document.Edit.Action.Paragraph.title
@@ -606,17 +543,36 @@ extension DocumentEditorViewController {
         self.viewModel.hideGlobalCaptureEntry()
     }
     
-    // 在其他非空行的位置点击 heading 按钮
-    public func showHeadingAdd(at location: Int) {
+    public func showHeadingActions(at location: Int, isHeading: Bool) {
         let actionsController = ActionsViewController()
+        actionsController.title = L10n.Document.Heading.title
+
+        if isHeading == false {
+            actionsController.addAction(icon: nil, title: L10n.Document.Heading.toHeading) { viewController in
+                viewController.dismiss(animated: true, completion: {
+                    self.viewModel.showGlobalCaptureEntry()
+                    let lastSelectedRange = self.textView.selectedRange
+                    let result = self.viewModel.performAction(EditAction.convertToHeading(location), textView: self.textView)
+                    self.textView.selectedRange = lastSelectedRange.offset(result.delta)
+                })
+            }
+        } else {
+            actionsController.addAction(icon: nil, title: L10n.Document.Heading.toParagraphContent) { viewController in
+                viewController.dismiss(animated: true, completion: {
+                    self.viewModel.showGlobalCaptureEntry()
+                    let lastSelectedRange = self.textView.selectedRange
+                    let result = self.viewModel.performAction(EditAction.convertHeadingToParagraph(location), textView: self.textView)
+                    self.textView.selectedRange = lastSelectedRange.offset(result.delta)
+                })
+            }
+        }
         
-        actionsController.addAction(icon: nil, title: L10n.Document.Heading.toHeading) { viewController in
-            viewController.dismiss(animated: true, completion: {
+        actionsController.addAction(icon: nil, title: L10n.Document.Heading.addNewEntryAtBegining) { viewController in
+            viewController.dismiss(animated: true) {
                 self.viewModel.showGlobalCaptureEntry()
-                let lastSelectedRange = self.textView.selectedRange
-                let result = self.viewModel.performAction(EditAction.convertToHeading(location), textView: self.textView)
-                self.textView.selectedRange = lastSelectedRange.offset(result.delta)
-            })
+                let result = self.viewModel.performAction(EditAction.addSameLevelHeadingAbove(0), textView: self.textView)
+                self.textView.selectedRange = NSRange(location: result.range!.upperBound - 1, length: 0)
+            }
         }
         
         actionsController.addAction(icon: nil, title: L10n.Document.Heading.addHeadingAboveIt) { viewController in
@@ -639,6 +595,14 @@ extension DocumentEditorViewController {
             viewController.dismiss(animated: true) {
                 self.viewModel.showGlobalCaptureEntry()
                 let result = self.viewModel.performAction(EditAction.addSubHeadingAfterCurrentHeading(location), textView: self.textView)
+                self.textView.selectedRange = NSRange(location: result.range!.upperBound - 1, length: 0) // move one position back, so user can start type heading text
+            }
+        }
+        
+        actionsController.addAction(icon: nil, title: L10n.Document.Heading.addNewEntryAtEnd) { viewController in
+            viewController.dismiss(animated: true) {
+                self.viewModel.showGlobalCaptureEntry()
+                let result = self.viewModel.performAction(EditAction.addHeadingAtBottom, textView: self.textView)
                 self.textView.selectedRange = NSRange(location: result.range!.upperBound - 1, length: 0) // move one position back, so user can start type heading text
             }
         }

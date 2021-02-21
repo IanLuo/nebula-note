@@ -1,12 +1,12 @@
 * TODO Start Writing
-x3 note use *Markdown* like syntax，supports rich text marks, list, checkbox, quote block, code block, multiple types of attachments.
+Delta Note use a *Markdown* like syntax，supports rich text marks, list, checkbox, quote block, code block, multiple types of attachments.
 #date#
 ** Paragraph
 Text under a heading belong to a paragraph.
 It's a good habit to put contents into paragraphs, because paragraph have tags, status, priority, schedule agenda against it, you can move paragraph around as a whole, and you can also fold a paragraph etc.
 
 Text above any heading is free text, it's totally ok to use free text.
-The content of x3 note is text based, you can drag file around in *files* folder.
+The content of Delta Note is text based, you can drag file around in *files* folder.
 
 Use *Heading* button to create a new title, which is one of the most used button, the icon of title button is a *Capital H*.
 ** Folding
@@ -14,12 +14,12 @@ If there's any character under a heading, you can fold it and only show the head
 ** Attachments
 Supports picture, audio, video, link, location, sketch as attachments.
 * Capture inspirations
-We put inspirations as attachments in x3 note, you can capture those ideas at anytime, in any form, manage them later, and use them when needed.
+We put inspirations as attachments in Delta Note, you can capture those ideas at anytime, in any form, manage them later, and use them when needed.
 ** Capture, check them later
-While using x3 note，a *capture* button is always accessible at your current view, when you are editing, it's in the actions button, in other view its at bottom right corner.
+While using Delta Note，a *capture* button is always accessible at your current view, when you are editing, it's in the actions button, in other view its at bottom right corner.
 Inspiration ideas are categorized on kept in the *Ideas*.
-** Share to x3 note
-When using any other app that have a share button, can share to x3 note, and the item shared can be find in the *Ideas* in x3 note.
+** Share to Delta Note
+When using any other app that have a share button, can share to Delta Note, and the item shared can be find in the *Ideas* in Delta Note.
 * Arrange agenda
 On any paragraph, by adding *Status* or *Date and time*, will make this paragraph managed by agenda, will be shown on the *Agenda* view, and multiple shortcuts below *Agenda* tab at left.
 ** Status

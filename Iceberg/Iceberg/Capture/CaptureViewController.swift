@@ -21,8 +21,7 @@ public class CaptureViewController: UIViewController, TransitionProtocol {
     public weak var delegate: CaptureViewControllerDelegate?
     
     private let _transition: UIViewControllerTransitioningDelegate = {
-        let animator = MoveInAnimtor()
-        animator.from = .right
+        let animator = MoveToAnimtor()
         let transition = FadeBackgroundTransition(animator: animator)
         return transition
     }()
@@ -42,20 +41,18 @@ public class CaptureViewController: UIViewController, TransitionProtocol {
     
     public let contentView: UIView = UIView()
     
-    private lazy var tableView: UITableView = {
-        let tableView = UITableView()
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.separatorStyle = .none
-        tableView.register(CaptureCell.self, forCellReuseIdentifier: CaptureCell.reuseIdentifier)
-        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: Layout.edgeInsets.bottom + 60, right: 0)
+    private lazy var collectionView: UICollectionView = {
+        let flowLayout = UICollectionViewFlowLayout()
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        collectionView.register(CaptureItemCell.self, forCellWithReuseIdentifier: CaptureItemCell.reuseIdentifier)
         
-        tableView.interface({ (me, theme) in
-            let me = me as! UITableView
-            me.backgroundColor = theme.color.background1
-            me.setBorder(position: .left, color: theme.color.background2, width: 0.5)
+        collectionView.interface({ (me, theme) in
+            let me = me as! UICollectionView
+            me.backgroundColor = theme.color.background2
         })
-        return tableView
+        return collectionView
     }()
     
     private lazy var cancelButton: RoundButton = {
@@ -79,19 +76,20 @@ public class CaptureViewController: UIViewController, TransitionProtocol {
         super.viewDidLoad()
         self.view.addSubview(self.contentView)
         
-        self.contentView.backgroundColor = InterfaceTheme.Color.background1
+        self.contentView.backgroundColor = InterfaceTheme.Color.background2
+        self.contentView.centerAnchors(position: [.centerX, .centerY], to: self.view)
+        self.collectionView.sizeAnchor(width: 300, height: 400)
         
-        self.contentView.addSubview(self.tableView)
+        self.contentView.roundConer(radius: Layout.cornerRadius)
+        
+        self.contentView.addSubview(self.collectionView)
         self.contentView.addSubview(self.cancelButton)
         
-        self.contentView.sideAnchor(for: [.bottom, .top, .right], to: self.view, edgeInset: 0)
-        self.contentView.sizeAnchor(width: 200)
-        
-        self.tableView.allSidesAnchors(to: self.contentView, edgeInset: 0, considerSafeArea: true)
-        
-        self.cancelButton.sideAnchor(for: .bottom, to: self.contentView, edgeInset: 30, considerSafeArea: true)
+        self.collectionView.sideAnchor(for: [.top, .left, .right], to: self.contentView, edgeInset: 0)
+        self.collectionView.columnAnchor(view: self.cancelButton, space: 10, alignment: .centerX)
+        self.cancelButton.sideAnchor(for: .bottom, to: self.contentView, edgeInset: 10, considerSafeArea: true)
         self.cancelButton.centerAnchors(position: .centerX, to: self.contentView)
-        self.cancelButton.sizeAnchor(width: 60)
+        self.cancelButton.sizeAnchor(width: 44)
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(cancel))
         tap.delegate = self
@@ -117,19 +115,20 @@ extension CaptureViewController: UIGestureRecognizerDelegate {
     }
 }
 
-extension CaptureViewController: UITableViewDelegate, UITableViewDataSource {
-    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+extension CaptureViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let kind = Attachment.Kind.allCases[indexPath.row]
         self.delegate?.didSelect(attachmentKind: kind)
         self.addActivity(for: kind)
+        collectionView.deselectItem(at: indexPath, animated: true)
     }
     
-    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return Attachment.Kind.allCases.count
     }
     
-    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: CaptureCell.reuseIdentifier, for: indexPath) as! CaptureCell
+    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CaptureItemCell.reuseIdentifier, for: indexPath) as! CaptureItemCell
         
         let attachmentKind = Attachment.Kind.allCases[indexPath.row]
         cell.iconView.image = attachmentKind.icon
@@ -140,6 +139,19 @@ extension CaptureViewController: UITableViewDelegate, UITableViewDataSource {
         }
         
         return cell
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 0
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 0
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let width = collectionView.bounds.width / 3
+        return CGSize(width: width, height: width * 1.2)
     }
 }
 
@@ -169,8 +181,8 @@ extension Attachment.Kind {
     }
 }
 
-private class CaptureCell: UITableViewCell {
-    internal static let reuseIdentifier = "CaptureCell"
+private class CaptureItemCell: UICollectionViewCell {
+    internal static let reuseIdentifier = "CaptureItemCell"
     
     internal let iconView: UIImageView = {
         let imageView = UIImageView()
@@ -195,31 +207,31 @@ private class CaptureCell: UITableViewCell {
         return imageView
     }()
     
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         
         self.setupUI()
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     private func setupUI() {
         self.interface { (me, theme) in
-            me.backgroundColor = InterfaceTheme.Color.background1
+            me.backgroundColor = InterfaceTheme.Color.background2
         }
         
         self.contentView.addSubview(self.iconView)
         self.contentView.addSubview(self.titleLabel)
         self.contentView.addSubview(self.memberFunctionIconView)
         
-        self.iconView.sideAnchor(for: .left, to: self.contentView, edgeInset:  Layout.innerViewEdgeInsets.left)
-        self.iconView.sizeAnchor(width: 18, height: 18)
-        self.iconView.centerAnchors(position: .centerY, to: self.contentView)
-        self.iconView.rowAnchor(view: self.titleLabel, space: 20)
-        self.titleLabel.sideAnchor(for: .top, to: self.contentView, edgeInset: 20)
-        self.titleLabel.centerAnchors(position: .centerY, to: self.contentView)
+        self.iconView.sideAnchor(for: .top, to: self.contentView, edgeInset:  Layout.innerViewEdgeInsets.top)
+        self.iconView.sizeAnchor(width: 30, height: 30)
+        self.iconView.centerAnchors(position: .centerX, to: self.contentView)
+        self.iconView.columnAnchor(view: self.titleLabel, space: 10, alignment: .centerX)
+        self.titleLabel.sideAnchor(for: .bottom, to: self.contentView, edgeInset: 20)
+        self.titleLabel.centerAnchors(position: .centerX, to: self.contentView)
 
         self.memberFunctionIconView.sideAnchor(for: .right, to: self.contentView, edgeInset: 10)
         self.memberFunctionIconView.centerAnchors(position: .centerY, to: self.contentView)
@@ -227,19 +239,24 @@ private class CaptureCell: UITableViewCell {
         self.memberFunctionIconView.image = Asset.Assets.proLabel.image
     }
     
-    override func setHighlighted(_ highlighted: Bool, animated: Bool) {
-        if highlighted {
-            self.backgroundColor = InterfaceTheme.Color.background2
-        } else {
-            self.backgroundColor = InterfaceTheme.Color.background1
+    override var isHighlighted: Bool {
+        didSet {
+            if isHighlighted {
+                self.backgroundColor = InterfaceTheme.Color.background2
+            } else {
+                self.backgroundColor = InterfaceTheme.Color.background1
+            }
         }
     }
     
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        if selected {
-            self.backgroundColor = InterfaceTheme.Color.background2
-        } else {
-            self.backgroundColor = InterfaceTheme.Color.background1
+    override var isSelected: Bool {
+        didSet {
+            if isSelected {
+                self.backgroundColor = InterfaceTheme.Color.background2
+            } else {
+                self.backgroundColor = InterfaceTheme.Color.background1
+            }
         }
     }
+    
 }

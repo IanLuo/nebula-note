@@ -46,6 +46,7 @@ public class BrowserCellIcon: BrowserCell, BrowserCellProtocol {
     
     private func setupUI() {
         self.backgroundColor = .clear
+        self.enableHover(on: self.container, hoverColor: isMac ? InterfaceTheme.Color.background3 : InterfaceTheme.Color.background2)
         
         self.container.interface { (me, theme) in
             me.backgroundColor = theme.color.background2

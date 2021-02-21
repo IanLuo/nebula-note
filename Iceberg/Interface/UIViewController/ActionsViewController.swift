@@ -154,7 +154,7 @@ open class ActionsViewController: UIViewController, TransitionProtocol {
                 self.popoverPresentationController?.sourceRect = CGRect(x: self.view.bounds.width / 2, y: self.view.bounds.height / 2, width: 0, height: 0)
             }
             let size = self.view.systemLayoutSizeFitting(CGSize(width: self.view.bounds.width, height: 0))
-            self.preferredContentSize = CGSize(width: 300, height: size.height)
+            self.preferredContentSize = CGSize(width: 350, height: size.height)
         }
     }
     

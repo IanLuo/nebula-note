@@ -39,6 +39,7 @@ public enum SettingsError: Error {
         case didShowUserGuide
         case openedDocuments
         case favoriteDocuments
+        case browserCellMode
         
         public func set(_ value: Any, completion: @escaping () -> Void) {
             Constants.store.set(value: value, key: self.rawValue, completion: completion)

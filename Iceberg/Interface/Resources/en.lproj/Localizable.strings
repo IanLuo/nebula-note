@@ -59,6 +59,8 @@
 "document.heading.addHeadingAboveIt" = "Create section entry above";
 "document.heading.addHeadingBelowIt" = "Create section entry below";
 "document.heading.addSubHeadingBelow" = "Create sub section entry";
+"document.heading.addNewEntryAtBegining" = "Insert new section at top";
+"document.heading.addNewEntryAtEnd" = "Append new section at bottom";
 "document.heading.toHeading" = "Convert to section heading";
 "document.heading.unfold" = "Unfold this section";
 "document.heading.fold" = "Fold this section";
@@ -198,6 +200,8 @@
 "setting.planning.unfinish.title" = "Unfinish";
 "setting.planning.finish.title" = "Finish";
 
+"setting.browser.style.title" = "Default Browser Style";
+
 "setting.editor.title" = "Editor";
 "setting.editor.foldAllWhenOpen" = "Fold all entries when open";
 
@@ -208,8 +212,8 @@
 "setting.manageAttachment.choose.title" = "All attachments";
 "setting.manageAttachment.delete.title" = "Delete selected attachments?";
 
-"setting.feedback.title" = "How do you think of x3 note?";
-"setting.feedback.rate" = "I want to give x3 note a 5 star";
+"setting.feedback.title" = "How do you think of Delta Note?";
+"setting.feedback.rate" = "I want to give Delta Note a 5 star";
 "setting.feedback.promot" = "I want to share to others";
 "setting.feedback.forum" = "I want to join the forum";
 "setting.feedback" = "Feedback";

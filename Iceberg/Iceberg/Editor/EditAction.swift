@@ -42,6 +42,7 @@ public enum EditAction {
     case addSameLevelHeadingAbove(Int)
     case addSameLevelHeadingAfterCurrentHeading(Int)
     case addSubHeadingAfterCurrentHeading(Int)
+    case addHeadingAtBottom
     case deleteSection(Int)
     case addFileLink(NSRange, URL)
     case setProperty(Int, [String: String])
@@ -118,6 +119,8 @@ public enum EditAction {
             return AddDocumentLinkCommpandComposer(range: range, url: url)
         case .setProperty(let location, let pair):
             return SetHeadingPropertyComposer(location: location, property: pair)
+        case .addHeadingAtBottom:
+            return AddNewHeadingAtBottomCommandComposer()
         }
     }
 }

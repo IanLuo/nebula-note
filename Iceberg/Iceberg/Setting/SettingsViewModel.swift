@@ -109,6 +109,14 @@ public class SettingsViewModel: ViewModelProtocol {
         return self.dependency.settingAccessor.allPlannings
     }
     
+    public var browserStyles: [String] {
+        return BrowserViewModel.allCases.map { $0.title }
+    }
+    
+    public var currentBrowserStyle: String {
+        return SettingsAccessor.shared.getSetting(item: .browserCellMode, type: String.self) ?? BrowserViewModel.icon.title
+    }
+    
     public var defaultPlannings: [String] {
         return self.dependency.settingAccessor.defaultPlannings
     }

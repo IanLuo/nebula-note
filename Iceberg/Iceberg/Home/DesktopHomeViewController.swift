@@ -129,12 +129,16 @@ public class DesktopHomeViewController: UIViewController {
     private func setupToolBar() {
         let stackView = UIStackView()
         stackView.distribution = .equalSpacing
+        stackView.alignment = .center
         
         let ideasButton = UIButton()
         ideasButton.interface { (me, interface) in
             let ideasButton = me as! UIButton
             ideasButton.setImage(Asset.SFSymbols.lightbulb.image.fill(color: interface.color.interactive), for: .normal)
+            ideasButton.setBackgroundImage(UIImage.create(with: interface.color.spotlight, size: .singlePoint), for: .normal)
         }
+        ideasButton.sizeAnchor(width: 40, height: 40)
+        ideasButton.roundConer(radius: Layout.cornerRadius)
         ideasButton.rx.tap.subscribe(onNext: { [weak ideasButton] in
             self.coordinator?.showCaptureEntrance(at: ideasButton)
         }).disposed(by: self.disposeBag)
@@ -174,6 +178,7 @@ public class DesktopHomeViewController: UIViewController {
         
         let otherStack = UIStackView()
         otherStack.spacing = 20
+        otherStack.alignment = .center
         otherStack.addArrangedSubview(ideasButton)
         
         stackView.addArrangedSubview(actionsStack)
@@ -293,7 +298,7 @@ public class DesktopHomeViewController: UIViewController {
                     viewController.present(activityVC, animated: true, completion: nil)
                 }
             case 2:
-                UIApplication.shared.open(URL(string: "https://forum.x3note.site/")!, options: [:], completionHandler: nil)
+                UIApplication.shared.open(URL(string: "https://forum.deltanote.ink/")!, options: [:], completionHandler: nil)
             case 3:
                 let appId = "11641"
                 let appKey = "k2q6pHh2ekAbQjELagm2VZ3rHJFHEj3bl1GI529FjaDO29hfwLcn5sJ9jBSVA24Q"

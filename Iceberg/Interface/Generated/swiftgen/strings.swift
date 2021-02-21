@@ -511,6 +511,10 @@ public enum L10n {
       public static let addHeadingAboveIt = L10n.tr("Localizable", "document.heading.addHeadingAboveIt")
       /// Create section entry below
       public static let addHeadingBelowIt = L10n.tr("Localizable", "document.heading.addHeadingBelowIt")
+      /// Insert new section at top
+      public static let addNewEntryAtBegining = L10n.tr("Localizable", "document.heading.addNewEntryAtBegining")
+      /// Append new section at bottom
+      public static let addNewEntryAtEnd = L10n.tr("Localizable", "document.heading.addNewEntryAtEnd")
       /// Create sub section entry
       public static let addSubHeadingBelow = L10n.tr("Localizable", "document.heading.addSubHeadingBelow")
       /// Fold this section
@@ -883,6 +887,12 @@ public enum L10n {
         public static let title = L10n.tr("Localizable", "setting.alert.icloudIsNotEnabled.title")
       }
     }
+    public enum Browser {
+      public enum Style {
+        /// Default Browser Style
+        public static let title = L10n.tr("Localizable", "setting.browser.style.title")
+      }
+    }
     public enum Editor {
       /// Fold all entries when open
       public static let foldAllWhenOpen = L10n.tr("Localizable", "setting.editor.foldAllWhenOpen")
@@ -900,9 +910,9 @@ public enum L10n {
       public static let forum = L10n.tr("Localizable", "setting.feedback.forum")
       /// I want to share to others
       public static let promot = L10n.tr("Localizable", "setting.feedback.promot")
-      /// I want to give x3 note a 5 star
+      /// I want to give Delta Note a 5 star
       public static let rate = L10n.tr("Localizable", "setting.feedback.rate")
-      /// How do you think of x3 note?
+      /// How do you think of Delta Note?
       public static let title = L10n.tr("Localizable", "setting.feedback.title")
     }
     public enum General {
