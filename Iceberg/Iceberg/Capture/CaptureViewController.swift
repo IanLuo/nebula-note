@@ -31,8 +31,12 @@ public class CaptureViewController: UIViewController, TransitionProtocol {
     public init() {
         super.init(nibName: nil, bundle: nil)
         
-        self.modalPresentationStyle = .overCurrentContext
-        self.transitioningDelegate = self._transition
+        if isMacOrPad {
+            self.modalPresentationStyle = UIModalPresentationStyle.popover
+        } else {
+            self.modalPresentationStyle = .custom
+            self.transitioningDelegate = self._transition
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -70,7 +74,17 @@ public class CaptureViewController: UIViewController, TransitionProtocol {
         return button
     }()
     
-    public var fromView: UIView?
+    public var fromView: UIView? {
+        didSet {
+            if isMacOrPad {
+                self.popoverPresentationController?.sourceView = fromView
+                
+                if let fromView = fromView {
+                    self.popoverPresentationController?.sourceRect = CGRect(origin: CGPoint(x: fromView.frame.midX, y: fromView.frame.midY), size: .zero)
+                }
+            }
+        }
+    }
     
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -94,6 +108,16 @@ public class CaptureViewController: UIViewController, TransitionProtocol {
         let tap = UITapGestureRecognizer(target: self, action: #selector(cancel))
         tap.delegate = self
         self.view.addGestureRecognizer(tap)
+        
+        if isMacOrPad {
+            self.cancelButton.isHidden = true
+            if self.fromView == nil {
+                self.popoverPresentationController?.sourceView = self.view
+                self.popoverPresentationController?.sourceRect = CGRect(x: self.view.bounds.width / 2, y: self.view.bounds.height / 2, width: 0, height: 0)
+            }
+            let size = self.view.systemLayoutSizeFitting(CGSize(width: self.view.bounds.width, height: 0))
+            self.preferredContentSize = CGSize(width: 350, height: size.height)
+        }
     }
     
     @objc func cancel() {
@@ -218,6 +242,8 @@ private class CaptureItemCell: UICollectionViewCell {
     }
     
     private func setupUI() {
+        self.enableHover(on: self.contentView, hoverColor: InterfaceTheme.Color.background3)
+        
         self.interface { (me, theme) in
             me.backgroundColor = InterfaceTheme.Color.background2
         }
