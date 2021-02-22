@@ -114,12 +114,12 @@ open class ModalFormViewController: TransitionViewController {
     public init() {
         super.init(nibName: nil, bundle: nil)
         
-        self.transitioningDelegate = self._transitionDelegate
         
         if isMacOrPad {
             self.modalPresentationStyle = UIModalPresentationStyle.popover
         } else {
-            self.modalPresentationStyle = .overCurrentContext
+            self.transitioningDelegate = self._transitionDelegate
+            self.modalPresentationStyle = .custom
         }
     }
     
