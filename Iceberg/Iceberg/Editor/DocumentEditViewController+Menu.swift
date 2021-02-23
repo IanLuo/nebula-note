@@ -515,7 +515,7 @@ extension DocumentEditorViewController {
                     }
                     
                     comfirm.present(from: self,
-                                    at: self.view,
+                                    at: self.textView,
                                     location: self.textView.rect(forStringRange: self.textView.selectedRange)?.origin)
                 })
             }
@@ -693,5 +693,51 @@ extension DocumentEditorViewController {
 
     public func showHeadingActionsView(at location: Int) {
         print(self.viewModel.getProperties(heading: location))
+    }
+    
+    public func showTemplatesPicker(location: Int) {
+        let selector = SelectorViewController()
+        selector.addItem(title: L10n.Document.Edit.Template.Date.ymd)
+        selector.addItem(title: L10n.Document.Edit.Template.Date.ymd2)
+        selector.addItem(title: L10n.Document.Edit.Template.Date.ymd3)
+        
+        selector.onCancel = {
+            $0.dismiss(animated: true) {
+                self.viewModel.showGlobalCaptureEntry()
+            }
+        }
+        
+        selector.onSelection = { index, viewController in
+            
+            viewController.dismiss(animated: true) {
+                var string = ""
+                
+                switch index {
+                case 0:
+                    let formatter = DateFormatter()
+                    formatter.dateFormat = "yyyy MM dd"
+                    string = formatter.string(from: Date())
+                case 1:
+                    let formatter = DateFormatter()
+                    formatter.dateFormat = "yyyy/MM/dd"
+                    string = formatter.string(from: Date())
+                default:
+                    let formatter = DateFormatter()
+                    formatter.dateFormat = "yyyy-MM-dd"
+                    string = formatter.string(from: Date())
+                }
+                
+                let result = self.viewModel.performAction(EditAction.insertText(string, location), textView: self.textView)
+                self.textView.selectedRange = NSRange(location: location + result.delta, length: 0)
+            }
+        }
+        
+        if let location = self.textView.rect(forStringRange: self.textView.selectedRange) {
+            selector.present(from: self, at: self.textView, location: location.center)
+        } else if let headingRange = self.viewModel.heading(at: self.textView.selectedRange.location)?.range, let location = self.textView.rect(forStringRange: headingRange){
+            selector.present(from: self, at: self.textView, location: location.center)
+        } else {
+            selector.present(from: self)
+        }
     }
 }

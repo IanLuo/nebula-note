@@ -467,6 +467,12 @@ public enum L10n {
         /// Use as cover
         public static let useAsCover = L10n.tr("Localizable", "document.edit.image.use-as-cover")
       }
+      public enum Insert {
+        public enum Tempalte {
+          /// Insert template
+          public static let title = L10n.tr("Localizable", "document.edit.insert.tempalte.title")
+        }
+      }
       public enum RemoteEditingArrivedKeepRemote {
         /// Keep remote one
         public static let one = L10n.tr("Localizable", "document.edit.remote_editing_arrived_keep_remote.one")
@@ -492,6 +498,16 @@ public enum L10n {
         public static let title = L10n.tr("Localizable", "document.edit.tag.title")
         /// Don't use special characters in tag
         public static let validation = L10n.tr("Localizable", "document.edit.tag.validation")
+      }
+      public enum Template {
+        public enum Date {
+          /// Year Month Day
+          public static let ymd = L10n.tr("Localizable", "document.edit.template.date.ymd")
+          /// Year/Month/Day
+          public static let ymd2 = L10n.tr("Localizable", "document.edit.template.date.ymd2")
+          /// Year-Month-Day
+          public static let ymd3 = L10n.tr("Localizable", "document.edit.template.date.ymd3")
+        }
       }
     }
     public enum Export {

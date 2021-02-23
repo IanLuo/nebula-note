@@ -82,6 +82,8 @@ public enum NormalAction: String, ToolbarActionProtocol, DocumentActon {
     case toggleFoldOrUnfold
     case foldOthersExcept
     
+    case template
+    
     public var title: String { return self.rawValue }
     
     public var icon: UIImage {
@@ -146,6 +148,8 @@ public enum NormalAction: String, ToolbarActionProtocol, DocumentActon {
             return Asset.SFSymbols.squareAndArrowDown.image
         case .headingProperty:
             return Asset.SFSymbols.sliderHorizontal3.image
+        case .template:
+            return Asset.SFSymbols.bookClosed.image
         case .toggleFoldOrUnfold:
             return Asset.SFSymbols.star.image // not using on toolbar, the the icon is wrong
         case .foldOthersExcept:

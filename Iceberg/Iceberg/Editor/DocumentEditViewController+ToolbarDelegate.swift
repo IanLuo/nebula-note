@@ -175,6 +175,8 @@ extension DocumentEditorViewController: DocumentEditToolbarDelegate {
                     self.showFileLinkChoose(location: currentLocation, linkRange: nil)
                 case .save:
                     self.viewModel.save {}
+                case .template:
+                    self.showTemplatesPicker(location: currentLocation)
                 default: break
                 }
             }

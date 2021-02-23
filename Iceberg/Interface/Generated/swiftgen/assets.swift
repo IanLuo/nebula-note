@@ -57,6 +57,7 @@ public enum Asset {
     public static let bell = ImageAsset(name: "bell")
     public static let bellSlash = ImageAsset(name: "bell.slash")
     public static let bold = ImageAsset(name: "bold")
+    public static let bookClosed = ImageAsset(name: "book.closed")
     public static let calendarBadgeClock = ImageAsset(name: "calendar.badge.clock")
     public static let calendarBadgeExclamationmark = ImageAsset(name: "calendar.badge.exclamationmark")
     public static let calendarBadgeMinus = ImageAsset(name: "calendar.badge.minus")
