@@ -727,7 +727,7 @@ extension DocumentEditorViewController {
                     string = formatter.string(from: Date())
                 }
                 
-                let result = self.viewModel.performAction(EditAction.insertText(string, location), textView: self.textView)
+                let result = self.viewModel.performAction(EditAction.replaceText(NSRange(location: location, length: 0), string), textView: self.textView)
                 self.textView.selectedRange = NSRange(location: location + result.delta, length: 0)
             }
         }

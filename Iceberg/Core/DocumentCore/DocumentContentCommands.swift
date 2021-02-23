@@ -745,7 +745,7 @@ public class MoveHeadingDownCommandComposer: DocumentContentCommandComposer {
 }
 
 // MARK: - InsertTextToHeadingCommand
-public class InsertTextToHeadingCommandComposer: DocumentContentCommandComposer {
+public class AppendTextToParagraphCommandComposer: DocumentContentCommandComposer {
     let location: Int
     let textToInsert: String
     public init(location: Int, textToInsert: String) {
