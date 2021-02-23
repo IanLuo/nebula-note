@@ -546,26 +546,6 @@ extension DocumentEditorViewController {
     public func showHeadingActions(at location: Int, isHeading: Bool) {
         let actionsController = ActionsViewController()
         actionsController.title = L10n.Document.Heading.title
-
-        if isHeading == false {
-            actionsController.addAction(icon: nil, title: L10n.Document.Heading.toHeading) { viewController in
-                viewController.dismiss(animated: true, completion: {
-                    self.viewModel.showGlobalCaptureEntry()
-                    let lastSelectedRange = self.textView.selectedRange
-                    let result = self.viewModel.performAction(EditAction.convertToHeading(location), textView: self.textView)
-                    self.textView.selectedRange = lastSelectedRange.offset(result.delta)
-                })
-            }
-        } else {
-            actionsController.addAction(icon: nil, title: L10n.Document.Heading.toParagraphContent) { viewController in
-                viewController.dismiss(animated: true, completion: {
-                    self.viewModel.showGlobalCaptureEntry()
-                    let lastSelectedRange = self.textView.selectedRange
-                    let result = self.viewModel.performAction(EditAction.convertHeadingToParagraph(location), textView: self.textView)
-                    self.textView.selectedRange = lastSelectedRange.offset(result.delta)
-                })
-            }
-        }
         
         actionsController.addAction(icon: nil, title: L10n.Document.Heading.addNewEntryAtBegining) { viewController in
             viewController.dismiss(animated: true) {
