@@ -106,8 +106,6 @@ public class BrowserFolderViewController: UIViewController {
         
         self.navigationItem.searchController = self.searchController
         
-        switch viewModel.mode {
-        case .browser, .chooser:
         // bind add document button
         let createDocumentBarButtonItem = UIBarButtonItem(image: Asset.SFSymbols.docBadgePlus.image, style: .plain, target: nil, action: nil)
         createDocumentBarButtonItem.rx
@@ -115,6 +113,12 @@ public class BrowserFolderViewController: UIViewController {
             .map { _ in L10n.Browser.Title.untitled } // use default documentname
             .bind(to: self.viewModel.input.addDocument)
             .disposed(by: self.disposeBag)
+        self.interface { (me, theme) in
+            createDocumentBarButtonItem.tintColor = theme.color.spotlight
+        }
+        
+        switch viewModel.mode {
+        case .browser, .chooser:
             
             let actionsBarButton = UIButton().interface { (me, theme) in
                 let button = me as! UIButton
@@ -133,10 +137,11 @@ public class BrowserFolderViewController: UIViewController {
                 self.navigationItem.rightBarButtonItems = [actionsBarButtonItem]
             }
         
-        self.interface { (me, theme) in
-            createDocumentBarButtonItem.tintColor = theme.color.spotlight
-        }
-        case .favorite: break
+        
+        case .favorite:
+            if viewModel.levelsToRoot > 0 {
+                self.navigationItem.rightBarButtonItem = createDocumentBarButtonItem
+            }
         }
                 
         self._setupObserver()
