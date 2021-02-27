@@ -31,11 +31,12 @@ public class HeadingsOutlineViewController: SelectorViewController {
     public init(viewModel: DocumentEditorViewModel) {
         self.viewModel = viewModel
         super.init(heightRatio: 0.8)
+        
         self.delegate = self
         viewModel.delegate = self
         self.emptyDataText = L10n.Document.Outlet.noHeading        
     }
-    
+        
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         

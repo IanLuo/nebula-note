@@ -430,8 +430,8 @@ extension DocumentEditorViewController {
         
         let isFolded = self.viewModel.isSectionFolded(at: location)
         let foldTitle = isFolded ? L10n.Document.Heading.unfold : L10n.Document.Heading.fold
-        let icon = isFolded ? Asset.SFSymbols.chevronUp.image : Asset.SFSymbols.chevronDown.image
-        actionsController.addAction(icon: icon, title: foldTitle) { viewController in
+
+        actionsController.addAction(icon: nil, title: foldTitle) { viewController in
             viewController.dismiss(animated: true, completion: {
                 self.viewModel.showGlobalCaptureEntry()
                 self.viewModel.foldOrUnfold(location: location)

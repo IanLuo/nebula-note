@@ -1154,6 +1154,8 @@ extension OutlineTextStorage: OutlineParserDelegate {
         
         let applyingRange = range ?? heading.paragraphRange
         
+        guard applyingRange.upperBound <= self.string.count else { return }
+        
         (self.string as NSString)
             .enumerateSubstrings(
                 in: applyingRange,
