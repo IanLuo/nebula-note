@@ -31,7 +31,7 @@ public struct OneDrive: Uploadable, OAuth2Connectable {
     
     private static let tenant: String = "consumers"
     
-    private let folderName = "Delta Note"
+    private let folderName = "Nebula"
     
     public let oauth = OAuth2Swift(consumerKey: "46f3d8ed-65a5-4c85-a105-1676b8cea77d",
                                     consumerSecret: "",

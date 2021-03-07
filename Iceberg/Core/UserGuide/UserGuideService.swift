@@ -12,16 +12,16 @@ import Interface
 import MHWebViewController
 
 public enum HelpPage: String {
-    case allUserGuide = "https://forum.deltanote.ink/c/5"
-    case editor = "https://forum.deltanote.ink/t/12"
-    case capture = "https://forum.deltanote.ink/t/13"
-    case documentManagement = "https://forum.deltanote.ink/t/14"
-    case entrance = "https://forum.deltanote.ink/t/15"
-    case dateAndTime = "https://forum.deltanote.ink/t/16"
-    case agenda = "https://forum.deltanote.ink/t/17"
-    case membership = "https://forum.deltanote.ink/t/19";
-    case syntax = "https://forum.deltanote.ink/t/18";
-    case privacyPolicy = "https://forum.deltanote.ink/t/32";
+    case allUserGuide = "https://forum.nebulaapp.net/c/5"
+    case editor = "https://forum.nebulaapp.net/t/12"
+    case capture = "https://forum.nebulaapp.net/t/13"
+    case documentManagement = "https://forum.nebulaapp.net/t/14"
+    case entrance = "https://forum.nebulaapp.net/t/15"
+    case dateAndTime = "https://forum.nebulaapp.net/t/16"
+    case agenda = "https://forum.nebulaapp.net/t/17"
+    case membership = "https://forum.nebulaapp.net/t/19";
+    case syntax = "https://forum.nebulaapp.net/t/18";
+    case privacyPolicy = "https://forum.nebulaapp.net/t/32";
     case termsOfService = "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/";
     
 //    public func open() {
@@ -60,7 +60,7 @@ public struct UserGuideService {
         return Observable.combineLatest(createActions)
     }
     
-    private let zhFiles: [String] = ["开始使用", "一句话功能介绍"]
+    private let zhFiles: [String] = ["开始使用", "功能介绍"]
     private let enFiles: [String] = ["Start Writing", "Function List"]
     private let fileExtension: String = "org"
     

@@ -35,7 +35,7 @@ public class AttachmentManagerCell: UICollectionViewCell {
     
     public let imageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.contentMode = .center
+        imageView.contentMode = .scaleAspectFit
         imageView.clipsToBounds = true
         imageView.layer.borderColor = InterfaceTheme.Color.background2.cgColor
         imageView.layer.borderWidth = 1

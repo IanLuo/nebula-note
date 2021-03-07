@@ -75,11 +75,11 @@ static NSMutableDictionary *attachmentMap;
         unavailableAttachment.bounds = CGRectMake(0, 0, 10, 10);
         
         checkboxCheckedAttachment = [[NSTextAttachment alloc] init];
-        checkboxCheckedAttachment.image = [[[UIImage imageNamed: @"checkmark.square" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil] fillWithColor:[[InterfaceTheme Color]spotlight]] insets:UIEdgeInsetsMake(-3, -3, -3, -3)];
+        checkboxCheckedAttachment.image = [[UIImage imageNamed: @"checkmark.circle.fill" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil] fillWithColor:[[InterfaceTheme Color] spotlight]];
         checkboxCheckedAttachment.bounds = CGRectMake(0, ([[SettingsAccessor shared] lineHeight] - 17) / 2, 20, 19);
         
         checkboxUncheckedAttachment = [[NSTextAttachment alloc] init];
-        checkboxUncheckedAttachment.image = [[UIImage imageNamed: @"square" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil] fillWithColor:[[InterfaceTheme Color]spotlight]];
+        checkboxUncheckedAttachment.image = [[UIImage imageNamed: @"circle" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil] fillWithColor:[[InterfaceTheme Color]spotlight]];
         checkboxUncheckedAttachment.bounds = CGRectMake(0, ([[SettingsAccessor shared] lineHeight] - 17) / 2, 20, 19);
         
         attachmentMap = [@{

@@ -42,7 +42,7 @@ extension UIView {
         }
     }
     
-    public func enableHover(on view: UIView, hoverColor: UIColor = InterfaceTheme.Color.spotlight) {
+    public func enableHover(on view: UIView, hoverColor: UIColor = InterfaceTheme.Color.background3) {
         class Background: UIView {
             convenience init(hoverColor: UIColor) {
                 self.init(frame: .zero)

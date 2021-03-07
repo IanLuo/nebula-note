@@ -23,6 +23,16 @@ public class BrowserCellIcon: BrowserCell, BrowserCellProtocol {
         self.enterButton.isHidden = self.cellModel?.hasSubDocuments == false
         
         super.showAsFolder(cellModel.hasSubDocuments)
+        
+        if cellModel.cover != nil {
+            self.titleLabel.layer.shadowColor = UIColor.black.cgColor
+            self.titleLabel.layer.shadowOffset = CGSize(width: 1, height: 1)
+            self.titleLabel.layer.shadowOpacity = 0.3
+            self.titleLabel.layer.shadowRadius = 1
+        } else {
+            self.titleLabel.layer.shadowOpacity = 0
+            self.titleLabel.layer.shadowColor = UIColor.clear.cgColor
+        }
     }
     
     public override init(frame: CGRect) {
@@ -100,10 +110,6 @@ public class BrowserCellIcon: BrowserCell, BrowserCellProtocol {
             let label = me as! UILabel
             label.textColor = theme.color.interactive
             label.font = theme.font.footnote
-            label.layer.shadowColor = UIColor.black.cgColor
-            label.layer.shadowOffset = CGSize(width: 1, height: 1)
-            label.layer.shadowOpacity = 0.8
-            label.layer.shadowRadius = 2
         }))
         self.titleLabel.bottomAnchor.constraint(equalTo: actionsView.topAnchor, constant: -5).isActive = true
         self.titleLabel.sideAnchor(for: [.left, .right], to: self.container, edgeInset: 10)

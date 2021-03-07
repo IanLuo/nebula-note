@@ -11,7 +11,7 @@ import Interface
 
 public struct DocumentContentCommandResult {
     public let isModifiedContent: Bool
-    public let range: NSRange?
+    public var range: NSRange?
     public let content: String?
     public let delta: Int
     
@@ -1021,9 +1021,44 @@ public class TextMarkCommandComposer: DocumentContentCommandComposer {
 
     public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
         let temp = textStorage.string.nsstring.substring(with: self.range)
-        let replacement = " " + self.markType.mark + temp + self.markType.mark
+        
+        var replacement = self.markType.mark + temp + self.markType.mark
+        
+        if self.range.location > 0
+            && !OutlineParser.RegexPattern.Element.TextMark.preCharacters.contains(textStorage.substring(self.range.moveLeftBound(by: -1).head(1))) {
+            replacement = " " + replacement
+        }
+        
+        if self.range.upperBound < textStorage.string.count
+        && !OutlineParser.RegexPattern.Element.TextMark.postCharacters.contains(textStorage.substring(self.range.moveRightBound(by: 1).tail(1))) {
+            replacement = replacement + " "
+        }
 
         return ReplaceTextCommand(range: self.range, textToReplace: replacement, textStorage: textStorage)
+    }
+}
+
+// MARK: - RemoveTextMarkCommandComposer
+public class RemoveTextMarkCommandComposer: DocumentContentCommandComposer {
+    public let markType: OutlineParser.MarkType
+    public let range: NSRange
+    
+    public init(markType: OutlineParser.MarkType, range: NSRange) {
+        self.markType = markType
+        self.range = range
+    }
+
+    public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
+        if textStorage.substring(self.range.head(1)) == self.markType.mark
+            && textStorage.substring(self.range.tail(1)) == self.markType.mark {
+            
+            let replacement = textStorage.substring(self.range.moveLeftBound(by: 1).moveRightBound(by: -1))
+            
+            return ReplaceTextCommand(range: self.range, textToReplace: replacement, textStorage: textStorage)
+        } else {
+            return NoChangeCommand()
+        }
+        
     }
 }
 

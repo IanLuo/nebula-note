@@ -20,10 +20,18 @@ extension DocumentEditorViewController: DocumentEditToolbarDelegate {
     
     private func commandCompletionActionMoveCursorForTextMark(_ oldSelectedRange: NSRange) -> (DocumentContentCommandResult) -> Void {
         return { result in
-            if result.delta > 0 {
-                self.textView.selectedRange = oldSelectedRange.offset(2)
-            } else {
-                self.textView.selectedRange = oldSelectedRange.offset(-2)
+            guard let range = result.range, let oldString = result.content else { return }
+            let newString = (self.textView.text as NSString).substring(with: range)
+            
+            // add text mark
+            if newString.count > oldString.count {
+                var range = (newString as NSString).range(of: oldString)
+                if range.location == Int.max { range.location = newString.hasPrefix(" ") ? 2 : 1 }
+                self.textView.selectedRange = NSRange(location: oldSelectedRange.location + range.location, length: oldSelectedRange.length)
+            } else { // remove text mark
+                var range = (oldString as NSString).range(of: newString)
+                if range.location == Int.max { range.location = 1 }
+                self.textView.selectedRange = NSRange(location: oldSelectedRange.location - range.location, length: oldSelectedRange.length)
             }
         }
     }

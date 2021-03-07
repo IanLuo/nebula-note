@@ -131,11 +131,11 @@ public enum SettingsError: Error {
     }
     
     public var interfaceStyle: InterfaceStyle {
-        // 支持 dark mode 的系统，默认值为自动，否则为 light
+        // 支持 dark mode 的系统，默认值为自动，否则为 dark
         if #available(iOS 13, *) {
             return InterfaceStyle(rawValue: SettingsAccessor.Item.interfaceStyle.get(String.self) ?? InterfaceStyle.auto.rawValue) ?? InterfaceStyle.auto
         } else {
-            return InterfaceStyle(rawValue: SettingsAccessor.Item.interfaceStyle.get(String.self) ?? InterfaceStyle.light.rawValue) ?? InterfaceStyle.light
+            return InterfaceStyle(rawValue: SettingsAccessor.Item.interfaceStyle.get(String.self) ?? InterfaceStyle.light.rawValue) ?? InterfaceStyle.dark
         }
     }
     

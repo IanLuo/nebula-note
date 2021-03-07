@@ -472,7 +472,29 @@ public class DocumentEditorViewModel: ViewModelProtocol {
         self.editorService.syncFoldingStatus()
     }
     
+    private func isRepeatingTextMark(markType: OutlineParser.MarkType, textView: UITextView, range: NSRange) -> Bool {
+        guard range.location > 0 && range.upperBound < textView.text.count else { return false }
+        
+        if (textView.text as NSString).substring(with: range.moveLeftBound(by: -1).head(1)) == markType.mark
+            && (textView.text as NSString).substring(with: range.moveRightBound(by: 1).tail(1)) == markType.mark {
+                return true
+        } else {
+            return false
+        }
+    }
+    
     public func performAction(_ action: EditAction, textView: UITextView) -> DocumentContentCommandResult {
+
+        // if the action is text mark, and the text mark is repeat, remove the mark
+        switch action {
+        case let .textMark(markType, range):
+            if isRepeatingTextMark(markType: markType, textView: textView, range: range) {
+                let range = range.moveLeftBound(by: -1).moveRightBound(by: 1)
+                return performCommandComposer(RemoveTextMarkCommandComposer(markType: markType, range: range), textView: textView)
+            }
+        default: break
+        }
+        
         let result = performCommandComposer(action.commandComposer, textView: textView)
         
         switch action {

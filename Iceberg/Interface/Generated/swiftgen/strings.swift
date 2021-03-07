@@ -926,9 +926,9 @@ public enum L10n {
       public static let forum = L10n.tr("Localizable", "setting.feedback.forum")
       /// I want to share to others
       public static let promot = L10n.tr("Localizable", "setting.feedback.promot")
-      /// I want to give Delta Note a 5 star
+      /// I want to give Nebula a 5 star
       public static let rate = L10n.tr("Localizable", "setting.feedback.rate")
-      /// How do you think of Delta Note?
+      /// How do you think of Nebula?
       public static let title = L10n.tr("Localizable", "setting.feedback.title")
     }
     public enum General {

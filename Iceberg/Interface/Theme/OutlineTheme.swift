@@ -133,7 +133,7 @@ public struct OutlineThemeStyle: OutlineThemeConfigProtocol {
         blockParagraph.firstLineHeadIndent = 20
         
         self.seperatorStyle = theme.color.secondaryDescriptive
-        self.headingStyle = TextStyle(font: theme.font.title, color: theme.color.interactive)
+        self.headingStyle = TextStyle(font: theme.font.body, color: theme.color.interactive)
         self.orderdedListStyle = TextStyle(font: theme.font.title, color: theme.color.secondaryDescriptive)
         self.unorderdedListStyle = TextStyle(font: theme.font.title, color: theme.color.secondaryDescriptive)
         self.checkboxStyle = TextStyle(font: theme.font.title, color: theme.color.spotlight)
@@ -152,46 +152,49 @@ public struct OutlineThemeStyle: OutlineThemeConfigProtocol {
                                            italic: TextStyle(font: theme.font.italic, color: theme.color.descriptive),
                                            underscore: TextStyle(font: theme.font.body, color: theme.color.descriptive,
                                                                  otherAttributes: [NSAttributedString.Key.underlineStyle: 1]),
-                                           strikethrought: TextStyle(font: theme.font.body, color: theme.color.descriptive,
+                                           strikethrought: TextStyle(font: theme.font.body, color: theme.color.secondaryDescriptive,
                                                                      otherAttributes: [NSAttributedString.Key.strikethroughStyle: 1]),
                                            verbatim: TextStyle(font: theme.font.body, color: theme.color.descriptive),
                                            highlight: TextStyle(font: theme.font.body, color: theme.color.spotlitTitle))
      /// 目前没有使用 button color, 因为 button 显示有问题
-       self.dateAndTimeStyle = DateAndTimeStyle(normal: ButtonStyle(buttonColor: theme.color.background3,
+       self.dateAndTimeStyle = DateAndTimeStyle(normal: ButtonStyle(buttonColor: theme.color.finished,
                                                                      textStyle: TextStyle(font: theme.font.footnote,
                                                                                           color: theme.color.finished)),
-                                                 soon: ButtonStyle(buttonColor: theme.color.background3,
+                                                 soon: ButtonStyle(buttonColor: theme.color.unfinished,
                                                                    textStyle: TextStyle(font: theme.font.footnote,
                                                                                         color: theme.color.unfinished)),
-                                                 overtime: ButtonStyle(buttonColor: theme.color.background3,
+                                                 overtime: ButtonStyle(buttonColor: theme.color.warning,
                                                                        textStyle: TextStyle(font: theme.font.footnote,
-                                                                                            color: theme.color.warning)))
-        self.planningStyle = PlanningStyle(finished: ButtonStyle(buttonColor: theme.color.background3,
+                                                                                            color: theme.color.warning)),
+                                                 finished: ButtonStyle(buttonColor: theme.color.background3,
+                                                                       textStyle: TextStyle(font: theme.font.footnote,
+                                                                                            color: theme.color.descriptive)))
+        self.planningStyle = PlanningStyle(finished: ButtonStyle(buttonColor: theme.color.finished,
                                                                  textStyle: TextStyle(font: theme.font.footnote,
-                                                                                      color: theme.color.finished)),
-                                           unfinished: ButtonStyle(buttonColor: theme.color.background3,
+                                                                                      color: theme.color.background3)),
+                                           unfinished: ButtonStyle(buttonColor: theme.color.unfinished,
                                                                    textStyle: TextStyle(font: theme.font.footnote,
-                                                                                        color: theme.color.unfinished)))
+                                                                                        color: theme.color.background3)))
         self.tagStyle = ButtonStyle(buttonColor: theme.color.background3,
                                     textStyle: TextStyle(font: theme.font.footnote, color: theme.color.interactive))
-        self.priorityStyle = PriorityStyle(a: ButtonStyle(buttonColor: theme.color.background3,
+        self.priorityStyle = PriorityStyle(a: ButtonStyle(buttonColor: theme.color.warning,
                                                           textStyle: TextStyle(font: theme.font.footnote,
-                                                                               color: theme.color.warning)),
-                                           b: ButtonStyle(buttonColor: theme.color.background3,
+                                                                               color: theme.color.background3)),
+                                           b: ButtonStyle(buttonColor: theme.color.warning,
                                                           textStyle: TextStyle(font: theme.font.footnote,
-                                                                               color: theme.color.warning)),
-                                           c: ButtonStyle(buttonColor: theme.color.background3,
+                                                                               color: theme.color.background3)),
+                                           c: ButtonStyle(buttonColor: theme.color.unfinished,
                                                           textStyle: TextStyle(font: theme.font.footnote,
-                                                                               color: theme.color.unfinished)),
-                                           d: ButtonStyle(buttonColor: theme.color.background3,
+                                                                               color: theme.color.background3)),
+                                           d: ButtonStyle(buttonColor: theme.color.unfinished,
                                                           textStyle: TextStyle(font: theme.font.footnote,
-                                                                               color: theme.color.unfinished)),
-                                           e: ButtonStyle(buttonColor: theme.color.background3,
+                                                                               color: theme.color.background3)),
+                                           e: ButtonStyle(buttonColor: theme.color.finished,
                                                           textStyle: TextStyle(font: theme.font.footnote,
-                                                                               color: theme.color.finished)),
-                                           f: ButtonStyle(buttonColor: theme.color.background3,
+                                                                               color: theme.color.background3)),
+                                           f: ButtonStyle(buttonColor: theme.color.finished,
                                                           textStyle: TextStyle(font: theme.font.footnote,
-                                                                               color: theme.color.finished)))
+                                                                               color: theme.color.background3)))
     }
     
     public let seperatorStyle: UIColor
@@ -247,6 +250,7 @@ public struct DateAndTimeStyle {
     public let normal: ButtonStyle
     public let soon: ButtonStyle
     public let overtime: ButtonStyle
+    public let finished: ButtonStyle
 }
 
 public struct TextMarkStyle {

@@ -32,7 +32,7 @@ public class Dropbox: Uploadable, OAuth2Connectable {
     
     private static let tenant: String = "consumers"
     
-    private let folderName = "Delta Note"
+    private let folderName = "Nebula"
     
     var dropboxClient: DropboxClient?
     

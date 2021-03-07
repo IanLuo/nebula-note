@@ -428,7 +428,7 @@ private class TabView: UITableViewHeaderFooterView {
         button.interface({ (me, theme) in
             let button = me as! UIButton
             button.titleLabel?.font = theme.font.title
-            button.setTitleColor(theme.color.interactive, for: .normal)
+            button.setTitleColor(theme.color.spotlight, for: .normal)
             button.setTitleColor(theme.color.spotlitTitle, for: .selected)
             button.setBackgroundImage(UIImage.create(with: theme.color.spotlight, size: .singlePoint), for: .selected)
             button.setBackgroundImage(UIImage.create(with: theme.color.background1, size: .singlePoint), for: .normal)
@@ -445,7 +445,7 @@ private class TabView: UITableViewHeaderFooterView {
         
         imageView.interface({ [weak self] (me, theme) in
             let imageView = me as! UIImageView
-            imageView.tintColor = self?.isHighlighted == true ? theme.color.spotlitTitle : theme.color.descriptive
+            imageView.tintColor = self?.isHighlighted == true ? theme.color.spotlitTitle : theme.color.spotlight
         })
         imageView.contentMode = .scaleAspectFit
         return imageView
@@ -456,7 +456,7 @@ private class TabView: UITableViewHeaderFooterView {
         get { return self.titleButton.isSelected }
         set {
             self.titleButton.isSelected = newValue
-            self.iconView.tintColor = newValue ? InterfaceTheme.Color.spotlitTitle : InterfaceTheme.Color.interactive
+            self.iconView.tintColor = newValue ? InterfaceTheme.Color.spotlitTitle : InterfaceTheme.Color.spotlight
         }
     }
     
@@ -512,7 +512,7 @@ private class SubtabCell: UITableViewCell {
         label.interface({ (me, theme) in
             let label = me as! UILabel
             label.font = theme.font.body
-            label.textColor = theme.color.interactive
+            label.textColor = theme.color.spotlight
         })
         return label
     }()
@@ -546,7 +546,7 @@ private class SubtabCell: UITableViewCell {
         
         imageView.interface({ (me, theme) in
             let imageView = me as! UIImageView
-            imageView.tintColor = InterfaceTheme.Color.descriptive
+            imageView.tintColor = InterfaceTheme.Color.interactive
         })
         imageView.contentMode = .scaleAspectFit
         return imageView

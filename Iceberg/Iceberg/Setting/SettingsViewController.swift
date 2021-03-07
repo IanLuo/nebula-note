@@ -144,8 +144,10 @@ public class SettingsViewController: UITableViewController {
             self?.exportShowIndexSwitch.onTintColor = theme.color.spotlight
             
             self?.attachmentManagerLabel.textColor = theme.color.interactive
+            
+            self?.attachmentManagerLabel.textColor = theme.color.interactive
 
-            self?.feedbackLabel.textColor = theme.color.interactive
+            self?.resetPublishLoginInfo.textColor = theme.color.interactive
         }
         
         let button = UIButton()

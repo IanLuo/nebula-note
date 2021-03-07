@@ -61,7 +61,6 @@ public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
         public let documents: BehaviorRelay<[BrowserDocumentSection]> = BehaviorRelay(value: [])
         public let onCreatededDocument: PublishSubject<URL> = PublishSubject()
         public let onCreatingDocumentFailed: PublishSubject<String> = PublishSubject()
-        public let recentDocuments: BehaviorRelay<[RecentDocumentSection]> = BehaviorRelay(value: [])
     }
     
     private var _documentRelativePath: String = ""
@@ -119,7 +118,7 @@ public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
                 if let url = url {
                     let sections = self?.output.documents.value
                     if var secion = sections?.first {
-                        let cellModel = BrowserCellModel(url: url)
+                        let cellModel = BrowserCellModel(url: url, coordinator: self?.context.coordinator)
                         cellModel.coordinator = self?.context.coordinator
                         secion.items.append(cellModel)
                         secion.items.sort(by: { $0.updateDate.timeIntervalSince1970 > $1.updateDate.timeIntervalSince1970 })
@@ -150,10 +149,9 @@ public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
             switch self.dataMode! {
             case .browser:
                 allItems = self.allFiles.map {
-                    let cellModel = BrowserCellModel(url: $0)
+                    let cellModel = BrowserCellModel(url: $0, coordinator: self.context.coordinator)
                     cellModel.shouldShowActions = self.mode.showActions
                     cellModel.shouldShowChooseHeadingIndicator = self.mode.showChooseIndicator
-                    cellModel.coordinator = self.context.coordinator
                     return cellModel
                 }
             default: break
@@ -206,7 +204,7 @@ public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
     private func loadRecent() -> [BrowserCellModel] {
         return allFiles.filter { $0.lastOpenedStamp != nil && $0.path.hasSuffix(Document.fileExtension) && !$0.path.contains(SyncCoordinator.Prefix.deleted.rawValue) }
             .sorted(by: { $0.lastOpenedStamp! > $1.lastOpenedStamp! })
-            .map { BrowserCellModel(url: $0) }
+            .map { [weak self] in BrowserCellModel(url: $0, coordinator: self?.context.coordinator) }
     }
     
     private func loadFavorites() -> Observable<[BrowserCellModel]> {
@@ -223,10 +221,9 @@ public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
             return urls.sorted(by: { (url1, url2) -> Bool in
                 url1.lastModifyOrCreateTimeStamp > url2.lastModifyOrCreateTimeStamp
             }).map {
-                let cellModel = BrowserCellModel(url: $0)
+                let cellModel = BrowserCellModel(url: $0, coordinator: self.context.coordinator)
                 cellModel.shouldShowActions = self.mode.showActions
                 cellModel.shouldShowChooseHeadingIndicator = self.mode.showChooseIndicator
-                cellModel.coordinator = self.context.coordinator
                 return cellModel
             }
         }
@@ -248,10 +245,9 @@ public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
             do {
                 let urls = try self.dependency.documentManager.query(in: url.convertoFolderURL)
                 urls.forEach {
-                    let cellModel = BrowserCellModel(url: $0)
+                    let cellModel = BrowserCellModel(url: $0, coordinator: self.context.coordinator)
                     cellModel.shouldShowActions = self.mode.showActions
                     cellModel.shouldShowChooseHeadingIndicator = self.mode.showChooseIndicator
-                    cellModel.coordinator = self.context.coordinator
                     cellModels.append(cellModel)
                 }
                 
@@ -259,7 +255,7 @@ public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
                 for url in Array(self.dependency.syncManager.onDownloadingUpdates.value.keys.filter { $0.pathExtension == Document.fileExtension && !$0.packageName
                     .hasPrefix(SyncCoordinator.Prefix.deleted.rawValue) }) {
                     if url.parentDocumentURL == self.url && !urls.contains(where: { $0.documentRelativePath == url.documentRelativePath }) {
-                        let cellModel = BrowserCellModel(url: url, isDownloading: true)
+                        let cellModel = BrowserCellModel(url: url, isDownloading: true, coordinator: self.context.coordinator)
                         cellModel.shouldShowActions = self.mode.showActions
                         cellModel.shouldShowChooseHeadingIndicator = self.mode.showChooseIndicator
                         cellModel.coordinator = self.context.coordinator

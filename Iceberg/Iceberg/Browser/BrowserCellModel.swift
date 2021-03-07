@@ -29,12 +29,13 @@ public class BrowserCellModel {
     
     public weak var coordinator: BrowserCoordinator?
     
-    public init(url: URL, isDownloading: Bool = false) {
+    public init(url: URL, isDownloading: Bool = false, coordinator: BrowserCoordinator?) {
         self.url = url
         self.parent = url.parentDocumentURL
         self.levelFromRoot = url.documentRelativePath.components(separatedBy: "/").filter { $0.count > 0 }.count
         let attriutes = try? FileManager.default.attributesOfItem(atPath: url.path)
         self.updateDate = (attriutes?[FileAttributeKey.modificationDate] as? Date) ?? Date.distantPast
+        self.coordinator = coordinator
         
         if isDownloading {
             downloadingProcess = 0

@@ -306,10 +306,10 @@ extension UIViewController {
                 case .light:
                     return LightInterfaceTheme()
                 case .unspecified:
-                    return LightInterfaceTheme() // default to light
+                    return DarkInterfaceTheme() // default to light
                 }
             } else {
-                return LightInterfaceTheme() // default to light
+                return DarkInterfaceTheme() // default to dark
             }
         }
     }

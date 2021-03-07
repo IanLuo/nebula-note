@@ -274,7 +274,7 @@ extension EditorCoordinator: SearchCoordinatorDelegate {
     public func showDocumentInfo(viewModel: DocumentEditorViewModel, completion: @escaping () -> Void) {
         let documentInfoViewController = DocumentInfoViewController(viewModel: viewModel)
         documentInfoViewController.didCloseAction = completion
-        self.viewController?.present(documentInfoViewController, animated: true, completion: nil)
+        self.viewController?.present(Application.createDefaultNavigationControlller(root: documentInfoViewController, transparentBar: false), animated: true, completion: nil)
     }
 }
 

@@ -52,7 +52,7 @@ public class DocumentInfoViewController: TransitionViewController {
     
     public var fromView: UIView?
     
-    private let transitionDelegate: UIViewControllerTransitioningDelegate = FadeBackgroundTransition(animator: MoveInAnimtor(from: MoveInAnimtor.From.right))
+    private let transitionDelegate: UIViewControllerTransitioningDelegate = FadeBackgroundTransition(animator: MoveToAnimtor())
     
     private var viewModel: DocumentEditorViewModel!
     
@@ -60,8 +60,7 @@ public class DocumentInfoViewController: TransitionViewController {
         self.init(nibName: nil, bundle: nil)
         
         self.viewModel = viewModel
-        self.modalPresentationStyle = .overCurrentContext
-        self.transitioningDelegate = self.transitionDelegate
+        self.modalPresentationStyle = .pageSheet
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(cancel))
         tap.delegate = self
@@ -91,18 +90,28 @@ public class DocumentInfoViewController: TransitionViewController {
         }).disposed(by: self.disposeBag)
     }
     
+    public override func viewDidLoad() {
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.cancel,
+                                                                 target: self,
+                                                                 action: #selector(cancel))
+    }
+    
+    @objc func cancel() {
+        self.dismiss(animated: true)
+    }
+    
     private func setupUI() {
         self.view.addSubview(self.contentView)
         
-        self.contentView.sideAnchor(for: [.top, .bottom, .right], to: self.view, edgeInsets: UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0))
-        self.contentView.sizeAnchor(width: 240)
+        self.contentView.sideAnchor(for: [.top, .bottom, .right, .left], to: self.view, edgeInsets: UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0))
+//        self.contentView.sizeAnchor(width: 240)
         
         self.contentView.addSubview(self.favoriteButton)
-        self.favoriteButton.sideAnchor(for: [.traling, .top], to: self.contentView, edgeInsets: UIEdgeInsets(top: 0, left: 0, bottom: 0, right: -Layout.edgeInsets.right), considerSafeArea: true)
+        self.favoriteButton.sideAnchor(for: [.traling, .top], to: self.contentView, edgeInsets: UIEdgeInsets(top: Layout.edgeInsets.top, left: 0, bottom: 0, right: -Layout.edgeInsets.right), considerSafeArea: true)
         self.favoriteButton.sizeAnchor(width: 44)
         
         self.contentView.addSubview(self.helpButton)
-        self.helpButton.sideAnchor(for: [.leading, .top], to: self.contentView, edgeInsets: UIEdgeInsets(top: 0, left: Layout.edgeInsets.left, bottom: 0, right: 0), considerSafeArea: true)
+        self.helpButton.sideAnchor(for: [.leading, .top], to: self.contentView, edgeInsets: UIEdgeInsets(top: Layout.edgeInsets.top, left: Layout.edgeInsets.left, bottom: 0, right: 0), considerSafeArea: true)
         self.helpButton.sizeAnchor(width: 44)
         
         let exportViewController = ExportSelectViewController(exporterManager: self.viewModel.dependency.exportManager)
@@ -134,12 +143,7 @@ public class DocumentInfoViewController: TransitionViewController {
         self.addChild(basicInfoViewController)
         basicInfoViewController.didMove(toParent: self)
     }
-    
-    @objc func cancel() {
-        self.dismiss(animated: true, completion: nil)
-        self.didCloseAction?()
-    }
-    
+        
     @objc func showHelpTopics(view: UIView) {
         let actionsViewController = ActionsViewController()
         
