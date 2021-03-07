@@ -168,12 +168,12 @@ public class AgendaTableCell: UITableViewCell {
         let aString: NSMutableAttributedString = NSMutableAttributedString()
         if let isFinished = cellModel.isFinished, let planning = cellModel.planning {
             let style = OutlineTheme.planningStyle(isFinished: isFinished)
-            aString.append(NSAttributedString(string: planning + " ", attributes: style.textStyle.attributes))
+            aString.append(NSAttributedString(string: planning + " ", attributes: [NSAttributedString.Key.foregroundColor: style.buttonColor, NSAttributedString.Key.font: OutlineTheme.markStyle.font]))
         }
         
         if let priority = cellModel.priority {
             let style = OutlineTheme.priorityStyle(priority)
-            aString.append(NSAttributedString(string: priority + " ", attributes: style.textStyle.attributes))
+            aString.append(NSAttributedString(string: priority + " ", attributes: [NSAttributedString.Key.foregroundColor: style.buttonColor, NSAttributedString.Key.font: OutlineTheme.markStyle.font]))
         }
         
         aString.append(NSAttributedString(string: cellModel.headingText, attributes: OutlineTheme.headingStyle(level: cellModel.level).attributes))
