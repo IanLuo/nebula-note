@@ -24,7 +24,7 @@ public class BrowserCellModel {
     public var downloadingProcess: Int = 100
     
     public lazy var cover: UIImage? = {
-        return UIImage(contentsOfFile: self.url.coverURL.path)?.resize(upto: CGSize(width: 100, height: 100))
+        return UIImage(contentsOfFile: self.url.coverURL.path)?.resize(upto: CGSize(width: 300, height: 300))
     }()
     
     public weak var coordinator: BrowserCoordinator?

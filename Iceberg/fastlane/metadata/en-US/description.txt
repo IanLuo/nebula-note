@@ -1,10 +1,6 @@
-We design x3 Note to help students, bloggers, writers, and professionals to capture ideas, manage plans, and transform thoughts into organized articles.
+Nebula is an personal knowledge system, which combines note taking, material management, and task management together.
 
-It won't write a story or article for you, but x3 Note will gather your ideas from any source from your phone, Mac, or iPad, so every time you open x3 Note, your ideas will be there, waiting to inspire you.
-
-With the ability to generate a work plan from the note content, it feels like there's a clever and busy housekeeper, tracking all your work status and time, and show them to you in one place with well organized and easy to read format, tells you what is more urgent, and when you decide to start one, directly take you to the exact location, like you never left.
-
-* Editor is in the center
+* Full feature rich editor
 Our text editor is very clean and also very smart. 
 - Paragraphs can fold, so you can keep it clean, even when the document is very long, and focus on the current work.
 - Text decorations, like Bold, underscore, italic, strikethrough, hi-lightly.
@@ -45,8 +41,8 @@ And we can publish attachments too!
 * Export to other formats
 - HTML, txt, image, PDF, Markdown.
 
-For more information about x3 note please visit http://forum.x3note.site.
+For more information about Nebula please visit http://forum.nebulaapp.net
 
-Privacy policy: https://forum.x3note.site/t/32
+Privacy policy: https://forum.nebulaapp.net/t/32
 Terms of service: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 twitter: @x3note

@@ -1,1 +1,5 @@
-fixed a problem that might misrender the heading
+1. We have a new name, from x3 Note to Nebula, we thinks it suits us better.
+2. New document and recent documents browser
+3. New capture interface
+4. Search function in browser
+5. Fix various of issues

@@ -7,3 +7,4 @@
 */
 
 CFBundleDisplayName = "Nebula";
+CFBundleName = "Nebula";

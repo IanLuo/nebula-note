@@ -7,3 +7,4 @@
 */
 
 CFBundleDisplayName = "星云记";
+CFBundleName = "星云记";
