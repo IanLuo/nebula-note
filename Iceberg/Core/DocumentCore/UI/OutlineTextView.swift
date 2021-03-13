@@ -63,20 +63,23 @@ public class OutlineTextView: UITextView {
                 let textInputTraits = self.value(forKey: "textInputTraits") as? NSObject
                 textInputTraits?.setValue(interface.color.spotlight, forKey: "insertionPointColor")
             }
-        }
+        }        
+    }
+    
+    public override func layoutSubviews() {
+        super.layoutSubviews()
         
-        // update character border
-        self.rx.value.subscribe(onNext: {
-            if let string = $0 {
-                if string.count == 0 {
-                    self.characterBorder = (.zero, .zero)
-                } else {
-                    let begin = self.layoutManager.boundingRect(forGlyphRange: NSRange(location: 0, length: 1), in: self.textContainer)
-                    let end = self.layoutManager.boundingRect(forGlyphRange: self.layoutManager.glyphRange(forCharacterRange: NSRange(location: self.text.count - 1, length: 1), actualCharacterRange: nil), in: self.textContainer)
-                    self.characterBorder = (begin, end)
-                }
-            }
-        }).disposed(by: self.disposeBag)
+        self.updateCharacterborder(string: self.text)
+    }
+    
+    public func updateCharacterborder(string: String) {
+        if string.count == 0 {
+            self.characterBorder = (.zero, .zero)
+        } else {
+            let begin = self.layoutManager.boundingRect(forGlyphRange: NSRange(location: 0, length: 1), in: self.textContainer)
+            let end = self.layoutManager.boundingRect(forGlyphRange: self.layoutManager.glyphRange(forCharacterRange: NSRange(location: self.text.count - 1, length: 1), actualCharacterRange: nil), in: self.textContainer)
+            self.characterBorder = (begin, end)
+        }
     }
     
     private var lastTap: (CGPoint, Bool, Double) = (.zero, true, 0)

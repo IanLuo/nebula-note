@@ -50,7 +50,7 @@ public class BrowserCellIcon: BrowserCell, BrowserCellProtocol {
         
     let icon: UIImageView = {
         let imageView = UIImageView()
-        imageView.contentMode = .center
+        imageView.contentMode = .scaleAspectFit
         return imageView
     }()
     

@@ -24,7 +24,7 @@ public class BrowserListCell: BrowserCell, BrowserCellProtocol {
         imageView.roundConer(radius: Layout.cornerRadius)
         
         imageView.clipsToBounds = true
-        imageView.contentMode = .center
+        imageView.contentMode = .scaleAspectFit
         return imageView
     }()
     

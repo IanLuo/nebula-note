@@ -173,6 +173,7 @@ public class EditorCoordinator: Coordinator {
         guard resolverViewController.shouldShow else { return }
         
         let nav = Application.createDefaultNavigationControlller(root: resolverViewController, transparentBar: false)
+        nav.modalPresentationStyle = .fullScreen
         from.present(nav, animated: true)
     }
     
@@ -181,6 +182,12 @@ public class EditorCoordinator: Coordinator {
                                                     usage: EditorCoordinator.Usage.temp(url))
         
         guard let vc = documentCoordinator.viewController else { return }
+
+        self.addChild(documentCoordinator)
+        
+        documentCoordinator.onMovingOut = {
+            vc.navigationController?.popViewController(animated: true)
+        }
         
         from.navigationController?.pushViewController(vc, animated: true)
     }

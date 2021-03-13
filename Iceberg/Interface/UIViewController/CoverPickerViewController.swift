@@ -49,9 +49,9 @@ public class CoverPickerViewController: ActionsViewController {
             })
         }
         
-//        self.addAction(icon: Asset.SFSymbols.pho.image.fill(color: InterfaceTheme.Color.descriptive), title: L10n.ImagePicker.library, action: { vc in
-//            self.showImageLibrary()
-//        })
+        self.addAction(icon: Asset.SFSymbols.photoOnRectangle.image.fill(color: InterfaceTheme.Color.descriptive), title: L10n.ImagePicker.library, action: { vc in
+            self.showImageLibrary()
+        })
         
         self.addAction(icon: Asset.SFSymbols.docText.image.fill(color: InterfaceTheme.Color.descriptive), title: L10n.ImagePicker.files, action: { vc in
             self.showDocumentPicker()

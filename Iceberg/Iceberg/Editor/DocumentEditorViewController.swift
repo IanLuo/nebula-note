@@ -457,6 +457,8 @@ extension DocumentEditorViewController: DocumentEditViewModelDelegate {
         
         self.setToolbarEnabled(true)
         
+        self.textView.updateCharacterborder(string: self.textView.text)
+        
         // 移动到指定的位置（如果需要）
         if self.viewModel.onLoadingLocation > 0 {
             self.allowScrollContentWhenKeyboardDisapearTemporaily()

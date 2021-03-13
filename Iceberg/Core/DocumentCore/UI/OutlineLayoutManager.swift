@@ -65,10 +65,10 @@ public class OutlineLayoutManager: NSLayoutManager {
                 context.saveGState()
                 context.translateBy(x: origin.x, y: origin.y)
                 color.setFill()
-                
+                        
                 var rect = rect
                 rect.origin.x = rect.origin.x - 1
-                rect.origin.y = rect.origin.y - font.descender
+                rect.origin.y = rect.origin.y - font.descender - 1
                 rect.size.height = font.lineHeight - font.descender
                 rect.size.width = rect.size.width + 2
 

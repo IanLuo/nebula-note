@@ -151,7 +151,7 @@ public class SettingsViewController: UITableViewController {
         }
         
         let button = UIButton()
-        button.setImage(UIImage(named: "AppIcon")?.resize(upto: CGSize(width: 30, height: 30)), for: .normal)
+        button.setImage(UIImage(named: "AppIcon")?.resize(upto: CGSize(width: 44, height: 44)), for: .normal)
         let rightButton = UIBarButtonItem(customView: button)
         button.rx.tap.subscribe(onNext: { [weak self] _ in
             self?._showFeedbackOptions(from: button)

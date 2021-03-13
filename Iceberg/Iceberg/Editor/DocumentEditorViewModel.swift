@@ -364,11 +364,13 @@ public class DocumentEditorViewModel: ViewModelProtocol {
                         _ = service.toggleContentCommandComposer(composer: InsertTextCommandComposer(location: location, textToInsert: text)).perform()
                     }
                     
-                    self?.dependency.editorContext.closeIfOpen(url: url, complete: {
-                        DispatchQueue.runOnMainQueueSafely {
-                            completion(result)
+                    service.save { _ in
+                        self?.dependency.editorContext.closeIfOpen(url: url) {
+                            DispatchQueue.runOnMainQueueSafely {
+                                completion(result)
+                            }
                         }
-                    })
+                    }
                 }
             })
         }

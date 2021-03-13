@@ -30,7 +30,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "E43427F52121BF5B00EC6DC3"
-               BuildableName = "x3Note.app"
+               BuildableName = "Nabula.app"
                BlueprintName = "x3Note"
                ReferencedContainer = "container:x3Note.xcodeproj">
             </BuildableReference>
@@ -62,7 +62,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E43427F52121BF5B00EC6DC3"
-            BuildableName = "x3Note.app"
+            BuildableName = "Nabula.app"
             BlueprintName = "x3Note"
             ReferencedContainer = "container:x3Note.xcodeproj">
          </BuildableReference>
@@ -74,13 +74,14 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES"
+      askForAppToLaunch = "Yes"
       launchAutomaticallySubstyle = "2">
       <BuildableProductRunnable
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E43427F52121BF5B00EC6DC3"
-            BuildableName = "x3Note.app"
+            BuildableName = "Nabula.app"
             BlueprintName = "x3Note"
             ReferencedContainer = "container:x3Note.xcodeproj">
          </BuildableReference>

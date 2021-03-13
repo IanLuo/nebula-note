@@ -234,11 +234,11 @@ extension SettingsAccessor: NSFilePresenter {
                     version.isResolved = true
                     try version.replaceItem(at: Constants.storeURL, options: [.init(rawValue: 0)])
                     try NSFileVersion.removeOtherVersionsOfItem(at: Constants.storeURL)
-                    log.info("found remote version, which is newer, use that one")
+                    log.info("found remote version, which is older, use that one")
                 } else {
                     version.isResolved = true
                     try NSFileVersion.removeOtherVersionsOfItem(at: Constants.storeURL)
-                    log.info("found remote version, which is older, removed")
+                    log.info("found remote version, which is newer, removed")
                 }
             } catch {
                 log.error(error)
