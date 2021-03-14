@@ -228,7 +228,7 @@ public class SettingsViewController: UITableViewController {
                     viewController.present(activityVC, animated: true, completion: nil)
                 }
             case 2:
-                UIApplication.shared.open(URL(string: "https://forum.deltanote.ink/")!, options: [:], completionHandler: nil)
+                UIApplication.shared.open(URL(string: "https://forum.nebulaapp.net/")!, options: [:], completionHandler: nil)
             case 3:
                 let appId = "11641"
                 let appKey = "k2q6pHh2ekAbQjELagm2VZ3rHJFHEj3bl1GI529FjaDO29hfwLcn5sJ9jBSVA24Q"

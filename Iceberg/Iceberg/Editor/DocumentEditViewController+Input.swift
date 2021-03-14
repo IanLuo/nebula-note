@@ -66,7 +66,15 @@ extension DocumentEditorViewController: UITextViewDelegate {
         /// if the input is inside a heading prefix, __ignore backspace__
         if let heading = self.viewModel.heading(at: textView.selectedRange.location), text.count > 0 {
             if range.location == heading.prefix.upperBound || heading.prefix.contains(range.location) {
-                let result = self.viewModel.performAction(EditAction.replaceText(NSRange(location: heading.contentLocation, length: range.length), text), textView: textView)
+                var rangeOutsideHeadingPrefix = range
+                
+                rangeOutsideHeadingPrefix.location = heading.contentLocation
+                
+                if rangeOutsideHeadingPrefix.length > 0 {
+                    rangeOutsideHeadingPrefix.length = max(0, range.length - heading.prefix.length - 1) // the last -1 is for the space after heading prefix
+                }
+                
+                let result = self.viewModel.performAction(EditAction.replaceText(rangeOutsideHeadingPrefix, text), textView: textView)
                 if let range = result.range {
                     textView.selectedRange = range
                 }

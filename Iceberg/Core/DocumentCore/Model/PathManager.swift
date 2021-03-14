@@ -31,13 +31,17 @@ public enum URLLocation {
 private var fileCoordinatorCache: [URL: NSFileCoordinator] = [:]
 private let _fileCoordinatorLock: NSRecursiveLock = NSRecursiveLock()
 private let fetchFileCoordinator: (URL) -> NSFileCoordinator = { url in
+    _fileCoordinatorLock.lock()
+    
+    defer {
+        _fileCoordinatorLock.unlock()
+    }
+    
     if let existingFileCoordinator = fileCoordinatorCache[url] {
         return existingFileCoordinator
     } else {
         let fileCoordinator = NSFileCoordinator()
-        _fileCoordinatorLock.lock()
         fileCoordinatorCache[url] = fileCoordinator
-        _fileCoordinatorLock.unlock()
         return fileCoordinator
     }
 }
