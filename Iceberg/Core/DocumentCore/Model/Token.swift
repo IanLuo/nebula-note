@@ -41,6 +41,7 @@ public class Token {
     
     public var name: String
     private var _rawData: [String: NSRange]
+    public var data: [String: NSRange] { return _rawData.mapValues { $0.offset(self.offset) } }
     
     public init(range: NSRange, name: String, data: [String: NSRange]) {
         self._range = range

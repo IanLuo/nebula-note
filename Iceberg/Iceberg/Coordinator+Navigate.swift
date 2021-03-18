@@ -62,7 +62,7 @@ extension Coordinator {
         let navigationController = Coordinator.createDefaultNavigationControlller()
         
         let captureCoordinator = CaptureCoordinator(stack: navigationController, dependency: self.dependency)
-        captureCoordinator.fromView = at
+        captureCoordinator.fromView = at ?? UIApplication.shared.windows.first(where: { $0.isHidden == false })
         captureCoordinator.delegate = self
         
         if let topCoordinator = self.topCoordinator {

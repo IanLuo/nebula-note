@@ -124,7 +124,7 @@ extension DocumentEditorViewController {
         // 如果在 heading 中，换行不在当前位置，而在 heading 之后
         guard let currentPosition = textView.selectedTextRange?.start else { return true }
         
-        // 如果当前位置在 heading 内部(除开最前端)，回车的时候，先查找 tag 的位置，将 tag 之前，光标之后的内容，添加到行位
+        // 如果当前位置在 heading 内部(除开最前端)，回车的时候，先查找 tag 的位置，将 tag 之前，光标之后的内容，添加到行尾
         for case let heading in self.viewModel.currentTokens where heading is HeadingToken {
             let heading = heading as! HeadingToken
             
@@ -170,7 +170,7 @@ extension DocumentEditorViewController {
             return false
         }
         
-        // checkbox, 自动添加 checkbox 前缀，如果真有前缀没有内容，则删除前缀
+        // checkbox, 自动添加 checkbox 前缀，如果只有前缀没有内容，则删除前缀
         for case let token in self.viewModel.currentTokens where token is CheckboxToken {
             if token.range.length == (token as! CheckboxToken).status.length {
                 let oldSelectedRange = textView.selectedRange
