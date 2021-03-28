@@ -268,6 +268,13 @@ extension URL {
             return path
         }
     }
+    
+    public func isNameAvailable(newName: String) -> Bool {
+        var newURL = self
+        newURL.deleteLastPathComponent()
+        newURL = newURL.appendingPathComponent(newName).appendingPathExtension(Document.fileExtension)
+        return !FileManager.default.fileExists(atPath: newURL.path)
+    }
 }
 
 private struct DocumentConstants {

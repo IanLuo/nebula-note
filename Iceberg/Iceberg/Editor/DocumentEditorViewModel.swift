@@ -595,6 +595,10 @@ public class DocumentEditorViewModel: ViewModelProtocol {
     public func didUpdate() {
         self.editorService.markAsContentUpdated()
     }
+    
+    public func rename(to: String, completion: @escaping (Error?) -> Void) {
+        self.editorService.rename(newTitle: to, completion: completion)
+    }
 }
 
 extension DocumentEditorViewModel {

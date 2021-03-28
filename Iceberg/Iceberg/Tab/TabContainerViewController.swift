@@ -287,6 +287,7 @@ private class TabBar: UIScrollView {
             newTab.isSelected.accept(shouldSelect)
             strongSelf.stackView.insertArrangedSubview(newTab, at: 0)
             newTab.sizeAnchor(height: 44)
+            newTab.widthAnchor.constraint(lessThanOrEqualToConstant: 200).isActive = true
             
             newTab.onCloseTapped.subscribe(onNext: { [weak newTab] url in
                 guard let newTab = newTab else { return }

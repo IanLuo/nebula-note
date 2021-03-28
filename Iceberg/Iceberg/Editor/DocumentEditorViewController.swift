@@ -242,6 +242,8 @@ public class DocumentEditorViewController: UIViewController {
 //            }).disposed(by: self.disposeBag)
             
             // fire request to load backlinks
+            
+            self.textView.setTitle(self.viewModel.url.packageName)
         }
     }
     

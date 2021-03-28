@@ -236,4 +236,47 @@ extension DocumentEditorViewController: OutlineTextViewDelegate {
 
         self.viewModel.dependency.globalCaptureEntryWindow?.hide()
     }
+    
+    public func didTapOnTitle(at: CGPoint) {
+        let renameFormViewController = ModalFormViewController()
+        let title = L10n.Browser.Action.Rename.newName
+        renameFormViewController.title = title
+        renameFormViewController.addTextFied(title: title, placeHoder: "", defaultValue: self.viewModel.url.packageName) // 不需要显示 placeholder, default value 有值
+        renameFormViewController.onSaveValueAutoDismissed = { [weak self] formValue in
+            guard let strongSelf = self else { return }
+            if let newName = formValue[title] as? String {
+                strongSelf.viewModel.rename(to: newName.escaped) { error in
+                    if let error = error {
+                        log.error(error)
+                    } else {
+                        log.info("changed document")
+                        DispatchQueue.runOnMainQueueSafely {
+                            strongSelf.viewModel.context.dependency.settingAccessor.logOpenDocument(url: strongSelf.viewModel.url)
+                            strongSelf.textView.setTitle(newName)
+                            
+                        }
+                    }
+                }
+            }
+        }
+        
+        renameFormViewController.onCancel = { viewController in
+            viewController.dismiss(animated: true)
+        }
+        
+        // 显示给用户，是否可以使用这个文件名
+        renameFormViewController.onValidating = { formData in
+            if !self.viewModel.url.isNameAvailable(newName: formData[title] as! String) {
+                return [title: L10n.Browser.Action.Rename.Warning.nameIsTaken]
+            }
+            
+            return [:]
+        }
+        
+        renameFormViewController.onCancel = { viewController in
+            viewController.dismiss(animated: true, completion: nil)
+        }
+
+        renameFormViewController.present(from: self, at: self.textView, location: at)
+    }
 }

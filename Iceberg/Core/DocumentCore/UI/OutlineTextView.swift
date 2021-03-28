@@ -21,12 +21,15 @@ public protocol OutlineTextViewDelegate: class {
     func didTapOnPlanning(textView: UITextView, characterIndex: Int, planning: String, point: CGPoint)
     func didTapOnPriority(textView: UITextView, characterIndex: Int, priority: String, point: CGPoint)
     func didTapOnAttachment(textView: UITextView, characterIndex: Int, type: String, value: String, point: CGPoint)
+    func didTapOnTitle(at: CGPoint)
 }
 
 public class OutlineTextView: UITextView {
     public weak var outlineDelegate: OutlineTextViewDelegate?
     
     private let disposeBag = DisposeBag()
+    
+    private let titleLabel: UILabel = UILabel().font(UIFont.preferredFont(forTextStyle: .title1)).numberOfLines(0)
         
     public override init(frame: CGRect, textContainer: NSTextContainer?) {
         super.init(frame: frame, textContainer: textContainer)
@@ -58,18 +61,38 @@ public class OutlineTextView: UITextView {
             textView.typingAttributes = [NSAttributedString.Key.font: interface.font.body,
                                      NSAttributedString.Key.foregroundColor: interface.color.interactive]
             
+            textView.titleLabel.textColor = interface.color.descriptive
+            
             // work around for cursor coloring on mac
             if isMac {
                 let textInputTraits = self.value(forKey: "textInputTraits") as? NSObject
                 textInputTraits?.setValue(interface.color.spotlight, forKey: "insertionPointColor")
             }
         }
+        
+        self.addSubview(self.titleLabel)
+        
+        self.titleLabel.sideAnchor(for: [.left, .top], to: self, edgeInsets: UIEdgeInsets(top: 0, left: Layout.edgeInsets.left, bottom: 0, right: -Layout.edgeInsets.right))
+        
+        let tapOnNameGesture = UITapGestureRecognizer()
+        tapOnNameGesture.rx.event.asDriver().drive(onNext: { event in
+            switch event.state {
+            case .ended:
+                self.outlineDelegate?.didTapOnTitle(at: event.location(in: self))
+            default: break
+            }
+        }).disposed(by: self.disposeBag)
+        
+        self.titleLabel.isUserInteractionEnabled = true
+        self.titleLabel.addGestureRecognizer(tapOnNameGesture)
     }
     
     public override func layoutSubviews() {
         super.layoutSubviews()
         
         self.updateCharacterborder(string: self.text)
+        
+        self.adjustEdgeInsetsForTitle()
     }
     
     public func updateCharacterborder(string: String) {
@@ -80,6 +103,24 @@ public class OutlineTextView: UITextView {
             let end = self.layoutManager.boundingRect(forGlyphRange: self.layoutManager.glyphRange(forCharacterRange: NSRange(location: self.text.count - 1, length: 1), actualCharacterRange: nil), in: self.textContainer)
             self.characterBorder = (begin, end)
         }
+    }
+    
+    public func setTitle(_ text: String) {
+        self.titleLabel.text = text
+        
+        self.adjustEdgeInsetsForTitle()
+    }
+    
+    private func adjustEdgeInsetsForTitle() {
+        let width = self.bounds.width - self.contentInset.left - self.contentInset.right
+        let size = self.titleLabel.sizeThatFits(CGSize(width: width,
+                                                       height: CGFloat.greatestFiniteMagnitude))
+        let edgeContentSize = self.titleLabel.sizeThatFits(size)
+        self.textContainerInset = UIEdgeInsets(top: edgeContentSize.height + 30, left: 0, bottom: 0, right: 0)
+        
+        var frame = self.titleLabel.frame
+        frame.size = edgeContentSize
+        self.titleLabel.frame = frame
     }
     
     private var lastTap: (CGPoint, Bool, Double) = (.zero, true, 0)
@@ -186,7 +227,10 @@ public class OutlineTextView: UITextView {
     }
     
     public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        if self.tapped(location: point, event: event) {
+        let textLocation = CGPoint(x: point.x - self.textContainerInset.left,
+                                   y: point.y - self.textContainerInset.top)
+        
+        if self.tapped(location: textLocation, event: event) {
             return super.hitTest(point, with: event)
         } else {
             return nil

@@ -169,10 +169,7 @@ public class BrowserCellModel {
     }
     
     public func isNameAvailable(newName: String) -> Bool {
-        var newURL = self.url
-        newURL.deleteLastPathComponent()
-        newURL = newURL.appendingPathComponent(newName).appendingPathExtension(Document.fileExtension)
-        return !FileManager.default.fileExists(atPath: newURL.path)
+        return self.url.isNameAvailable(newName: newName)
     }
     
     // get all files in documents directory
