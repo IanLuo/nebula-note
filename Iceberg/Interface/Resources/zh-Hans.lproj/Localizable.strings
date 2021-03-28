@@ -258,6 +258,7 @@
 "browser.mode.list" = "列表";
 "browser.mode.icon" = "图标";
 
+"browser.recent.title" = "最近使用";
 // agenda
 "agenda.title" = "日程表";
 "agenda.startToday" = "今天开始";

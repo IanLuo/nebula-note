@@ -13,13 +13,16 @@ import UIKit
 
 extension Coordinator {
     public func openDocument(url: URL, location: Int) {
-        let navigationController = Coordinator.createDefaultNavigationControlller(transparentBar: false)
+//        let navigationController = Coordinator.createDefaultNavigationControlller(transparentBar: false)
+//
+//        let documentCoordinator = EditorCoordinator(stack: navigationController, dependency: self.dependency,usage: EditorCoordinator.Usage.editor(url, location))
+//
+//        documentCoordinator.start(from: self)
+//        self.dependency.globalCaptureEntryWindow?.isForcedToHide = true
         
-        let documentCoordinator = EditorCoordinator(stack: navigationController, dependency: self.dependency,
-                                                    usage: EditorCoordinator.Usage.editor(url, location))
+        self.dependency.eventObserver.emit(OpenDocumentEvent(url: url, location: location))
         
-        documentCoordinator.start(from: self)
-        self.dependency.globalCaptureEntryWindow?.isForcedToHide = true
+        self.dependency.eventObserver.emit(SwitchTabEvent(toTabIndex: 5))
     }
     
     public func showAttachmentPicker(from coordinator: Coordinator? = nil, kind: Attachment.Kind, at: UIView?, location: CGPoint?, accessoryData: [String: Any]? = nil, complete: @escaping (String) -> Void, cancel: @escaping () -> Void) {
@@ -162,9 +165,9 @@ extension Coordinator {
         (self.rootCoordinator as? Application)?.homeCoordinator?.toggleLeftPart()
     }
     
-    public func toggleDesktopMiddlePart() {
-        (self.rootCoordinator as? Application)?.homeCoordinator?.toggleMiddlePart()
-    }
+//    public func toggleDesktopMiddlePart() {
+//        (self.rootCoordinator as? Application)?.homeCoordinator?.toggleMiddlePart()
+//    }
     
     @available(iOS 13.0, *)
     func enableGlobalNavigateKeyCommands() {
@@ -174,9 +177,9 @@ extension Coordinator {
             self.toggleDesktopLeftPart()
         })
         
-        binding.addAction(for: KeyAction.toggleMiddlePart, on: self.viewController, block: {
-            self.toggleDesktopMiddlePart()
-        })
+//        binding.addAction(for: KeyAction.toggleMiddlePart, on: self.viewController, block: {
+//            self.toggleDesktopMiddlePart()
+//        })
         
         binding.addAction(for: KeyAction.toggleFullWidth, on: self.viewController, block: {
             self.toggleEditorFullScreen()

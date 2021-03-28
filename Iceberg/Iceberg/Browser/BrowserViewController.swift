@@ -14,13 +14,14 @@ import RxCocoa
 import Core
 
 fileprivate enum ViewType {
-    case recent, documents
+    case recent, documents, favorite
 }
 
 fileprivate struct Model {
     var viewType: BehaviorRelay<ViewType>
     var browserFolderViewController: UIViewController
     var recentViewController: UIViewController
+    var favoriteViewController: UIViewController
     var shouldShowRecentView: Bool
     var shouldShowHelpButton: Bool
     var usage: BrowserCoordinator.Usage
@@ -41,9 +42,10 @@ public class BrowserViewController: UIViewController {
     
     private lazy var viewTypeSegmented: UISegmentedControl = {
         let seg = UISegmentedControl()
-        seg.insertSegment(withTitle: "Recent", at: 0, animated: false)
-        seg.insertSegment(withTitle: "Documents", at: 1, animated: false)
-        seg.selectedSegmentIndex = 1
+        seg.insertSegment(withTitle: L10n.Browser.Favorite.title, at: 0, animated: false)
+        seg.insertSegment(withTitle: L10n.Browser.Recent.title, at: 1, animated: false)
+        seg.insertSegment(withTitle: L10n.Browser.title, at: 2, animated: false)
+        seg.selectedSegmentIndex = 2
         
         seg.interface { (view, theme) in
             let seg = view as! UISegmentedControl
@@ -57,8 +59,15 @@ public class BrowserViewController: UIViewController {
         }
         
         seg.rx.value.asDriver().drive(onNext: { selectedIndex in
-            let newValue = selectedIndex == 0 ? ViewType.recent : ViewType.documents
-            self.model.viewType.accept(newValue)
+            switch selectedIndex {
+            case 0:
+                self.model.viewType.accept(.favorite)
+            case 1:
+                self.model.viewType.accept(.recent)
+            case 2:
+                self.model.viewType.accept(.documents)
+            default: break
+            }
         }).disposed(by: self.disposeBag)
     
         return seg
@@ -77,6 +86,7 @@ public class BrowserViewController: UIViewController {
     
     public convenience init(recentViewController: BrowserFolderViewController,
                             browserFolderViewController: BrowserFolderViewController,
+                            favoriateViewController: BrowserFolderViewController,
                             coordinator: BrowserCoordinator) {
         
         self.init()
@@ -84,6 +94,7 @@ public class BrowserViewController: UIViewController {
         self.model = Model(viewType: BehaviorRelay<ViewType>(value: .documents),
                            browserFolderViewController: Coordinator.createDefaultNavigationControlller(root: browserFolderViewController, transparentBar: true),
                            recentViewController: Coordinator.createDefaultNavigationControlller(root: recentViewController, transparentBar: true),
+                           favoriteViewController: Coordinator.createDefaultNavigationControlller(root: favoriateViewController, transparentBar: true),
                            shouldShowRecentView: true,
                            shouldShowHelpButton: true,
                            usage: coordinator.usage)
@@ -92,23 +103,14 @@ public class BrowserViewController: UIViewController {
         case .browseDocument, .chooseHeader:
             self.model.shouldShowRecentView = true
             self.model.shouldShowHelpButton = true
-        case .favoriate:
-            self.model.shouldShowRecentView = false
-            self.model.shouldShowHelpButton = false
         }
         
         self.recentViewController = recentViewController
         self.browserFolderViewController = browserFolderViewController
         
-        switch coordinator.usage {
-        case .favoriate:
-            self.title = L10n.Browser.Favorite.title
-            self.tabBarItem = UITabBarItem(title: "", image: Asset.SFSymbols.star.image, tag: 0)
-        default:
-            self.title = L10n.Browser.title
-            self.navigationItem.titleView = self.viewTypeSegmented
-            self.tabBarItem = UITabBarItem(title: "", image: Asset.SFSymbols.doc.image, tag: 0)
-        }
+        self.title = L10n.Browser.title
+        self.navigationItem.titleView = self.viewTypeSegmented
+        self.tabBarItem = UITabBarItem(title: "", image: Asset.SFSymbols.doc.image, tag: 0)
     }
     
     public override func viewDidLoad() {
@@ -149,6 +151,9 @@ public class BrowserViewController: UIViewController {
             case .recent:
                 strongSelf.view.addSubview(strongSelf.model.recentViewController.view)
                 strongSelf.model.recentViewController.view.allSidesAnchors(to: strongSelf.view, edgeInset: 0, considerSafeArea: true)
+            case .favorite:
+                strongSelf.view.addSubview(strongSelf.model.favoriteViewController.view)
+                strongSelf.model.favoriteViewController.view.allSidesAnchors(to: strongSelf.view, edgeInset: 0, considerSafeArea: true)
             }
         }).disposed(by: self.disposeBag)
         

@@ -262,6 +262,10 @@ public enum L10n {
       /// Document ending
       public static let endOfDocument = L10n.tr("Localizable", "browser.outline.endOfDocument")
     }
+    public enum Recent {
+      /// Recent
+      public static let title = L10n.tr("Localizable", "browser.recent.title")
+    }
     public enum Tab {
       /// Close Tab
       public static let close = L10n.tr("Localizable", "browser.tab.close")

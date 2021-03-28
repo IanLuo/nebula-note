@@ -220,12 +220,12 @@ public class EditorCoordinator: Coordinator {
                     
                     let offset = firstResult.heading?.range.upperBound ?? 0
                     
-                    if isMacOrPad {
+//                    if isMacOrPad {
                         self.dependency.eventObserver.emit(OpenDocumentEvent(url: url, location: offset))
-                    } else {
-                        let editorCoor = EditorCoordinator(stack: self.stack, dependency: self.dependency, usage: .editor(url, offset))
-                        editorCoor.start(from: self)
-                    }
+//                    } else {
+//                        let editorCoor = EditorCoordinator(stack: self.stack, dependency: self.dependency, usage: .editor(url, offset))
+//                        editorCoor.start(from: self)
+//                    }
                 }
             } failed: { error in
                 print(error)
@@ -239,12 +239,12 @@ public class EditorCoordinator: Coordinator {
             }
             
             if FileManager.default.fileExists(atPath: url.path) {
-                if isMacOrPad {
+//                if isMacOrPad {
                     self.dependency.eventObserver.emit(OpenDocumentEvent(url: url, location: location))
-                } else {
-                    let editorCoor = EditorCoordinator(stack: self.stack, dependency: self.dependency, usage: .editor(url, location))
-                    editorCoor.start(from: self)
-                }
+//                } else {
+//                    let editorCoor = EditorCoordinator(stack: self.stack, dependency: self.dependency, usage: .editor(url, location))
+//                    editorCoor.start(from: self)
+//                }
             } else {
                 self.viewController?.showAlert(title: L10n.Browser.fileNotExisted, message: L10n.Browser.FileNotExisted.message)
             }
@@ -253,12 +253,12 @@ public class EditorCoordinator: Coordinator {
     
     public func openDocument(url: URL) {
         if FileManager.default.fileExists(atPath: url.path) {
-            if isMacOrPad {
+//            if isMacOrPad {
                 self.dependency.eventObserver.emit(OpenDocumentEvent(url: url))
-            } else {
-                let editorCoor = EditorCoordinator(stack: self.stack, dependency: self.dependency, usage: .editor(url, 0))
-                editorCoor.start(from: self)
-            }
+//            } else {
+//                let editorCoor = EditorCoordinator(stack: self.stack, dependency: self.dependency, usage: .editor(url, 0))
+//                editorCoor.start(from: self)
+//            }
         } else {
             self.viewController?.showAlert(title: L10n.Browser.fileNotExisted, message: L10n.Browser.FileNotExisted.message)
         }

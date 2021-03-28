@@ -38,7 +38,7 @@ public class MoveToAnimtor: NSObject, Animator {
                 transitionViewController.view.layoutIfNeeded()
                 let destRect = transitionViewController.contentView.frame
                 // 如果没有设置显示位置的 UIView，使用屏幕正中心的点作为显示位置
-                let startRect = fromView != nil ? fromView!.superview!.convert(fromView!.frame, to: from.view) : CGRect(origin: transitionViewController.view.center, size: .zero)
+                let startRect = fromView != nil ? fromView!.convert(fromView!.frame, to: from.view) : CGRect(origin: transitionViewController.view.center, size: .zero)
                 let animatableView = UIImageView(frame: startRect)
                 animatableView.contentMode = .center
                 
@@ -77,7 +77,7 @@ public class MoveToAnimtor: NSObject, Animator {
                 transitionViewController.contentView.alpha = 0
                 let startRect = transitionViewController.contentView.frame
                 // 如果没有设置显示位置的 UIView，使用屏幕正中心的点作为显示位置
-                var destRect = toView != nil ? toView!.superview!.convert(toView!.frame, to: from.view) : CGRect(origin: transitionViewController.view.center, size: .zero)
+                var destRect = toView != nil ? toView!.convert(toView!.frame, to: from.view) : CGRect(origin: transitionViewController.view.center, size: .zero)
                 
                 // avoid the animation scale, looks bad
                 if destRect.width > startRect.width || destRect.height > startRect.height {

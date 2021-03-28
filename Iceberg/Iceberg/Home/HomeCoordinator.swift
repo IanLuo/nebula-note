@@ -20,6 +20,8 @@ public class HomeCoordinator: Coordinator {
     
     private let disposeBag = DisposeBag()
     
+    private var tabController: TabContainerViewController!
+    
     public override init(stack: UINavigationController, dependency: Dependency) {
         super.init(stack: stack, dependency: dependency)
         
@@ -40,6 +42,9 @@ public class HomeCoordinator: Coordinator {
         agendaCoordinator.delegate = self
         self.addPersistentCoordinator(agendaCoordinator)
         
+        let kanbanCoordinator = KanbanCoordinator(stack: self.stack, dependency: self.dependency)
+        self.addPersistentCoordinator(kanbanCoordinator)
+        
         let captureCoordinator = CaptureListCoordinator(stack: self.stack, dependency: self.dependency, mode: CaptureListViewModel.Mode.manage)
         self.addPersistentCoordinator(captureCoordinator)
         
@@ -51,24 +56,30 @@ public class HomeCoordinator: Coordinator {
         browserCoordinator.delegate = self
         self.addPersistentCoordinator(browserCoordinator)
         
-        let favoriteCoordinator = BrowserCoordinator(stack: self.stack, dependency: self.dependency, usage: .favoriate)
-        favoriteCoordinator.delegate = self
-        self.addPersistentCoordinator(favoriteCoordinator)
+        let tabCoordinator = TabContainerCoordinator(stack: self.stack, dependency: self.dependency)
+        tabController = (tabCoordinator.viewController as! TabContainerViewController)
+        self.addPersistentCoordinator(tabCoordinator)
         
         let tabs = [Coordinator.createDefaultNavigationControlller(root: agendaCoordinator.viewController!),
                     Coordinator.createDefaultNavigationControlller(root: captureCoordinator.viewController!),
                     Coordinator.createDefaultNavigationControlller(root: searchCoordinator.viewController!),
                     Coordinator.createDefaultNavigationControlller(root: browserCoordinator.viewController!),
-                    Coordinator.createDefaultNavigationControlller(root: favoriteCoordinator.viewController!)]
+                    Coordinator.createDefaultNavigationControlller(root: kanbanCoordinator.viewController!),
+                    Coordinator.createDefaultNavigationControlller(root: tabCoordinator.viewController!)
+        ]
+        
+        tabController.navigationController?.isNavigationBarHidden = true
         
         dashboardViewController.addTab(tabs: [DashboardViewController.TabType.agenda(tabs[0], 0),
                                               DashboardViewController.TabType.captureList(tabs[1], 1),
                                               DashboardViewController.TabType.search(tabs[2], 2),
                                               DashboardViewController.TabType.documents(tabs[3], 3),
-                                              DashboardViewController.TabType.favorite(tabs[4], 4)])
+                                              DashboardViewController.TabType.kanban(tabs[4], 4),
+                                              DashboardViewController.TabType.editor(tabs[5], 5),
+        ])
         
         if isMacOrPad {
-            self.viewController = DesktopHomeViewController(dashboardViewController: dashboardViewController, coordinator: self, documentTabsContainerViewController: TabContainerViewController(viewModel: viewModel))
+            self.viewController = DesktopHomeViewController(dashboardViewController: dashboardViewController, coordinator: self)
         } else {
             let homeViewController = HomeViewController(masterViewController: navigationController)
             self.viewController = homeViewController
@@ -77,6 +88,10 @@ public class HomeCoordinator: Coordinator {
         
         self.dependency.eventObserver.registerForEvent(on: self, eventType: OpenDocumentEvent.self, queue: .main, action: { [weak self] (event: OpenDocumentEvent) -> Void in
             self?.openDocumentFromEvent(event: event)
+        })
+        
+        self.dependency.eventObserver.registerForEvent(on: self, eventType: SwitchTabEvent.self, queue: .main, action: { [weak self] (event: SwitchTabEvent) -> Void in
+            self?.selectTab(at: event.toTabIndex)
         })
     }
     
@@ -141,9 +156,7 @@ public class HomeCoordinator: Coordinator {
     
     @available(iOS 13.0, *)
     public func isCommandAvailable(command: UICommand) -> Bool {
-        guard let desktopHome = self.viewController as? DesktopHomeViewController else { return false }
-        
-        return desktopHome.isCommandAvailable(command: command)
+        return tabController.isCommandAvailable(command: command)
     }
     
     // MARK: - private -
@@ -190,6 +203,7 @@ extension HomeCoordinator: SearchCoordinatorDelegate {
         if isMacOrPad {
             self.addOnDesktopContainerTabIfNeeded(url: url, shouldSelect: true)
             self.selectOnDesktopContainerTab(url: url, location: location)
+            self.selectTab(at: 5)
         } else {
             self.openDocument(url: url, location: location)
         }
@@ -205,6 +219,7 @@ extension HomeCoordinator: AgendaCoordinatorDelegate {
         if isMacOrPad {
             self.addOnDesktopContainerTabIfNeeded(url: url, shouldSelect: true)
             self.selectOnDesktopContainerTab(url: url, location: location)
+            self.selectTab(at: 5)
         } else {
             self.openDocument(url: url, location: location)
         }
@@ -216,6 +231,7 @@ extension HomeCoordinator: BrowserCoordinatorDelegate {
         if isMacOrPad {
             self.addOnDesktopContainerTabIfNeeded(url: url, shouldSelect: true)
             self.selectOnDesktopContainerTab(url: url, location: 0)
+            self.selectTab(at: 5)
         } else {
             self.openDocument(url: url, location: 0)
         }
@@ -264,7 +280,7 @@ extension HomeCoordinator: DashboardViewControllerDelegate {
     public func toggleFullScreen() {
         let macHomeViewController = (self.viewController as? DesktopHomeViewController)
         
-        if macHomeViewController?.isLeftPartVisiable == true || macHomeViewController?.isMiddlePartVisiable == true {
+        if macHomeViewController?.isLeftPartVisiable == true {
             macHomeViewController?.hideLeftAndMiddlePart()
         } else {
             showAllParts()
@@ -273,7 +289,7 @@ extension HomeCoordinator: DashboardViewControllerDelegate {
     
     public func showAllParts() {
         (self.viewController as? DesktopHomeViewController)?.toggleLeftPartVisiability(visiable: true)
-        (self.viewController as? DesktopHomeViewController)?.toggleMiddlePartVisiability(visiable: true)
+//        (self.viewController as? DesktopHomeViewController)?.toggleMiddlePartVisiability(visiable: true)
     }
     
     public func toggleLeftPart() {
@@ -282,11 +298,11 @@ extension HomeCoordinator: DashboardViewControllerDelegate {
         }
     }
     
-    public func toggleMiddlePart() {
-        if let desktopViewController = self.viewController as? DesktopHomeViewController {
-            desktopViewController.toggleMiddlePartVisiability(visiable: !desktopViewController.isMiddlePartVisiable, animated: true)
-        }
-    }
+//    public func toggleMiddlePart() {
+//        if let desktopViewController = self.viewController as? DesktopHomeViewController {
+//            desktopViewController.toggleMiddlePartVisiability(visiable: !desktopViewController.isMiddlePartVisiable, animated: true)
+//        }
+//    }
     
     public func showHeadings(tag: String) {
         let agendaCoordinator = AgendaCoordinator(filterType: .tag(tag), stack: self.stack, dependency: self.dependency)
@@ -322,17 +338,16 @@ extension HomeCoordinator: DashboardViewControllerDelegate {
 
 extension HomeCoordinator {
     public func selectOnDesktopContainerTab(url: URL, location: Int) {
-        (self.viewController as? DesktopHomeViewController)?.selectDocument(url: url, location: location)
+        self.tabController.selectTab(url: url, location: location)
     }
     
     public func addOnDesktopContainerTabIfNeeded(url: URL, shouldSelect: Bool) {
-        if let macHomeViewController = self.viewController as? DesktopHomeViewController, !macHomeViewController.isDocumentAdded(url: url) {
-            let stack = Coordinator.createDefaultNavigationControlller()
-            let editorCoordinator = EditorCoordinator(stack: stack, dependency: self.dependency, usage: .editor(url, 0))
-            
-            macHomeViewController.addDocuments(editorCoordinator: editorCoordinator, souldSelect: shouldSelect)
-            self.addChild(editorCoordinator)
-        }
+        let stack = Coordinator.createDefaultNavigationControlller()
+        let editorCoordinator = EditorCoordinator(stack: stack, dependency: self.dependency, usage: .editor(url, 0))
+        
+        self.tabController.addTabs(editorCoordinator: editorCoordinator, shouldSelected: shouldSelect)
+        
+        self.addChild(editorCoordinator)
     }
 }
 

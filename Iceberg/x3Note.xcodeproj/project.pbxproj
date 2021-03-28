@@ -123,6 +123,8 @@
 		E44825A3219722C300C17568 /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44825A2219722C300C17568 /* Application.swift */; };
 		E44E479A23D3038000D41AA2 /* Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44E479923D3037F00D41AA2 /* Array.swift */; };
 		E44E60F521E9F2C0005AC25F /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44E60F421E9F2C0005AC25F /* Location.swift */; };
+		E452EC19260B7E3700F18C84 /* TabContainerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E452EC18260B7E3700F18C84 /* TabContainerViewModel.swift */; };
+		E452EC29260B7E5400F18C84 /* TabContainerCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E452EC28260B7E5400F18C84 /* TabContainerCoordinator.swift */; };
 		E45D74BE2329BA48003C1BC2 /* BrowserFolderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45D74BD2329BA47003C1BC2 /* BrowserFolderViewController.swift */; };
 		E45DCF8822AB646F007F34DB /* SimpleParserDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45DCF8722AB646F007F34DB /* SimpleParserDelegate.swift */; };
 		E45DCF8A22AB6649007F34DB /* String+Conenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45DCF8922AB6649007F34DB /* String+Conenience.swift */; };
@@ -205,6 +207,9 @@
 		E4A85B9A239BEECD00A41EFD /* ViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A85B99239BEECD00A41EFD /* ViewModelProtocol.swift */; };
 		E4AB056522068C7D00F98BEB /* FilteredItemsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4AB056422068C7D00F98BEB /* FilteredItemsViewController.swift */; };
 		E4ABC87324A59DFA00E20232 /* UIScrollView+Scrolling.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4ABC87224A59DFA00E20232 /* UIScrollView+Scrolling.swift */; };
+		E4AC58552608CEAA0039060E /* KanbanCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4AC58542608CEAA0039060E /* KanbanCoordinator.swift */; };
+		E4AC585E2608CECC0039060E /* KanbanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4AC585D2608CECC0039060E /* KanbanViewController.swift */; };
+		E4AC58672608CF050039060E /* KanbanViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4AC58662608CF050039060E /* KanbanViewModel.swift */; };
 		E4AE275322D1E42600315CE6 /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4AE275222D1E42600315CE6 /* LoadingViewController.swift */; };
 		E4AECB3F25BC047200566F1F /* SFSymbols.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E4AECB3E25BC047200566F1F /* SFSymbols.xcassets */; };
 		E4B19AB021C5363A00ED3463 /* SettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B19AAF21C5363A00ED3463 /* SettingsTests.swift */; };
@@ -475,7 +480,7 @@
 		E42A87FE21CFCAC500151C90 /* AttachmentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentViewModel.swift; sourceTree = "<group>"; };
 		E43227122517ABF60032BB8B /* AuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewController.swift; sourceTree = "<group>"; };
 		E4322724251F39A90032BB8B /* OneDrive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneDrive.swift; sourceTree = "<group>"; };
-		E43427F62121BF5B00EC6DC3 /* Nabula.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Nabula.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E43427F62121BF5B00EC6DC3 /* Nebula.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Nebula.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E43427F92121BF5B00EC6DC3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E43428002121BF5F00EC6DC3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E434280A2121BF5F00EC6DC3 /* x3NoteTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = x3NoteTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -519,6 +524,8 @@
 		E44E60F421E9F2C0005AC25F /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 		E451B27A223A191B000BEA34 /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
 		E451B280223A1F80000BEA34 /* assets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = assets.swift; sourceTree = "<group>"; };
+		E452EC18260B7E3700F18C84 /* TabContainerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabContainerViewModel.swift; sourceTree = "<group>"; };
+		E452EC28260B7E5400F18C84 /* TabContainerCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabContainerCoordinator.swift; sourceTree = "<group>"; };
 		E4537DDA25173F7400362DDF /* Medium.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Medium.swift; sourceTree = "<group>"; };
 		E4537DE32517841200362DDF /* PublishFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublishFactory.swift; sourceTree = "<group>"; };
 		E457D51F230C342200B307C7 /* CaptureActionExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CaptureActionExtension.entitlements; sourceTree = "<group>"; };
@@ -614,6 +621,9 @@
 		E4A85B99239BEECD00A41EFD /* ViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelProtocol.swift; sourceTree = "<group>"; };
 		E4AB056422068C7D00F98BEB /* FilteredItemsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilteredItemsViewController.swift; sourceTree = "<group>"; };
 		E4ABC87224A59DFA00E20232 /* UIScrollView+Scrolling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScrollView+Scrolling.swift"; sourceTree = "<group>"; };
+		E4AC58542608CEAA0039060E /* KanbanCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanbanCoordinator.swift; sourceTree = "<group>"; };
+		E4AC585D2608CECC0039060E /* KanbanViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanbanViewController.swift; sourceTree = "<group>"; };
+		E4AC58662608CF050039060E /* KanbanViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanbanViewModel.swift; sourceTree = "<group>"; };
 		E4AE275222D1E42600315CE6 /* LoadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingViewController.swift; sourceTree = "<group>"; };
 		E4AECB3E25BC047200566F1F /* SFSymbols.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = SFSymbols.xcassets; sourceTree = "<group>"; };
 		E4B19AAD21C5010100ED3463 /* SettingsAccessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsAccessor.swift; sourceTree = "<group>"; };
@@ -961,7 +971,6 @@
 			isa = PBXGroup;
 			children = (
 				E41CB16121D8897400EF0A3C /* HomeCoordinator.swift */,
-				E49FE98E245DB2B5005F634C /* TabContainerViewController.swift */,
 				E41CB16321D8899200EF0A3C /* HomeViewController.swift */,
 				E43FD50B2453E5E100D02394 /* DesktopHomeViewController.swift */,
 				E4729BA72204160200F22885 /* DashboardViewController.swift */,
@@ -1114,7 +1123,7 @@
 		E43427F72121BF5B00EC6DC3 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E43427F62121BF5B00EC6DC3 /* Nabula.app */,
+				E43427F62121BF5B00EC6DC3 /* Nebula.app */,
 				E434280A2121BF5F00EC6DC3 /* x3NoteTests.xctest */,
 				E43428152121BF6000EC6DC3 /* x3NoteUITests.xctest */,
 				E41CB19B21D88D9300EF0A3C /* Core.framework */,
@@ -1129,7 +1138,9 @@
 		E43427F82121BF5B00EC6DC3 /* Iceberg */ = {
 			isa = PBXGroup;
 			children = (
+				E452EC17260B7E1100F18C84 /* Tab */,
 				E4C1933E2248A0CA00EF4C95 /* Iceberg.entitlements */,
+				E4AC58532608CE920039060E /* Kanban */,
 				E4FC35A623EC4D8B00A371D3 /* AttachmentManager */,
 				E4F823EF23E17D6000ADADCB /* UserGuide */,
 				E46DE4D623A91291008A24CA /* Membership */,
@@ -1251,6 +1262,16 @@
 				E42574C22294DEF3008993BC /* InterfaceTheme.swift */,
 			);
 			path = Theme;
+			sourceTree = "<group>";
+		};
+		E452EC17260B7E1100F18C84 /* Tab */ = {
+			isa = PBXGroup;
+			children = (
+				E452EC28260B7E5400F18C84 /* TabContainerCoordinator.swift */,
+				E49FE98E245DB2B5005F634C /* TabContainerViewController.swift */,
+				E452EC18260B7E3700F18C84 /* TabContainerViewModel.swift */,
+			);
+			path = Tab;
 			sourceTree = "<group>";
 		};
 		E4537D4F25163C6B00362DDF /* Publish */ = {
@@ -1478,6 +1499,16 @@
 			path = Trash;
 			sourceTree = "<group>";
 		};
+		E4AC58532608CE920039060E /* Kanban */ = {
+			isa = PBXGroup;
+			children = (
+				E4AC58542608CEAA0039060E /* KanbanCoordinator.swift */,
+				E4AC585D2608CECC0039060E /* KanbanViewController.swift */,
+				E4AC58662608CF050039060E /* KanbanViewModel.swift */,
+			);
+			path = Kanban;
+			sourceTree = "<group>";
+		};
 		E4B1BED32342304200683E10 /* Builder */ = {
 			isa = PBXGroup;
 			children = (
@@ -1674,7 +1705,7 @@
 			);
 			name = x3Note;
 			productName = Iceland;
-			productReference = E43427F62121BF5B00EC6DC3 /* Nabula.app */;
+			productReference = E43427F62121BF5B00EC6DC3 /* Nebula.app */;
 			productType = "com.apple.product-type.application";
 		};
 		E43428092121BF5F00EC6DC3 /* x3NoteTests */ = {
@@ -2259,6 +2290,7 @@
 				E47E0E4C253BFBA90085BAA9 /* AppDelegate.swift in Sources */,
 				E4729BA82204160200F22885 /* DashboardViewController.swift in Sources */,
 				E41B893221E3497D009C5AD7 /* ImageAttachmentView.swift in Sources */,
+				E452EC29260B7E5400F18C84 /* TabContainerCoordinator.swift in Sources */,
 				E4B1BED02340E34C00683E10 /* BrowserFolderViewModel.swift in Sources */,
 				E4F823F123E17D7A00ADADCB /* UserGuideView.swift in Sources */,
 				E4A46A2B21B4109C00FBDA04 /* DocumentSearchViewController.swift in Sources */,
@@ -2272,6 +2304,7 @@
 				E4EFA45F222F684B00611FF5 /* CaptureViewController.swift in Sources */,
 				E41FA5752191569C001D8C63 /* DocumentEditorViewController.swift in Sources */,
 				E4773BAA21F7507E000F8F3F /* SearchTabelCellModel.swift in Sources */,
+				E452EC19260B7E3700F18C84 /* TabContainerViewModel.swift in Sources */,
 				E462DB9A223D259F00BF7AB4 /* DateSelectViewController.swift in Sources */,
 				E49F3E4C21B91885003F468D /* SettingsViewModel.swift in Sources */,
 				E4FE2B302557AAEF0061E0CB /* PublishViewController.swift in Sources */,
@@ -2282,6 +2315,7 @@
 				E41CB15B21D87CDD00EF0A3C /* SearchCoordinator.swift in Sources */,
 				E41B893421E3497D009C5AD7 /* LinkAttachmentView.swift in Sources */,
 				E42A87FD21CFC9B300151C90 /* AttachmentTextViewController.swift in Sources */,
+				E4AC58672608CF050039060E /* KanbanViewModel.swift in Sources */,
 				E46DE4DC23A912DC008A24CA /* MembershipViewModel.swift in Sources */,
 				E4B1BED22340EFF600683E10 /* BrowserCell.swift in Sources */,
 				E4EA857521D3AF0D00DD92F9 /* AgendaDateSelectView.swift in Sources */,
@@ -2340,9 +2374,11 @@
 				E465F8822242269000FA6E83 /* DocumentEditViewController+ToolbarDelegate.swift in Sources */,
 				E47829FD222E683B0054513E /* InputToolbar.swift in Sources */,
 				E41F86C5218EF4E1006C4CDB /* AgendaCoordinator.swift in Sources */,
+				E4AC58552608CEAA0039060E /* KanbanCoordinator.swift in Sources */,
 				E472FF9D2270A691004C8495 /* ExportSelectViewController.swift in Sources */,
 				E4C3890B23EC503C0077B393 /* AttachmentManagerViewModel.swift in Sources */,
 				E4CBCD1F2370695500A0FFDB /* ActivityHandler.swift in Sources */,
+				E4AC585E2608CECC0039060E /* KanbanViewController.swift in Sources */,
 				E4729BB02205372D00F22885 /* DashboardSubtypeItemViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2831,7 +2867,7 @@
 				MARKETING_VERSION = 1.3.2;
 				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -D DEBUG=1";
 				PRODUCT_BUNDLE_IDENTIFIER = com.wod.x3note;
-				PRODUCT_NAME = Nabula;
+				PRODUCT_NAME = Nebula;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SUPPORTS_MACCATALYST = YES;
@@ -2863,7 +2899,7 @@
 				);
 				MARKETING_VERSION = 1.3.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.wod.x3note;
-				PRODUCT_NAME = Nabula;
+				PRODUCT_NAME = Nebula;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SUPPORTS_MACCATALYST = YES;

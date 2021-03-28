@@ -213,7 +213,8 @@ public class DashboardViewController: UIViewController {
         case captureList(UIViewController, Int)
         case search(UIViewController, Int)
         case documents(UIViewController, Int)
-        case favorite(UIViewController, Int)
+        case kanban(UIViewController, Int)
+        case editor(UIViewController, Int)
         
         var viewController: UIViewController {
             switch self {
@@ -221,7 +222,8 @@ public class DashboardViewController: UIViewController {
             case .captureList(let viewController, _): return viewController
             case .search(let viewController, _): return viewController
             case .documents(let viewController, _): return viewController
-            case .favorite(let viewController, _): return viewController
+            case .kanban(let viewController, _): return viewController
+            case .editor(let viewController, _): return viewController
             }
         }
         
@@ -231,7 +233,8 @@ public class DashboardViewController: UIViewController {
             case .captureList(_ , let index): return index
             case .search(_ , let index): return index
             case .documents(_ , let index): return index
-            case .favorite(_, let index): return index
+            case .kanban(_, let index): return index
+            case .editor(_, let index): return index
             }
         }
     }

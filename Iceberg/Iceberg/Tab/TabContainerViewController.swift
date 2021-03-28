@@ -29,13 +29,15 @@ public class TabContainerViewController: UIViewController {
     
     private let disposeBag = DisposeBag()
     
-    private var viewModel: DashboardViewModel!
+    private var viewModel: TabContainerViewModel!
     
     public var currentEditorViewController: DocumentEditorViewController?
     
-    public convenience init(viewModel: DashboardViewModel) {
+    public convenience init(viewModel: TabContainerViewModel) {
         self.init()
         self.viewModel = viewModel
+        self.title = "Editor"
+        self.tabBarItem.image = Asset.SFSymbols.pencil.image
     }
     
     public override func viewDidLoad() {
@@ -47,7 +49,7 @@ public class TabContainerViewController: UIViewController {
         self.view.addSubview(self.tabBar)
         self.view.addSubview(self.container)
         
-        self.tabBar.sideAnchor(for: [.leading, .top, .traling], to: self.view, edgeInset: 0)
+        self.tabBar.sideAnchor(for: [.leading, .top, .traling], to: self.view, edgeInset: 0, considerSafeArea: true)
         
         self.tabBar.sizeAnchor(height: 54)
         
@@ -136,13 +138,13 @@ public class TabContainerViewController: UIViewController {
                 self.tabBar.selectDocument.onNext(url)
                 
                 // load content
-                viewController.start()
+                viewController.start(location)
                 
                 self.currentEditorViewController = viewController                
-            }
-            
-            if location > 0 {
-                viewController.scrollTo(location: location)
+            } else {
+                if location > 0 {
+                    viewController.scrollTo(location: location)
+                }
             }
         }
     }

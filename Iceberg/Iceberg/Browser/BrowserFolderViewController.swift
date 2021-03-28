@@ -135,12 +135,10 @@ public class BrowserFolderViewController: UIViewController {
                 self.navigationItem.rightBarButtonItems = [actionsBarButtonItem, createDocumentBarButtonItem]
             case .recent:
                 self.navigationItem.rightBarButtonItems = [actionsBarButtonItem]
-            }
-        
-        
-        case .favorite:
-            if viewModel.levelsToRoot > 0 {
-                self.navigationItem.rightBarButtonItem = createDocumentBarButtonItem
+            case .favorite:
+                if viewModel.levelsToRoot > 0 {
+                    self.navigationItem.rightBarButtonItem = createDocumentBarButtonItem
+                }
             }
         }
                 
@@ -154,7 +152,7 @@ public class BrowserFolderViewController: UIViewController {
         case .browser:
             // bind title from foldler name
             self.viewModel.title.asDriver(onErrorJustReturn: "").drive(self.rx.title).disposed(by: self.disposeBag)
-        case .recent:
+        case .recent, .favorite:
             break
         }
 
@@ -320,7 +318,11 @@ extension BrowserFolderViewController: UICollectionViewDelegateFlowLayout, UICol
         case .listSmall:
             return CGSize(width: collectionView.frame.width, height: 130)
         case .icon:
-            let width = (min(collectionView.bounds.width, collectionView.bounds.height) - Layout.edgeInsets.left - Layout.edgeInsets.right) / 3
+            var width = (min(collectionView.bounds.width, collectionView.bounds.height) - Layout.edgeInsets.left - Layout.edgeInsets.right) / 3
+            if isMacOrPad {
+                width = 200
+            }
+            
             return CGSize(width: width, height: width * 1.2)
         }
     }

@@ -150,3 +150,11 @@ public class iCloudAvailabilityChangedEvent: Event {
     public let isEnabled: Bool
     public init(isEnabled: Bool) { self.isEnabled = isEnabled }
 }
+
+// tab
+public class SwitchTabEvent: Event {
+    public let toTabIndex: Int
+    public init(toTabIndex: Int) {
+        self.toTabIndex = toTabIndex
+    }
+}

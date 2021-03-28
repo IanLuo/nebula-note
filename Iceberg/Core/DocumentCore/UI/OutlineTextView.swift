@@ -27,7 +27,7 @@ public class OutlineTextView: UITextView {
     public weak var outlineDelegate: OutlineTextViewDelegate?
     
     private let disposeBag = DisposeBag()
-    
+        
     public override init(frame: CGRect, textContainer: NSTextContainer?) {
         super.init(frame: frame, textContainer: textContainer)
         self.setup()
@@ -52,7 +52,7 @@ public class OutlineTextView: UITextView {
         }
         
         self.interface { (me, interface) in
-            let textView = me as! UITextView
+            let textView = me as! OutlineTextView
             textView.tintColor = interface.color.spotlight
             textView.backgroundColor = interface.color.background1
             textView.typingAttributes = [NSAttributedString.Key.font: interface.font.body,
@@ -63,7 +63,7 @@ public class OutlineTextView: UITextView {
                 let textInputTraits = self.value(forKey: "textInputTraits") as? NSObject
                 textInputTraits?.setValue(interface.color.spotlight, forKey: "insertionPointColor")
             }
-        }        
+        }
     }
     
     public override func layoutSubviews() {

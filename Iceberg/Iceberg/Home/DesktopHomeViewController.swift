@@ -18,7 +18,7 @@ import Doorbell
 public class DesktopHomeViewController: UIViewController {
     struct Constants {
         static let leftWidth: CGFloat = 300
-        static let middleWidth: CGFloat = 375
+//        static let middleWidth: CGFloat = 375
     }
     
     private let disposeBag: DisposeBag = DisposeBag()
@@ -33,20 +33,19 @@ public class DesktopHomeViewController: UIViewController {
     }()
     private var leftPart: UIView = UIView()
     private var middlePart: UIView = UIView()
-    private var rightPart: UIView = UIView()
+//    private var rightPart: UIView = UIView()
     
     private let toggleLeftPartButton = UIButton()
-    private let toggleMiddlePartButton = UIButton()
+//    private let toggleMiddlePartButton = UIButton()
     
     private var dashboardViewController: DashboardViewController!
-    private var documentTabsContainerViewController: TabContainerViewController!
+//    private var documentTabsContainerViewController: TabContainerViewController!
     
     private weak var coordinator: HomeCoordinator?
     
-    convenience init(dashboardViewController: DashboardViewController, coordinator: HomeCoordinator, documentTabsContainerViewController: TabContainerViewController) {
+    convenience init(dashboardViewController: DashboardViewController, coordinator: HomeCoordinator) {
         self.init()
         self.dashboardViewController = dashboardViewController
-        self.documentTabsContainerViewController = documentTabsContainerViewController
         self.coordinator = coordinator
     }
     
@@ -55,31 +54,31 @@ public class DesktopHomeViewController: UIViewController {
         self.view.addSubview(self.toolBar)
         self.view.addSubview(self.middlePart)
         self.view.addSubview(self.leftPart)
-        self.view.addSubview(self.rightPart)
+//        self.view.addSubview(self.rightPart)
         
         self.setupUI()
         
         self.toggleLeftPartVisiability(visiable: true, animated: false)
-        self.toggleMiddlePartVisiability(visiable: true, animated: false)
+//        self.toggleMiddlePartVisiability(visiable: true, animated: false)
     }
     
-    public func isDocumentAdded(url: URL) -> Bool {
-        return self.documentTabsContainerViewController.isDocumentAdded(url: url)
-    }
+//    public func isDocumentAdded(url: URL) -> Bool {
+//        return self.documentTabsContainerViewController.isDocumentAdded(url: url)
+//    }
     
-    public func selectDocument(url: URL, location: Int) {
-        self.documentTabsContainerViewController.selectTab(url: url, location: location)
-    }
+//    public func selectDocument(url: URL, location: Int) {
+//        self.documentTabsContainerViewController.selectTab(url: url, location: location)
+//    }
     
-    public func addDocuments(editorCoordinator: EditorCoordinator, souldSelect: Bool) {
-        self.documentTabsContainerViewController.addTabs(editorCoordinator: editorCoordinator, shouldSelected: souldSelect)
-    }
+//    public func addDocuments(editorCoordinator: EditorCoordinator, souldSelect: Bool) {
+//        self.documentTabsContainerViewController.addTabs(editorCoordinator: editorCoordinator, shouldSelected: souldSelect)
+//    }
     
-    @available(iOS 13.0, *)
-    public func isCommandAvailable(command: UICommand) -> Bool {
-        guard command.propertyList != nil else { return true }
-        return self.documentTabsContainerViewController.isCommandAvailable(command: command)
-    }
+//    @available(iOS 13.0, *)
+//    public func isCommandAvailable(command: UICommand) -> Bool {
+//        guard command.propertyList != nil else { return true }
+//        return self.documentTabsContainerViewController.isCommandAvailable(command: command)
+//    }
         
     private func setupUI() {
         self.toolBar.sizeAnchor(height: 100)
@@ -89,20 +88,20 @@ public class DesktopHomeViewController: UIViewController {
         self.leftPart.sizeAnchor(width: Constants.leftWidth)
         self.leftPart.topAnchor.constraint(equalTo: self.toolBar.bottomAnchor).isActive = true
         
-        self.middlePart.sideAnchor(for: .bottom, to: self.view, edgeInset: 0)
-        self.middlePart.sizeAnchor(width: Constants.middleWidth)
+        self.middlePart.sideAnchor(for: [.bottom, .right], to: self.view, edgeInset: 0)
+//        self.middlePart.sizeAnchor(width: Constants.middleWidth)
         
         self.toolBar.columnAnchor(view: self.middlePart, alignment: .none)
         self.leftPart.rowAnchor(view: self.middlePart)
         
-        self.rightPart.sideAnchor(for: [.bottom, .right], to: self.view, edgeInset: 0)
-        self.rightPart.topAnchor.constraint(equalTo: self.toolBar.bottomAnchor).isActive = true
-        self.rightPart.leftAnchor.constraint(equalTo: self.middlePart.rightAnchor).isActive = true
+//        self.rightPart.sideAnchor(for: [.bottom, .right], to: self.view, edgeInset: 0)
+//        self.rightPart.topAnchor.constraint(equalTo: self.toolBar.bottomAnchor).isActive = true
+//        self.rightPart.leftAnchor.constraint(equalTo: self.middlePart.rightAnchor).isActive = true
         
         self.middlePart.backgroundColor = InterfaceTheme.Color.background1
         self.setupToolBar()
         self.setupLeftPart()
-        self.setupRightPart()
+//        self.setupRightPart()
         
         
         if #available(iOS 13.0, *) {
@@ -161,21 +160,21 @@ public class DesktopHomeViewController: UIViewController {
             self?.toggleLeftPartVisiability(visiable: !toggleLeftPartButton.isSelected)
         }).disposed(by: self.disposeBag)
                 
-        self.toggleMiddlePartButton.interface { (me, theme) in
-            let button = me as! UIButton
-            button.setImage(Asset.Assets.middlePart.image.fill(color: theme.color.interactive), for: .normal)
-            button.setImage(Asset.Assets.middlePart.image.fill(color: theme.color.descriptive), for: .selected)
-        }
+//        self.toggleMiddlePartButton.interface { (me, theme) in
+//            let button = me as! UIButton
+//            button.setImage(Asset.Assets.middlePart.image.fill(color: theme.color.interactive), for: .normal)
+//            button.setImage(Asset.Assets.middlePart.image.fill(color: theme.color.descriptive), for: .selected)
+//        }
         
-        self.toggleMiddlePartButton.rx.tap.subscribe(onNext: { [weak self, unowned toggleMiddlePartButton] in
-            self?.toggleMiddlePartVisiability(visiable: !toggleMiddlePartButton.isSelected)
-        }).disposed(by: self.disposeBag)
+//        self.toggleMiddlePartButton.rx.tap.subscribe(onNext: { [weak self, unowned toggleMiddlePartButton] in
+//            self?.toggleMiddlePartVisiability(visiable: !toggleMiddlePartButton.isSelected)
+//        }).disposed(by: self.disposeBag)
         
         let actionsStack = UIStackView()
         actionsStack.spacing = 20
         actionsStack.addArrangedSubview(iconButton)
         actionsStack.addArrangedSubview(toggleLeftPartButton)
-        actionsStack.addArrangedSubview(toggleMiddlePartButton)
+//        actionsStack.addArrangedSubview(toggleMiddlePartButton)
         
         let otherStack = UIStackView()
         otherStack.spacing = 20
@@ -193,7 +192,7 @@ public class DesktopHomeViewController: UIViewController {
     
     public func hideLeftAndMiddlePart() {
         self.toggleLeftPartVisiability(visiable: false)
-        self.toggleMiddlePartVisiability(visiable: false)
+//        self.toggleMiddlePartVisiability(visiable: false)
     }
     
     private func setupLeftPart() {
@@ -203,12 +202,12 @@ public class DesktopHomeViewController: UIViewController {
         nav.view.allSidesAnchors(to: self.leftPart, edgeInset: 0)
     }
     
-    private func setupRightPart() {
-        self.addChild(self.documentTabsContainerViewController)
+//    private func setupRightPart() {
+//        self.addChild(self.documentTabsContainerViewController)
         
-        self.rightPart.addSubview(self.documentTabsContainerViewController.view)
-        self.documentTabsContainerViewController.view.allSidesAnchors(to: self.rightPart, edgeInset: 0)
-    }
+//        self.rightPart.addSubview(self.documentTabsContainerViewController.view)
+//        self.documentTabsContainerViewController.view.allSidesAnchors(to: self.rightPart, edgeInset: 0)
+//    }
     
     internal func toggleLeftPartVisiability(visiable: Bool, animated: Bool = true) {
         self.toggleLeftPartButton.isSelected = visiable
@@ -234,29 +233,29 @@ public class DesktopHomeViewController: UIViewController {
         return self.leftPart.constraint(for: .left)?.constant == 0
     }
     
-    internal func toggleMiddlePartVisiability(visiable: Bool, animated: Bool = true) {
-        self.toggleMiddlePartButton.isSelected = visiable
-        
-        if visiable {
-            self.leftPart.constraint(for: .right)?.constant = 0
-        } else {
-            self.leftPart.constraint(for: .right)?.constant = Constants.middleWidth
-        }
-        
-        self.toggleMiddlePartButton.isSelected = visiable
-        
-        if animated {
-            UIView.animate(withDuration: 0.3) {
-                self.view.layoutIfNeeded()
-            }
-        } else {
-            self.view.layoutIfNeeded()
-        }
-    }
+//    internal func toggleMiddlePartVisiability(visiable: Bool, animated: Bool = true) {
+//        self.toggleMiddlePartButton.isSelected = visiable
+//
+//        if visiable {
+//            self.leftPart.constraint(for: .right)?.constant = 0
+//        } else {
+//            self.leftPart.constraint(for: .right)?.constant = Constants.middleWidth
+//        }
+//
+//        self.toggleMiddlePartButton.isSelected = visiable
+//
+//        if animated {
+//            UIView.animate(withDuration: 0.3) {
+//                self.view.layoutIfNeeded()
+//            }
+//        } else {
+//            self.view.layoutIfNeeded()
+//        }
+//    }
     
-    internal var isMiddlePartVisiable: Bool {
-        return self.leftPart.constraint(for: .right)?.constant == 0
-    }
+//    internal var isMiddlePartVisiable: Bool {
+//        return self.leftPart.constraint(for: .right)?.constant == 0
+//    }
     
     public func showInMiddlePart(viewController: UIViewController) {
         if let lastChildViewController = lastChildViewController {
@@ -269,9 +268,9 @@ public class DesktopHomeViewController: UIViewController {
         viewController.view.allSidesAnchors(to: self.middlePart, edgeInset: 0)
         lastChildViewController = viewController
         
-        if !self.isMiddlePartVisiable {
-            self.toggleMiddlePartVisiability(visiable: true)
-        }
+//        if !self.isMiddlePartVisiable {
+//            self.toggleMiddlePartVisiability(visiable: true)
+//        }
     }
     
     private func _showFeedbackOptions(from: UIView) {

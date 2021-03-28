@@ -13,7 +13,7 @@ public enum KeyAction: String, CaseIterable {
     case captureIdea
     // view
     case toggleLeftPart
-    case toggleMiddlePart
+//    case toggleMiddlePart
     case agendaTab
     case searchTab
     case ideaTab
@@ -61,8 +61,8 @@ public enum KeyAction: String, CaseIterable {
             return true
         case .toggleLeftPart:
             return true
-        case .toggleMiddlePart:
-            return true
+//        case .toggleMiddlePart:
+//            return true
         case .agendaTab:
             return true
         case .searchTab:
@@ -93,8 +93,8 @@ public enum KeyAction: String, CaseIterable {
             return ""
         case .toggleLeftPart:
             return L10n.Key.Command.toggleLeftPart
-        case .toggleMiddlePart:
-            return L10n.Key.Command.toggleMiddlePart
+//        case .toggleMiddlePart:
+//            return L10n.Key.Command.toggleMiddlePart
         case .agendaTab:
             return L10n.Key.Command.agendaTab
         case .searchTab:
@@ -186,8 +186,8 @@ public enum KeyAction: String, CaseIterable {
             return OtherAction.captureIdea
         case .toggleLeftPart:
             return OtherAction.toggleLeftPart
-        case .toggleMiddlePart:
-            return OtherAction.toggleMiddlePart
+//        case .toggleMiddlePart:
+//            return OtherAction.toggleMiddlePart
         case .agendaTab:
             return OtherAction.agendaTab
         case .searchTab:
@@ -278,7 +278,7 @@ public struct KeyBinding {
     let keyBindingMap: [KeyAction: String] = [
         .captureIdea: "shift`cmd`c",
         .toggleLeftPart: "cmd`shift`1",
-        .toggleMiddlePart: "cmd`shift`2",
+//        .toggleMiddlePart: "cmd`shift`2",
         .agendaTab: "ctl`cmd`1",
         .ideaTab: "ctl`cmd`2",
         .searchTab: "ctl`cmd`3",
@@ -345,8 +345,8 @@ public struct KeyBinding {
                                      image: nil,
                                      identifier: Menu.panel.identifier,
                                      options: [],
-                                     children: [KeyAction.toggleLeftPart,
-                                                KeyAction.toggleMiddlePart,
+                                     children: [KeyAction.toggleLeftPart
+//                                                KeyAction.toggleMiddlePart,
                                         ].map { self.create(for: $0) }),
                               afterMenu: UIMenu.Identifier.application)
                 

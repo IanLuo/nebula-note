@@ -123,6 +123,7 @@ public enum Asset {
     public static let plus = ImageAsset(name: "plus")
     public static let power = ImageAsset(name: "power")
     public static let recordCircle = ImageAsset(name: "record.circle")
+    public static let rectangleSplit3x1 = ImageAsset(name: "rectangle.split.3x1")
     public static let scribble = ImageAsset(name: "scribble")
     public static let sliderHorizontal3 = ImageAsset(name: "slider.horizontal.3")
     public static let sparkles = ImageAsset(name: "sparkles")

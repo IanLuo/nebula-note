@@ -22,13 +22,11 @@ public class BrowserCoordinator: Coordinator {
     public enum Usage {
         case browseDocument
         case chooseHeader
-        case favoriate
         
         var browserFolderMode: BrowserFolderViewModel.Mode {
             switch self {
             case .browseDocument: return .browser
             case .chooseHeader: return .chooser
-            case .favoriate: return .favorite
             }
         }
     }
@@ -48,11 +46,12 @@ public class BrowserCoordinator: Coordinator {
         
         let browserFolderViewModel = BrowserFolderViewModel(url: URL.documentBaseURL, mode: usage.browserFolderMode, coordinator: self, dataMode: DataMode.browser)
         let browserFolderViewController = BrowserFolderViewController(viewModel: browserFolderViewModel)
-        
+        let browseFavoriteViewController = BrowserFolderViewController(viewModel: BrowserFolderViewModel(coordinator: self, dataMode: .favorite))
         let browseRecentViewController = BrowserFolderViewController(viewModel: BrowserFolderViewModel(coordinator: self, dataMode: .recent))
         
         let browseViewController = BrowserViewController(recentViewController: browseRecentViewController,
                                                          browserFolderViewController: browserFolderViewController,
+                                                         favoriateViewController: browseFavoriteViewController,
                                                          coordinator: self)
         
         self.viewController = browseViewController
@@ -60,7 +59,7 @@ public class BrowserCoordinator: Coordinator {
         // binding
         browserFolderViewController.output.onSelectDocument.subscribe(onNext: { [unowned self] url in
             switch self.usage {
-            case .browseDocument, .favoriate:
+            case .browseDocument:
                 self.delegate?.didSelectDocument(url: url, coordinator: self)
                 self.didSelectDocumentAction?(url)
             case .chooseHeader:
@@ -80,7 +79,6 @@ public class BrowserCoordinator: Coordinator {
                 self.didSelectDocumentAction?(url)
             case .chooseHeader:
                 self.showOutlineHeadings(url: url)
-            default: break
             }
         }).disposed(by: self.disposeBag)
     }

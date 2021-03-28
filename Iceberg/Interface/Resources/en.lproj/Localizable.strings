@@ -257,6 +257,7 @@
 "browser.mode.list" = "List";
 "browser.mode.icon" = "Icon";
 
+"browser.recent.title" = "Recent";
 // agenda
 "agenda.title" = "Agenda";
 "agenda.startToday" = "Start today";

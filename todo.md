@@ -1,12 +1,17 @@
----- 1.2.9 ----
+---- 1.3.0 ----
 [ ] import improvement
+  [ ] html
+  [ ] md
+  [ ] drag and drop and paste
+      drag a file into any view, if the file is convertable, convert it, if it's pure text, create a new file, other format just add as attachment.
+      when dragging some text, only work for editor, use converter try to convert it, and then past into editor
+[ ] entry for insert new heading at top / bottom
 [ ] improve close tab performance
 [ ] search in editor
 [ ] fast open document
-[ ] new document view for big icon
-[ ] change capture interface
+[x] new document view for big icon
+[x] change capture interface
 [ ] use tab for iPhone version
-[ ] for desktop, the parts icon, move with the parts opens
 ---- 1.2.8 ----
 [x] add favorite function
 [x] update icons

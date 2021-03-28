@@ -13,7 +13,7 @@ import RxCocoa
 import RxDataSources
 
 public enum DataMode {
-    case browser, recent
+    case browser, recent, favorite
 }
 
 public struct BrowserDocumentSection {
@@ -42,10 +42,9 @@ public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
     public enum Mode {
         case chooser
         case browser
-        case favorite
         
         public var showActions: Bool {
-            return self == .browser || self == .favorite
+            return self == .browser
         }
         
         public var showChooseIndicator: Bool {
@@ -144,7 +143,6 @@ public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
         
         // if the mode is browse or choose, and data mode is browser, search from all files
         switch self.mode {
-        case .favorite: break
         default:
             switch self.dataMode! {
             case .browser:
@@ -167,23 +165,15 @@ public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
     public func reload() {
         switch self.dataMode! {
         case .browser:
-            // when loading data, for root page, loading favorite list for favorite, others load from root directory
-            if self.isRoot {
-                switch self.mode {
-                case .favorite:
-                    self.loadFavorites().subscribe(onNext: { [weak self] in
-                        self?.allLoadedDocuments.accept($0)
-                    }).disposed(by: self.disposeBag)
-                    return
-                case .browser, .chooser: break
-                }
-            }
-            
             self.loadFolderData(url: self.url)
                 .subscribe(onNext: { [weak self] in
                     self?.allLoadedDocuments.accept($0)
                 })
                 .disposed(by: self.disposeBag)
+        case .favorite:
+            self.loadFavorites().subscribe(onNext: { [weak self] in
+                self?.allLoadedDocuments.accept($0)
+            }).disposed(by: self.disposeBag)
         case .recent:
             self.allLoadedDocuments.accept(self.loadRecent())
         }

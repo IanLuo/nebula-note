@@ -66,7 +66,8 @@ public class DocumentEditorViewController: UIViewController {
         NotificationCenter.default.removeObserver(self)
     }
     
-    public func start() {
+    public func start(_ location: Int = 0) {
+        self.viewModel.onLoadingLocation = location
         self.viewModel.start()
     }
     
@@ -479,40 +480,29 @@ extension DocumentEditorViewController: DocumentEditViewModelDelegate {
     }
     
     internal func scrollTo(location: Int, shouldScrollToZero: Bool = false) {
-        if location > 0 {
+        let moveToLocationAndFlash: (Int) -> Void = { location in
+            if !self.textView.isFirstResponder {
+                self.textView.becomeFirstResponder()
+            }
+            
+            self.textView.selectedRange = NSRange(location: location, length: 0)
+            self.textView.scrollRangeToVisible(self.textView.selectedRange)
+            
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.3) {
+                self.textView.flashLine(location: location)
+            }
+        }
+        
+        if shouldScrollToZero || location > 0 {
             self.viewModel.unfold(location: location)
             
             if isMac {
                 DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.3) {
-                    if !self.textView.isFirstResponder {
-                        self.textView.becomeFirstResponder()
-                    }
+                    moveToLocationAndFlash(location)
                 }
             } else {
-                if !self.textView.isFirstResponder {
-                    self.textView.becomeFirstResponder()
-                }
+                moveToLocationAndFlash(location)
             }
-            self.textView.selectedRange = NSRange(location: location, length: 0)
-            self.textView.scrollRangeToVisible(self.textView.selectedRange)
-            
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.2) {
-                self.textView.flashLine(location: location)
-            }
-        } else if shouldScrollToZero && location == 0 {
-            if isMac {
-                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.3) {
-                    if !self.textView.isFirstResponder {
-                        self.textView.becomeFirstResponder()
-                    }
-                }
-            } else {
-                if !self.textView.isFirstResponder {
-                    self.textView.becomeFirstResponder()
-                }
-            }
-            self.textView.selectedRange = NSRange(location: 0, length: 0)
-            self.textView.scrollRangeToVisible(self.textView.selectedRange)
         }
     }
     
