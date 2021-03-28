@@ -163,14 +163,8 @@ public class HomeCoordinator: Coordinator {
     
     private func initializedDefaultOpeningDocuments() {
         if let opendFiles = self.dependency.settingAccessor.openedDocuments?.filter({ FileManager.default.fileExists(atPath: $0.path) }) {
-            if isMacOrPad {
-                for (index, url) in opendFiles.enumerated() {
-                    self.addOnDesktopContainerTabIfNeeded(url: url, shouldSelect: index == opendFiles.count - 1)
-                }
-            } else {
-                //                    if let first = opendFiles.first, FileManager.default.fileExists(atPath: first.path) {
-                //                        self?.topCoordinator?.openDocument(url: first, location: 0)
-                //                    }
+            for (index, url) in opendFiles.enumerated() {
+                self.addOnDesktopContainerTabIfNeeded(url: url, shouldSelect: index == opendFiles.count - 1)
             }
         }
     }

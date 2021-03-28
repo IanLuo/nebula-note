@@ -66,7 +66,7 @@ public class CaptureGlobalEntranceWindow: UIWindow {
     }
     
     public func hide() {
-        if isPhone {
+        if isPhone && self.alpha == 1 {
             UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveEaseInOut, animations: {
                 self.frame = CGRect(x: UIScreen.main.bounds.width, y: UIScreen.main.bounds.height - self._fromWindow!.safeArea.bottom - 60 - 30, width: self.frame.size.width, height: self.frame.size.height)
             }, completion: { _ in
@@ -79,6 +79,7 @@ public class CaptureGlobalEntranceWindow: UIWindow {
     public func show() {
         if isPhone {
             guard self.isForcedToHide == false else { return }
+            guard self.alpha == 0 else { return }
             
             self.alpha = 1
             UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveEaseInOut, animations: {

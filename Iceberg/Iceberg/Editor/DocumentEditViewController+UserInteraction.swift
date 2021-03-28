@@ -243,6 +243,8 @@ extension DocumentEditorViewController: OutlineTextViewDelegate {
         renameFormViewController.title = title
         renameFormViewController.addTextFied(title: title, placeHoder: "", defaultValue: self.viewModel.url.packageName) // 不需要显示 placeholder, default value 有值
         renameFormViewController.onSaveValueAutoDismissed = { [weak self] formValue in
+            self?.viewModel.showGlobalCaptureEntry()
+            
             guard let strongSelf = self else { return }
             if let newName = formValue[title] as? String {
                 strongSelf.viewModel.rename(to: newName.escaped) { error in
@@ -260,10 +262,6 @@ extension DocumentEditorViewController: OutlineTextViewDelegate {
             }
         }
         
-        renameFormViewController.onCancel = { viewController in
-            viewController.dismiss(animated: true)
-        }
-        
         // 显示给用户，是否可以使用这个文件名
         renameFormViewController.onValidating = { formData in
             if !self.viewModel.url.isNameAvailable(newName: formData[title] as! String) {
@@ -275,8 +273,11 @@ extension DocumentEditorViewController: OutlineTextViewDelegate {
         
         renameFormViewController.onCancel = { viewController in
             viewController.dismiss(animated: true, completion: nil)
+            self.viewModel.showGlobalCaptureEntry()
         }
 
         renameFormViewController.present(from: self, at: self.textView, location: at)
+        
+        self.viewModel.hideGlobalCaptureEntry()
     }
 }

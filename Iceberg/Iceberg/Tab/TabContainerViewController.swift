@@ -135,8 +135,6 @@ public class TabContainerViewController: UIViewController {
                 self.addChild(viewController)
                 viewController.view.allSidesAnchors(to: self.container, edgeInset: 0)
                 
-                self.tabBar.selectDocument.onNext(url)
-                
                 // load content
                 viewController.start(location)
                 
@@ -146,6 +144,8 @@ public class TabContainerViewController: UIViewController {
                     viewController.scrollTo(location: location)
                 }
             }
+            
+            self.tabBar.selectDocument.onNext(url)
         }
     }
     
@@ -288,6 +288,8 @@ private class TabBar: UIScrollView {
             strongSelf.stackView.insertArrangedSubview(newTab, at: 0)
             newTab.sizeAnchor(height: 44)
             newTab.widthAnchor.constraint(lessThanOrEqualToConstant: 200).isActive = true
+        
+            strongSelf.setContentOffset(.zero, animated: false)
             
             newTab.onCloseTapped.subscribe(onNext: { [weak newTab] url in
                 guard let newTab = newTab else { return }

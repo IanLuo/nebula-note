@@ -81,6 +81,16 @@ public class BrowserCoordinator: Coordinator {
                 self.showOutlineHeadings(url: url)
             }
         }).disposed(by: self.disposeBag)
+        
+        browseFavoriteViewController.output.onSelectDocument.subscribe(onNext: { [unowned self] url in
+            switch self.usage {
+            case .browseDocument:
+                self.delegate?.didSelectDocument(url: url, coordinator: self)
+                self.didSelectDocumentAction?(url)
+            case .chooseHeader:
+                self.showOutlineHeadings(url: url)
+            }
+        }).disposed(by: self.disposeBag)
     }
     
     public func showOutlineHeadings(url: URL) {

@@ -33,9 +33,9 @@ public class DocumentEditorViewController: UIViewController {
     private let disposeBag = DisposeBag()
     private let _contentEdgeInsect: UIEdgeInsets = {
         if isMacOrPad {
-            return UIEdgeInsets(top: 30, left: 60, bottom: 0, right: 100)
+            return UIEdgeInsets(top: 30, left: 60, bottom: 100, right: 100)
         } else {
-            return UIEdgeInsets(top: 30, left: 12, bottom: 0, right: 20)
+            return UIEdgeInsets(top: 30, left: 12, bottom: 100, right: 20)
         }
     }()
     
@@ -84,8 +84,6 @@ public class DocumentEditorViewController: UIViewController {
         view.spacing = 20
         return view
     }()
-    
-    private var _keyboardHeight: CGFloat = 0
     
     private var isInitTheme: Bool = true
     public override func viewDidLoad() {
@@ -370,6 +368,10 @@ public class DocumentEditorViewController: UIViewController {
             UIView.animate(withDuration: 0.2) {
                 self.textView.contentInset = self._contentEdgeInsect
             }
+            
+            self.viewModel.showGlobalCaptureEntry()
+        } else if notification.name == UIResponder.keyboardWillShowNotification {
+            self.viewModel.hideGlobalCaptureEntry()
         } else {
             self.textView.contentInset = UIEdgeInsets(top: self._contentEdgeInsect.top, left: self._contentEdgeInsect.left, bottom: keyboardViewEndFrame.height - view.safeAreaInsets.bottom, right: self._contentEdgeInsect.right)
             self.textView.scrollRangeToVisible(self.textView.selectedRange)

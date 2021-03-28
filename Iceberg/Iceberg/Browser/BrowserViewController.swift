@@ -32,9 +32,7 @@ public class BrowserViewController: UIViewController {
     public struct Output {
         public let canceld: PublishSubject<Void> = PublishSubject()
     }
-    
-    private var recentViewController: BrowserFolderViewController!
-    private var browserFolderViewController: BrowserFolderViewController!
+        
     public let output: Output = Output()
     private let disposeBag = DisposeBag()
     
@@ -104,10 +102,7 @@ public class BrowserViewController: UIViewController {
             self.model.shouldShowRecentView = true
             self.model.shouldShowHelpButton = true
         }
-        
-        self.recentViewController = recentViewController
-        self.browserFolderViewController = browserFolderViewController
-        
+                
         self.title = L10n.Browser.title
         self.navigationItem.titleView = self.viewTypeSegmented
         self.tabBarItem = UITabBarItem(title: "", image: Asset.SFSymbols.doc.image, tag: 0)
