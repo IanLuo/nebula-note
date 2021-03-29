@@ -78,7 +78,6 @@ public class HomeCoordinator: Coordinator {
         tabController.delegate = self
         self.addPersistentCoordinator(tabCoordinator)
         
-        tabController.navigationController?.isNavigationBarHidden = true
         
         dashboardViewController.addTab(tabs: [DashboardViewController.TabType.agenda(Coordinator.createDefaultNavigationControlller(root: agendaCoordinator.viewController!), TabIndex.agenda.index),
                                               DashboardViewController.TabType.captureList(Coordinator.createDefaultNavigationControlller(root: captureCoordinator.viewController!), TabIndex.idea.index),

@@ -49,6 +49,8 @@ public class TabContainerViewController: UIViewController {
     }
     
     private func setupUI() {
+        self.navigationController?.isNavigationBarHidden = true
+        
         self.view.addSubview(self.tabBar)
         self.view.addSubview(self.container)
         self.view.addSubview(self.openDocumentButton)
