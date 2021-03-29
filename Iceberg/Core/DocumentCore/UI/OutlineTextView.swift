@@ -239,7 +239,9 @@ public class OutlineTextView: UITextView {
     
     public func flashLine(location: Int) {
         var effectiveRange: NSRange = NSRange(location: 0, length: 0)
-        let rect = self.layoutManager.lineFragmentRect(forGlyphAt: location, effectiveRange: &effectiveRange)
+        var rect = self.layoutManager.lineFragmentRect(forGlyphAt: location, effectiveRange: &effectiveRange)
+        
+        rect.origin.y += self.textContainerInset.top
         
         let view: UIView = UIView()
         view.backgroundColor = UIColor.lightGray.withAlphaComponent(0.5)

@@ -23,6 +23,8 @@
 "selector.empty" = "没有内容";
 
 "dashboard" = "控制台";
+"dashboard.kanban" = "看板";
+"dashboard.editor" = "编辑器";
 
 "document.browser.delete.confirm" = "删除这个文档？";
 

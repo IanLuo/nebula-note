@@ -22,7 +22,7 @@ public class ActivityHandler {
                 guard isComplete else { return }
                 for case let homeCoordinator in application.children where homeCoordinator is HomeCoordinator {
                     let homeCoordinator = homeCoordinator as! HomeCoordinator
-                    homeCoordinator.selectTab(at: 3)
+                    homeCoordinator.selectTab(.browser)
                     homeCoordinator.dependency.documentManager.add(title: L10n.Browser.Title.untitled, below: nil) { [unowned homeCoordinator] url in
                         if let top = homeCoordinator.topCoordinator, let url = url {
                             homeCoordinator.dependency.globalCaptureEntryWindow?.hide()

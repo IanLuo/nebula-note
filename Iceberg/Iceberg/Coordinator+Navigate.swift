@@ -190,19 +190,19 @@ extension Coordinator {
         }
         
         binding.addAction(for: KeyAction.agendaTab, on: self.viewController) {
-            (self.rootCoordinator as? Application)?.homeCoordinator?.selectTab(at: 0)
+            (self.rootCoordinator as? Application)?.homeCoordinator?.selectTab(.agenda)
         }
         
         binding.addAction(for: KeyAction.ideaTab, on: self.viewController) {
-            (self.rootCoordinator as? Application)?.homeCoordinator?.selectTab(at: 1)
+            (self.rootCoordinator as? Application)?.homeCoordinator?.selectTab(.idea)
         }
         
         binding.addAction(for: KeyAction.searchTab, on: self.viewController) {
-            (self.rootCoordinator as? Application)?.homeCoordinator?.selectTab(at: 2)
+            (self.rootCoordinator as? Application)?.homeCoordinator?.selectTab(.search)
         }
         
         binding.addAction(for: KeyAction.browserTab, on: self.viewController) {
-            (self.rootCoordinator as? Application)?.homeCoordinator?.selectTab(at: 3)
+            (self.rootCoordinator as? Application)?.homeCoordinator?.selectTab(.browser)
         }
         
         binding.addAction(for: KeyAction.cancel, on: self.viewController) {

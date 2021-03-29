@@ -25,8 +25,8 @@ public class KanbanViewController: UIViewController {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
         
-        self.title = "Kanban"
-        self.tabBarItem.image = Asset.SFSymbols.rectangleSplit3x1.image
+        self.title = TabIndex.kanban.name
+            self.tabBarItem.image = TabIndex.kanban.icon
     }
     
     required init?(coder: NSCoder) {

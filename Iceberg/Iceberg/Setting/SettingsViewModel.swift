@@ -58,8 +58,8 @@ public class SettingsViewModel: ViewModelProtocol {
         mainPage.addGroup(SettingsViewModel.Group(title: "General", items: [
             Item(label: "Default first screen",
                  value: ItemValue.list(SettingsAccessor.Item.landingTabIndex.get(Int.self) ?? 3,
-                                       LandingTab.allCases.map { $0.name },
-                                       LandingTab.allCases.map { $0.icon }),
+                                       TabIndex.allCases.map { $0.name },
+                                       TabIndex.allCases.map { $0.icon }),
                  action: { newIndex in
                     SettingsAccessor.Item.landingTabIndex.set(newIndex, completion: {})
             })
@@ -198,26 +198,27 @@ public class SettingsViewModel: ViewModelProtocol {
     }
 }
 
-enum LandingTab: CaseIterable {
-    case agenda, captureList, search, browser, favorite
-    
+
+extension TabIndex {
     var name: String {
         switch self {
         case .agenda: return  L10n.Agenda.title
-        case .captureList: return L10n.CaptureList.title
+        case .idea: return L10n.CaptureList.title
         case .search: return L10n.Search.title
         case .browser: return L10n.Browser.title
-        case .favorite: return L10n.Browser.Favorite.title
+        case .kanban: return L10n.Dashboard.kanban
+        case .editor: return L10n.Dashboard.editor
         }
     }
     
     var icon: UIImage {
         switch self {
-        case .agenda: return Asset.SFSymbols.calendar.image.fill(color: InterfaceTheme.Color.interactive)
-        case .captureList: return Asset.SFSymbols.lightbulb.image.fill(color: InterfaceTheme.Color.interactive)
-        case .search: return Asset.SFSymbols.magnifyingglass.image.fill(color: InterfaceTheme.Color.interactive)
-        case .browser: return Asset.SFSymbols.doc.image.fill(color: InterfaceTheme.Color.interactive)
-        case .favorite: return Asset.SFSymbols.star.image.fill(color: InterfaceTheme.Color.interactive)
+        case .agenda: return Asset.SFSymbols.calendar.image.resize(upto: CGSize(width: 15, height: 15)).fill(color: InterfaceTheme.Color.interactive)
+        case .idea: return Asset.SFSymbols.lightbulb.image.resize(upto: CGSize(width: 15, height: 15)).fill(color: InterfaceTheme.Color.interactive)
+        case .search: return Asset.SFSymbols.magnifyingglass.image.resize(upto: CGSize(width: 15, height: 15)).fill(color: InterfaceTheme.Color.interactive)
+        case .browser: return Asset.SFSymbols.doc.image.resize(upto: CGSize(width: 15, height: 15)).fill(color: InterfaceTheme.Color.interactive)
+        case .kanban: return Asset.SFSymbols.rectangleSplit3x1.image.resize(upto: CGSize(width: 15, height: 15)).fill(color: InterfaceTheme.Color.interactive)
+        case .editor: return Asset.SFSymbols.pencil.image.resize(upto: CGSize(width: 15, height: 15)).fill(color: InterfaceTheme.Color.interactive)
         }
     }
 }

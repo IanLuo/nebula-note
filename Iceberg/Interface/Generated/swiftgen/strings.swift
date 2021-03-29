@@ -339,6 +339,13 @@ public enum L10n {
     }
   }
 
+  public enum Dashboard {
+    /// Editor
+    public static let editor = L10n.tr("Localizable", "dashboard.editor")
+    /// Kanban
+    public static let kanban = L10n.tr("Localizable", "dashboard.kanban")
+  }
+
   public enum Document {
     public enum Browser {
       public enum Delete {

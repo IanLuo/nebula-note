@@ -84,7 +84,7 @@ public class SettingsViewController: UITableViewController {
         self.isSyncEnabledLabel.text = L10n.Setting.storeLocation
         self.landingTabTitleLabel.text = L10n.Setting.LandingTab.title
         self.storeLocationButton.setTitle(self.viewModel.isSyncEnabled ? L10n.Setting.StoreLocation.iCloud : L10n.Setting.StoreLocation.onDevice, for: .normal)
-        self.chooseLandingTabButton.setTitle(LandingTab.allCases[self.viewModel.currentLandigTabIndex].name, for: .normal)
+        self.chooseLandingTabButton.setTitle(TabIndex.allCases[self.viewModel.currentLandigTabIndex].name, for: .normal)
         
         self.interfaceStyleLabel.text = L10n.Setting.InterfaceStyle.title
         self.interfaceStyleButton.setTitle(self.viewModel.interfaceStyle.localizedTitle, for: .normal)
@@ -412,7 +412,7 @@ public class SettingsViewController: UITableViewController {
         let dependency = self.viewModel.dependency
         
         let selector = SelectorViewController()
-        let tabs = LandingTab.allCases
+        let tabs = TabIndex.allCases
 
         for tab in tabs {
             selector.addItem(icon: tab.icon, title: tab.name)
@@ -428,7 +428,7 @@ public class SettingsViewController: UITableViewController {
         
         selector.onSelection = { index, viewController in
             viewController.dismiss(animated: true, completion: nil)
-            self.viewModel.setLandingTabIndex(index)
+            self.viewModel.setLandingTabIndex(tabs[index].index)
             self.chooseLandingTabButton.setTitle(tabs[index].name, for: .normal)
             dependency.globalCaptureEntryWindow?.show()
         }

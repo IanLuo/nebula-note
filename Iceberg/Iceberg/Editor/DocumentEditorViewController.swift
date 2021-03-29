@@ -262,12 +262,7 @@ public class DocumentEditorViewController: UIViewController {
     public override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         
-        self.textView.endEditing(true)
-        
-        // only for phone
-        if self.presentingViewController == nil && isPhone {
-            self.viewModel.context.coordinator?.removeFromParent()
-        }
+        self.textView.endEditing(true)        
     }
     
     public override func viewDidLayoutSubviews() {

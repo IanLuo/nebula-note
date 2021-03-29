@@ -15,6 +15,7 @@ import RxCocoa
 
 public protocol TabContainerViewControllerDelegate: class {
     func didCloseDocument(url: URL, editorViewController: DocumentEditorViewController)
+    func didTapOnOpenDocument()
 }
 
 public class TabContainerViewController: UIViewController {
@@ -31,13 +32,15 @@ public class TabContainerViewController: UIViewController {
     
     private var viewModel: TabContainerViewModel!
     
+    private let openDocumentButton: UIButton = UIButton()
+    
     public var currentEditorViewController: DocumentEditorViewController?
     
     public convenience init(viewModel: TabContainerViewModel) {
         self.init()
         self.viewModel = viewModel
-        self.title = "Editor"
-        self.tabBarItem.image = Asset.SFSymbols.pencil.image
+        self.title = TabIndex.editor.name
+        self.tabBarItem.image = TabIndex.editor.icon
     }
     
     public override func viewDidLoad() {
@@ -48,20 +51,29 @@ public class TabContainerViewController: UIViewController {
     private func setupUI() {
         self.view.addSubview(self.tabBar)
         self.view.addSubview(self.container)
+        self.view.addSubview(self.openDocumentButton)
         
-        self.tabBar.sideAnchor(for: [.leading, .top, .traling], to: self.view, edgeInset: 0, considerSafeArea: true)
+        self.openDocumentButton.roundConer(radius: Layout.cornerRadius)
+        self.openDocumentButton.sizeAnchor(width: 44, height: 44)
+        self.openDocumentButton.sideAnchor(for: [.leading], to: self.view, edgeInsets: UIEdgeInsets(top: 0, left: Layout.edgeInsets.left, bottom: 0, right: 0), considerSafeArea: true)
+        self.openDocumentButton.rowAnchor(view: self.tabBar, space: 5, alignment: .top)
+        self.tabBar.sideAnchor(for: [.top, .traling], to: self.view, edgeInset: 0, considerSafeArea: true)
         
         self.tabBar.sizeAnchor(height: 54)
         
-        self.tabBar.columnAnchor(view: self.container, alignment: .none)
+        self.tabBar.columnAnchor(view: self.container, space: 0, alignment: .none)
         self.container.sideAnchor(for: [.leading, .bottom, .traling], to: self.view, edgeInset: 0, considerSafeArea: true)
         
-        self.interface { (me, theme) in
+        self.interface { [weak self] (me, theme) in
+            self?.openDocumentButton.setImage(Asset.SFSymbols.plus.image.fill(color: theme.color.spotlight), for: .normal)
+            self?.openDocumentButton.setBackgroundImage(UIImage.create(with: theme.color.background2, size: .singlePoint), for: .normal)
             me.view.backgroundColor = theme.color.background1
         }
     }
     
     private func setupObservers() {
+        self.openDocumentButton.rx.tap.subscribe(onNext: { [weak self] _ in self?.delegate?.didTapOnOpenDocument() }).disposed(by: self.disposeBag)
+        
         self.tabBar.onCloseDocument
             .subscribe(onNext: { [weak self ] tab in
                 let index = self?.index(for: tab.url) ?? 0
@@ -245,7 +257,7 @@ private class TabBar: UIScrollView {
     private func setup() {
         self.addSubview(self.stackView)
         
-        self.contentInset = UIEdgeInsets(top: 0, left: Layout.innerViewEdgeInsets.left, bottom: 0, right: Layout.innerViewEdgeInsets.right)
+        self.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: Layout.innerViewEdgeInsets.right)
         
         self.stackView.sideAnchor(for: [.left, .top, .bottom], to: self, edgeInsets: .init(top: 0, left: 0, bottom: -10, right: 0))
         self.stackView.rightAnchor.constraint(lessThanOrEqualTo: self.rightAnchor).isActive = true

@@ -13,6 +13,23 @@ import Core
 import Interface
 import RxSwift
 
+public enum TabIndex: Int {
+    case agenda = 0
+    case idea = 1
+    case search = 2
+    case browser = 3
+    case kanban = 4
+    case editor = 5
+    
+    var index: Int {
+        return self.rawValue
+    }
+    
+    public static var allCases: [TabIndex] {
+        return [.agenda, .idea, .search, .browser, .kanban, editor]
+    }
+}
+
 public class HomeCoordinator: Coordinator {
     private var _dashboardViewController: DashboardViewController!
     
@@ -58,24 +75,17 @@ public class HomeCoordinator: Coordinator {
         
         let tabCoordinator = TabContainerCoordinator(stack: self.stack, dependency: self.dependency)
         tabController = (tabCoordinator.viewController as! TabContainerViewController)
+        tabController.delegate = self
         self.addPersistentCoordinator(tabCoordinator)
-        
-        let tabs = [Coordinator.createDefaultNavigationControlller(root: agendaCoordinator.viewController!),
-                    Coordinator.createDefaultNavigationControlller(root: captureCoordinator.viewController!),
-                    Coordinator.createDefaultNavigationControlller(root: searchCoordinator.viewController!),
-                    Coordinator.createDefaultNavigationControlller(root: browserCoordinator.viewController!),
-                    Coordinator.createDefaultNavigationControlller(root: kanbanCoordinator.viewController!),
-                    Coordinator.createDefaultNavigationControlller(root: tabCoordinator.viewController!)
-        ]
         
         tabController.navigationController?.isNavigationBarHidden = true
         
-        dashboardViewController.addTab(tabs: [DashboardViewController.TabType.agenda(tabs[0], 0),
-                                              DashboardViewController.TabType.captureList(tabs[1], 1),
-                                              DashboardViewController.TabType.search(tabs[2], 2),
-                                              DashboardViewController.TabType.documents(tabs[3], 3),
-                                              DashboardViewController.TabType.kanban(tabs[4], 4),
-                                              DashboardViewController.TabType.editor(tabs[5], 5),
+        dashboardViewController.addTab(tabs: [DashboardViewController.TabType.agenda(Coordinator.createDefaultNavigationControlller(root: agendaCoordinator.viewController!), TabIndex.agenda.index),
+                                              DashboardViewController.TabType.captureList(Coordinator.createDefaultNavigationControlller(root: captureCoordinator.viewController!), TabIndex.idea.index),
+                                              DashboardViewController.TabType.search(Coordinator.createDefaultNavigationControlller(root: searchCoordinator.viewController!), TabIndex.search.index),
+                                              DashboardViewController.TabType.documents(Coordinator.createDefaultNavigationControlller(root: browserCoordinator.viewController!), TabIndex.browser.index),
+                                              DashboardViewController.TabType.kanban(Coordinator.createDefaultNavigationControlller(root: kanbanCoordinator.viewController!), TabIndex.kanban.index),
+                                              DashboardViewController.TabType.editor(Coordinator.createDefaultNavigationControlller(root: tabCoordinator.viewController!), TabIndex.editor.index),
         ])
         
         if isMacOrPad {
@@ -91,7 +101,9 @@ public class HomeCoordinator: Coordinator {
         })
         
         self.dependency.eventObserver.registerForEvent(on: self, eventType: SwitchTabEvent.self, queue: .main, action: { [weak self] (event: SwitchTabEvent) -> Void in
-            self?.selectTab(at: event.toTabIndex)
+            if let tabIndex = TabIndex(rawValue: event.toTabIndex) {
+                self?.selectTab(tabIndex)
+            }
         })
     }
     
@@ -176,31 +188,24 @@ public class HomeCoordinator: Coordinator {
             guard $0 else { return }
             
             hasInitedLandingTab.onNext(())
-            
             let defaultTabIndex = SettingsAccessor.Item.landingTabIndex.get(Int.self) ?? 3
-            self?.selectTab(at: defaultTabIndex)
+            self?.selectTab(TabIndex(rawValue: defaultTabIndex) ?? .browser)
         }).disposed(by: self.disposeBag)
     }
     
     public func openDocumentFromEvent(event: OpenDocumentEvent) {
         self.addOnDesktopContainerTabIfNeeded(url: event.url, shouldSelect: true)
-        self.selectOnDesktopContainerTab(url: event.url, location: 0)
+        self.selectOnDesktopContainerTab(url: event.url, location: event.location)
     }
     
-    public func selectTab(at index: Int) {
-        self._dashboardViewController.selectOnTab(index: index)
+    public func selectTab(_ tab: TabIndex) {
+        self._dashboardViewController.selectOnTab(index: tab.index)
     }
 }
 
 extension HomeCoordinator: SearchCoordinatorDelegate {
     public func didSelectDocument(url: URL, location: Int, searchCoordinator: SearchCoordinator) {
-        if isMacOrPad {
-            self.addOnDesktopContainerTabIfNeeded(url: url, shouldSelect: true)
-            self.selectOnDesktopContainerTab(url: url, location: location)
-            self.selectTab(at: 5)
-        } else {
-            self.openDocument(url: url, location: location)
-        }
+        self.openDocument(url: url, location: location)
     }
     
     public func didCancelSearching() {
@@ -210,25 +215,13 @@ extension HomeCoordinator: SearchCoordinatorDelegate {
 
 extension HomeCoordinator: AgendaCoordinatorDelegate {
     public func didSelectDocument(url: URL, location: Int) {
-        if isMacOrPad {
-            self.addOnDesktopContainerTabIfNeeded(url: url, shouldSelect: true)
-            self.selectOnDesktopContainerTab(url: url, location: location)
-            self.selectTab(at: 5)
-        } else {
-            self.openDocument(url: url, location: location)
-        }
+        self.openDocument(url: url, location: location)
     }
 }
 
 extension HomeCoordinator: BrowserCoordinatorDelegate {
     public func didSelectDocument(url: URL, coordinator: BrowserCoordinator) {
-        if isMacOrPad {
-            self.addOnDesktopContainerTabIfNeeded(url: url, shouldSelect: true)
-            self.selectOnDesktopContainerTab(url: url, location: 0)
-            self.selectTab(at: 5)
-        } else {
-            self.openDocument(url: url, location: 0)
-        }
+        self.openDocument(url: url, location: 0)
     }
     
     public func didSelectOutline(url: URL, selection: OutlineLocation, coordinator: BrowserCoordinator) {}
@@ -283,7 +276,6 @@ extension HomeCoordinator: DashboardViewControllerDelegate {
     
     public func showAllParts() {
         (self.viewController as? DesktopHomeViewController)?.toggleLeftPartVisiability(visiable: true)
-//        (self.viewController as? DesktopHomeViewController)?.toggleMiddlePartVisiability(visiable: true)
     }
     
     public func toggleLeftPart() {
@@ -291,12 +283,6 @@ extension HomeCoordinator: DashboardViewControllerDelegate {
             desktopViewController.toggleLeftPartVisiability(visiable: !desktopViewController.isLeftPartVisiable, animated: true)
         }
     }
-    
-//    public func toggleMiddlePart() {
-//        if let desktopViewController = self.viewController as? DesktopHomeViewController {
-//            desktopViewController.toggleMiddlePartVisiability(visiable: !desktopViewController.isMiddlePartVisiable, animated: true)
-//        }
-//    }
     
     public func showHeadings(tag: String) {
         let agendaCoordinator = AgendaCoordinator(filterType: .tag(tag), stack: self.stack, dependency: self.dependency)
@@ -346,6 +332,10 @@ extension HomeCoordinator {
 }
 
 extension HomeCoordinator: TabContainerViewControllerDelegate {
+    public func didTapOnOpenDocument() {
+        self.selectTab(.browser)
+    }
+    
     public func didCloseDocument(url: URL, editorViewController: DocumentEditorViewController) {
         self.children.forEach {
             if let editor = $0 as? EditorCoordinator {
