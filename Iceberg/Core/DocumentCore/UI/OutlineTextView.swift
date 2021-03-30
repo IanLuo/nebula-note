@@ -36,6 +36,12 @@ public class OutlineTextView: UITextView {
         self.setup()
     }
     
+    private lazy var tap: UITapGestureRecognizer = {
+        let tap = UITapGestureRecognizer()
+        tap.delegate = self
+        return tap
+    }()
+    
     deinit {
         self.textStorage.removeLayoutManager(self.layoutManager)
     }
@@ -85,6 +91,10 @@ public class OutlineTextView: UITextView {
         
         self.titleLabel.isUserInteractionEnabled = true
         self.titleLabel.addGestureRecognizer(tapOnNameGesture)
+        
+        if !isMac {
+            self.addGestureRecognizer(self.tap)
+        }
     }
     
     public override func layoutSubviews() {
@@ -153,7 +163,11 @@ public class OutlineTextView: UITextView {
     }
     
     @objc private func tapped(location: CGPoint, event: UIEvent?) -> Bool {
-        guard let event = event, event.type == .touches else { return true }
+
+        // only for mac
+        if isMac {
+            guard let event = event, event.type == .touches else { return true }
+        }
         
         // handle multiple entrance
         guard location.x != lastTap.0.x || (CFAbsoluteTimeGetCurrent() - lastTap.2 > 0.5) else { return lastTap.1 }
@@ -226,6 +240,7 @@ public class OutlineTextView: UITextView {
         return rect
     }
     
+    #if targetEnvironment(macCatalyst)
     public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         let textLocation = CGPoint(x: point.x - self.textContainerInset.left,
                                    y: point.y - self.textContainerInset.top)
@@ -236,6 +251,7 @@ public class OutlineTextView: UITextView {
             return nil
         }
     }
+    #endif
     
     public func flashLine(location: Int) {
         var effectiveRange: NSRange = NSRange(location: 0, length: 0)
@@ -273,6 +289,18 @@ extension UITextView {
     #endif
 }
 
+extension OutlineTextView: UIGestureRecognizerDelegate {
+    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        if gestureRecognizer == self.tap && gestureRecognizer.state == .ended {
+            let point = gestureRecognizer.location(in: self)
+            let textLocation = CGPoint(x: point.x - self.textContainerInset.left,
+                                       y: point.y - self.textContainerInset.top)
+            return self.tapped(location: textLocation, event: nil)
+        } else {
+            return true
+        }
+    }
+}
 
 extension UITextView {
     
