@@ -9,7 +9,7 @@
 import Foundation
 import RxSwift
 
-public struct DocumentHeading {
+public struct DocumentHeading: Codable {
     public let level: Int
     public let priority: String?
     public let tags: [String]?

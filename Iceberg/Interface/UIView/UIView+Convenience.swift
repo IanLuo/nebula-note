@@ -25,7 +25,7 @@ public class Padding: UIView {
     public init(child: UIView, horizontal: CGFloat = 0, vertical: CGFloat = 0) {
         super.init(frame: .zero)
         self.addSubview(child)
-        child.allSidesAnchors(to: self, edgeInsets: UIEdgeInsets(top: vertical, left: -horizontal, bottom: -vertical, right: horizontal))
+        child.allSidesAnchors(to: self, edgeInsets: UIEdgeInsets(top: vertical, left: horizontal, bottom: -vertical, right: -horizontal))
     }
     
     required init?(coder: NSCoder) {

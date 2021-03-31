@@ -225,6 +225,7 @@
 		E4C3890923EC50180077B393 /* AttachmentManagerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C3890823EC50180077B393 /* AttachmentManagerViewController.swift */; };
 		E4C3890B23EC503C0077B393 /* AttachmentManagerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C3890A23EC503C0077B393 /* AttachmentManagerViewModel.swift */; };
 		E4C3890D23EC51890077B393 /* AttachmentManagerCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C3890C23EC51890077B393 /* AttachmentManagerCellModel.swift */; };
+		E4C6EC92261336E900A38ABB /* KanbanGridViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C6EC91261336E900A38ABB /* KanbanGridViewController.swift */; };
 		E4C7137F23ABCE8200DC38BE /* PurchaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C7137D23ABC9F400DC38BE /* PurchaseManager.swift */; };
 		E4C7138123ADCD0A00DC38BE /* JPGExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C7138023ADCD0A00DC38BE /* JPGExporter.swift */; };
 		E4C76B7F25616B6B0007AFA5 /* AppKitHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E4C76B7E25616B6B0007AFA5 /* AppKitHelper.m */; };
@@ -644,6 +645,7 @@
 		E4C3890A23EC503C0077B393 /* AttachmentManagerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentManagerViewModel.swift; sourceTree = "<group>"; };
 		E4C3890C23EC51890077B393 /* AttachmentManagerCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentManagerCellModel.swift; sourceTree = "<group>"; };
 		E4C46FE221EB311900F6374F /* ModalFormViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModalFormViewController.swift; sourceTree = "<group>"; };
+		E4C6EC91261336E900A38ABB /* KanbanGridViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanbanGridViewController.swift; sourceTree = "<group>"; };
 		E4C7137D23ABC9F400DC38BE /* PurchaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseManager.swift; sourceTree = "<group>"; };
 		E4C7138023ADCD0A00DC38BE /* JPGExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JPGExporter.swift; sourceTree = "<group>"; };
 		E4C76B7E25616B6B0007AFA5 /* AppKitHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppKitHelper.m; sourceTree = "<group>"; };
@@ -1504,6 +1506,7 @@
 			children = (
 				E4AC58542608CEAA0039060E /* KanbanCoordinator.swift */,
 				E4AC585D2608CECC0039060E /* KanbanViewController.swift */,
+				E4C6EC91261336E900A38ABB /* KanbanGridViewController.swift */,
 				E4AC58662608CF050039060E /* KanbanViewModel.swift */,
 			);
 			path = Kanban;
@@ -2328,6 +2331,7 @@
 				E4EA855C21D1DACE00DD92F9 /* AttachmentVideoViewController.swift in Sources */,
 				E428B89C2343A5900026AC1F /* BrowserViewController.swift in Sources */,
 				E41B892621E31B07009C5AD7 /* DashboardViewModel.swift in Sources */,
+				E4C6EC92261336E900A38ABB /* KanbanGridViewController.swift in Sources */,
 				E4EA855821D1DA8700DD92F9 /* AttachmentLinkViewController.swift in Sources */,
 				E49FE990245EA61B005F634C /* TabContainerViewController.swift in Sources */,
 				E4192A9923EE4AAB00F0E5DB /* AttachmentManagerCell.swift in Sources */,

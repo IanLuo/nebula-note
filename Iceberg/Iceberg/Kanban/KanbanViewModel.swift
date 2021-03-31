@@ -26,15 +26,8 @@ public class KanbanViewModel: ViewModelProtocol {
     
     public required init() {
         self.headingsMap.subscribe(onNext: { [weak self] map in
-            let statusMap: [String: Int] = map.keys.reduce([:], { result, key in
-                var result = result
-                if let count = result[key] {
-                    result[key] = count + 1
-                } else {
-                    result[key] = 1
-                }
-                
-                return result
+            let statusMap: [String: Int] = map.mapValues({
+                $0.count
             })
             
             self?.status.onNext(statusMap)
@@ -48,6 +41,10 @@ public class KanbanViewModel: ViewModelProtocol {
         }
     }
     
+    public func isFinishedStatus(status: String) -> Bool {
+        return self.dependency.settingAccessor.finishedPlanning.contains(status)
+    }
+    
     public func loadHeadings(for status: String) {
         self.dependency.documentSearchManager.searchPlanning(status) { [weak self] result in
             guard let strongSelf = self else { return }
@@ -55,16 +52,16 @@ public class KanbanViewModel: ViewModelProtocol {
             value[status] = result
             self?.headingsMap.accept(value)
         } failure: { (error) in
-            print(error)
+            log.error(error)
         }
     }
     
-    public func update(heading: DocumentHeadingSearchResult, newStatus: String) -> Observable<Void> {
+    public func update(heading: DocumentHeading, newStatus: String) -> Observable<Void> {
         return Observable.create { observer -> Disposable in
             
-            let service = self.dependency.editorContext.request(url: heading.documentInfo.url)
+            let service = self.dependency.editorContext.request(url: heading.url)
             service.open { [service] _ in
-                _ = service.toggleContentCommandComposer(composer: PlanningCommandComposer(location: heading.heading.location, kind: .addOrUpdate(newStatus)))
+                _ = service.toggleContentCommandComposer(composer: PlanningCommandComposer(location: heading.location, kind: .addOrUpdate(newStatus))).perform()
                 
                 service.save { _ in
                     observer.onNext(())
