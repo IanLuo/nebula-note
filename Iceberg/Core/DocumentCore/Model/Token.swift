@@ -318,8 +318,9 @@ public class HeadingToken: Token {
         let planningUpperBound = self.planning?.upperBound ?? 0
         let prioerityUpperBound = self.priority?.upperBound ?? 0
         let otherTagsLocation = max(planningUpperBound, prioerityUpperBound)
+        
         let location = max(self.headingTextRange.location, otherTagsLocation)
-        return NSRange(location: location, length: self.headingTextRange.upperBound - location)
+        return NSRange(location: location, length: self.headingTextRange.upperBound - location - (self.tags?.length ?? 0))
     }
     
     public var levelRange: NSRange {

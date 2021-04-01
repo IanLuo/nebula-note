@@ -42,10 +42,10 @@ public class KanbanViewController: UIViewController {
         }
         
         self.statusBarContainer.sideAnchor(for: [.left, .right, .top], to: self.view, edgeInsets: UIEdgeInsets(top: Layout.edgeInsets.top, left: Layout.edgeInsets.left, bottom: 0, right: -Layout.edgeInsets.right), considerSafeArea: true)
-        self.statusBarContainer.sizeAnchor(height: 44)
+        self.statusBarContainer.sizeAnchor(height: 30)
 
         self.documentBarContainer.sideAnchor(for: [.left, .right], to: self.view, edgeInsets: UIEdgeInsets(top: Layout.edgeInsets.top, left: Layout.edgeInsets.left, bottom: 0, right: -Layout.edgeInsets.right), considerSafeArea: true)
-        self.documentBarContainer.sizeAnchor(height: 44)
+        self.documentBarContainer.sizeAnchor(height: 30)
         
         self.statusBarContainer.columnAnchor(view: self.documentBarContainer, space: 20)
         
@@ -79,8 +79,16 @@ public class KanbanViewController: UIViewController {
     
     private func createStatusButtonBar(_ status: [String: Int]) -> UIView {
         return UIStackView(subviews: status.sorted(by: { (v1, v2) -> Bool in
-            // put finished status behind
-            return !self.viewModel.isFinishedStatus(status: v2.key)
+            switch (self.viewModel.isFinishedStatus(status: v1.key), self.viewModel.isFinishedStatus(status: v2.key)) {
+            case (true, true):
+                return v1.key < v2.key
+            case (false, false):
+                return v1.key < v2.key
+            case (true, false):
+                return false
+            case (false, true):
+                return true
+            }
         }).map({ key, value in
             let button = UIButton(title: "\(key) \(value)", for: .normal)
             
@@ -90,10 +98,11 @@ public class KanbanViewController: UIViewController {
                 let color = self.viewModel.isFinishedStatus(status: key) ? theme.color.finished : theme.color.unfinished
                 button.setBackgroundImage(UIImage.create(with: color, size: .singlePoint), for: .normal)
                 button.setTitleColor(theme.color.spotlitTitle, for: .normal)
+                button.titleLabel?.font = theme.font.footnote
             }
             
             button.contentEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
-            button.sizeAnchor(height: 40)
+            button.sizeAnchor(height: 30)
             button.roundConer(radius: Layout.cornerRadius)
             return button
         }), distribution: .equalSpacing, spacing: 10)
@@ -104,11 +113,12 @@ public class KanbanViewController: UIViewController {
             let button = UIButton(title: $0, for: .normal)
             button.interface { (me, theme) in
                 let button = me as! UIButton
-                button.setBackgroundImage(UIImage.create(with: theme.color.spotlight, size: .singlePoint), for: .normal)
-                button.setTitleColor(theme.color.spotlitTitle, for: .normal)
+                button.setBackgroundImage(UIImage.create(with: theme.color.background2, size: .singlePoint), for: .normal)
+                button.setTitleColor(theme.color.interactive, for: .normal)
+                button.titleLabel?.font = theme.font.footnote
             }
             button.contentEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
-            button.sizeAnchor(height: 40)
+            button.sizeAnchor(height: 30)
             button.roundConer(radius: Layout.cornerRadius)
             return button
         }), distribution: .equalSpacing, spacing: 10)

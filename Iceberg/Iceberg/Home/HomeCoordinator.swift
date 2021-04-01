@@ -195,6 +195,8 @@ public class HomeCoordinator: Coordinator {
     public func openDocumentFromEvent(event: OpenDocumentEvent) {
         self.addOnDesktopContainerTabIfNeeded(url: event.url, shouldSelect: true)
         self.selectOnDesktopContainerTab(url: event.url, location: event.location)
+        
+        self.selectTab(TabIndex.editor)
     }
     
     public func selectTab(_ tab: TabIndex) {
