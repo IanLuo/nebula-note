@@ -24,12 +24,28 @@ public class KanbanViewModel: ViewModelProtocol {
     
     private let disposeBag = DisposeBag()
     
+    public let ignoredStatus: BehaviorRelay<[String]> = BehaviorRelay(value: [])
+    
+    public let ignoredDocuments: BehaviorRelay<[String]> = BehaviorRelay(value: [])
+    
     public required init() {
         self.headingsMap.subscribe(onNext: { [weak self] map in
             let statusMap: [String: Int] = map.mapValues({
                 $0.count
             })
             
+            if let strongSelf = self {
+                var map = map
+                
+                if strongSelf.ignoredStatus.value.count > 0 {
+                    for (key, _) in map {
+                        if strongSelf.ignoredStatus.value.contains(key) {
+                            map[key] = []
+                        }
+                    }
+                }
+            }
+                        
             self?.status.onNext(statusMap)
             self?.documents.onNext(Array(Set(map.values.flatMap({ $0 }).map { $0.documentInfo.name })))
         }).disposed(by: self.disposeBag)
@@ -45,6 +61,7 @@ public class KanbanViewModel: ViewModelProtocol {
         }).subscribe(onNext: { result in
             self.headingsMap.accept(result.reduce(self.headingsMap.value) { result, next in
                 var result = result
+
                 result[next.0] = next.1
                 return result
             })

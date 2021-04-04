@@ -53,7 +53,9 @@ public class KanbanGridViewController: UIViewController {
             }
         })
         
-        let stackView = UIStackView(subviews: self.status.map { status in
+        let stackView = UIStackView(subviews: self.status.filter({ [weak self] in
+            self?.viewModel.ignoredStatus.value.contains($0) == false
+        }).map { status in
             let column = KanbanColumn(viewModel: self.viewModel)
             column.sizeAnchor(width: isPhone ? 200 : 300)
             column.showStatus(status,
@@ -144,7 +146,9 @@ private class KanbanColumn: UIView, UITableViewDelegate, UITableViewDataSource, 
     }
     
     func reload(title: String? = nil) {
-        self.headings = viewModel.headingsMap.value[title ?? self.titleLabel.text ?? ""]?.sorted(by: { (head1, head2) -> Bool in
+        self.headings = viewModel.headingsMap.value[title ?? self.titleLabel.text ?? ""]?.filter({ [weak self] in
+            self?.viewModel.ignoredDocuments.value.contains($0.documentInfo.name) == false
+        }).sorted(by: { (head1, head2) -> Bool in
             switch (head1.heading.priority, head2.heading.priority) {
             case (nil, nil):
                 return head1.heading.text < head2.heading.text
