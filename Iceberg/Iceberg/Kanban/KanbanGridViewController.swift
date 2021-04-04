@@ -127,6 +127,11 @@ private class KanbanColumn: UIView, UITableViewDelegate, UITableViewDataSource, 
         self.contentTableView.sideAnchor(for: [.left, .right, .bottom], to: self, edgeInset: 0)
         self.roundConer(radius: Layout.cornerRadius)
         
+        self.titleLabel.interface { (me, theme) in
+            let label = me as! UILabel
+            label.textColor = theme.color.spotlitTitle
+        }
+        
         self.contentTableView.interface { (me, theme) in
             let table = me as! UITableView
             table.backgroundColor = theme.color.background2
