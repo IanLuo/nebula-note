@@ -36,23 +36,36 @@ public class KanbanViewModel: ViewModelProtocol {
     }
     
     public func loadAllStatus() {
-        for status in self.dependency.settingAccessor.allPlannings {
-            self.loadHeadings(for: status)
-        }
+        self.loadheadings(self.dependency.settingAccessor.allPlannings)
+    }
+    
+    public func loadheadings(_ status: [String]) {
+        Observable.zip(status.map {
+            self.loadHeadings(for: $0)
+        }).subscribe(onNext: { result in
+            self.headingsMap.accept(result.reduce(self.headingsMap.value) { result, next in
+                var result = result
+                result[next.0] = next.1
+                return result
+            })
+        }).disposed(by: self.disposeBag)
     }
     
     public func isFinishedStatus(status: String) -> Bool {
         return self.dependency.settingAccessor.finishedPlanning.contains(status)
     }
     
-    public func loadHeadings(for status: String) {
-        self.dependency.documentSearchManager.searchPlanning(status) { [weak self] result in
-            guard let strongSelf = self else { return }
-            var value = strongSelf.headingsMap.value
-            value[status] = result
-            self?.headingsMap.accept(value)
-        } failure: { (error) in
-            log.error(error)
+    public func loadHeadings(for status: String) -> Observable<(String, [DocumentHeadingSearchResult])> {
+        return Observable.create { observer -> Disposable in
+            self.dependency.documentSearchManager.searchPlanning(status) { result in
+                observer.onNext((status, result))
+                observer.onCompleted()
+            } failure: { (error) in
+                observer.onError(error)
+                log.error(error)
+            }
+            
+            return Disposables.create()
         }
     }
     
@@ -71,7 +84,6 @@ public class KanbanViewModel: ViewModelProtocol {
             
             return Disposables.create()
         }
-
     }
     
     public func open(heading: DocumentHeadingSearchResult) {

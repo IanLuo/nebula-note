@@ -91,8 +91,7 @@ public class KanbanGridViewController: UIViewController {
     
     private func update(heading: DocumentHeading, status: String) {
         self.viewModel.update(heading: heading, newStatus: status).subscribe(onNext: { [weak self] in
-            self?.viewModel.loadHeadings(for: heading.planning ?? "")
-            self?.viewModel.loadHeadings(for: status)
+            self?.viewModel.loadheadings([heading.planning ?? "", status])
         }).disposed(by: self.disposeBag)
     }
 }
@@ -189,9 +188,13 @@ private class KanbanColumn: UIView, UITableViewDelegate, UITableViewDataSource, 
     }
     
     func dropInteraction(_ interaction: UIDropInteraction, performDrop session: UIDropSession) {
+        self.border(color: InterfaceTheme.Color.spotlight, width: 0)
+
         session.loadObjects(ofClass: NSString.self) { value in
             do {
                 let heading = try JSONDecoder().decode(DocumentHeading.self, from: (value.first as! NSString).data(using: String.Encoding.utf8.rawValue)!)
+                
+                guard heading.planning != self.titleLabel.text else { return }
                 self.onUpdate?(heading)
             } catch {
                 log.error(error)
@@ -200,7 +203,11 @@ private class KanbanColumn: UIView, UITableViewDelegate, UITableViewDataSource, 
     }
     
     func dropInteraction(_ interaction: UIDropInteraction, sessionDidEnter session: UIDropSession) {
-        
+        self.border(color: InterfaceTheme.Color.spotlight, width: 2)
+    }
+    
+    func dropInteraction(_ interaction: UIDropInteraction, sessionDidExit session: UIDropSession) {
+        self.border(color: InterfaceTheme.Color.spotlight, width: 0)
     }
     
     func dropInteraction(_ interaction: UIDropInteraction, sessionDidUpdate session: UIDropSession) -> UIDropProposal {
