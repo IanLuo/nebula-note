@@ -689,6 +689,13 @@ public enum L10n {
     public static let library = L10n.tr("Localizable", "imagePicker.library")
   }
 
+  public enum Kanban {
+    public enum Filter {
+      /// Unlock filters
+      public static let `get` = L10n.tr("Localizable", "kanban.filter.get")
+    }
+  }
+
   public enum Key {
     public enum Command {
       /// Insert New Attachment
@@ -817,6 +824,8 @@ public enum L10n {
       public static let andMoreToCome = L10n.tr("Localizable", "membership.function.andMoreToCome")
       /// Custom section status
       public static let customStatus = L10n.tr("Localizable", "membership.function.customStatus")
+      /// Filters in Kanban
+      public static let kanbanFilter = L10n.tr("Localizable", "membership.function.kanbanFilter")
       /// Move section to other document
       public static let moveToOtherDocument = L10n.tr("Localizable", "membership.function.moveToOtherDocument")
       /// Refile from capturelist

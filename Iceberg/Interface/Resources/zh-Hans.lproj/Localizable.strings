@@ -390,6 +390,7 @@
 "membership.function.customStatus" = "自定义段落的状态";
 "membership.function.unlimitedLevelOfSubDocuments" = "不限制子文件夹的层数";
 "membership.function.removeExportWaterprint" = "移除导出图片中的水印";
+"membership.function.kanbanFilter" = "看板过滤器";
 "membership.function.andMoreToCome" = "更多功能持续开发中";
 "membership.moreHelp" = "关于会员订阅";
 "membership.price.monthly" = "￥10.00";
@@ -460,3 +461,6 @@
 "publish.attachment.storage-service.description" = "如果文章中包含附件，比如图片，视频，音频，则需要选择一个文件保存服务来上传这些附件，否则文章中就无法显示这些附件内容。如果没有找到你喜欢的文件上传服务，请在论坛或者应用内反馈告诉我们。";
 "publish.complete" =  "已发布到 %@";
 "publish.choose" = "请选择";
+
+// kanban
+"kanban.filter.get" = "解锁过滤器";

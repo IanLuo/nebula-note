@@ -389,6 +389,7 @@
 "membership.function.customStatus" = "Custom section status";
 "membership.function.unlimitedLevelOfSubDocuments" = "Unlimited level of sub documents";
 "membership.function.removeExportWaterprint" = "Remove export waterprint";
+"membership.function.kanbanFilter" = "Filters in Kanban";
 "membership.function.andMoreToCome" = "And more to come";
 "membership.moreHelp" = "About member subscription";
 "membership.price.monthly" = "$1.49 USD";
@@ -459,3 +460,6 @@
 "publish.attachment.storage-service.description" = "If you have attachments used in your document that about to publish, there need a place to store the attachments, such as images, videos, audios, otherwise it will not be able to display in your article on that platform, if you want the attachment be visiable on those platforms, you should choose a service to use, and if you can't find the service you like, you can give us feedback on the forum or through the feedback in this app.";
 "publish.complete" =  "Successflully published to %@";
 "publish.choose" = "Choose";
+
+// kanban
+"kanban.filter.get" = "Unlock filters";

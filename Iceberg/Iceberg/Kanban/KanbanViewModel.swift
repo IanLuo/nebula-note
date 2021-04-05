@@ -10,6 +10,10 @@ import Foundation
 import RxSwift
 import RxCocoa
 import Core
+import Interface
+
+private let keyIgnoredStatus = "keyIgnoredStatus"
+private let keyIgnoredDocuments = "keyIgnoredDocuments"
 
 public class KanbanViewModel: ViewModelProtocol {
     public var context: ViewModelContext<KanbanCoordinator>!
@@ -28,31 +32,59 @@ public class KanbanViewModel: ViewModelProtocol {
     
     public let ignoredDocuments: BehaviorRelay<[String]> = BehaviorRelay(value: [])
     
+    private let ignoredEntryStore = KeyValueStoreFactory.store(type: KeyValueStoreType.plist(.custom("ignoredEntries")))
+    
+    public var shouldReloadData: Bool = false
+    
+    private var isLoadingAllData = false
+    
     public required init() {
         self.headingsMap.subscribe(onNext: { [weak self] map in
             let statusMap: [String: Int] = map.mapValues({
                 $0.count
             })
-            
-            if let strongSelf = self {
-                var map = map
-                
-                if strongSelf.ignoredStatus.value.count > 0 {
-                    for (key, _) in map {
-                        if strongSelf.ignoredStatus.value.contains(key) {
-                            map[key] = []
-                        }
-                    }
-                }
-            }
-                        
+                                    
             self?.status.onNext(statusMap)
             self?.documents.onNext(Array(Set(map.values.flatMap({ $0 }).map { $0.documentInfo.name })))
         }).disposed(by: self.disposeBag)
+        
+        if let savedIgnoredStatus = self.ignoredEntryStore.get(key: keyIgnoredStatus, type: [String].self) {
+            self.ignoredStatus.accept(savedIgnoredStatus)
+        }
+        
+        if let savedIgnoredDocuments = self.ignoredEntryStore.get(key: keyIgnoredDocuments, type: [String].self) {
+            self.ignoredDocuments.accept(savedIgnoredDocuments)
+        }
+        
+        self.ignoredStatus.subscribe(onNext: { [weak self] in
+            self?.ignoredEntryStore.set(value: $0, key: keyIgnoredStatus, completion: {})
+        }).disposed(by: self.disposeBag)
+        
+        self.ignoredDocuments.subscribe(onNext: { [weak self] in
+            self?.ignoredEntryStore.set(value: $0, key: keyIgnoredDocuments, completion: {})
+        }).disposed(by: self.disposeBag)
+    }
+    
+    public func didSetupContext() {
+        self.context.coordinator?.dependency.eventObserver.registerForEvent(on: self,
+                                                                    eventType: DocumentHeadingChangeEvent.self,
+                                                                    queue: .main) { [weak self] (event: DocumentHeadingChangeEvent) -> Void in
+            self?.shouldReloadData = true
+            
+            if isMacOrPad {
+                self?.loadAllStatus()
+            }
+        }
     }
     
     public func loadAllStatus() {
+        guard self.isLoadingAllData == false else { return }
+        self.isLoadingAllData = true
+        
         self.loadheadings(self.dependency.settingAccessor.allPlannings)
+        
+        self.shouldReloadData = false
+        self.isLoadingAllData = false
     }
     
     public func loadheadings(_ status: [String]) {
@@ -83,6 +115,32 @@ public class KanbanViewModel: ViewModelProtocol {
             }
             
             return Disposables.create()
+        }
+    }
+    
+    public func updateIgnoredStatus(status: String, add: Bool) {
+        var a = self.ignoredStatus.value
+        if add {
+            a.append(status)
+            self.ignoredStatus.accept(Array(Set(a)))
+        } else {
+            for case let (i, s) in a.enumerated() where s == status {
+                a.remove(at: i)
+            }
+            self.ignoredStatus.accept(a)
+        }
+    }
+    
+    public func updateIgnoredDocument(document: String, add: Bool) {
+        var a = self.ignoredDocuments.value
+        if add {
+            a.append(document)
+            self.ignoredDocuments.accept(Array(Set(a)))
+        } else {
+            for case let (i, d) in a.enumerated() where d == document {
+                a.remove(at: i)
+            }
+            self.ignoredDocuments.accept(a)
         }
     }
     

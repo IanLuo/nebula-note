@@ -79,7 +79,7 @@ public class KanbanGridViewController: UIViewController {
         let selector = SelectorViewController()
         
         for s in self.status {
-            selector.addItem(attributedString: NSAttributedString(string: s, attributes: [NSAttributedString.Key.backgroundColor: OutlineTheme.planningStyle(isFinished: self.viewModel.isFinishedStatus(status: s)).buttonColor]))
+            selector.addItem(attributedString: NSAttributedString(string: s, attributes: [NSAttributedString.Key.backgroundColor: OutlineTheme.planningStyle(isFinished: self.viewModel.isFinishedStatus(status: s)).buttonColor, NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.spotlitTitle]))
         }
         
         selector.onSelection = { index, viewController in
@@ -97,6 +97,8 @@ public class KanbanGridViewController: UIViewController {
         }).disposed(by: self.disposeBag)
     }
 }
+
+// MARK: -
 
 private class KanbanColumn: UIView, UITableViewDelegate, UITableViewDataSource, UIDropInteractionDelegate {
     let titleLabel: UILabel = UILabel().textAlignment(.center)
@@ -222,6 +224,8 @@ private class KanbanColumn: UIView, UITableViewDelegate, UITableViewDataSource, 
     func dropInteraction(_ interaction: UIDropInteraction, sessionDidUpdate session: UIDropSession) -> UIDropProposal {
         return UIDropProposal(operation: .move)
     }
+    
+    // MARK: - 
     
     class KanbanColumnCell: UITableViewCell, UIDragInteractionDelegate {
         static let reuseIdentifier = "KanbanColumnCell"
