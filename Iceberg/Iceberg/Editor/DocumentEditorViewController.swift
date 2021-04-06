@@ -89,7 +89,7 @@ public class DocumentEditorViewController: UIViewController {
             let button = me as! UIButton
             button.setImage(Asset.SFSymbols.arrowRightCircle.image.resize(upto: CGSize(width: 20, height: 20)).fill(color: theme.color.interactive), for: .normal)
             button.setImage(Asset.SFSymbols.arrowLeftCircle.image.resize(upto: CGSize(width: 20, height: 20)).fill(color: theme.color.interactive), for: .selected)
-            button.setBackgroundImage(UIImage.create(with: theme.color.background3, size: .singlePoint), for: .normal)
+            button.setBackgroundImage(UIImage.create(with: theme.color.background2, size: .singlePoint), for: .normal)
         }
         return button
     }()
@@ -164,7 +164,7 @@ public class DocumentEditorViewController: UIViewController {
             self.toolbarAvilabilityButton.sideAnchor(for: [.right], to: self.view, edgeInset: Layout.innerViewEdgeInsets.right)
             self.toolbarAvilabilityButton.sizeAnchor(width: 44, height: 44)
             
-            self.topViewContainer.columnAnchor(view: self.toolbarAvilabilityButton, space: 50, alignment: .none)
+            self.topViewContainer.columnAnchor(view: self.toolbarAvilabilityButton, space: 20, alignment: .none)
             
             self.toolbarAvilabilityButton.columnAnchor(view: self.toolBar, space: 30, alignment: .none)
             self.toolBar.sideAnchor(for: .right, to: self.view, edgeInsets: .init(top: 0, left: 0, bottom: 0, right: -Layout.innerViewEdgeInsets.right))
@@ -262,6 +262,9 @@ public class DocumentEditorViewController: UIViewController {
     }
     
     public func hideToolbar(_ isHidden: Bool) {
+        if isHidden == true && self.toolBar.alpha == 0 { return }
+        if isHidden == false && self.toolBar.alpha != 0 { return }
+        
         self.toolBar.constraint(for: .right)?.constant = isHidden ? 44 : -Layout.innerViewEdgeInsets.right
         self.toolbarAvilabilityButton.isSelected = isHidden
         
@@ -452,6 +455,12 @@ public class DocumentEditorViewController: UIViewController {
     
     public override func resignFirstResponder() -> Bool {
         return self.textView.resignFirstResponder()
+    }
+    
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if isPhone && scrollView.isTracking {
+            self.hideToolbar(true)
+        }
     }
 }
 

@@ -24,7 +24,7 @@ public protocol OutlineTextViewDelegate: class {
     func didTapOnTitle(at: CGPoint)
 }
 
-public class OutlineTextView: UITextView {
+public class OutlineTextView: UITextView, UIScrollViewDelegate {
     public weak var outlineDelegate: OutlineTextViewDelegate?
     
     private let disposeBag = DisposeBag()
