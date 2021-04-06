@@ -258,12 +258,18 @@ public class DocumentEditorViewController: UIViewController {
             // fire request to load backlinks
             
             self.textView.setTitle(self.viewModel.url.packageName)
+            
+            self.hideToolbar(true)
         }
     }
     
     public func hideToolbar(_ isHidden: Bool) {
         if isHidden == true && self.toolBar.alpha == 0 { return }
         if isHidden == false && self.toolBar.alpha != 0 { return }
+        
+        if isHidden == false && self.textView.isFirstResponder {
+            self.textView.resignFirstResponder()
+        }
         
         self.toolBar.constraint(for: .right)?.constant = isHidden ? 44 : -Layout.innerViewEdgeInsets.right
         self.toolbarAvilabilityButton.isSelected = isHidden
