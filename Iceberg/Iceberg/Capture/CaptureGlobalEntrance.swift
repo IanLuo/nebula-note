@@ -10,6 +10,8 @@ import Foundation
 import UIKit
 import Core
 import Interface
+import RxSwift
+import RxCocoa
 
 public class CaptureGlobalEntranceWindow: UIWindow {
     public var isForcedToHide: Bool = false {
@@ -35,6 +37,12 @@ public class CaptureGlobalEntranceWindow: UIWindow {
                       height: 60)
     }
     
+    public let isInFullScreenEditor: BehaviorRelay<Bool> = BehaviorRelay(value: false)
+    public let isModalViewInfront: BehaviorRelay<Bool> = BehaviorRelay(value: false)
+    public let isKeyboardVisiable: BehaviorRelay<Bool> = BehaviorRelay(value: false)
+    
+    private let disposeBag = DisposeBag()
+    
     public init(window: UIWindow) {
         if #available(iOS 13, *) {
             super.init(windowScene: window.windowScene!)
@@ -52,6 +60,14 @@ public class CaptureGlobalEntranceWindow: UIWindow {
         }
         
         NotificationCenter.default.addObserver(self, selector: #selector(_orientationChanged), name: UIDevice.orientationDidChangeNotification, object: nil)
+        
+        Observable.combineLatest(self.isInFullScreenEditor, self.isModalViewInfront, self.isKeyboardVisiable).subscribe(onNext: { isInFullScreenEditor, isModelViewInfront, isKeyboardVisiable in
+            if isInFullScreenEditor || isModelViewInfront || isKeyboardVisiable {
+                self.hide()
+            } else {
+                self.show()
+            }
+        }).disposed(by: self.disposeBag)
     }
     
     @objc private func _orientationChanged(notification: Notification) {
@@ -67,11 +83,11 @@ public class CaptureGlobalEntranceWindow: UIWindow {
     
     public func hide() {
         if isPhone && self.alpha == 1 {
+            self.alpha = 0 // 防止旋转的时候在屏幕上出现
             UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveEaseInOut, animations: {
                 self.frame = CGRect(x: UIScreen.main.bounds.width, y: UIScreen.main.bounds.height - self._fromWindow!.safeArea.bottom - 60 - 30, width: self.frame.size.width, height: self.frame.size.height)
             }, completion: { _ in
                 self.isOffScreen = true
-                self.alpha = 0 // 防止旋转的时候在屏幕上出现
             })
         }
     }

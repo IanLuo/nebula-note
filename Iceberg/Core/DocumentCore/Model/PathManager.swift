@@ -514,7 +514,7 @@ extension URL {
         
         log.info("no directory exists at: \(self.path), creating one...")
         let fileCoordinator = fetchFileCoordinator(self)
-        let intent = NSFileAccessIntent.writingIntent(with: URL(fileURLWithPath: path), options: NSFileCoordinator.WritingOptions.forReplacing)
+        let intent = NSFileAccessIntent.writingIntent(with: URL(fileURLWithPath: path), options: NSFileCoordinator.WritingOptions.forMerging)
         let queue = OperationQueue()
         queue.qualityOfService = .userInteractive
         fileCoordinator.coordinate(with: [intent], queue: queue) { error in

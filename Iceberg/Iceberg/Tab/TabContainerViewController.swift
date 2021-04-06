@@ -26,6 +26,8 @@ public class TabContainerViewController: UIViewController {
     
     private let tabBar: TabBar = TabBar()
     
+    private let barContainer: UIView = UIView()
+    
     private let container: UIView = UIView()
     
     private let disposeBag = DisposeBag()
@@ -51,19 +53,22 @@ public class TabContainerViewController: UIViewController {
     private func setupUI() {
         self.navigationController?.isNavigationBarHidden = true
         
-        self.view.addSubview(self.tabBar)
+        self.view.addSubview(self.barContainer)
         self.view.addSubview(self.container)
-        self.view.addSubview(self.openDocumentButton)
+        
+        self.barContainer.addSubview(self.tabBar)
+        self.barContainer.addSubview(self.openDocumentButton)
         
         self.openDocumentButton.roundConer(radius: Layout.cornerRadius)
         self.openDocumentButton.sizeAnchor(width: 44, height: 44)
-        self.openDocumentButton.sideAnchor(for: [.leading], to: self.view, edgeInsets: UIEdgeInsets(top: 0, left: Layout.edgeInsets.left, bottom: 0, right: 0), considerSafeArea: true)
-        self.openDocumentButton.rowAnchor(view: self.tabBar, space: 5, alignment: .top)
-        self.tabBar.sideAnchor(for: [.top, .traling], to: self.view, edgeInset: 0, considerSafeArea: true)
+        self.openDocumentButton.sideAnchor(for: [.leading], to: self.barContainer, edgeInsets: UIEdgeInsets(top: 0, left: Layout.edgeInsets.left, bottom: 0, right: 0))
+        self.openDocumentButton.rowAnchor(view: self.tabBar, space: 10, alignment: .top)
+        self.tabBar.sideAnchor(for: [.top, .traling, .bottom], to: self.barContainer, edgeInset: 0)
         
         self.tabBar.sizeAnchor(height: 54)
         
-        self.tabBar.columnAnchor(view: self.container, space: 0, alignment: .none)
+        self.barContainer.sideAnchor(for: [.leading, .top, .traling], to: self.view, edgeInset: 0, considerSafeArea: true)
+        self.barContainer.columnAnchor(view: self.container, space: 0, alignment: .none)
         self.container.sideAnchor(for: [.leading, .bottom, .traling], to: self.view, edgeInset: 0, considerSafeArea: true)
         
         self.interface { [weak self] (me, theme) in
@@ -124,6 +129,19 @@ public class TabContainerViewController: UIViewController {
         return self.viewController(for: url) != nil
     }
     
+    public var isTabbarHidden: Bool {
+        return self.barContainer.constraint(for: .top)?.constant != 0
+    }
+    
+    public func hideTabbar(_ isHidden: Bool) {
+        self.barContainer.constraint(for: .top)?.constant = isHidden ? -54 : 0
+        
+        UIView.animate(withDuration: 0.25) {
+            self.barContainer.alpha = isHidden ? 0 : 1
+            self.view.layoutIfNeeded()
+        }
+    }
+    
     @available(iOS 13.0, *)
     public func isCommandAvailable(command: UICommand) -> Bool {
         guard let properties = command.propertyList as? [String: Any] else { return false }
@@ -147,6 +165,7 @@ public class TabContainerViewController: UIViewController {
                 self.container.subviews.forEach { $0.removeFromSuperview() }
                 self.container.addSubview(viewController.view)
                 self.addChild(viewController)
+                viewController.tabContainer = self
                 viewController.view.allSidesAnchors(to: self.container, edgeInset: 0)
                 
                 // load content
@@ -215,6 +234,10 @@ public class TabContainerViewController: UIViewController {
     
     private func addPair(for url: URL, viewController: DocumentEditorViewController) {
         self.openingViewControllers.insert((url.documentRelativePath, viewController), at: 0)
+    }
+    
+    public override func resignFirstResponder() -> Bool {
+        return self.currentEditorViewController?.resignFirstResponder() ?? false
     }
 }
 

@@ -184,7 +184,7 @@ public class MembershipViewController: UIViewController {
         let aString = NSMutableAttributedString(string: L10n.Membership.Function.title + "\n\n")
         let titleLength = aString.length
         for `case` in MemberFunctions.allCases {
-            aString.append(NSAttributedString(string: "★ ", attributes: [NSAttributedString.Key.foregroundColor : InterfaceTheme.Color.spotlight]))
+            aString.append(NSAttributedString(string: "✓ ", attributes: [NSAttributedString.Key.foregroundColor : InterfaceTheme.Color.spotlight]))
             aString.append(NSAttributedString(string: `case`.name + "\n", attributes: [NSAttributedString.Key.foregroundColor : InterfaceTheme.Color.descriptive]))
         }
         

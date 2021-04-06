@@ -32,7 +32,7 @@ public class KanbanViewModel: ViewModelProtocol {
     
     public let ignoredDocuments: BehaviorRelay<[String]> = BehaviorRelay(value: [])
     
-    private let ignoredEntryStore = KeyValueStoreFactory.store(type: KeyValueStoreType.plist(.custom("ignoredEntries")))
+    private let ignoredEntryStore: KeyValueStore = KeyValueStoreFactory.store(type: KeyValueStoreType.plist(.custom("ignoredEntries")))
     
     public var shouldReloadData: Bool = false
     
@@ -48,18 +48,19 @@ public class KanbanViewModel: ViewModelProtocol {
             self?.documents.onNext(Array(Set(map.values.flatMap({ $0 }).map { $0.documentInfo.name })))
         }).disposed(by: self.disposeBag)
         
+        
         if let savedIgnoredStatus = self.ignoredEntryStore.get(key: keyIgnoredStatus, type: [String].self) {
             self.ignoredStatus.accept(savedIgnoredStatus)
         }
-        
+
         if let savedIgnoredDocuments = self.ignoredEntryStore.get(key: keyIgnoredDocuments, type: [String].self) {
             self.ignoredDocuments.accept(savedIgnoredDocuments)
         }
-        
+
         self.ignoredStatus.subscribe(onNext: { [weak self] in
             self?.ignoredEntryStore.set(value: $0, key: keyIgnoredStatus, completion: {})
         }).disposed(by: self.disposeBag)
-        
+
         self.ignoredDocuments.subscribe(onNext: { [weak self] in
             self?.ignoredEntryStore.set(value: $0, key: keyIgnoredDocuments, completion: {})
         }).disposed(by: self.disposeBag)

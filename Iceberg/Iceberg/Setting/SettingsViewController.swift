@@ -206,10 +206,10 @@ public class SettingsViewController: UITableViewController {
     private func _showFeedbackOptions(from: UIView) {
         let selector = SelectorViewController()
         selector.title = L10n.Setting.Feedback.title
+        selector.addItem(title: L10n.Setting.feedback)
         selector.addItem(title: L10n.Setting.Feedback.rate)
         selector.addItem(title: L10n.Setting.Feedback.promot)
         selector.addItem(title: L10n.Setting.Feedback.forum)
-        selector.addItem(title: L10n.Setting.feedback)
         selector.onCancel = { viewController in
             viewController.dismiss(animated: true)
             self.viewModel.showGlobalCaptureEntry()
@@ -218,21 +218,9 @@ public class SettingsViewController: UITableViewController {
         selector.onSelection = { selection, viewController in
             switch selection {
             case 0:
-                SKStoreReviewController.requestReview()
-            case 1:
-                if let name = URL(string: "https://itunes.apple.com/app/id1501111134"), !name.absoluteString.isEmpty {
-                    let objectsToShare = [name]
-                    let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
-                    activityVC.popoverPresentationController?.sourceView = viewController.view
-                    activityVC.popoverPresentationController?.sourceRect = CGRect(x: 0, y: 0, width: 500, height: 600)
-                    viewController.present(activityVC, animated: true, completion: nil)
-                }
-            case 2:
-                UIApplication.shared.open(URL(string: "https://forum.nebulaapp.net/")!, options: [:], completionHandler: nil)
-            case 3:
                 let appId = "11641"
                 let appKey = "k2q6pHh2ekAbQjELagm2VZ3rHJFHEj3bl1GI529FjaDO29hfwLcn5sJ9jBSVA24Q"
-
+                
                 viewController.dismiss(animated: true) {
                     let feedback = Doorbell.init(apiKey: appKey, appId: appId)
                     feedback!.showFeedbackDialog(in: self, completion: { (error, cancelled) -> Void in
@@ -241,6 +229,18 @@ public class SettingsViewController: UITableViewController {
                         }
                     })
                 }
+            case 1:
+                SKStoreReviewController.requestReview()
+            case 2:
+                if let name = URL(string: "https://itunes.apple.com/app/id1501111134"), !name.absoluteString.isEmpty {
+                    let objectsToShare = [name]
+                    let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
+                    activityVC.popoverPresentationController?.sourceView = viewController.view
+                    activityVC.popoverPresentationController?.sourceRect = CGRect(x: 0, y: 0, width: 500, height: 600)
+                    viewController.present(activityVC, animated: true, completion: nil)
+                }
+            case 3:
+                UIApplication.shared.open(URL(string: "https://forum.nebulaapp.net/")!, options: [:], completionHandler: nil)
             default: break
             }
         }

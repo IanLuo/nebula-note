@@ -101,7 +101,7 @@
 "document.menu.enableReadingMode" = "Reading mode";
 "document.menu.enableEditingMode" = "Editing mode";
 "document.menu.info" = "Document Info";
-"document.menu.fullScreen" = "Full width";
+"document.menu.fullScreen" = "Full Screen";
 
 "document.edit.date.all-day" = "All day";
 
@@ -222,7 +222,7 @@
 "setting.feedback.rate" = "I want to give Nebula a 5 star";
 "setting.feedback.promot" = "I want to share to others";
 "setting.feedback.forum" = "I want to join the forum";
-"setting.feedback" = "Feedback";
+"setting.feedback" = "Write some feedback";
 
 "setting.privacy" = "Privicy policy";
 "setting.terms" = "Terms of service";
@@ -433,7 +433,7 @@
 "key.command.pickIdeaMenu" = "Insert From Ideas";
 "key.command.pickerAttachmentMenu" = "Picker From Attachments";
 "key.command.addAttachment" = "Insert New Attachment";
-"key.command.toggleFullWidth" = "Toggle Full Width Editor";
+"key.command.toggleFullWidth" = "Toggle Full Screen Editor";
 "key.command.foldAll" = "Fold All";
 "key.command.unfoldAll" = "Unfold All";
 "key.command.outline" = "Show Outline";

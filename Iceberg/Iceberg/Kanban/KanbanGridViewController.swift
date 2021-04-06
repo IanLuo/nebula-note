@@ -39,7 +39,7 @@ public class KanbanGridViewController: UIViewController {
     
     public func showStatus(_ status: [String]) {
         self.contentView.subviews.forEach { $0.removeFromSuperview() }
-        
+
         self.status = status.sorted(by: { (s1, s2) -> Bool in
             switch (self.viewModel.isFinishedStatus(status: s1), self.viewModel.isFinishedStatus(status: s2)) {
             case (true, true):
@@ -52,7 +52,7 @@ public class KanbanGridViewController: UIViewController {
                 return true
             }
         })
-        
+
         let stackView = UIStackView(subviews: self.status.filter({ [weak self] in
             self?.viewModel.ignoredStatus.value.contains($0) == false
         }).map { status in
@@ -63,13 +63,13 @@ public class KanbanGridViewController: UIViewController {
             column.onUpdate = { heading in
                 self.update(heading: heading, status: status)
             }
-            
+
             column.didSelectCellActionButton = {
                 self.showActions(heading: $0, from: $1)
             }
             return column
         }, axis: .horizontal, distribution: .equalSpacing, alignment: .fill, spacing: 10)
-        
+
         self.contentView.addSubview(stackView)
         stackView.allSidesAnchors(to: self.contentView, edgeInset: 0)
         stackView.heightAnchor.constraint(equalTo: self.view.heightAnchor).isActive = true
@@ -78,7 +78,10 @@ public class KanbanGridViewController: UIViewController {
     private func showActions(heading: DocumentHeading, from: UIView) {
         let selector = SelectorViewController()
         
+        selector.title = heading.planning
+        
         for s in self.status {
+            guard s != heading.planning else { continue }
             selector.addItem(attributedString: NSAttributedString(string: s, attributes: [NSAttributedString.Key.backgroundColor: OutlineTheme.planningStyle(isFinished: self.viewModel.isFinishedStatus(status: s)).buttonColor, NSAttributedString.Key.foregroundColor: InterfaceTheme.Color.spotlitTitle]))
         }
         
@@ -147,13 +150,12 @@ private class KanbanColumn: UIView, UITableViewDelegate, UITableViewDataSource, 
     private let viewModel: KanbanViewModel
     
     func showStatus(_ title: String, color: UIColor) {
-        self.titleLabel.text = title
         self.titleLabel.backgroundColor = color
         self.reload(title: title)
     }
     
-    func reload(title: String? = nil) {
-        self.headings = viewModel.headingsMap.value[title ?? self.titleLabel.text ?? ""]?.filter({ [weak self] in
+    private func reload(title: String) {
+        self.headings = viewModel.headingsMap.value[title]?.filter({ [weak self] in
             self?.viewModel.ignoredDocuments.value.contains($0.documentInfo.name) == false
         }).sorted(by: { (head1, head2) -> Bool in
             switch (head1.heading.priority, head2.heading.priority) {
@@ -167,6 +169,7 @@ private class KanbanColumn: UIView, UITableViewDelegate, UITableViewDataSource, 
                 return p1 < p2
             }
         }) ?? []
+        self.titleLabel.text = "\(title) [\(self.headings.count)]"
         self.contentTableView.reloadData()
     }
     
@@ -225,7 +228,7 @@ private class KanbanColumn: UIView, UITableViewDelegate, UITableViewDataSource, 
         return UIDropProposal(operation: .move)
     }
     
-    // MARK: - 
+    // MARK: -
     
     class KanbanColumnCell: UITableViewCell, UIDragInteractionDelegate {
         static let reuseIdentifier = "KanbanColumnCell"
@@ -318,9 +321,6 @@ private class KanbanColumn: UIView, UITableViewDelegate, UITableViewDataSource, 
             fatalError("init(coder:) has not been implemented")
         }
         
-        private func showActions() {
-        }
-               
         func configCell(searchResult: DocumentHeadingSearchResult) {
             self.searchResult = searchResult
             self.textlabel.text = searchResult.heading.text.trimmingCharacters(in: CharacterSet.whitespaces)

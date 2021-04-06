@@ -173,6 +173,8 @@ public class HomeViewController: UIViewController {
     private func _updateDetailViewAlpha(offset: CGFloat) {
         let alphaComponent = max(0.3, 1 - offset / self.masterViewWidth) // 透明度不小于 0.3
         self.currentDetailViewController?.view.alpha = alphaComponent
+        
+        self.currentDetailViewController?.view.isUserInteractionEnabled = alphaComponent == 1
     }
     
     public override func didRotate(from fromInterfaceOrientation: UIInterfaceOrientation) {

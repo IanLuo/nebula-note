@@ -37,7 +37,9 @@ public class KanbanViewController: UIViewController {
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        self.viewModel.loadAllStatus()
+        if isPhone {
+            self.viewModel.loadAllStatus()
+        }
     }
     
     public override func viewDidLoad() {
@@ -45,7 +47,7 @@ public class KanbanViewController: UIViewController {
         
         self.view.addSubview(self.actionPanel)
         
-        self.actionPanel.sideAnchor(for: [.left, .right], to: self.view, edgeInset: 0).sideAnchor(for: .top, to: self.view, edgeInset: 0)
+        self.actionPanel.sideAnchor(for: [.left, .right], to: self.view, edgeInset: 0).sideAnchor(for: .top, to: self.view, edgeInset: 0, considerSafeArea: true)
         
         self.actionPanel.addSubview(self.statusBarContainer)
         self.actionPanel.addSubview(self.documentBarContainer)
@@ -71,7 +73,11 @@ public class KanbanViewController: UIViewController {
             let button = UIButton()
             button.setTitle(L10n.Kanban.Filter.get, for: .normal)
             button.setImage(Asset.Assets.proLabel.image, for: .normal)
-            button.contentEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: -10)
+            button.setBackgroundImage(UIImage.create(with: InterfaceTheme.Color.background2, size: .singlePoint), for: .normal)
+            button.setTitleColor(InterfaceTheme.Color.interactive, for: .normal)
+            button.roundConer(radius: Layout.cornerRadius)
+            button.contentEdgeInsets = UIEdgeInsets(top: 0, left: 30, bottom: 0, right: 30)
+            button.sizeAnchor(height: 44)
             button.imageEdgeInsets = UIEdgeInsets(top: 0, left: -10, bottom: 0, right:0)
             button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: -10)
             button.rx.tap.subscribe(onNext: {
@@ -79,7 +85,7 @@ public class KanbanViewController: UIViewController {
             }).disposed(by: self.disposeBag)
             
             cover.addSubview(button)
-            button.sideAnchor(for: .left, to: cover, edgeInset: Layout.edgeInsets.left)
+            button.sideAnchor(for: .left, to: cover, edgeInset: Layout.innerViewEdgeInsets.left)
             button.centerAnchors(position: .centerY, to: cover)
         }
         
@@ -104,10 +110,10 @@ public class KanbanViewController: UIViewController {
             strongSelf.statusBarContainer.subviews.forEach { $0.removeFromSuperview() }
             strongSelf.statusBarContainer.addSubview(view)
             view.allSidesAnchors(to: strongSelf.statusBarContainer, edgeInset: 0)
-            
+
             kanbanGraidViewController.showStatus(statusMap.map { $0.key })
         }).disposed(by: self.disposeBag)
-        
+
         Observable.combineLatest(self.viewModel.documents, self.viewModel.ignoredDocuments).asDriver(onErrorJustReturn: ([], [])).drive(onNext: { [weak self] in
             guard let strongSelf = self else { return }
             let view = strongSelf.createDocumentBar($0.0, ignored: $0.1)
@@ -132,7 +138,7 @@ public class KanbanViewController: UIViewController {
                 return true
             }
         }).map({ key, value in
-            let button = UIButton(title: "\(key) \(value)", for: .normal)
+            let button = UIButton(title: "\(key) [\(value)]", for: .normal)
             
             button.interface { (me, theme) in
                 let button = me as! UIButton

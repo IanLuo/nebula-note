@@ -600,7 +600,7 @@ public enum L10n {
       public static let enableReadingMode = L10n.tr("Localizable", "document.menu.enableReadingMode")
       /// Fold all
       public static let foldAll = L10n.tr("Localizable", "document.menu.foldAll")
-      /// Full width
+      /// Full Screen
       public static let fullScreen = L10n.tr("Localizable", "document.menu.fullScreen")
       /// Document Info
       public static let info = L10n.tr("Localizable", "document.menu.info")
@@ -768,7 +768,7 @@ public enum L10n {
       public static let strikeThroughText = L10n.tr("Localizable", "key.command.strikeThroughText")
       /// Show Tag Actions
       public static let tagMenu = L10n.tr("Localizable", "key.command.tagMenu")
-      /// Toggle Full Width Editor
+      /// Toggle Full Screen Editor
       public static let toggleFullWidth = L10n.tr("Localizable", "key.command.toggleFullWidth")
       /// Toggle Left Part
       public static let toggleLeftPart = L10n.tr("Localizable", "key.command.toggleLeftPart")
@@ -901,7 +901,7 @@ public enum L10n {
   }
 
   public enum Setting {
-    /// Feedback
+    /// Write some feedback
     public static let feedback = L10n.tr("Localizable", "setting.feedback")
     /// Privicy policy
     public static let privacy = L10n.tr("Localizable", "setting.privacy")

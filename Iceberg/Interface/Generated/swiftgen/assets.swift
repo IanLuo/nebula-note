@@ -46,10 +46,13 @@ public enum Asset {
   public enum SFSymbols {
     public static let arrowClockwise = ImageAsset(name: "arrow.clockwise")
     public static let arrowDownToLine = ImageAsset(name: "arrow.down.to.line")
+    public static let arrowLeftCircle = ImageAsset(name: "arrow.left.circle")
     public static let arrowLeft = ImageAsset(name: "arrow.left")
     public static let arrowLeftToLine = ImageAsset(name: "arrow.left.to.line")
+    public static let arrowRightCircle = ImageAsset(name: "arrow.right.circle")
     public static let arrowRight = ImageAsset(name: "arrow.right")
     public static let arrowRightToLine = ImageAsset(name: "arrow.right.to.line")
+    public static let arrowUpAndDownAndArrowLeftAndRight = ImageAsset(name: "arrow.up.and.down.and.arrow.left.and.right")
     public static let arrowUpDoc = ImageAsset(name: "arrow.up.doc")
     public static let arrowUpToLine = ImageAsset(name: "arrow.up.to.line")
     public static let arrowUturnLeft = ImageAsset(name: "arrow.uturn.left")

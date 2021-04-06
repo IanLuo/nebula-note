@@ -39,6 +39,8 @@ public class DocumentEditorViewController: UIViewController {
         }
     }()
     
+    public weak var tabContainer: TabContainerViewController?
+    
     // these two part is used for mac and ipad
     private let topViewContainer: UIView = UIView()
     private let rightViewContainer: UIView = UIView()
@@ -76,12 +78,28 @@ public class DocumentEditorViewController: UIViewController {
     }
     
     public let inputbar = InputToolbar(mode: .paragraph)
+    private lazy var toolbarAvilabilityButton: UIButton = {
+        let button = UIButton()
+        button.rx.tap.subscribe(onNext: {
+            self.hideToolbar(self.toolBar.alpha != 0)
+        }).disposed(by: self.disposeBag)
+        button.roundConer(radius: 22)
+        
+        button.interface { (me, theme) in
+            let button = me as! UIButton
+            button.setImage(Asset.SFSymbols.arrowRightCircle.image.resize(upto: CGSize(width: 20, height: 20)).fill(color: theme.color.interactive), for: .normal)
+            button.setImage(Asset.SFSymbols.arrowLeftCircle.image.resize(upto: CGSize(width: 20, height: 20)).fill(color: theme.color.interactive), for: .selected)
+            button.setBackgroundImage(UIImage.create(with: theme.color.background3, size: .singlePoint), for: .normal)
+        }
+        return button
+    }()
     
     private let toolBar: UIStackView = {
         let view = UIStackView()
         view.axis = .vertical
         view.distribution = .equalSpacing
         view.spacing = 20
+        
         return view
     }()
     
@@ -103,6 +121,7 @@ public class DocumentEditorViewController: UIViewController {
         self.view.addSubview(self.textView)
         self.view.addSubview(self.rightViewContainer)
         self.view.addSubview(self._loadingIndicator)
+        self.view.addSubview(self.toolbarAvilabilityButton)
         
         if !self.viewModel.isReadyToEdit {
             self._loadingIndicator.startAnimating()
@@ -137,56 +156,52 @@ public class DocumentEditorViewController: UIViewController {
                     }
                 }
             }
-
-            var closeButtonIcon = Asset.SFSymbols.xmark.image.fill(color: InterfaceTheme.Color.interactive)
-            if self.viewModel.context.coordinator?.isModal == false {
-                closeButtonIcon = Asset.SFSymbols.chevronLeft.image.fill(color: InterfaceTheme.Color.interactive)
-            }
-            let closeButton = UIBarButtonItem(image: closeButtonIcon, style: .plain, target: self, action: #selector(cancel(_:)))
-            self.navigationItem.leftBarButtonItem = closeButton
-            
-            let menuButton = UIBarButtonItem(image: Asset.SFSymbols.ellipsis.image.fill(color: InterfaceTheme.Color.interactive), style: .plain, target: self, action: #selector(showMenu))
-            let outlookButton = UIBarButtonItem(image: Asset.SFSymbols.filemenuAndSelection.image.fill(color: InterfaceTheme.Color.interactive), style: .plain, target: nil, action: nil)
-            outlookButton.rx.tap.subscribe(onNext: { [weak self] _ in
-                self?.showOutline(from: nil)
-            }).disposed(by: self.disposeBag)
-            
-            self.navigationItem.rightBarButtonItems = [menuButton, outlookButton]
             
             self.inputbar.delegate = self
             
-            if isMacOrPad {
-                self.topViewContainer.addSubview(self.inputbar)
-                self.view.addSubview(self.toolBar)
-                
-                self.inputbar.allSidesAnchors(to: self.topViewContainer, edgeInsets: .init(top: 0, left: Layout.innerViewEdgeInsets.left, bottom: 0, right: -50))
-                self.inputbar.sizeAnchor(height: 60)
-                self.topViewContainer.columnAnchor(view: self.toolBar, space: 50, alignment: .none)
-                self.toolBar.sideAnchor(for: .right, to: self.view, edgeInsets: .init(top: 0, left: 0, bottom: 0, right: -Layout.innerViewEdgeInsets.right))
-                self.toolBar.sizeAnchor(width: 44)
-                
-                self.addToolbarButton(title: L10n.Document.Menu.fullScreen, icon: Asset.Assets.fullscreen.image) { [weak self] button in
-                    self?.viewModel.context.coordinator?.toggleEditorFullScreen()
-                }
-                
-                self.addToolbarButton(title: L10n.Document.Menu.foldAll, icon: Asset.Assets.foldAll.image) { [weak self]  button in
-                    self?.viewModel.foldAll()
-                }
-                
-                self.addToolbarButton(title: L10n.Document.Menu.unfoldAll, icon: Asset.Assets.unfoldAll.image) { [weak self]  button in
-                    self?.viewModel.unfoldAll()
-                }
-                
-                self.addToolbarButton(title: L10n.Document.Menu.outline, icon: Asset.SFSymbols.filemenuAndSelection.image) { [weak self]  button in
-                    self?.showOutline(from: button)
-                }
-                
-                self.addToolbarButton(title: "", icon: Asset.SFSymbols.ellipsis.image) { [weak self]  button in
-                    self?.showInfo()
-                }
-            } else {
-                self.inputbar.frame = CGRect(origin: .zero, size: .init(width: self.view.bounds.width, height: 44))
+            self.view.addSubview(self.toolBar)
+            
+            self.toolbarAvilabilityButton.sideAnchor(for: [.right], to: self.view, edgeInset: Layout.innerViewEdgeInsets.right)
+            self.toolbarAvilabilityButton.sizeAnchor(width: 44, height: 44)
+            
+            self.topViewContainer.columnAnchor(view: self.toolbarAvilabilityButton, space: 50, alignment: .none)
+            
+            self.toolbarAvilabilityButton.columnAnchor(view: self.toolBar, space: 30, alignment: .none)
+            self.toolBar.sideAnchor(for: .right, to: self.view, edgeInsets: .init(top: 0, left: 0, bottom: 0, right: -Layout.innerViewEdgeInsets.right))
+            self.toolBar.sizeAnchor(width: 44)
+            
+            self.addToolbarButton(title: L10n.Document.Menu.fullScreen, icon: Asset.SFSymbols.arrowUpAndDownAndArrowLeftAndRight.image.resize(upto: CGSize(width: 20, height: 20))) { [weak self] button in
+                let isHidden = self?.tabContainer?.isTabbarHidden == true
+                self?.tabContainer?.hideTabbar(!isHidden)
+                self?.viewModel.context.coordinator?.toggleEditorFullScreen()
+                self?.viewModel.dependency.globalCaptureEntryWindow?.isInFullScreenEditor.accept(!isHidden)
+                self?.hideToolbar(!isHidden)
+            }
+            
+            self.addToolbarButton(title: L10n.Document.Menu.foldAll, icon: Asset.Assets.foldAll.image) { [weak self]  button in
+                self?.viewModel.foldAll()
+            }
+            
+            self.addToolbarButton(title: L10n.Document.Menu.unfoldAll, icon: Asset.Assets.unfoldAll.image) { [weak self]  button in
+                self?.viewModel.unfoldAll()
+            }
+            
+            self.addToolbarButton(title: L10n.Document.Menu.outline, icon: Asset.SFSymbols.filemenuAndSelection.image) { [weak self]  button in
+                self?.showOutline(from: button)
+            }
+            
+            self.addToolbarButton(title: "", icon: Asset.SFSymbols.ellipsis.image) { [weak self]  button in
+                self?.showInfo()
+            }
+            
+            
+            if isPhone {
                 self.textView.inputAccessoryView = self.inputbar
+                self.inputbar.frame = CGRect(origin: .zero, size: .init(width: self.view.bounds.width, height: 44))
+            } else {
+                self.inputbar.sizeAnchor(height: 60)
+                self.topViewContainer.addSubview(self.inputbar)
+                self.inputbar.allSidesAnchors(to: self.topViewContainer, edgeInsets: .init(top: 0, left: Layout.innerViewEdgeInsets.left, bottom: 0, right: -50))
             }
             
             self.inputbar.mode = .paragraph
@@ -195,6 +210,7 @@ public class DocumentEditorViewController: UIViewController {
             
             let notificationCenter = NotificationCenter.default
             notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillShowNotification, object: nil)
+            notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillHideNotification, object: nil)
             notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardDidHideNotification, object: nil)
             notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardDidChangeFrameNotification, object: nil)
             notificationCenter.addObserver(self, selector: #selector(_tryToShowUserGuide), name: UIResponder.keyboardDidShowNotification, object: nil)
@@ -245,6 +261,16 @@ public class DocumentEditorViewController: UIViewController {
         }
     }
     
+    public func hideToolbar(_ isHidden: Bool) {
+        self.toolBar.constraint(for: .right)?.constant = isHidden ? 44 : -Layout.innerViewEdgeInsets.right
+        self.toolbarAvilabilityButton.isSelected = isHidden
+        
+        UIView.animate(withDuration: 0.25) {
+            self.view.layoutIfNeeded()
+            self.toolBar.alpha = isHidden ? 0 : 1
+        }
+    }
+    
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
@@ -257,12 +283,16 @@ public class DocumentEditorViewController: UIViewController {
         }
         
         self.viewModel.loadBacklinks()
+        
+        self.viewModel.dependency.globalCaptureEntryWindow?.isInFullScreenEditor.accept(self.tabContainer?.isTabbarHidden == true)
     }
     
     public override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         
-        self.textView.endEditing(true)        
+        self.textView.endEditing(true)
+        
+        self.viewModel.dependency.globalCaptureEntryWindow?.isInFullScreenEditor.accept(false)
     }
     
     public override func viewDidLayoutSubviews() {
@@ -363,10 +393,10 @@ public class DocumentEditorViewController: UIViewController {
             UIView.animate(withDuration: 0.2) {
                 self.textView.contentInset = self._contentEdgeInsect
             }
-            
-            self.viewModel.showGlobalCaptureEntry()
-        } else if notification.name == UIResponder.keyboardWillShowNotification {
-            self.viewModel.hideGlobalCaptureEntry()
+        } else if notification.name == UIResponder.keyboardWillShowNotification && self.textView.isFirstResponder {
+            self.viewModel.dependency.globalCaptureEntryWindow?.isKeyboardVisiable.accept(true)
+        } else if notification.name == UIResponder.keyboardWillHideNotification && self.textView.isFirstResponder {
+            self.viewModel.dependency.globalCaptureEntryWindow?.isKeyboardVisiable.accept(false)
         } else {
             self.textView.contentInset = UIEdgeInsets(top: self._contentEdgeInsect.top, left: self._contentEdgeInsect.left, bottom: keyboardViewEndFrame.height - view.safeAreaInsets.bottom, right: self._contentEdgeInsect.right)
             self.textView.scrollRangeToVisible(self.textView.selectedRange)
@@ -418,6 +448,10 @@ public class DocumentEditorViewController: UIViewController {
     
     public override var keyCommands: [UIKeyCommand]? {
         return super.keyCommands
+    }
+    
+    public override func resignFirstResponder() -> Bool {
+        return self.textView.resignFirstResponder()
     }
 }
 
