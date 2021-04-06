@@ -157,7 +157,10 @@ public class TabContainerViewController: UIViewController {
     }
     
     public func selectTab(url: URL, location: Int) {
-        self.hideTabbar(false)
+        
+        if self.isTabbarHidden {
+            self.hideTabbar(false)
+        }
         
         self.viewModel.dependency.settingAccessor.logOpenDocument(url: url)
         
