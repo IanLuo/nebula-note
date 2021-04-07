@@ -267,9 +267,6 @@ extension Coordinator {
 extension Coordinator: CaptureCoordinatorDelegate {
     public func didCancel(coordinator: CaptureCoordinator) {
         
-        if !(self is EditorCoordinator) {
-            self.dependency.globalCaptureEntryWindow?.show()
-        }
     }
     
     public func didSelect(attachmentKind: Attachment.Kind, coordinator: CaptureCoordinator) {
@@ -283,21 +280,17 @@ extension Coordinator: CaptureCoordinatorDelegate {
                 
                 if attachmentKind.isMemberFunction && !self.dependency.purchaseManager.isMember.value {
                     self.topCoordinator?.showMembership()
-                    self.dependency.globalCaptureEntryWindow?.show()
                     return
                 }
                 
                 self.showAttachmentPicker(kind: attachmentKind, at: self.fromView, location: self.fromLocation, complete: { [weak self] attachmentId in
-                    self?.dependency.globalCaptureEntryWindow?.show()
                     coordinator.addAttachment(attachmentId: attachmentId) {
                         DispatchQueue.runOnMainQueueSafely {
                             HUD.flash(HUDContentType.success, delay: 1)
                             self?.dependency.eventObserver.emit(NewCaptureAddedEvent(attachmentId: attachmentId, kind: attachmentKind.rawValue))
                         }
                     }
-                    }, cancel: { [weak self] in
-                        self?.dependency.globalCaptureEntryWindow?.show()
-                })
+                }, cancel: {})
             }
         }
     }

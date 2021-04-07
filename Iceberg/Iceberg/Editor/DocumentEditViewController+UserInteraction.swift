@@ -50,8 +50,6 @@ extension DocumentEditorViewController: OutlineTextViewDelegate {
     public func didTapDateAndTime(textView: UITextView, characterIndex: Int, dateAndTimeString: String, point: CGPoint) {
         let dateAndTime = DateAndTimeType(dateAndTimeString)!
         self.viewModel.context.coordinator?.showDateSelector(title: L10n.Document.DateAndTime.update, current: dateAndTime, add: { [unowned self] newDateAndTime in
-            self.viewModel.dependency.globalCaptureEntryWindow?.show()
-            
             let oldSelectedRange = textView.selectedRange
             let result = self.viewModel.performAction(EditAction.updateDateAndTime(characterIndex, newDateAndTime), textView: self.textView)
             if self.textView.selectedRange.location > characterIndex {
@@ -69,11 +67,7 @@ extension DocumentEditorViewController: OutlineTextViewDelegate {
                 
                 self.viewModel.dependency.eventObserver.emit(DateAndTimeChangedEvent(oldDateAndTime: dateAndTime,
                                                                                                   newDateAndTime: nil))
-        }, cancel: { [weak self] in
-            self?.viewModel.dependency.globalCaptureEntryWindow?.show()
-        })
-        
-        self.viewModel.dependency.globalCaptureEntryWindow?.hide()
+            }, cancel: {})
     }
     
     public func didTapOnTags(textView: UITextView, characterIndex: Int, tags: [String], point: CGPoint) {
@@ -101,7 +95,6 @@ extension DocumentEditorViewController: OutlineTextViewDelegate {
                         self.viewModel.context.coordinator?.openDocumentLink(link: link)
                     } else {
                         if let url = URL(string: linkStructure[OutlineParser.Key.Element.Link.url] as? String ?? "") {
-                            self.viewModel.dependency.globalCaptureEntryWindow?.show()
                             UIApplication.shared.open(url, options: [:], completionHandler: nil)
                         }
                     }
@@ -115,8 +108,6 @@ extension DocumentEditorViewController: OutlineTextViewDelegate {
                     let location = textView.rect(forStringRange: textView.selectedRange)?.center
                     for case let linkToken in self.viewModel.tokens(at: characterIndex) where linkToken is LinkToken {
                         self.showDocumentLinkTitleEditor(title: linkTitle, link: linkPath, from: self.textView, location: location) { [unowned self] in
-                            self.viewModel.dependency.globalCaptureEntryWindow?.show()
-                            
                             if let newLinkString = $0 {
                                 let oldSelectedRange = textView.selectedRange
                                 let result = self.viewModel.performAction(EditAction.replaceText(linkToken.range, newLinkString), textView: self.textView)
@@ -138,7 +129,6 @@ extension DocumentEditorViewController: OutlineTextViewDelegate {
                     }
                 } else { // 编辑普通连接
                     self.viewModel.context.coordinator?.showLinkEditor(title: linkTitle, url: linkPath, from: self.textView, location: location, completeEdit: { [unowned self] linkString in
-                        self.viewModel.dependency.globalCaptureEntryWindow?.show()
                         let oldSelectedRange = textView.selectedRange
                         let result = self.viewModel.performAction(EditAction.updateLink(characterIndex, linkString), textView: self.textView)
                         textView.selectedRange = oldSelectedRange.offset(result.delta)
@@ -150,12 +140,9 @@ extension DocumentEditorViewController: OutlineTextViewDelegate {
         
         actionsController.setCancel { viewController in
             viewController.dismiss(animated: true, completion: nil)
-            self.viewModel.dependency.globalCaptureEntryWindow?.show()
         }
         
         actionsController.present(from: self, at: self.textView, location: point)
-
-        self.viewModel.dependency.globalCaptureEntryWindow?.hide()
     }
     
     public func didTapOnLevel(textView: UITextView, chracterIndex: Int, point: CGPoint) {
@@ -211,21 +198,16 @@ extension DocumentEditorViewController: OutlineTextViewDelegate {
             viewController.dismiss(animated: true, completion: {
                 let exportManager = ExportManager(editorContext: self.viewModel.dependency.editorContext)
                 exportManager.share(from: self, url: attachment.url)
-                self.viewModel.dependency.globalCaptureEntryWindow?.show()
             })
         }
         
         actionsView.addAction(icon: nil, title: L10n.General.Button.Title.close) { viewController in
-            viewController.dismiss(animated: true, completion: {
-                self.viewModel.dependency.globalCaptureEntryWindow?.show()
-            })
+            viewController.dismiss(animated: true)
         }
         
 
         actionsView.setCancel { viewController in
-            viewController.dismiss(animated: true, completion: {
-                self.viewModel.dependency.globalCaptureEntryWindow?.show()
-            })
+            viewController.dismiss(animated: true)
         }
         
         if let location = self.textView.rect(forStringRange: NSRange(location: atCharactor, length: 0)) {
@@ -233,8 +215,6 @@ extension DocumentEditorViewController: OutlineTextViewDelegate {
         } else {
             actionsView.present(from: self)
         }
-
-        self.viewModel.dependency.globalCaptureEntryWindow?.hide()
     }
     
     public func didTapOnTitle(at: CGPoint) {
@@ -243,8 +223,6 @@ extension DocumentEditorViewController: OutlineTextViewDelegate {
         renameFormViewController.title = title
         renameFormViewController.addTextFied(title: title, placeHoder: "", defaultValue: self.viewModel.url.packageName) // 不需要显示 placeholder, default value 有值
         renameFormViewController.onSaveValueAutoDismissed = { [weak self] formValue in
-            self?.viewModel.showGlobalCaptureEntry()
-            
             guard let strongSelf = self else { return }
             if let newName = formValue[title] as? String {
                 strongSelf.viewModel.rename(to: newName.escaped) { error in
@@ -272,12 +250,9 @@ extension DocumentEditorViewController: OutlineTextViewDelegate {
         }
         
         renameFormViewController.onCancel = { viewController in
-            viewController.dismiss(animated: true, completion: nil)
-            self.viewModel.showGlobalCaptureEntry()
+            viewController.dismiss(animated: true)
         }
 
         renameFormViewController.present(from: self, at: self.textView, location: at)
-        
-        self.viewModel.hideGlobalCaptureEntry()
     }
 }

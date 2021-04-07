@@ -25,15 +25,7 @@ public extension ViewModelProtocol {
     func openDocument(url: URL, location: Int = 0) {
         self.context.coordinator?.openDocument(url: url, location: location)
     }
-    
-    func hideGlobalCaptureEntry() {
-        self.context.coordinator?.dependency.globalCaptureEntryWindow?.hide()
-    }
-    
-    func showGlobalCaptureEntry() {
-        self.context.coordinator?.dependency.globalCaptureEntryWindow?.show()
-    }
-    
+        
     var isMember: Bool {
         return self.context.dependency.purchaseManager.isMember.value
     }

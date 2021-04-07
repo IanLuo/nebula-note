@@ -192,7 +192,6 @@ public class AttachmentManagerViewController: UIViewController, UICollectionView
                 viewController.dismiss(animated: true, completion: {
                     let exportManager = ExportManager(editorContext: self.viewModel.dependency.editorContext)
                     exportManager.share(from: self, url: attachment.url)
-                    self.viewModel.dependency.globalCaptureEntryWindow?.show()
                 })
             }
         } else {
@@ -208,7 +207,6 @@ public class AttachmentManagerViewController: UIViewController, UICollectionView
             actionsView.addAction(icon: nil, title: L10n.Document.Link.open) { viewController in
                 viewController.dismiss(animated: true, completion: {
                     if let url = URL(string: linkInfo?.0 ?? "") {
-                        self.viewModel.dependency.globalCaptureEntryWindow?.show()
                         UIApplication.shared.open(url, options: [:], completionHandler: nil)
                     }
                 })
@@ -229,9 +227,7 @@ public class AttachmentManagerViewController: UIViewController, UICollectionView
         }
                 
         actionsView.addAction(icon: nil, title: L10n.General.Button.Title.close) { viewController in
-            viewController.dismiss(animated: true, completion: {
-                self.viewModel.dependency.globalCaptureEntryWindow?.show()
-            })
+            viewController.dismiss(animated: true)
         }
         
         if self.viewModel.context.coordinator?.usage == .manage {
@@ -251,13 +247,9 @@ public class AttachmentManagerViewController: UIViewController, UICollectionView
         }
         
         actionsView.setCancel { viewController in
-            viewController.dismiss(animated: true, completion: {
-                self.viewModel.dependency.globalCaptureEntryWindow?.show()
-            })
+            viewController.dismiss(animated: true)
         }
         
         actionsView.present(from: self, at: self.view, location: self.view.convert(from.center, to: self.view))
-
-        self.viewModel.dependency.globalCaptureEntryWindow?.hide()
     }
 }

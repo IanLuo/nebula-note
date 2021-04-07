@@ -245,8 +245,6 @@ extension CaptureListViewController: CaptureTableCellDelegate {
         let actionsViewController = self.createActionsViewController(cellModel: cellModel)
         
         actionsViewController.present(from: self, at: self.view, location: self.tableView.convert(from.center, to: self.view))
-
-        self.viewModel.hideGlobalCaptureEntry()
     }
     
     public func didTapActionsWithLink(attachment: Attachment, link: String?, from: UIView) {
@@ -259,13 +257,10 @@ extension CaptureListViewController: CaptureTableCellDelegate {
                 if let url = URL(string: link ?? "") {
                     UIApplication.shared.open(url, options: [:], completionHandler: nil)
                 }
-                self.viewModel.showGlobalCaptureEntry()
             })
         }
         
         actionsViewController.present(from: self, at: self.view, location: self.tableView.convert(from.center, to: self.view))
-        
-        self.viewModel.hideGlobalCaptureEntry()
     }
     
     public func didTapActionsWithLocation(attachment: Attachment, location: CLLocationCoordinate2D, from: UIView) {
@@ -277,14 +272,11 @@ extension CaptureListViewController: CaptureTableCellDelegate {
             viewController.dismiss(animated: true, completion: {
                 let mapItem = MKMapItem(placemark: MKPlacemark(coordinate: location, addressDictionary:nil))
                 mapItem.openInMaps(launchOptions: [:])
-                self.viewModel.showGlobalCaptureEntry()
             })
         }
         
         
         actionsViewController.present(from: self, at: from)
-        
-        self.viewModel.hideGlobalCaptureEntry()
     }
     
     // 创建菜单
@@ -299,10 +291,7 @@ extension CaptureListViewController: CaptureTableCellDelegate {
                 viewController.dismiss(animated: true, completion: {
                     guard let index = self.viewModel.index(for: cellModel) else { return }
                     self.viewModel.chooseRefileLocation(index: index, completion: {
-                        self.viewModel.showGlobalCaptureEntry()
-                    }, canceled: {
-                        self.viewModel.showGlobalCaptureEntry()
-                    })
+                    }, canceled: {})
                 })
             }
             
@@ -318,7 +307,6 @@ extension CaptureListViewController: CaptureTableCellDelegate {
                         vc.dismiss(animated: true) {
                             guard let index = self.viewModel.index(for: cellModel) else { return }
                             self.viewModel.delete(index: index, alsoDeleteAttachment: true)
-                            self.viewModel.showGlobalCaptureEntry()
                         }
                     }
                     
@@ -333,7 +321,6 @@ extension CaptureListViewController: CaptureTableCellDelegate {
                     self.viewModel.selectAttachment(index: index)
                     let shouldDeleteAttachment = cellModel.attachmentView.attachment.kind.displayAsPureText
                     self.viewModel.delete(index: index, alsoDeleteAttachment: shouldDeleteAttachment)
-                    self.viewModel.showGlobalCaptureEntry()
                 })
             }
         }
@@ -341,7 +328,6 @@ extension CaptureListViewController: CaptureTableCellDelegate {
         actionsViewController.setCancel { viewController in
             viewController.dismiss(animated: true, completion: nil)
             self.viewModel.context.coordinator?.onCancelAction?()
-            self.viewModel.showGlobalCaptureEntry()
         }
         
         return actionsViewController

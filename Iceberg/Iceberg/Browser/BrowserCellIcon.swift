@@ -82,7 +82,6 @@ public class BrowserCellIcon: BrowserCell, BrowserCellProtocol {
         actionButton.rx.tap.subscribe(onNext: { [unowned actionButton] button in
             super.actionViewController.fromView = actionButton
             self.onPresentingModalViewController.onNext((super.actionViewController, actionButton))
-            self.cellModel?.coordinator?.dependency.globalCaptureEntryWindow?.hide()
         }).disposed(by: self.disposeBag)
         
         self.enterButton.rx.tap.subscribe(onNext: { [weak self] in

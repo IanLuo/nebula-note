@@ -82,9 +82,8 @@ public class BrowserCell: UICollectionViewCell {
         self.createExportActionItem(for: actionsViewController)
         self.createDeleteActionItem(for: actionsViewController)
         
-        actionsViewController.setCancel { [weak self] viewController in
+        actionsViewController.setCancel { viewController in
             viewController.dismiss(animated: true, completion: nil)
-            self?.cellModel?.coordinator?.dependency.globalCaptureEntryWindow?.show()
         }
         
         return actionsViewController
@@ -111,15 +110,11 @@ public class BrowserCell: UICollectionViewCell {
                     .subscribe(onNext: { url in
                         strongSelf.onCreateSubDocument.onNext(url)
                     }).disposed(by: strongSelf.disposeBag)
-                
-                cellModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
             }
         } else {
             actionsViewController.addActionAutoDismiss(icon: Asset.Assets.proLabel.image, title: L10n.Browser.Actions.newSub) { [weak self] in
                 guard let cellModel = self?.cellModel else { return }
                 cellModel.coordinator?.showMembership()
-                
-                cellModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
             }
         }
     }
@@ -140,13 +135,11 @@ public class BrowserCell: UICollectionViewCell {
                                 strongSelf.onDeleteDocument.onNext(url)
                             }).disposed(by: strongSelf.disposeBag)
                     })
-                    cellModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
                 })
             }
             
             confirmViewController.cancelAction = {
                 $0.dismiss(animated: true, completion: nil)
-                cellModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
             }
             
             confirmViewController.present(from: viewController, at: view)
@@ -194,16 +187,11 @@ public class BrowserCell: UICollectionViewCell {
                     }
                     
                     selector.onCancel = { viewController in
-                        viewController.dismiss(animated: true, completion: {
-                            cellModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
-                        })
+                        viewController.dismiss(animated: true)
                     }
                     
                     selector.onSelection = { index, viewController in
                         viewController.dismiss(animated: true, completion: {
-                            
-                            cellModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
-                            
                             if index == 0 {
                                 cellModel.move(to: URL.documentBaseURL).subscribe(onNext: { fromURL, toURL in
                                     strongSelf.onMoveDocument.onNext((fromURL, toURL))
@@ -241,10 +229,6 @@ public class BrowserCell: UICollectionViewCell {
                 }
             }
             
-            renameFormViewController.onCancel = { _ in
-                cellModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
-            }
-            
             // 显示给用户，是否可以使用这个文件名
             renameFormViewController.onValidating = { formData in
                 if let cellModel = self.cellModel {
@@ -256,11 +240,8 @@ public class BrowserCell: UICollectionViewCell {
                 return [:]
             }
             
-            renameFormViewController.onCancel = { [weak self] viewController in
-                guard let strongSelf = self else { return }
-                guard let cellModel = strongSelf.cellModel else { return }
+            renameFormViewController.onCancel = { viewController in
                 viewController.dismiss(animated: true, completion: nil)
-                cellModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
             }
             
             self.onPresentingModalViewController.onNext((renameFormViewController, self))
@@ -278,12 +259,6 @@ public class BrowserCell: UICollectionViewCell {
                     .subscribe(onNext: { url in
                         strongSelf.onChangeCover.onNext(url)
                     }).disposed(by: strongSelf.disposeBag)
-                
-                cellModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
-            }
-            
-            coverPicker.onCancel = {
-                cellModel.coordinator?.dependency.globalCaptureEntryWindow?.show()
             }
             
             self?.onPresentingModalViewController.onNext((coverPicker, strongSelf))
@@ -295,9 +270,7 @@ public class BrowserCell: UICollectionViewCell {
             
             guard let cellModel = self?.cellModel else { return }
             
-            cellModel.coordinator?.showExportSelector(document: cellModel.url, at: self, complete: { [weak cellModel] in
-                cellModel?.coordinator?.dependency.globalCaptureEntryWindow?.show()
-            })
+            cellModel.coordinator?.showExportSelector(document: cellModel.url, at: self, complete: {})
         }
         
     }

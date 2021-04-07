@@ -278,12 +278,9 @@ public class BrowserFolderViewController: UIViewController {
                 }
                 
                 self.collectionView.reloadData()
-                self.viewModel.showGlobalCaptureEntry()
             }
         }
                     
-        self.viewModel.hideGlobalCaptureEntry()
-        
         selector.present(from: self, at: from)
     }
     

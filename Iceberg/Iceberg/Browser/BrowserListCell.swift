@@ -107,7 +107,6 @@ public class BrowserListCell: BrowserCell, BrowserCellProtocol {
         actionButton.tapped { [weak self] view in
             guard let strongSelf = self else { return }
             strongSelf.onPresentingModalViewController.onNext((strongSelf.actionViewController, view))
-            strongSelf.cellModel?.coordinator?.dependency.globalCaptureEntryWindow?.hide()
         }
         
         self.actionButton = actionButton
@@ -169,7 +168,6 @@ public class BrowserListCell: BrowserCell, BrowserCellProtocol {
         actionButton.tapped { [weak self] view in
             guard let strongSelf = self else { return }
             strongSelf.actionViewController.fromView = view
-            strongSelf.cellModel?.coordinator?.dependency.globalCaptureEntryWindow?.hide()
             strongSelf.onPresentingModalViewController.onNext((strongSelf.actionViewController, view))
         }
         

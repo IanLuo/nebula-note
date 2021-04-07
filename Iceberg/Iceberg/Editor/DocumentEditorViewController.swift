@@ -87,8 +87,8 @@ public class DocumentEditorViewController: UIViewController {
         
         button.interface { (me, theme) in
             let button = me as! UIButton
-            button.setImage(Asset.SFSymbols.arrowRightCircle.image.resize(upto: CGSize(width: 20, height: 20)).fill(color: theme.color.interactive), for: .normal)
-            button.setImage(Asset.SFSymbols.arrowLeftCircle.image.resize(upto: CGSize(width: 20, height: 20)).fill(color: theme.color.interactive), for: .selected)
+            button.setImage(Asset.SFSymbols.arrowRightCircle.image.resize(upto: CGSize(width: 20, height: 20)).fill(color: theme.color.interactive), for: .selected)
+            button.setImage(Asset.SFSymbols.arrowLeftCircle.image.resize(upto: CGSize(width: 20, height: 20)).fill(color: theme.color.interactive), for: .normal)
             button.setBackgroundImage(UIImage.create(with: theme.color.background2, size: .singlePoint), for: .normal)
         }
         return button
@@ -167,7 +167,8 @@ public class DocumentEditorViewController: UIViewController {
             self.topViewContainer.columnAnchor(view: self.toolbarAvilabilityButton, space: 20, alignment: .none)
             
             self.toolbarAvilabilityButton.columnAnchor(view: self.toolBar, space: 30, alignment: .none)
-            self.toolBar.sideAnchor(for: .right, to: self.view, edgeInsets: .init(top: 0, left: 0, bottom: 0, right: -Layout.innerViewEdgeInsets.right))
+            self.toolBar.sideAnchor(for: .right, to: self.view, edgeInsets: .init(top: 0, left: 0, bottom: 0, right: 44))
+            self.toolBar.alpha = 0
             self.toolBar.sizeAnchor(width: 44)
             
             self.addToolbarButton(title: L10n.Document.Menu.fullScreen, icon: Asset.SFSymbols.arrowUpAndDownAndArrowLeftAndRight.image.resize(upto: CGSize(width: 20, height: 20))) { [weak self] button in
@@ -258,8 +259,6 @@ public class DocumentEditorViewController: UIViewController {
             // fire request to load backlinks
             
             self.textView.setTitle(self.viewModel.url.packageName)
-            
-            self.hideToolbar(true)
         }
     }
     
@@ -272,7 +271,7 @@ public class DocumentEditorViewController: UIViewController {
         }
         
         self.toolBar.constraint(for: .right)?.constant = isHidden ? 44 : -Layout.innerViewEdgeInsets.right
-        self.toolbarAvilabilityButton.isSelected = isHidden
+        self.toolbarAvilabilityButton.isSelected = !isHidden
         
         UIView.animate(withDuration: 0.25) {
             self.view.layoutIfNeeded()

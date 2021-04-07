@@ -106,14 +106,12 @@ public class TrashViewController: UIViewController, UITableViewDelegate {
         
         actions.addAction(icon: nil, title: L10n.Trash.recover) { [unowned self] viewController in
             viewController.dismiss(animated: true) {
-                self.viewModel.showGlobalCaptureEntry()
                 self.viewModel.recover(index: indexPath.row)
             }
         }
         
         actions.addAction(icon: nil, title: L10n.General.Button.Title.open) { [unowned self] viewController in
             viewController.dismiss(animated: true) {
-                self.viewModel.showGlobalCaptureEntry()
                 if let url = self.viewModel.url(at: indexPath.row) {
                     self.viewModel.openDocument(url: url, location: 0)
                 }
@@ -122,18 +120,15 @@ public class TrashViewController: UIViewController, UITableViewDelegate {
         
         actions.addAction(icon: nil, title: L10n.Trash.delete, style: .warning) { [unowned self] viewController in
             viewController.dismiss(animated: true) {
-                self.viewModel.showGlobalCaptureEntry()
                 self.delete(index: indexPath.row)
             }
         }
         
         actions.setCancel { viewController in
-            self.viewModel.showGlobalCaptureEntry()
             viewController.dismiss(animated: true)
         }
         
         actions.present(from: self, at: tableView.cellForRow(at: indexPath))
-        self.viewModel.hideGlobalCaptureEntry()
     }
     
     private func delete(index: Int) {

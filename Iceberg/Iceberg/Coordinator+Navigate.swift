@@ -70,7 +70,6 @@ extension Coordinator {
         
         if let topCoordinator = self.topCoordinator {
             captureCoordinator.start(from: topCoordinator)
-            self.dependency.globalCaptureEntryWindow?.hide()
             log.info("showing capture entry on top of: \(topCoordinator)")
         } else {
             log.error("can't find a coordinator to start \n\(self.debugDescription)")
@@ -83,31 +82,23 @@ extension Coordinator {
                                  delete: @escaping () -> Void,
                                  cancel: @escaping () -> Void) {
         
-        self.dependency.globalCaptureEntryWindow?.hide()
-        
         let dateAndTimeSelectViewController = DateAndTimeSelectViewController(nibName: "DateAndTimeSelectViewController", bundle: nil)
         dateAndTimeSelectViewController.title = title
         dateAndTimeSelectViewController.passInDateAndTime = current
         dateAndTimeSelectViewController.didSelectAction = { [unowned dateAndTimeSelectViewController] dateAndTime in
-            dateAndTimeSelectViewController.dismiss(animated: true, completion: {
-                self.dependency.globalCaptureEntryWindow?.show()
-            })
+            dateAndTimeSelectViewController.dismiss(animated: true)
             
             add(dateAndTime)
         }
         
         dateAndTimeSelectViewController.didDeleteAction = { [unowned dateAndTimeSelectViewController] in
-            dateAndTimeSelectViewController.dismiss(animated: true, completion: {
-                self.dependency.globalCaptureEntryWindow?.show()
-            })
+            dateAndTimeSelectViewController.dismiss(animated: true)
             
             delete()
         }
         
         dateAndTimeSelectViewController.didCancelAction = { [unowned dateAndTimeSelectViewController] in
-            dateAndTimeSelectViewController.dismiss(animated: true, completion: {
-                self.dependency.globalCaptureEntryWindow?.show()
-            })
+            dateAndTimeSelectViewController.dismiss(animated: true)
             
             cancel()
         }

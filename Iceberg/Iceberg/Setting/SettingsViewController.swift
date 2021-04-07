@@ -212,7 +212,6 @@ public class SettingsViewController: UITableViewController {
         selector.addItem(title: L10n.Setting.Feedback.forum)
         selector.onCancel = { viewController in
             viewController.dismiss(animated: true)
-            self.viewModel.showGlobalCaptureEntry()
         }
         
         selector.onSelection = { selection, viewController in
@@ -245,7 +244,6 @@ public class SettingsViewController: UITableViewController {
             }
         }
         
-        self.viewModel.hideGlobalCaptureEntry()
         selector.present(from: self, at: from)
     }
         
@@ -337,7 +335,6 @@ public class SettingsViewController: UITableViewController {
     @objc private func _interfaceStyleButtonTapped(_ view: UIView) {
         let selector = SelectorViewController()
         selector.title = L10n.Setting.InterfaceStyle.title
-        let dependency = self.viewModel.dependency
         
         selector.fromView = view
         
@@ -356,18 +353,15 @@ public class SettingsViewController: UITableViewController {
         
         selector.onCancel = { viewController in
             viewController.dismiss(animated: true)
-            dependency.globalCaptureEntryWindow?.show()
         }
         
         selector.onSelection = { index, viewController in
             viewController.dismiss(animated: true)
             self.viewModel.setInterfaceStyle(styles[index])
-            dependency.globalCaptureEntryWindow?.show()
             self.interfaceStyleButton.setTitle(styles[index].localizedTitle, for: .normal)
         }
         
         selector.present(from: self, at: view)
-        dependency.globalCaptureEntryWindow?.hide()
     }
     
     private func showBrowserStyleSelector(from: UIView) {
@@ -378,9 +372,7 @@ public class SettingsViewController: UITableViewController {
         selector.currentTitle = self.viewModel.currentBrowserStyle
         
         selector.onCancel = {
-            $0.dismiss(animated: true) {
-                self.viewModel.showGlobalCaptureEntry()
-            }
+            $0.dismiss(animated: true)
         }
         
         selector.onSelection = { index, viewController in
@@ -398,19 +390,13 @@ public class SettingsViewController: UITableViewController {
                 })
                 default: break
                 }
-                
-                self.viewModel.showGlobalCaptureEntry()
             }
         }
                     
-        self.viewModel.hideGlobalCaptureEntry()
-        
         selector.present(from: self, at: from)
     }
     
     @objc private func _showLandingTabNamesSelector(from: UIView) {
-        let dependency = self.viewModel.dependency
-        
         let selector = SelectorViewController()
         let tabs = TabIndex.allCases
 
@@ -422,21 +408,18 @@ public class SettingsViewController: UITableViewController {
         selector.title = L10n.Setting.LandingTab.title
         
         selector.onCancel = { viewController in
-            viewController.dismiss(animated: true, completion: nil)
-            dependency.globalCaptureEntryWindow?.show()
+            viewController.dismiss(animated: true)
         }
         
         selector.onSelection = { index, viewController in
             viewController.dismiss(animated: true, completion: nil)
             self.viewModel.setLandingTabIndex(tabs[index].index)
             self.chooseLandingTabButton.setTitle(tabs[index].name, for: .normal)
-            dependency.globalCaptureEntryWindow?.show()
         }
         
         selector.currentTitle = tabs[self.viewModel.currentLandigTabIndex].name
         
         selector.present(from: self, at: from)
-        dependency.globalCaptureEntryWindow?.hide()
     }
     
     @objc func _planningManageFinish(from: UIView) {
@@ -476,9 +459,8 @@ public class SettingsViewController: UITableViewController {
             }
         }
         
-        actionsViewController.setCancel { [unowned self] viewController in
-            viewController.dismiss(animated: true, completion: nil)
-            self.viewModel.showGlobalCaptureEntry()
+        actionsViewController.setCancel { viewController in
+            viewController.dismiss(animated: true)
         }
         
         let addTitle = isFinish ? L10n.Setting.Planning.Finish.add :  L10n.Setting.Planning.Unfinish.add
@@ -508,13 +490,11 @@ public class SettingsViewController: UITableViewController {
                 
                 formViewController.title = addTitle
                 
-                formViewController.onCancel = { [unowned self] viewController in
+                formViewController.onCancel = { viewController in
                     viewController.dismiss(animated: true, completion: nil)
-                    self.viewModel.dependency.globalCaptureEntryWindow?.show()
                 }
                 
                 formViewController.onSaveValue = { [unowned self] data, viewController in
-                    self.viewModel.dependency.globalCaptureEntryWindow?.show()
                     
                     if let newPlanning = data[addTitle] as? String {
                         self.viewModel.addPlanning(newPlanning, isForFinished: isFinish, completion: {
@@ -536,7 +516,6 @@ public class SettingsViewController: UITableViewController {
         }
         
         actionsViewController.present(from: self, at: from)
-        self.viewModel.dependency.globalCaptureEntryWindow?.hide()
     }
     
     public override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

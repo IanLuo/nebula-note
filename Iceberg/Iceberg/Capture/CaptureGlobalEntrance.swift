@@ -81,7 +81,7 @@ public class CaptureGlobalEntranceWindow: UIWindow {
         }
     }
     
-    public func hide() {
+    private func hide() {
         if isPhone && self.alpha == 1 {
             self.alpha = 0 // 防止旋转的时候在屏幕上出现
             UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveEaseInOut, animations: {
@@ -92,7 +92,7 @@ public class CaptureGlobalEntranceWindow: UIWindow {
         }
     }
     
-    public func show() {
+    private func show() {
         if isPhone {
             guard self.isForcedToHide == false else { return }
             guard self.alpha == 0 else { return }

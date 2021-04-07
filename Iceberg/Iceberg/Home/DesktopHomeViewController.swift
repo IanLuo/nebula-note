@@ -282,7 +282,6 @@ public class DesktopHomeViewController: UIViewController {
         selector.addItem(title: L10n.Setting.Feedback.forum)
         selector.onCancel = { viewController in
             viewController.dismiss(animated: true)
-            self.coordinator?.dependency.globalCaptureEntryWindow?.show()
         }
         
         selector.onSelection = { selection, viewController in
@@ -315,7 +314,6 @@ public class DesktopHomeViewController: UIViewController {
             }
         }
         
-        self.coordinator?.dependency.globalCaptureEntryWindow?.hide()
         selector.present(from: self, at: from)
     }
 }
