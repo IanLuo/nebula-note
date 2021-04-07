@@ -324,11 +324,15 @@ extension CaptureListViewController: UICollectionViewDataSource, CHTCollectionVi
     }
     
     public func collectionView(_ collectionView: UICollectionView!, layout collectionViewLayout: UICollectionViewLayout!, columnCountForSection section: Int) -> Int {
-        return isPhone ? 3 : 5
+        return isPhone ? 1 : 5
     }
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return self.viewModel.currentFilterdCellModels[indexPath.row].attachmentView.size(for: (collectionView.bounds.width - Layout.edgeInsets.left - Layout.edgeInsets.right - 40) / (isPhone ? 3 : 5)).heigher(by: 120)
+        if isPhone {
+            return self.viewModel.currentFilterdCellModels[indexPath.row].attachmentView.size(for: collectionView.bounds.width).heigher(by: 120)
+        } else {
+            return self.viewModel.currentFilterdCellModels[indexPath.row].attachmentView.size(for: (collectionView.bounds.width - Layout.edgeInsets.left - Layout.edgeInsets.right - 40) / (isPhone ? 1 : 5)).heigher(by: 120)
+        }
     }
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumColumnSpacingForSectionAt section: Int) -> CGFloat {
@@ -340,7 +344,11 @@ extension CaptureListViewController: UICollectionViewDataSource, CHTCollectionVi
     }
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return Layout.edgeInsets
+        if isPhone {
+            return .zero
+        } else {
+            return Layout.edgeInsets
+        }
     }
 }
 
