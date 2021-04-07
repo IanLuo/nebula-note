@@ -51,19 +51,18 @@ public class CaptureListViewController: UIViewController {
         return seg
     }()
     
-    private lazy var tableView: UITableView = {
-        let tableView = UITableView()
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.register(CaptureTableCell.self, forCellReuseIdentifier: CaptureTableCell.reuseIdentifier)
-        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 80, right: 0)
+    private lazy var collectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        collectionView.register(CaptureTableCell.self, forCellWithReuseIdentifier: CaptureTableCell.reuseIdentifier)
+        collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 80, right: 0)
         
-        tableView.interface { (me, theme) in
+        collectionView.interface { (me, theme) in
             me.backgroundColor = theme.color.background1
         }
-        tableView.separatorStyle = .none
-        tableView.tableFooterView = UIView()
-        return tableView
+        return collectionView
     }()
     
     private lazy var cancelButton: UIButton = {
@@ -115,7 +114,7 @@ public class CaptureListViewController: UIViewController {
                                                                  eventType: NewCaptureAddedEvent.self,
                                                                  queue: OperationQueue.main,
                                                                  action: { [weak self] (event: NewCaptureAddedEvent) -> Void in
-            self?.tableView.reloadData()
+            self?.collectionView.reloadData()
         })
     }
     
@@ -125,11 +124,11 @@ public class CaptureListViewController: UIViewController {
         }
         
         self.view.addSubview(self.filterSegmentedControl)
-        self.view.addSubview(self.tableView)
+        self.view.addSubview(self.collectionView)
         
         self.filterSegmentedControl.sideAnchor(for: [.left, .top, .right], to: self.view, edgeInset: 30, considerSafeArea: true)
-        self.filterSegmentedControl.columnAnchor(view: self.tableView, space: 10, alignment: .centerX)
-        self.tableView.sideAnchor(for: [.left, .bottom, .right], to: self.view, edgeInset: 0, considerSafeArea: true)
+        self.filterSegmentedControl.columnAnchor(view: self.collectionView, space: 10, alignment: .centerX)
+        self.collectionView.sideAnchor(for: [.left, .bottom, .right], to: self.view, edgeInset: 0, considerSafeArea: true)
         
         if self.viewModel.context.coordinator?.isModal ?? false {
             self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: Asset.SFSymbols.chevronDown.image, style: .plain, target: self, action: #selector(cancel))
@@ -204,29 +203,6 @@ public class CaptureListViewController: UIViewController {
         
         self.viewModel.loadFilterdData(kind: self.viewModel.currentFilteredAttachmentKind)
     }
-    
-    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let attachment = self.viewModel.currentFilteredData[indexPath.row]
-        
-        let fromView = tableView.cellForRow(at: indexPath) ?? tableView
-        
-        switch attachment.kind {
-        case .link:
-            if let link = attachment.linkValue {
-                self.didTapActionsWithLink(attachment: attachment, link: link, from: fromView)
-            } else {
-                self.didTapActions(attachment: attachment, from: fromView)
-            }
-        case .location:
-            if let coor = attachment.coordinator {
-                self.didTapActionsWithLocation(attachment: attachment, location: coor, from: fromView)
-            } else {
-                self.didTapActions(attachment: attachment, from: fromView)
-            }
-        default:
-            self.didTapActions(attachment: attachment, from: fromView)
-        }
-    }
 }
 
 extension CaptureListViewController: CaptureTableCellDelegate {
@@ -244,7 +220,7 @@ extension CaptureListViewController: CaptureTableCellDelegate {
         let cellModel = self.viewModel.currentFilterdCellModels[index]
         let actionsViewController = self.createActionsViewController(cellModel: cellModel)
         
-        actionsViewController.present(from: self, at: self.view, location: self.tableView.convert(from.center, to: self.view))
+        actionsViewController.present(from: self, at: self.view, location: self.collectionView.convert(from.center, to: self.view))
     }
     
     public func didTapActionsWithLink(attachment: Attachment, link: String?, from: UIView) {
@@ -260,7 +236,7 @@ extension CaptureListViewController: CaptureTableCellDelegate {
             })
         }
         
-        actionsViewController.present(from: self, at: self.view, location: self.tableView.convert(from.center, to: self.view))
+        actionsViewController.present(from: self, at: self.view, location: self.collectionView.convert(from.center, to: self.view))
     }
     
     public func didTapActionsWithLocation(attachment: Attachment, location: CLLocationCoordinate2D, from: UIView) {
@@ -311,7 +287,7 @@ extension CaptureListViewController: CaptureTableCellDelegate {
                     }
                     
                     guard let index = self.viewModel.index(for: cellModel) else { return }
-                    confirmViewController.present(from: self, at: self.tableView.cellForRow(at: IndexPath(row: index, section: 0)))
+                    confirmViewController.present(from: self, at: self.collectionView.cellForItem(at: IndexPath(row: index, section: 0)))
                 })
             }
         case .pick:
@@ -334,20 +310,32 @@ extension CaptureListViewController: CaptureTableCellDelegate {
     }
 }
 
-extension CaptureListViewController: UITableViewDataSource {
-    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+extension CaptureListViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return viewModel.currentFilterdCellModels.count
     }
     
-    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: CaptureTableCell.reuseIdentifier, for: indexPath) as! CaptureTableCell
+    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CaptureTableCell.reuseIdentifier, for: indexPath) as! CaptureTableCell
         cell.cellModel = self.viewModel.currentFilterdCellModels[indexPath.row]
         cell.delegate = self
         return cell
     }
     
-    public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return self.viewModel.currentFilterdCellModels[indexPath.row].attachmentView.size(for: tableView.bounds.width - 60).height + 120
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return self.viewModel.currentFilterdCellModels[indexPath.row].attachmentView.size(for: (collectionView.bounds.width - Layout.edgeInsets.left - Layout.edgeInsets.right - 40) / 5).heigher(by: 120)
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 10
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 10
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return Layout.edgeInsets
     }
 }
 
@@ -361,23 +349,44 @@ extension CaptureListViewController: EmptyContentPlaceHolderProtocol {
     }
     
     public var viewToShowImage: UIView {
-        return self.tableView
+        return self.collectionView
     }
 }
 
-extension CaptureListViewController: UITableViewDelegate {
-    // nothing to do yet
+extension CaptureListViewController: UICollectionViewDelegate {
+    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let attachment = self.viewModel.currentFilteredData[indexPath.row]
+        
+        let fromView = collectionView.cellForItem(at: indexPath) ?? collectionView
+        
+        switch attachment.kind {
+        case .link:
+            if let link = attachment.linkValue {
+                self.didTapActionsWithLink(attachment: attachment, link: link, from: fromView)
+            } else {
+                self.didTapActions(attachment: attachment, from: fromView)
+            }
+        case .location:
+            if let coor = attachment.coordinator {
+                self.didTapActionsWithLocation(attachment: attachment, location: coor, from: fromView)
+            } else {
+                self.didTapActions(attachment: attachment, from: fromView)
+            }
+        default:
+            self.didTapActions(attachment: attachment, from: fromView)
+        }
+    }
 }
 
 extension CaptureListViewController: CaptureListViewModelDelegate {
     public func didStartRefile(at index: Int) {
-        if let cell = self.tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? CaptureTableCell {
+        if let cell = self.collectionView.cellForItem(at: IndexPath(row: index, section: 0)) as? CaptureTableCell {
             cell.showProcessingAnimation()
         }
     }
     
     public func didDeleteCapture(index: Int) {
-        self.tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .left)
+        self.collectionView.deleteItems(at: [IndexPath(row: index, section: 0)])
         self.showEmptyContentImage(self.viewModel.currentFilterdCellModels.count == 0)
     }
     
@@ -386,7 +395,7 @@ extension CaptureListViewController: CaptureListViewModelDelegate {
     }
         
     public func didCompleteRefile(index: Int, attachment: Attachment) {
-        if let cell = self.tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? CaptureTableCell {
+        if let cell = self.collectionView.cellForItem(at: IndexPath(row: index, section: 0)) as? CaptureTableCell {
             cell.hideProcessingAnimation()
         }
         
@@ -399,7 +408,7 @@ extension CaptureListViewController: CaptureListViewModelDelegate {
     
     public func didLoadData() {
         self.view.hideProcessingAnimation()
-        self.tableView.reloadData()
+        self.collectionView.reloadData()
         self.showEmptyContentImage(self.viewModel.currentFilterdCellModels.count == 0)
     }
 }

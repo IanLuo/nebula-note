@@ -32,7 +32,7 @@ public class KanbanGridViewController: UIViewController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         self.view.addSubview(self.contentView)
         self.contentView.allSidesAnchors(to: self.view, edgeInset: 0)
     }

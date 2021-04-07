@@ -18,7 +18,7 @@ public protocol CaptureTableCellDelegate: class {
     func didTapActionsWithLocation(attachment: Attachment, location: CLLocationCoordinate2D, from: UIView)
 }
 
-public class CaptureTableCell: UITableViewCell {
+public class CaptureTableCell: UICollectionViewCell {
     public static let reuseIdentifier = "CaptureTableCell"
     public weak var delegate: CaptureTableCellDelegate?
     public var cellModel: CaptureTableCellModel? {
@@ -65,11 +65,9 @@ public class CaptureTableCell: UITableViewCell {
         return view
     }()
     
-    public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    public override init(frame: CGRect) {
+        super.init(frame: frame)
         self.setupUI()
-        
-        self.selectionStyle = .none
         
         self.enableHover(on: self.attachmentContentView, hoverColor: InterfaceTheme.Color.background3)
     }
