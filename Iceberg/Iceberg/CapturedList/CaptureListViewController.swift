@@ -12,6 +12,7 @@ import Core
 import MapKit
 import Interface
 import RxSwift
+import CHTCollectionViewWaterfallLayout
 
 public protocol CaptureListViewControllerDelegate: class {
     func didChooseAttachment(_ attachment: Attachment, viewController: UIViewController)
@@ -52,7 +53,7 @@ public class CaptureListViewController: UIViewController {
     }()
     
     private lazy var collectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
+        let layout = CHTCollectionViewWaterfallLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.delegate = self
         collectionView.dataSource = self
@@ -310,7 +311,7 @@ extension CaptureListViewController: CaptureTableCellDelegate {
     }
 }
 
-extension CaptureListViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+extension CaptureListViewController: UICollectionViewDataSource, CHTCollectionViewDelegateWaterfallLayout {
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return viewModel.currentFilterdCellModels.count
     }
@@ -322,11 +323,15 @@ extension CaptureListViewController: UICollectionViewDataSource, UICollectionVie
         return cell
     }
     
-    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return self.viewModel.currentFilterdCellModels[indexPath.row].attachmentView.size(for: (collectionView.bounds.width - Layout.edgeInsets.left - Layout.edgeInsets.right - 40) / 5).heigher(by: 120)
+    public func collectionView(_ collectionView: UICollectionView!, layout collectionViewLayout: UICollectionViewLayout!, columnCountForSection section: Int) -> Int {
+        return isPhone ? 3 : 5
     }
     
-    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return self.viewModel.currentFilterdCellModels[indexPath.row].attachmentView.size(for: (collectionView.bounds.width - Layout.edgeInsets.left - Layout.edgeInsets.right - 40) / (isPhone ? 3 : 5)).heigher(by: 120)
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumColumnSpacingForSectionAt section: Int) -> CGFloat {
         return 10
     }
     

@@ -1,5 +1,8 @@
 PODS:
   - Alamofire (4.8.2)
+  - CHTCollectionViewWaterfallLayout (0.9.8):
+    - CHTCollectionViewWaterfallLayout/ObjC (= 0.9.8)
+  - CHTCollectionViewWaterfallLayout/ObjC (0.9.8)
   - Differentiator (4.0.1)
   - Doorbell (0.2.5)
   - Drawsana (0.12.0)
@@ -71,6 +74,7 @@ PODS:
   - SwiftyStoreKit (0.15.1)
 
 DEPENDENCIES:
+  - CHTCollectionViewWaterfallLayout
   - Doorbell
   - Drawsana
   - Firebase/Crashlytics
@@ -92,6 +96,7 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - Alamofire
+    - CHTCollectionViewWaterfallLayout
     - Differentiator
     - Doorbell
     - Drawsana
@@ -146,6 +151,7 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   Alamofire: ae5c501addb7afdbb13687d7f2f722c78734c2d3
+  CHTCollectionViewWaterfallLayout: 5f241d2480ab4939aa0d1ad4981de9eef1fbe60d
   Differentiator: 886080237d9f87f322641dedbc5be257061b0602
   Doorbell: 4de282e483060cfb80b788e761eda35ec5c7cf69
   Drawsana: 6e69c064ffb859fef968a0a50d3481849a48941c
@@ -174,6 +180,6 @@ SPEC CHECKSUMS:
   SwiftyDropbox: 7e864f1e826bfc1b9b53a5edccef6c8d5fbe9e3b
   SwiftyStoreKit: 555996ed1159bb57209e7ec251b2a775d4434a69
 
-PODFILE CHECKSUM: 1064992de6a32370a66bab412237eac7d2497a06
+PODFILE CHECKSUM: f1cdec7693cec21a43e6a083ef7c7b7e718a5c02
 
 COCOAPODS: 1.10.0

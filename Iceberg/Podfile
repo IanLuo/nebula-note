@@ -15,6 +15,7 @@ target 'x3Note' do
     pod 'KDCalendar', '~> 1.6.5'
     pod 'PKHUD', '~> 5.0'
     pod 'Firebase/Crashlytics'
+    pod 'CHTCollectionViewWaterfallLayout'
 #    pod 'Firebase/Analytics'
     pod 'Doorbell'
 #    pod 'ShowTime'
