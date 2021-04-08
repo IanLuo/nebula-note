@@ -54,6 +54,8 @@ public class CaptureListViewController: UIViewController {
     
     private lazy var collectionView: UICollectionView = {
         let layout = CHTCollectionViewWaterfallLayout()
+        layout.minimumColumnSpacing = 10
+        layout.minimumInteritemSpacing = 10
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.delegate = self
         collectionView.dataSource = self
@@ -127,7 +129,7 @@ public class CaptureListViewController: UIViewController {
         self.view.addSubview(self.filterSegmentedControl)
         self.view.addSubview(self.collectionView)
         
-        self.filterSegmentedControl.sideAnchor(for: [.left, .top, .right], to: self.view, edgeInset: 30, considerSafeArea: true)
+        self.filterSegmentedControl.sideAnchor(for: [.top], to: self.view, edgeInset: 30, considerSafeArea: true)
         self.filterSegmentedControl.columnAnchor(view: self.collectionView, space: 10, alignment: .centerX)
         self.collectionView.sideAnchor(for: [.left, .bottom, .right], to: self.view, edgeInset: 0, considerSafeArea: true)
         
@@ -324,23 +326,13 @@ extension CaptureListViewController: UICollectionViewDataSource, CHTCollectionVi
     }
     
     public func collectionView(_ collectionView: UICollectionView!, layout collectionViewLayout: UICollectionViewLayout!, columnCountForSection section: Int) -> Int {
-        return isPhone ? 1 : 5
+        return isPhone ? 2 : 5
     }
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        if isPhone {
-            return self.viewModel.currentFilterdCellModels[indexPath.row].attachmentView.size(for: collectionView.bounds.width).heigher(by: 120)
-        } else {
-            return self.viewModel.currentFilterdCellModels[indexPath.row].attachmentView.size(for: (collectionView.bounds.width - Layout.edgeInsets.left - Layout.edgeInsets.right - 40) / (isPhone ? 1 : 5)).heigher(by: 120)
-        }
-    }
-    
-    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumColumnSpacingForSectionAt section: Int) -> CGFloat {
-        return 10
-    }
-    
-    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 10
+        return self.viewModel.currentFilterdCellModels[indexPath.row]
+            .attachmentView.size(for: (collectionView.bounds.width - Layout.edgeInsets.left - Layout.edgeInsets.right - (isPhone ? 10 : 40)) / (isPhone ? 2 : 5))
+            .heigher(by: Layout.edgeInsets.top + Layout.edgeInsets.bottom + 60)
     }
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {

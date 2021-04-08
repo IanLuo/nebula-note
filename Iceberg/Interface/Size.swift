@@ -45,9 +45,8 @@ extension CGSize {
 
 extension String {
     public func boundingBox(for width: CGFloat, font: UIFont) -> CGSize {
-        let attributes: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: font]
-        let attString = NSAttributedString(string: self, attributes: attributes)
-        let framesetter = CTFramesetterCreateWithAttributedString(attString)
-        return CTFramesetterSuggestFrameSizeWithConstraints(framesetter, CFRange(location: 0,length: 0), nil, CGSize(width: width, height: CGFloat.greatestFiniteMagnitude), nil)
+        return (self as NSString).boundingRect(with: CGSize(width: width, height: CGFloat.greatestFiniteMagnitude),
+                                               options: [],
+                                               attributes: [NSAttributedString.Key.font: font], context: nil).size
     }
 }

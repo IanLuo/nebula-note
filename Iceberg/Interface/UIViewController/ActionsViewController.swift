@@ -10,7 +10,13 @@ import Foundation
 import UIKit
 import RxSwift
 
+public struct ModalNotification {
+    public static let appear: UIKit.Notification.Name = UIKit.Notification.Name("Modal-appear")
+    public static let disappear: UIKit.Notification.Name = UIKit.Notification.Name("Modal-disappear")
+}
+
 open class ActionsViewController: UIViewController, TransitionProtocol {
+    
     fileprivate struct Constants {
         static let rowHeight: CGFloat = 50
         static let specialItemSeparatorHeight: CGFloat = 0.5
@@ -32,6 +38,18 @@ open class ActionsViewController: UIViewController, TransitionProtocol {
                 return Constants.rowHeight + Constants.specialItemSeparatorHeight
             }
         }
+    }
+    
+    open override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        NotificationCenter.default.post(name: ModalNotification.appear, object: nil)
+    }
+    
+    open override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        NotificationCenter.default.post(name: ModalNotification.disappear, object: nil)
     }
     
     public func addAction(icon: UIImage?, title: String, style: Style = .default, at: Int? = nil, action: @escaping (ActionsViewController) -> Void) {

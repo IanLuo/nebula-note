@@ -33,7 +33,7 @@ public class CaptureTableCell: UICollectionViewCell {
         let label = UILabel()
         label.interface({ (me, theme) in
             let label = me as! UILabel
-            label.font = theme.font.title
+            label.font = theme.font.callout
             label.textColor = theme.color.descriptive
         })
         return label
@@ -85,7 +85,7 @@ public class CaptureTableCell: UICollectionViewCell {
         self.contentView.addSubview(self.attachmentContentView)
         self.contentView.addSubview(self.actionsContainerView)
         
-        self.actionsContainerView.sideAnchor(for: [.left, .top, .right], to: self.contentView, edgeInsets: .init(top: 0, left: 30, bottom: 0, right: -30))
+        self.actionsContainerView.sideAnchor(for: [.left, .top, .right], to: self.contentView, edgeInsets: .init(top: 0, left: Layout.edgeInsets.left, bottom: 0, right: -Layout.edgeInsets.right))
         self.actionsContainerView.sizeAnchor(height: 60)
         
         self.actionsContainerView.addSubview(self.titleLabel)
@@ -96,7 +96,7 @@ public class CaptureTableCell: UICollectionViewCell {
         self.dateAndTimelabel.sideAnchor(for: [.bottom, .right], to: self.actionsContainerView, edgeInset: 0)
                 
         self.actionsContainerView.columnAnchor(view: self.attachmentContentView)
-        self.attachmentContentView.sideAnchor(for: [.left, .bottom, .right], to: self.contentView, edgeInset: 30)
+        self.attachmentContentView.sideAnchor(for: [.left, .bottom, .right], to: self.contentView, edgeInsets: UIEdgeInsets(top: 0, left: Layout.edgeInsets.left, bottom: -Layout.edgeInsets.bottom, right: -Layout.edgeInsets.right))
     }
     
     private func setupAttachmentUI(attachmentView: AttachmentViewType) {

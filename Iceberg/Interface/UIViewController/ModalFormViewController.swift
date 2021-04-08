@@ -175,6 +175,18 @@ open class ModalFormViewController: TransitionViewController {
         makeFirstTextFieldFirstResponder()
     }
     
+    open override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        NotificationCenter.default.post(name: ModalNotification.appear, object: nil)
+    }
+    
+    open override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        NotificationCenter.default.post(name: ModalNotification.disappear, object: nil)
+    }
+    
     deinit {
         NotificationCenter.default.removeObserver(self)
     }

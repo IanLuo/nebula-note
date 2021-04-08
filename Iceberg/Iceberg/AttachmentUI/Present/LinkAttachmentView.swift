@@ -19,7 +19,7 @@ public class LinkAttachmentView: UIView, AttachmentViewProtocol {
     public var attachment: Attachment!
     
     public func size(for width: CGFloat) -> CGSize {
-        return self.label.text?.boundingBox(for: width, font: self.label.font).heigher(by: 20) ?? .zero
+        return self.label.sizeThatFits(CGSize(width: width - 20, height: CGFloat.greatestFiniteMagnitude))
     }
     
     public let label: UILabel = {

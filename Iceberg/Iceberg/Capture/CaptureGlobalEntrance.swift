@@ -38,7 +38,7 @@ public class CaptureGlobalEntranceWindow: UIWindow {
     }
     
     public let isInFullScreenEditor: BehaviorRelay<Bool> = BehaviorRelay(value: false)
-    public let isModalViewInfront: BehaviorRelay<Bool> = BehaviorRelay(value: false)
+    public let modalViewsInfront: BehaviorRelay<Int> = BehaviorRelay(value: 0)
     public let isKeyboardVisiable: BehaviorRelay<Bool> = BehaviorRelay(value: false)
     
     private let disposeBag = DisposeBag()
@@ -61,8 +61,26 @@ public class CaptureGlobalEntranceWindow: UIWindow {
         
         NotificationCenter.default.addObserver(self, selector: #selector(_orientationChanged), name: UIDevice.orientationDidChangeNotification, object: nil)
         
-        Observable.combineLatest(self.isInFullScreenEditor, self.isModalViewInfront, self.isKeyboardVisiable).subscribe(onNext: { isInFullScreenEditor, isModelViewInfront, isKeyboardVisiable in
-            if isInFullScreenEditor || isModelViewInfront || isKeyboardVisiable {
+        NotificationCenter.default.rx
+            .notification(ModalNotification.appear)
+            .takeUntil(self.rx.deallocated)
+            .subscribe(onNext: { _ in
+                let count = self.modalViewsInfront.value
+                self.modalViewsInfront.accept(count + 1)
+            })
+            .disposed(by: self.disposeBag)
+        
+        NotificationCenter.default.rx
+            .notification(ModalNotification.disappear)
+            .takeUntil(self.rx.deallocated)
+            .subscribe(onNext: { _ in
+                let count = self.modalViewsInfront.value
+                self.modalViewsInfront.accept(count - 1)
+            })
+            .disposed(by: self.disposeBag)
+        
+        Observable.combineLatest(self.isInFullScreenEditor, self.modalViewsInfront, self.isKeyboardVisiable).subscribe(onNext: { isInFullScreenEditor, modalViewsInfront, isKeyboardVisiable in
+            if isInFullScreenEditor || (modalViewsInfront > 0) || isKeyboardVisiable {
                 self.hide()
             } else {
                 self.show()
@@ -83,11 +101,11 @@ public class CaptureGlobalEntranceWindow: UIWindow {
     
     private func hide() {
         if isPhone && self.alpha == 1 {
-            self.alpha = 0 // 防止旋转的时候在屏幕上出现
             UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveEaseInOut, animations: {
                 self.frame = CGRect(x: UIScreen.main.bounds.width, y: UIScreen.main.bounds.height - self._fromWindow!.safeArea.bottom - 60 - 30, width: self.frame.size.width, height: self.frame.size.height)
             }, completion: { _ in
                 self.isOffScreen = true
+                self.alpha = 0 // 防止旋转的时候在屏幕上出现
             })
         }
     }

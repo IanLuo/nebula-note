@@ -16,7 +16,7 @@ public class AudioAttachmentView: UIView, AttachmentViewProtocol {
     public var attachment: Attachment!
     
     public func size(for width: CGFloat) -> CGSize {
-        return CGSize(width: width, height: 100)
+        return CGSize(width: width, height: 180)
     }
     
     public var playerController: AVPlayerViewController!

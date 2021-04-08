@@ -40,6 +40,7 @@ PODS:
   - GoogleUtilities/UserDefaults (7.2.0):
     - GoogleUtilities/Logger
   - Haptico (1.0.2)
+  - InterposeKit (0.0.1)
   - JAMSVGImage (1.6.1)
   - KDCalendar (1.6.5)
   - MHWebViewController (1.1.2)
@@ -79,6 +80,7 @@ DEPENDENCIES:
   - Drawsana
   - Firebase/Crashlytics
   - Haptico
+  - InterposeKit
   - JAMSVGImage
   - KDCalendar (~> 1.6.5)
   - MHWebViewController
@@ -108,6 +110,7 @@ SPEC REPOS:
     - GoogleDataTransport
     - GoogleUtilities
     - Haptico
+    - InterposeKit
     - JAMSVGImage
     - KDCalendar
     - MHWebViewController
@@ -163,6 +166,7 @@ SPEC CHECKSUMS:
   GoogleDataTransport: 1024b1a4dfbd7a0e92cb20d7e0a6f1fb66b449a4
   GoogleUtilities: d866834472f1324d080496bc67ab3ce5d0d46027
   Haptico: ce38d1f993f3a0df9a6d7795a9dd2849648aa9d1
+  InterposeKit: 0cd0449bc2f08a94a14fa712168ed748a0f5445f
   JAMSVGImage: 7aa966a310ddf5f53de295d5ce5b930df8ff1eb2
   KDCalendar: 15e74f37bd3d206bf7549c594fd08e0347c276f4
   MHWebViewController: bc0c4be723b798260ccec01ce6b9e86c6543741e
@@ -180,6 +184,6 @@ SPEC CHECKSUMS:
   SwiftyDropbox: 7e864f1e826bfc1b9b53a5edccef6c8d5fbe9e3b
   SwiftyStoreKit: 555996ed1159bb57209e7ec251b2a775d4434a69
 
-PODFILE CHECKSUM: f1cdec7693cec21a43e6a083ef7c7b7e718a5c02
+PODFILE CHECKSUM: 1796ffb0b3974efff97f8113c0e4cd0117071b5e
 
 COCOAPODS: 1.10.0
