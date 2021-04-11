@@ -14,7 +14,7 @@ import Interface
 
 public protocol BrowserCoordinatorDelegate: class {
     func didSelectDocument(url: URL, coordinator: BrowserCoordinator)
-    func didSelectOutline(url: URL, selection: OutlineLocation, coordinator: BrowserCoordinator)
+    func didSelectOutline(documentInfo: DocumentInfo, selection: OutlineLocation, coordinator: BrowserCoordinator)
     func didCancel(coordinator: BrowserCoordinator)
 }
 
@@ -35,7 +35,7 @@ public class BrowserCoordinator: Coordinator {
     public weak var delegate: BrowserCoordinatorDelegate?
     
     public var didSelectDocumentAction: ((URL) -> Void)?
-    public var didSelectOutlineAction: ((URL, OutlineLocation) -> Void)?
+    public var didSelectOutlineAction: ((DocumentInfo, OutlineLocation) -> Void)?
     public var didCancelAction: (() -> Void)?
     
     private let disposeBag = DisposeBag()
@@ -108,10 +108,10 @@ public class BrowserCoordinator: Coordinator {
 }
 
 extension BrowserCoordinator: EditorCoordinatorSelectHeadingDelegate {
-    public func didSelectOutline(url: URL, selection: OutlineLocation, coordinator: EditorCoordinator) {
+    public func didSelectOutline(documentInfo: DocumentInfo, selection: OutlineLocation, coordinator: EditorCoordinator) {
         coordinator.stop {
-            self.delegate?.didSelectOutline(url: url, selection: selection, coordinator: self)
-            self.didSelectOutlineAction?(url, selection)
+            self.delegate?.didSelectOutline(documentInfo: documentInfo, selection: selection, coordinator: self)
+            self.didSelectOutlineAction?(documentInfo, selection)
         }
     }
     

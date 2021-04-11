@@ -61,6 +61,10 @@ public class OutlineTextView: UITextView, UIScrollViewDelegate {
             self.smartDashesType = .no
         }
         
+        if isMac {
+            self.smartQuotesType = .no
+        }
+        
         self.interface { (me, interface) in
             let textView = me as! OutlineTextView
             textView.tintColor = interface.color.spotlight

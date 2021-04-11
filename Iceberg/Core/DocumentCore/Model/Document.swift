@@ -8,6 +8,11 @@
 
 import Foundation
 
+public enum OutlineLocation {
+    case heading(DocumentHeading)
+    case position(Int)
+}
+
 public class DocumentInfo {
     public let name: String
     public var cover: UIImage? {
@@ -15,11 +20,13 @@ public class DocumentInfo {
     }
     public let url: URL
     public let coverURL: URL
+    public let id: String
     
-    public init(name: String, cover: UIImage?, url: URL, coverURL: URL) {
+    public init(name: String, cover: UIImage?, url: URL, coverURL: URL, id: String) {
         self.name = name
         self.coverURL = coverURL
         self.url = url
+        self.id = id
     }
     
     public init(wrapperURL: URL) {
@@ -28,10 +35,12 @@ public class DocumentInfo {
         self.name = wrapperURL.packageName
         self.coverURL = wrapperURL.coverURL
         self.url = wrapperURL
+        self.id = ""
     }
 }
 
 public class Document: UIDocument {
+    public static let documentIdPrefix = "documentID:"
     public static let fileExtension = "ice"
     public static let contentFileExtension = "org"
     public static let coverFileExtension = "jpg"

@@ -47,7 +47,7 @@ public class DocumentLog: Codable {
 
 public class EditorService {
     private let editorController: EditorController
-    fileprivate var document: Document?
+    fileprivate let document: Document
     private lazy var trimmer: OutlineTextTrimmer = OutlineTextTrimmer(parser: OutlineParser())
     private let eventObserver: EventObserver
     private var queue: DispatchQueue!
@@ -65,22 +65,18 @@ public class EditorService {
         self.eventObserver = eventObserver
         self.editorController = EditorController(parser: parser, attachmentManager: AttachmentManager())
         self.queue = queue
+        self.document = Document(fileURL: url)
         self.settingsAccessor = settingsAccessor
-        
         self.editorController.delegate = self
         
         queue.async { [weak self] in
-            let document = Document(fileURL: url)
-            DispatchQueue.runOnMainQueueSafely {
-                self?.document = document
-                self?.isReadyToUse = true
-            }
+            self?.isReadyToUse = true
         }
     }
     
     deinit {
         log.info("deiniting editor service with url: \(self.url)")
-        self.document?.close(completionHandler: nil)
+        self.document.close(completionHandler: nil)
     }
 
     // MARK: - life cycle -
@@ -102,39 +98,35 @@ public class EditorService {
     }
     
     public var isOpen: Bool {
-        guard let document = self.document else { return false }
-        return document.documentState == .normal
+        return self.document.documentState == .normal
     }
     
     public func open(completion:((String?) -> Void)? = nil) {
         log.info("open file: \(self.url)")
-        guard let document = self.document else {
-            log.error("can't initialize document with url: \(self.url)")
-            completion?(nil)
-            return
-        }
         
         self.queue.async { [weak self] in
-            if document.documentState == .normal {
+            guard let strongSelf = self else { return }
+            
+            if strongSelf.document.documentState == .normal {
                 // 如果文档已经打开，则直接返回
                 log.info("file already open, do nothing")
                 DispatchQueue.runOnMainQueueSafely {
-                    completion?(document.string)
+                    completion?(strongSelf.document.string)
                 }
             } else {
                 // 打开文档，触发解析，然后返回
-                document.open { [unowned document] (isOpenSuccessfully: Bool) in
+                strongSelf.document.open { (isOpenSuccessfully: Bool) in
                     guard let strongSelf = self else { return }
                                         
                     if isOpenSuccessfully {
                         
                         log.info("open document success(\(strongSelf.url))")
                         
-                        self?.loadLogs()
+                        strongSelf.loadLogs()
                         
                         DispatchQueue.runOnMainQueueSafely {
-                            strongSelf.editorController.string = document.string // 触发解析
-                            completion?(document.string)
+                            strongSelf.editorController.string = strongSelf.document.string // 触发解析
+                            completion?(strongSelf.document.string)
                         }
                         
                         // fill in logs for this document
@@ -151,18 +143,13 @@ public class EditorService {
         
     private var isClosing: Bool = false
     func close(completion:((Bool) -> Void)? = nil) {
-        guard let document = self.document else {
-            completion?(false)
-            return
-        }
-        
         guard self.isOpen else { return }
         guard self.isClosing == false else { return }
         
         self.isClosing = true
         
         self.queue.async { [weak self] in
-            document.close {
+            self?.document.close {
                 completion?($0)
                 
                 self?.isClosing = false
@@ -182,7 +169,7 @@ public class EditorService {
     }
     
     public func markAsContentUpdated() {
-        self.document?.updateContent(editorController.string)
+        self.document.updateContent(editorController.string)
     }
     
     public func toggleContentCommandComposer(composer: DocumentContentCommandComposer) -> DocumentContentCommand {
@@ -194,37 +181,44 @@ public class EditorService {
     }
 
     public var documentState: UIDocument.State {
-        return self.document?.documentState ?? .closed
+        return self.document.documentState
     }
     
     public var cover: UIImage? {
         set {
-            self.document?.updateCover(newValue)
+            self.document.updateCover(newValue)
         }
-        get { return self.document?.cover }
+        get { return self.document.cover }
     }
     
     public var logs: DocumentLog?
     
+    public var documentInfo: DocumentInfo {
+        return DocumentInfo(name: self.fileURL.packageName, cover: self.cover, url: self.fileURL, coverURL: self.fileURL.coverURL, id: self.id)
+    }
+    
     private func loadLogs() {
-        if let logs = self.document?.logs, let data = logs.data(using: .utf8) {
-            let decoder = JSONDecoder()
-            do {
-                self.logs = try decoder.decode(DocumentLog.self, from: data)
-                
-                // if documentId is empty, set it
-                if self.logs?.id == nil {
-                    self.logs?.id = "documentID:{\(UUID().uuidString)}"
-                    self.updateLogs(self.logs!)
-                }
-            } catch {
-                print("Failed to load logs \(error)")
+        let data = self.document.logs.data(using: .utf8)!
+        let decoder = JSONDecoder()
+        do {
+            self.logs = try decoder.decode(DocumentLog.self, from: data)
+            
+            // if documentId is empty, set it
+            if self.logs?.id == nil {
+                self.logs?.id = "\(Document.documentIdPrefix){\(UUID().uuidString)}"
+                self.updateLogs(self.logs!)
             }
+        } catch {
+            print("Failed to load logs \(error)")
         }
     }
     
-    public var id: String? {
-        return self.logs?.id
+    public var id: String {
+        guard self.logs != nil else {
+            fatalError("the document is not open")
+        }
+        
+        return self.logs!.id! // the id must assign if the log is assigned
     }
     
     public func syncFoldingStatus() {
@@ -249,7 +243,7 @@ public class EditorService {
         let json = JSONEncoder()
         do {
             if let string = String(data: try json.encode(logs), encoding: .utf8) {
-                self.document?.updateLogs(string)
+                self.document.updateLogs(string)
             }
         } catch {
             print("Error: \(error)")
@@ -283,12 +277,13 @@ public class EditorService {
     
     private var isReverting: Bool = false
     public func revertContent(complete: ((Bool) -> Void)? = nil) {
-        guard let url = self.document?.fileURL else { return }
         guard !isReverting else { return }
         
+        let url = self.document.fileURL
+        
         isReverting = true
-        self.document?.revert(toContentsOf: url, completionHandler: { [weak self] status in
-            if let string = self?.document?.string {
+        self.document.revert(toContentsOf: url, completionHandler: { [weak self] status in
+            if let string = self?.document.string {
                 self?.editorController.string = string
             }
             complete?(status)
@@ -309,7 +304,7 @@ public class EditorService {
     }
     
     public var fileURL: URL {
-        return document?.fileURL ?? self.url
+        return document.fileURL
     }
     
     public var deepestEntryLevel: Int {
@@ -380,15 +375,10 @@ public class EditorService {
         
         editorController.insertToParagraph(at: heading, content: content)
         
-        self.document?.updateContent(editorController.string)
+        self.document.updateContent(editorController.string)
     }
 
     public func rename(newTitle: String, completion: ((Error?) -> Void)? = nil) {
-        guard let document = self.document else {
-            completion?(EditorServiceError.fileIsNotReady)
-            return
-        }
-        
         let newURL = document.fileURL.deletingLastPathComponent().appendingPathComponent(newTitle).appendingPathExtension(Document.fileExtension)
         document.fileURL.rename(queue: self.queue, url: newURL, completion: { error in
             self.open(completion: { _ in
@@ -398,12 +388,12 @@ public class EditorService {
     }
     
     public func save(completion: ((Bool) -> Void)? = nil) {
-        guard let document = self.document else { return }
         guard self.isOpen else { return }
         
-        queue.async {
-            document.updateContent(self.editorController.string)
-            document.save(to: document.fileURL, for: UIDocument.SaveOperation.forOverwriting) { success in
+        queue.async { [weak self] in
+            guard let strongSelf = self else { return }
+            strongSelf.document.updateContent(strongSelf.editorController.string)
+            strongSelf.document.save(to: strongSelf.document.fileURL, for: UIDocument.SaveOperation.forOverwriting) { success in
                 
                 DispatchQueue.runOnMainQueueSafely {
                     completion?(success)
@@ -420,21 +410,12 @@ public class EditorService {
     }
     
     public func delete(completion: ((Error?) -> Void)? = nil) {
-        guard let document = self.document else {
-            completion?(EditorServiceError.fileIsNotReady)
-            return
-        }
-        
-        document.fileURL.delete(queue: self.queue) {
+        self.document.fileURL.delete(queue: self.queue) {
             completion?($0)
         }
     }
     
     public func find(target: String, found: @escaping ([NSRange]) -> Void) throws {
-        guard let document = self.document else {
-            return
-        }
-        
         let matcher = try NSRegularExpression(pattern: "\(target)", options: .caseInsensitive)
         let string = document.string
         var matchedRanges: [NSRange] = []

@@ -92,7 +92,7 @@ extension DocumentEditorViewController: OutlineTextViewDelegate {
                 
                 if let link = linkStructure[OutlineParser.Key.Element.Link.url] as? String {
                     if isDocumentLink {
-                        self.viewModel.context.coordinator?.openDocumentLink(link: link)
+                        self.viewModel.context.coordinator?.openDocumentLink(opener: self.viewModel.url, link: link)
                     } else {
                         if let url = URL(string: linkStructure[OutlineParser.Key.Element.Link.url] as? String ?? "") {
                             UIApplication.shared.open(url, options: [:], completionHandler: nil)
@@ -225,6 +225,7 @@ extension DocumentEditorViewController: OutlineTextViewDelegate {
         renameFormViewController.onSaveValueAutoDismissed = { [weak self] formValue in
             guard let strongSelf = self else { return }
             if let newName = formValue[title] as? String {
+                let oldURL = strongSelf.viewModel.url
                 strongSelf.viewModel.rename(to: newName.escaped) { error in
                     if let error = error {
                         log.error(error)
@@ -233,7 +234,7 @@ extension DocumentEditorViewController: OutlineTextViewDelegate {
                         DispatchQueue.runOnMainQueueSafely {
                             strongSelf.viewModel.context.dependency.settingAccessor.logOpenDocument(url: strongSelf.viewModel.url)
                             strongSelf.textView.setTitle(newName)
-                            
+                            strongSelf.viewModel.dependency.eventObserver.emit(RenameDocumentEvent(oldUrl: oldURL, newUrl: strongSelf.viewModel.url))
                         }
                     }
                 }

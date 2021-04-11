@@ -203,6 +203,10 @@ public class DocumentEditorViewModel: ViewModelProtocol {
         return self.editorService.headings
     }
     
+    public var documentInfo: DocumentInfo {
+        return self.editorService.documentInfo
+    }
+    
     public var isReadingModel: Bool {
         get { return self.editorService.isReadingMode }
         set {
@@ -219,7 +223,7 @@ public class DocumentEditorViewModel: ViewModelProtocol {
             .getSetting(item: SettingsAccessor.Item.favoriteDocuments,
                         type: [String].self) ?? []
             
-        guard let id = self.editorService.id else { return }
+        let id = self.editorService.id
         if isFavorite == true {
             if !favoriteDocuments.contains(id) {
                 favoriteDocuments.append(id)

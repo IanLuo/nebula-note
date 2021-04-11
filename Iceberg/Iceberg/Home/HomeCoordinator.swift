@@ -225,7 +225,7 @@ extension HomeCoordinator: BrowserCoordinatorDelegate {
         self.openDocument(url: url, location: 0)
     }
     
-    public func didSelectOutline(url: URL, selection: OutlineLocation, coordinator: BrowserCoordinator) {}
+    public func didSelectOutline(documentInfo: DocumentInfo, selection: OutlineLocation, coordinator: BrowserCoordinator) {}
     
     public func didCancel(coordinator: BrowserCoordinator) {}
 }

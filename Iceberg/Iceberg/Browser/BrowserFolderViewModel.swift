@@ -180,14 +180,8 @@ public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
     }
     
     private var allFiles: [URL] {
-        if iCloudDocumentManager.status == .on {
-            return self.dependency.syncManager.allFilesInCloud.value.filter { url in
-                url.path.hasSuffix(Document.fileExtension) && !url.path.contains(SyncCoordinator.Prefix.deleted.rawValue)
-            }
-        } else {
-            return self.dependency.syncManager.allFilesLocal.filter { url in
-                url.path.hasSuffix(Document.fileExtension) && !url.path.contains(SyncCoordinator.Prefix.deleted.rawValue)
-            }
+        return self.dependency.syncManager.allFilesLocal.filter { url in
+            url.path.hasSuffix(Document.fileExtension) && !url.path.contains(SyncCoordinator.Prefix.deleted.rawValue)
         }
     }
     

@@ -433,8 +433,8 @@ extension DocumentEditorViewController {
             actionsController.addAction(icon: nil, title: L10n.Document.Heading.moveToAnotherDocument) { viewController in
                 viewController.dismiss(animated: true, completion: {
                     let oldLocation = self.textView.selectedRange.location
-                    self.viewModel.context.coordinator?.showDocumentHeadingPicker(completion: { [unowned self] url, outlineLocation in
-                        self.viewModel.moveParagraphToOtherDocument(url: url, outline: outlineLocation, location: location, textView: self.textView, completion: { [unowned self] result in
+                    self.viewModel.context.coordinator?.showDocumentHeadingPicker(completion: { [unowned self] documentInfo, outlineLocation in
+                        self.viewModel.moveParagraphToOtherDocument(url: documentInfo.url, outline: outlineLocation, location: location, textView: self.textView, completion: { [unowned self] result in
                             
                             guard result.content != nil else { return }
                             
@@ -602,17 +602,9 @@ extension DocumentEditorViewController {
     }
     
     public func showFileLinkChoose(location: Int, linkRange: NSRange?) {
-        self.viewModel.context.coordinator?.showDocumentHeadingPicker(completion: { (url, outlineLocation) in
-            var resolvedURL: URL!
-            switch outlineLocation {
-            case .heading(let heading):
-                resolvedURL = url.appendingPathComponent(heading.id).appendingPathComponent(heading.text)
-            case .position(let location):
-                resolvedURL = url.appendingPathComponent("\(location)")
-            }
-                        
+        self.viewModel.context.coordinator?.showDocumentHeadingPicker(completion: { (documentInfo, outlineLocation) in
             let range = linkRange ?? NSRange(location: location, length: 0)
-            let result = self.viewModel.performAction(EditAction.addFileLink(range, resolvedURL), textView: self.textView)
+            let result = self.viewModel.performAction(EditAction.addFileLink(range, documentInfo.url, documentInfo, outlineLocation), textView: self.textView)
             self.textView.selectedRange = NSRange(location: result.delta + location, length: 0)
         })
     }

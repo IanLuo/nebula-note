@@ -33,7 +33,7 @@ public class CaptureListCoordinator: Coordinator {
         self.viewController = viewController
     }
     
-    public func showDocumentHeadingSelector(completion: @escaping (URL, OutlineLocation) -> Void, canceled: @escaping () -> Void) {
+    public func showDocumentHeadingSelector(completion: @escaping (DocumentInfo, OutlineLocation) -> Void, canceled: @escaping () -> Void) {
         let navigationController = Coordinator.createDefaultNavigationControlller()
         
         let documentCoord = BrowserCoordinator(stack: navigationController,
@@ -44,9 +44,9 @@ public class CaptureListCoordinator: Coordinator {
             documentCoord.viewController?.modalPresentationStyle = .fullScreen
         }
         
-        documentCoord.didSelectOutlineAction = { [weak documentCoord]  url, outlineLocation in
+        documentCoord.didSelectOutlineAction = { [weak documentCoord]  documentInfo, outlineLocation in
             documentCoord?.stop()
-            completion(url, outlineLocation)
+            completion(documentInfo, outlineLocation)
         }
         
         documentCoord.didCancelAction = { [weak documentCoord] in

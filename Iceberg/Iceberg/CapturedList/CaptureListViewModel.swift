@@ -207,8 +207,8 @@ public class CaptureListViewModel: ViewModelProtocol {
     
     public func chooseRefileLocation(index: Int, completion: @escaping () -> Void, canceled: @escaping () -> Void) {
         self.currentIndex = index
-        self.context.coordinator?.showDocumentHeadingSelector(completion: { [unowned self] url, outlineLocation in
-            guard let service = self.context.coordinator?.dependency.editorContext.request(url: url) else {
+        self.context.coordinator?.showDocumentHeadingSelector(completion: { [unowned self] documentInfo, outlineLocation in
+            guard let service = self.context.coordinator?.dependency.editorContext.request(url: documentInfo.url) else {
                 return
             }
             

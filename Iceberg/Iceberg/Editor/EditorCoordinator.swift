@@ -10,9 +10,10 @@ import Foundation
 import UIKit
 import Core
 import Interface
+import RxSwift
 
 public protocol EditorCoordinatorSelectHeadingDelegate: class {
-    func didSelectOutline(url: URL, selection: OutlineLocation, coordinator: EditorCoordinator)
+    func didSelectOutline(documentInfo: DocumentInfo, selection: OutlineLocation, coordinator: EditorCoordinator)
     func didCancel(coordinator: EditorCoordinator)
 }
 
@@ -33,6 +34,9 @@ public class EditorCoordinator: Coordinator {
     public var didCancelSelectionOutlineSelectionAction: (() -> Void)?
     
     public private(set) var url: URL!
+    
+    
+    private let disposeBag = DisposeBag()
     
     public init(stack: UINavigationController, dependency: Dependency, usage: Usage) {
         self.usage = usage
@@ -84,7 +88,7 @@ public class EditorCoordinator: Coordinator {
         coordinator.start(from: self)
     }
     
-    public func showDocumentHeadingPicker(completion: @escaping (URL, OutlineLocation) -> Void) {
+    public func showDocumentHeadingPicker(completion: @escaping (DocumentInfo, OutlineLocation) -> Void) {
         let navigationController = Coordinator.createDefaultNavigationControlller()
         
             
@@ -92,9 +96,9 @@ public class EditorCoordinator: Coordinator {
                                                dependency: super.dependency,
                                                usage: .chooseHeader)
         
-        documentCoord.didSelectOutlineAction = { [weak documentCoord] url, outlineLocation in
+        documentCoord.didSelectOutlineAction = { [weak documentCoord] documentInfo, outlineLocation in
             documentCoord?.stop()
-            completion(url, outlineLocation)
+            completion(documentInfo, outlineLocation)
         }
         
         documentCoord.didCancelAction = { [weak documentCoord] in
@@ -206,31 +210,38 @@ public class EditorCoordinator: Coordinator {
         coor.start(from: self)
     }
     
-    public func openDocumentLink(link: String) {
+    public func openDocumentLink(opener: URL, link: String) {
         let url = URL.documentBaseURL.appendingPathComponent(OutlineParser.Values.Link.removeScheme(link: link))
-        
-        if let idMatchResult = try! NSRegularExpression(pattern: "(\\{.*\\})", options: []).firstMatch(in: url.path, options: [], range: NSRange(location: 0, length: url.path.count)) {
+        if let idMatchResult = try! NSRegularExpression(pattern: "(\(Document.documentIdPrefix)\\{.*\\})", options: []).firstMatch(in: url.path, options: [], range: NSRange(location: 0, length: url.path.count)) {
+           let idRange = idMatchResult.range(at: 1)
+           let id = url.path.nsstring.substring(with: idRange).trimmingCharacters(in: CharacterSet(charactersIn: "{}"))
+            
+            let offset = Int(url.lastPathComponent) ?? 0
+           
+           self.dependency.documentSearchManager
+               .searchLog(containing: id, onlyTakeFirst: true).subscribe(onNext: { urls in
+                   if let url = urls.first {
+                       self.dependency.eventObserver.emit(OpenDocumentEvent(url: url, location: offset))
+                   }
+               }).disposed(by: self.disposeBag)
+       } else if let idMatchResult = try! NSRegularExpression(pattern: "(\\{.*\\})", options: []).firstMatch(in: url.path, options: [], range: NSRange(location: 0, length: url.path.count)) {
             let idRange = idMatchResult.range(at: 1)
             let id = url.path.nsstring.substring(with: idRange).trimmingCharacters(in: CharacterSet(charactersIn: "{}"))
             
-            self.dependency.documentSearchManager.search(contain: id, cancelOthers: true) { results in
-                if let firstResult = results.first {
-                    let documentInfo = firstResult.documentInfo
-                    let url = documentInfo.url
-                    
-                    let offset = firstResult.heading?.range.upperBound ?? 0
-                    
-//                    if isMacOrPad {
+            self.dependency.documentSearchManager
+                .search(contain: id, cancelOthers: true) { results in
+                    if let firstResult = results.filter({ $0.documentInfo.url != opener }).first {
+                        let documentInfo = firstResult.documentInfo
+                        let url = documentInfo.url
+                        
+                        let offset = firstResult.heading?.range.upperBound ?? 0
+                        
                         self.dependency.eventObserver.emit(OpenDocumentEvent(url: url, location: offset))
-//                    } else {
-//                        let editorCoor = EditorCoordinator(stack: self.stack, dependency: self.dependency, usage: .editor(url, offset))
-//                        editorCoor.start(from: self)
-//                    }
+                    }
+                } failed: { error in
+                    print(error)
                 }
-            } failed: { error in
-                print(error)
-            }
-        } else {
+        }else {
             var location = 0
             var url = url
             if url.pathExtension == "" {
@@ -239,12 +250,7 @@ public class EditorCoordinator: Coordinator {
             }
             
             if FileManager.default.fileExists(atPath: url.path) {
-//                if isMacOrPad {
-                    self.dependency.eventObserver.emit(OpenDocumentEvent(url: url, location: location))
-//                } else {
-//                    let editorCoor = EditorCoordinator(stack: self.stack, dependency: self.dependency, usage: .editor(url, location))
-//                    editorCoor.start(from: self)
-//                }
+                self.dependency.eventObserver.emit(OpenDocumentEvent(url: url, location: location))
             } else {
                 self.viewController?.showAlert(title: L10n.Browser.fileNotExisted, message: L10n.Browser.FileNotExisted.message)
             }
@@ -253,12 +259,7 @@ public class EditorCoordinator: Coordinator {
     
     public func openDocument(url: URL) {
         if FileManager.default.fileExists(atPath: url.path) {
-//            if isMacOrPad {
-                self.dependency.eventObserver.emit(OpenDocumentEvent(url: url))
-//            } else {
-//                let editorCoor = EditorCoordinator(stack: self.stack, dependency: self.dependency, usage: .editor(url, 0))
-//                editorCoor.start(from: self)
-//            }
+            self.dependency.eventObserver.emit(OpenDocumentEvent(url: url))
         } else {
             self.viewController?.showAlert(title: L10n.Browser.fileNotExisted, message: L10n.Browser.FileNotExisted.message)
         }
@@ -291,8 +292,8 @@ extension EditorCoordinator: HeadingsOutlineViewControllerDelegate {
         self.didCancelSelectionOutlineSelectionAction?()
     }
     
-    public func didSelect(url: URL, selection: OutlineLocation) {
-        self.delegate?.didSelectOutline(url: url, selection: selection, coordinator: self)
+    public func didSelect(documentInfo: DocumentInfo, selection: OutlineLocation) {
+        self.delegate?.didSelectOutline(documentInfo: documentInfo, selection: selection, coordinator: self)
         self.didSelectOutlineSelectionAction?(selection)
     }
 }

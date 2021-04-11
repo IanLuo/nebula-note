@@ -103,8 +103,6 @@ public class iCloudDocumentManager: NSObject {
 //          self.startMonitoringiCloudFileUpdateIfNeeded()
 //    }
     
-    public let allFilesInCloud: BehaviorRelay<[URL]> = BehaviorRelay(value: [])
-    
     public var allFilesLocal: [URL] {
         let enumerator = FileManager.default.enumerator(at: URL.documentBaseURL, includingPropertiesForKeys: nil)
         var urls: [URL] = []
@@ -576,8 +574,6 @@ extension iCloudDocumentManager: NSMetadataQueryDelegate {
             
             self.handleConflictIfNeeded(item: item)
         }
-        
-        self.allFilesInCloud.accept(items.compactMap { $0.url })
     }
     
     @objc private func _metadataQueryProgress(_ notification: Notification) {

@@ -162,14 +162,19 @@ public class DeleteSectionCommpandComposer: DocumentContentCommandComposer {
 
 public class AddDocumentLinkCommpandComposer: DocumentContentCommandComposer {
     let range: NSRange
+    let documentInfo: DocumentInfo
+    let outlineLocation: OutlineLocation
     let url: URL
-    public init(range: NSRange, url: URL) {
+    
+    public init(range: NSRange, url: URL, documentInfo: DocumentInfo, outlineLocation: OutlineLocation) {
         self.range = range
         self.url = url
+        self.documentInfo = documentInfo
+        self.outlineLocation = outlineLocation
     }
     
     public func compose(textStorage: OutlineTextStorage) -> DocumentContentCommand {
-        return ReplaceContentCommandComposer(range: self.range, textToReplace: OutlineParser.Values.Link.serializeFileLink(url: self.url)).compose(textStorage: textStorage)
+        return ReplaceContentCommandComposer(range: self.range, textToReplace: OutlineParser.Values.Link.serializeFileLink(url: self.url, documentInfo: self.documentInfo, outlineLocation: self.outlineLocation)).compose(textStorage: textStorage)
     }
 }
 

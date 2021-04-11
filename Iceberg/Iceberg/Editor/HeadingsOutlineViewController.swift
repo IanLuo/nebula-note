@@ -11,13 +11,8 @@ import UIKit
 import Interface
 import Core
 
-public enum OutlineLocation {
-    case heading(DocumentHeading)
-    case position(Int)
-}
-
 public protocol HeadingsOutlineViewControllerDelegate: class {
-    func didSelect(url: URL, selection: OutlineLocation)
+    func didSelect(documentInfo: DocumentInfo, selection: OutlineLocation)
     func didCancel()
 }
 
@@ -61,11 +56,11 @@ extension HeadingsOutlineViewController: SelectorViewControllerDelegate {
     public func SelectorDidSelect(index: Int, viewController: SelectorViewController) {
         switch index {
         case 0:
-            self.outlineDelegate?.didSelect(url: self.viewModel.url, selection: .position(0))
+            self.outlineDelegate?.didSelect(documentInfo: self.viewModel.documentInfo, selection: .position(0))
         case self.items.count - 1:
-            self.outlineDelegate?.didSelect(url: self.viewModel.url, selection: .position(self.viewModel.string.count))
+            self.outlineDelegate?.didSelect(documentInfo: self.viewModel.documentInfo, selection: .position(self.viewModel.string.count))
         default:
-            self.outlineDelegate?.didSelect(url: self.viewModel.url, selection: .heading(self.viewModel.documentHeading(at: index - 1))) // minus 1, because 1 is extra 'document beginnig'
+            self.outlineDelegate?.didSelect(documentInfo: self.viewModel.documentInfo, selection: .heading(self.viewModel.documentHeading(at: index - 1))) // minus 1, because 1 is extra 'document beginnig'
         }
     }
 }
