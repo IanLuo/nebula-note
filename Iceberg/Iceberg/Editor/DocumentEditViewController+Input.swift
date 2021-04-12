@@ -136,9 +136,6 @@ extension DocumentEditorViewController {
                 _ = self.viewModel.performAction(EditAction.replaceText(NSRange(location: heading.range.upperBound, length: 0), textToPutInNextLine), textView: textView)
                 _ = self.viewModel.performAction(EditAction.replaceText(breakRange, ""), textView: textView)
                 textView.selectedRange = NSRange(location: heading.range.upperBound + 1, length: 0) // +1 是因为添加了一个换行符
-                return false
-            } else {
-                return true
             }
         }
         
@@ -181,6 +178,15 @@ extension DocumentEditorViewController {
                 let result = self.viewModel.performAction(EditAction.checkboxSwitch(textView.selectedRange.location), textView: self.textView)
                 textView.selectedRange = NSRange(location: result.range!.upperBound, length: 0)
             }
+            return false
+        }
+        
+        // if the current location is end of document, add an extal line break at the end
+        if textView.selectedRange.upperBound == self.textView.text.count {
+            
+            _ = self.viewModel.performAction(EditAction.replaceText(self.textView.selectedRange, "\n\n"), textView: textView)
+            textView.selectedRange = textView.selectedRange.offset(-1)
+            
             return false
         }
         

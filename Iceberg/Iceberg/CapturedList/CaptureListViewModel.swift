@@ -8,6 +8,7 @@
 
 import Foundation
 import Core
+import Interface
 
 public protocol CaptureListViewModelDelegate: class {
     func didLoadData()
@@ -27,6 +28,15 @@ public class CaptureListViewModel: ViewModelProtocol {
     public enum Mode {
         case pick
         case manage
+        
+        var columnCount: Int {
+            switch self {
+            case .manage:
+                return isPhone ? 2 : 5
+            case .pick:
+                return isPhone ? 2 : 3
+            }
+        }
     }
     
     public var mode: Mode = .pick

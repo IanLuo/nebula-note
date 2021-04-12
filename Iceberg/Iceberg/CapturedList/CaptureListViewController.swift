@@ -326,12 +326,12 @@ extension CaptureListViewController: UICollectionViewDataSource, CHTCollectionVi
     }
     
     public func collectionView(_ collectionView: UICollectionView!, layout collectionViewLayout: UICollectionViewLayout!, columnCountForSection section: Int) -> Int {
-        return isPhone ? 2 : 5
+        return self.viewModel.mode.columnCount
     }
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return self.viewModel.currentFilterdCellModels[indexPath.row]
-            .attachmentView.size(for: (collectionView.bounds.width - Layout.edgeInsets.left - Layout.edgeInsets.right - (isPhone ? 10 : 40)) / (isPhone ? 2 : 5))
+            .attachmentView.size(for: (collectionView.bounds.width - Layout.edgeInsets.left - Layout.edgeInsets.right - (isPhone ? 10 : 40)) / CGFloat(self.viewModel.mode.columnCount))
             .heigher(by: Layout.edgeInsets.top + Layout.edgeInsets.bottom + 60)
     }
     

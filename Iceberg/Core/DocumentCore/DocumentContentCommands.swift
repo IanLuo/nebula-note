@@ -467,7 +467,7 @@ public class ConvertHeadingLineToParagragh: DocumentContentCommandComposer {
             return NoChangeCommand()
         }
         
-        return ReplaceTextCommand(range: heading.levelRange.moveRightBound(by: 1), textToReplace: "", textStorage: textStorage)
+        return ReplaceTextCommand(range: heading.prefix.moveRightBound(by: 1), textToReplace: "", textStorage: textStorage)
     }
 }
 

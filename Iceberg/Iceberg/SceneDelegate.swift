@@ -83,4 +83,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         super.validate(command)
     }
+    
+    func sceneDidBecomeActive(_ scene: UIScene) {
+        self.application.handleSharedIdeas()
+    }
 }

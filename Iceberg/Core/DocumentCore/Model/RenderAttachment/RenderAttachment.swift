@@ -39,7 +39,7 @@ public class RenderAttachment: NSTextAttachment {
             switch attachment.kind {
             case .sketch, .image, .video:
                 if let image = image {
-                    let image = image.resize(upto: CGSize(width: UIScreen.main.bounds.width * 0.7, height: UIScreen.main.bounds.width * 0.7))
+                    let image = image.resize(upto: CGSize(width: min(600, UIScreen.main.bounds.width * 0.7), height: min(500,  UIScreen.main.bounds.width * 0.7)))
                     let scale = UIScreen.main.scale / image.scale
                     self.image = image
                     self.bounds = CGRect(origin: .zero, size: image.size.applying(CGAffineTransform(scaleX: 1/scale, y: 1/scale)))

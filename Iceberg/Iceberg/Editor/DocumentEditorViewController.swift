@@ -191,10 +191,13 @@ public class DocumentEditorViewController: UIViewController {
                 self?.showOutline(from: button)
             }
             
+            self.addToolbarButton(title: L10n.Search.title, icon: Asset.SFSymbols.magnifyingglass.image) { [weak self]  button in
+                self?.viewModel.dependency.eventObserver.emit(SwitchTabEvent(toTabIndex: TabIndex.search.index))
+            }
+            
             self.addToolbarButton(title: "", icon: Asset.SFSymbols.ellipsis.image) { [weak self]  button in
                 self?.showInfo()
             }
-            
             
             if isPhone {
                 self.textView.inputAccessoryView = self.inputbar

@@ -474,6 +474,24 @@ public enum L10n {
         /// Edit document link title
         public static let title = L10n.tr("Localizable", "document.edit.document_link.title")
       }
+      public enum Heading {
+        /// Convert Heading
+        public static let convert = L10n.tr("Localizable", "document.edit.heading.convert")
+        public enum Convert {
+          /// To level 1 heading
+          public static let _1 = L10n.tr("Localizable", "document.edit.heading.convert.1")
+          /// To level 2 heading
+          public static let _2 = L10n.tr("Localizable", "document.edit.heading.convert.2")
+          /// To level 3 heading
+          public static let _3 = L10n.tr("Localizable", "document.edit.heading.convert.3")
+          /// To level 4 heading
+          public static let _4 = L10n.tr("Localizable", "document.edit.heading.convert.4")
+          /// To level 5 heading
+          public static let _5 = L10n.tr("Localizable", "document.edit.heading.convert.5")
+          /// To level 6 heading
+          public static let _6 = L10n.tr("Localizable", "document.edit.heading.convert.6")
+        }
+      }
       public enum Image {
         /// Use as cover
         public static let useAsCover = L10n.tr("Localizable", "document.edit.image.use-as-cover")

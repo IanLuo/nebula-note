@@ -53,9 +53,8 @@ public class OutlineTextView: UITextView, UIScrollViewDelegate {
     private func setup() {
         self.alwaysBounceVertical = true
         self.autocapitalizationType = .sentences
-        self.autocorrectionType = .no
+        self.autocorrectionType = .default
         self.keyboardDismissMode = .interactive
-        self.isDirectionalLockEnabled = true
 
         if #available(iOS 11.0, *) {
             self.smartDashesType = .no
@@ -262,7 +261,7 @@ public class OutlineTextView: UITextView, UIScrollViewDelegate {
     
     public func flashLine(location: Int) {
         var effectiveRange: NSRange = NSRange(location: 0, length: 0)
-        var rect = self.layoutManager.lineFragmentRect(forGlyphAt: location, effectiveRange: &effectiveRange)
+        var rect = self.layoutManager.lineFragmentRect(forGlyphAt: min(location, self.text.count - 1), effectiveRange: &effectiveRange)
         
         rect.origin.y += self.textContainerInset.top
         

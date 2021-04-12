@@ -165,6 +165,15 @@
 "document.edit.conflict.description" = "选择要保留的版本";
 "document.edit.conflict.warning" = "确定保留这个版本？";
 "document.edit.conflict.current" = "当前设备";
+
+"document.edit.heading.convert" = "转换标题";
+"document.edit.heading.convert.1" = "转为 1 级标题";
+"document.edit.heading.convert.2" = "转为 2 级标题";
+"document.edit.heading.convert.3" = "转为 3 级标题";
+"document.edit.heading.convert.4" = "转为 4 级标题";
+"document.edit.heading.convert.5" = "转为 5 级标题";
+"document.edit.heading.convert.6" = "转为 6 级标题";
+
 // sync
 "sync.confirm.useiCloud" = "是否使用 iCloud 保存文档？使用 iCloud 保存文档，可以在多台设备上共享内容，就算设备丢失，或者重新安装 app，也不会丢失编写的内容。";
 "sync.alert.status.on.title" = "正在使用 iCloud 保存文档";

@@ -73,6 +73,8 @@ public class AgendaViewController: UIViewController {
         // add observer to be able to reload dates
         NotificationCenter.default.addObserver(self, selector: #selector(reloadDatesIfNeeded), name: UIApplication.didBecomeActiveNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(reloadDatesIfNeeded), name: UIApplication.willEnterForegroundNotification, object: nil)
+        
+        self.view.showProcessingAnimation()
     }
     
     deinit {
@@ -197,6 +199,7 @@ extension AgendaViewController: AgendaViewModelDelegate {
     public func didLoadData() {
         self.tableView.reloadData()
         self.showEmptyContentImage(self.viewModel.data.count == 0)
+        self.view.hideProcessingAnimation()
     }
     
     public func didCompleteLoadAllData() {

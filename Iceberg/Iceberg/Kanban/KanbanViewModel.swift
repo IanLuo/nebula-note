@@ -47,23 +47,6 @@ public class KanbanViewModel: ViewModelProtocol {
             self?.status.onNext(statusMap)
             self?.documents.onNext(Array(Set(map.values.flatMap({ $0 }).map { $0.documentInfo.name })))
         }).disposed(by: self.disposeBag)
-        
-        
-        if let savedIgnoredStatus = self.ignoredEntryStore.get(key: keyIgnoredStatus, type: [String].self) {
-            self.ignoredStatus.accept(savedIgnoredStatus)
-        }
-
-        if let savedIgnoredDocuments = self.ignoredEntryStore.get(key: keyIgnoredDocuments, type: [String].self) {
-            self.ignoredDocuments.accept(savedIgnoredDocuments)
-        }
-
-        self.ignoredStatus.subscribe(onNext: { [weak self] in
-            self?.ignoredEntryStore.set(value: $0, key: keyIgnoredStatus, completion: {})
-        }).disposed(by: self.disposeBag)
-
-        self.ignoredDocuments.subscribe(onNext: { [weak self] in
-            self?.ignoredEntryStore.set(value: $0, key: keyIgnoredDocuments, completion: {})
-        }).disposed(by: self.disposeBag)
     }
     
     public func didSetupContext() {
@@ -76,6 +59,26 @@ public class KanbanViewModel: ViewModelProtocol {
                 self?.loadAllStatus()
             }
         }
+        
+        self.dependency.purchaseManager.isMember.subscribe(onNext: {
+            guard $0 else { return }
+            
+            if let savedIgnoredStatus = self.ignoredEntryStore.get(key: keyIgnoredStatus, type: [String].self) {
+                self.ignoredStatus.accept(savedIgnoredStatus)
+            }
+            
+            if let savedIgnoredDocuments = self.ignoredEntryStore.get(key: keyIgnoredDocuments, type: [String].self) {
+                self.ignoredDocuments.accept(savedIgnoredDocuments)
+            }
+            
+            self.ignoredStatus.subscribe(onNext: { [weak self] in
+                self?.ignoredEntryStore.set(value: $0, key: keyIgnoredStatus, completion: {})
+            }).disposed(by: self.disposeBag)
+            
+            self.ignoredDocuments.subscribe(onNext: { [weak self] in
+                self?.ignoredEntryStore.set(value: $0, key: keyIgnoredDocuments, completion: {})
+            }).disposed(by: self.disposeBag)
+        }).disposed(by: self.disposeBag)
     }
     
     public func loadAllStatus() {

@@ -191,7 +191,7 @@ private class KanbanColumn: UIView, UITableViewDelegate, UITableViewDataSource, 
         
         cell.onHeadingTapped = {
             let heading = self.headings[indexPath.row]
-            self.viewModel.dependency.eventObserver.emit(OpenDocumentEvent(url: heading.documentInfo.url, location: heading.heading.location))
+            self.viewModel.dependency.eventObserver.emit(OpenDocumentEvent(url: heading.documentInfo.url, location: heading.heading.range.upperBound))
         }
         
         return cell

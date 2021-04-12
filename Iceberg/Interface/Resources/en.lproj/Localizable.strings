@@ -166,6 +166,15 @@
 "document.edit.conflict.description" = "Choose the version you want to keep";
 "document.edit.conflict.warning" = "Sure to keep this version?";
 "document.edit.conflict.current" = "Current device";
+
+"document.edit.heading.convert" = "Convert Heading";
+"document.edit.heading.convert.1" = "To level 1 heading";
+"document.edit.heading.convert.2" = "To level 2 heading";
+"document.edit.heading.convert.3" = "To level 3 heading";
+"document.edit.heading.convert.4" = "To level 4 heading";
+"document.edit.heading.convert.5" = "To level 5 heading";
+"document.edit.heading.convert.6" = "To level 6 heading";
+
 // sync
 "sync.confirm.useiCloud" = "Do you want use iCloud to store, your documents. If so, you will be able to access the contents from any device with your iCloud account, and they will be kept safe if you remove the app, or even lose your device.";
 "sync.alert.status.on.title" = "Using iCloud storage";

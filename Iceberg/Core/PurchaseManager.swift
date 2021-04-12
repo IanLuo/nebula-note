@@ -124,11 +124,7 @@ public struct PurchaseManager {
                     
                     var expireDate: Date? = nil
                     switch purchaseResult {
-                    case .expired(expiryDate: let _expireDate, let items):
-//                        expireDate = _expireDate
-//
-//                        self._clearCachedExpire()
-                    break
+                    case .expired: break
                     case .notPurchased:
                         expireDate = nil
                         
