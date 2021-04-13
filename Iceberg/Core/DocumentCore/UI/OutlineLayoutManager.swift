@@ -43,9 +43,42 @@ public class OutlineLayoutManager: NSLayoutManager {
 
             self._handleForCode(textStorage: textStorage, range: glyphsToShow, origin: origin, shouldStop: &stop)
             
+            self.handleHighlight(textStorage: textStorage, range: glyphsToShow, origin: origin, shouldStop: &stop)
+            
             super.drawGlyphs(forGlyphRange: glyphsToShow, at: origin)
         } else {
             super.drawGlyphs(forGlyphRange: glyphsToShow, at: origin)
+        }
+    }
+    
+    private func handleHighlight(textStorage: NSTextStorage, range: NSRange, origin: CGPoint, shouldStop: inout Bool) {
+        textStorage.enumerateAttribute(OutlineAttribute.backgroundColor,
+                                        in: range,
+                                        options: []) { (value, range, stop) in
+            guard let color = value as? UIColor else {
+                super.drawGlyphs(forGlyphRange: range, at: origin);return
+            }
+            
+            let glRange = glyphRange(forCharacterRange: range, actualCharacterRange: nil);
+            
+            self.enumerateEnclosingRects(forGlyphRange: glRange, withinSelectedGlyphRange: NSRange(location: 0, length: 0), in: self.textContainers[0], using: { (rect, stop) in
+                
+                guard let context = UIGraphicsGetCurrentContext() else { return }
+                let font = InterfaceTheme.Font.body
+                context.saveGState()
+                context.translateBy(x: origin.x, y: origin.y)
+                color.setFill()
+                        
+                var rect = rect
+                rect.origin.x = rect.origin.x - 1
+                rect.origin.y = rect.origin.y - font.descender - 5
+                rect.size.height = font.lineHeight - font.descender
+                rect.size.width = rect.size.width + 2
+
+                let path = UIBezierPath(roundedRect: rect, cornerRadius: 4)
+                path.fill()
+                context.restoreGState()
+            })
         }
     }
     

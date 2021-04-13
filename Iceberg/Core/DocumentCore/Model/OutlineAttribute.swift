@@ -72,4 +72,6 @@ public struct OutlineAttribute {
     }
     
     public static let onePiease: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_ONE_PIEASE)
+    
+    public static let backgroundColor: NSAttributedString.Key = NSAttributedString.Key(OUTLINE_ATTRIBUTE_HIGHLIGHT)
 }
