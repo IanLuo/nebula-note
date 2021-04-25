@@ -1,1 +1,1 @@
-note,notebook,idea,inspiration,plan,agenda,blog,wiki,take note,knowledge,blogger,editor,novel,story
+note,notebook,idea,inspiration,plan,agenda,blog,wiki,take note,knowledge,blogger,editor,kanban,story

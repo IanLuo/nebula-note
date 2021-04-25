@@ -378,6 +378,20 @@ extension URL {
             return path.replacingOccurrences(of: separator, with: "", options: [], range: nil)
         }
     }
+    
+    public var fileRelativeToDocumentPathComponents: [String] {
+        return self.documentRelativePath.replacingOccurrences(of: ".\(Document.fileExtension)", with: "").components(separatedBy: "/")
+    }
+    
+    public static func documentURL(withRelativePath: String) -> URL? {
+        let url = URL.documentBaseURL.appendingPathComponent(withRelativePath)
+        
+        if FileManager.default.fileExists(atPath: url.path) {
+            return url
+        } else {
+            return nil
+        }
+    }
         
     public var levelsToRoot: Int {
         return self.documentRelativePath.components(separatedBy: "/").filter { $0.count > 0 }.count

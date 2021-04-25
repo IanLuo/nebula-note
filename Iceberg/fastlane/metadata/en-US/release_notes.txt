@@ -1,5 +1,15 @@
-1. We have a new name, from x3 Note to Nebula, we thinks it suits us better.
-2. New document and recent documents browser
-3. New capture interface
-4. Search function in browser
-5. Fix various of issues
+New feature
+1. New kanban function
+2. Support tabs on iPhone
+3. New material UI
+4. Integrate favorite into document browser
+5. New full screen mode
+6. Now even if you change your document name, paragraph heading, won't affect link and back link
+7. Now document title is in document, and can change directly
+ 
+fix and optimization
+1. Optimize highlight text render
+2. Fix material won't auto refresh shared item, need tap refresh button 
+3. Fix sometimes it will fail to move an item in material management to document
+4. Fix attachment in document too easy to tap
+5. Fix after change document name, the search result didn't change

@@ -158,10 +158,10 @@ public struct PurchaseManager {
         return Observable.create { observer -> Disposable in
             
             SwiftyStoreKit.purchaseProduct(productId, quantity: 1, atomically: false) { result in
-                self._clearCachedExpire()
                 
                 switch result {
                 case .success(let product):
+                    self._clearCachedExpire()
                     if product.needsFinishTransaction {
                         SwiftyStoreKit.finishTransaction(product.transaction)
                     }

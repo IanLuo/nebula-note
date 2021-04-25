@@ -1,5 +1,5 @@
 # The Deliverfile allows you to store various App Store Connect metadata
 # For more information, check out the docs
 # https://docs.fastlane.tools/actions/deliver/
-app_version "1.3.0"
+app_version "1.3.3"
 force true

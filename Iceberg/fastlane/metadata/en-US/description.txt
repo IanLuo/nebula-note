@@ -1,6 +1,6 @@
-Nebula is an personal knowledge system, which combines note taking, material management, and task management together.
+Nebula is an personal knowledge system, combines note taking, material management, and task management together.
 
-* Full featured rich text editor
+* Rich text editor
 - Paragraphs can be folded.
 - Text decorations like Bold, underscore, italic, strikethrough, hi-lightly.
 - Plenty of attachments: image, video, audio, location, free hand sketch.
@@ -8,25 +8,32 @@ Nebula is an personal knowledge system, which combines note taking, material man
 - Link List, checkbox, quote block, source code block.
 - Publish to blog platforms with attachments.
 - Export to other file formats, such as Markdown, txt, html, pdf, image.
-- Add tags to paragraph
-- Add working status to paragraphs
-- Add priority to paragraph
-- Insert date and time
+- Add tags to paragraph.
+- Add working status to paragraphs.
+- Add priority to paragraph.
+- Insert date and time.
+- Full screen mode.
+- Works with Task Management and Material Management make your like easy and efficient.
 
-* Capture and manage materials  
+* Automatically Kanban
+- Automatically generate all items from document headings.
+- Automatically update note content from Kanban, and other way around.
+- Support drag gesture on Mac and iPad.
+
+* Capture and Materials management
 - Capture text, image, audio, video, link from other apps.
 - Use those materials in your document anytime, any where.
 - Material management center.
 
-* Tasks
+* Task Management
 - Track any paragraph by setting status to it.
 - Add date and time to arrange the task.
 - Set priority
 - Agenda to gather and manage all tasks. 
 
-* Bi-direction document link
+* Bi-direction document linking
 - Create document link, and generate bi-direction link automatically
-- You can create link direct to a paragraph
+- Paragraph level link
 
 * Document management
 - Hierarchy base document system.

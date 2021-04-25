@@ -123,6 +123,18 @@ public extension UIButton {
         self.setImage(image, for: state)
         return self
     }
+    
+    @discardableResult
+    func contentEdgeInsets(_ insets: UIEdgeInsets) -> Self {
+        self.contentEdgeInsets = insets
+        return self
+    }
+    
+    @discardableResult
+    func titleFont(_ font: UIFont) -> Self {
+        self.titleLabel?.font = font
+        return self
+    }
  }
 
 

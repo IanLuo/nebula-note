@@ -104,7 +104,6 @@ public class DocumentInfoViewController: TransitionViewController {
         self.view.addSubview(self.contentView)
         
         self.contentView.sideAnchor(for: [.top, .bottom, .right, .left], to: self.view, edgeInsets: UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0))
-//        self.contentView.sizeAnchor(width: 240)
         
         self.contentView.addSubview(self.favoriteButton)
         self.favoriteButton.sideAnchor(for: [.traling, .top], to: self.contentView, edgeInsets: UIEdgeInsets(top: Layout.edgeInsets.top, left: 0, bottom: 0, right: -Layout.edgeInsets.right), considerSafeArea: true)
@@ -113,6 +112,40 @@ public class DocumentInfoViewController: TransitionViewController {
         self.contentView.addSubview(self.helpButton)
         self.helpButton.sideAnchor(for: [.leading, .top], to: self.contentView, edgeInsets: UIEdgeInsets(top: Layout.edgeInsets.top, left: Layout.edgeInsets.left, bottom: 0, right: 0), considerSafeArea: true)
         self.helpButton.sizeAnchor(width: 44)
+        
+        let pathView = UIStackView()
+        let pathComponents = self.viewModel.url.fileRelativeToDocumentPathComponents
+        for pathComponent in pathComponents.enumerated().map({ index, path -> UIButton in
+            let button = UIButton(title: path, for: .normal)
+                .roundConer(radius: Layout.cornerRadius)
+                .backgroundImage(InterfaceTheme.Color.background2, for: .normal)
+                .titleColor(InterfaceTheme.Color.spotlight, for: .normal)
+                .titleFont(InterfaceTheme.Font.footnote)
+                .contentEdgeInsets(UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 10))
+            button.rx
+                .tap
+                .subscribe(onNext: { _ in
+                    if let url = URL.documentURL(withRelativePath: pathComponents[0...index].joined(separator: "/")) {
+                        self.dismiss(animated: true) { [weak self] in
+                            self?.viewModel.openDocument(url: url)
+                        }
+                    }
+                })
+                .disposed(by: self.disposeBag)
+            
+            return button
+        }) {
+            pathView.addArrangedSubview(UILabel(text: "/").textColor(InterfaceTheme.Color.descriptive))
+            pathView.addArrangedSubview(pathComponent)
+        }
+        
+        let pathScrollView = UIScrollView()
+        pathScrollView.addSubview(pathView)
+        pathView.allSidesAnchors(to: pathScrollView, edgeInset: 0)
+        pathScrollView.heightAnchor.constraint(equalTo: pathView.heightAnchor).isActive = true
+        
+        self.contentView.addSubview(pathScrollView)
+        self.helpButton.columnAnchor(view: pathScrollView, space: 30, alignment: .none)
         
         let exportViewController = ExportSelectViewController(exporterManager: self.viewModel.dependency.exportManager)
         exportViewController.delegate = self
@@ -123,7 +156,10 @@ public class DocumentInfoViewController: TransitionViewController {
         self.contentView.addSubview(self.publishButton)
         self.contentView.addSubview(basicInfoViewController.view)
         
-        self.favoriteButton.columnAnchor(view: basicInfoViewController.view, space: 30, alignment: [])
+        pathScrollView.leadingAnchor.constraint(equalTo: helpButton.leadingAnchor).isActive = true
+        pathScrollView.trailingAnchor.constraint(equalTo: favoriteButton.trailingAnchor).isActive = true
+        
+        pathScrollView.columnAnchor(view: basicInfoViewController.view, space: 10, alignment: [])
         
         basicInfoViewController.view.sideAnchor(for: [.left, .right], to: self.contentView, edgeInset: 0)
         

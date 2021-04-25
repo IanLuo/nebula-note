@@ -220,6 +220,12 @@ public class TabContainerViewController: UIViewController {
         return nil
     }
     
+    
+    public func isFileOpened(url: URL) -> Bool {
+        return self.openingViewControllers.map { $0.0 }
+            .contains(url.documentRelativePath)
+    }
+    
     private func viewController(for url: URL) -> DocumentEditorViewController? {
         for pair in self.openingViewControllers {
             if pair.0 == url.documentRelativePath {

@@ -72,7 +72,7 @@ public class BrowserCell: UICollectionViewCell {
     
     var actionViewController: ActionsViewController {
         let actionsViewController = ActionsViewController()
-        actionsViewController.title = L10n.Browser.Actions.title
+        actionsViewController.title = self.cellModel?.url.fileRelativeToDocumentPathComponents.joined(separator: "/")
         
         self.createNewDocumentActionItem(for: actionsViewController)
         self.createRenameActionItem(for: actionsViewController)

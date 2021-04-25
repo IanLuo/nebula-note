@@ -323,12 +323,16 @@ extension HomeCoordinator {
     }
     
     public func addOnDesktopContainerTabIfNeeded(url: URL, shouldSelect: Bool) {
-        let stack = Coordinator.createDefaultNavigationControlller()
-        let editorCoordinator = EditorCoordinator(stack: stack, dependency: self.dependency, usage: .editor(url, 0))
         
-        self.tabController.addTabs(editorCoordinator: editorCoordinator, shouldSelected: shouldSelect)
-        
-        self.addChild(editorCoordinator)
+        if self.tabController.isFileOpened(url: url) == false {
+            let stack = Coordinator.createDefaultNavigationControlller()
+            let editorCoordinator = EditorCoordinator(stack: stack, dependency: self.dependency, usage: .editor(url, 0))
+            
+            self.tabController.addTabs(editorCoordinator: editorCoordinator, shouldSelected: shouldSelect)
+            self.addChild(editorCoordinator)
+        } else {
+            self.tabController.selectTab(url: url, location: 0)
+        }
     }
 }
 
