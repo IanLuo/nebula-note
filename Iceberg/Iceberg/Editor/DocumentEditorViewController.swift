@@ -174,8 +174,8 @@ public class DocumentEditorViewController: UIViewController {
             self.addToolbarButton(title: L10n.Document.Menu.fullScreen, icon: Asset.SFSymbols.arrowUpAndDownAndArrowLeftAndRight.image.resize(upto: CGSize(width: 20, height: 20))) { [weak self] button in
                 let isHidden = self?.tabContainer?.isTabbarHidden == true
                 self?.tabContainer?.hideTabbar(!isHidden)
-                self?.viewModel.context.coordinator?.toggleEditorFullScreen()
                 self?.viewModel.dependency.globalCaptureEntryWindow?.isInFullScreenEditor.accept(!isHidden)
+                self?.viewModel.context.coordinator?.toggleEditorFullScreen()
                 self?.hideToolbar(!isHidden)
             }
             

@@ -79,7 +79,7 @@ public enum SettingsError: Error {
     }
     
     @objc public var lineHeight: CGFloat {
-        return InterfaceTheme.Font.body.xHeight
+        return InterfaceTheme.Font.body.capHeight
     }
     
     public var maxLevel: Int {

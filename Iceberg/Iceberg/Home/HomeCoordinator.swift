@@ -268,15 +268,10 @@ extension HomeCoordinator: DashboardViewControllerDelegate {
     public func toggleFullScreen() {
         let macHomeViewController = (self.viewController as? DesktopHomeViewController)
         
-        if macHomeViewController?.isLeftPartVisiable == true {
-            macHomeViewController?.hideLeftAndMiddlePart()
-        } else {
-            showAllParts()
-        }
-    }
-    
-    public func showAllParts() {
-        (self.viewController as? DesktopHomeViewController)?.toggleLeftPartVisiability(visiable: true)
+        let isFull = self.dependency.globalCaptureEntryWindow?.isInFullScreenEditor.value == true
+        
+        macHomeViewController?.toogleToolBar(visiable: !isFull)
+        macHomeViewController?.toggleLeftPartVisiability(visiable: !isFull)
     }
     
     public func toggleLeftPart() {

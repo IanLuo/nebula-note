@@ -32,11 +32,12 @@ public class Application: Coordinator {
         
         super.init(stack: navigationController, dependency: dependency)
         
+        _entranceWindow = CaptureGlobalEntranceWindow(window: window)
+        dependency.globalCaptureEntryWindow = self._entranceWindow
+        
         // init entry window for iPhone
         if isPhone {
-            _entranceWindow = CaptureGlobalEntranceWindow(window: window)
             _entranceWindow?.makeKeyAndVisible()
-            dependency.globalCaptureEntryWindow = self._entranceWindow
             _entranceWindow?.entryAction = { [weak self] in
                 self?.showCaptureEntrance()
             }

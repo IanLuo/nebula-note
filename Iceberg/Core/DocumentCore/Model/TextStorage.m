@@ -39,8 +39,8 @@ static NSMutableDictionary *attachmentMap;
 + (void)initialize {
     if ([self class] == [TextStorage class]) {
         foldingAttachment = [[NSTextAttachment alloc] init];
-        foldingAttachment.image = [[[UIImage imageNamed:@"ellipsis" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil] fillWithColor:[[InterfaceTheme Color] descriptive]] insets:UIEdgeInsetsMake(3, 5, 3, 3)];
-        foldingAttachment.bounds = CGRectMake(0, ([[SettingsAccessor shared] lineHeight] - 18) / 2, 28, 20);
+        foldingAttachment.image = [[UIImage imageNamed:@"ellipsis" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil] fillWithColor:[[InterfaceTheme Color] descriptive]];
+        foldingAttachment.bounds = CGRectMake(0, ([[SettingsAccessor shared] lineHeight] - 14) / 2, [[SettingsAccessor shared] lineHeight] + 10, [[SettingsAccessor shared] lineHeight]);
         
         linkAttachment = [[NSTextAttachment alloc] init];
         linkAttachment.image = [[UIImage imageNamed: @"link" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil] fillWithColor:[[InterfaceTheme Color]descriptive]];
@@ -51,12 +51,12 @@ static NSMutableDictionary *attachmentMap;
         documentAttachment.bounds = CGRectMake(0, -2, 11, 15);
         
         foldedAttachment = [[NSTextAttachment alloc] init];
-        foldedAttachment.image = [[[[UIImage imageNamed: @"plus" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil] fillWithColor:[[InterfaceTheme Color]spotlight]] insets:UIEdgeInsetsMake(5, 5, 5, 5)] translationWithOffset: CGPointMake(0, -3)];
-        foldedAttachment.bounds = CGRectMake(0, ([[SettingsAccessor shared] lineHeight] - 22) / 2, 24, 20);
+        foldedAttachment.image = [[[UIImage imageNamed: @"arrowtriangle.right.fill" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil] fillWithColor:[[InterfaceTheme Color]spotlight]] insets:UIEdgeInsetsMake(5, 5, 5, 14)];
+        foldedAttachment.bounds = CGRectMake(0, ([[SettingsAccessor shared] lineHeight] - 14) / 2, [[SettingsAccessor shared] lineHeight] + 9, [[SettingsAccessor shared] lineHeight]);
         
         unfoldedAttachment = [[NSTextAttachment alloc] init];
-        unfoldedAttachment.image = [[[[UIImage imageNamed: @"minus" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil] fillWithColor:[[InterfaceTheme Color] spotlight]] insets:UIEdgeInsetsMake(5, 5, 5, 5)] translationWithOffset:CGPointMake(0, -3)];
-        unfoldedAttachment.bounds = CGRectMake(0, ([[SettingsAccessor shared] lineHeight] - 20) / 2, 24, 17);
+        unfoldedAttachment.image = [[[UIImage imageNamed: @"arrowtriangle.down.fill" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil] fillWithColor:[[InterfaceTheme Color] spotlight]] insets:UIEdgeInsetsMake(5, 5, 5, 14)];
+        unfoldedAttachment.bounds = CGRectMake(0, ([[SettingsAccessor shared] lineHeight] - 14) / 2, [[SettingsAccessor shared] lineHeight] + 9, [[SettingsAccessor shared] lineHeight]);
         
         scheduleAttachment = [[NSTextAttachment alloc] init];
         scheduleAttachment.image = [[UIImage imageNamed: @"calendar.badge.clock" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil] fillWithColor:[[InterfaceTheme Color]spotlight]];

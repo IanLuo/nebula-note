@@ -60,6 +60,9 @@ extension DocumentEditorViewController: UITextViewDelegate {
                 textView.selectedRange = NSRange(location: heading.prefix.upperBound + 1, length: 0)
             }
         }
+        
+        
+        self.textView.updateCurrentLineIndicator(location: location)
     }
     
     public func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {

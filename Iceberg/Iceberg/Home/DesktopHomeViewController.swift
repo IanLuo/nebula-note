@@ -151,6 +151,18 @@ public class DesktopHomeViewController: UIViewController {
         self.toggleLeftPartVisiability(visiable: false)
     }
     
+    public func toogleToolBar(visiable: Bool) {
+        if visiable {
+            self.toolBar.constraint(for: .height)?.constant = 100
+        } else {
+            self.toolBar.constraint(for: .height)?.constant = 0
+        }
+        
+        UIView.animate(withDuration: 0.25) {
+            self.view.layoutIfNeeded()
+        }
+    }
+    
     private func setupLeftPart() {
         let nav = Application.createDefaultNavigationControlller(root: self.dashboardViewController, transparentBar: true)
         self.addChildViewController(nav)

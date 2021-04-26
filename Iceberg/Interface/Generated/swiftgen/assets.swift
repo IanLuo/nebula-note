@@ -57,6 +57,8 @@ public enum Asset {
     public static let arrowUpToLine = ImageAsset(name: "arrow.up.to.line")
     public static let arrowUturnLeft = ImageAsset(name: "arrow.uturn.left")
     public static let arrowUturnRight = ImageAsset(name: "arrow.uturn.right")
+    public static let arrowtriangleDownFill = ImageAsset(name: "arrowtriangle.down.fill")
+    public static let arrowtriangleRightFill = ImageAsset(name: "arrowtriangle.right.fill")
     public static let bell = ImageAsset(name: "bell")
     public static let bellSlash = ImageAsset(name: "bell.slash")
     public static let bold = ImageAsset(name: "bold")

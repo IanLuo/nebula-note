@@ -385,7 +385,7 @@ extension DocumentEditorViewController {
         }
     }
     
-    public func showParagraphActions(at location: Int) {
+    public func showParagraphActions(at location: Int, point: CGPoint? = nil) {
         let actionsController = ActionsViewController()
         actionsController.title = L10n.Document.Edit.Action.Paragraph.title
         
@@ -489,7 +489,9 @@ extension DocumentEditorViewController {
             viewController.dismiss(animated: true)
         }
         
-        if let location = self.textView.rect(forStringRange: self.textView.selectedRange) {
+        if let passedInPoint = point {
+            actionsController.present(from: self, at: self.textView, location: passedInPoint)
+        } else if let location = self.textView.rect(forStringRange: self.textView.selectedRange) {
             actionsController.present(from: self, at: self.textView, location: location.center)
         } else if let headingRange = self.viewModel.heading(at: location)?.range, let location = self.textView.rect(forStringRange: headingRange){
             actionsController.present(from: self, at: self.textView, location: location.center)

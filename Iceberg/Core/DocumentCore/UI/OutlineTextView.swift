@@ -22,6 +22,7 @@ public protocol OutlineTextViewDelegate: class {
     func didTapOnPriority(textView: UITextView, characterIndex: Int, priority: String, point: CGPoint)
     func didTapOnAttachment(textView: UITextView, characterIndex: Int, type: String, value: String, point: CGPoint)
     func didTapOnTitle(at: CGPoint)
+    func didTapOnActions(textView: UITextView, characterIndex: Int, point: CGPoint)
 }
 
 public class OutlineTextView: UITextView, UIScrollViewDelegate {
@@ -30,7 +31,8 @@ public class OutlineTextView: UITextView, UIScrollViewDelegate {
     private let disposeBag = DisposeBag()
     
     private let titleLabel: UILabel = UILabel().numberOfLines(0)
-        
+    private lazy var currentLineIndicator = CurrentLineIndicator()
+    
     public override init(frame: CGRect, textContainer: NSTextContainer?) {
         super.init(frame: frame, textContainer: textContainer)
         self.setup()
@@ -63,6 +65,8 @@ public class OutlineTextView: UITextView, UIScrollViewDelegate {
         if isMac {
             self.smartQuotesType = .no
         }
+        
+        self.addSubview(self.currentLineIndicator)
         
         self.interface { (me, interface) in
             let textView = me as! OutlineTextView
@@ -100,6 +104,13 @@ public class OutlineTextView: UITextView, UIScrollViewDelegate {
         if !isMac {
             self.addGestureRecognizer(self.tap)
         }
+        
+        self.currentLineIndicator.actionButton.rx.tap.subscribe(onNext: { [weak self] in
+            guard let strongSelf = self else { return }
+            strongSelf.outlineDelegate?.didTapOnActions(textView: strongSelf,
+                                                        characterIndex: strongSelf.selectedRange.location,
+                                                        point: strongSelf.currentLineIndicator.actionButton.frame.origin)
+        }).disposed(by: self.disposeBag)
     }
     
     public override func layoutSubviews() {
@@ -170,11 +181,6 @@ public class OutlineTextView: UITextView, UIScrollViewDelegate {
     
     @objc private func tapped(location: CGPoint, event: UIEvent?) -> Bool {
 
-        // only for mac
-        if isMac {
-            guard let event = event, event.type == .touches else { return true }
-        }
-        
         // handle multiple entrance
         guard location.x != lastTap.0.x || (CFAbsoluteTimeGetCurrent() - lastTap.2 > 0.5) else { return lastTap.1 }
         
@@ -183,6 +189,20 @@ public class OutlineTextView: UITextView, UIScrollViewDelegate {
                                                                in: self.textContainer,
                                                                fractionOfDistanceBetweenInsertionPoints: &fraction)
         
+        // only for mac
+        if isMac {
+            guard let event = event, event.type == .touches else {
+                return true
+            }
+        }
+        
+        // check if the user tapped the action button, if so, ignore the tap
+        // the location checking the action button, considers the edge insets of the text container
+        if self.currentLineIndicator.actionButton
+            .convert(self.currentLineIndicator.actionButton.frame, to: self)
+            .applying(CGAffineTransform(translationX: -self.textContainerInset.left, y: -self.textContainerInset.top)).contains(location) {
+            return true
+        }
         
         // check if the character is with range of all characters
         guard isPointInBorder(location, self.characterBorder) else { return true }
@@ -281,6 +301,68 @@ public class OutlineTextView: UITextView, UIScrollViewDelegate {
             }
         } completion: { _ in
             view.removeFromSuperview()
+        }
+    }
+    
+    public override func becomeFirstResponder() -> Bool {
+        let result = super.becomeFirstResponder()
+        self.currentLineIndicator.alpha = 1
+        return result
+    }
+    
+    public override func resignFirstResponder() -> Bool {
+        let result = super.resignFirstResponder()
+        self.currentLineIndicator.alpha = 0
+        return result
+    }
+    
+    public func updateCurrentLineIndicator(location: Int) {
+        guard self.currentLineIndicator.alpha == 1 else { return }
+        
+        var effectiveRange: NSRange = NSRange(location: 0, length: 0)
+        var rect = self.layoutManager.lineFragmentRect(forGlyphAt: min(location, self.text.count - 1), effectiveRange: &effectiveRange)
+        
+        rect.origin.y += self.textContainerInset.top
+        let font = (self.textStorage.attribute(NSAttributedString.Key.font, at: location, longestEffectiveRange: nil, in: effectiveRange) as? UIFont) ?? self.font
+        let paragraph = self.textStorage.attribute(NSAttributedString.Key.paragraphStyle, at: location, longestEffectiveRange: nil, in: effectiveRange) as? NSParagraphStyle
+        
+        rect.origin.y -= (rect.height - (font?.lineHeight ?? 0)) / 2
+        currentLineIndicator.frame = rect
+        
+        var buttonRect = currentLineIndicator.actionButton.frame
+        buttonRect.origin.x = (paragraph?.headIndent ?? 0) - currentLineIndicator.actionButton.bounds.width
+
+        currentLineIndicator.actionButton.frame = buttonRect
+    }
+}
+
+private class CurrentLineIndicator: UIView {
+    let actionButton = UIButton()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        actionButton.interface { (me, theme) in
+            let button = me as! UIButton
+            button.setImage(Asset.SFSymbols.ellipsis.image.fill(color: theme.color.spotlight), for: .normal)
+            button.backgroundColor = theme.color.background1
+        }
+        
+        self.addSubview(actionButton)
+        actionButton.sideAnchor(for: [.leading, .top, .bottom], to: self, edgeInset: 0)
+        actionButton.sizeAnchor(width: 30)
+        
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("shouldn't be here")
+    }
+    
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        if self.actionButton.frame.contains(point) {
+            return actionButton
+        } else {
+            return superview
         }
     }
 }

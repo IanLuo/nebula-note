@@ -14,6 +14,10 @@ import CoreLocation
 import MapKit
 
 extension DocumentEditorViewController: OutlineTextViewDelegate {
+    public func didTapOnActions(textView: UITextView, characterIndex: Int, point: CGPoint) {
+        self.showParagraphActions(at: characterIndex, point: point) 
+    }
+    
     public func didTapOnAttachment(textView: UITextView, characterIndex: Int, type: String, value: String, point: CGPoint) {
         self.viewModel.dependency.attachmentManager.attachment(with: value, completion: { [weak self] attachment in
             self?._showAttachmentView(attachment: attachment, atCharactor: characterIndex)
