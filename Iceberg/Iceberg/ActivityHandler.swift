@@ -10,7 +10,6 @@ import Foundation
 import Core
 import RxSwift
 import Interface
-import PKHUD
 
 public class ActivityHandler {
     private let disposeBag = DisposeBag()
@@ -63,8 +62,8 @@ public class ActivityHandler {
     
     private func handleCapture(application: Application, kind: Attachment.Kind) {
         application.topCoordinator?.showAttachmentPicker(kind: kind, at: UIApplication.shared.windows.first, location: nil, complete: { [unowned application] attachmentId in
-            application.dependency.captureService.save(key: attachmentId) {
-                HUD.flash(HUDContentType.success, delay: 1)
+            application.dependency.captureService.save(key: attachmentId) { [application] in
+                application.viewController?.toastSuccess()
             }
         }, cancel: {})
     }

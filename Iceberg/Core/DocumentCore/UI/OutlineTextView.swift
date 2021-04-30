@@ -75,7 +75,7 @@ public class OutlineTextView: UITextView, UIScrollViewDelegate {
             textView.typingAttributes = [NSAttributedString.Key.font: interface.font.body,
                                      NSAttributedString.Key.foregroundColor: interface.color.interactive]
             
-            textView.titleLabel.textColor = interface.color.interactive
+            textView.titleLabel.textColor = interface.color.spotlight
             textView.titleLabel.font = UIFont.boldSystemFont(ofSize: 30)
             
             // work around for cursor coloring on mac
@@ -142,7 +142,7 @@ public class OutlineTextView: UITextView, UIScrollViewDelegate {
         let size = self.titleLabel.sizeThatFits(CGSize(width: width,
                                                        height: CGFloat.greatestFiniteMagnitude))
         let edgeContentSize = self.titleLabel.sizeThatFits(size)
-        self.textContainerInset = UIEdgeInsets(top: edgeContentSize.height + 40, left: 0, bottom: 0, right: 0)
+        self.textContainerInset = UIEdgeInsets(top: edgeContentSize.height + 40, left: 30, bottom: 0, right: 0)
         
         var frame = self.titleLabel.frame
         frame.size = edgeContentSize
@@ -318,20 +318,20 @@ public class OutlineTextView: UITextView, UIScrollViewDelegate {
     
     public func updateCurrentLineIndicator(location: Int) {
         guard self.currentLineIndicator.alpha == 1 else { return }
+        guard self.text.count > 0 else { return }
         
-        var effectiveRange: NSRange = NSRange(location: 0, length: 0)
-        var rect = self.layoutManager.lineFragmentRect(forGlyphAt: min(location, self.text.count - 1), effectiveRange: &effectiveRange)
+        let location = max(0, min(location, self.text.count - 1)) // incase the cursor is at the end, which is beyong de text length
+        var rect = self.layoutManager.lineFragmentRect(forGlyphAt: location, effectiveRange: nil)
         
         rect.origin.y += self.textContainerInset.top
-        let font = (self.textStorage.attribute(NSAttributedString.Key.font, at: location, longestEffectiveRange: nil, in: effectiveRange) as? UIFont) ?? self.font
-        let paragraph = self.textStorage.attribute(NSAttributedString.Key.paragraphStyle, at: location, longestEffectiveRange: nil, in: effectiveRange) as? NSParagraphStyle
+        let font = (self.textStorage.attribute(NSAttributedString.Key.font, at: location, effectiveRange: nil) as? UIFont) ?? self.font
+        let paragraph = self.textStorage.attribute(NSAttributedString.Key.paragraphStyle, at: location, effectiveRange: nil) as? NSParagraphStyle
         
-        rect.origin.y -= (rect.height - (font?.lineHeight ?? 0)) / 2
+        rect.origin.y -= (rect.height - (font?.capHeight ?? 0) - 10) / 2
         currentLineIndicator.frame = rect
         
         var buttonRect = currentLineIndicator.actionButton.frame
-        buttonRect.origin.x = (paragraph?.headIndent ?? 0) - currentLineIndicator.actionButton.bounds.width
-
+        buttonRect.origin.x = (paragraph?.firstLineHeadIndent ?? 0) + 5
         currentLineIndicator.actionButton.frame = buttonRect
     }
 }
@@ -344,14 +344,14 @@ private class CurrentLineIndicator: UIView {
         
         actionButton.interface { (me, theme) in
             let button = me as! UIButton
-            button.setImage(Asset.SFSymbols.ellipsis.image.fill(color: theme.color.spotlight), for: .normal)
-            button.backgroundColor = theme.color.background1
+            button.setImage(Asset.SFSymbols.paragraph.image.fill(color: theme.color.spotlight).resize(upto: CGSize(width: 20, height: 20)), for: .normal)
         }
         
-        self.addSubview(actionButton)
-        actionButton.sideAnchor(for: [.leading, .top, .bottom], to: self, edgeInset: 0)
-        actionButton.sizeAnchor(width: 30)
+        actionButton.imageView?.contentMode = .center
         
+        self.addSubview(actionButton)
+        actionButton.size(width: 30, height: 30)
+        actionButton.align(to: self, direction: .left, position: .head, inset: 0)
     }
     
     required init?(coder: NSCoder) {

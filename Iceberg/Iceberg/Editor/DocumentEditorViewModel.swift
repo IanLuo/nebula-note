@@ -134,8 +134,8 @@ public class DocumentEditorViewModel: ViewModelProtocol {
                 }
             }
         } else {
-            self.editorService.revertContent() { _ in
-                self.editorService.syncFoldingStatus()
+            self.editorService.revertContent() { [weak self] _ in
+                self?.editorService.syncFoldingStatus()
             }
         }
     }
@@ -447,12 +447,10 @@ public class DocumentEditorViewModel: ViewModelProtocol {
     }
     
     public func unfold(location: Int) {
-        for heading in self.headings {
-            if heading.paragraphWithSubRange.contains(location) || heading.range.location == location {
-                self.editorService.markFoldingState(heading: heading, isFolded: false)
-            }
+        if let heading = self.heading(at: location) {
+            self.editorService.markFoldingState(heading: heading, isFolded: false)
         }
-        
+
         self.editorService.syncFoldingStatus()
     }
     

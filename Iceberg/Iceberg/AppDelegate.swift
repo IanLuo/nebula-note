@@ -12,7 +12,7 @@ import RxSwift
 import Interface
 
 //#if os(iOS)
-import Firebase
+//import Firebase
 //#endif
 #if DEBUG
 //import ShowTime
@@ -31,7 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
 //        if !isMac {
-            FirebaseApp.configure()
+            //FirebaseApp.configure()
 //        }
         #if DEBUG
 //        ShowTime.enabled = .never

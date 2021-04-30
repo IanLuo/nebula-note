@@ -6,41 +6,42 @@ PODS:
   - Differentiator (4.0.1)
   - Doorbell (0.2.5)
   - Drawsana (0.12.0)
-  - Firebase/CoreOnly (7.4.0):
-    - FirebaseCore (= 7.4.0)
-  - Firebase/Crashlytics (7.4.0):
+  - Firebase/CoreOnly (7.11.0):
+    - FirebaseCore (= 7.11.0)
+  - Firebase/Crashlytics (7.11.0):
     - Firebase/CoreOnly
-    - FirebaseCrashlytics (~> 7.4.0)
-  - FirebaseCore (7.4.0):
+    - FirebaseCrashlytics (~> 7.11.0)
+  - FirebaseCore (7.11.0):
     - FirebaseCoreDiagnostics (~> 7.4)
     - GoogleUtilities/Environment (~> 7.0)
     - GoogleUtilities/Logger (~> 7.0)
-  - FirebaseCoreDiagnostics (7.4.0):
-    - GoogleDataTransport (~> 8.0)
+  - FirebaseCoreDiagnostics (7.11.0):
+    - GoogleDataTransport (~> 8.4)
     - GoogleUtilities/Environment (~> 7.0)
     - GoogleUtilities/Logger (~> 7.0)
-    - nanopb (~> 2.30907.0)
-  - FirebaseCrashlytics (7.4.0):
+    - nanopb (~> 2.30908.0)
+  - FirebaseCrashlytics (7.11.0):
     - FirebaseCore (~> 7.0)
     - FirebaseInstallations (~> 7.0)
-    - GoogleDataTransport (~> 8.0)
-    - nanopb (~> 2.30907.0)
+    - GoogleDataTransport (~> 8.4)
+    - nanopb (~> 2.30908.0)
     - PromisesObjC (~> 1.2)
-  - FirebaseInstallations (7.4.0):
+  - FirebaseInstallations (7.11.0):
     - FirebaseCore (~> 7.0)
     - GoogleUtilities/Environment (~> 7.0)
     - GoogleUtilities/UserDefaults (~> 7.0)
     - PromisesObjC (~> 1.2)
-  - GoogleDataTransport (8.2.0):
-    - nanopb (~> 2.30907.0)
-  - GoogleUtilities/Environment (7.2.0):
+  - GoogleDataTransport (8.4.0):
+    - GoogleUtilities/Environment (~> 7.2)
+    - nanopb (~> 2.30908.0)
     - PromisesObjC (~> 1.2)
-  - GoogleUtilities/Logger (7.2.0):
+  - GoogleUtilities/Environment (7.4.0):
+    - PromisesObjC (~> 1.2)
+  - GoogleUtilities/Logger (7.4.0):
     - GoogleUtilities/Environment
-  - GoogleUtilities/UserDefaults (7.2.0):
+  - GoogleUtilities/UserDefaults (7.4.0):
     - GoogleUtilities/Logger
   - Haptico (1.0.2)
-  - InterposeKit (0.0.1)
   - JAMSVGImage (1.6.1)
   - KDCalendar (1.6.5)
   - MHWebViewController (1.1.2)
@@ -50,11 +51,11 @@ PODS:
   - MSGraphClientSDK/Authentication (1.0.0)
   - MSGraphClientSDK/Common (1.0.0):
     - MSGraphClientSDK/Authentication
-  - nanopb (2.30907.0):
-    - nanopb/decode (= 2.30907.0)
-    - nanopb/encode (= 2.30907.0)
-  - nanopb/decode (2.30907.0)
-  - nanopb/encode (2.30907.0)
+  - nanopb (2.30908.0):
+    - nanopb/decode (= 2.30908.0)
+    - nanopb/encode (= 2.30908.0)
+  - nanopb/decode (2.30908.0)
+  - nanopb/encode (2.30908.0)
   - OAuthSwift (2.1.0)
   - PKHUD (5.3.0)
   - PromisesObjC (1.2.12)
@@ -80,7 +81,6 @@ DEPENDENCIES:
   - Drawsana
   - Firebase/Crashlytics
   - Haptico
-  - InterposeKit
   - JAMSVGImage
   - KDCalendar (~> 1.6.5)
   - MHWebViewController
@@ -110,7 +110,6 @@ SPEC REPOS:
     - GoogleDataTransport
     - GoogleUtilities
     - Haptico
-    - InterposeKit
     - JAMSVGImage
     - KDCalendar
     - MHWebViewController
@@ -158,20 +157,19 @@ SPEC CHECKSUMS:
   Differentiator: 886080237d9f87f322641dedbc5be257061b0602
   Doorbell: 4de282e483060cfb80b788e761eda35ec5c7cf69
   Drawsana: 6e69c064ffb859fef968a0a50d3481849a48941c
-  Firebase: 09fb40287b6dfc8ee65f726fa0b788719d3f2a07
-  FirebaseCore: 99c06e5a1e8d6952e75cb1f0a6d0b23c0f5ccdcf
-  FirebaseCoreDiagnostics: 3770093ac4f2be4590fa03cfa1d3a6e5602d4557
-  FirebaseCrashlytics: ef6b0947ab6819b5cb335f8c0a7677cd57d544c5
-  FirebaseInstallations: 30646fc9a61c6f4ee3cd7a8b7231721842b40c95
-  GoogleDataTransport: 1024b1a4dfbd7a0e92cb20d7e0a6f1fb66b449a4
-  GoogleUtilities: d866834472f1324d080496bc67ab3ce5d0d46027
+  Firebase: c121feb35e4126c0b355e3313fa9b487d47319fd
+  FirebaseCore: 907447d8917a4d3eb0cce2829c5a0ad21d90b432
+  FirebaseCoreDiagnostics: 68ad972f99206cef818230f3f3179d52ccfb7f8c
+  FirebaseCrashlytics: 272b675aa9d1e9bae1f9e1449fcc1f2cf6042806
+  FirebaseInstallations: a58d4f72ec5861840b84df489f2668d970df558a
+  GoogleDataTransport: cd9db2180fcecd8da1b561aea31e3e56cf834aa7
+  GoogleUtilities: 284cddc7fffc14ae1907efb6f78ab95c1fccaedc
   Haptico: ce38d1f993f3a0df9a6d7795a9dd2849648aa9d1
-  InterposeKit: 0cd0449bc2f08a94a14fa712168ed748a0f5445f
   JAMSVGImage: 7aa966a310ddf5f53de295d5ce5b930df8ff1eb2
   KDCalendar: 15e74f37bd3d206bf7549c594fd08e0347c276f4
   MHWebViewController: bc0c4be723b798260ccec01ce6b9e86c6543741e
   MSGraphClientSDK: ffc07a58a838e0702c7bf2a856367035d4a335d7
-  nanopb: 59221d7f958fb711001e6a449489542d92ae113e
+  nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
   OAuthSwift: b65415797d860d0a25c7d178250cfb8cec4b83bf
   PKHUD: 98f3e4bc904b9c916f1c5bb6d765365b5357291b
   PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
@@ -184,6 +182,6 @@ SPEC CHECKSUMS:
   SwiftyDropbox: 7e864f1e826bfc1b9b53a5edccef6c8d5fbe9e3b
   SwiftyStoreKit: 555996ed1159bb57209e7ec251b2a775d4434a69
 
-PODFILE CHECKSUM: 1796ffb0b3974efff97f8113c0e4cd0117071b5e
+PODFILE CHECKSUM: 0403c9febb9f0e622af4e043acef753a167a9f9d
 
 COCOAPODS: 1.10.0

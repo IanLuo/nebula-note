@@ -9,7 +9,6 @@
 import Foundation
 import UIKit
 import Core
-import PKHUD
 import RxSwift
 import RxCocoa
 import Interface
@@ -286,7 +285,7 @@ extension Coordinator: CaptureCoordinatorDelegate {
                 self.showAttachmentPicker(kind: attachmentKind, at: self.fromView, location: self.fromLocation, complete: { [weak self] attachmentId in
                     coordinator.addAttachment(attachmentId: attachmentId) {
                         DispatchQueue.runOnMainQueueSafely {
-                            HUD.flash(HUDContentType.success, delay: 1)
+                            self?.viewController?.toastSuccess()
                             self?.dependency.eventObserver.emit(NewCaptureAddedEvent(attachmentId: attachmentId, kind: attachmentKind.rawValue))
                         }
                     }

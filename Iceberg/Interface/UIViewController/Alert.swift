@@ -8,7 +8,6 @@
 
 import Foundation
 import UIKit
-import PKHUD
 
 extension UIViewController {
     public func showAlert(title: String, message: String) {
@@ -18,10 +17,20 @@ extension UIViewController {
     }
     
     public func toastError(title: String, subTitle: String? = nil) {
-        HUD.flash(HUDContentType.labeledError(title: title, subtitle: subTitle), delay: 1.5)
+        let alertController = UIAlertController(title: title, message: subTitle, preferredStyle: .alert)
+        self.present(alertController, animated: true, completion: nil)
+        
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.5) {
+            alertController.dismiss(animated: true)
+        }
     }
     
     public func toastSuccess() {
-        HUD.flash(HUDContentType.success)
+        let alertController = UIAlertController(title: "Success", message: nil, preferredStyle: .alert)
+        self.present(alertController, animated: true, completion: nil)
+        
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.5) {
+            alertController.dismiss(animated: true)
+        }
     }
 }

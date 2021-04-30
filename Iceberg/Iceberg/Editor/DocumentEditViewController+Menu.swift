@@ -389,15 +389,6 @@ extension DocumentEditorViewController {
         let actionsController = ActionsViewController()
         actionsController.title = L10n.Document.Edit.Action.Paragraph.title
         
-        let isFolded = self.viewModel.isSectionFolded(at: location)
-        let foldTitle = isFolded ? L10n.Document.Heading.unfold : L10n.Document.Heading.fold
-
-        actionsController.addAction(icon: nil, title: foldTitle) { viewController in
-            viewController.dismiss(animated: true, completion: {
-                self.viewModel.foldOrUnfold(location: location)
-            })
-        }
-        
         actionsController.addActionAutoDismiss(icon: nil, title: L10n.Key.Command.foldOthersExcpet) {
             self.viewModel.foldOtherHeadings(except: self.textView.selectedRange.location)
         }
@@ -485,96 +476,10 @@ extension DocumentEditorViewController {
             }
         }
         
-        actionsController.setCancel { viewController in
-            viewController.dismiss(animated: true)
-        }
-        
-        if let passedInPoint = point {
-            actionsController.present(from: self, at: self.textView, location: passedInPoint)
-        } else if let location = self.textView.rect(forStringRange: self.textView.selectedRange) {
-            actionsController.present(from: self, at: self.textView, location: location.center)
-        } else if let headingRange = self.viewModel.heading(at: location)?.range, let location = self.textView.rect(forStringRange: headingRange){
-            actionsController.present(from: self, at: self.textView, location: location.center)
-        } else {
-            actionsController.present(from: self)
-        }
-    }
-    
-    public func showHeadingActions(at location: Int, isHeading: Bool) {
-        let actionsController = ActionsViewController()
-        actionsController.title = L10n.Document.Heading.title
-        
         actionsController.addAction(icon: nil, title: L10n.Document.Heading.addNewEntryAtBegining) { viewController in
             viewController.dismiss(animated: true) {
                 let result = self.viewModel.performAction(EditAction.addSameLevelHeadingAbove(0), textView: self.textView)
                 self.textView.selectedRange = NSRange(location: result.range!.upperBound - 1, length: 0)
-            }
-        }
-        
-        if isHeading {
-            actionsController.addAction(icon: Asset.SFSymbols.arrowRight.image.fill(color: InterfaceTheme.Color.interactive), title: L10n.Document.Edit.Heading.convert) { viewController in
-                viewController.dismiss(animated: true, completion: {
-                    let convertHeadingAction = ActionsViewController()
-                    convertHeadingAction.title = L10n.Document.Edit.Heading.convert
-                    
-                    convertHeadingAction.addActionAutoDismiss(icon: nil, title: L10n.Document.Heading.toParagraphContent) {
-                        let lastSelectedRange = self.textView.selectedRange
-                        let result = self.viewModel.performAction(EditAction.convertHeadingToParagraph(location), textView: self.textView)
-                        self.textView.selectedRange = lastSelectedRange.offset(result.delta)
-                    }
-                    
-                    convertHeadingAction.addActionAutoDismiss(icon: nil, title: L10n.Document.Edit.Heading.Convert._1) {
-                        let lastSelectedRange = self.textView.selectedRange
-                        let result = self.viewModel.performAction(EditAction.changeHeadingLevel(location, 1), textView: self.textView)
-                        self.textView.selectedRange = lastSelectedRange.offset(result.delta)
-                    }
-                    
-                    convertHeadingAction.addActionAutoDismiss(icon: nil, title: L10n.Document.Edit.Heading.Convert._2) {
-                        let lastSelectedRange = self.textView.selectedRange
-                        let result = self.viewModel.performAction(EditAction.changeHeadingLevel(location, 2), textView: self.textView)
-                        self.textView.selectedRange = lastSelectedRange.offset(result.delta)
-                    }
-                    
-                    convertHeadingAction.addActionAutoDismiss(icon: nil, title: L10n.Document.Edit.Heading.Convert._3) {
-                        let lastSelectedRange = self.textView.selectedRange
-                        let result = self.viewModel.performAction(EditAction.changeHeadingLevel(location, 3), textView: self.textView)
-                        self.textView.selectedRange = lastSelectedRange.offset(result.delta)
-                    }
-                    
-                    convertHeadingAction.addActionAutoDismiss(icon: nil, title: L10n.Document.Edit.Heading.Convert._4) {
-                        let lastSelectedRange = self.textView.selectedRange
-                        let result = self.viewModel.performAction(EditAction.changeHeadingLevel(location, 4), textView: self.textView)
-                        self.textView.selectedRange = lastSelectedRange.offset(result.delta)
-                    }
-                    
-                    convertHeadingAction.addActionAutoDismiss(icon: nil, title: L10n.Document.Edit.Heading.Convert._5) {
-                        let lastSelectedRange = self.textView.selectedRange
-                        let result = self.viewModel.performAction(EditAction.changeHeadingLevel(location, 5), textView: self.textView)
-                        self.textView.selectedRange = lastSelectedRange.offset(result.delta)
-                    }
-                    
-                    convertHeadingAction.addActionAutoDismiss(icon: nil, title: L10n.Document.Edit.Heading.Convert._6) {
-                        let lastSelectedRange = self.textView.selectedRange
-                        let result = self.viewModel.performAction(EditAction.changeHeadingLevel(location, 6), textView: self.textView)
-                        self.textView.selectedRange = lastSelectedRange.offset(result.delta)
-                    }
-                    
-                    if let location = self.textView.rect(forStringRange: self.textView.selectedRange) {
-                        convertHeadingAction.present(from: self, at: self.textView, location: location.center)
-                    } else if let headingRange = self.viewModel.heading(at: location)?.range, let location = self.textView.rect(forStringRange: headingRange){
-                        convertHeadingAction.present(from: self, at: self.textView, location: location.center)
-                    } else {
-                        convertHeadingAction.present(from: self)
-                    }
-                })
-            }
-        } else {
-            actionsController.addAction(icon: nil, title: L10n.Document.Heading.toHeading) { viewController in
-                viewController.dismiss(animated: true, completion: {
-                    let lastSelectedRange = self.textView.selectedRange
-                    let result = self.viewModel.performAction(EditAction.convertToHeading(location), textView: self.textView)
-                    self.textView.selectedRange = lastSelectedRange.offset(result.delta)
-                })
             }
         }
         
@@ -603,6 +508,77 @@ extension DocumentEditorViewController {
             viewController.dismiss(animated: true) {
                 let result = self.viewModel.performAction(EditAction.addHeadingAtBottom, textView: self.textView)
                 self.textView.selectedRange = NSRange(location: result.range!.upperBound - 1, length: 0) // move one position back, so user can start type heading text
+            }
+        }
+        
+        actionsController.setCancel { viewController in
+            viewController.dismiss(animated: true)
+        }
+        
+        if let passedInPoint = point {
+            actionsController.present(from: self, at: self.textView, location: passedInPoint)
+        } else if let location = self.textView.rect(forStringRange: self.textView.selectedRange) {
+            actionsController.present(from: self, at: self.textView, location: location.center)
+        } else if let headingRange = self.viewModel.heading(at: location)?.range, let location = self.textView.rect(forStringRange: headingRange){
+            actionsController.present(from: self, at: self.textView, location: location.center)
+        } else {
+            actionsController.present(from: self)
+        }
+    }
+    
+    public func showHeadingActions(at location: Int, isHeading: Bool) {
+        let actionsController = ActionsViewController()
+        actionsController.title = L10n.Document.Heading.title
+        
+        if isHeading {
+            actionsController.addActionAutoDismiss(icon: nil, title: L10n.Document.Heading.toParagraphContent) {
+                let lastSelectedRange = self.textView.selectedRange
+                let result = self.viewModel.performAction(EditAction.convertHeadingToParagraph(location), textView: self.textView)
+                self.textView.selectedRange = lastSelectedRange.offset(result.delta)
+            }
+            
+            actionsController.addActionAutoDismiss(icon: nil, title: L10n.Document.Edit.Heading.Convert._1) {
+                let lastSelectedRange = self.textView.selectedRange
+                let result = self.viewModel.performAction(EditAction.changeHeadingLevel(location, 1), textView: self.textView)
+                self.textView.selectedRange = lastSelectedRange.offset(result.delta)
+            }
+            
+            actionsController.addActionAutoDismiss(icon: nil, title: L10n.Document.Edit.Heading.Convert._2) {
+                let lastSelectedRange = self.textView.selectedRange
+                let result = self.viewModel.performAction(EditAction.changeHeadingLevel(location, 2), textView: self.textView)
+                self.textView.selectedRange = lastSelectedRange.offset(result.delta)
+            }
+            
+            actionsController.addActionAutoDismiss(icon: nil, title: L10n.Document.Edit.Heading.Convert._3) {
+                let lastSelectedRange = self.textView.selectedRange
+                let result = self.viewModel.performAction(EditAction.changeHeadingLevel(location, 3), textView: self.textView)
+                self.textView.selectedRange = lastSelectedRange.offset(result.delta)
+            }
+            
+            actionsController.addActionAutoDismiss(icon: nil, title: L10n.Document.Edit.Heading.Convert._4) {
+                let lastSelectedRange = self.textView.selectedRange
+                let result = self.viewModel.performAction(EditAction.changeHeadingLevel(location, 4), textView: self.textView)
+                self.textView.selectedRange = lastSelectedRange.offset(result.delta)
+            }
+            
+            actionsController.addActionAutoDismiss(icon: nil, title: L10n.Document.Edit.Heading.Convert._5) {
+                let lastSelectedRange = self.textView.selectedRange
+                let result = self.viewModel.performAction(EditAction.changeHeadingLevel(location, 5), textView: self.textView)
+                self.textView.selectedRange = lastSelectedRange.offset(result.delta)
+            }
+            
+            actionsController.addActionAutoDismiss(icon: nil, title: L10n.Document.Edit.Heading.Convert._6) {
+                let lastSelectedRange = self.textView.selectedRange
+                let result = self.viewModel.performAction(EditAction.changeHeadingLevel(location, 6), textView: self.textView)
+                self.textView.selectedRange = lastSelectedRange.offset(result.delta)
+            }
+        } else {
+            actionsController.addAction(icon: nil, title: L10n.Document.Heading.toHeading) { viewController in
+                viewController.dismiss(animated: true, completion: {
+                    let lastSelectedRange = self.textView.selectedRange
+                    let result = self.viewModel.performAction(EditAction.convertToHeading(location), textView: self.textView)
+                    self.textView.selectedRange = lastSelectedRange.offset(result.delta)
+                })
             }
         }
         

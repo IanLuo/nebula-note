@@ -318,7 +318,7 @@ public class FoldingAndUnfoldingCommand: DocumentContentCommand {
         
         textStorage.setAttributeForHeading(heading, isFolded: false)
         
-        for subHeading in textStorage.subheadings(of: heading) {
+        for subHeading in textStorage.firstLevelSubheadings(of: heading) {
             // rerender all sub heading headers
             subHeading.needsRender = true
             
@@ -394,7 +394,7 @@ public class UnfoldToLocationCommand: FoldingAndUnfoldingCommand {
         textStorage.beginEditing()
         
         for heading in self.textStorage.headingTokens {
-            if heading.contentWithSubHeadingsRange.contains(self.location) || heading.range.location == self.location {
+            if heading.contentWithFirstLevelSubHeadingsRange.contains(self.location) || heading.range.location == self.location {
                 super._markUnfold(heading: heading, textStorage: self.textStorage)
             }
         }
