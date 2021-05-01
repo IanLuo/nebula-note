@@ -47,6 +47,7 @@ extension UIView {
             convenience init(hoverColor: UIColor) {
                 self.init(frame: .zero)
                 self.backgroundColor = hoverColor
+                self.isUserInteractionEnabled = false
             }
         }
         

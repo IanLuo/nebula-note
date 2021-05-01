@@ -532,7 +532,7 @@ extension DocumentEditorViewController: DocumentEditViewModelDelegate {
     internal func scrollTo(location: Int, shouldScrollToZero: Bool = false) {
         let moveToLocationAndFlash: (Int) -> Void = { location in
             if !self.textView.isFirstResponder {
-                self.textView.becomeFirstResponder()
+                _ = self.textView.becomeFirstResponder()
             }
             
             self.textView.selectedRange = NSRange(location: location, length: 0)
@@ -554,6 +554,8 @@ extension DocumentEditorViewController: DocumentEditViewModelDelegate {
                 moveToLocationAndFlash(location)
             }
         }
+        
+        self.textView.updateCurrentLineIndicator(location: location)
     }
     
     public func updateHeadingInfo(heading: HeadingToken?) {

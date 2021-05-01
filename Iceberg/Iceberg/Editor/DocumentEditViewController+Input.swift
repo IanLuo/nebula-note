@@ -87,17 +87,9 @@ extension DocumentEditorViewController: UITextViewDelegate {
         
         
         /// handle inupt at end of folded paragraph 1 -->
-        let lastPosition = range.location - 1
-        if let heading = self.viewModel.heading(at: lastPosition) {
-            var paragraphContentRange: NSRange = heading.contentWithSubHeadingsRange
-            if paragraphContentRange.upperBound != textView.text.nsstring.length {
-                paragraphContentRange = paragraphContentRange.moveRightBound(by: -1)
-            }
-            
-            if paragraphContentRange.length > 0
-                && paragraphContentRange.upperBound == range.location
-                && self.viewModel.foldedRange(at: lastPosition) != nil {
-                self.viewModel.unfold(location: lastPosition)
+        if let heading = self.viewModel.heading(at: range.location) {
+            if self.viewModel.foldedRange(at: heading.contentWithSubHeadingsRange.location) != nil {
+                self.viewModel.unfold(location: heading.range.location)
                 return false
             }
         }

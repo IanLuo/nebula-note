@@ -109,7 +109,7 @@ public class OutlineTextView: UITextView, UIScrollViewDelegate {
             guard let strongSelf = self else { return }
             strongSelf.outlineDelegate?.didTapOnActions(textView: strongSelf,
                                                         characterIndex: strongSelf.selectedRange.location,
-                                                        point: strongSelf.currentLineIndicator.actionButton.frame.origin)
+                                                        point: strongSelf.currentLineIndicator.actionButton.convert(strongSelf.currentLineIndicator.actionButton.frame.center, to: strongSelf))
         }).disposed(by: self.disposeBag)
     }
     
@@ -195,15 +195,7 @@ public class OutlineTextView: UITextView, UIScrollViewDelegate {
                 return true
             }
         }
-        
-        // check if the user tapped the action button, if so, ignore the tap
-        // the location checking the action button, considers the edge insets of the text container
-        if self.currentLineIndicator.actionButton
-            .convert(self.currentLineIndicator.actionButton.frame, to: self)
-            .applying(CGAffineTransform(translationX: -self.textContainerInset.left, y: -self.textContainerInset.top)).contains(location) {
-            return true
-        }
-        
+                
         // check if the character is with range of all characters
         guard isPointInBorder(location, self.characterBorder) else { return true }
         
@@ -254,7 +246,7 @@ public class OutlineTextView: UITextView, UIScrollViewDelegate {
     
     private func hideKeyboardIfNeeded() {
         if isPhone {
-            self.resignFirstResponder()
+            _ = self.resignFirstResponder()
         }
     }
     
@@ -270,6 +262,12 @@ public class OutlineTextView: UITextView, UIScrollViewDelegate {
     public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         let textLocation = CGPoint(x: point.x - self.textContainerInset.left,
                                    y: point.y - self.textContainerInset.top)
+        
+        guard event?.type == .touches else { return super.hitTest(point, with: event) }
+        
+        if self.currentLineIndicator.actionButtonFrameInTextVirew.contains(point) {
+            return self.currentLineIndicator.actionButton
+        }
         
         if self.tapped(location: textLocation, event: event) {
             return super.hitTest(point, with: event)
@@ -354,16 +352,16 @@ private class CurrentLineIndicator: UIView {
         actionButton.align(to: self, direction: .left, position: .head, inset: 0)
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("shouldn't be here")
+    var actionButtonFrameInTextVirew: CGRect {
+        if self.superview != nil {
+            return CGRect(origin: CGPoint(x: self.frame.origin.x + actionButton.frame.origin.x, y: self.frame.origin.y), size: actionButton.frame.size)
+        } else {
+            return CGRect.zero
+        }
     }
     
-    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        if self.actionButton.frame.contains(point) {
-            return actionButton
-        } else {
-            return superview
-        }
+    required init?(coder: NSCoder) {
+        fatalError("shouldn't be here")
     }
 }
 
