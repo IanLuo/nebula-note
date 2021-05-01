@@ -1358,9 +1358,9 @@ extension OutlineTextStorage {
                 range = range.moveRightBound(by: -1)
             }
             
-            self.setParagraphIndent(heading: heading)
-            
             guard range.length > 0 else { return }
+            
+            self.setParagraphIndent(heading: heading)
             
             self.setAttributes(nil, range: range)
             

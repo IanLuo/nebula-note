@@ -314,7 +314,7 @@ public class FoldingAndUnfoldingCommand: DocumentContentCommand {
     }
     
     fileprivate func _markUnfold(heading: HeadingToken, textStorage: OutlineTextStorage) {
-        guard textStorage.isFolded(location: heading.range.location) == true else { return }
+        guard textStorage.isFolded(location: heading.range.location) == true && heading.contentWithSubHeadingsRange.length > 0 else { return }
         
         textStorage.setAttributeForHeading(heading, isFolded: false)
         
@@ -334,7 +334,7 @@ public class FoldingAndUnfoldingCommand: DocumentContentCommand {
     }
     
     fileprivate func _markFold(heading: HeadingToken, textStorage: OutlineTextStorage) {
-        guard textStorage.isFolded(location: heading.range.location) == false else { return }
+        guard textStorage.isFolded(location: heading.range.location) == false && heading.contentWithSubHeadingsRange.length > 0 else { return }
         textStorage.setAttributeForHeading(heading, isFolded: true)
     }
     

@@ -447,10 +447,12 @@ public class DocumentEditorViewModel: ViewModelProtocol {
     }
     
     public func unfold(location: Int) {
-        if let heading = self.heading(at: location) {
-            self.editorService.markFoldingState(heading: heading, isFolded: false)
+        for heading in self.headings {
+            if heading.paragraphWithSubRange.contains(location) || heading.range.location == location {
+                self.editorService.markFoldingState(heading: heading, isFolded: false)
+            }
         }
-
+        
         self.editorService.syncFoldingStatus()
     }
     
