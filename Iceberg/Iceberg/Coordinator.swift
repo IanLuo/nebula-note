@@ -34,6 +34,7 @@ public class Dependency {
     lazy var attachmentManager: AttachmentManager = { AttachmentManager() }()
     lazy var urlHandlerManager: URLHandlerManager = { URLHandlerManager(documentManager: documentManager, eventObserver: eventObserver) }()
     lazy var shareExtensionHandler: ShareExtensionDataHandler = { ShareExtensionDataHandler() }()
+    lazy var sharedDataHandler: ShareExtensionDataHandler = { ShareExtensionDataHandler() }()
     lazy var captureService: CaptureService = { CaptureService(attachmentManager: attachmentManager) }()
     lazy var exportManager: ExportManager = { ExportManager(editorContext: editorContext) }()
     weak var globalCaptureEntryWindow: CaptureGlobalEntranceWindow?

@@ -9,6 +9,7 @@
 import UIKit
 import Social
 import Core
+import RxSwift
 
 @objc(ShareViewController) class ShareViewController: SLComposeServiceViewController {
     
@@ -19,27 +20,24 @@ import Core
         return true
     }
     
+    private let disposeBag = DisposeBag()
+    
     override func viewDidLoad() {
 //        self.textView.isHidden = true
     }
     
     override func didSelectPost() {
-        let group = DispatchGroup()
-        
-        DispatchQueue.global(qos: DispatchQoS.QoSClass.default).async {
-            for item in self.extensionContext?.inputItems ?? [] {
-                if let item = item as? NSExtensionItem {
-                    group.enter()
-                    self._extensionItemHandler.handleExtensionItem(item, userInput: self.textView.text) {
-                        group.leave()
-                    }
-                }
+        if let items = self.extensionContext?.inputItems as? [NSExtensionItem] {
+            DispatchQueue.global(qos: DispatchQoS.QoSClass.default).async {
+                Observable.zip(items.map { item in
+                    self._extensionItemHandler.handleExtensionItem(item.attachments ?? [], userInput: self.textView.text)
+                })
+                .subscribe(onCompleted: {
+                    self.extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
+                })
+                .disposed(by: self.disposeBag)
             }
-            
-            group.notify(queue: DispatchQueue.main) {
-                self.extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
-            }
-        }
+        } 
         
         // This is called after the user selects Post. Do the upload of contentText and/or NSExtensionContext attachments.
     

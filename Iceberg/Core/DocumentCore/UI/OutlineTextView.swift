@@ -23,6 +23,7 @@ public protocol OutlineTextViewDelegate: class {
     func didTapOnAttachment(textView: UITextView, characterIndex: Int, type: String, value: String, point: CGPoint)
     func didTapOnTitle(at: CGPoint)
     func didTapOnActions(textView: UITextView, characterIndex: Int, point: CGPoint)
+    func didHandleIdeasFiles(urls: [URL], characterIndex: Int)
 }
 
 public class OutlineTextView: UITextView, UIScrollViewDelegate {
@@ -111,6 +112,10 @@ public class OutlineTextView: UITextView, UIScrollViewDelegate {
                                                         characterIndex: strongSelf.selectedRange.location,
                                                         point: strongSelf.currentLineIndicator.actionButton.convert(strongSelf.currentLineIndicator.actionButton.frame.center, to: strongSelf))
         }).disposed(by: self.disposeBag)
+        
+        // enable drop
+        let interaction = UIDropInteraction(delegate: self)
+        self.addInteraction(interaction)
     }
     
     public override func layoutSubviews() {
@@ -384,6 +389,63 @@ extension OutlineTextView: UIGestureRecognizerDelegate {
             return self.tapped(location: textLocation, event: nil)
         } else {
             return false
+        }
+    }
+}
+
+extension OutlineTextView: UIDropInteractionDelegate {
+    public func dropInteraction(_ interaction: UIDropInteraction, canHandle session: UIDropSession) -> Bool {
+        return true
+    }
+    
+    public func dropInteraction(_ interaction: UIDropInteraction, performDrop session: UIDropSession) {
+        ShareExtensionItemHandler()
+            .handleExtensionItem(session.items.map { $0.itemProvider })
+            .observeOn(MainScheduler())
+            .subscribe(onNext: { urls in
+            self.outlineDelegate?.didHandleIdeasFiles(urls: urls, characterIndex: self.selectedRange.location)
+        }).disposed(by: self.disposeBag)
+    }
+    
+    public func dropInteraction(_ interaction: UIDropInteraction, sessionDidEnter session: UIDropSession) {
+        
+    }
+    
+    public func dropInteraction(_ interaction: UIDropInteraction, sessionDidExit session: UIDropSession) {
+        
+    }
+    
+    public func dropInteraction(_ interaction: UIDropInteraction, sessionDidUpdate session: UIDropSession) -> UIDropProposal {
+        let point = session.location(in: self)
+        
+        let characterIndex = self.layoutManager.characterIndex(for: point.applying(CGAffineTransform(translationX: -self.textContainerInset.left, y: -self.textContainerInset.top)),
+                                                               in: self.textContainer,
+                                                               fractionOfDistanceBetweenInsertionPoints: nil)
+        
+        self.selectedRange = NSRange(location: characterIndex, length: 0)
+        
+        return UIDropProposal(operation: .copy)
+    }
+}
+
+extension OutlineTextView {
+    public override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
+        if action == #selector(UITextView.paste(_:)) && UIPasteboard.general.image != nil {
+            return true
+        } else {
+            return super.canPerformAction(action, withSender: sender)
+        }
+    }
+    
+    public override func paste(_ sender: Any?) {
+        let pasteBoard = UIPasteboard.general
+        
+        if let image = pasteBoard.image {
+            ShareExtensionItemHandler().saveImage(image: image).subscribe( onNext: { url in
+                self.outlineDelegate?.didHandleIdeasFiles(urls: [url], characterIndex: self.selectedRange.location)
+            }).disposed(by: self.disposeBag)
+        } else {
+            super.paste(sender)
         }
     }
 }

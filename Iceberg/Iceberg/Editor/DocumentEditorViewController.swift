@@ -30,7 +30,7 @@ public class DocumentEditorViewController: UIViewController {
     
     internal var _lastLocation: Int?
     internal var _isAdjustingSelectRange: Bool = false
-    private let disposeBag = DisposeBag()
+    let disposeBag = DisposeBag()
     private let _contentEdgeInsect: UIEdgeInsets = {
         if isMacOrPad {
             return UIEdgeInsets(top: 30, left: 60, bottom: 100, right: 100)

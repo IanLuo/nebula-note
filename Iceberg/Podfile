@@ -48,10 +48,12 @@ end
 
 target 'CaptureIdeaExtension' do
     pod 'SwiftyBeaver'
+    pod 'RxSwift', :git => 'git@github.com:ReactiveX/RxSwift.git', :tag => '5.1.0'
 end
 
 target 'CaptureActionExtension' do
     pod 'SwiftyBeaver'
+    pod 'RxSwift', :git => 'git@github.com:ReactiveX/RxSwift.git', :tag => '5.1.0'
 end
 
 post_install do |installer|

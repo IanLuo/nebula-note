@@ -150,21 +150,21 @@ public class CaptureListViewController: UIViewController {
         }
         
         refreshButton.rx.tap.subscribe(onNext: { [unowned refreshButton] in
-            let handler = self.viewModel.dependency.shareExtensionHandler
             refreshButton.showProcessingAnimation()
             
-            handler.harvestSharedItems(attachmentManager: self.viewModel.dependency.attachmentManager,
-                                       urlHandler: self.viewModel.dependency.urlHandlerManager,
-                                       captureService: self.viewModel.dependency.captureService) { ideasCount in
-                                        
-                                        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1) {
-                                            refreshButton.hideProcessingAnimation()
-                                        }
-                                        
-                                        if ideasCount > 0 {
-                                            self.viewModel.loadAllCapturedData()
-                                        }
-            }
+            self.viewModel.dependency.shareExtensionHandler
+                .harvestSharedItems(attachmentManager: self.viewModel.dependency.attachmentManager,
+                                    urlHandler: self.viewModel.dependency.urlHandlerManager,
+                                    captureService: self.viewModel.dependency.captureService)
+                .subscribe(onNext: { ideasCount in
+                    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1) {
+                        refreshButton.hideProcessingAnimation()
+                    }
+                    
+                    if ideasCount > 0 {
+                        self.viewModel.loadAllCapturedData()
+                    }
+                }).disposed(by: self.disposeBag)
         }).disposed(by: self.disposeBag)
         
         let refreshItem = UIBarButtonItem(customView: refreshButton)

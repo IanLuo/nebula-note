@@ -12,8 +12,24 @@ import Core
 import Interface
 import CoreLocation
 import MapKit
+import RxSwift
 
 extension DocumentEditorViewController: OutlineTextViewDelegate {
+    public func didHandleIdeasFiles(urls: [URL], characterIndex: Int) {
+        Observable.from(urls)
+            .flatMap { url in
+                self.viewModel.dependency.sharedDataHandler
+                    .createAttachmentFromIdea(attachmentManager: self.viewModel.dependency.attachmentManager,
+                                              url: url)
+            }
+            .observeOn(MainScheduler())
+            .subscribe(onNext: {
+                guard let attachment = self.viewModel.dependency.attachmentManager.attachment(with: $0) else { return }
+                _ = self.viewModel.performAction(EditAction.addAttachment(NSRange(location: characterIndex, length: 0), attachment.key, attachment.kind.rawValue), textView: self.textView)
+            })
+            .disposed(by: self.disposeBag)
+    }
+    
     public func didTapOnActions(textView: UITextView, characterIndex: Int, point: CGPoint) {
         self.showParagraphActions(at: characterIndex, point: point) 
     }

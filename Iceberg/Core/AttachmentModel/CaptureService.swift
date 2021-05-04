@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit.UIImage
+import RxSwift
 
 public protocol CaptureServiceProtocol {
     func save(key: String, completion: @escaping () -> Void)
@@ -42,6 +43,18 @@ public struct CaptureService: CaptureServiceProtocol {
                 log.info("successfully add new capture idea for key: \(key)")
                 completion()
             } // value 没用
+        }
+    }
+    
+    public func save(key: String) -> Observable<String> {
+        return Observable.create { observer in
+            
+            self.save(key: key) {
+                observer.onNext(key)
+                observer.onCompleted()
+            }
+            
+            return Disposables.create()
         }
     }
     

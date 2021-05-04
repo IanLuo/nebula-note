@@ -448,7 +448,7 @@ public enum L10n {
           public static let title = L10n.tr("Localizable", "document.edit.action.paragraph.title")
         }
         public enum Section {
-          /// Delete current section
+          /// Delete current paragraph
           public static let delete = L10n.tr("Localizable", "document.edit.action.section.delete")
         }
       }

@@ -129,18 +129,16 @@ public class Application: Coordinator {
         guard _isHandlingSharedIdeas == false else { return }
         _isHandlingSharedIdeas = true
         
-        let handler = self.dependency.shareExtensionHandler
-        
-        handler.harvestSharedItems(attachmentManager: self.dependency.attachmentManager,
-                                   urlHandler: self.dependency.urlHandlerManager,
-                                   captureService: self.dependency.captureService) { ideasCount in
-                                    
-                                    if ideasCount > 0 {
-                                        self.dependency.eventObserver.emit(NewCaptureAddedEvent(attachmentId: "", kind: ""))
-                                    }
-                                    
-                                    self._isHandlingSharedIdeas = false
-        }
+        self.dependency.shareExtensionHandler.harvestSharedItems(attachmentManager: self.dependency.attachmentManager,
+                                                                 urlHandler: self.dependency.urlHandlerManager,
+                                                                 captureService: self.dependency.captureService)
+            .subscribe(onNext: { ideasCount in
+                if ideasCount > 0 {
+                    self.dependency.eventObserver.emit(NewCaptureAddedEvent(attachmentId: "", kind: ""))
+                }
+                
+                self._isHandlingSharedIdeas = false
+            }).disposed(by: self.disposeBag)
     }
     
     private func _setupiCloud() {

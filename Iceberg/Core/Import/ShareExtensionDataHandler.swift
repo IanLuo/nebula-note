@@ -7,9 +7,14 @@
 //
 
 import Foundation
+import RxSwift
 
 /// 通过第三发 app 分享
 public struct ShareExtensionDataHandler {
+    enum IdeaError: Error {
+        case dataUnavailable
+    }
+    
     public init() {}
     
     public var sharedContainterURL: URL {
@@ -36,62 +41,55 @@ public struct ShareExtensionDataHandler {
         }
     }
     
-    public func harvestSharedItems(attachmentManager: AttachmentManager, urlHandler: URLHandlerManager, captureService: CaptureService, completion: @escaping (Int) -> Void) {
-        DispatchQueue.global(qos: DispatchQoS.QoSClass.userInteractive).async {
-            let sharedItem = self.loadAllUnHandledShareIdeas()
+    public func createAttachmentFromIdea(attachmentManager: AttachmentManager, url: URL) -> Observable<String> {
+        return Observable.create { observer in
             
-            let completeHandleSharedItems: () -> Void = {
-                completion(sharedItem.count)
-            }
-            
-            var handleSaveItem: (([URL]) -> Void)!
-            handleSaveItem = { urls in
-                guard let url = urls.first else {
-                    completeHandleSharedItems()
-                    return
-                }
-                
-                let remains: [URL] = Array(urls.dropFirst())
-                
-                let attachmentKindString = url.deletingPathExtension().pathExtension // kind 已经在保存的时候，添加成为了 url 的前一个 ext
-                if let kind = Attachment.Kind(rawValue: attachmentKindString) {
-                    var content = url.path
-                    switch kind {
-                    case .text: fallthrough
-                    case .link: fallthrough
-                    case .location:
+            let attachmentKindString = url.deletingPathExtension().pathExtension // kind 已经在保存的时候，添加成为了 url 的前一个 ext
+            if let kind = Attachment.Kind(rawValue: attachmentKindString) {
+                var content = url.path
+                switch kind {
+                case .text: fallthrough
+                case .link: fallthrough
+                case .location:
                     content = try! String(contentsOf: url) // if the shared type is location, read the content of the file and insert it, otherwise, use the url as content
-                    default: break
-                    }
-                    
-                    attachmentManager.insert(content: content, kind: kind, description: "shared idea", complete: { key in
-                        captureService.save(key: key, completion: {
-                            
-                            do {
-                                try FileManager.default.removeItem(at: url)
-                            } catch {
-                                log.error(error)
-                            }
-                            
-                            handleSaveItem(remains)
-                        })
-                    }) { error in
-                        log.error(error)
-                        handleSaveItem(remains)
-                    }
-                } else { //  if the url is not an attachment, try handle it use url scheme handler
-                    if urlHandler.handle(url: url, sourceApp: "") {
-                        do {
-                            try FileManager.default.removeItem(at: url)
-                        } catch {
-                            log.error(error)
-                        }
-                    }
-                    handleSaveItem(remains)
+                default: break
                 }
+                
+                attachmentManager.insert(content: content, kind: kind, description: "shared idea", complete: { key in
+                    do {
+                        try FileManager.default.removeItem(at: url)
+                        observer.onNext(key)
+                        observer.onCompleted()
+                    } catch {
+                        observer.onError(error)
+                        observer.onCompleted()
+                    }
+                }) { error in
+                    log.error(error)
+                    observer.onError(error)
+                    observer.onCompleted()
+                }
+            } else {
+                observer.onError(IdeaError.dataUnavailable)
             }
-                        
-            handleSaveItem(sharedItem)
+            
+            return Disposables.create()
         }
+    }
+    
+    public func harvestSharedItems(attachmentManager: AttachmentManager, urlHandler: URLHandlerManager, captureService: CaptureService) -> Observable<Int> {
+        
+        let sharedItem = self.loadAllUnHandledShareIdeas()
+        
+        guard sharedItem.count > 0 else {
+            return Observable.just(0)
+        }
+        
+        return Observable
+            .zip(sharedItem.map {
+                self.createAttachmentFromIdea(attachmentManager: attachmentManager, url: $0)
+                    .flatMap(captureService.save(key:))
+            }).map { $0.count }
+            .observeOn(ConcurrentDispatchQueueScheduler(queue: DispatchQueue.global(qos: .background)))
     }
 }

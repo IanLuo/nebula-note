@@ -9,6 +9,7 @@
 import UIKit
 import MobileCoreServices
 import Core
+import RxSwift
 
 class ActionRequestHandler: NSObject, NSExtensionRequestHandling {
 
@@ -16,22 +17,18 @@ class ActionRequestHandler: NSObject, NSExtensionRequestHandling {
     
     let shareExtensionItemHandler: ShareExtensionItemHandler = ShareExtensionItemHandler()
     
+    private let disposeBag = DisposeBag()
+    
     func beginRequest(with context: NSExtensionContext) {
         // Do not call super in an Action extension with no user interface
         self.extensionContext = context
         
         print("did tap capture action: \(context.inputItems)")
-        let group = DispatchGroup()
-                
-        for item in context.inputItems as! [NSExtensionItem] {
-            group.enter()
-             shareExtensionItemHandler.handleExtensionItem(item) {
-                group.leave()
-            }
-        }
-        
-        group.notify(queue: DispatchQueue.main) {
-            self.extensionContext?.completeRequest(returningItems: nil, completionHandler: nil)
+
+        if let items = context.inputItems as? [NSExtensionItem] {
+            Observable.zip(items.map { item in
+                shareExtensionItemHandler.handleExtensionItem(item.attachments ?? [])
+            }).subscribe().disposed(by: self.disposeBag)
         }
     }
 }
