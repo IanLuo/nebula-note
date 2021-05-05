@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import RxSwift
 
 public protocol SelectorViewControllerDelegate: class {
     func SelectorDidCancel(viewController: SelectorViewController)
@@ -21,8 +22,11 @@ open class SelectorViewController: UIViewController {
     
     public let heightRatio: CGFloat
     
+    private let disposeBag = DisposeBag()
+    
     public init(heightRatio: CGFloat = 1/2) {
         self.heightRatio = heightRatio
+        self.items = []
         super.init(nibName: nil, bundle: nil)
         
         // custom transition only add to iPhone
@@ -82,6 +86,20 @@ open class SelectorViewController: UIViewController {
         return button
     }()
     
+    private lazy var filterInput: UITextField = {
+        let tf = UITextField()
+        
+        tf.backgroundColor = InterfaceTheme.Color.background2
+        tf.leftView = UIImageView(image: Asset.SFSymbols.magnifyingglass.image.fill(color: InterfaceTheme.Color.descriptive).resize(upto: CGSize(width: 20, height: 20)))
+        tf.leftViewMode = .always
+        tf.rx.text.asObservable().subscribe(onNext: {
+            self.fileterString = $0 ?? ""
+            self.runFilter()
+        }).disposed(by: self.disposeBag)
+        
+        return tf
+    }()
+    
     public var emptyDataText: String = L10n.Selector.empty
     
     public var emptyDataIcon: UIImage?
@@ -126,11 +144,15 @@ open class SelectorViewController: UIViewController {
         }
     }
     
-    public var items: [Item] = []
+    public var items: [Item] {
+        didSet { self.runFilter() }
+    }
     public var currentTitle: String?
     public var selectedTitles: [String] = []
     public weak var delegate: SelectorViewControllerDelegate?
     public var name: String?
+    fileprivate var filteredItems: [Item] = []
+    private var fileterString: String = ""
     
     private let transitionDelegate = FadeBackgroundTransition(animator: MoveToAnimtor())
     
@@ -144,6 +166,19 @@ open class SelectorViewController: UIViewController {
         let item = Item(icon: icon, title: "", attributedString: attributedString, description: description, enabled: enabled)
         self.items.append(item)
         self.insertNewItemToTableIfNeeded(newItem: item)
+    }
+    
+    private func runFilter() {
+        if fileterString.count == 0 {
+            self.filteredItems = self.items
+        } else {
+            let m = self.fileterString.uppercased()
+            filteredItems = self.items.filter({ item in
+                (item.attributedString?.string ?? item.title).uppercased().contains(m)
+            })
+        }
+        
+        self.tableView.reloadData()
     }
     
     private func insertNewItemToTableIfNeeded(newItem: Item) {
@@ -167,9 +202,11 @@ open class SelectorViewController: UIViewController {
     }
 
     private func setupUI() {
+        self.contentView.backgroundColor = InterfaceTheme.Color.background2
         self.view.addSubview(self.contentView)
         self.contentView.addSubview(self.tableView)
         self.contentView.addSubview(self.titleLabel)
+        self.contentView.addSubview(self.filterInput)
         self.contentView.addSubview(self.closeButton)
         
         let insets: CGFloat = isMacOrPad ? 0 : 30
@@ -185,7 +222,6 @@ open class SelectorViewController: UIViewController {
         
         self.titleLabel.sizeAnchor(height: 60)
         self.titleLabel.sideAnchor(for: [.left, .right, .top], to: self.contentView, edgeInset: 0)
-        self.titleLabel.setBorder(position: .bottom, color: InterfaceTheme.Color.background3, width: 0.5)
         
         self.closeButton.sizeAnchor(width: 30)
         self.closeButton.sideAnchor(for: [.right], to: self.contentView, edgeInset: 20)
@@ -195,7 +231,12 @@ open class SelectorViewController: UIViewController {
             self.closeButton.isHidden = true
         }
         
-        self.titleLabel.columnAnchor(view: self.tableView, space: 0)
+        self.titleLabel.columnAnchor(view: self.filterInput, space: 0)
+        self.filterInput.sideAnchor(for: [.left, .right], to: self.contentView, edgeInset: 30)
+        
+        self.filterInput.columnAnchor(view: self.tableView, space: 0)
+        self.filterInput.sizeAnchor(height: 30)
+        
         self.tableView.sideAnchor(for: [.left, .right, .bottom], to: self.contentView, edgeInset: 0)
     }
     
@@ -221,13 +262,13 @@ open class SelectorViewController: UIViewController {
 
 extension SelectorViewController: UITableViewDataSource, UITableViewDelegate {
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.items.count
+        return self.filteredItems.count
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ActionCell.reuseIdentifier, for: indexPath) as! ActionCell
         
-        let item = self.items[indexPath.row]
+        let item = self.filteredItems[indexPath.row]
         cell.descriptionLabel.text = item.description
         cell.titleLabel.text = item.title
         if let attr = item.attributedString {
@@ -243,7 +284,7 @@ extension SelectorViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        let item = self.items[indexPath.row]
+        let item = self.filteredItems[indexPath.row]
         cell.setSelected(item.title == self.currentTitle, animated: false)
     }
     

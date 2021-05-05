@@ -155,7 +155,7 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "SHOW_PARSING_TOKEN_RANGE"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
       </CommandLineArguments>
       <LocationScenarioReference
