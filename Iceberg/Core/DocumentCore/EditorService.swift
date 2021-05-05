@@ -47,7 +47,7 @@ public class DocumentLog: Codable {
 
 public class EditorService {
     private let editorController: EditorController
-    fileprivate let document: Document
+    fileprivate var document: Document
     private lazy var trimmer: OutlineTextTrimmer = OutlineTextTrimmer(parser: OutlineParser())
     private let eventObserver: EventObserver
     private var queue: DispatchQueue!
@@ -380,8 +380,9 @@ public class EditorService {
 
     public func rename(newTitle: String, completion: ((Error?) -> Void)? = nil) {
         let newURL = document.fileURL.deletingLastPathComponent().appendingPathComponent(newTitle).appendingPathExtension(Document.fileExtension)
-        document.fileURL.rename(queue: self.queue, url: newURL, completion: { error in
-            self.open(completion: { _ in
+        document.fileURL.rename(queue: self.queue, url: newURL, completion: { [weak self] error in
+            self?.document = Document(fileURL: newURL)
+            self?.open(completion: { _ in
                 completion?(error)
             })
         })
