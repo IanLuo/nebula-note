@@ -444,6 +444,8 @@ extension OutlineTextView {
             ShareExtensionItemHandler().saveImage(image: image).subscribe( onNext: { url in
                 self.outlineDelegate?.didHandleIdeasFiles(urls: [url], characterIndex: self.selectedRange.location)
             }).disposed(by: self.disposeBag)
+        } else if let string = pasteBoard.string {
+            self.textStorage.replaceCharacters(in: self.selectedRange, with: string)
         } else {
             super.paste(sender)
         }

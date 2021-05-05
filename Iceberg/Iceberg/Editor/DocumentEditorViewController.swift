@@ -270,7 +270,7 @@ public class DocumentEditorViewController: UIViewController {
         if isHidden == false && self.toolBar.alpha != 0 { return }
         
         if isHidden == false && self.textView.isFirstResponder {
-            self.textView.resignFirstResponder()
+            _ = self.textView.resignFirstResponder()
         }
         
         self.toolBar.constraint(for: .right)?.constant = isHidden ? 44 : -Layout.innerViewEdgeInsets.right
