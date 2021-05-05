@@ -161,13 +161,13 @@ open class SelectorViewController: UIViewController {
     private let transitionDelegate = FadeBackgroundTransition(animator: MoveToAnimtor())
     
     public func addItem(icon: UIImage? = nil, title: String, description: String? = nil, enabled: Bool = true) {
-        let item = Item(icon: icon, title: title, attributedString: nil, description: description, enabled: enabled)
+        let item = Item(icon: icon, title: title, attributedString: nil, description: description, enabled: enabled, id: UUID().uuidString)
         self.items.append(item)
         self.insertNewItemToTableIfNeeded(newItem: item)
     }
     
     public func addItem(icon: UIImage? = nil, attributedString: NSAttributedString, description: String? = nil, enabled: Bool = true) {
-        let item = Item(icon: icon, title: "", attributedString: attributedString, description: description, enabled: enabled)
+        let item = Item(icon: icon, title: "", attributedString: attributedString, description: description, enabled: enabled, id: UUID().uuidString)
         self.items.append(item)
         self.insertNewItemToTableIfNeeded(newItem: item)
     }
@@ -262,6 +262,7 @@ open class SelectorViewController: UIViewController {
         public let attributedString: NSAttributedString?
         public let description: String?
         public let enabled: Bool
+        public let id: String
     }
 }
 
@@ -301,12 +302,19 @@ extension SelectorViewController: UITableViewDataSource, UITableViewDelegate {
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        guard self.items[indexPath.row].enabled else { return }
         
-        self.delegate?.SelectorDidSelect(index: indexPath.row, viewController: self)
+        let item = self.filteredItems[indexPath.row]
+        guard item.enabled else { return }
         
-        unowned let unownedSelf = self
-        self.onSelection?(indexPath.row, unownedSelf)
+        for (i, it) in self.items.enumerated() {
+            if item.id == it.id {
+                self.delegate?.SelectorDidSelect(index: i, viewController: self)
+                
+                unowned let unownedSelf = self
+                self.onSelection?(i, unownedSelf)
+                return
+            }
+        }
     }
     
     public func showEmptyDataView() {
