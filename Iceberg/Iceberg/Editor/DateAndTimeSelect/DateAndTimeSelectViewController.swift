@@ -51,7 +51,7 @@ public class DateAndTimeSelectViewController: TransitionViewController {
     private let _dateSelectViewController: DateSelectViewController = DateSelectViewController()
     
     private lazy var _transitionDelegate: FadeBackgroundTransition = {
-        return FadeBackgroundTransition(animator: MoveInAnimtor())
+        return FadeBackgroundTransition(animator: MoveToAnimtor())
     }()
     
     public var passInDateAndTime: DateAndTimeType? {
@@ -73,8 +73,13 @@ public class DateAndTimeSelectViewController: TransitionViewController {
     
     public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-        self.transitioningDelegate = self._transitionDelegate
-        self.modalPresentationStyle = .overCurrentContext
+        
+        if isMacOrPad {
+            self.modalPresentationStyle = UIModalPresentationStyle.popover
+        } else {
+            self.modalPresentationStyle = .custom
+            self.transitioningDelegate = self._transitionDelegate
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -105,6 +110,15 @@ public class DateAndTimeSelectViewController: TransitionViewController {
         self._dateSelectViewController.repeatType.subscribe(onNext: { type in
             self.repeatType = type
         }).disposed(by: self.disposeBag)
+        
+        if isMacOrPad {
+            self._closeButton.isHidden = true
+            if self.fromView == nil {
+                self.popoverPresentationController?.sourceView = self.view
+                self.popoverPresentationController?.sourceRect = CGRect(x: self.view.bounds.width / 2, y: self.view.bounds.height / 2, width: 0, height: 0)
+            }
+            self.preferredContentSize = self._contentView.contentSize
+        }
     }
     
     private func _initValues() {
@@ -132,6 +146,8 @@ public class DateAndTimeSelectViewController: TransitionViewController {
             self?._cancelButton.tintColor = theme.color.interactive
             self?._cancelButton.setImage(Asset.SFSymbols.xmark.image.withRenderingMode(.alwaysTemplate), for: .normal)
         }
+        
+        self.view.backgroundColor = .clear
         
         self._calendarContainer.addSubview(self._dateSelectViewController.view)
         self._dateSelectViewController.view.allSidesAnchors(to: self._calendarContainer, edgeInset: 0)

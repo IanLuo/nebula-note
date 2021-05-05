@@ -69,7 +69,7 @@ extension DocumentEditorViewController: OutlineTextViewDelegate {
     
     public func didTapDateAndTime(textView: UITextView, characterIndex: Int, dateAndTimeString: String, point: CGPoint) {
         let dateAndTime = DateAndTimeType(dateAndTimeString)!
-        self.viewModel.context.coordinator?.showDateSelector(title: L10n.Document.DateAndTime.update, current: dateAndTime, add: { [unowned self] newDateAndTime in
+        self.viewModel.context.coordinator?.showDateSelector(title: L10n.Document.DateAndTime.update, current: dateAndTime, point: point, from: self.textView, add: { [unowned self] newDateAndTime in
             let oldSelectedRange = textView.selectedRange
             let result = self.viewModel.performAction(EditAction.updateDateAndTime(characterIndex, newDateAndTime), textView: self.textView)
             if self.textView.selectedRange.location > characterIndex {

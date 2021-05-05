@@ -78,6 +78,8 @@ extension Coordinator {
     
     public func showDateSelector(title: String,
                                  current: DateAndTimeType?,
+                                 point: CGPoint? = nil,
+                                 from: UIView? = nil,
                                  add: @escaping (DateAndTimeType) -> Void,
                                  delete: @escaping () -> Void,
                                  cancel: @escaping () -> Void) {
@@ -103,7 +105,7 @@ extension Coordinator {
             cancel()
         }
         
-        self.viewController?.present(dateAndTimeSelectViewController, animated: true, completion: nil)
+        dateAndTimeSelectViewController.present(from: self.viewController!, at: from, location: point, completion: nil)
     }
     
     public func showMembership() {

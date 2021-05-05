@@ -81,7 +81,7 @@ extension DocumentEditorViewController {
             viewController.dismiss(animated: true)
         }
         
-        self.textView.resignFirstResponder() // 隐藏键盘
+        _  = self.textView.resignFirstResponder() // 隐藏键盘
         
         actionsController.present(from: self)
     }
@@ -103,6 +103,7 @@ extension DocumentEditorViewController {
     }
     
     public func showDateAndTimeCreator(location: Int) {
+        let point = self.textView.rect(forStringRange: self.textView.selectedRange)?.center ?? self.textView.center
         
         let handleNewDateAndTime: (DateAndTimeType) -> Void = { newDateAndTime in
             let oldSelectedRange = self.textView.selectedRange
@@ -120,7 +121,7 @@ extension DocumentEditorViewController {
         let actionsViewController = ActionsViewController()
         actionsViewController.addAction(icon: nil, title: L10n.Document.DateAndTime.schedule, action: { viewController in
             viewController.dismiss(animated: true, completion: {
-                self.viewModel.context.coordinator?.showDateSelector(title: L10n.Document.DateAndTime.schedule, current: nil, add: { newDateAndTime in
+                self.viewModel.context.coordinator?.showDateSelector(title: L10n.Document.DateAndTime.schedule, current: nil, point: point, from: self.textView, add: { newDateAndTime in
                     newDateAndTime.isSchedule = true
                     handleNewDateAndTime(newDateAndTime)
                 }, delete: {
@@ -131,7 +132,7 @@ extension DocumentEditorViewController {
         
         actionsViewController.addAction(icon: nil, title: L10n.Document.DateAndTime.due, action: { viewController in
             viewController.dismiss(animated: true, completion: {
-                self.viewModel.context.coordinator?.showDateSelector(title: L10n.Document.DateAndTime.due, current: nil, add: { newDateAndTime in
+                self.viewModel.context.coordinator?.showDateSelector(title: L10n.Document.DateAndTime.due, current: nil, point: point, from: self.textView, add: { newDateAndTime in
                     newDateAndTime.isDue = true
                     handleNewDateAndTime(newDateAndTime)
                 }, delete: {
@@ -142,7 +143,7 @@ extension DocumentEditorViewController {
         
         actionsViewController.addAction(icon: nil, title: L10n.Document.DateAndTime.title, action: { viewController in
             viewController.dismiss(animated: true, completion: {
-                self.viewModel.context.coordinator?.showDateSelector(title: L10n.Document.DateAndTime.title, current: nil, add: { newDateAndTime in
+                self.viewModel.context.coordinator?.showDateSelector(title: L10n.Document.DateAndTime.title, current: nil, point: point, from: self.textView, add: { newDateAndTime in
                     handleNewDateAndTime(newDateAndTime)
                 }, delete: {
                     handleDeleteDateAndTime()
@@ -160,11 +161,7 @@ extension DocumentEditorViewController {
             viewController.dismiss(animated: true)
         }
         
-        if let location = self.textView.rect(forStringRange: self.textView.selectedRange) {
-            actionsViewController.present(from: self, at: self.textView, location: location.center)
-        } else {
-            actionsViewController.present(from: self)
-        }
+        actionsViewController.present(from: self, at: self.textView, location: point)
     }
     
     public func showPriorityEditor(location: Int, current: String?) {
