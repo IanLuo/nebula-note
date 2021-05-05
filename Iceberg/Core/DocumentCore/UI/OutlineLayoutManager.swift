@@ -56,7 +56,7 @@ public class OutlineLayoutManager: NSLayoutManager {
                                         in: range,
                                         options: []) { (value, range, stop) in
             guard let color = value as? UIColor else {
-                super.drawGlyphs(forGlyphRange: range, at: origin);return
+                return
             }
             
             let glRange = glyphRange(forCharacterRange: range, actualCharacterRange: nil);
@@ -85,7 +85,7 @@ public class OutlineLayoutManager: NSLayoutManager {
     private func _handleButton(textStorage: NSTextStorage, range: NSRange, origin: CGPoint, shouldStop: inout Bool) {
         textStorage.enumerateAttribute(OutlineAttribute.button, in: range, options: []) { (value, range, stop) in
             guard let value = value else {
-                super.drawGlyphs(forGlyphRange: range, at: origin);return
+                return
             }
             
             guard let color = (value as? UIColor) else { return }
@@ -149,7 +149,7 @@ public class OutlineLayoutManager: NSLayoutManager {
     private func _handleForCode(textStorage: NSTextStorage, range: NSRange, origin: CGPoint, shouldStop: inout Bool) {
         textStorage.enumerateAttribute(OutlineAttribute.Block.code, in: range, options: []) { (value, range, stop) in
             guard let value = value else {
-                super.drawGlyphs(forGlyphRange: range, at: origin);return
+                return
             }
             
             guard var color = (value as? UIColor) else { return }

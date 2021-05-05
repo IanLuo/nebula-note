@@ -35,7 +35,8 @@ extension TransitionProtocol {
                 }
             }
             
-            from.present(viewController, animated: true, completion: completion)
+            let animated = isMac ? false : true
+            from.present(viewController, animated: animated, completion: completion)
         }
     }
 }

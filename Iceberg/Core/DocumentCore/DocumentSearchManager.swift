@@ -411,8 +411,10 @@ public class DocumentSearchManager {
         }
     }
     
+    private let readQueue = DispatchQueue(label: "document reading queue")
     public func allHeadings(completion: @escaping ([DocumentHeadingSearchResult]) -> Void, failure: @escaping (Error) -> Void) {
         let operation = BlockOperation()
+        
         
         operation.addExecutionBlock {
             

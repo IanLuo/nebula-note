@@ -368,6 +368,14 @@ private class CurrentLineIndicator: UIView {
     required init?(coder: NSCoder) {
         fatalError("shouldn't be here")
     }
+    
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        if event?.type == .touches && self.actionButton.frame.contains(point) {
+            return self.actionButton
+        } else {
+            return self.superview
+        }
+    }
 }
 
 extension UITextView {

@@ -680,10 +680,15 @@ extension DocumentEditorViewController {
     
     public func showTemplatesPicker(location: Int) {
         let selector = SelectorViewController()
-        selector.addItem(title: L10n.Document.Edit.Template.Date.ymd)
-        selector.addItem(title: L10n.Document.Edit.Template.Date.ymd2)
-        selector.addItem(title: L10n.Document.Edit.Template.Date.ymd3)
         
+        let dateFormats = ["yyyy/MM/dd", "yyyy MM dd", "yyyy-MM-dd"]
+        
+        for formate in dateFormats {
+            let formatter = DateFormatter()
+            formatter.dateFormat = formate
+            selector.addItem(title: formatter.string(from: Date()))
+        }
+                
         selector.onCancel = {
             $0.dismiss(animated: true)
         }
@@ -691,22 +696,9 @@ extension DocumentEditorViewController {
         selector.onSelection = { index, viewController in
             
             viewController.dismiss(animated: true) {
-                var string = ""
-                
-                switch index {
-                case 0:
-                    let formatter = DateFormatter()
-                    formatter.dateFormat = "yyyy MM dd"
-                    string = formatter.string(from: Date())
-                case 1:
-                    let formatter = DateFormatter()
-                    formatter.dateFormat = "yyyy/MM/dd"
-                    string = formatter.string(from: Date())
-                default:
-                    let formatter = DateFormatter()
-                    formatter.dateFormat = "yyyy-MM-dd"
-                    string = formatter.string(from: Date())
-                }
+                let formatter = DateFormatter()
+                formatter.dateFormat = dateFormats[index]
+                let string = formatter.string(from: Date())
                 
                 let result = self.viewModel.performAction(EditAction.replaceText(NSRange(location: location, length: 0), string), textView: self.textView)
                 self.textView.selectedRange = NSRange(location: location + result.delta, length: 0)
