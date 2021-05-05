@@ -393,6 +393,8 @@ extension DocumentEditorViewController {
             self.viewModel.foldOtherHeadings(except: self.textView.selectedRange.location)
         }
         
+        actionsController.addSperator()
+        
         actionsController.addAction(icon: nil, title: L10n.Document.Heading.moveTo) { viewController in
             viewController.dismiss(animated: true, completion: {
                 self.viewModel.context.coordinator?.showOutline(ignoredHeadingLocation: location,
@@ -475,6 +477,8 @@ extension DocumentEditorViewController {
                 })
             }
         }
+        
+        actionsController.addSperator()
         
         actionsController.addAction(icon: nil, title: L10n.Document.Heading.addNewEntryAtBegining) { viewController in
             viewController.dismiss(animated: true) {

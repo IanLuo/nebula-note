@@ -27,6 +27,7 @@ open class ActionsViewController: UIViewController, TransitionProtocol {
         case `default`
         case highlight
         case warning
+        case seperator
         
         var height: CGFloat {
             switch self {
@@ -36,6 +37,8 @@ open class ActionsViewController: UIViewController, TransitionProtocol {
                 return Constants.rowHeight + Constants.specialItemSeparatorHeight
             case .warning:
                 return Constants.rowHeight + Constants.specialItemSeparatorHeight
+            case .seperator:
+                return 1
             }
         }
     }
@@ -50,6 +53,10 @@ open class ActionsViewController: UIViewController, TransitionProtocol {
         super.viewWillDisappear(animated)
         
         NotificationCenter.default.post(name: ModalNotification.disappear, object: nil)
+    }
+    
+    public func addSperator() {
+        self.addAction(icon: nil, title: "__seperator", style: .seperator) { _ in }
     }
     
     public func addAction(icon: UIImage?, title: String, style: Style = .default, at: Int? = nil, action: @escaping (ActionsViewController) -> Void) {
@@ -189,7 +196,7 @@ open class ActionsViewController: UIViewController, TransitionProtocol {
                 accessoryViewContainer.subviews.forEach { $0.removeFromSuperview() }
                 accessoryViewContainer.addSubview(accessoryView)
                 accessoryView.allSidesAnchors(to: accessoryViewContainer, edgeInset: 0)
-                accessoryView.setBorder(position: Border.Position.bottom, color: InterfaceTheme.Color.background3, width: 0.5)
+//                accessoryView.setBorder(position: Border.Position.bottom, color: InterfaceTheme.Color.background3, width: 0.5)
                 
                 accessoryViewContainer.constraint(for: Position.height)?.isActive = false
             }
@@ -205,7 +212,7 @@ open class ActionsViewController: UIViewController, TransitionProtocol {
         let view = UIView()
         view.backgroundColor = InterfaceTheme.Color.background2
         
-        view.setBorder(position: Border.Position.bottom, color: InterfaceTheme.Color.background3, width: 0.5)
+//        view.setBorder(position: Border.Position.bottom, color: InterfaceTheme.Color.background3, width: 0.5)
         return view
     }()
     
@@ -248,9 +255,10 @@ open class ActionsViewController: UIViewController, TransitionProtocol {
             tableView.backgroundColor = .clear
         }
 
-        tableView.separatorStyle = .singleLine
+        tableView.separatorStyle = .none
         tableView.separatorColor = InterfaceTheme.Color.background3
         tableView.register(ActionCell.self, forCellReuseIdentifier: ActionCell.reuseIdentifier)
+        tableView.register(Seperator.self, forCellReuseIdentifier: Seperator.resuseIdentifier)
         return tableView
     }()
     
@@ -321,12 +329,15 @@ extension ActionsViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: ActionCell.reuseIdentifier, for: indexPath) as! ActionCell
-        
         let item = self.items[indexPath.row]
-        cell.item = item
-
-        return cell
+        
+        if item.title == "__seperator" {
+            return tableView.dequeueReusableCell(withIdentifier: Seperator.resuseIdentifier, for: indexPath)
+        } else {
+            let cell = tableView.dequeueReusableCell(withIdentifier: ActionCell.reuseIdentifier, for: indexPath) as! ActionCell
+            cell.item = item
+            return cell
+        }
     }
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -344,10 +355,28 @@ extension ActionsViewController: UITableViewDataSource, UITableViewDelegate {
     }
 }
 
+fileprivate class Seperator: UITableViewCell {
+    static let resuseIdentifier = "Seperator"
+    
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
+        self.contentView.interface { me, theme in
+            me.backgroundColor = theme.color.background3
+        }
+        
+        selectionStyle = .none
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
 fileprivate class ActionCell: UITableViewCell {
     fileprivate var item: ActionsViewController.Item? {
         didSet {
-            self.iconView.image = item?.icon
+            self.iconView.image = item?.icon?.resize(upto: CGSize(width: 20, height: 20))
             self.titleLabel.text = item?.title
             
             guard let item = item else { return }
@@ -371,6 +400,8 @@ fileprivate class ActionCell: UITableViewCell {
                 self.titleLabel.constraint(for: .top)?.constant = ActionsViewController.Constants.specialItemSeparatorHeight / 2
                 self.titleLabel.constraint(for: .bottom)?.constant = -ActionsViewController.Constants.specialItemSeparatorHeight / 2
                 self.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+            case .seperator:
+                break
             }
         }
     }
