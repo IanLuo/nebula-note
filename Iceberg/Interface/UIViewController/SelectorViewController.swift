@@ -92,6 +92,10 @@ open class SelectorViewController: UIViewController {
         tf.backgroundColor = InterfaceTheme.Color.background2
         tf.leftView = UIImageView(image: Asset.SFSymbols.magnifyingglass.image.fill(color: InterfaceTheme.Color.descriptive).resize(upto: CGSize(width: 20, height: 20)))
         tf.leftViewMode = .always
+        tf.textColor = InterfaceTheme.Color.interactive
+        tf.clearButtonMode = .whileEditing
+        tf.tintColor = InterfaceTheme.Color.interactive
+        
         tf.rx.text.asObservable().subscribe(onNext: {
             self.fileterString = $0 ?? ""
             self.runFilter()
@@ -184,7 +188,8 @@ open class SelectorViewController: UIViewController {
     private func insertNewItemToTableIfNeeded(newItem: Item) {
         // 已经显示，则需要插入
         if self.tableView.window != nil {
-            self.tableView.insertRows(at: [IndexPath(row: self.items.count - 1, section: 0)], with: UITableView.RowAnimation.none)
+//            self.tableView.insertRows(at: [IndexPath(row: self.filteredItems.count - 1, section: 0)], with: UITableView.RowAnimation.none)
+            self.tableView.reloadData()
         }
     }
     
@@ -261,6 +266,12 @@ open class SelectorViewController: UIViewController {
 }
 
 extension SelectorViewController: UITableViewDataSource, UITableViewDelegate {
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView.isDragging == true {
+            self.filterInput.endEditing(true)
+        }
+    }
+    
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.filteredItems.count
     }
