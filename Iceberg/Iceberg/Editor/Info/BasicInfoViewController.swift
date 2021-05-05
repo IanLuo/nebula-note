@@ -12,12 +12,12 @@ import Interface
 
 public class BasicInfoViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     enum InfoItem: CaseIterable {
+        case backlink
         case editDate
         case wordCount
         case characterCount
         case paragraphs
         case creatDate
-        case backlink
         
         var title: String {
             switch self {
@@ -97,20 +97,16 @@ public class BasicInfoViewController: UIViewController, UITableViewDelegate, UIT
         self.tableView.allSidesAnchors(to: self.view, edgeInset: 0)
     }
     
-    public func numberOfSections(in tableView: UITableView) -> Int {
-        return InfoItem.allCases.count
-    }
-    
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return InfoItem.allCases.count
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: InfoCell.reuseIdentifier, for: indexPath) as! InfoCell
         
-        cell.textLabel?.text = InfoItem.allCases[indexPath.section].title
-        cell.detailTextLabel?.text = InfoItem.allCases[indexPath.section].value(viewModel: self._viewModel)
-        cell.accessoryType = InfoItem.allCases[indexPath.section].interactive ? .disclosureIndicator : .none
+        cell.textLabel?.text = InfoItem.allCases[indexPath.row].title
+        cell.detailTextLabel?.text = InfoItem.allCases[indexPath.row].value(viewModel: self._viewModel)
+        cell.accessoryType = InfoItem.allCases[indexPath.row].interactive ? .disclosureIndicator : .none
         
         return cell
     }
@@ -119,7 +115,7 @@ public class BasicInfoViewController: UIViewController, UITableViewDelegate, UIT
         tableView.deselectRow(at: indexPath, animated: true)
         
         if let cell = tableView.cellForRow(at: indexPath) {
-            InfoItem.allCases[indexPath.section].onTap(viewController: self, view: cell, viewModel: self._viewModel)
+            InfoItem.allCases[indexPath.row].onTap(viewController: self, view: cell, viewModel: self._viewModel)
         }
     }
 }

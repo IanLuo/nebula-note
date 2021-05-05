@@ -76,7 +76,7 @@ public class OutlineTextView: UITextView, UIScrollViewDelegate {
             textView.typingAttributes = [NSAttributedString.Key.font: interface.font.body,
                                      NSAttributedString.Key.foregroundColor: interface.color.interactive]
             
-            textView.titleLabel.textColor = interface.color.spotlight
+            textView.titleLabel.textColor = interface.color.descriptive
             textView.titleLabel.font = UIFont.boldSystemFont(ofSize: 30)
             
             // work around for cursor coloring on mac
@@ -88,7 +88,7 @@ public class OutlineTextView: UITextView, UIScrollViewDelegate {
         
         self.addSubview(self.titleLabel)
         
-        self.titleLabel.sideAnchor(for: [.left, .top], to: self, edgeInsets: UIEdgeInsets(top: 0, left: Layout.edgeInsets.left, bottom: 0, right: -Layout.edgeInsets.right))
+        self.titleLabel.sideAnchor(for: [.left, .top], to: self, edgeInsets: UIEdgeInsets(top: 0, left: Layout.edgeInsets.left + 15, bottom: 0, right: -Layout.edgeInsets.right))
         
         let tapOnNameGesture = UITapGestureRecognizer()
         tapOnNameGesture.rx.event.asDriver().drive(onNext: { event in
@@ -147,7 +147,7 @@ public class OutlineTextView: UITextView, UIScrollViewDelegate {
         let size = self.titleLabel.sizeThatFits(CGSize(width: width,
                                                        height: CGFloat.greatestFiniteMagnitude))
         let edgeContentSize = self.titleLabel.sizeThatFits(size)
-        self.textContainerInset = UIEdgeInsets(top: edgeContentSize.height + 40, left: 30, bottom: 0, right: 0)
+        self.textContainerInset = UIEdgeInsets(top: edgeContentSize.height + 40, left: 20, bottom: 0, right: 0)
         
         var frame = self.titleLabel.frame
         frame.size = edgeContentSize
@@ -334,7 +334,7 @@ public class OutlineTextView: UITextView, UIScrollViewDelegate {
         currentLineIndicator.frame = rect
         
         var buttonRect = currentLineIndicator.actionButton.frame
-        buttonRect.origin.x = (paragraph?.firstLineHeadIndent ?? 0) + 5
+        buttonRect.origin.x = (paragraph?.firstLineHeadIndent ?? 0)
         currentLineIndicator.actionButton.frame = buttonRect
     }
 }

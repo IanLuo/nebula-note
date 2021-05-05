@@ -532,12 +532,14 @@ private class InputTextFieldCell: UITableViewCell, UITextFieldDelegate, FormCell
         override func textRect(forBounds bounds: CGRect) -> CGRect {
             var bounds = bounds
             bounds.origin.x += 10
+            bounds.size.width -= 15
             return bounds
         }
         
         override func editingRect(forBounds bounds: CGRect) -> CGRect {
             var bounds = bounds
             bounds.origin.x += 10
+            bounds.size.width -= 15
             return bounds
         }
     }

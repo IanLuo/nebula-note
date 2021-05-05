@@ -293,7 +293,7 @@ public class DocumentEditorViewModel: ViewModelProtocol {
     }
     
     public func loadBacklinks() {
-        self.dependency.documentSearchManager.searchBacklink(url: self.url).subscribe(onNext: { [weak self] in
+        self.dependency.documentSearchManager.searchBacklink(documentId: self.editorService.id, headingIds: self.editorService.logs?.headings.map { $0.key } ?? [], url: self.url).subscribe(onNext: { [weak self] in
             self?.backlinks.accept($0)
         }).disposed(by: self.disposeBag)
     }

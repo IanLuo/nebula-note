@@ -273,6 +273,14 @@ public class DocumentEditorViewController: UIViewController {
             _ = self.textView.resignFirstResponder()
         }
         
+        if isHidden {
+            let count = self.viewModel.dependency.globalCaptureEntryWindow?.modalViewsInfront.value ?? 0
+            self.viewModel.dependency.globalCaptureEntryWindow?.modalViewsInfront.accept(count - 1)
+        } else {
+            let count = self.viewModel.dependency.globalCaptureEntryWindow?.modalViewsInfront.value ?? 0
+            self.viewModel.dependency.globalCaptureEntryWindow?.modalViewsInfront.accept(count + 1)
+        }
+        
         self.toolBar.constraint(for: .right)?.constant = isHidden ? 44 : -Layout.innerViewEdgeInsets.right
         self.toolbarAvilabilityButton.isSelected = !isHidden
         
@@ -293,7 +301,9 @@ public class DocumentEditorViewController: UIViewController {
             self.enableKeyBindings()
         }
         
-        self.viewModel.loadBacklinks()
+        if self.viewModel.isReadyToEdit {
+            self.viewModel.loadBacklinks()
+        }
         
         self.viewModel.dependency.globalCaptureEntryWindow?.isInFullScreenEditor.accept(self.tabContainer?.isTabbarHidden == true)
     }
@@ -504,6 +514,8 @@ extension DocumentEditorViewController: DocumentEditViewModelDelegate {
     }
     
     public func didReadyToEdit() {
+        self.viewModel.loadBacklinks()
+        
         self._loadingIndicator.stopAnimating()
         
         self.setToolbarEnabled(true)
@@ -521,7 +533,7 @@ extension DocumentEditorViewController: DocumentEditViewModelDelegate {
                     
                     if let range = result.range {
                         self.textView.selectedRange = NSRange(location: range.upperBound, length: 0)
-                        self.textView.becomeFirstResponder()
+                        _ = self.textView.becomeFirstResponder()
                     }
                 }
             }

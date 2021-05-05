@@ -387,18 +387,22 @@ public class DocumentSearchManager {
         }
     }
     
-    public func searchBacklink(url: URL) -> Observable<[URL]> {
-        let linkString = OutlineParser.Values.Link.x3 + "://" + url.documentRelativePath
-        let containingWrapperURL = url.wrapperURL
+    public func searchBacklink(documentId: String, headingIds: [String], url: URL) -> Observable<[URL]> {
+        var allIds = [documentId]
+        allIds.append(contentsOf: headingIds)
         
         return Observable.create { observer -> Disposable in
             DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
                 var result: [URL] = []
                 for file in self.loadAllFiles() {
-                    guard file.wrapperURL != containingWrapperURL else { continue }
+                    guard file.wrapperURL != url else { continue }
+                    
                     if let content = try? String(contentsOf: file) {
-                        if content.contains(linkString) {
-                            result.append(file)
+                        for id in allIds {
+                            if content.contains(id) {
+                                result.append(file)
+                                continue
+                            }
                         }
                     }
                 }

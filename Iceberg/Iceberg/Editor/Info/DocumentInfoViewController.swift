@@ -96,6 +96,20 @@ public class DocumentInfoViewController: TransitionViewController {
                                                                  action: #selector(cancel))
     }
     
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        let count = self.viewModel.dependency.globalCaptureEntryWindow?.modalViewsInfront.value ?? 0
+        self.viewModel.dependency.globalCaptureEntryWindow?.modalViewsInfront.accept(count + 1)
+    }
+    
+    public override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        let count = self.viewModel.dependency.globalCaptureEntryWindow?.modalViewsInfront.value ?? 0
+        self.viewModel.dependency.globalCaptureEntryWindow?.modalViewsInfront.accept(count - 1)
+    }
+    
     @objc func cancel() {
         self.dismiss(animated: true)
     }

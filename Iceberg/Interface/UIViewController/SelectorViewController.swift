@@ -237,7 +237,7 @@ open class SelectorViewController: UIViewController {
         }
         
         self.titleLabel.columnAnchor(view: self.filterInput, space: 0)
-        self.filterInput.sideAnchor(for: [.left, .right], to: self.contentView, edgeInset: 30)
+        self.filterInput.sideAnchor(for: [.left, .right], to: self.contentView, edgeInset: 40)
         
         self.filterInput.columnAnchor(view: self.tableView, space: 0)
         self.filterInput.sizeAnchor(height: 30)

@@ -51,11 +51,11 @@ static NSMutableDictionary *attachmentMap;
         documentAttachment.bounds = CGRectMake(0, -2, 11, 15);
         
         foldedAttachment = [[NSTextAttachment alloc] init];
-        foldedAttachment.image = [[[UIImage imageNamed: @"arrowtriangle.right.fill" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil] fillWithColor:[[InterfaceTheme Color]spotlight]] insets:UIEdgeInsetsMake(5, 5, 5, 14)];
+        foldedAttachment.image = [[[UIImage imageNamed: @"arrowtriangle.right.fill" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil] fillWithColor:[[InterfaceTheme Color]descriptive]] insets:UIEdgeInsetsMake(5, 5, 5, 14)];
         foldedAttachment.bounds = CGRectMake(0, ([[SettingsAccessor shared] lineHeight] - 14) / 2, [[SettingsAccessor shared] lineHeight] + 9, [[SettingsAccessor shared] lineHeight]);
         
         unfoldedAttachment = [[NSTextAttachment alloc] init];
-        unfoldedAttachment.image = [[[UIImage imageNamed: @"arrowtriangle.down.fill" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil] fillWithColor:[[InterfaceTheme Color] spotlight]] insets:UIEdgeInsetsMake(5, 5, 5, 14)];
+        unfoldedAttachment.image = [[[UIImage imageNamed: @"arrowtriangle.down.fill" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil] fillWithColor:[[InterfaceTheme Color] descriptive]] insets:UIEdgeInsetsMake(5, 5, 5, 14)];
         unfoldedAttachment.bounds = CGRectMake(0, ([[SettingsAccessor shared] lineHeight] - 14) / 2, [[SettingsAccessor shared] lineHeight] + 9, [[SettingsAccessor shared] lineHeight]);
         
         scheduleAttachment = [[NSTextAttachment alloc] init];
@@ -116,7 +116,7 @@ static NSMutableDictionary *attachmentMap;
 }
 
 - (NSString *)string {
-    return [self.backingStore mutableString];
+    return [self.backingStore string];
 }
 
 + (NSTextAttachment *)foldingAttachment {
