@@ -347,7 +347,7 @@ private class CurrentLineIndicator: UIView {
         
         actionButton.interface { (me, theme) in
             let button = me as! UIButton
-            button.setImage(Asset.SFSymbols.paragraph.image.fill(color: theme.color.spotlight).resize(upto: CGSize(width: 20, height: 20)), for: .normal)
+            button.setImage(Asset.SFSymbols.paragraph.image.fill(color: theme.color.descriptive).resize(upto: CGSize(width: 20, height: 20)), for: .normal)
         }
         
         actionButton.imageView?.contentMode = .center
