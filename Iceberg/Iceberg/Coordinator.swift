@@ -286,7 +286,7 @@ extension Coordinator: CaptureCoordinatorDelegate {
                 self.showAttachmentPicker(kind: attachmentKind, at: self.fromView, location: self.fromLocation, complete: { [weak self] attachmentId in
                     coordinator.addAttachment(attachmentId: attachmentId) {
                         DispatchQueue.runOnMainQueueSafely {
-                            self?.viewController?.toastSuccess()
+                            self?.topCoordinator?.viewController?.toastSuccess()
                             self?.dependency.eventObserver.emit(NewCaptureAddedEvent(attachmentId: attachmentId, kind: attachmentKind.rawValue))
                         }
                     }

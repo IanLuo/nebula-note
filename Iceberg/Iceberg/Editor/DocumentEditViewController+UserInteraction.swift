@@ -169,7 +169,7 @@ extension DocumentEditorViewController: OutlineTextViewDelegate {
         self.viewModel.foldOrUnfold(location: chracterIndex)
         
         if self.textView.isFirstResponder {
-            self.textView.resignFirstResponder()
+            _ = self.textView.resignFirstResponder()
         }
     }
     
@@ -186,7 +186,10 @@ extension DocumentEditorViewController: OutlineTextViewDelegate {
         let actionsView = ActionsViewController()
 
         let view = AttachmentViewFactory.create(attachment: attachment)
-        view.sizeAnchor(width: self.view.bounds.width, height: view.size(for: self.view.bounds.width).height)
+        
+        let width = isMacOrPad ? 600 : self.view.bounds.width
+        view.sizeAnchor(width: width, height: view.size(for: width).height)
+        actionsView.preferredWidth = width
         
         actionsView.accessoryView = view
         actionsView.title = attachment.kind.name

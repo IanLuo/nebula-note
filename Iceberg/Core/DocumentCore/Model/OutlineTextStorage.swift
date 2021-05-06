@@ -1183,20 +1183,16 @@ extension OutlineTextStorage: OutlineParserDelegate {
         
         guard applyingRange.upperBound <= self.string.count else { return }
         
-        (self.string as NSString)
-            .enumerateSubstrings(
-                in: applyingRange,
-                options: .byLines
-            ) { (_, range, inclosingRange, stop) in
-                // 第一行缩进比正文少一个 level
-                if range.location == heading.range.location {
-                    let firstLine = NSMutableParagraphStyle()
-                    firstLine.firstLineHeadIndent = CGFloat((heading.level - 1) * 24)
-                    firstLine.headIndent = paragraphStyle.firstLineHeadIndent
-                    self.addAttributes([NSAttributedString.Key.paragraphStyle: firstLine], range: inclosingRange)
-                } else {
-                    self.addAttributes([NSAttributedString.Key.paragraphStyle: paragraphStyle], range: inclosingRange)
-                }
+        (self.string as NSString).enumerateSubstrings(in: applyingRange, options: .byLines) { (_, range, inclosingRange, stop) in
+            // 第一行缩进比正文少一个 level
+            if range.location == heading.range.location {
+                let firstLine = NSMutableParagraphStyle()
+                firstLine.firstLineHeadIndent = CGFloat((heading.level - 1) * 24)
+                firstLine.headIndent = paragraphStyle.firstLineHeadIndent
+                self.addAttributes([NSAttributedString.Key.paragraphStyle: firstLine], range: inclosingRange)
+            } else {
+                self.addAttributes([NSAttributedString.Key.paragraphStyle: paragraphStyle], range: inclosingRange)
+            }
         }
         
         // make sure the end of document have correctly indent

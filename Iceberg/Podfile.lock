@@ -3,7 +3,7 @@ PODS:
   - CHTCollectionViewWaterfallLayout (0.9.8):
     - CHTCollectionViewWaterfallLayout/ObjC (= 0.9.8)
   - CHTCollectionViewWaterfallLayout/ObjC (0.9.8)
-  - Differentiator (4.0.1)
+  - Differentiator (5.0.0)
   - Doorbell (0.2.5)
   - Drawsana (0.12.0)
   - Firebase/CoreOnly (7.11.0):
@@ -59,16 +59,16 @@ PODS:
   - OAuthSwift (2.1.0)
   - PKHUD (5.3.0)
   - PromisesObjC (1.2.12)
-  - RxCocoa (5.1.0):
-    - RxRelay (~> 5)
-    - RxSwift (~> 5)
-  - RxDataSources (4.0.1):
-    - Differentiator (~> 4.0)
-    - RxCocoa (~> 5.0)
-    - RxSwift (~> 5.0)
-  - RxRelay (5.1.1):
-    - RxSwift (~> 5)
-  - RxSwift (5.1.0)
+  - RxCocoa (6.1.0):
+    - RxRelay (= 6.1.0)
+    - RxSwift (= 6.1.0)
+  - RxDataSources (5.0.0):
+    - Differentiator (~> 5.0)
+    - RxCocoa (~> 6.0)
+    - RxSwift (~> 6.0)
+  - RxRelay (6.1.0):
+    - RxSwift (= 6.1.0)
+  - RxSwift (6.1.0)
   - SwiftGen (6.4.0)
   - SwiftyBeaver (1.9.2)
   - SwiftyDropbox (6.0.3):
@@ -87,9 +87,9 @@ DEPENDENCIES:
   - MSGraphClientSDK
   - OAuthSwift (from `https://github.com/OAuthSwift/OAuthSwift.git`, tag `2.1.2`)
   - PKHUD (~> 5.0)
-  - "RxCocoa (from `git@github.com:ReactiveX/RxSwift.git`, tag `5.1.0`)"
-  - RxDataSources
-  - "RxSwift (from `git@github.com:ReactiveX/RxSwift.git`, tag `5.1.0`)"
+  - "RxCocoa (from `git@github.com:ReactiveX/RxSwift.git`, tag `6.1.0`)"
+  - "RxDataSources (from `git@github.com:RxSwiftCommunity/RxDataSources`, tag `5.0.1`)"
+  - "RxSwift (from `git@github.com:ReactiveX/RxSwift.git`, tag `6.1.0`)"
   - SwiftGen (~> 6.0)
   - SwiftyBeaver
   - SwiftyDropbox
@@ -117,7 +117,6 @@ SPEC REPOS:
     - nanopb
     - PKHUD
     - PromisesObjC
-    - RxDataSources
     - RxRelay
     - SwiftGen
     - SwiftyBeaver
@@ -129,10 +128,13 @@ EXTERNAL SOURCES:
     :tag: 2.1.2
   RxCocoa:
     :git: "git@github.com:ReactiveX/RxSwift.git"
-    :tag: 5.1.0
+    :tag: 6.1.0
+  RxDataSources:
+    :git: "git@github.com:RxSwiftCommunity/RxDataSources"
+    :tag: 5.0.1
   RxSwift:
     :git: "git@github.com:ReactiveX/RxSwift.git"
-    :tag: 5.1.0
+    :tag: 6.1.0
   SwiftyStoreKit:
     :git: "git@github.com:bizz84/SwiftyStoreKit.git"
     :tag: 0.15.1
@@ -143,10 +145,13 @@ CHECKOUT OPTIONS:
     :tag: 2.1.2
   RxCocoa:
     :git: "git@github.com:ReactiveX/RxSwift.git"
-    :tag: 5.1.0
+    :tag: 6.1.0
+  RxDataSources:
+    :git: "git@github.com:RxSwiftCommunity/RxDataSources"
+    :tag: 5.0.1
   RxSwift:
     :git: "git@github.com:ReactiveX/RxSwift.git"
-    :tag: 5.1.0
+    :tag: 6.1.0
   SwiftyStoreKit:
     :git: "git@github.com:bizz84/SwiftyStoreKit.git"
     :tag: 0.15.1
@@ -154,7 +159,7 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   Alamofire: ae5c501addb7afdbb13687d7f2f722c78734c2d3
   CHTCollectionViewWaterfallLayout: 5f241d2480ab4939aa0d1ad4981de9eef1fbe60d
-  Differentiator: 886080237d9f87f322641dedbc5be257061b0602
+  Differentiator: e8497ceab83c1b10ca233716d547b9af21b9344d
   Doorbell: 4de282e483060cfb80b788e761eda35ec5c7cf69
   Drawsana: 6e69c064ffb859fef968a0a50d3481849a48941c
   Firebase: c121feb35e4126c0b355e3313fa9b487d47319fd
@@ -173,15 +178,15 @@ SPEC CHECKSUMS:
   OAuthSwift: b65415797d860d0a25c7d178250cfb8cec4b83bf
   PKHUD: 98f3e4bc904b9c916f1c5bb6d765365b5357291b
   PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
-  RxCocoa: 13d2a4d7546a34b8ececae8c281e4ea1dbb94f2b
-  RxDataSources: efee07fa4de48477eca0a4611e6d11e2da9c1114
-  RxRelay: d77f7d771495f43c556cbc43eebd1bb54d01e8e9
-  RxSwift: ad5874f24bb0dbffd1e9bb8443604e3578796c7a
+  RxCocoa: 5c51f02d562cbd94629f6c26cf0c80fe4ab8d343
+  RxDataSources: aa47cc1ed6c500fa0dfecac5c979b723542d79cf
+  RxRelay: 483e1a19fad961b41f0b0c0bee506f46c1ae14fe
+  RxSwift: a834e5c538e89eca0cae86f403f4fbf0336786ce
   SwiftGen: 67860cc7c3cfc2ed25b9b74cfd55495fc89f9108
   SwiftyBeaver: b8239f6bfe9e1ea3303e6139abc8c24228081d84
   SwiftyDropbox: 7e864f1e826bfc1b9b53a5edccef6c8d5fbe9e3b
   SwiftyStoreKit: 555996ed1159bb57209e7ec251b2a775d4434a69
 
-PODFILE CHECKSUM: 91890eee9f50b6c7bacc28cfb36fde3c9363bb6c
+PODFILE CHECKSUM: c3aafab0bd2349c28fd2bcb41c184bb0dca16bff
 
 COCOAPODS: 1.10.0

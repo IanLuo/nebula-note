@@ -166,7 +166,7 @@ public struct ShareExtensionItemHandler {
             } else {
                 return Observable.error(ShareError.nothingFound)
             }
-        }.catchError { error in
+        }.catch { error in
             return attachment.loadItem(identifier: "public.image", options: nil).flatMap { data -> Observable<URL> in
                 if let image = data as? UIImage {
                     return self.saveImage(image: image)
@@ -234,14 +234,14 @@ public struct ShareExtensionItemHandler {
     
     private func downloadAndSaveImage(url: String) -> Observable<URL> {
         if let url = URL(string: url) {
-            do {
-                if let image = UIImage(data: try Data(contentsOf: url)) {
-                    return self.saveImage(image: image)
+            return UIImage.download(url: url).flatMap { image -> Observable<UIImage> in
+                if let image = image {
+                    return Observable.just(image)
                 } else {
                     return Observable.error(ShareError.nothingFound)
                 }
-            } catch {
-                return Observable.error(error)
+            }.flatMap { image in
+                self.saveImage(image: image)
             }
         } else {
             return Observable.error(ShareError.nothingFound)
@@ -336,6 +336,26 @@ extension Observable {
             } else {
                 return self
             }
+        }
+    }
+}
+
+extension UIImage {
+    static func download(url: URL) -> Observable<UIImage?> {
+        return Observable.create { observer in
+            
+            DispatchQueue.global(qos: .background).async {
+                do {
+                    let image = try UIImage(data: Data(contentsOf: url))
+                    observer.onNext(image)
+                    observer.onCompleted()
+                } catch {
+                    observer.onError(error)
+                    observer.onCompleted()
+                }
+            }
+            
+            return Disposables.create()
         }
     }
 }

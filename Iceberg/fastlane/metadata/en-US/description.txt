@@ -2,6 +2,8 @@ Nebula is an personal knowledge system, combines note taking, material managemen
 
 * Rich text editor
 - Paragraphs can be folded.
+- You can drag and drop to add link and attachments into editor
+- You can paste your image into the editor
 - Text decorations like Bold, underscore, italic, strikethrough, hi-lightly.
 - Plenty of attachments: image, video, audio, location, free hand sketch.
 - Paragraphs can have subparagraphs, easier to organize the contents.

@@ -51,7 +51,7 @@ public class DateAndTimeSelectViewController: TransitionViewController {
     private let _dateSelectViewController: DateSelectViewController = DateSelectViewController()
     
     private lazy var _transitionDelegate: FadeBackgroundTransition = {
-        return FadeBackgroundTransition(animator: MoveToAnimtor())
+        return FadeBackgroundTransition(animator: MoveInAnimtor())
     }()
     
     public var passInDateAndTime: DateAndTimeType? {

@@ -5,9 +5,9 @@ platform :ios, '11.0'
 use_frameworks!
 
 target 'x3Note' do
-    pod 'RxSwift', :git => 'git@github.com:ReactiveX/RxSwift.git', :tag => '5.1.0'
-    pod 'RxCocoa', :git => 'git@github.com:ReactiveX/RxSwift.git', :tag => '5.1.0'
-    pod 'RxDataSources'
+    pod 'RxSwift', :git => 'git@github.com:ReactiveX/RxSwift.git', :tag => '6.1.0'
+    pod 'RxCocoa', :git => 'git@github.com:ReactiveX/RxSwift.git', :tag => '6.1.0'
+    pod 'RxDataSources', :git => 'git@github.com:RxSwiftCommunity/RxDataSources', :tag => '5.0.1'
     pod 'SwiftyBeaver'
     pod 'Haptico' # https://github.com/iSapozhnik/Haptico
     pod 'Drawsana' # https://github.com/Asana/Drawsana
@@ -22,14 +22,14 @@ target 'x3Note' do
 end
 
 target 'x3NoteTests' do
-    pod 'RxSwift', :git => 'git@github.com:ReactiveX/RxSwift.git', :tag => '5.1.0'
-    pod 'RxCocoa', :git => 'git@github.com:ReactiveX/RxSwift.git', :tag => '5.1.0'
+    pod 'RxSwift', :git => 'git@github.com:ReactiveX/RxSwift.git', :tag => '6.1.0'
+    pod 'RxCocoa', :git => 'git@github.com:ReactiveX/RxSwift.git', :tag => '6.1.0'
 end
 
 target 'Core' do
   pod 'OAuthSwift', :git => 'https://github.com/OAuthSwift/OAuthSwift.git', :tag => '2.1.2'
-  pod 'RxSwift', :git => 'git@github.com:ReactiveX/RxSwift.git', :tag => '5.1.0'
-  pod 'RxCocoa', :git => 'git@github.com:ReactiveX/RxSwift.git', :tag => '5.1.0'
+  pod 'RxSwift', :git => 'git@github.com:ReactiveX/RxSwift.git', :tag => '6.1.0'
+  pod 'RxCocoa', :git => 'git@github.com:ReactiveX/RxSwift.git', :tag => '6.1.0'
   pod 'SwiftyBeaver'
   pod 'SwiftyStoreKit', :git => 'git@github.com:bizz84/SwiftyStoreKit.git', :tag => '0.15.1'
   pod 'MHWebViewController'
@@ -39,8 +39,8 @@ target 'Core' do
 end
 
 target 'Interface' do
-  pod 'RxSwift', :git => 'git@github.com:ReactiveX/RxSwift.git', :tag => '5.1.0'
-  pod 'RxCocoa', :git => 'git@github.com:ReactiveX/RxSwift.git', :tag => '5.1.0'
+  pod 'RxSwift', :git => 'git@github.com:ReactiveX/RxSwift.git', :tag => '6.1.0'
+  pod 'RxCocoa', :git => 'git@github.com:ReactiveX/RxSwift.git', :tag => '6.1.0'
   pod 'SwiftyBeaver'
   pod 'PKHUD', '~> 5.0'
   pod 'JAMSVGImage'
@@ -48,12 +48,12 @@ end
 
 target 'CaptureIdeaExtension' do
     pod 'SwiftyBeaver'
-    pod 'RxSwift', :git => 'git@github.com:ReactiveX/RxSwift.git', :tag => '5.1.0'
+    pod 'RxSwift', :git => 'git@github.com:ReactiveX/RxSwift.git', :tag => '6.1.0'
 end
 
 target 'CaptureActionExtension' do
     pod 'SwiftyBeaver'
-    pod 'RxSwift', :git => 'git@github.com:ReactiveX/RxSwift.git', :tag => '5.1.0'
+    pod 'RxSwift', :git => 'git@github.com:ReactiveX/RxSwift.git', :tag => '6.1.0'
 end
 
 post_install do |installer|

@@ -110,6 +110,7 @@ public class EditorService {
             if strongSelf.document.documentState == .normal {
                 // 如果文档已经打开，则直接返回
                 log.info("file already open, do nothing")
+                self?.loadLogs()
                 DispatchQueue.runOnMainQueueSafely {
                     completion?(strongSelf.document.string)
                 }
