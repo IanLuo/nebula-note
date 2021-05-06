@@ -325,7 +325,7 @@ public class OutlineTextView: UITextView, UIScrollViewDelegate {
         
         let location = max(0, min(location, self.text.count - 1)) // incase the cursor is at the end, which is beyong de text length
         var rect = self.layoutManager.lineFragmentRect(forGlyphAt: location, effectiveRange: nil)
-        
+//        
         rect.origin.y += self.textContainerInset.top
         let font = (self.textStorage.attribute(NSAttributedString.Key.font, at: location, effectiveRange: nil) as? UIFont) ?? self.font
         let paragraph = self.textStorage.attribute(NSAttributedString.Key.paragraphStyle, at: location, effectiveRange: nil) as? NSParagraphStyle

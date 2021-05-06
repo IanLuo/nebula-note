@@ -1,11 +1,11 @@
-Nebula is an personal knowledge system, combines note taking, material management, and task management together.
+Nebula is a personal knowledge system, combines note-taking, material management, and task management together.
 
 * Rich text editor
 - Paragraphs can be folded.
-- You can drag and drop to add link and attachments into editor
+- You can drag and drop to add link and attachments into the editor
 - You can paste your image into the editor
 - Text decorations like Bold, underscore, italic, strikethrough, hi-lightly.
-- Plenty of attachments: image, video, audio, location, free hand sketch.
+- Plenty of attachments: image, video, audio, location, freehand sketch.
 - Paragraphs can have subparagraphs, easier to organize the contents.
 - Link List, checkbox, quote block, source code block.
 - Publish to blog platforms with attachments.
@@ -14,17 +14,17 @@ Nebula is an personal knowledge system, combines note taking, material managemen
 - Add working status to paragraphs.
 - Add priority to paragraph.
 - Insert date and time.
-- Full screen mode.
-- Works with Task Management and Material Management make your like easy and efficient.
+- Full-screen mode.
+- Works with Task Management and Material Management to make everything easy and efficient.
 
 * Automatically Kanban
 - Automatically generate all items from document headings.
-- Automatically update note content from Kanban, and other way around.
-- Support drag gesture on Mac and iPad.
+- Automatically update note content from Kanban, and another way around.
+- Support drag gestures on Mac and iPad.
 
 * Capture and Materials management
 - Capture text, image, audio, video, link from other apps.
-- Use those materials in your document anytime, any where.
+- Use those materials in your document anytime, anywhere.
 - Material management center.
 
 * Task Management
@@ -38,26 +38,26 @@ Nebula is an personal knowledge system, combines note taking, material managemen
 - Paragraph level link
 
 * Document management
-- Hierarchy base document system.
-- Apply multiple tags to paragraph.
-- Status, date and time can also used to find your content.
-- Documents, event paragraphs in it can be move around easily.
-- Full text search.
+- Hierarchy-based document system.
+- Apply multiple tags to paragraphs.
+- Status, date, and time can also be used to find your content.
+- Documents, event paragraphs in it can be moved around easily.
+- Full-text search.
 - Mark your favorite document, find them directly.
 
 * iCloud sync
 Automatically sync to your iCloud account, keep your data safe, and keep all devices the same.
 
 * Publish to blog platforms
-We support directly publish articles to blog platforms, if the platform we have now didn't contain the one you are using, please let use know.
+We support directly publish articles to blog platforms, if the platform we have now didn't contain the one you are using, please let us know.
 
 And we can publish attachments too!
 
 * Export to other formats
-- HTML, txt, image, PDF, Markdown.
+- HTML, text, image, PDF, Markdown.
 
 For more information about Nebula please visit http://forum.nebulaapp.net
 
 Privacy policy: https://forum.nebulaapp.net/t/32
 Terms of service: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
-twitter: @nebulaapp1
+Twitter: @nebulaapp1
