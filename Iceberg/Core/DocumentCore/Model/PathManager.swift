@@ -171,7 +171,7 @@ extension URL {
         
         var error: NSError?
         
-        fileCoordinator.prepare(forReadingItemsAt: urls, options: [], writingItemsAt: [], options: [], error: &error) { accessor in
+        fileCoordinator.prepare(forReadingItemsAt: urls, options: [.withoutChanges], writingItemsAt: [], options: [], error: &error) { completionHandler in
             for url in urls {
                 do {
                     try each(url, String(contentsOf: url))
@@ -179,6 +179,7 @@ extension URL {
                     log.error(error)
                 }
             }
+            completionHandler()
         }
     }
         

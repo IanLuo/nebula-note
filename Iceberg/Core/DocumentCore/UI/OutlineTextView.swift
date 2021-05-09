@@ -184,7 +184,7 @@ public class OutlineTextView: UITextView, UIScrollViewDelegate {
         return true
     }
     
-    @objc private func tapped(location: CGPoint, event: UIEvent?) -> Bool {
+    @objc private func tapped(location: CGPoint, locationOnView: CGPoint, event: UIEvent?) -> Bool {
 
         // handle multiple entrance
         guard location.x != lastTap.0.x || (CFAbsoluteTimeGetCurrent() - lastTap.2 > 0.5) else { return lastTap.1 }
@@ -213,33 +213,33 @@ public class OutlineTextView: UITextView, UIScrollViewDelegate {
         var shouldPassTapToOtherGuestureRecognizers = false
         if let hiddenValue = attributes[OutlineAttribute.tempShowAttachment] as? String {
             if hiddenValue == OutlineAttribute.Heading.folded.rawValue {
-                self.outlineDelegate?.didTapOnHiddenAttachment(textView: self, characterIndex: characterIndex, point: location)
+                self.outlineDelegate?.didTapOnHiddenAttachment(textView: self, characterIndex: characterIndex, point: locationOnView)
             }
         } else if let hiddenValue = attributes[OutlineAttribute.tempHidden] as? Int, hiddenValue == OutlineAttribute.hiddenValueFolded.intValue {
             // do nothing
         } else if let _ = attributes[OutlineAttribute.Heading.level] as? Int {
-            self.outlineDelegate?.didTapOnLevel(textView: self, chracterIndex: characterIndex, point: location)
+            self.outlineDelegate?.didTapOnLevel(textView: self, chracterIndex: characterIndex, point: locationOnView)
         } else if let checkbox = attributes[OutlineAttribute.checkbox] as? String {
-            self.outlineDelegate?.didTapOnCheckbox(textView: self, characterIndex: characterIndex, checkbox: checkbox, point: location)
+            self.outlineDelegate?.didTapOnCheckbox(textView: self, characterIndex: characterIndex, checkbox: checkbox, point: locationOnView)
         } else if let linkStructure = attributes[OutlineAttribute.Link.title] as? [String: Any] {
             self.hideKeyboardIfNeeded()
-            self.outlineDelegate?.didTapOnLink(textView: self, characterIndex: characterIndex, linkStructure: linkStructure, point: location)
+            self.outlineDelegate?.didTapOnLink(textView: self, characterIndex: characterIndex, linkStructure: linkStructure, point: locationOnView)
         } else if let tags = attributes[OutlineAttribute.Heading.tags] as? [String] {
             self.hideKeyboardIfNeeded()
-            self.outlineDelegate?.didTapOnTags(textView: self, characterIndex: characterIndex, tags: tags, point: location)
+            self.outlineDelegate?.didTapOnTags(textView: self, characterIndex: characterIndex, tags: tags, point: locationOnView)
         } else if let dateAndTimeString = attributes[OutlineAttribute.dateAndTime] as? String {
             self.hideKeyboardIfNeeded()
-            self.outlineDelegate?.didTapDateAndTime(textView: self, characterIndex: characterIndex, dateAndTimeString: dateAndTimeString, point: location)
+            self.outlineDelegate?.didTapDateAndTime(textView: self, characterIndex: characterIndex, dateAndTimeString: dateAndTimeString, point: locationOnView)
         } else if let planning = attributes[OutlineAttribute.Heading.planning] as? String {
             self.hideKeyboardIfNeeded()
-            self.outlineDelegate?.didTapOnPlanning(textView: self, characterIndex: characterIndex, planning: planning, point: location)
+            self.outlineDelegate?.didTapOnPlanning(textView: self, characterIndex: characterIndex, planning: planning, point: locationOnView)
         } else if let priority = attributes[OutlineAttribute.Heading.priority] as? String {
             self.hideKeyboardIfNeeded()
-            self.outlineDelegate?.didTapOnPriority(textView: self, characterIndex: characterIndex, priority: priority, point: location)
+            self.outlineDelegate?.didTapOnPriority(textView: self, characterIndex: characterIndex, priority: priority, point: locationOnView)
         }  else if let type = attributes[OutlineAttribute.Attachment.type] as? String,
             let value = attributes[OutlineAttribute.Attachment.value] as? String {
             self.hideKeyboardIfNeeded()
-            self.outlineDelegate?.didTapOnAttachment(textView: self, characterIndex: characterIndex, type: type, value: value, point: location)
+            self.outlineDelegate?.didTapOnAttachment(textView: self, characterIndex: characterIndex, type: type, value: value, point: locationOnView)
         } else {
             shouldPassTapToOtherGuestureRecognizers = true
         }
@@ -394,7 +394,7 @@ extension OutlineTextView: UIGestureRecognizerDelegate {
             let point = gestureRecognizer.location(in: self)
             let textLocation = CGPoint(x: point.x - self.textContainerInset.left,
                                        y: point.y - self.textContainerInset.top)
-            return self.tapped(location: textLocation, event: nil)
+            return self.tapped(location: textLocation, locationOnView: point, event: nil)
         } else {
             return false
         }
