@@ -498,6 +498,9 @@ public class DocumentEditorViewModel: ViewModelProtocol {
                 let range = range.moveLeftBound(by: -1).moveRightBound(by: 1)
                 return performCommandComposer(RemoveTextMarkCommandComposer(markType: markType, range: range), textView: textView)
             }
+            
+        case .addHeadingAtBottom:
+            self.unfold(location: self.string.count - 1)
         default: break
         }
         

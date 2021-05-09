@@ -136,8 +136,8 @@ public class DocumentEditorViewController: UIViewController {
         self.topViewContainer.sideAnchor(for: [.left, .top, .right], to: self.view, edgeInset: 0)
         self.topViewContainer.bottomAnchor.constraint(equalTo: self.textView.topAnchor).isActive = true
         self.topViewContainer.bottomAnchor.constraint(equalTo: self.rightViewContainer.topAnchor).isActive = true
-        if isPhone {
-            self.topViewContainer.sizeAnchor(height: 0) // this view only available for iPad and mac
+        if isPhone || isPad {
+            self.topViewContainer.sizeAnchor(height: 0) // this view only available for macOS
         }
         self.textView.sideAnchor(for: [.left, .bottom], to: self.view, edgeInset: 0)
         self.textView.rightAnchor.constraint(equalTo: self.rightViewContainer.leftAnchor).isActive = true
@@ -199,7 +199,7 @@ public class DocumentEditorViewController: UIViewController {
                 self?.showInfo()
             }
             
-            if isPhone {
+            if isPhone || isPad {
                 self.textView.inputAccessoryView = self.inputbar
                 self.inputbar.frame = CGRect(origin: .zero, size: .init(width: self.view.bounds.width, height: 44))
             } else {

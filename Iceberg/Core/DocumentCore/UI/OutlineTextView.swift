@@ -274,7 +274,7 @@ public class OutlineTextView: UITextView, UIScrollViewDelegate {
             return self.currentLineIndicator.actionButton
         }
         
-        if self.tapped(location: textLocation, event: event) {
+        if self.tapped(location: textLocation, locationOnView: point, event: event) {
             return super.hitTest(point, with: event)
         } else {
             return nil
