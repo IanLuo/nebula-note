@@ -25,5 +25,5 @@ public var isMac: Bool {
 }
 
 public var isMacOrPad: Bool {
-    return isPad || isMac
+    return !isPhone
 }

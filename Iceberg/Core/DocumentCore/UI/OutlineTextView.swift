@@ -409,7 +409,7 @@ extension OutlineTextView: UIDropInteractionDelegate {
     public func dropInteraction(_ interaction: UIDropInteraction, performDrop session: UIDropSession) {
         ShareExtensionItemHandler()
             .handleExtensionItem(session.items.map { $0.itemProvider })
-            .observeOn(MainScheduler())
+            .observe(on: MainScheduler())
             .subscribe(onNext: { urls in
             self.outlineDelegate?.didHandleIdeasFiles(urls: urls, characterIndex: self.selectedRange.location)
         }).disposed(by: self.disposeBag)
