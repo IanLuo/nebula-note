@@ -183,12 +183,13 @@ public class HomeCoordinator: Coordinator {
     private func initializeDefaultTab() {
         let hasInitedLandingTab: PublishSubject<Void> = PublishSubject<Void>()
         
-        self.dependency.appContext.isFileReadyToAccess.takeUntil(hasInitedLandingTab).subscribe(onNext: { [weak self] in
+        self.dependency.appContext.isFileReadyToAccess.take(until: hasInitedLandingTab).subscribe(onNext: { [weak self] in
             guard $0 else { return }
             
             hasInitedLandingTab.onNext(())
             let defaultTabIndex = SettingsAccessor.Item.landingTabIndex.get(Int.self) ?? 3
-            self?.selectTab(TabIndex(rawValue: defaultTabIndex) ?? .browser)
+            
+            self?.dependency.eventObserver.emit(SwitchTabEvent(toTabIndex: defaultTabIndex))
         }).disposed(by: self.disposeBag)
     }
     
@@ -302,7 +303,10 @@ extension HomeCoordinator: DashboardViewControllerDelegate {
         }
         
         if isMacOrPad {
-            (self.viewController as? DesktopHomeViewController)?.showInMiddlePart(viewController: viewController)
+            if let desktopHomeViewController = self.viewController as? DesktopHomeViewController {
+                desktopHomeViewController.showInMiddlePart(viewController: viewController)
+                desktopHomeViewController.updateSelectedTabIndex.onNext(index)
+            }
         } else {
             if let homeViewController = self.viewController as? HomeViewController {
                 homeViewController.showChildViewController(viewController)
@@ -333,7 +337,7 @@ extension HomeCoordinator {
 
 extension HomeCoordinator: TabContainerViewControllerDelegate {
     public func didTapOnOpenDocument() {
-        self.selectTab(.browser)
+        self.dependency.eventObserver.emit(SwitchTabEvent(toTabIndex: TabIndex.browser.index))
     }
     
     public func didCloseDocument(url: URL, editorViewController: DocumentEditorViewController) {

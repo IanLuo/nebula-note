@@ -40,6 +40,8 @@ public class DesktopHomeViewController: UIViewController {
     
     private weak var coordinator: HomeCoordinator?
     
+    public let updateSelectedTabIndex: PublishSubject<Int> = PublishSubject()
+    
     convenience init(dashboardViewController: DashboardViewController, coordinator: HomeCoordinator) {
         self.init()
         self.dashboardViewController = dashboardViewController
@@ -107,7 +109,7 @@ public class DesktopHomeViewController: UIViewController {
             ideasButton.setImage(Asset.SFSymbols.lightbulb.image.fill(color: interface.color.spotlitTitle), for: .normal)
             ideasButton.setBackgroundImage(UIImage.create(with: interface.color.spotlight, size: .singlePoint), for: .normal)
         }
-        ideasButton.sizeAnchor(width: 44, height: 44)
+        ideasButton.sizeAnchor(width: 60, height: 60)
         ideasButton.roundConer(radius: Layout.cornerRadius)
         ideasButton.rx.tap.subscribe(onNext: { [weak ideasButton] in
             self.coordinator?.showCaptureEntrance(at: ideasButton)
@@ -138,7 +140,15 @@ public class DesktopHomeViewController: UIViewController {
         
         let otherStack = UIStackView()
         otherStack.spacing = 20
-        otherStack.alignment = .center
+        otherStack.alignment = .lastBaseline
+        
+        otherStack.addArrangedSubview(self.createPanelButton(index: TabIndex.agenda))
+        otherStack.addArrangedSubview(self.createPanelButton(index: TabIndex.idea))
+        otherStack.addArrangedSubview(self.createPanelButton(index: TabIndex.search))
+        otherStack.addArrangedSubview(self.createPanelButton(index: TabIndex.browser))
+        otherStack.addArrangedSubview(self.createPanelButton(index: TabIndex.kanban))
+        otherStack.addArrangedSubview(self.createPanelButton(index: TabIndex.editor))
+        
         otherStack.addArrangedSubview(ideasButton)
         
         stackView.addArrangedSubview(actionsStack)
@@ -148,6 +158,38 @@ public class DesktopHomeViewController: UIViewController {
         stackView.sideAnchor(for: [.left, .right], to: self.toolBar, edgeInset: 30)
         stackView.centerAnchors(position: .centerY, to: self.toolBar)
         stackView.sizeAnchor(height: 80)
+        
+        self.updateSelectedTabIndex.subscribe(onNext: { index in
+            otherStack.arrangedSubviews.forEach { view in
+                if let button = view as? SwitchTabButton {
+                    button.isSelected = button.tag == index
+                }
+            }
+        }).disposed(by: self.disposeBag)
+    }
+    
+    class SwitchTabButton: UIButton {}
+    
+    private func createPanelButton(index: TabIndex) -> SwitchTabButton {
+        let button = SwitchTabButton()
+        button.tag = index.index
+        
+        button.interface { me, theme in
+            let button = me as! UIButton
+            button.setImage(index.icon.fill(color: theme.color.spotlight), for: .selected)
+            button.setImage(index.icon.fill(color: theme.color.interactive), for: .normal)
+            button.setBackgroundImage(UIImage.create(with: theme.color.background2, size: .singlePoint), for: .normal)
+            button.setBackgroundImage(UIImage.create(with: theme.color.background3, size: .singlePoint), for: .selected)
+        }
+        
+        button.roundConer(radius: Layout.cornerRadius)
+        button.sizeAnchor(width: 44, height: 44)
+        
+        button.rx.tap.subscribe(onNext: {
+            self.coordinator?.dependency.eventObserver.emit(SwitchTabEvent(toTabIndex: button.tag))
+        }).disposed(by: self.disposeBag)
+        
+        return button
     }
     
     public func hideLeftAndMiddlePart() {
