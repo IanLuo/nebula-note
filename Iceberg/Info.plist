@@ -140,13 +140,13 @@
 	<key>NSCalendarsUsageDescription</key>
 	<string>access your calendar</string>
 	<key>NSCameraUsageDescription</key>
-	<string>We need to access your camera to take photo</string>
+	<string>Take photo and add to your idea or add to your document</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>find your location</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>record</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>We need to access your photo library to pick photo</string>
+	<string>Pick images and add to your idea or add to your document</string>
 	<key>NSUbiquitousContainers</key>
 	<dict>
 		<key>iCloud.com.wod.x3note</key>
