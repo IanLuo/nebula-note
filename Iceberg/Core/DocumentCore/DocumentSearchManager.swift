@@ -395,7 +395,7 @@ public class DocumentSearchManager {
             DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
                 var result: [URL] = []
                 for file in self.loadAllFiles() {
-                    guard file.wrapperURL != url else { continue }
+                    guard file.wrapperURL.documentRelativePath != url.documentRelativePath else { continue }
                     
                     if let content = try? String(contentsOf: file) {
                         for id in allIds {
