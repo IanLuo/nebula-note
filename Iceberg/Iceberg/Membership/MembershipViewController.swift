@@ -203,7 +203,7 @@ public class MembershipViewController: UIViewController {
             .asDriver()
             .drive(onNext: { [weak self] product in
                 self?.monthlyProductView.update(product: product)
-//                self?.monthlyProductView.orderButton.hideProcessingAnimation()
+                self?.view.hideProcessingAnimation()
             }).disposed(by: self.disposeBag)
         
         self.viewModel
@@ -212,7 +212,7 @@ public class MembershipViewController: UIViewController {
             .asDriver()
             .drive(onNext: { [weak self] product in
                 self?.yearlyProductView.update(product: product)
-//                self?.yearlyProductView.orderButton.hideProcessingAnimation()
+                self?.view.hideProcessingAnimation()
             }).disposed(by: self.disposeBag)
         
         self.monthlyProductView
@@ -220,7 +220,7 @@ public class MembershipViewController: UIViewController {
             .rx
             .tap
             .subscribe(onNext: { [weak self] in
-//                self?.monthlyProductView.orderButton.showProcessingAnimation()
+                self?.view.showProcessingAnimation()
                 self?.viewModel.purchaseMonthlyMembership()
             })
             .disposed(by: self.disposeBag)
@@ -230,7 +230,7 @@ public class MembershipViewController: UIViewController {
             .rx
             .tap
             .subscribe(onNext: { [weak self] in
-//                self?.yearlyProductView.orderButton.showProcessingAnimation()
+                self?.view.showProcessingAnimation()
                 self?.viewModel.purchaseYearlyMembership()
             })
             .disposed(by: self.disposeBag)
@@ -249,18 +249,16 @@ public class MembershipViewController: UIViewController {
             })
             .disposed(by: self.disposeBag)
         
-//        self.viewModel.output.errorOccurs.subscribe(onNext: { [weak self] error in
-//            self?.showAlert(title: "error", message: "\(error.localizedDescription)")
-//        }).disposed(by:self.disposeBag)
+        self.viewModel.output.errorOccurs.subscribe(onNext: { [weak self] error in
+            self?.showAlert(title: "error", message: "\(error.localizedDescription)")
+            self?.view.hideProcessingAnimation()
+        }).disposed(by:self.disposeBag)
     }
     
     private func loadData() {
         self.viewModel.loadProducts()
         
         self.restoreButton.setTitle(L10n.Membership.restore, for: .normal)
-        
-//        self.monthlyProductView.orderButton.showProcessingAnimation()
-//        self.yearlyProductView.orderButton.showProcessingAnimation()
     }
     
 }

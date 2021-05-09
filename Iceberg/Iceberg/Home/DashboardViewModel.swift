@@ -70,10 +70,6 @@ public class DashboardViewModel: ViewModelProtocol {
     
     private func markNeedReloadData() {
         self._isHeadingsNeedsReload = true
-        
-        if isMacOrPad {
-            self.loadDataIfNeeded()
-        }
     }
     
     private func _setupHeadingChangeObserver() {
@@ -131,14 +127,14 @@ public class DashboardViewModel: ViewModelProtocol {
                                                                     eventType: iCloudOpeningStatusChangedEvent.self,
                                                                     queue: .main,
                                                                     action: { [weak self] (event: iCloudOpeningStatusChangedEvent) in
-                                                                        self?.markNeedReloadData()
+                                                                        self?.loadDataIfNeeded()
         })
         
         self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
                                                                     eventType: NewDocumentPackageDownloadedEvent.self,
                                                                     queue: .main,
                                                                     action: { [weak self] (event: NewDocumentPackageDownloadedEvent) in
-                                                                        self?.markNeedReloadData()
+                                                                        self?.loadDataIfNeeded()
         })
         
         self.coordinator?.dependency.eventObserver.registerForEvent(on: self,

@@ -106,7 +106,7 @@ public class MembershipViewModel: ViewModelProtocol {
     public func loadProducts() {
         Observable.combineLatest(self.purchaseManager.loadProduct(productId: PurchaseManager.ProductType.monthlyMembership.key),
                                  self.purchaseManager.validate(productId: PurchaseManager.ProductType.monthlyMembership.key))
-            .skipWhile { $0.0 == nil }
+            .skip { $0.0 == nil }
             .map { product, expireDate in
                 return Product(type: PurchaseManager.ProductType.monthlyMembership,
                                name: product!.localizedTitle,
@@ -121,7 +121,7 @@ public class MembershipViewModel: ViewModelProtocol {
         
         Observable.combineLatest(self.purchaseManager.loadProduct(productId: PurchaseManager.ProductType.yearlyMembership.key),
                                  self.purchaseManager.validate(productId: PurchaseManager.ProductType.yearlyMembership.key))
-            .skipWhile { $0.0 == nil }
+            .skip { $0.0 == nil }
             .map { product, expireDate in
                 return Product(type: PurchaseManager.ProductType.yearlyMembership,
                                name: product!.localizedTitle,

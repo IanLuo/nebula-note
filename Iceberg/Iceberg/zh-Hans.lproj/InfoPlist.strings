@@ -6,5 +6,5 @@
   Copyright © 2020 wod. All rights reserved.
 */
 
-CFBundleDisplayName = "星云记";
-CFBundleName = "星云记";
+CFBundleDisplayName = "星云笔记";
+CFBundleName = "星云笔记";

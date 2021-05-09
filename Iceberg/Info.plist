@@ -121,7 +121,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>306</string>
+	<string>307</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSApplicationCategoryType</key>
@@ -140,13 +140,13 @@
 	<key>NSCalendarsUsageDescription</key>
 	<string>access your calendar</string>
 	<key>NSCameraUsageDescription</key>
-	<string>take photo</string>
+	<string>We need to access your camera to take photo</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>find your location</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>record</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>access your photo library</string>
+	<string>We need to access your photo library to pick photo</string>
 	<key>NSUbiquitousContainers</key>
 	<dict>
 		<key>iCloud.com.wod.x3note</key>

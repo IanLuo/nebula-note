@@ -98,7 +98,7 @@ public class AgendaViewModel {
     }
     
     public func loadData() {
-        guard (isConnectingScreen || isMacOrPad) && self._shouldReloadData else { return }
+        guard self._shouldReloadData else { return }
         
         self._shouldReloadData = false
         
@@ -226,21 +226,12 @@ public class AgendaViewModel {
                                                                     eventType: DocumentHeadingChangeEvent.self,
                                                                     queue: .main) { [weak self] (event: DocumentHeadingChangeEvent) -> Void in
                                                                         self?._shouldReloadData = true
-                                                                        
-                                                                        if isMacOrPad {
-                                                                            guard self?.isLoadingAgendaData == false else { return }
-                                                                            self?.loadData()
-                                                                        }
         }
         
         self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
                                                                     eventType: DocumentAgendaRelatedChangeEvent.self,
                                                                     queue: .main) { [weak self] (event: DocumentAgendaRelatedChangeEvent) -> Void in
                                                                         self?._shouldReloadData = true
-                                                                        
-                                                                        if isMacOrPad {
-                                                                            self?.loadData()
-                                                                        }
         }
         
         self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
@@ -248,10 +239,6 @@ public class AgendaViewModel {
                                                                     queue: .main,
                                                                     action: { [weak self] (event: DateAndTimeChangedEvent) -> Void in
                                                                         self?._shouldReloadData = true
-                                                                        
-                                                                        if isMacOrPad {
-                                                                            self?.loadData()
-                                                                        }
         })
         
         self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
@@ -259,10 +246,6 @@ public class AgendaViewModel {
                                                                     queue: .main,
                                                                     action: { [weak self] (event: iCloudOpeningStatusChangedEvent) in
                                                                         self?._shouldReloadData = true
-                                                                        
-                                                                        if isMacOrPad {
-                                                                            self?.loadData()
-                                                                        }
         })
         
         self.coordinator?.dependency.eventObserver.registerForEvent(on: self,

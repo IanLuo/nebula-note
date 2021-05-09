@@ -15,7 +15,7 @@ import RxSwift
 public class KanbanGridViewController: UIViewController {
     private let viewModel: KanbanViewModel
     
-    private var status: [String] = []
+    public private(set) var status: [String] = []
     
     public init(viewModel: KanbanViewModel) {
         self.viewModel = viewModel
@@ -35,6 +35,12 @@ public class KanbanGridViewController: UIViewController {
         
         self.view.addSubview(self.contentView)
         self.contentView.allSidesAnchors(to: self.view, edgeInset: 0)
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        self.viewModel.loadAllStatus()
     }
     
     public func showStatus(_ status: [String]) {

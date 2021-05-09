@@ -199,6 +199,6 @@ public func mergePlistFiles(name: String, url1: URL, url2: URL) -> URL {
         try? FileManager.default.removeItem(at: mergedFileURL)
     }
     
-    plist1.write(to: mergedFileURL, atomically: false)
+    plist1.write(to: mergedFileURL, atomically: true)
     return mergedFileURL
 }

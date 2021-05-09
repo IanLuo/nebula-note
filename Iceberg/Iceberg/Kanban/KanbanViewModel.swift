@@ -32,12 +32,12 @@ public class KanbanViewModel: ViewModelProtocol {
     
     public let ignoredDocuments: BehaviorRelay<[String]> = BehaviorRelay(value: [])
     
-    private let ignoredEntryStore: KeyValueStore = KeyValueStoreFactory.store(type: KeyValueStoreType.plist(.custom("ignoredEntries")))
+    private lazy var ignoredEntryStore: KeyValueStore = KeyValueStoreFactory.store(type: KeyValueStoreType.plist(.custom("ignoredEntries")))
     
     public var shouldReloadData: Bool = false
     
     private var isLoadingAllData = false
-    
+        
     public required init() {
         self.headingsMap.subscribe(onNext: { [weak self] map in
             let statusMap: [String: Int] = map.mapValues({
@@ -54,10 +54,6 @@ public class KanbanViewModel: ViewModelProtocol {
                                                                     eventType: DocumentHeadingChangeEvent.self,
                                                                     queue: .main) { [weak self] (event: DocumentHeadingChangeEvent) -> Void in
             self?.shouldReloadData = true
-            
-            if isMacOrPad {
-                self?.loadAllStatus()
-            }
         }
         
         self.dependency.purchaseManager.isMember.subscribe(onNext: {

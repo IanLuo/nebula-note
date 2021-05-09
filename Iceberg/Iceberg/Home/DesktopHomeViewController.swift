@@ -36,12 +36,15 @@ public class DesktopHomeViewController: UIViewController {
     private let toggleLeftPartButton = UIButton()
     private var dashboardViewController: DashboardViewController!
     
+    public weak var delegate: HomeViewControllerDelegate?
+    
     private weak var coordinator: HomeCoordinator?
     
     convenience init(dashboardViewController: DashboardViewController, coordinator: HomeCoordinator) {
         self.init()
         self.dashboardViewController = dashboardViewController
         self.coordinator = coordinator
+        self.delegate = coordinator
     }
     
     public override func viewDidLoad() {
@@ -175,8 +178,10 @@ public class DesktopHomeViewController: UIViewController {
         
         if visiable {
             self.leftPart.constraint(for: .left)?.constant = 0
+            self.delegate?.didShowMasterView()
         } else {
             self.leftPart.constraint(for: .left)?.constant = -Constants.leftWidth
+            self.delegate?.didShowDetailView()
         }
         
         self.toggleLeftPartButton.isSelected = visiable

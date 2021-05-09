@@ -138,7 +138,7 @@ public struct OutlineThemeStyle: OutlineThemeConfigProtocol {
         self.unorderdedListStyle = TextStyle(font: theme.font.title, color: theme.color.secondaryDescriptive)
         self.checkboxStyle = TextStyle(font: theme.font.title, color: theme.color.spotlight)
         self.linkStyle = TextStyle(font: theme.font.body, color: theme.color.spotlight)
-        self.markStyle = TextStyle(font: theme.font.footnote, color: theme.color.secondaryDescriptive.withAlphaComponent(0.1))
+        self.markStyle = TextStyle(font: theme.font.footnote, color: theme.color.secondaryDescriptive.withAlphaComponent(0.3))
         self.paragraphStyle = TextStyle(font: theme.font.body, color: theme.color.descriptive)
         self.codeBlockStyle = CodeBlockStyle(textStyle: TextStyle(font: theme.font.body,
                                                                   color: theme.color.interactive,

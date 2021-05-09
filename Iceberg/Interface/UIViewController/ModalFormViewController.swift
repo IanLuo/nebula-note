@@ -257,6 +257,8 @@ open class ModalFormViewController: TransitionViewController {
     }
     
     @objc private func keyBoardWillShow(notification: Notification) {
+        guard isPhone else { return }
+        
         if let rect = notification.userInfo?[UIApplication.keyboardFrameEndUserInfoKey] as? CGRect {
             let height = rect.height
             UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseOut, animations: {
@@ -271,6 +273,8 @@ open class ModalFormViewController: TransitionViewController {
     }
     
     @objc private func keyBoardWillHide(notification: Notification) {
+        guard isPhone else { return }
+        
         UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseOut, animations: {
             self.tableView.constraint(for: .bottom)?.constant = 0
             self.view.layoutIfNeeded()

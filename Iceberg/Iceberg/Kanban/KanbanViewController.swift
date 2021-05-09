@@ -106,6 +106,7 @@ public class KanbanViewController: UIViewController {
         
         Observable.combineLatest(self.viewModel.status, self.viewModel.ignoredStatus, self.viewModel.ignoredDocuments).asDriver(onErrorJustReturn: ([:], [], [])).drive(onNext: { [weak self] (statusMap, ignored, _) in
             guard let strongSelf = self else { return }
+            guard strongSelf.view.window != nil else { return }
             let view = strongSelf.createStatusButtonBar(statusMap, ignored: ignored)
             strongSelf.statusBarContainer.subviews.forEach { $0.removeFromSuperview() }
             strongSelf.statusBarContainer.addSubview(view)
