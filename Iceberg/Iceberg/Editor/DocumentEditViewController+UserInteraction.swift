@@ -22,10 +22,14 @@ extension DocumentEditorViewController: OutlineTextViewDelegate {
                     .createAttachmentFromIdea(attachmentManager: self.viewModel.dependency.attachmentManager,
                                               url: url)
             }
-            .observeOn(MainScheduler())
+            .observe(on: MainScheduler())
             .subscribe(onNext: {
                 guard let attachment = self.viewModel.dependency.attachmentManager.attachment(with: $0) else { return }
                 _ = self.viewModel.performAction(EditAction.addAttachment(NSRange(location: characterIndex, length: 0), attachment.key, attachment.kind.rawValue), textView: self.textView)
+                
+                if attachment.kind.displayAsPureText {
+                    self.viewModel.dependency.attachmentManager.delete(key: attachment.key, completion: {}, failure: {_ in })
+                }
             })
             .disposed(by: self.disposeBag)
     }

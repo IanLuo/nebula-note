@@ -178,8 +178,8 @@ public class DesktopHomeViewController: UIViewController {
             let button = me as! UIButton
             button.setImage(index.icon.fill(color: theme.color.spotlight), for: .selected)
             button.setImage(index.icon.fill(color: theme.color.interactive), for: .normal)
-            button.setBackgroundImage(UIImage.create(with: theme.color.background2, size: .singlePoint), for: .normal)
-            button.setBackgroundImage(UIImage.create(with: theme.color.background3, size: .singlePoint), for: .selected)
+            button.setBackgroundImage(UIImage.create(with: theme.color.background1, size: .singlePoint), for: .normal)
+            button.setBackgroundImage(UIImage.create(with: theme.color.background2, size: .singlePoint), for: .selected)
         }
         
         button.roundConer(radius: Layout.cornerRadius)

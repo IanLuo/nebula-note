@@ -110,8 +110,11 @@ public class TabContainerViewController: UIViewController {
                 self.tabBar.renameTab(with: event.oldUrl, to: event.newUrl)
                 self.addPair(for: event.newUrl, viewController: controller)
                 self.removePair(for: event.oldUrl)
-                self.viewModel.context.dependency.settingAccessor.logCloseDocument(url: event.oldUrl)
-                self.viewModel.context.dependency.settingAccessor.logOpenDocument(url: event.newUrl)
+                
+                DispatchQueue.global(qos: .userInteractive).async {
+                    self.viewModel.context.dependency.settingAccessor.logCloseDocument(url: event.oldUrl)
+                    self.viewModel.context.dependency.settingAccessor.logOpenDocument(url: event.newUrl)
+                }
             }
         }
         
@@ -162,7 +165,9 @@ public class TabContainerViewController: UIViewController {
             self.hideTabbar(false)
         }
         
-        self.viewModel.dependency.settingAccessor.logOpenDocument(url: url)
+        DispatchQueue.global(qos: .userInteractive).async {
+            self.viewModel.dependency.settingAccessor.logOpenDocument(url: url)
+        }
         
         if let viewController = self.viewController(for: url) {
             
@@ -206,8 +211,10 @@ public class TabContainerViewController: UIViewController {
             viewController.removeFromParent()
             viewController.view.removeFromSuperview()
             self.removePair(for: url)
-            self.delegate?.didCloseDocument(url: url, editorViewController: viewController)
-            self.viewModel.dependency.settingAccessor.logCloseDocument(url: url)
+            DispatchQueue.global(qos: .userInteractive).async {
+                self.delegate?.didCloseDocument(url: url, editorViewController: viewController)
+                self.viewModel.dependency.settingAccessor.logCloseDocument(url: url)
+            }
         }
     }
     
