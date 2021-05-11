@@ -24,7 +24,8 @@ extension DocumentEditorViewController: OutlineTextViewDelegate {
             }
             .observe(on: MainScheduler())
             .subscribe(onNext: {
-                guard let attachment = self.viewModel.dependency.attachmentManager.attachment(with: $0) else { return }
+                guard let key = $0 else { return }
+                guard let attachment = self.viewModel.dependency.attachmentManager.attachment(with: key) else { return }
                 _ = self.viewModel.performAction(EditAction.addAttachment(NSRange(location: characterIndex, length: 0), attachment.key, attachment.kind.rawValue), textView: self.textView)
                 
                 if attachment.kind.displayAsPureText {

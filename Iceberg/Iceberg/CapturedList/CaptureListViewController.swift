@@ -164,6 +164,10 @@ public class CaptureListViewController: UIViewController {
                     if ideasCount > 0 {
                         self.viewModel.loadAllCapturedData()
                     }
+                }, onError: { error in
+                    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1) {
+                        refreshButton.hideProcessingAnimation()
+                    }
                 }).disposed(by: self.disposeBag)
         }).disposed(by: self.disposeBag)
         

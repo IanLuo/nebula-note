@@ -57,8 +57,12 @@
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES"
       launchAutomaticallySubstyle = "2">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <RemoteRunnable
+         runnableDebuggingMode = "0"
+         BundleIdentifier = "com.wod.x3note"
+         RemotePath = "/var/containers/Bundle/Application/BD5274AE-F447-4680-B777-D143BF9F3E00/Nebula.app">
+      </RemoteRunnable>
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E43427F52121BF5B00EC6DC3"
@@ -66,7 +70,7 @@
             BlueprintName = "x3Note"
             ReferencedContainer = "container:x3Note.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"

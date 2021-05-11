@@ -41,7 +41,7 @@ public struct ShareExtensionDataHandler {
         }
     }
     
-    public func createAttachmentFromIdea(attachmentManager: AttachmentManager, url: URL) -> Observable<String> {
+    public func createAttachmentFromIdea(attachmentManager: AttachmentManager, url: URL) -> Observable<String?> {
         return Observable.create { observer in
             
             let attachmentKindString = url.deletingPathExtension().pathExtension // kind 已经在保存的时候，添加成为了 url 的前一个 ext
@@ -61,16 +61,17 @@ public struct ShareExtensionDataHandler {
                         observer.onNext(key)
                         observer.onCompleted()
                     } catch {
-                        observer.onError(error)
+                        observer.onNext(nil)
                         observer.onCompleted()
                     }
                 }) { error in
                     log.error(error)
-                    observer.onError(error)
+                    observer.onNext(nil)
                     observer.onCompleted()
                 }
             } else {
-                observer.onError(IdeaError.dataUnavailable)
+                observer.onNext(nil)
+                observer.onCompleted()
             }
             
             return Disposables.create()
@@ -87,9 +88,17 @@ public struct ShareExtensionDataHandler {
         
         return Observable
             .zip(sharedItem.map {
-                self.createAttachmentFromIdea(attachmentManager: attachmentManager, url: $0)
-                    .flatMap(captureService.save(key:))
-            }).map { $0.count }
-            .observeOn(ConcurrentDispatchQueueScheduler(queue: DispatchQueue.global(qos: .background)))
+                return self.createAttachmentFromIdea(attachmentManager: attachmentManager, url: $0)
+                    .flatMap({ (key: String?) ->  Observable<String?> in
+                        if let key = key {
+                            return captureService.save(key: key).map { Optional($0) }
+                        } else {
+                            return Observable<String?>.just(nil)
+                        }
+                    })
+            })
+            .map({ $0.filter { $0 != nil } })
+            .map { $0.count }
+            .observe(on: ConcurrentDispatchQueueScheduler(queue: DispatchQueue.global(qos: .background)))
     }
 }
