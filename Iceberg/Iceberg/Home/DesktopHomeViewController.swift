@@ -109,8 +109,8 @@ public class DesktopHomeViewController: UIViewController {
             ideasButton.setImage(Asset.SFSymbols.lightbulb.image.fill(color: interface.color.spotlitTitle), for: .normal)
             ideasButton.setBackgroundImage(UIImage.create(with: interface.color.spotlight, size: .singlePoint), for: .normal)
         }
-        ideasButton.sizeAnchor(width: 60, height: 60)
-        ideasButton.roundConer(radius: Layout.cornerRadius)
+        ideasButton.sizeAnchor(width: 44, height: 44)
+        ideasButton.roundConer(radius: 22)
         ideasButton.rx.tap.subscribe(onNext: { [weak ideasButton] in
             self.coordinator?.showCaptureEntrance(at: ideasButton)
         }).disposed(by: self.disposeBag)

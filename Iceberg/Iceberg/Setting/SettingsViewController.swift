@@ -503,7 +503,7 @@ public class SettingsViewController: UITableViewController {
                             viewController.dismiss(animated: true, completion: { [weak self] in
                                 guard let strongSelf = self else { return }
                                 let buttonToUpdate = isFinish ?
-                                strongSelf.planningFinishButton : strongSelf.planningUnfinishButton
+                                    strongSelf.planningFinishButton : strongSelf.planningUnfinishButton
                                 
                                 buttonToUpdate?.setTitle(strongSelf.viewModel.getPlanning(isForFinished: isFinish).joined(separator: ","), for: .normal)
                                 
@@ -513,7 +513,7 @@ public class SettingsViewController: UITableViewController {
                     }
                 }
                 
-                self.present(formViewController, animated: true, completion: nil)
+                formViewController.present(from: self, at: from)
             })
         }
         
