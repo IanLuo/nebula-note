@@ -320,17 +320,16 @@ public class OutlineTextView: UITextView, UIScrollViewDelegate {
     }
     
     public func updateCurrentLineIndicator(location: Int) {
+        let caretRect = self.caretRect(for: self.position(from: self.beginningOfDocument, offset: location)!)
         guard self.currentLineIndicator.alpha == 1 else { return }
         guard self.text.count > 0 else { return }
         
         let location = max(0, min(location, self.text.count - 1)) // incase the cursor is at the end, which is beyong de text length
-        var rect = self.layoutManager.lineFragmentRect(forGlyphAt: location, effectiveRange: nil)
-//        
-        rect.origin.y += self.textContainerInset.top
-        let font = (self.textStorage.attribute(NSAttributedString.Key.font, at: location, effectiveRange: nil) as? UIFont) ?? self.font
         let paragraph = self.textStorage.attribute(NSAttributedString.Key.paragraphStyle, at: location, effectiveRange: nil) as? NSParagraphStyle
+        let rect = CGRect(x: self.textContainerInset.left - self.currentLineIndicator.actionButton.bounds.width,
+                          y: caretRect.origin.y - (self.currentLineIndicator.actionButton.bounds.height - caretRect.height) / 2,
+                             width: self.bounds.width, height: caretRect.size.height)
         
-        rect.origin.y -= (rect.height - (font?.capHeight ?? 0) - 10) / 2
         currentLineIndicator.frame = rect
         
         var buttonRect = currentLineIndicator.actionButton.frame
