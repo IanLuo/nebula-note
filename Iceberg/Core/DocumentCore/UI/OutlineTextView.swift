@@ -320,9 +320,11 @@ public class OutlineTextView: UITextView, UIScrollViewDelegate {
     }
     
     public func updateCurrentLineIndicator(location: Int) {
-        let caretRect = self.caretRect(for: self.position(from: self.beginningOfDocument, offset: location)!)
         guard self.currentLineIndicator.alpha == 1 else { return }
         guard self.text.count > 0 else { return }
+        
+        let position = self.position(from: self.beginningOfDocument, offset: location) ?? self.beginningOfDocument
+        let caretRect = self.caretRect(for: position)
         
         let location = max(0, min(location, self.text.count - 1)) // incase the cursor is at the end, which is beyong de text length
         let paragraph = self.textStorage.attribute(NSAttributedString.Key.paragraphStyle, at: location, effectiveRange: nil) as? NSParagraphStyle

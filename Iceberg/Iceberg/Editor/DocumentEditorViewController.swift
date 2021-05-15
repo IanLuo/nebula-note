@@ -543,14 +543,12 @@ extension DocumentEditorViewController: DocumentEditViewModelDelegate {
     
     internal func scrollTo(location: Int, shouldScrollToZero: Bool = false) {
         let moveToLocationAndFlash: (Int) -> Void = { location in
-            if !self.textView.isFirstResponder {
-                _ = self.textView.becomeFirstResponder()
-            }
-            
-            self.textView.selectedRange = NSRange(location: location, length: 0)
-            self.textView.scrollRangeToVisible(self.textView.selectedRange)
-            
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.3) {
+                if !self.textView.isFirstResponder {
+                    _ = self.textView.becomeFirstResponder()
+                }
+                self.textView.selectedRange = NSRange(location: location, length: 0)
+                self.textView.scrollRangeToVisible(self.textView.selectedRange)
                 self.textView.flashLine(location: location)
             }
         }
