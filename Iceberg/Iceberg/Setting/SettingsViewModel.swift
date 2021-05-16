@@ -166,6 +166,7 @@ public class SettingsViewModel: ViewModelProtocol {
     }
     
     public func setSyncEnabled(_ enable: Bool, completion: @escaping (Result<Void, Error>) -> Void) {
+        self.dependency.eventObserver.emit(iCloudStatusAboutToChangeEvent(isGointToEnable: enable))
         self.dependency.syncManager.swithiCloud(on: enable) { [weak self] error in
             DispatchQueue.runOnMainQueueSafely {
                 if let error = error {

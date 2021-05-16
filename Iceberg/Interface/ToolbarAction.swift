@@ -43,6 +43,7 @@ public enum OtherAction: String, DocumentActon {
     case outline
     case inspector
     case cancel
+    case closeTab
 }
 
 public enum NormalAction: String, ToolbarActionProtocol, DocumentActon {

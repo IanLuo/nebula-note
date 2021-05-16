@@ -101,23 +101,32 @@ public class EditorService {
         return self.document.documentState == .normal
     }
     
+    private let lock = NSLock()
+    
     public func open(completion:((String?) -> Void)? = nil) {
         log.info("open file: \(self.url)")
+        
+        lock.lock()
         
         self.queue.async { [weak self] in
             guard let strongSelf = self else { return }
             
-            if strongSelf.document.documentState == .normal {
+            if strongSelf.isOpen {
                 // 如果文档已经打开，则直接返回
                 log.info("file already open, do nothing")
                 self?.loadLogs()
                 DispatchQueue.runOnMainQueueSafely {
                     completion?(strongSelf.document.string)
                 }
+                
+                self?.lock.unlock()
             } else {
                 // 打开文档，触发解析，然后返回
                 strongSelf.document.open { (isOpenSuccessfully: Bool) in
+                    
                     guard let strongSelf = self else { return }
+                    
+                    strongSelf.lock.unlock()
                                         
                     if isOpenSuccessfully {
                         

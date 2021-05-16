@@ -54,6 +54,7 @@ public enum KeyAction: String, CaseIterable {
     case save
     case foldOrUnfoldHeading
     case foldOthersExcept
+    case closeTab
     
     public var isGlobal: Bool {
         switch self {
@@ -91,6 +92,8 @@ public enum KeyAction: String, CaseIterable {
         switch self {
         case .cancel:
             return ""
+        case .closeTab:
+            return "close tab"
         case .toggleLeftPart:
             return L10n.Key.Command.toggleLeftPart
 //        case .toggleMiddlePart:
@@ -262,6 +265,8 @@ public enum KeyAction: String, CaseIterable {
             return NormalAction.toggleFoldOrUnfold
         case .foldOthersExcept:
             return NormalAction.foldOthersExcept
+        case .closeTab:
+            return OtherAction.closeTab
         }
     }
 }
@@ -316,7 +321,8 @@ public struct KeyBinding {
         .cancel: UIKeyCommand.inputEscape,
         .save: "cmd`s",
         .foldOrUnfoldHeading: "cmd`f",
-        .foldOthersExcept: "cmd`shift`f"
+        .foldOthersExcept: "cmd`shift`f",
+        .closeTab: "cmd`w"
     ]
     
     public func constructMenu(builder: UIMenuBuilder) {

@@ -461,6 +461,10 @@ extension DocumentEditorViewController {
             self.viewModel.foldOtherHeadings(except: self.textView.selectedRange.location)
         }
         
+        binding.addAction(for: KeyAction.closeTab, on: self) {
+            self.viewModel.dependency.eventObserver.emit(CloseTabEvent(url: self.viewModel.url))
+        }
+        
         self.viewModel.context.coordinator?.enableGlobalNavigateKeyCommands()
     }
 }

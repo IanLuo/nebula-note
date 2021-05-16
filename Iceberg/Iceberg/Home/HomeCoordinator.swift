@@ -37,7 +37,7 @@ public class HomeCoordinator: Coordinator {
     
     private let disposeBag = DisposeBag()
     
-    private var tabController: TabContainerViewController!
+    public private(set) var tabController: TabContainerViewController!
     
     public override init(stack: UINavigationController, dependency: Dependency) {
         super.init(stack: stack, dependency: dependency)

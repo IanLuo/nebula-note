@@ -151,10 +151,24 @@ public class iCloudAvailabilityChangedEvent: Event {
     public init(isEnabled: Bool) { self.isEnabled = isEnabled }
 }
 
+public class iCloudStatusAboutToChangeEvent: Event {
+    public let isGoingToEnable: Bool
+    public init(isGointToEnable: Bool) {
+        self.isGoingToEnable = isGointToEnable
+    }
+}
+
 // tab
 public class SwitchTabEvent: Event {
     public let toTabIndex: Int
     public init(toTabIndex: Int) {
         self.toTabIndex = toTabIndex
+    }
+}
+
+public class CloseTabEvent: Event {
+    public let url: URL
+    public init(url: URL) {
+        self.url = url
     }
 }

@@ -78,26 +78,28 @@ public class TabContainerViewController: UIViewController {
         }
     }
     
+    private func chooseNextTabAfterClose(url: URL) {
+        let index = self.index(for: url) ?? 0
+        if self.openingViewControllers.count == 1 || index == 0 {
+            if let documentRelativePath = self.openingViewControllers.first?.0 {
+                self.selectTab(url: URL(documentRelativePath: documentRelativePath), location: 0)
+            }
+        } else if index - 1 > 0 {
+            let documentRelativePath = self.openingViewControllers[index - 1].0
+            self.selectTab(url: URL(documentRelativePath: documentRelativePath), location: 0)
+        }
+    }
+    
     private func setupObservers() {
         self.openDocumentButton.rx.tap.subscribe(onNext: { [weak self] _ in self?.delegate?.didTapOnOpenDocument() }).disposed(by: self.disposeBag)
         
         self.tabBar.onCloseDocument
             .subscribe(onNext: { [weak self ] tab in
-                let index = self?.index(for: tab.url) ?? 0
                 self?.closeDocument(url: tab.url)
                 
                 // if the closed document is currently openning, open another one
                 if tab.isSelected.value {
-                    if self?.openingViewControllers.count == 1 || index == 0 {
-                        if let documentRelativePath = self?.openingViewControllers.first?.0 {
-                            self?.selectTab(url: URL(documentRelativePath: documentRelativePath), location: 0)
-                        }
-                    } else if index - 1 > 0 {
-                        if let documentRelativePath = self?.openingViewControllers[index - 1].0 {
-                            self?.selectTab(url: URL(documentRelativePath: documentRelativePath), location: 0)
-                        }
-                    }
-                    
+                    self?.chooseNextTabAfterClose(url: tab.url)
                 }
             }).disposed(by: self.disposeBag)
         
@@ -122,10 +124,31 @@ public class TabContainerViewController: UIViewController {
             self.closeDocument(url: event.url)
             self.tabBar.removeTab(with: event.url)
         }
+        
+        self.viewModel.dependency.eventObserver.registerForEvent(on: self,
+                                                                 eventType: iCloudStatusAboutToChangeEvent.self,
+                                                                 queue: nil) { [weak self] (event: iCloudStatusAboutToChangeEvent) -> Void in
+            self?.closeAll()
+        }
+        
+        self.viewModel.dependency.eventObserver.registerForEvent(on: self, eventType: CloseTabEvent.self, queue: .main) { [weak self] in
+            let url = $0.url
+            self?.closeDocument(url: url)
+            self?.tabBar.removeTab(with: url)
+            self?.chooseNextTabAfterClose(url: url)
+        }
     }
     
     deinit {
         self.viewModel.context.dependency.eventObserver.unregister(for: self, eventType: nil)
+    }
+    
+    public func closeAll() {
+        self.openingViewControllers.forEach { [weak self] key, viewController in
+            self?.closeDocument(url: viewController.viewModel.url)
+        }
+        self.openingViewControllers.removeAll()
+        self.tabBar.removeAll()
     }
     
     public func isDocumentAdded(url: URL) -> Bool {
@@ -292,6 +315,14 @@ private class TabBar: UIScrollView {
     func removeTab(with url: URL) {
         self.stackView.arrangedSubviews.forEach { tab in
             if let tab = tab as? Tab, tab.url.documentRelativePath == url.documentRelativePath {
+                tab.removeFromSuperview()
+            }
+        }
+    }
+    
+    func removeAll() {
+        self.stackView.arrangedSubviews.forEach { tab in
+            if let tab  = tab as? Tab {
                 tab.removeFromSuperview()
             }
         }

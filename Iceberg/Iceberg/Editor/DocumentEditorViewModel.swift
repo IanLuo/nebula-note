@@ -110,6 +110,10 @@ public class DocumentEditorViewModel: ViewModelProtocol {
     }
     
     deinit {
+        self.close()
+    }
+    
+    public func close() {
         self.removeObservers()
         self.context.dependency.editorContext.closeIfOpen(url: self.url, complete: {})
     }

@@ -67,6 +67,10 @@ public class Application: Coordinator {
             self?._setupiCloud()
         }
         
+        self.dependency.eventObserver.registerForEvent(on: self, eventType: iCloudDisabledEvent.self, queue: nil) { [weak self] (event: iCloudDisabledEvent) -> Void in
+            self?._setupiCloud()
+        }
+        
         // 通知完成初始化
         self.dependency.appContext.startComplete.subscribe(onNext: { [weak self] isComplete in
             guard let strongSelf = self else { return }

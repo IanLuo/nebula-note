@@ -33,8 +33,7 @@ public class InputToolbar: UIView {
     private static let attachment: [ToolbarActionProtocol] = [NormalAction.fileLink, NormalAction.captured, NormalAction.allAttachments, NormalAction.newAttachment]
     private static let file: [ToolbarActionProtocol] = [NormalAction.save]
     
-    private static let headless: [ActionGroup] = [ActionGroup(actions: paragraphActions, isEnabled: false, isHidden: true),
-                                                  ActionGroup(actions: headingActions, isEnabled: true, isHidden: true),
+    private static let headless: [ActionGroup] = [ActionGroup(actions: headingActions, isEnabled: true, isHidden: true),
                                                   ActionGroup(actions: textMark, isEnabled: true, isHidden: true),
                                                   ActionGroup(actions: undoAndRedo, isEnabled: true, isHidden: true),
                                                   ActionGroup(actions: moveCursor, isEnabled: true, isHidden: !isMac),
@@ -43,8 +42,7 @@ public class InputToolbar: UIView {
                                                   ActionGroup(actions: attachment, isEnabled: true, isHidden: true),
                                                   ActionGroup(actions: file, isEnabled: true, isHidden: false)]
     
-    private static let actionsParagraph: [ActionGroup] = [ActionGroup(actions: paragraphActions, isEnabled: true, isHidden: true),
-                                                          ActionGroup(actions: headingActions, isEnabled: true, isHidden: true),
+    private static let actionsParagraph: [ActionGroup] = [ActionGroup(actions: headingActions, isEnabled: true, isHidden: true),
                                                           ActionGroup(actions: textMark, isEnabled: true, isHidden: true),
                                                           ActionGroup(actions: undoAndRedo, isEnabled: true, isHidden: true),
                                                           ActionGroup(actions: moveCursor, isEnabled: true, isHidden: !isMac),
@@ -53,8 +51,7 @@ public class InputToolbar: UIView {
                                                           ActionGroup(actions: attachment, isEnabled: true, isHidden: true),
                                                           ActionGroup(actions: file, isEnabled: true, isHidden: false)]
     
-    private static let actionsHeading: [ActionGroup] = [ActionGroup(actions: paragraphActions, isEnabled: true, isHidden: true),
-                                                        ActionGroup(actions: headingActions, isEnabled: true, isHidden: true),
+    private static let actionsHeading: [ActionGroup] = [ActionGroup(actions: headingActions, isEnabled: true, isHidden: true),
                                                         ActionGroup(actions: textMark, isEnabled: false, isHidden: true),
                                                         ActionGroup(actions: undoAndRedo, isEnabled: true, isHidden: true),
                                                         ActionGroup(actions: moveCursor, isEnabled: true, isHidden: !isMac),
@@ -63,8 +60,7 @@ public class InputToolbar: UIView {
                                                         ActionGroup(actions: attachment, isEnabled: false, isHidden: true),
                                                         ActionGroup(actions: file, isEnabled: true, isHidden: false)]
     
-    private static let quoteBlock: [ActionGroup] = [ActionGroup(actions: paragraphActions, isEnabled: true, isHidden: true),
-                                                    ActionGroup(actions: headingActions, isEnabled: true, isHidden: true),
+    private static let quoteBlock: [ActionGroup] = [ActionGroup(actions: headingActions, isEnabled: true, isHidden: true),
                                                     ActionGroup(actions: textMark, isEnabled: false, isHidden: true),
                                                     ActionGroup(actions: undoAndRedo, isEnabled: true, isHidden: true),
                                                     ActionGroup(actions: moveCursor, isEnabled: true, isHidden: !isMac),
@@ -73,8 +69,7 @@ public class InputToolbar: UIView {
                                                     ActionGroup(actions: attachment, isEnabled: false, isHidden: true),
                                                     ActionGroup(actions: file, isEnabled: true, isHidden: false)]
     
-    private static let codeBlock: [ActionGroup] = [ActionGroup(actions: paragraphActions, isEnabled: true, isHidden: true),
-                                                   ActionGroup(actions: headingActions, isEnabled: true, isHidden: true),
+    private static let codeBlock: [ActionGroup] = [ActionGroup(actions: headingActions, isEnabled: true, isHidden: true),
                                                    ActionGroup(actions: textMark, isEnabled: false, isHidden: true),
                                                    ActionGroup(actions: undoAndRedo, isEnabled: true, isHidden: true),
                                                    ActionGroup(actions: moveCursor, isEnabled: true, isHidden: !isMac),
@@ -126,6 +121,8 @@ public class InputToolbar: UIView {
         if commandTitle == NormalAction.toggleFoldOrUnfold.rawValue {
             return true
         } else if commandTitle == NormalAction.foldOthersExcept.rawValue {
+            return true
+        } else if commandTitle == OtherAction.closeTab.title {
             return true
         }
         
