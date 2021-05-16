@@ -129,7 +129,7 @@
 "document.edit.action.arrow-up" = "Arrow up";
 "document.edit.action.arrow-down" = "Arrow down";
 "document.edit.action.quote-block" = "Quote block";
-"document.edit.action.paragraph.title" = "Section actions";
+"document.edit.action.paragraph.title" = "Paragraph actions";
 "document.edit.action.section.delete" = "Delete current paragraph";
 "document.edit.action.code-block" = "Code block";
 "document.edit.tag.title" = "Edit tag";
