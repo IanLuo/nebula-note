@@ -1,10 +1,7 @@
 New features
-1. Now you can drag and drop link and attachment into editor
-2. Now you can use filter in selector
-3. In document info, you can see and chooose documents on the document path
-4. You can directly paste image into the editor now
+1. macOS and iPad has better layout for windows
 
 Fix
-1. Editor performance is enhanced greatly
-2. Fix some backlink didn't correctly searched
-3. Removed a library that causes crashs
+1. Fix crash when try to add customized status
+2. Faster to open and close document
+3. The paragraph button now shows at correct place

@@ -454,7 +454,10 @@ extension OutlineTextView {
                 self.outlineDelegate?.didHandleIdeasFiles(urls: [url], characterIndex: self.selectedRange.location)
             }).disposed(by: self.disposeBag)
         } else if let string = pasteBoard.string {
-            self.textStorage.replaceCharacters(in: self.selectedRange, with: string)
+            if let range = self.selectedTextRange {
+                self.replace(range, withText: string)
+                self.selectedRange = NSRange(location: self.selectedRange.location + string.count, length: 0)
+            }
         } else {
             super.paste(sender)
         }

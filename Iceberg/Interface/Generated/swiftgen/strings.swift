@@ -444,7 +444,7 @@ public enum L10n {
           public static let verbatim = L10n.tr("Localizable", "document.edit.action.mark.verbatim")
         }
         public enum Paragraph {
-          /// Section actions
+          /// Paragraph actions
           public static let title = L10n.tr("Localizable", "document.edit.action.paragraph.title")
         }
         public enum Section {
