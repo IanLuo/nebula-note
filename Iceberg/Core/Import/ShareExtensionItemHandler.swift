@@ -193,7 +193,7 @@ public struct ShareExtensionItemHandler {
         }
     }
     
-    private func saveString(_ string: String) -> Observable<URL> {
+    public func saveString(_ string: String) -> Observable<URL> {
         let fileName = UUID().uuidString
         let url = URL.file(directory: URL.directory(location: URLLocation.temporary), name: fileName, extension: "txt")
         

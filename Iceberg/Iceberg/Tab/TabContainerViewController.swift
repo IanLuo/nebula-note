@@ -437,7 +437,7 @@ private class Tab: UIView {
         self.url = url
         self.setup()
         
-        self.enableHover(on: self, hoverColor: InterfaceTheme.Color.spotlight.withAlphaComponent(0.7))
+        self.enableHover(on: self, hoverColor: InterfaceTheme.Color.interactive.withAlphaComponent(0.7))
     }
     
     func replaceUrl(to newUrl: URL) {
@@ -486,7 +486,7 @@ private class Tab: UIView {
             .disposed(by: self.disposeBag)
         
         isSelected.subscribe(onNext: { [weak self] isSelected in
-            self?.backgroundColor = isSelected ? InterfaceTheme.Color.spotlight : InterfaceTheme.Color.background2
+            self?.backgroundColor = isSelected ? InterfaceTheme.Color.interactive : InterfaceTheme.Color.background2
             self?.titleButton.setTitleColor(isSelected ? InterfaceTheme.Color.spotlitTitle : InterfaceTheme.Color.interactive, for: .normal)
             closeButton.setImage(Asset.SFSymbols.xmark.image.fill(color: isSelected ? InterfaceTheme.Color.spotlitTitle : InterfaceTheme.Color.interactive).resize(upto: CGSize(width: 10, height: 10)), for: .normal)
         }).disposed(by: self.disposeBag)

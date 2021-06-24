@@ -450,7 +450,7 @@ private class TabView: UITableViewHeaderFooterView {
             let imageView = me as! UIImageView
             imageView.tintColor = self?.isHighlighted == true ? theme.color.spotlitTitle : theme.color.spotlight
         })
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .center
         return imageView
     }()
         

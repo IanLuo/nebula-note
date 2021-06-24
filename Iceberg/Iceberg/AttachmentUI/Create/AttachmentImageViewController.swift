@@ -130,7 +130,7 @@ extension AttachmentImageViewController: UIImagePickerControllerDelegate, UINavi
                         log.error(error)
                     } else {
                         do {
-                            try image.jpegData(compressionQuality: 1.0)?.write(to: file)
+                            try image.jpegData(compressionQuality: 0.8)?.write(to: file)
                             self.viewModel.save(content: file.path, kind: .image, description: "pick image")
                         } catch {
                             log.error(error)

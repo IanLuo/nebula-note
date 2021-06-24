@@ -83,10 +83,10 @@ public struct Layout {
     @objc public let interactive: UIColor = UIColor(82, 81, 82)
     @objc public let descriptive: UIColor = UIColor(112, 109, 107)
     @objc public let secondaryDescriptive: UIColor = UIColor(183, 181, 178)
-    @objc public let background1: UIColor = UIColor(249, 248, 246)
+    @objc public let background1: UIColor = UIColor(255, 252, 248)
     @objc public let background2: UIColor = UIColor(237, 233, 229)
     @objc public let background3: UIColor = UIColor(220, 215, 214)
-    @objc public let spotlight: UIColor = UIColor(199, 173, 124)
+    @objc public let spotlight: UIColor = UIColor(57, 54, 39)
     @objc public let warning: UIColor = UIColor(194, 81, 76)
 }
 
@@ -96,13 +96,13 @@ public struct Layout {
     @objc public var finished: UIColor = UIColor(148, 201, 113)
     @objc public var unfinished: UIColor = UIColor(red:1.00, green:0.77, blue:0.25, alpha:1.00)
     
-    @objc public let interactive: UIColor = UIColor(242, 242, 247)
+    @objc public let interactive: UIColor = UIColor(238, 238, 238)
     @objc public let descriptive: UIColor = UIColor(145, 145, 146)
     @objc public let secondaryDescriptive: UIColor = UIColor(124, 124, 123)
-    @objc public let background1: UIColor = UIColor(55, 54, 53)
-    @objc public let background2: UIColor = UIColor(63, 61, 60)
+    @objc public let background1: UIColor = UIColor(49, 49, 49)
+    @objc public let background2: UIColor = UIColor(64, 64, 64)
     @objc public let background3: UIColor = UIColor(81, 80, 75)
-    @objc public let spotlight: UIColor = UIColor(199, 173, 124)
+    @objc public let spotlight: UIColor = UIColor(219, 210, 199)
     @objc public let warning: UIColor = UIColor(194, 81, 76)
 }
 

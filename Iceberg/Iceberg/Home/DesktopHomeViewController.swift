@@ -117,7 +117,10 @@ public class DesktopHomeViewController: UIViewController {
         
         let iconButton = UIButton()
         iconButton.roundConer(radius: Layout.cornerRadius)
-        iconButton.setImage(Asset.SFSymbols.faceSmilingFill.image.fill(color: InterfaceTheme.Color.spotlight).resize(upto: CGSize(width: 30, height: 30)), for: .normal)
+        iconButton.interface { me, theme in
+            let iconButton = me as! UIButton
+            iconButton.setImage(Asset.SFSymbols.faceSmilingFill.image.fill(color: theme.color.spotlight).resize(upto: CGSize(width: 30, height: 30)), for: .normal)
+        }
         iconButton.sizeAnchor(width: 44, height: 44)
         iconButton.rx.tap.subscribe(onNext: { [weak self] _ in
             self?._showFeedbackOptions(from: iconButton)
@@ -176,8 +179,8 @@ public class DesktopHomeViewController: UIViewController {
         
         button.interface { me, theme in
             let button = me as! UIButton
-            button.setImage(index.icon.fill(color: theme.color.spotlight), for: .selected)
-            button.setImage(index.icon.fill(color: theme.color.interactive), for: .normal)
+            button.setImage(index.icon.fill(color: theme.color.interactive), for: .selected)
+            button.setImage(index.icon.fill(color: theme.color.descriptive), for: .normal)
             button.setBackgroundImage(UIImage.create(with: theme.color.background1, size: .singlePoint), for: .normal)
             button.setBackgroundImage(UIImage.create(with: theme.color.background2, size: .singlePoint), for: .selected)
         }

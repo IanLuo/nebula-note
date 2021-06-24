@@ -63,7 +63,7 @@ public class CaptureGlobalEntranceWindow: UIWindow {
         
         NotificationCenter.default.rx
             .notification(ModalNotification.appear)
-            .takeUntil(self.rx.deallocated)
+            .take(until: self.rx.deallocated)
             .subscribe(onNext: { _ in
                 let count = self.modalViewsInfront.value
                 self.modalViewsInfront.accept(count + 1)
@@ -72,7 +72,7 @@ public class CaptureGlobalEntranceWindow: UIWindow {
         
         NotificationCenter.default.rx
             .notification(ModalNotification.disappear)
-            .takeUntil(self.rx.deallocated)
+            .take(until: self.rx.deallocated)
             .subscribe(onNext: { _ in
                 let count = self.modalViewsInfront.value
                 self.modalViewsInfront.accept(count - 1)
