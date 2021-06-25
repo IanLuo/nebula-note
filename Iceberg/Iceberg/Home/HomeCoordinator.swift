@@ -62,7 +62,7 @@ public class HomeCoordinator: Coordinator {
         let kanbanCoordinator = KanbanCoordinator(stack: self.stack, dependency: self.dependency)
         self.addPersistentCoordinator(kanbanCoordinator)
         
-        let captureCoordinator = CaptureListCoordinator(stack: self.stack, dependency: self.dependency, mode: CaptureListViewModel.Mode.manage)
+        let captureCoordinator = MaterialsCoordinator(stack: self.stack, dependency: self.dependency)
         self.addPersistentCoordinator(captureCoordinator)
         
         let searchCoordinator = SearchCoordinator(stack: self.stack, dependency: self.dependency)

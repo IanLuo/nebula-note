@@ -24,6 +24,9 @@ public class AttachmentManagerViewController: UIViewController, UICollectionView
     public convenience init(viewModel: AttachmentManagerViewModel) {
         self.init()
         self.viewModel = viewModel
+        
+        self.title = L10n.Attachment.title
+        self.tabBarItem.image = Asset.SFSymbols.paperclip.image.fill(color: InterfaceTheme.Color.interactive)
     }
     
     private lazy var collectionView: UICollectionView = {
@@ -47,7 +50,7 @@ public class AttachmentManagerViewController: UIViewController, UICollectionView
     private func setupUI() {
         self.view.addSubview(self.collectionView)
         
-        self.collectionView.allSidesAnchors(to: self.view, edgeInset: 0)
+        self.collectionView.allSidesAnchors(to: self.view, edgeInset: 0, considerSafeArea: true)
         
         self.interface { [weak self] (me, theme) in
             me.view.backgroundColor = theme.color.background1

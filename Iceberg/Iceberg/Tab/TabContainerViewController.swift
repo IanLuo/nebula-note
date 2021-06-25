@@ -232,7 +232,7 @@ public class TabContainerViewController: UIViewController {
     public func closeDocument(url: URL) {
         if let viewController = self.viewController(for: url) {
             viewController.removeFromParent()
-            viewController.view.removeFromSuperview()
+            self.container.subviews.forEach { $0.removeFromSuperview() }
             self.removePair(for: url)
             DispatchQueue.global(qos: .userInteractive).async {
                 self.delegate?.didCloseDocument(url: url, editorViewController: viewController)

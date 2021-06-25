@@ -37,6 +37,7 @@
 "attachment.kind.text" = "Text";
 "attachment.kind.all" = "All";
 "attachment.share" = "Export";
+"attachment.title" = "Attachment";
 
 // edit document
 "document.dateAndTime.title" = "Date and time";
@@ -472,3 +473,6 @@
 
 // kanban
 "kanban.filter.get" = "Unlock filters";
+
+// material
+"material.title" = "Materials";

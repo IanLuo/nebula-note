@@ -150,6 +150,8 @@ public enum L10n {
   public enum Attachment {
     /// Export
     public static let share = L10n.tr("Localizable", "attachment.share")
+    /// Attachment
+    public static let title = L10n.tr("Localizable", "attachment.title")
     public enum Kind {
       /// All
       public static let all = L10n.tr("Localizable", "attachment.kind.all")
@@ -822,6 +824,11 @@ public enum L10n {
     public static let current = L10n.tr("Localizable", "location.current")
     /// Add a location
     public static let title = L10n.tr("Localizable", "location.title")
+  }
+
+  public enum Material {
+    /// Materials
+    public static let title = L10n.tr("Localizable", "material.title")
   }
 
   public enum Membership {

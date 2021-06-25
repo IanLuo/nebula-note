@@ -44,6 +44,7 @@ public enum Asset {
     public static let green = ColorAsset(name: "Green")
   }
   public enum SFSymbols {
+    public static let archivebox = ImageAsset(name: "archivebox")
     public static let arrowClockwise = ImageAsset(name: "arrow.clockwise")
     public static let arrowDownToLine = ImageAsset(name: "arrow.down.to.line")
     public static let arrowLeftCircle = ImageAsset(name: "arrow.left.circle")

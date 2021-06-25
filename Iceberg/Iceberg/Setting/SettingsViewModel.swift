@@ -204,7 +204,7 @@ extension TabIndex {
     var name: String {
         switch self {
         case .agenda: return  L10n.Agenda.title
-        case .idea: return L10n.CaptureList.title
+        case .idea: return L10n.Material.title
         case .search: return L10n.Search.title
         case .browser: return L10n.Browser.title
         case .kanban: return L10n.Dashboard.kanban
@@ -215,7 +215,7 @@ extension TabIndex {
     var icon: UIImage {
         switch self {
         case .agenda: return Asset.SFSymbols.calendar.image.resize(upto: CGSize(width: 25, height: 25)).fill(color: InterfaceTheme.Color.interactive)
-        case .idea: return Asset.SFSymbols.lightbulb.image.resize(upto: CGSize(width: 25, height: 25)).fill(color: InterfaceTheme.Color.interactive)
+        case .idea: return Asset.SFSymbols.archivebox.image.resize(upto: CGSize(width: 25, height: 25)).fill(color: InterfaceTheme.Color.interactive)
         case .search: return Asset.SFSymbols.magnifyingglass.image.resize(upto: CGSize(width: 25, height: 25)).fill(color: InterfaceTheme.Color.interactive)
         case .browser: return Asset.SFSymbols.doc.image.resize(upto: CGSize(width: 25, height: 25)).fill(color: InterfaceTheme.Color.interactive)
         case .kanban: return Asset.SFSymbols.rectangleSplit3x1.image.resize(upto: CGSize(width: 20, height: 20)).fill(color: InterfaceTheme.Color.interactive)
