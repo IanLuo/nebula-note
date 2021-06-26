@@ -186,9 +186,17 @@ fileprivate class PlistStore: NSObject, KeyValueStore {
 }
 
 public func mergePlistFiles(name: String, url1: URL, url2: URL) -> URL {
-    let plist1 = NSMutableDictionary(contentsOf: url1) ?? NSMutableDictionary()
-    let plist2 = NSMutableDictionary(contentsOf: url2) ?? NSMutableDictionary()
+    var plist1 = NSMutableDictionary(contentsOf: url1) ?? NSMutableDictionary()
+    var plist2 = NSMutableDictionary(contentsOf: url2) ?? NSMutableDictionary()
     
+    // check which file has bigger version number, make plist2 the dominate version
+    if (plist1[PlistStore.storeVersionKey] as? Int ?? 0) > (plist2[PlistStore.storeVersionKey] as? Int ?? 0) {
+        let dominateVersion = plist1
+        plist1 = plist2
+        plist2 = dominateVersion
+    }
+    
+    // merge files, if they have the same key, use the value in plist2
     for (key, value) in plist2 {
         plist1[key] = value
     }

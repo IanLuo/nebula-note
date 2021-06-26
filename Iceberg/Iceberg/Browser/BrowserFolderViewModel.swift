@@ -350,7 +350,7 @@ public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
         NotificationCenter.default
             .rx
             .notification(UIApplication.didBecomeActiveNotification)
-            .takeUntil(self.rx.deallocated)
+            .take(until: self.rx.deallocated)
             .subscribe(onNext: { _ in
                 self.reload()
             })

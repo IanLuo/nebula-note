@@ -77,6 +77,12 @@ public class iCloudDocumentManager: NSObject {
         return query
     }()
     
+    private var metadataQueueUpdateObserver: Any!
+    private var metadataQueueStartObserver: Any!
+    private var metadataQueueFinishObserver: Any!
+    private var metadataQueueProgressObserver: Any!
+    private let metadataQueue: OperationQueue = OperationQueue()
+    
     public init(eventObserver: EventObserver) {
         self._eventObserver = eventObserver
         
@@ -85,18 +91,47 @@ public class iCloudDocumentManager: NSObject {
         // 这个通知暂时不处理，貌似收不到
 //        NotificationCenter.default.addObserver(self, selector: #selector(_iCloudAvailabilityChanged(_:)), name: NSNotification.Name.NSUbiquityIdentityDidChange, object: nil)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(_metadataQueryDidUpdate(_ :)),
-                                               name: NSNotification.Name.NSMetadataQueryDidUpdate, object: self._metadataQuery)
-        NotificationCenter.default.addObserver(self, selector: #selector(_metadataQueryDidStart(_ :)),
-                                               name: NSNotification.Name.NSMetadataQueryDidStartGathering, object: self._metadataQuery)
-        NotificationCenter.default.addObserver(self, selector: #selector(_metadataQueryDidFinish(_ :)),
-                                               name: NSNotification.Name.NSMetadataQueryDidFinishGathering, object: self._metadataQuery)
-        NotificationCenter.default.addObserver(self, selector: #selector(_metadataQueryProgress(_ :)),
-                                               name: NSNotification.Name.NSMetadataQueryGatheringProgress, object: self._metadataQuery)
+        self.metadataQueue.qualityOfService = .background
+
+        self.metadataQueueUpdateObserver
+            = NotificationCenter.default.addObserver(forName: NSNotification.Name.NSMetadataQueryDidUpdate,
+                                                     object:self._metadataQuery,
+                                                     queue: metadataQueue,
+                                                     using: { notification in
+                                                        self._metadataQueryDidUpdate(notification)
+                                                     })
+        
+        self.metadataQueueStartObserver
+            = NotificationCenter.default.addObserver(forName: NSNotification.Name.NSMetadataQueryDidStartGathering,
+                                                     object:self._metadataQuery,
+                                                     queue: metadataQueue,
+                                                     using: { notification in
+                                                        self._metadataQueryDidStart(notification)
+                                                     })
+        
+        self.metadataQueueFinishObserver
+            = NotificationCenter.default.addObserver(forName: NSNotification.Name.NSMetadataQueryDidFinishGathering,
+                                                     object:self._metadataQuery,
+                                                     queue: metadataQueue,
+                                                     using: { notification in
+                                                        self._metadataQueryDidFinish(notification)
+                                                     })
+        
+        self.metadataQueueProgressObserver
+            = NotificationCenter.default.addObserver(forName: NSNotification.Name.NSMetadataQueryGatheringProgress,
+                                                     object:self._metadataQuery,
+                                                     queue: metadataQueue,
+                                                     using: { notification in
+                                                        self._metadataQueryProgress(notification)
+                                                     })
+        
     }
     
     deinit {
-        NotificationCenter.default.removeObserver(self)
+        NotificationCenter.default.removeObserver(self.metadataQueueUpdateObserver)
+        NotificationCenter.default.removeObserver(self.metadataQueueStartObserver)
+        NotificationCenter.default.removeObserver(self.metadataQueueFinishObserver)
+        NotificationCenter.default.removeObserver(self.metadataQueueProgressObserver)
     }
 //
 //    @objc private func _iCloudAvailabilityChanged(_ notification: Notification) {
@@ -647,7 +682,7 @@ extension iCloudDocumentManager: NSMetadataQueryDelegate {
         if item.isInConflict == true {
             if let url = item.url {
                 // only handle plist
-                guard url.lastPathComponent == "\(CaptureService.plistFileName).plist" else { return }
+                guard url.pathExtension == "plist" else { return }
                 
                 let version = NSFileVersion.currentVersionOfItem(at: url)
                 let name = url.deletingPathExtension().lastPathComponent

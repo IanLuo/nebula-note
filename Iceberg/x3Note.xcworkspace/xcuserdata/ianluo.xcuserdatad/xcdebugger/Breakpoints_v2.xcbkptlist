@@ -67,21 +67,5 @@
             </Locations>
          </BreakpointContent>
       </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "2F3EEC4B-011C-4C77-8B17-F79FD08095BF"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Core/DocumentCore/KeyValueStore.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "192"
-            endingLineNumber = "192"
-            landmarkName = "mergePlistFiles(name:url1:url2:)"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
    </Breakpoints>
 </Bucket>
