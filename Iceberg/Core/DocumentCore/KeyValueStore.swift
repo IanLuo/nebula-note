@@ -45,6 +45,7 @@ fileprivate class PlistStore: NSObject, KeyValueStore {
     private var _url: URL?
     private var _store: NSMutableDictionary?
     fileprivate static let storeVersionKey = "version"
+    private let lock: NSLock = NSLock()
     
     public init(type: PlistStoreType) {
         super.init()
@@ -87,6 +88,12 @@ fileprivate class PlistStore: NSObject, KeyValueStore {
     }
 
     public func get(key: String) -> Any? {
+        lock.lock()
+        
+        defer {
+            lock.unlock()
+        }
+        
         if let store = _store {
             return store.object(forKey: key)
         } else {
@@ -105,20 +112,29 @@ fileprivate class PlistStore: NSObject, KeyValueStore {
     }
     
     public func set(value: Any, key: String, completion: @escaping () -> Void) {
+        lock.lock()
+        
         if let store = _store, let url = self._url {
             store.setValue(value, forKey: key)
+            self._store = store
             
             url.deletingLastPathComponent().createDirectoryIfNeeded { error in
-                guard error == nil else { log.error(error!); return }
+                guard error == nil else {
+                    self.lock.unlock()
+                    log.error(error!);
+                    return
+                }
                 
                 url.writeBlock(queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.userInteractive), accessor: { error in
                     if let error = error {
                         log.error(error)
+                        self.lock.unlock()
                     } else {
                         // bump version number
                         self.bumpVersionNumber(store)
                         
                         store.write(to: url, atomically: true)
+                        self.lock.unlock()
                         completion()
                     }
                 })
@@ -127,22 +143,30 @@ fileprivate class PlistStore: NSObject, KeyValueStore {
             let userDefaults = UserDefaults.standard
             userDefaults.set(value, forKey: key)
             userDefaults.synchronize()
+            
+            lock.unlock()
             completion()
         }
     }
     
     public func remove(key: String, completion: @escaping () -> Void) {
+        lock.lock()
+        
         if let store = _store, let url = self._url {
             store.removeObject(forKey: key)
+            self._store = store
             
             url.writeBlock(queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.userInteractive), accessor: { error in
                 if let error = error {
                     log.error(error)
+                    self.lock.unlock()
                 } else {
                     // bump version number
                     self.bumpVersionNumber(store)
                     
                     store.write(to: url, atomically: true)
+                    
+                    self.lock.unlock()
                     completion()
                 }
             })
@@ -150,33 +174,45 @@ fileprivate class PlistStore: NSObject, KeyValueStore {
             let userDefaults = UserDefaults.standard
             userDefaults.removeObject(forKey: key)
             userDefaults.synchronize()
+            lock.unlock()
             completion()
         }
     }
     
     public func clear(completion: @escaping () -> Void) {
+        lock.lock()
+        
         if let store = _store, let url = self._url {
-            
+            store.removeAllObjects()
+            self._store = store
+
             url.writeBlock(queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.userInteractive)) { error in
                 if let error = error {
                     log.error(error)
+                    self.lock.unlock()
                 } else {
-                    store.removeAllObjects()
-                    
                     let version = (store.value(forKey: PlistStore.storeVersionKey) as? Int) ?? 0
                     let newVersion = version + 1
                     self.bumpVersionNumber(store, forceVersion: newVersion)
                     
                     store.write(to: url, atomically: true)
+                    self.lock.unlock()
                     completion()
                 }
             }
         } else {
             UserDefaults.resetStandardUserDefaults()
+            lock.unlock()
         }
     }
     
     public func allKeys() -> [String] {
+        lock.lock()
+        
+        defer {
+            lock.unlock()
+        }
+        
         if let store = _store {
             return store.allKeys as? [String] ?? []
         } else {

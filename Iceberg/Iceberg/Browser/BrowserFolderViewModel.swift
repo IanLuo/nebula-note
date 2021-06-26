@@ -192,9 +192,7 @@ public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
     }
     
     private func loadFavorites() -> Observable<[BrowserCellModel]> {
-        guard let favorites = self.dependency.settingAccessor.getSetting(item: .favoriteDocuments, type: [String].self) else {
-            return Observable.just([])
-        }
+        let favorites = self.dependency.settingAccessor.favorites
         
         let searchManager = self.dependency.documentSearchManager
         
@@ -346,6 +344,16 @@ public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
                                         action: { [weak self] (event: NewFilesAvailableEvent) in
                                             self?.reload()
         })
+        
+        eventObserver.registerForEvent(on: self, eventType: DocumentFavoriteChangedEvent.self, queue: nil) { [weak self] _ in
+            guard let strongSelf = self else { return }
+            
+            switch strongSelf.dataMode {
+            case .favorite:
+                strongSelf.reload()
+            default: break
+            }
+        }
         
         NotificationCenter.default
             .rx

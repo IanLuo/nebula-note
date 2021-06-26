@@ -24,8 +24,10 @@ public enum SettingsError: Error {
     }
     
     private struct Constants {
-        static var store: KeyValueStore { return KeyValueStoreFactory.store(type: KeyValueStoreType.plist(PlistStoreType.custom("Settings"))) }
-        static let storeURL: URL = URL.file(directory: URL.keyValueStoreURL, name: "Settings", extension: "plist")
+        static var favoritesStore: KeyValueStore { StoreContainer.shared.get(store: .favorite) }
+        static var settingsStore: KeyValueStore { StoreContainer.shared.get(store: .setting) }
+        static var recentFilesStore: KeyValueStore = { StoreContainer.shared.get(store: .recentDocuments) }()
+        static let storeURL: URL = StoreContainer.shared.storeURL(store: .setting)
     }
     
     public enum Item: String {
@@ -37,20 +39,19 @@ public enum SettingsError: Error {
         case currentSubscription
         case isFirstLaunchApp
         case didShowUserGuide
-        case openedDocuments
-        case favoriteDocuments
         case browserCellMode
         
         public func set(_ value: Any, completion: @escaping () -> Void) {
-            Constants.store.set(value: value, key: self.rawValue, completion: completion)
+            Constants.settingsStore.set(value: value, key: self.rawValue, completion: completion)
         }
         
         public func get<T>(_ t: T.Type) -> T? {
-            return Constants.store.get(key: self.rawValue, type: T.self)
+            return Constants.settingsStore.get(key: self.rawValue, type: T.self)
         }
     }
     
     private static let instance = SettingsAccessor()
+    
     private override init() {
         super.init()
         NSFileCoordinator.addFilePresenter(self)
@@ -91,29 +92,32 @@ public enum SettingsError: Error {
     }
     
     public func logOpenDocument(url: URL) {
-        if var paths = Item.openedDocuments.get([String].self) {
-            paths.append(url.documentRelativePath)
-            paths = Array(Set(paths))
-            Item.openedDocuments.set(paths, completion: {})
-        } else {
-            Item.openedDocuments.set([url.documentRelativePath], completion: {})
-        }
+        Constants.recentFilesStore.set(value: "\(Date().timeIntervalSince1970)",
+                                       key: url.documentRelativePath, completion: {})
         
         documentDidOpen.onNext(url)
     }
     
     public func logCloseDocument(url: URL) {
-        if var paths = Item.openedDocuments.get([String].self) {
-            paths.removeAll { p -> Bool in
-                p == url.documentRelativePath
-            }
-            Item.openedDocuments.set(paths, completion: {})
-        }
+        Constants.recentFilesStore.remove(key: url.documentRelativePath, completion: {})
+    }
+    
+    public var favorites: [String] {
+        return Constants.favoritesStore.allKeys()
+    }
+    
+    public func addFavorite(id: String, completion: @escaping () -> Void) {
+        Constants.favoritesStore.set(value: "", key: id, completion: completion)
+    }
+    
+    public func removeFavorite(id: String, completion: @escaping () -> Void) {
+        Constants.favoritesStore.remove(key: id, completion: completion)
     }
     
     public var openedDocuments: [URL]? {
         let resourceKeys: Set<URLResourceKey> = [.creationDateKey, .contentModificationDateKey]
-        return Item.openedDocuments.get([String].self)?.map {
+        
+        return Constants.recentFilesStore.allKeys().map {
             URL.documentBaseURL.appendingPathComponent($0)
         }.sorted(by: { url1, url2 in
             do {
@@ -226,7 +230,7 @@ extension SettingsAccessor: NSFilePresenter {
         if version.localizedName != nil {
             let thatStore = NSMutableDictionary(contentsOf: version.url) ?? NSMutableDictionary()
             let thatVersion = thatStore.value(forKey: "version") as? Int ?? 0
-            let thisVersion = Constants.store.get(key: "version") as? Int ?? 0
+            let thisVersion = Constants.settingsStore.get(key: "version") as? Int ?? 0
             
             log.info("new settings version of file found")
             do {

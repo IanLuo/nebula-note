@@ -45,12 +45,13 @@ public class EventObserver: EventObserverProtocol {
 }
 
 public class DefaultEventObserverImpl: EventObserverProtocol {
+    private let defaultQueue = OperationQueue()
     public func registerForEvent<E: Event>(on: AnyObject,
                                            eventType: E.Type,
                                            queue: OperationQueue?,
                                            send by: AnyObject?,
                                            action: @escaping (E) -> Void) {
-        NotificationCenter.default.addObserver(forName: NSNotification.Name("\(eventType)"), object: by, queue: queue) { notification in
+        NotificationCenter.default.addObserver(forName: NSNotification.Name("\(eventType)"), object: by, queue: queue ?? defaultQueue) { notification in
             action(notification.userInfo!["event"] as! E)
         }
     }
@@ -69,5 +70,7 @@ public class DefaultEventObserverImpl: EventObserverProtocol {
         NotificationCenter.default.post(name: NSNotification.Name("\(type(of: event))"), object: by, userInfo: ["event": event])
     }
     
-    public init() {}
+    public init() {
+        self.defaultQueue.qualityOfService = .background
+    }
 }
