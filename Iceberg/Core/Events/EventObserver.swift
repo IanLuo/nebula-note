@@ -18,7 +18,10 @@ public protocol EventObserverProtocol {
     func emit(_ event: Event, send by: AnyObject?)
 }
 
+private let defaultQueue = OperationQueue()
+
 public class EventObserver: EventObserverProtocol {
+    
     public func registerForEvent<E>(on: AnyObject,
                                     eventType: E.Type,
                                     queue: OperationQueue?,
@@ -38,14 +41,15 @@ public class EventObserver: EventObserverProtocol {
     }
     
     private let eventObserverImpl: EventObserverProtocol
+    private let notificationQueue = DispatchQueue(label: "Event Queue", qos: DispatchQoS.background, attributes: [.concurrent], autoreleaseFrequency: .workItem, target: nil)
 
     public init() {
         self.eventObserverImpl = DefaultEventObserverImpl()
+        defaultQueue.underlyingQueue = self.notificationQueue
     }
 }
 
 public class DefaultEventObserverImpl: EventObserverProtocol {
-    private let defaultQueue = OperationQueue()
     public func registerForEvent<E: Event>(on: AnyObject,
                                            eventType: E.Type,
                                            queue: OperationQueue?,
@@ -67,10 +71,10 @@ public class DefaultEventObserverImpl: EventObserverProtocol {
     
     public func emit(_ event: Event,
                      send by: AnyObject?) {
-        NotificationCenter.default.post(name: NSNotification.Name("\(type(of: event))"), object: by, userInfo: ["event": event])
+        defaultQueue.underlyingQueue?.async {
+            NotificationCenter.default.post(name: NSNotification.Name("\(type(of: event))"), object: by, userInfo: ["event": event])
+        }
     }
     
-    public init() {
-        self.defaultQueue.qualityOfService = .background
-    }
+    public init() {}
 }

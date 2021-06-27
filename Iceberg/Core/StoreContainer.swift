@@ -12,13 +12,13 @@ public class StoreContainer {
     public enum Store {
         case setting
         case favorite
-        case recentDocuments
+        case openningFiles
         
         public var key: String {
             switch self {
             case .setting: return "Settings"
             case .favorite: return "Favorite"
-            case .recentDocuments: return "recentFiles"
+            case .openningFiles: return "OpeningFiles"
             }
         }
         

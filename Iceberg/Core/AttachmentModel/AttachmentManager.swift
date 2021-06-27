@@ -105,18 +105,15 @@ public enum AttachmentError: Error {
     /// 通过附件的 key 来删除附件
     /// - parameter key: 附件的 key
     public func delete(key: String, completion: @escaping () -> Void, failure: @escaping (Error) -> Void) {
-        
-        self.attachment(with: key, completion: { attachment in
-            let url = attachment.wrapperURL
-            attachment.wrapperURL.delete(queue: DispatchQueue.main, completion: { error in
-                if let error = error {
-                    failure(error)
-                } else {
-                    log.info("deleted attachment with key: \(key), url: \(url)")
-                    completion()
-                }
-            })
-        }, failure: failure)
+        let url = AttachmentManager.wrappterURL(key: key.unescaped)
+        url.delete(queue: DispatchQueue.global(qos: .utility), completion: { [url] error in
+            if let error = error {
+                failure(error)
+            } else {
+                log.info("deleted attachment with key: \(key), url: \(url)")
+                completion()
+            }
+        })
     }
     
     public func delete(keys: [String], completion: @escaping ([String]) -> Void, failure: @escaping (Error) -> Void) {
@@ -141,7 +138,9 @@ public enum AttachmentError: Error {
         }
         
         if keys.count > 0 {
-            performDeleteAttachmentAction(keys)
+            DispatchQueue.global(qos: .userInitiated).async {
+                performDeleteAttachmentAction(keys)
+            }
         } else {
             completion(deletedKeys)
         }

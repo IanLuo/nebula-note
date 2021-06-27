@@ -26,7 +26,7 @@ public enum SettingsError: Error {
     private struct Constants {
         static var favoritesStore: KeyValueStore { StoreContainer.shared.get(store: .favorite) }
         static var settingsStore: KeyValueStore { StoreContainer.shared.get(store: .setting) }
-        static var recentFilesStore: KeyValueStore = { StoreContainer.shared.get(store: .recentDocuments) }()
+        static var recentFilesStore: KeyValueStore = { StoreContainer.shared.get(store: .openningFiles) }()
         static let storeURL: URL = StoreContainer.shared.storeURL(store: .setting)
     }
     

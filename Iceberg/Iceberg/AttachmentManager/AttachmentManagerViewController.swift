@@ -143,6 +143,7 @@ public class AttachmentManagerViewController: UIViewController, UICollectionView
             viewController.dismiss(animated: true) {
                 self?.viewModel.delete(indexs: indexs)
                 self?.isSelectMode.accept(false)
+                self?.view.showProcessingAnimation()
             }
         }) { viewController in
             viewController.dismiss(animated: true)

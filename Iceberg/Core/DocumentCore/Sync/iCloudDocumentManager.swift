@@ -82,6 +82,7 @@ public class iCloudDocumentManager: NSObject {
     private var metadataQueueFinishObserver: Any!
     private var metadataQueueProgressObserver: Any!
     private let metadataQueue: OperationQueue = OperationQueue()
+    private let iCloudeDispatchQueue = DispatchQueue(label: "iCloud Queue", qos: DispatchQoS.background, attributes: [.concurrent], autoreleaseFrequency: .workItem, target: nil)
     
     public init(eventObserver: EventObserver) {
         self._eventObserver = eventObserver
@@ -91,7 +92,7 @@ public class iCloudDocumentManager: NSObject {
         // 这个通知暂时不处理，貌似收不到
 //        NotificationCenter.default.addObserver(self, selector: #selector(_iCloudAvailabilityChanged(_:)), name: NSNotification.Name.NSUbiquityIdentityDidChange, object: nil)
         
-        self.metadataQueue.qualityOfService = .background
+        self.metadataQueue.underlyingQueue = self.iCloudeDispatchQueue
 
         self.metadataQueueUpdateObserver
             = NotificationCenter.default.addObserver(forName: NSNotification.Name.NSMetadataQueryDidUpdate,

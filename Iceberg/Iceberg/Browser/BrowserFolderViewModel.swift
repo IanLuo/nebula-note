@@ -331,11 +331,19 @@ public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
         })
         
         eventObserver.registerForEvent(on: self,
-                                        eventType: DocumentRemovedFromiCloudEvent.self,
-                                        queue: OperationQueue.main,
-                                        action: { [weak self] (event: DocumentRemovedFromiCloudEvent) in
+                                       eventType: DocumentRemovedFromiCloudEvent.self,
+                                       queue: OperationQueue.main,
+                                       action: { [weak self] (event: DocumentRemovedFromiCloudEvent) in
+                                        // if document is in current folder, reload
+                                        if event.url.deletingLastPathComponent() == self?.url {
                                             self?.reload()
-        })
+                                        } else if let items = self?.output.documents.value.first?.items {
+                                            // if new document is in current folder's items, reload current folder, because the folder enter indicator might need update
+                                            for case let cellModel in items where cellModel.url.parentDocumentURL == event.url.parentDocumentURL {
+                                                self?.reload()
+                                            }
+                                        }
+                                       })
         
         /// this event is sent by SyncCoordinator
         eventObserver.registerForEvent(on: self,
