@@ -16,14 +16,14 @@ import RxCocoa
 public class Application: Coordinator {
     weak var window: UIWindow?
     private var _entranceWindow: CaptureGlobalEntranceWindow?
-    fileprivate var _didTheUserTurnOffiCloudFromSettings: Bool = false
+    fileprivate var didTheUserTurnOffiCloudFromSettings: Bool = false
     private let disposeBag = DisposeBag()
     var homeCoordinator: HomeCoordinator?
     
     public init(window: UIWindow) {
         self.window = window
         let dependency = Dependency()
-        
+
         let navigationController = Coordinator.createDefaultNavigationControlller()
         
         if isMacOrPad {
@@ -31,7 +31,9 @@ public class Application: Coordinator {
         }
         
         super.init(stack: navigationController, dependency: dependency)
-        
+        // 设置 iCloud
+        self.setupiCloud()
+
         _entranceWindow = CaptureGlobalEntranceWindow(window: window)
         dependency.globalCaptureEntryWindow = self._entranceWindow
         
@@ -48,7 +50,7 @@ public class Application: Coordinator {
         if self.dependency.syncManager.refreshCurrentiCloudAccountStatus() == .closed {
             if iCloudDocumentManager.status == .on {
                 iCloudDocumentManager.status = .off
-                self._didTheUserTurnOffiCloudFromSettings = true
+                self.didTheUserTurnOffiCloudFromSettings = true
             }
         }
         
@@ -64,11 +66,11 @@ public class Application: Coordinator {
         }
         
         self.dependency.eventObserver.registerForEvent(on: self, eventType: iCloudEnabledEvent.self, queue: nil) { [weak self] (event: iCloudEnabledEvent) -> Void in
-            self?._setupiCloud()
+            self?.setupiCloud()
         }
         
         self.dependency.eventObserver.registerForEvent(on: self, eventType: iCloudDisabledEvent.self, queue: nil) { [weak self] (event: iCloudDisabledEvent) -> Void in
-            self?._setupiCloud()
+            self?.setupiCloud()
         }
         
         // 通知完成初始化
@@ -117,10 +119,7 @@ public class Application: Coordinator {
         }
         
         self.homeCoordinator?.start(from: self, animated: false)
-        
-        // 设置 iCloud
-        self._setupiCloud()
-        
+                
         DispatchQueue.main.async {
             self.dependency.appContext.uiStackReady.accept(true)
             self.dependency.eventObserver.emit(UIStackReadyEvent())
@@ -145,7 +144,7 @@ public class Application: Coordinator {
             }).disposed(by: self.disposeBag)
     }
     
-    private func _setupiCloud() {
+    private func setupiCloud() {
         let status = self.dependency.syncManager.refreshCurrentiCloudAccountStatus()
         
         switch status {
@@ -163,7 +162,7 @@ public class Application: Coordinator {
                 })
             }
         case .closed:
-            if self._didTheUserTurnOffiCloudFromSettings {
+            if self.didTheUserTurnOffiCloudFromSettings {
                 self.stack.showAlert(title: L10n.Sync.Alert.Account.Closed.title, message: L10n.Sync.Alert.Account.Closed.msg)
             }
             

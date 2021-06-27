@@ -265,6 +265,7 @@ public class iCloudDocumentManager: NSObject {
         set {
             UserDefaults.standard.set(newValue.rawValue, forKey: "iCloudStatus")
             UserDefaults.standard.synchronize()
+            StoreContainer.shared.reset()
         }
     }
     

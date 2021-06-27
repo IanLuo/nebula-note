@@ -172,8 +172,6 @@ public class SettingsViewModel: ViewModelProtocol {
                 if let error = error {
                     completion(.failure(error))
                 } else {
-                    StoreContainer.shared.reset()
-                    
                     iCloudDocumentManager.status = enable ? .on : .off
                     completion(.success(()))
                     self?.delegate?.didSetIsSyncEnabled(enable)

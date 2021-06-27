@@ -26,10 +26,6 @@ public class MaterialsViewController: UIViewController {
     convenience init(viewControllers: [UIViewController]) {
         self.init()
         self.viewControllers = viewControllers
-        
-        viewControllers.forEach {
-            self.addChildViewController($0)
-        }
     }
     
     public required init?(coder: NSCoder) {
@@ -62,10 +58,15 @@ public class MaterialsViewController: UIViewController {
     
     private func select(switcher: UISegmentedControl, index: Int) {
         switcher.selectedSegmentIndex = index
-        self.view.subviews.forEach { $0.removeFromSuperview() }
         
-        guard let view = self.viewControllers?[index].view else { return }
-        self.view.addSubview(view)
-        view.allSidesAnchors(to: self.view, edgeInset: 0)
+        self.children.forEach {
+            $0.removeFromParent()
+            $0.view.removeFromSuperview()
+        }
+        
+        guard let viewController = self.viewControllers?[index] else { return }
+        self.addChildViewController(viewController)
+        self.view.addSubview(viewController.view)
+        viewController.view.allSidesAnchors(to: self.view, edgeInset: 0)
     }
 }

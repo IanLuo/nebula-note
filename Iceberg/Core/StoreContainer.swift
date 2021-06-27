@@ -13,12 +13,14 @@ public class StoreContainer {
         case setting
         case favorite
         case openningFiles
+        case ignoredDocumentsInKanban
         
         public var key: String {
             switch self {
             case .setting: return "Settings"
             case .favorite: return "Favorite"
             case .openningFiles: return "OpeningFiles"
+            case .ignoredDocumentsInKanban: return "ignoredEntries"
             }
         }
         
