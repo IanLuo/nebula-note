@@ -314,6 +314,22 @@ public class OutlineParser {
             }
         }
         
+        // MARK: raw http link
+        if includeParsee.contains(.rawHttpLink) {
+            let result: [[String: NSRange]] = Matcher.Element.rawHttpLink
+                .matches(in: str, options: [], range: totalRange)
+                .map { (result: NSTextCheckingResult) -> [String: NSRange] in
+                    var comp: [String: NSRange] = [:]
+                    comp[Key.Element.link] = result.range(at: 0)
+                    return comp
+            }
+            
+            if result.count > 0 {
+                self.logResult(result)
+                self.delegate?.didFoundRawHttpLink(text: str, urlRanges: result)
+            }
+        }
+        
         // MARK: 最后，解析带 mark 的文字
         let markResuls: [[String: NSRange]] =
             [(Key.Element.TextMark.bold, Matcher.Element.TextMark.bold),
@@ -365,6 +381,7 @@ public protocol OutlineParserDelegate: class {
     func didFoundQuoteBlockEnd(text: String, ranges: [[String: NSRange]])
     func didFoundAttachment(text: String, attachmentRanges: [[String: NSRange]])
     func didFoundLink(text: String, urlRanges: [[String: NSRange]])
+    func didFoundRawHttpLink(text: String, urlRanges: [[String: NSRange]])
     func didFoundTextMark(text: String, markRanges: [[String: NSRange]])
     func didFoundDateAndTime(text: String, rangesData: [[String: NSRange]])
     func didFoundDrawerBegin(text: String, rangesData: [[String: NSRange]])
@@ -389,6 +406,7 @@ extension OutlineParserDelegate {
     public func didFoundQuoteBlockEnd(text: String, ranges: [[String: NSRange]]) {}
     public func didFoundAttachment(text: String, attachmentRanges: [[String : NSRange]]) {}
     public func didFoundLink(text: String, urlRanges: [[String : NSRange]]) {}
+    public func didFoundRawHttpLink(text: String, urlRanges: [[String: NSRange]]) {}
     public func didFoundTextMark(text: String, markRanges: [[String : NSRange]]) {}
     public func didFoundDateAndTime(text: String, rangesData: [[String: NSRange]]) {}
     public func didFoundDrawerBegin(text: String, rangesData: [[String: NSRange]]) {}

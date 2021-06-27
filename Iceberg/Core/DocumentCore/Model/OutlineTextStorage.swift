@@ -533,6 +533,28 @@ extension OutlineTextStorage: OutlineParserDelegate {
         }
     }
     
+    public func didFoundRawHttpLink(text: String, urlRanges: [[String : NSRange]]) {
+        urlRanges.forEach { linkRangeData in
+            guard let range = linkRangeData[OutlineParser.Key.Element.link] else { return }
+            
+            self.ignoreTextMarkRanges.append(contentsOf: urlRanges.map { $0[OutlineParser.Key.Element.link]! })
+            
+            let linkToken = LinkToken(range: range, name: OutlineParser.Key.Element.link, data: linkRangeData)
+            self.tempParsingTokenResult.append(linkToken)
+            
+            self.checkMarkEmbeded(token: linkToken)
+            
+            linkToken.decorationAttributesAction = { textStorage, token in
+                let linkText = textStorage.string.nsstring.substring(with: token.range)
+                textStorage.addAttributes([NSAttributedString.Key.foregroundColor: OutlineTheme.linkStyle.color,
+                    NSAttributedString.Key.font: OutlineTheme.linkStyle.font,
+                    OutlineAttribute.Link.title: [OutlineParser.Key.Element.Link.title: linkText,
+                                                  OutlineParser.Key.Element.Link.url: linkText]],
+                                          range: token.range)
+            }
+        }
+    }
+    
     public func didFoundAttachment(text: String, attachmentRanges: [[String : NSRange]]) {
         attachmentRanges.forEach { rangeData in
             

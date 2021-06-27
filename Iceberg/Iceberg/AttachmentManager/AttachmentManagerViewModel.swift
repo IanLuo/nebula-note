@@ -31,7 +31,34 @@ public class AttachmentManagerViewModel: ViewModelProtocol {
     
     public typealias CoordinatorType = AttachmentManagerCoordinator
     
-    public required init() {}
+    public required init() {
+        
+    }
+    
+    public func didSetupContext() {
+        self.setupObserver()
+    }
+    
+    private func setupObserver() {
+        let eventObserver = self.dependency.eventObserver
+        eventObserver.registerForEvent(on: self,
+                                       eventType: DocumentRemovedFromiCloudEvent.self,
+                                       queue: OperationQueue.main,
+                                       action: { [weak self] (event: DocumentRemovedFromiCloudEvent) in
+                                        if event.url.pathExtension == AttachmentDocument.fileExtension {
+                                            self?.loadData()
+                                        }
+                                       })
+        
+        eventObserver.registerForEvent(on: self,
+                                       eventType: NewDocumentAddedFromiCloudEvent.self,
+                                       queue: OperationQueue.main,
+                                       action: { [weak self] (event: NewDocumentAddedFromiCloudEvent) in
+                                        if event.url.pathExtension == AttachmentDocument.fileExtension {
+                                            self?.loadData()
+                                        }
+                                       })
+    }
     
     public struct Output {
         public let attachments: BehaviorRelay<[AttachmentManagerSection]> = BehaviorRelay<[AttachmentManagerSection]>(value: [])

@@ -48,8 +48,9 @@ extension OutlineParser {
         public static let quoteBlockEnd: ParseeTypes = ParseeTypes(rawValue: 1 << 11)
         public static let dateAndTime: ParseeTypes = ParseeTypes(rawValue: 1 << 12)
         public static let drawer: ParseeTypes = ParseeTypes(rawValue: 1 << 13)
+        public static let rawHttpLink: ParseeTypes = ParseeTypes(rawValue: 1 << 14)
         
-        public static let all: ParseeTypes = [.heading, .checkbox, orderedList, unorderedList, seperator, attachment, link, .footnote, .codeBlockBegin, .codeBlockEnd, .quoteBlockBegin, .quoteBlockEnd, .dateAndTime, .drawer]
+        public static let all: ParseeTypes = [.heading, .checkbox, orderedList, unorderedList, seperator, attachment, link, .footnote, .codeBlockBegin, .codeBlockEnd, .quoteBlockBegin, .quoteBlockEnd, .dateAndTime, .drawer, .rawHttpLink]
         public static let onlyHeading: ParseeTypes = [.checkbox, orderedList, unorderedList, seperator, attachment, link, .footnote]
     }
     
@@ -109,6 +110,7 @@ extension OutlineParser {
             }
             
             public static var link = try! NSRegularExpression(pattern: RegexPattern.Element.link, options: [])
+            public static var rawHttpLink = try! NSRegularExpression(pattern: RegexPattern.Element.rawHttpLink, options: [])
         }
     }
     
@@ -283,6 +285,7 @@ extension OutlineParser {
             }
             
             public static let link = "\\[\\[(\(Values.Link.patternAll)\\:[^\\]\\[]*)\\]\\[([^\\]\\]]*)\\]\\]"
+            public static let rawHttpLink = "(?<![\\[])https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&\\/\\/=]*)"
         }
     }
     
