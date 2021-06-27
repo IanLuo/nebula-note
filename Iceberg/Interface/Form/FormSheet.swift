@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct FormTemplateKey<ValueType> {
+struct FormRow<ValueType> {
     var value: ValueType
     var title: String
 }

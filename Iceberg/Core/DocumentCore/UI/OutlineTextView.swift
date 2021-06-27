@@ -456,7 +456,8 @@ extension OutlineTextView {
         } else if let string = pasteBoard.string {
             if let range = self.selectedTextRange {
                 self.replace(range, withText: string)
-                self.selectedRange = NSRange(location: self.selectedRange.location + string.count, length: 0)
+                let locaton = self.offset(from: self.beginningOfDocument, to: range.start)
+                self.selectedRange = NSRange(location: locaton + string.count, length: 0)
             }
         } else {
             super.paste(sender)
