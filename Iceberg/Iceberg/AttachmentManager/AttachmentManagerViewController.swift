@@ -14,6 +14,7 @@ import Core
 import RxDataSources
 import Interface
 import MapKit
+import QuickLook
 
 public class AttachmentManagerViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     private var viewModel: AttachmentManagerViewModel!
@@ -186,7 +187,9 @@ public class AttachmentManagerViewController: UIViewController, UICollectionView
         let actionsView = ActionsViewController()
 
         let view = AttachmentViewFactory.create(attachment: attachment)
-        view.sizeAnchor(width: self.view.bounds.width, height: view.size(for: self.view.bounds.width).height)
+        let width = isMacOrPad ? 600 : self.view.bounds.width
+        view.sizeAnchor(width: width, height: view.size(for: width).height)
+        actionsView.preferredWidth = width
         
         actionsView.accessoryView = view
         actionsView.title = attachment.kind.rawValue
@@ -204,6 +207,13 @@ public class AttachmentManagerViewController: UIViewController, UICollectionView
                     self.onSelectingAttachment.onNext(self.viewModel.attachment(at: index))
                 })
             }
+        }
+        
+        actionsView.addAction(icon: nil, title: L10n.Attachment.preview) { viewController in
+            viewController.dismiss(animated: true, completion: {
+                let previewViewController = PreviewManager(url: attachment.url).createPreviewController()
+                self.present(previewViewController, animated: true)
+            })
         }
         
         if attachment.kind == .link {
@@ -234,20 +244,18 @@ public class AttachmentManagerViewController: UIViewController, UICollectionView
             viewController.dismiss(animated: true)
         }
         
-        if self.viewModel.context.coordinator?.usage == .manage {
-            actionsView.addAction(icon: nil, title: L10n.General.Button.Title.delete, style: .warning) { viewController in
-                viewController.dismiss(animated: true, completion: {
-                    let confirm = ConfirmViewController(contentText: L10n.General.Button.Title.delete, onConfirm: { viewController in
-                        viewController.dismiss(animated: true) {
-                            self.viewModel.delete(indexs: [index])
-                        }
-                    }) { viewController in
-                        viewController.dismiss(animated: true)
+        actionsView.addAction(icon: nil, title: L10n.General.Button.Title.delete, style: .warning) { viewController in
+            viewController.dismiss(animated: true, completion: {
+                let confirm = ConfirmViewController(contentText: L10n.General.Button.Title.delete, onConfirm: { viewController in
+                    viewController.dismiss(animated: true) {
+                        self.viewModel.delete(indexs: [index])
                     }
-                    
-                    self.present(confirm, animated: true)
-                })
-            }
+                }) { viewController in
+                    viewController.dismiss(animated: true)
+                }
+                
+                confirm.present(from: self, at: self.view, location: self.view.convert(from.center, to: self.view))
+            })
         }
         
         actionsView.setCancel { viewController in

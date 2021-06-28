@@ -105,7 +105,7 @@ public class OutlineLayoutManager: NSLayoutManager {
                 rect.size.height = font.lineHeight - font.descender
                 rect.size.width = rect.size.width + 2
 
-                let path = UIBezierPath(roundedRect: rect, cornerRadius: 4)
+                let path = UIBezierPath(roundedRect: rect, cornerRadius: 8)
                 path.fill()
                 context.restoreGState()
             })
@@ -132,14 +132,14 @@ public class OutlineLayoutManager: NSLayoutManager {
             var rect = self.boundingRect(forGlyphRange: glRange, in: self.textContainers[0])
             rect.origin.y = rect.origin.y + font.descender
             
-            let path = UIBezierPath(roundedRect: rect, cornerRadius: 4)
+            let path = UIBezierPath(roundedRect: rect, cornerRadius: 8)
             path.fill()
             context.restoreGState()
             
             context.saveGState()
             context.translateBy(x: origin.x, y: origin.y)
             InterfaceTheme.Color.spotlight.setFill()
-            let lineRect = CGRect(x: rect.origin.x, y: rect.origin.y, width: 3, height: rect.height)
+            let lineRect = CGRect(x: rect.origin.x, y: rect.origin.y, width: 10, height: rect.height)
             let lineRectPath = UIBezierPath(roundedRect: lineRect, cornerRadius: 0)
             lineRectPath.fill()
             context.restoreGState()

@@ -222,6 +222,13 @@ extension DocumentEditorViewController: OutlineTextViewDelegate {
             }
         }
         
+        actionsView.addAction(icon: nil, title: L10n.Attachment.preview) { viewController in
+            viewController.dismiss(animated: true, completion: {
+                let previewViewController = PreviewManager(url: attachment.url).createPreviewController()
+                self.present(previewViewController, animated: true)
+            })
+        }
+        
         actionsView.addAction(icon: nil, title: L10n.Attachment.share) { viewController in
             viewController.dismiss(animated: true, completion: {
                 let exportManager = ExportManager(editorContext: self.viewModel.dependency.editorContext)

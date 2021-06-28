@@ -5,6 +5,7 @@
   Created by ian luo on 2019/1/1.
   Copyright © 2019 wod. All rights reserved.
 */
+"app.name" = "Nebula";
 
 "general.button.title.save" = "Save";
 "general.button.title.open" = "Open";
@@ -38,6 +39,7 @@
 "attachment.kind.all" = "All";
 "attachment.share" = "Export";
 "attachment.title" = "Attachment";
+"attachment.preview" = "Preview";
 
 // edit document
 "document.dateAndTime.title" = "Date and time";

@@ -228,8 +228,12 @@ public class Application: Coordinator {
 }
 
 extension Coordinator {
-    public static func createDefaultNavigationControlller(root: UIViewController? = nil, transparentBar: Bool = true) -> UINavigationController {
+    public static func createDefaultNavigationControlller(root: UIViewController? = nil, transparentBar: Bool = true, hiddenBydefault: Bool = false) -> UINavigationController {
         let navigationController = UINavigationController()
+        
+        if hiddenBydefault {
+            navigationController.isNavigationBarHidden = true
+        }
         
         if let root = root {
             navigationController.pushViewController(root, animated: false)

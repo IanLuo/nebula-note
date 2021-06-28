@@ -80,7 +80,7 @@ public class HomeCoordinator: Coordinator {
         
         
         dashboardViewController.addTab(tabs: [DashboardViewController.TabType.agenda(Coordinator.createDefaultNavigationControlller(root: agendaCoordinator.viewController!), TabIndex.agenda.index),
-                                              DashboardViewController.TabType.captureList(Coordinator.createDefaultNavigationControlller(root: captureCoordinator.viewController!), TabIndex.idea.index),
+                                              DashboardViewController.TabType.captureList(Coordinator.createDefaultNavigationControlller(root: captureCoordinator.viewController!, hiddenBydefault: true), TabIndex.idea.index),
                                               DashboardViewController.TabType.search(Coordinator.createDefaultNavigationControlller(root: searchCoordinator.viewController!), TabIndex.search.index),
                                               DashboardViewController.TabType.documents(Coordinator.createDefaultNavigationControlller(root: browserCoordinator.viewController!), TabIndex.browser.index),
                                               DashboardViewController.TabType.kanban(Coordinator.createDefaultNavigationControlller(root: kanbanCoordinator.viewController!), TabIndex.kanban.index),

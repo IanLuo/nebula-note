@@ -20,11 +20,13 @@ public class MaterialsViewController: UIViewController {
     }
     
     var viewControllers: [UIViewController]?
+    private var switcher: UISegmentedControl!
     
     private let disposeBag = DisposeBag()
     
     convenience init(viewControllers: [UIViewController]) {
         self.init()
+        self.switcher = UISegmentedControl(items: viewControllers.map { $0.title ?? "" })
         self.viewControllers = viewControllers
     }
     
@@ -33,10 +35,6 @@ public class MaterialsViewController: UIViewController {
     }
     
     public override func viewDidLoad() {
-        let switcher = UISegmentedControl(items: self.viewControllers?.map { $0.title ?? "" })
-
-        self.navigationItem.titleView = switcher
-        
         switcher.interface { me, theme in
             let seg = me as! UISegmentedControl
             if #available(iOS 13.0, *) {
@@ -48,16 +46,16 @@ public class MaterialsViewController: UIViewController {
             }
         }
         
-        switcher.rx.value.asDriver().drive(onNext: { [switcher] index in
+        switcher.rx.value.asDriver().drive(onNext: {index in
             guard index >= 0 && index < (self.viewControllers?.count ?? 0) else { return }
-            self.select(switcher: switcher, index: index)
+            self.select(index: index)
         }).disposed(by: self.disposeBag)
         
-        self.select(switcher: switcher, index: 0)
+        self.select(index: 0)
     }
     
-    private func select(switcher: UISegmentedControl, index: Int) {
-        switcher.selectedSegmentIndex = index
+    private func select(index: Int) {
+        self.switcher.selectedSegmentIndex = index
         
         self.children.forEach {
             $0.removeFromParent()
@@ -65,8 +63,10 @@ public class MaterialsViewController: UIViewController {
         }
         
         guard let viewController = self.viewControllers?[index] else { return }
-        self.addChildViewController(viewController)
-        self.view.addSubview(viewController.view)
-        viewController.view.allSidesAnchors(to: self.view, edgeInset: 0)
+        viewController.navigationItem.titleView = self.switcher
+        let nav = Application.createDefaultNavigationControlller(root: viewController)
+        self.addChildViewController(nav)
+        self.view.addSubview(nav.view)
+        nav.view.allSidesAnchors(to: self.view, edgeInset: 0)
     }
 }

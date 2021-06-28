@@ -73,7 +73,7 @@ public class DashboardViewController: UIViewController {
     }
     
     public override func viewDidLoad() {
-        title = L10n.dashboard
+        title = L10n.App.name
         
         super.viewDidLoad()
         

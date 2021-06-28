@@ -58,16 +58,10 @@ public class KanbanViewModel: ViewModelProtocol {
             self?.shouldReloadData = true
         }
         
-        self.dependency.purchaseManager.isMember.subscribe(onNext: {
+        self.dependency.purchaseManager.isMember.subscribe(onNext: { [weak self] in
             guard $0 else { return }
             
-            self.ignoredStatus.subscribe(onNext: { [weak self] in
-                self?.ignoredEntryStore.set(value: $0, key: keyIgnoredStatus, completion: {})
-            }).disposed(by: self.disposeBag)
-            
-            self.ignoredDocuments.subscribe(onNext: { [weak self] in
-                self?.ignoredEntryStore.set(value: $0, key: keyIgnoredDocuments, completion: {})
-            }).disposed(by: self.disposeBag)
+            self?.loadIgnoreStatus()
         }).disposed(by: self.disposeBag)
     }
     
@@ -107,8 +101,6 @@ public class KanbanViewModel: ViewModelProtocol {
         }
     }
     
-
-    
     public func isFinishedStatus(status: String) -> Bool {
         return self.dependency.settingAccessor.finishedPlanning.contains(status)
     }
@@ -138,6 +130,8 @@ public class KanbanViewModel: ViewModelProtocol {
             }
             self.ignoredStatus.accept(a)
         }
+        
+        self.ignoredEntryStore.set(value: self.ignoredStatus.value, key: keyIgnoredStatus, completion: {})
     }
     
     public func updateIgnoredDocument(document: String, add: Bool) {
@@ -151,6 +145,8 @@ public class KanbanViewModel: ViewModelProtocol {
             }
             self.ignoredDocuments.accept(a)
         }
+        
+        self.ignoredEntryStore.set(value: self.ignoredDocuments.value, key: keyIgnoredDocuments, completion: {})
     }
     
     public func update(heading: DocumentHeading, newStatus: String) -> Observable<Void> {

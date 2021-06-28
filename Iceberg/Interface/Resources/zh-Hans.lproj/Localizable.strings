@@ -5,6 +5,7 @@
   Created by ian luo on 2019/1/1.
   Copyright © 2019 wod. All rights reserved.
 */
+"app.name" = "星云记";
 
 "general.button.title.save" = "保存";
 "general.button.title.open" = "打开";
@@ -38,6 +39,7 @@
 "attachment.kind.all" = "全部";
 "attachment.share" = "导出";
 "attachment.title" = "附件";
+"attachment.preview" = "预览";
 
 // edit document
 "document.dateAndTime.title" = "日期和时间";

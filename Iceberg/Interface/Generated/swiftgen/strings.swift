@@ -147,7 +147,14 @@ public enum L10n {
     }
   }
 
+  public enum App {
+    /// Nebula
+    public static let name = L10n.tr("Localizable", "app.name")
+  }
+
   public enum Attachment {
+    /// Preview
+    public static let preview = L10n.tr("Localizable", "attachment.preview")
     /// Export
     public static let share = L10n.tr("Localizable", "attachment.share")
     /// Attachment
