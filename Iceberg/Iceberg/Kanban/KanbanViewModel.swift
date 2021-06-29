@@ -68,8 +68,6 @@ public class KanbanViewModel: ViewModelProtocol {
     public func loadAllStatus() {
         guard self.isLoadingAllData == false else { return }
         
-        self.loadIgnoreStatus()
-        
         self.isLoadingAllData = true
         
         self.loadheadings(self.dependency.settingAccessor.allPlannings)
