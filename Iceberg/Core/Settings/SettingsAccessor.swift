@@ -54,7 +54,6 @@ public enum SettingsError: Error {
     
     private override init() {
         super.init()
-        NSFileCoordinator.addFilePresenter(self)
     }
     @objc public static var shared: SettingsAccessor { return instance }
     
@@ -144,19 +143,11 @@ public enum SettingsError: Error {
     }
     
     public var customizedUnfinishedPlannings: [String]? {
-        if let plannings = SettingsAccessor.Item.unfinishedPlannings.get([String].self) {
-            return plannings.count > 0 ? plannings : nil
-        } else {
-            return nil
-        }
+        return (SettingsAccessor.Item.unfinishedPlannings.get([String].self) ?? []) + StoreContainer.shared.get(store: .customizedUnfinishedStatus).allKeys()
     }
     
     public var customizedFinishedPlannings: [String]? {
-        if let plannings = SettingsAccessor.Item.finishedPlannings.get([String].self) {
-            return plannings.count > 0 ? plannings : nil
-        } else {
-            return nil
-        }
+        return (SettingsAccessor.Item.finishedPlannings.get([String].self) ?? []) + StoreContainer.shared.get(store: .customizedFinishedStatus).allKeys()
     }
     
     public var unfinishedPlanning: [String] {
@@ -178,14 +169,12 @@ public enum SettingsError: Error {
     
     /// add new planning
     public func addPlanning(_ planning: String, isForFinished: Bool, completion: @escaping (Result<Void, Error>) -> Void) {
-        let item = isForFinished ? SettingsAccessor.Item.finishedPlannings : SettingsAccessor.Item.unfinishedPlannings
-        if var plannings = item.get([String].self) {
-            plannings.append(planning)
-            item.set(plannings) {
+        if isForFinished {
+            StoreContainer.shared.get(store: .customizedFinishedStatus).set(value: "", key: planning) {
                 completion(.success(()))
             }
         } else {
-            item.set([planning]) {
+            StoreContainer.shared.get(store: .customizedUnfinishedStatus).set(value: "", key: planning) {
                 completion(.success(()))
             }
         }
@@ -214,40 +203,8 @@ public enum SettingsError: Error {
         if !removePlanningAction(SettingsAccessor.Item.finishedPlannings) {
             _ = removePlanningAction(SettingsAccessor.Item.unfinishedPlannings)
         }
-    }    
-}
-
-extension SettingsAccessor: NSFilePresenter {
-    public var presentedItemURL: URL? {
-        return Constants.storeURL
-    }
-    
-    public var presentedItemOperationQueue: OperationQueue {
-        return OperationQueue()
-    }
-    
-    public func presentedItemDidGain(_ version: NSFileVersion) {
-        if version.localizedName != nil {
-            let thatStore = NSMutableDictionary(contentsOf: version.url) ?? NSMutableDictionary()
-            let thatVersion = thatStore.value(forKey: "version") as? Int ?? 0
-            let thisVersion = Constants.settingsStore.get(key: "version") as? Int ?? 0
-            
-            log.info("new settings version of file found")
-            do {
-                if thisVersion < thatVersion {
-                    version.isResolved = true
-                    try version.replaceItem(at: Constants.storeURL, options: [.init(rawValue: 0)])
-                    try NSFileVersion.removeOtherVersionsOfItem(at: Constants.storeURL)
-                    log.info("found remote version, which is older, use that one")
-                } else {
-                    version.isResolved = true
-                    try NSFileVersion.removeOtherVersionsOfItem(at: Constants.storeURL)
-                    log.info("found remote version, which is newer, removed")
-                }
-            } catch {
-                log.error(error)
-            }
-        }
         
-    }
+        StoreContainer.shared.get(store: .customizedFinishedStatus).remove(key: planning, completion: {})
+        StoreContainer.shared.get(store: .customizedUnfinishedStatus).remove(key: planning, completion: {})
+    }    
 }

@@ -48,8 +48,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             self.window = UIWindow(frame: UIScreen.main.bounds)
             
             self.application = Application(window: window!)
-            self.application?.start(from: nil, animated: false)
             self.application.dependency.purchaseManager.initialize()
+            self.application?.start(from: nil, animated: false)
             
             self.window?.makeKeyAndVisible()
         }

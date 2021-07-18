@@ -8,12 +8,14 @@
 
 import Foundation
 
-public class StoreContainer {
+public class StoreContainer: CustomDebugStringConvertible {
     public enum Store {
         case setting
         case favorite
         case openningFiles
         case ignoredDocumentsInKanban
+        case customizedFinishedStatus
+        case customizedUnfinishedStatus
         
         public var key: String {
             switch self {
@@ -21,6 +23,8 @@ public class StoreContainer {
             case .favorite: return "Favorite"
             case .openningFiles: return "OpeningFiles"
             case .ignoredDocumentsInKanban: return "ignoredEntries"
+            case .customizedFinishedStatus: return "customizedFinishedStatus"
+            case .customizedUnfinishedStatus: return "customizedUnfinishedStatus"
             }
         }
         
@@ -51,5 +55,13 @@ public class StoreContainer {
     
     public func storeURL(store: Store) -> URL {
         return store.url
+    }
+    
+    public var debugDescription: String {
+        let value = self.stores.map {
+            "\($0.value)"
+        }.joined(separator: "\n")
+        
+        return value
     }
 }

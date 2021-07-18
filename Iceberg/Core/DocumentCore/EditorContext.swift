@@ -20,7 +20,7 @@ public class EditorContext {
     
     private let _cacheLock: NSLock = NSLock()
     private static var _cachedServiceInstances: [String: EditorService] = [:]
-    public let _editingQueue: DispatchQueue = DispatchQueue(label: "editor.doing.editing", qos: DispatchQoS.userInteractive)
+    public let _editingQueue: DispatchQueue = DispatchQueue(label: "editor context", qos: .userInteractive, attributes: [], autoreleaseFrequency: .workItem, target: nil)
     
     private let _serviceReferenceCounter: ReferenceCounter = ReferenceCounter()
     

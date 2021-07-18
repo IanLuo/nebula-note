@@ -83,6 +83,10 @@ fileprivate class PlistStore: NSObject, KeyValueStore {
         }
     }
     
+    override var description: String {
+        return self._url?.path ?? ""
+    }
+    
     public func get<T>(key: String, type: T.Type) -> T? {
         return self.get(key: key) as? T
     }
@@ -214,7 +218,7 @@ fileprivate class PlistStore: NSObject, KeyValueStore {
         }
         
         if let store = _store {
-            return store.allKeys as? [String] ?? []
+            return store.allKeys.filter { ($0 as? String) != "version" } as? [String] ?? []
         } else {
             return UserDefaults.standard.dictionaryRepresentation().keys.map {$0}
         }

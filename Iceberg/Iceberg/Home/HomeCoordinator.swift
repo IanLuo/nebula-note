@@ -182,15 +182,10 @@ public class HomeCoordinator: Coordinator {
     
     private func initializeDefaultTab() {
         let hasInitedLandingTab: PublishSubject<Void> = PublishSubject<Void>()
+        hasInitedLandingTab.onNext(())
+        let defaultTabIndex = SettingsAccessor.Item.landingTabIndex.get(Int.self) ?? 3
         
-        self.dependency.appContext.isFileReadyToAccess.take(until: hasInitedLandingTab).subscribe(onNext: { [weak self] in
-            guard $0 else { return }
-            
-            hasInitedLandingTab.onNext(())
-            let defaultTabIndex = SettingsAccessor.Item.landingTabIndex.get(Int.self) ?? 3
-            
-            self?.dependency.eventObserver.emit(SwitchTabEvent(toTabIndex: defaultTabIndex))
-        }).disposed(by: self.disposeBag)
+        self.dependency.eventObserver.emit(SwitchTabEvent(toTabIndex: defaultTabIndex))
     }
     
     public func openDocumentFromEvent(event: OpenDocumentEvent) {

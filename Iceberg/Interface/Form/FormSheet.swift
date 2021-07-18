@@ -8,64 +8,95 @@
 
 import Foundation
 
-struct FormRow<ValueType> {
-    var value: ValueType
-    var title: String
-}
-
-protocol FormModel {
-    
-}
+public typealias FormItem = UIView
 
 public protocol Validatable {
     associatedtype ValueType
-    
-    func isValid() -> Bool
-    var condition: Condition<ValueType> { get set }
+    var isValid: ((ValueType) -> ValidateResult)? { get set }
 }
 
-public protocol Visable {
-    associatedtype FormModel
-    var isVisiable: ((FormModel) -> Bool)? { get set }
+public protocol Visiable {
+    associatedtype ValueType
+    var isVisiable: ((ValueType) -> Bool)? { get set }
 }
 
 public protocol Editable {
-    associatedtype FormModel
-    var isEditable: ((FormModel) -> Bool)? { get set }
+    associatedtype ValueType
+    var isEditable: ((ValueType) -> Bool)? { get set }
 }
 
-public protocol FormSheet {
-    associatedtype FormModel
-    func addSection(_ section: FormSheetSection)
-}
-
-public protocol FormSheetSection {
-    var title: String { get set }
-    func addRow<FormModel, ValueType>(_ row: FormSheetSectionRow<FormModel, ValueType>)
-}
-
-public struct FormSheetSectionRow<FormModel, ValueType>: Validatable, Visable, Editable {
-    public var isVisiable: ((FormModel) -> Bool)?
+public class FormElementGroup {
+    internal init(title: String,
+                  direction: NSLayoutConstraint.Axis,
+                  distribute: UIStackView.Distribution,
+                  alignment: UIStackView.Alignment,
+                  space: CGFloat) {
+        self.title = title
+        self.direction = direction
+        self.distribute = distribute
+        self.alignment = alignment
+        self.space = space
+    }
     
-    public var isEditable: ((FormModel) -> Bool)?
+    public let title: String
+    public let direction: NSLayoutConstraint.Axis
+    public let distribute: UIStackView.Distribution
+    public let alignment: UIStackView.Alignment
+    public let space: CGFloat
     
-    public func isValid() -> Bool {
-        return self.condition.run(value: self.value)
+    private let stackView: UIStackView = UIStackView()
+    
+    @discardableResult
+    public func addElement<ValueType>(_ element: FormElement<ValueType>) -> FormElementGroup {
+        stackView.addArrangedSubview(FormItemView(configure: element))
+        return self
+    }
+}
+
+public class FormElement<ValueType>: Validatable, Visiable, Editable {
+    public var isVisiable: ((ValueType) -> Bool)?
+    public var isEditable: ((ValueType) -> Bool)?
+    public var isValid: ((ValueType) -> ValidateResult)?
+    
+    public init(value: ValueType) {
+        self.value = value
     }
     
     public var value: ValueType
-    public var condition: Condition<ValueType>
-}
 
-public struct Condition<ValueType> {
-    private let condition: (ValueType) -> Bool
-    public func run(value: ValueType) -> Bool {
-        return condition(value)
+    @discardableResult
+    public func visiabilityWhen(_ action: @escaping (ValueType) -> Bool) -> Self {
+        self.isVisiable = action
+        return self
+    }
+    
+    @discardableResult
+    public func editableWhen(_ action: @escaping (ValueType) -> Bool) -> Self {
+        self.isEditable = action
+        return self
+    }
+    
+    @discardableResult
+    public func validateWhen(_ action: @escaping (ValueType) -> ValidateResult) -> Self {
+        self.isValid = action
+        return self
     }
 }
 
-protocol RowBuilder {
-    func build<FormModel, ValueType>(type: ValueType) -> FormSheetSectionRow<FormModel, ValueType>
+public enum ValidateResult {
+    case Pass
+    case Fail(String)
 }
 
-
+public class FormItemView<ValueType>: FormItem {
+    public init(configure: FormElement<ValueType>) {
+        self.configure = configure
+        super.init(frame: .zero)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    private let configure: FormElement<ValueType>
+}
