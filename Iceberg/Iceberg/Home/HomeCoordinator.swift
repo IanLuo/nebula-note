@@ -52,7 +52,6 @@ public class HomeCoordinator: Coordinator {
         
         self._dashboardViewController = dashboardViewController
         
-        viewModel.coordinator = self
         dashboardViewController.delegate = self
         
         let agendaCoordinator = AgendaCoordinator(stack: self.stack, dependency: self.dependency)
@@ -160,11 +159,7 @@ public class HomeCoordinator: Coordinator {
         let membershipCoordinator = MembershipCoordinator(stack: navigationController, dependency: self.dependency)
         membershipCoordinator.start(from: self)
     }
-    
-    public func getAllTags() -> [String] {
-        return self._viewModel.allTags
-    }
-    
+        
     @available(iOS 13.0, *)
     public func isCommandAvailable(command: UICommand) -> Bool {
         return tabController.isCommandAvailable(command: command)
@@ -228,7 +223,7 @@ extension HomeCoordinator: BrowserCoordinatorDelegate {
 
 extension HomeCoordinator: HomeViewControllerDelegate {
     public func didShowMasterView() {
-        self._dashboardViewController.reloadDataIfNeeded()
+        
     }
     
     public func didShowDetailView() {
@@ -236,31 +231,6 @@ extension HomeCoordinator: HomeViewControllerDelegate {
 }
 
 extension HomeCoordinator: DashboardViewControllerDelegate {
-    public func showHeadings(subTabType: DashboardViewModel.DahsboardItemData) {
-        var filterType: AgendaCoordinator.FilterType?
-        
-        switch subTabType {
-        case .scheduled(let headings):
-            filterType = .scheduled(headings)
-        case .overdue(let headings):
-            filterType = .overdue(headings)
-        case .startSoon(let headings):
-            filterType = .startSoon(headings)
-        case .overdueSoon(let headings):
-            filterType = .overdue(headings)
-        case .today(let headings):
-            filterType = .today(headings)
-        default: break
-        }
-        
-        if let filterType = filterType {
-            let agendaCoordinator = AgendaCoordinator(filterType: filterType, stack: self.stack, dependency: self.dependency)
-            agendaCoordinator.delegate = self
-            agendaCoordinator.viewController?.title = subTabType.title
-            self.showTempCoordinator(agendaCoordinator)
-        }
-    }
-    
     public func toggleFullScreen() {
         let macHomeViewController = (self.viewController as? DesktopHomeViewController)
         
@@ -280,17 +250,9 @@ extension HomeCoordinator: DashboardViewControllerDelegate {
     }
     
     public func showHeadings(tag: String) {
-        let agendaCoordinator = AgendaCoordinator(filterType: .tag(tag), stack: self.stack, dependency: self.dependency)
-        agendaCoordinator.delegate = self
-        agendaCoordinator.viewController?.title = tag
-        self.showTempCoordinator(agendaCoordinator)
     }
     
     public func showHeadings(planning: String) {
-        let agendaCoordinator = AgendaCoordinator(filterType: .planning(planning), stack: self.stack, dependency: self.dependency)
-        agendaCoordinator.delegate = self
-        agendaCoordinator.viewController?.title = planning
-        self.showTempCoordinator(agendaCoordinator)
     }
         
     public func didSelectTab(at index: Int, viewController: UIViewController) {

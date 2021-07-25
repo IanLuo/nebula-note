@@ -80,6 +80,25 @@ extension UIView {
     }
     
     @discardableResult
+    public func sizeEqualAnchor(position: Position, dimention: NSLayoutDimension?) -> Self {
+        if position.contains(.width) {
+            let dimention = dimention ?? self.superview!.widthAnchor
+            let width = self.widthAnchor.constraint(equalTo: dimention)
+            width.identifier = Position.width.identifier(for: self)
+            width.isActive = true
+        }
+        
+        if position.contains(.height) {
+            let dimention = dimention ?? self.superview!.heightAnchor
+            let width = self.heightAnchor.constraint(equalTo: dimention)
+            width.identifier = Position.height.identifier(for: self)
+            width.isActive = true
+        }
+        
+        return self
+    }
+    
+    @discardableResult
     public func sizeAnchor(width: CGFloat? = nil, height: CGFloat? = nil) -> Self {
         self.makeSureTranslationIsSetToFalse()
         

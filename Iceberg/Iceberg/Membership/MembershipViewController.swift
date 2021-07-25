@@ -203,7 +203,6 @@ public class MembershipViewController: UIViewController {
             .asDriver()
             .drive(onNext: { [weak self] product in
                 self?.monthlyProductView.update(product: product)
-                self?.view.hideProcessingAnimation()
             }).disposed(by: self.disposeBag)
         
         self.viewModel
@@ -212,7 +211,6 @@ public class MembershipViewController: UIViewController {
             .asDriver()
             .drive(onNext: { [weak self] product in
                 self?.yearlyProductView.update(product: product)
-                self?.view.hideProcessingAnimation()
             }).disposed(by: self.disposeBag)
         
         self.monthlyProductView
@@ -240,10 +238,14 @@ public class MembershipViewController: UIViewController {
             .tap
             .subscribe(onNext: { [weak self] in
                 guard let strongSelf = self else { return }
-                
+                strongSelf.view.showProcessingAnimation()
                 strongSelf.viewModel.restore().subscribe(onNext: {
                     if $0.count > 0 {
-                        strongSelf.loadData()
+                        strongSelf.viewModel.validateAllProducts().subscribe(onNext: {
+                            strongSelf.view.hideProcessingAnimation()
+                        }).disposed(by: strongSelf.disposeBag)
+                    } else {
+                        self?.view.hideProcessingAnimation()
                     }
                 }).disposed(by: strongSelf.disposeBag)
             })
@@ -253,14 +255,16 @@ public class MembershipViewController: UIViewController {
             self?.showAlert(title: "error", message: "\(error.localizedDescription)")
             self?.view.hideProcessingAnimation()
         }).disposed(by:self.disposeBag)
+        
+        self.viewModel.output.didFinishTransition.subscribe(onNext: { [weak self] in
+            self?.view.hideProcessingAnimation()
+        }).disposed(by: self.disposeBag)
     }
     
     private func loadData() {
         self.viewModel.loadProducts()
-        
         self.restoreButton.setTitle(L10n.Membership.restore, for: .normal)
     }
-    
 }
 
 class ProductDescriptionView: UIView {

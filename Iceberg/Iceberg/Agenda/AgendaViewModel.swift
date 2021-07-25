@@ -12,71 +12,25 @@ import RxSwift
 import RxCocoa
 import Interface
 
-public protocol AgendaViewModelDelegate: class {
-    func didCompleteLoadAllData()
-    func didLoadData()
-    func didFailed(_ error: Error)
-}
-
-public class AgendaViewModel {
-
-    public struct Output {
-        let tasks: BehaviorSubject<[AgendaCellModel]> = BehaviorSubject(value: [])
-        let filsteredData: BehaviorSubject<[AgendaCellModel]> = BehaviorSubject(value: [])
-    }
+public class AgendaViewModel: ViewModelProtocol {
+    public required init() {}
     
-    public weak var delegate: AgendaViewModelDelegate?
-    public weak var coordinator: AgendaCoordinator? {
-        didSet {
-            self._setupObserver()
-        }
-    }
-    private let _documentSearchManager: DocumentSearchManager
+    public typealias CoordinatorType = AgendaCoordinator
+    public var context: ViewModelContext<AgendaCoordinator>!
     
-    public init(documentSearchManager: DocumentSearchManager) {
-        self._documentSearchManager = documentSearchManager
-        
-        self.dates = self.generateDates()
-    }
+    private let disposeBag = DisposeBag()
     
     /// 用于显示的数据
-    public private(set) var dateOrderedData: [Date: [AgendaCellModel]] = [:]
-    public private(set) var data: [AgendaCellModel] = []
-    public private(set) var dates: [Date] = []
+    public let tags: BehaviorRelay<[String: [DocumentHeadingSearchResult]]> = BehaviorRelay(value: [:])
+    public let status: BehaviorRelay<[String: [DocumentHeadingSearchResult]]> = BehaviorRelay(value: [:])
+    public let scheduled: BehaviorRelay<[DocumentHeadingSearchResult]> = BehaviorRelay(value: [])
+    public let overdue: BehaviorRelay<[DocumentHeadingSearchResult]> = BehaviorRelay(value: [])
+    public let dueSoon: BehaviorRelay<[DocumentHeadingSearchResult]> = BehaviorRelay(value: [])
+    public let startSoon: BehaviorRelay<[DocumentHeadingSearchResult]> = BehaviorRelay(value: [])
+    public let all: BehaviorRelay<[AgendaCellModel]> = BehaviorRelay(value: [])
     
     private var _shouldReloadData: Bool = true // 如果在这个界面打开的 document 修改了这个 heading，应该刷新
     public var isConnectingScreen: Bool = false
-    
-    public let output: Output = Output()
-    
-    private func generateDates() -> [Date] {
-        var dates: [Date] = []
-        let today = Date() // current date and time
-        dates.append(today)
-        for i in 1..<30 {
-            dates.append(today.dayAfter(i).dayEnd) // after today use day end time
-        }
-
-        return dates
-    }
-    
-    public func regenerateDatesIfNeeded() -> Bool {
-        if self.checkShouldRegenerateDates(dates: self.dates) {
-            self.dates = self.generateDates()
-            return true
-        }
-        
-        return false
-    }
-    
-    private func checkShouldRegenerateDates(dates: [Date]) -> Bool {
-        if dates.first?.isSameDay(Date()) == false {
-            self._shouldReloadData = true
-            return true
-        }
-        
-        return false
-    }
     
     private let _headingChangeObservingQueue: OperationQueue = {
         let queue = OperationQueue()
@@ -85,16 +39,8 @@ public class AgendaViewModel {
         return queue
     }()
     
-    public var filterType: AgendaCoordinator.FilterType?
-    
-    public var indexOfToday: Int {
-        let today = Date()
-        for (index, date) in self.dates.enumerated() {
-            if date.isSameDay(today) {
-                return index
-            }
-        }
-        return 0
+    public func didSetupContext() {
+        self._setupObserver()
     }
     
     public func loadData() {
@@ -102,71 +48,7 @@ public class AgendaViewModel {
         
         self._shouldReloadData = false
         
-        if self.filterType == nil {
-            self.loadAgendaData()
-        } else {
-            self.loadFiltered()
-        }
-    }
-    
-    // 加载过滤之后的数据，也就是在 dashboard 中显示的，子分类里面所显示的那些
-    public func loadFiltered() {
-        if let filterType = self.filterType {
-            switch filterType {
-            case .tag(let tag):
-                self._documentSearchManager.searchTag(tag, completion: { [weak self] results in
-                    var __data: [AgendaCellModel] = []
-                    
-                    for result in results {
-                        let children = result.getWholdTree()
-                            .map {
-                                AgendaCellModel(searchResult: $0)
-                            }.sortedByPriority.reversed().sortedByPlanning
-                        
-                        __data.append(contentsOf: children)
-                    }
-                    
-                    self?.data = __data
-                    self?.delegate?.didCompleteLoadAllData()
-                }) { error in
-                    log.error(error)
-                }
-            case .planning(let planning):
-                self._documentSearchManager.searchPlanning(planning, completion: { [weak self] results in
-                    self?.data = results.map { AgendaCellModel(searchResult: $0) }.sortedByPriority
-                    self?.delegate?.didCompleteLoadAllData()
-                }) { error in
-                    log.error(error)
-                }
-            case .dueSoon(let results):
-                self.data = results.map { AgendaCellModel(searchResult: $0) }.sortedByPriority
-                self.delegate?.didCompleteLoadAllData()
-            case .overdue(let results):
-                self.data = results.map { AgendaCellModel(searchResult: $0) }.sortedByPriority
-                self.delegate?.didCompleteLoadAllData()
-            case .scheduled(let results):
-                self.data = results.map { AgendaCellModel(searchResult: $0) }.sortedByPriority
-                self.delegate?.didCompleteLoadAllData()
-            case .startSoon(let results):
-                self.data = results.map { AgendaCellModel(searchResult: $0) }.sortedByPriority
-                self.delegate?.didCompleteLoadAllData()
-            case .unfinished(let results):
-                self.data = results.map { AgendaCellModel(searchResult: $0) }.sortedByPriority
-                self.delegate?.didCompleteLoadAllData()
-            case .finished(let results):
-                self.data = results.map { AgendaCellModel(searchResult: $0) }.sortedByPriority
-                self.delegate?.didCompleteLoadAllData()
-            case .today(let results):
-                self.data = results.map { AgendaCellModel(searchResult: $0) }.sortedByPriority
-                self.delegate?.didCompleteLoadAllData()
-            }
-        }
-    }
-    
-    public func loadData(for index: Int) {
-        self.output.tasks.onNext(self.dateOrderedData[self.dates[index]] ?? [])
-        self.data = self.dateOrderedData[self.dates[index]] ?? []
-        self.delegate?.didLoadData()
+        self.loadAgendaData()
     }
     
     // 加载 agenda 界面所有数据
@@ -175,80 +57,115 @@ public class AgendaViewModel {
         
         self.isLoadingAgendaData = true
         
-        let finishedPlainings = SettingsAccessor.shared.finishedPlanning
+        let today = Date().dayEnd
+        var scheduled: [DocumentHeadingSearchResult] = []
+        var startSoon: [DocumentHeadingSearchResult] = []
+        var overdue: [DocumentHeadingSearchResult] = []
+        var overdueSoon: [DocumentHeadingSearchResult] = []
         
-        self._documentSearchManager.allHeadings(completion: { [weak self] (results1) in
-            self?._documentSearchManager.searchDateAndTime(completion: { (results2) in
-                var results = results1.filter { $0.heading.planning != nil }
-                results.append(contentsOf: results2)
-                let allData = results.map { AgendaCellModel(searchResult: $0) }
-
-                self?.dateOrderedData = [:]
-
-                // filter data for each date
-                self?.dates.forEach { date in
-                    let mappedCellModels = allData.filter { cellModel in
-                        // 已完成的条目不显示
-                        if let planning = cellModel.planning, finishedPlainings.contains(planning) {
-                            return false
-                        }
+        let dateAndTimeSearch = self.context.dependency.documentSearchManager.searchDateAndTime()
+        let allHeadingSearch = self.context.dependency.documentSearchManager.allHeadings()
+        let finishedPlannings = self.context.coordinator?.dependency.settingAccessor.finishedPlanning ?? []
+        
+        Observable.zip(dateAndTimeSearch, allHeadingSearch)
+            .subscribe(onNext: { dataAndTimeResult, allResult in
+                dataAndTimeResult.forEach { result in
+                    
+                    if let dateAndTime = result.dateAndTime {
+                        guard finishedPlannings.contains(result.heading.planning ?? "") == false else { return }
                         
-                        // only for item that has date and time
-                        else if let dateAndTime = cellModel.dateAndTime {
-                            return dateAndTime.checkNotice(relative: date) != nil
-                        } else {
-                            return true
+                        if let notice = dateAndTime.checkNotice(relative: today) {
+                            if dateAndTime.isDue {
+                                if notice.daysCount <= 3 && notice.daysCount >= 0{
+                                    overdueSoon.append(result)
+                                } else {
+                                    overdue.append(result)
+                                }
+                            } else {
+                                if notice.daysCount <= 3 && notice.daysCount >= 0 {
+                                    startSoon.append(result)
+                                } else {
+                                    scheduled.append(result)
+                                }
+                            }
                         }
-                    }
-
-                    DispatchQueue.runOnMainQueueSafely {
-                        self?.dateOrderedData[date] = mappedCellModels._trim()._sort()
-                        self?.delegate?.didCompleteLoadAllData()
-                        self?.isLoadingAgendaData = false
                     }
                 }
+                
+                var allTags:[String: [Any]] = [:]
+                var allPlannings: [String: [Any]] = [:]
+                var results = allResult.filter { $0.heading.planning != nil && !finishedPlannings.contains($0.heading.planning ?? "") }
+
+                for result in results {
+                    if let tags = result.heading.tags {
+                        for tag in tags {
+                            allTags.appendToGroup(key: tag, value: result)
+                        }
+                    }
                     
-            }, failure: { [weak self] (error) in
-                self?.delegate?.didFailed(error)
-                self?.isLoadingAgendaData = false
-            })
-            
-        }, failure: { [weak self] (error) in
-            self?.delegate?.didFailed(error)
-            self?.isLoadingAgendaData = false
-        })
+                    if let planning = result.heading.planning {
+                        allPlannings.appendToGroup(key: planning, value: result)
+                    }
+                }
+                
+                results.append(contentsOf: dataAndTimeResult)
+                let allData = results.map { AgendaCellModel(searchResult: $0) }
+                
+                let mappedCellModels = allData.filter { cellModel in
+                    // 已完成的条目不显示
+                    if let planning = cellModel.planning, finishedPlannings.contains(planning) {
+                        return false
+                    }
+                    
+                    // only for item that has date and time
+                    else if let dateAndTime = cellModel.dateAndTime {
+                        return dateAndTime.checkNotice(relative: today) != nil
+                    } else {
+                        return true
+                    }
+                }
+                
+                self.tags.accept(allTags as! [String: [DocumentHeadingSearchResult]])
+                self.status.accept(allPlannings as! [String: [DocumentHeadingSearchResult]])
+                self.overdue.accept(overdue)
+                self.startSoon.accept(startSoon)
+                self.dueSoon.accept(overdueSoon)
+                self.scheduled.accept(scheduled)
+                self.all.accept(mappedCellModels)
+                
+                self.isLoadingAgendaData = false
+            }).disposed(by: self.disposeBag)
     }
-        
-    
+
     private var _runningForHeadingChangeReload: Bool = false
     private func _setupObserver() {
-        self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
+        self.context.coordinator?.dependency.eventObserver.registerForEvent(on: self,
                                                                     eventType: DocumentHeadingChangeEvent.self,
                                                                     queue: .main) { [weak self] (event: DocumentHeadingChangeEvent) -> Void in
                                                                         self?._shouldReloadData = true
         }
         
-        self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
+        self.context.coordinator?.dependency.eventObserver.registerForEvent(on: self,
                                                                     eventType: DocumentAgendaRelatedChangeEvent.self,
                                                                     queue: .main) { [weak self] (event: DocumentAgendaRelatedChangeEvent) -> Void in
                                                                         self?._shouldReloadData = true
         }
         
-        self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
+        self.context.coordinator?.dependency.eventObserver.registerForEvent(on: self,
                                                                     eventType: DateAndTimeChangedEvent.self,
                                                                     queue: .main,
                                                                     action: { [weak self] (event: DateAndTimeChangedEvent) -> Void in
                                                                         self?._shouldReloadData = true
         })
         
-        self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
+        self.context.coordinator?.dependency.eventObserver.registerForEvent(on: self,
                                                                     eventType: iCloudOpeningStatusChangedEvent.self,
                                                                     queue: .main,
                                                                     action: { [weak self] (event: iCloudOpeningStatusChangedEvent) in
                                                                         self?._shouldReloadData = true
         })
         
-        self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
+        self.context.coordinator?.dependency.eventObserver.registerForEvent(on: self,
                                                                     eventType: iCloudOpeningStatusChangedEvent.self,
                                                                     queue: .main,
                                                                     action: { [weak self] (event: iCloudOpeningStatusChangedEvent) in
@@ -259,7 +176,7 @@ public class AgendaViewModel {
                                                                         }
         })
         
-        self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
+        self.context.coordinator?.dependency.eventObserver.registerForEvent(on: self,
                                                                     eventType: NewDocumentPackageDownloadedEvent.self,
                                                                     queue: .main,
                                                                     action: { [weak self] (event: NewDocumentPackageDownloadedEvent) in
@@ -267,7 +184,7 @@ public class AgendaViewModel {
                                                                         self?.loadData()
         })
         
-        self.coordinator?.dependency.eventObserver.registerForEvent(on: self,
+        self.context.coordinator?.dependency.eventObserver.registerForEvent(on: self,
                                                                     eventType: iCloudAvailabilityChangedEvent.self,
                                                                     queue: .main,
                                                                     action: { [weak self] (event: iCloudAvailabilityChangedEvent) in

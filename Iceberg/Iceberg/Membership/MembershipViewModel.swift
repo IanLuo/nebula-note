@@ -50,6 +50,7 @@ public class MembershipViewModel: ViewModelProtocol {
         let monthlyProduct: BehaviorRelay<Product> = BehaviorRelay(value: Product(type: .monthlyMembership, name: L10n.Membership.Monthly.title, description: L10n.Membership.Monthly.description))
         let yearlyProduct: BehaviorRelay<Product> = BehaviorRelay(value: Product(type: .yearlyMembership, name: L10n.Membership.Yearly.title, description: L10n.Membership.Yearly.description))
         let errorOccurs: PublishSubject<Error> = PublishSubject()
+        let didFinishTransition: PublishSubject<Void> = PublishSubject()
     }
     
     public var context: ViewModelContext<MembershipCoordinator>!
@@ -73,18 +74,19 @@ public class MembershipViewModel: ViewModelProtocol {
         self.purchase(productId: PurchaseManager.ProductType.monthlyMembership.key)
             .flatMap { [unowned self] purchaseDetails in
                 return self.purchaseManager.validate(productId: purchaseDetails.productId)
-        }.subscribe(onNext: { [weak self] date in
-            if let oldProduct = self?.output.monthlyProduct.value {
-                self?.output.monthlyProduct.accept(Product(type: oldProduct.type,
-                                                           name: oldProduct.name,
-                                                           description: oldProduct.description,
-                                                           price: oldProduct.price,
-                                                           expireDate: date))
-            }
+            }.subscribe(onNext: { [weak self] date in
+                if let oldProduct = self?.output.monthlyProduct.value {
+                    self?.output.monthlyProduct.accept(Product(type: oldProduct.type,
+                                                               name: oldProduct.name,
+                                                               description: oldProduct.description,
+                                                               price: oldProduct.price,
+                                                               expireDate: date))
+                }
+                self?.output.didFinishTransition.onNext(())
             }, onError: { [weak self] in
                 self?.output.errorOccurs.onNext($0)
-    }).disposed(by: self.disposeBag)
-}
+            }).disposed(by: self.disposeBag)
+    }
     
     public func purchaseYearlyMembership() {
         self.purchase(productId: PurchaseManager.ProductType.yearlyMembership.key)
@@ -98,41 +100,56 @@ public class MembershipViewModel: ViewModelProtocol {
                                                           price: oldProduct.price,
                                                           expireDate: date))
             }
+            self?.output.didFinishTransition.onNext(())
         }, onError: { [weak self] in
             self?.output.errorOccurs.onNext($0)
         }).disposed(by: self.disposeBag)
     }
     
     public func loadProducts() {
-        Observable.combineLatest(self.purchaseManager.loadProduct(productId: PurchaseManager.ProductType.monthlyMembership.key),
-                                 self.purchaseManager.validate(productId: PurchaseManager.ProductType.monthlyMembership.key))
-            .skip { $0.0 == nil }
-            .map { product, expireDate in
+        self.purchaseManager.loadProduct(productId: PurchaseManager.ProductType.monthlyMembership.key)
+            .skip { $0 == nil }
+            .map { product in
                 return Product(type: PurchaseManager.ProductType.monthlyMembership,
                                name: product!.localizedTitle,
                                description: product!.localizedDescription,
                                price: product!.localizedPrice,
-                               expireDate: expireDate)
-        }.subscribe(onNext: { [weak self] in
-            self?.output.monthlyProduct.accept($0)
-        }, onError: { [weak self] in
-            self?.output.errorOccurs.onNext($0)
-        }).disposed(by: self.disposeBag)
+                               expireDate: nil)
+            }.subscribe(onNext: { [weak self] in
+                self?.output.monthlyProduct.accept($0)
+            }, onError: { [weak self] in
+                self?.output.errorOccurs.onNext($0)
+            }).disposed(by: self.disposeBag)
         
-        Observable.combineLatest(self.purchaseManager.loadProduct(productId: PurchaseManager.ProductType.yearlyMembership.key),
-                                 self.purchaseManager.validate(productId: PurchaseManager.ProductType.yearlyMembership.key))
-            .skip { $0.0 == nil }
-            .map { product, expireDate in
+        self.purchaseManager.loadProduct(productId: PurchaseManager.ProductType.yearlyMembership.key)
+            .skip { $0 == nil }
+            .map { product in
                 return Product(type: PurchaseManager.ProductType.yearlyMembership,
                                name: product!.localizedTitle,
                                description: product!.localizedDescription,
                                price: product!.localizedPrice,
-                               expireDate: expireDate)
-        }.subscribe(onNext: { [weak self] in
-            self?.output.yearlyProduct.accept($0)
-        }, onError: { [weak self] in
-            self?.output.errorOccurs.onNext($0)
-        }).disposed(by: self.disposeBag)
+                               expireDate: nil)
+            }.subscribe(onNext: { [weak self] in
+                self?.output.yearlyProduct.accept($0)
+            }, onError: { [weak self] in
+                self?.output.errorOccurs.onNext($0)
+            }).disposed(by: self.disposeBag)
+    }
+    
+    public func validateAllProducts() -> Observable<Void> {
+        let validateMonthly = self.purchaseManager.validate(productId: PurchaseManager.ProductType.monthlyMembership.key).do(onNext: { [weak self] expirationDate in
+            guard var product = self?.output.monthlyProduct.value else { return }
+            product.expireDate = expirationDate
+            self?.output.monthlyProduct.accept(product)
+        })
+        
+        let validateYearly = self.purchaseManager.validate(productId: PurchaseManager.ProductType.yearlyMembership.key).do(onNext: { [weak self] expirationDate in
+            guard var product = self?.output.yearlyProduct.value else { return }
+            product.expireDate = expirationDate
+            self?.output.yearlyProduct.accept(product)
+        })
+        
+        return Observable.merge(validateMonthly, validateYearly).map { _ in }
     }
     
     public func restore() -> Observable<[Purchase]> {

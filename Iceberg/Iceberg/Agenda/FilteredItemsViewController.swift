@@ -10,26 +10,22 @@ import Foundation
 import UIKit
 import Core
 import Interface
-
-public protocol FilteredItemsViewControllerDelegate: class {
-    func didTapOnDocument(url: URL, location: Int)
-}
+import RxSwift
 
 public class FilteredItemsViewController: UIViewController {
-    let viewModel: AgendaViewModel
-    public weak var delegate: FilteredItemsViewControllerDelegate?
+    var data: [AgendaCellModel] = []
+    let onDocumentSelected: PublishSubject<(url: URL, location: Int)> = PublishSubject()
     
-    public init(viewModel: AgendaViewModel) {
-        self.viewModel = viewModel
-        
+    public init(data: [AgendaCellModel]) {
+        self.data = data
         super.init(nibName: nil, bundle: nil)
-        
-        viewModel.delegate = self
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    let disposeBag = DisposeBag()
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
@@ -50,52 +46,39 @@ public class FilteredItemsViewController: UIViewController {
         self.view.addSubview(self.tableView)
         self.tableView.allSidesAnchors(to: self.view, edgeInset: 0)
         
-        self.view.showProcessingAnimation()
-        self.viewModel.loadFiltered()
+        let cancelItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: nil, action: nil)
+        self.navigationItem.rightBarButtonItem = cancelItem
+            
+        cancelItem.rx.tap.subscribe(onNext: { [weak self] in
+            self?.dismiss(animated: true)
+        }).disposed(by: self.disposeBag)
     }
 }
 
 extension FilteredItemsViewController: UITableViewDataSource {
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.viewModel.data.count
+        return self.data.count
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: AgendaTableCell.reuseIdentifier, for: indexPath) as! AgendaTableCell
-        cell.cellModel = self.viewModel.data[indexPath.row]
+        cell.cellModel = self.data[indexPath.row]
         return cell
     }
 }
 
 extension FilteredItemsViewController: UITableViewDelegate {
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let cellModel = self.viewModel.data[indexPath.row]
+        let cellModel = self.data[indexPath.row]
         
         if let dataAndTimeRange = cellModel.dateAndTimeRange {
-            self.delegate?.didTapOnDocument(url: cellModel.url, location: dataAndTimeRange.upperBound)
+            self.onDocumentSelected.onNext((url: cellModel.url, location: dataAndTimeRange.upperBound))
         } else {
-            self.delegate?.didTapOnDocument(url: cellModel.url, location: cellModel.heading.range.upperBound)
+            self.onDocumentSelected.onNext((url: cellModel.url, location: cellModel.heading.range.upperBound))
         }
         
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
             tableView.deselectRow(at: indexPath, animated: true)
         }
-    }
-}
-
-extension FilteredItemsViewController: AgendaViewModelDelegate {
-    public func didCompleteLoadAllData() {
-        DispatchQueue.runOnMainQueueSafely {
-            self.view.hideProcessingAnimation()
-            self.tableView.reloadData()
-        }
-    }
-    
-    public func didLoadData() {
-        self.tableView.reloadData()
-    }
-    
-    public func didFailed(_ error: Error) {
-        log.error(error)
     }
 }

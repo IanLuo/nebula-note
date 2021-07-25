@@ -298,6 +298,18 @@ public class DocumentSearchManager {
         self._contentSearchOperationQueue.addOperation(operation)
     }
     
+    public func searchDateAndTime() -> Observable<[DocumentHeadingSearchResult]> {
+        return Observable<[DocumentHeadingSearchResult]>.create { observer in
+            self.searchDateAndTime(completion: {
+                observer.onNext($0)
+                observer.onCompleted()
+            }, failure: {
+                observer.onError($0)
+            })
+            
+            return Disposables.create()
+        }
+    }
     /// 只有写在 heading 中的 datetime 才会被列入结果
     public func searchDateAndTime(completion: @escaping ([DocumentHeadingSearchResult]) -> Void,
                                   failure: @escaping (Error) -> Void) {
@@ -411,6 +423,19 @@ public class DocumentSearchManager {
                 observer.onCompleted()
             }
             
+            return Disposables.create()
+        }
+    }
+    
+    public func allHeadings() -> Observable<[DocumentHeadingSearchResult]> {
+        return Observable.create { observer in
+            self.allHeadings {
+                observer.onNext($0)
+                observer.onCompleted()
+            } failure: {
+                observer.onError($0)
+            }
+
             return Disposables.create()
         }
     }

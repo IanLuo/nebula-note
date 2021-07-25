@@ -148,7 +148,7 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "IGNORE_MEMBERSHIP_CHECK"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "SHOW_ALL_TOKEN_RANGE"

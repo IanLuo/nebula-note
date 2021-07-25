@@ -71,7 +71,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "70DE2C75-26EC-4C4A-90DC-3E29A3A095F9"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Pods/RxSwift/RxSwift/Rx.swift"
@@ -81,6 +81,38 @@
             endingLineNumber = "96"
             landmarkName = "register(synchronizationErrorMessage:)"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "70DE2C75-26EC-4C4A-90DC-3E29A3A095F9 - 554957758f28e33f"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "RxSwift.SynchronizationTracker.register(synchronizationErrorMessage: RxSwift.SynchronizationTracker.SynchronizationErrorMessages) -&gt; ()"
+                  moduleName = "RxSwift"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/ianluo/Documents/apps/Iceland/Iceberg/Pods/RxSwift/RxSwift/Rx.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "96"
+                  endingLineNumber = "96"
+                  offsetFromSymbolStart = "2072">
+               </Location>
+               <Location
+                  uuid = "70DE2C75-26EC-4C4A-90DC-3E29A3A095F9 - 554957758f28e33f"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "RxSwift.SynchronizationTracker.register(synchronizationErrorMessage: RxSwift.SynchronizationTracker.SynchronizationErrorMessages) -&gt; ()"
+                  moduleName = "RxSwift"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/ianluo/Documents/apps/Iceland/Iceberg/Pods/RxSwift/RxSwift/Rx.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "96"
+                  endingLineNumber = "96"
+                  offsetFromSymbolStart = "2060">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

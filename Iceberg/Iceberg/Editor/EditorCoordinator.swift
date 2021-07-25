@@ -162,8 +162,8 @@ public class EditorCoordinator: Coordinator {
     }
     
     public func loadAllTags() -> [String] {
-        if let home = self.rootCoordinator.searchFirstCoordinator(type: HomeCoordinator.self) {
-            return home.getAllTags()
+        if let agenda = self.rootCoordinator.searchFirstCoordinator(type: AgendaCoordinator.self) {
+            return agenda.getAllTags()
         } else {
             return []
         }

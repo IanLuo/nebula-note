@@ -21,7 +21,7 @@ public class AgendaViewController: UIViewController {
         static let besideDateBarHeight: CGFloat = 80
     }
     
-    private let viewModel: AgendaViewModel
+    let viewModel: AgendaViewModel
     
     public weak var delegate: AgendaViewControllerDelegate?
     
@@ -41,18 +41,10 @@ public class AgendaViewController: UIViewController {
         return tableView
     }()
     
-    private lazy var agendaDateSelectView: AgendaDateSelectView = {
-        let agendaDateSelectView = AgendaDateSelectView()
-        agendaDateSelectView.delegate = self
-        return agendaDateSelectView
-    }()
-    
     public init(viewModel: AgendaViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
 
-        viewModel.delegate = self
-        
         self.title = L10n.Agenda.title
         self.tabBarItem = UITabBarItem(title: L10n.Agenda.title, image: Asset.SFSymbols.calendar.image, tag: 0)
     }
@@ -65,16 +57,13 @@ public class AgendaViewController: UIViewController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        
-        self.setupUI()
+        self.interface { (me, theme) in
+            me.view.backgroundColor = theme.color.background1
+        }
+               
+        self.reloadUI()
         
         self.viewModel.loadData()
-        
-        // add observer to be able to reload dates
-        NotificationCenter.default.addObserver(self, selector: #selector(reloadDatesIfNeeded), name: UIApplication.didBecomeActiveNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(reloadDatesIfNeeded), name: UIApplication.willEnterForegroundNotification, object: nil)
-        
-        self.view.showProcessingAnimation()
     }
     
     deinit {
@@ -83,12 +72,14 @@ public class AgendaViewController: UIViewController {
     
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
+       
         self.viewModel.isConnectingScreen = true
-        
         self.viewModel.loadData()
         
-        reloadDatesIfNeeded()
+        self.viewModel.all.asDriver().drive(onNext: { [weak self] _ in
+            self?.reloadUI()
+            self?.tableView.reloadData()
+        }).disposed(by: self.disposeBag)
     }
     
     public override func viewDidDisappear(_ animated: Bool) {
@@ -96,25 +87,105 @@ public class AgendaViewController: UIViewController {
         self.viewModel.isConnectingScreen = false
     }
     
-    private func setupUI() {
-        self.interface { (me, theme) in
-            me.view.backgroundColor = theme.color.background1
+    private var dashboard: UIView?
+    
+    private func reloadUI() {
+       self.dashboard = UIStackView(subviews: [
+            UIStackView(subviews: [
+                UIStackView(subviews: [
+                    UIScrollView().sizeAnchor(height: 100).childBuilder(topView: self.view, bindTo: self.viewModel.tags.asDriver().asObservable(), builder: {
+                        UIStackView(subviews: $0.map { tagDict in
+                            Padding(child: UIStackView(subviews: [
+                                UILabel(text: "\(tagDict.value.count)").interface({ let l = $0 as! UILabel; l.font = $1.font.title; l.textColor = tagDict.value.count > 0 ? $1.color.interactive :  $1.color.descriptive}),
+                                UILabel(text: tagDict.key).interface({ let l = $0 as! UILabel; l.font = $1.font.footnote; l.textColor = tagDict.value.count > 0 ? $1.color.interactive : $1.color.descriptive})
+                            ], axis: .vertical), all: 30)
+                                .sizeAnchor(width: 150, height: 100)
+                                .roundConer(radius: Layout.cornerRadius)
+                                .interface({ $0.backgroundColor = $1.color.background2 })
+                                .tapGesture({ [weak self] in
+                                    self?.showHeadings(tag: tagDict.key, from: $0)
+                                })
+                        }, spacing: 16)
+                })], axis: .vertical, alignment: .fill).isHidden(observe: self.viewModel.tags.map({ $0.count == 0 })),
+                UIStackView(subviews: [
+                    UIScrollView().sizeAnchor(height: 100).childBuilder(topView: self.view, bindTo: self.viewModel.status.asDriver().asObservable(), builder: {
+                        UIStackView(subviews: $0.map { statusDict in
+                            Padding(child: UIStackView(subviews: [
+                                UILabel(text: "\(statusDict.value.count)").interface({ let l = $0 as! UILabel; l.font = $1.font.title; l.textColor = statusDict.value.count > 0 ? $1.color.interactive : $1.color.descriptive}),
+                                UILabel(text: statusDict.key).interface({ let l = $0 as! UILabel; l.font = $1.font.footnote; l.textColor = statusDict.value.count > 0 ? $1.color.interactive : $1.color.descriptive})
+                            ], axis: .vertical), all: 30)
+                                .sizeAnchor(width: 150, height: 100)
+                                .roundConer(radius: Layout.cornerRadius)
+                                .interface({ $0.backgroundColor = $1.color.background2 })
+                                .tapGesture({ [weak self] in
+                                    self?.showHeadings(status: statusDict.key, from: $0)
+                                })
+                        }, spacing: 16)
+                })], axis: .vertical, alignment: .fill).isHidden(observe: self.viewModel.status.map({ $0.count == 0 }))
+            ], axis: isPhone ? .vertical : .horizontal, distribution: .fillEqually, alignment: .fill, spacing: 20),
+            
+            UIStackView(subviews: [
+                UIStackView(subviews: [
+                    UIView().childBuilder(topView: self.view, bindTo: self.viewModel.scheduled.asDriver().asObservable(), position: .center, builder: { scheduled in
+                        UIStackView(subviews: [
+                            UILabel(text: "\(scheduled.count)").interface({ let l = $0 as! UILabel; l.font = $1.font.largeTitle; l.textColor = scheduled.count > 0 ? $1.color.interactive : $1.color.descriptive}),
+                            UILabel(text: L10n.Agenda.Sub.startSoon).interface({ let l = $0 as! UILabel; l.font = $1.font.title; l.textColor = scheduled.count > 0 ? $1.color.interactive : $1.color.descriptive})
+                        ], axis: .vertical, distribution: .equalCentering, alignment: .center)
+                    }).sizeAnchor(height: 100)
+                        .roundConer(radius: Layout.cornerRadius)
+                        .tapGesture({ [weak self] in
+                            guard let strongSelf = self else { return }
+                            self?.showHeadings(data: strongSelf.viewModel.scheduled.value.map { AgendaCellModel(searchResult: $0) }, from: $0)
+                        })
+                        .interface({ $0.backgroundColor = $1.color.background2 }),
+                    UIView().childBuilder(topView: self.view, bindTo: self.viewModel.overdue.asDriver().asObservable(), position: .center, builder: { overdue in
+                        UIStackView(subviews: [
+                            UILabel(text: "\(overdue.count)").interface({ let l = $0 as! UILabel; l.font = $1.font.largeTitle; l.textColor = overdue.count > 0 ? $1.color.interactive : $1.color.descriptive }),
+                            UILabel(text: L10n.Agenda.Sub.overdue).interface({ let l = $0 as! UILabel; l.font = $1.font.title; l.textColor = overdue.count > 0 ? $1.color.interactive : $1.color.descriptive})
+                            ], axis: .vertical, distribution: .equalCentering, alignment: .center)
+                        }).sizeAnchor(height: 100)
+                            .roundConer(radius: Layout.cornerRadius)
+                            .tapGesture({ [weak self] in
+                                guard let strongSelf = self else { return }
+                                self?.showHeadings(data: strongSelf.viewModel.overdue.value.map { AgendaCellModel(searchResult: $0) }, from: $0)
+                        })
+                        .interface({ $0.backgroundColor = $1.color.background2 }),
+                ], distribution: .fillEqually, alignment: .fill, spacing: 20),
+                UIStackView(subviews: [
+                    UIView().childBuilder(topView: self.view, bindTo: self.viewModel.dueSoon.asDriver().asObservable(), position: .center, builder: { dueSoon in
+                        UIStackView(subviews: [
+                            UILabel(text: "\(dueSoon.count)").interface({ let l = $0 as! UILabel; l.font = $1.font.largeTitle; l.textColor = dueSoon.count > 0 ? $1.color.interactive : $1.color.descriptive}),
+                            UILabel(text: L10n.Agenda.Sub.overdueSoon).interface({ let l = $0 as! UILabel; l.font = $1.font.title; l.textColor = dueSoon.count > 0 ? $1.color.interactive : $1.color.descriptive})
+                        ], axis: .vertical, distribution: .equalCentering, alignment: .center)
+                    }).sizeAnchor(height: 100)
+                        .roundConer(radius: Layout.cornerRadius)
+                        .tapGesture({ [weak self] in
+                            guard let strongSelf = self else { return }
+                            self?.showHeadings(data: strongSelf.viewModel.dueSoon.value.map { AgendaCellModel(searchResult: $0) }, from: $0)
+                        })
+                        .interface({ $0.backgroundColor = $1.color.background2 }),
+                    UIView().childBuilder(topView: self.view, bindTo: self.viewModel.startSoon.asDriver().asObservable(), position: .center, builder: { startSoon in
+                        UIStackView(subviews: [
+                            UILabel(text: "\(startSoon.count)").interface({ let l = $0 as! UILabel; l.font = $1.font.largeTitle; l.textColor = startSoon.count > 0 ? $1.color.interactive : $1.color.descriptive}),
+                            UILabel(text: L10n.Agenda.Sub.startSoon).interface({ let l = $0 as! UILabel; l.font = $1.font.title; l.textColor = startSoon.count > 0 ? $1.color.interactive : $1.color.descriptive})
+                            ], axis: .vertical, distribution: .equalCentering, alignment: .center)
+                        }).sizeAnchor(height: 100)
+                            .roundConer(radius: Layout.cornerRadius)
+                            .tapGesture({ [weak self] in
+                                guard let strongSelf = self else { return }
+                                self?.showHeadings(data: strongSelf.viewModel.startSoon.value.map { AgendaCellModel(searchResult: $0) }, from: $0)
+                        })
+                        .interface({ $0.backgroundColor = $1.color.background2 }),
+                ], distribution: .fillEqually, alignment: .fill, spacing: 20),
+            ], axis: isPhone ? .vertical : .horizontal, distribution: .fillEqually, alignment: .fill, spacing: 20),
+        ], axis: .vertical, alignment: .fill, spacing: 20)
+
+        if let dashboard = self.dashboard {
+            tableView.tableHeaderView = Padding(child: dashboard, horizontal: 20)
         }
         
-        self.view.addSubview(self.tableView)
-        self.view.addSubview(self.agendaDateSelectView)
-        
-        self.agendaDateSelectView.sideAnchor(for: [.top, .left, .right],
-                                        to: self.view,
-                                        edgeInsets: .init(top: Layout.edgeInsets.top,
-                                                          left: 0,
-                                                          bottom: 0,
-                                                          right: 0),
-                                        considerSafeArea: true)
-        self.agendaDateSelectView.sizeAnchor(height: Constants.besideDateBarHeight)
-        
-        self.agendaDateSelectView.columnAnchor(view: self.tableView, space: 20)
-        self.tableView.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 0)
+        self.view.addSubview(tableView)
+        tableView.allSidesAnchors(to: self.view, edgeInset: 0, considerSafeArea: true)
         
         let rightItem = UIBarButtonItem(title: L10n.General.help, style: .plain, target: nil, action: nil)
         rightItem.rx.tap.subscribe(onNext: {
@@ -123,44 +194,67 @@ public class AgendaViewController: UIViewController {
         self.navigationItem.rightBarButtonItem = rightItem
     }
     
-    @objc private func cancel() {
-        self.viewModel.coordinator?.stop()
-    }
-    
-    @objc private func reloadDatesIfNeeded() {
-        if self.viewModel.regenerateDatesIfNeeded() {
-            self.agendaDateSelectView.reload()
-            self.viewModel.loadData()
+    public override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        if let header = self.tableView.tableHeaderView {
+            var frame = header.frame
+            frame.size.height = header.systemLayoutSizeFitting(CGSize(width: self.view.bounds.width, height: UIView.layoutFittingCompressedSize.height)).height
+            header.frame = frame
+            self.tableView.tableHeaderView = header
         }
     }
-}
-
-extension AgendaViewController: AgendaDateSelectViewDelegate {
-    public func didSelectDate(at index: Int) {
-        self.viewModel.loadData(for: index)
+    
+    @objc private func cancel() {
+        self.viewModel.context.coordinator?.stop()
     }
     
-    public func dates() -> [Date] {
-        return self.viewModel.dates
+    private func showHeadings(tag: String, from: UIView) {
+        if let data = self.viewModel.tags.value[tag]?.map({ AgendaCellModel(searchResult: $0) }) {
+            self.showFiteredHeadings(data: data, from: from)
+        }
+    }
+    
+    private func showHeadings(status: String, from: UIView) {
+        if let data = self.viewModel.status.value[status]?.map({ AgendaCellModel(searchResult: $0) }) {
+            self.showFiteredHeadings(data: data, from: from)
+        }
+    }
+    
+    private func showHeadings(data: [AgendaCellModel], from: UIView) {
+        guard data.count > 0 else { return }
+        self.showFiteredHeadings(data: data, from: from)
+    }
+    
+    private func showFiteredHeadings(data: [AgendaCellModel], from: UIView) {
+        let vc = FilteredItemsViewController(data: data)
+        vc.onDocumentSelected.subscribe(onNext: {
+            self.delegate?.didSelectDocument(url: $0.url, location: $0.location)
+            self.dismiss(animated: true)
+        }).disposed(by: self.disposeBag)
+        
+        let nav = Application.createDefaultNavigationControlller(root: vc)
+        nav.modalPresentationStyle = .popover
+        nav.popoverPresentationController?.sourceView = from
+        self.present(nav, animated: true)
     }
 }
 
 extension AgendaViewController: UITableViewDataSource {
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.viewModel.data.count
+        return self.viewModel.all.value.count
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: AgendaTableCell.reuseIdentifier, for: indexPath) as! AgendaTableCell
-        let cellModel = self.viewModel.data[indexPath.row]
-        cellModel.currentDate = self.viewModel.dates[self.agendaDateSelectView.currentIndex]
+        let cellModel = self.viewModel.all.value[indexPath.row]
         cell.cellModel = cellModel
         return cell
     }
     
     public func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let dateSectionView = tableView.dequeueReusableHeaderFooterView(withIdentifier: DateSectionView.reuseIdentifier) as! DateSectionView
-        dateSectionView.date = self.viewModel.dates[self.agendaDateSelectView.currentIndex]
+        dateSectionView.date = Date()
         return dateSectionView
     }
     
@@ -172,7 +266,7 @@ extension AgendaViewController: UITableViewDataSource {
 extension AgendaViewController: UITableViewDelegate {
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let data = self.viewModel.data[indexPath.row]
+        let data = self.viewModel.all.value[indexPath.row]
         
         if let dateAndTimeRange = data.dateAndTimeRange {
             self.delegate?.didSelectDocument(url: data.url, location: dateAndTimeRange.upperBound)
@@ -192,22 +286,6 @@ extension UITableView {
             }
         }
         return 0
-    }
-}
-
-extension AgendaViewController: AgendaViewModelDelegate {
-    public func didLoadData() {
-        self.tableView.reloadData()
-        self.showEmptyContentImage(self.viewModel.data.count == 0)
-        self.view.hideProcessingAnimation()
-    }
-    
-    public func didCompleteLoadAllData() {
-        self.agendaDateSelectView.moveTo(index: 0)
-    }
-    
-    public func didFailed(_ error: Error) {
-        log.error(error)
     }
 }
 
@@ -236,12 +314,8 @@ private class DateSectionView: UITableViewHeaderFooterView {
         
         label.interface({ (me, theme) in
             let label = me as! UILabel
-            label.font = theme.font.largeTitle
-            if self.date?.isToday() == true {
-                label.textColor = theme.color.interactive
-            } else {
-                label.textColor = theme.color.descriptive
-            }
+            label.font = theme.font.body
+            label.textColor = theme.color.descriptive
         })
         label.textAlignment = .left
         return label
@@ -252,12 +326,8 @@ private class DateSectionView: UITableViewHeaderFooterView {
         
         label.interface({ (me, theme) in
             let label = me as! UILabel
-            label.font = theme.font.largeTitle
-            if self.date?.isToday() == true {
-                label.textColor = theme.color.interactive
-            } else {
-                label.textColor = theme.color.descriptive
-            }
+            label.font = theme.font.body
+            label.textColor = theme.color.descriptive
         })
         label.textAlignment = .left
         return label
@@ -278,14 +348,8 @@ private class DateSectionView: UITableViewHeaderFooterView {
             
             self.dateLabel.text = "\(date.day), \(date.monthStringLong),  \(date.weekOfYearString), \(date.year)"
             self.weekdayLabel.text = date.weekDayString
-            
-            if date.isToday() {
-                self.dateLabel.textColor = InterfaceTheme.Color.interactive
-                self.weekdayLabel.textColor = InterfaceTheme.Color.interactive
-            } else {
-                self.dateLabel.textColor = InterfaceTheme.Color.descriptive
-                self.weekdayLabel.textColor = InterfaceTheme.Color.descriptive
-            }
+            self.dateLabel.textColor = InterfaceTheme.Color.descriptive
+            self.weekdayLabel.textColor = InterfaceTheme.Color.descriptive
         }
     }
     
@@ -295,13 +359,13 @@ private class DateSectionView: UITableViewHeaderFooterView {
         self.contentView.addSubview(self.dateLabel)
         self.contentView.addSubview(self.weekdayLabel)
                 
-        self.weekdayLabel.sideAnchor(for: [.top, .left, .right],
+        self.weekdayLabel.sideAnchor(for: [.top, .left, .bottom],
                                      to: self.contentView,
                                      edgeInset: Layout.edgeInsets.left)
                 
-        self.weekdayLabel.columnAnchor(view: self.dateLabel, space: 10)
+        self.weekdayLabel.rowAnchor(view: self.dateLabel, space: 10)
         
-        self.dateLabel.sideAnchor(for: [.left, .right, .bottom],
+        self.dateLabel.sideAnchor(for: [.top, .bottom],
                                   to: self.contentView,
                                   edgeInset: Layout.edgeInsets.left)
         

@@ -446,8 +446,10 @@ extension OutlineParser {
                 public static func generatePattern() -> String {
                     var plannings = "\(todo)|\(done)|\(canceled)"
                     if let customized = SettingsAccessor.shared.customizedPlannings {
-                        plannings.append("|")
-                        plannings.append(customized.joined(separator: "|"))
+                        if customized.count > 0 {
+                            plannings.append("|")
+                            plannings.append(customized.joined(separator: "|"))
+                        }
                     }
                     return plannings
                 }

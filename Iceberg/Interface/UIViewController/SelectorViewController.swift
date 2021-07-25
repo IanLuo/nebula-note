@@ -131,6 +131,8 @@ open class SelectorViewController: UIViewController {
         super.viewDidLayoutSubviews()
         
         self.preferredContentSize = CGSize(width: 300, height: self.contentView.bounds.height)
+        
+        self.filterInput.isHidden = self.tableView.contentSize.height < self.tableView.bounds.height
     }
     
     public func scrollToDefaultValue() {

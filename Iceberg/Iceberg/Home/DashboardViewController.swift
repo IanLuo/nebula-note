@@ -15,9 +15,6 @@ import RxCocoa
 
 public protocol DashboardViewControllerDelegate: class {
     func didSelectTab(at index: Int, viewController: UIViewController)
-    func showHeadings(tag: String)
-    func showHeadings(planning: String)
-    func showHeadings(subTabType: DashboardViewModel.DahsboardItemData)
 }
 
 public class DashboardViewController: UIViewController {
@@ -64,8 +61,6 @@ public class DashboardViewController: UIViewController {
     public init(viewModel: DashboardViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
-        
-        viewModel.delegate = self
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -102,18 +97,19 @@ public class DashboardViewController: UIViewController {
         self.membershipButton.sizeAnchor(height: 30)
         
         self.trashButton.tapped { [unowned self] _ in
-            self.viewModel.coordinator?.showTrash()
+            self.viewModel.context.coordinator?.showTrash()
         }
         
         self.settingsButton.tapped { [unowned self] _ in
-            self.viewModel.coordinator?.showSettings()
+            self.viewModel.context.coordinator?.showSettings()
         }
         
         self.membershipButton.rx.tap.subscribe(onNext: { [unowned self] _ in
-            self.viewModel.coordinator?.showMembershipView()
+            self.viewModel.context.coordinator?.showMembershipView()
         }).disposed(by: self.disposeBag)
         
         self.viewModel
+            .context
             .coordinator?
             .dependency
             .purchaseManager
@@ -134,8 +130,7 @@ public class DashboardViewController: UIViewController {
         })
         tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 80, right: 0)
         tableView.separatorStyle = .none
-        tableView.register(TabView.self, forHeaderFooterViewReuseIdentifier: TabView.reuseIdentifier)
-        tableView.register(SubtabCell.self, forCellReuseIdentifier: SubtabCell.reuseIdentifier)
+        tableView.register(TabViewCell.self, forCellReuseIdentifier: TabViewCell.reuseIdentifier)
         tableView.tableFooterView = UIView()
         return tableView
     }()
@@ -158,7 +153,6 @@ public class DashboardViewController: UIViewController {
         if let index = index {
             self.tabs.forEach { $0.isCurrent = $0 == self.tabs[index] }
             self.delegate?.didSelectTab(at: index, viewController: self.tabs[index].type.viewController)
-            self.selectOnSubtab(tab: index, subtab: nil)
         } else {
             self.tabs.forEach { $0.isCurrent = false }
         }
@@ -166,46 +160,6 @@ public class DashboardViewController: UIViewController {
     
     public func viewController(at index: Int) -> UIViewController? {
         return self.tabs[index].type.viewController
-    }
-    
-    public func selectOnSubtab(tab: Int, subtab: Int?) {
-        self.tabs.forEach {
-            $0.sub.forEach {
-                $0.isCurrent = false
-            }
-        }
-        
-        if let subtab = subtab { // 到这里的时候，table view 已经把选中的 cell 高亮显示了，所以不需要做高亮的操作
-            self.selectOnSubtabAction(tab: tab, subtab: subtab)
-            self.selectOnTab(index: nil) // 取消 tab 上的选中效果
-            self.tabs[tab].sub[subtab].isCurrent = true
-        } else {
-            tableView.visibleCells.forEach {
-                $0.setSelected(false, animated: false)
-            }
-        }
-    }
-    
-    private func selectOnSubtabAction(tab: Int, subtab: Int) {
-        let type = self.tabs[tab].sub[subtab].type
-        switch type {
-        case .allTags:
-            let tagsViewController = DashboardSubtypeItemViewController(subtype: self.tabs[tab].sub[subtab].type)
-            tagsViewController.title = type.title
-            tagsViewController.didSelectAction = { title in
-                self.delegate?.showHeadings(tag: title)
-            }
-            self.navigationController?.pushViewController(tagsViewController, animated: true)
-        case .allStatus:
-            let tagsViewController = DashboardSubtypeItemViewController(subtype: self.tabs[tab].sub[subtab].type)
-            tagsViewController.title = type.title
-            tagsViewController.didSelectAction = { title in
-                self.delegate?.showHeadings(planning: title)
-            }
-            self.navigationController?.pushViewController(tagsViewController, animated: true)
-        default:
-            self.delegate?.showHeadings(subTabType: type)
-        }
     }
     
     public enum TabType {
@@ -256,160 +210,30 @@ public class DashboardViewController: UIViewController {
         public init(type: TabType) {
             self.type = type
         }
-        
-        public var sub: [Subtab] = [] {
-            didSet {
-                sub.sort { (left, right) -> Bool in
-                    return left.type.index < right.type.index
-                }
-            }
-        }
-    }
-    
-    fileprivate class Subtab: Equatable {
-        var icon: UIImage? { return self.type.icon }
-        var title: String { return self.type.title }
-        var subtitle: String { return self.type.subtitle }
-        var isCurrent: Bool = false
-        let type: DashboardViewModel.DahsboardItemData
-        
-        public static func == (lhs: DashboardViewController.Subtab, rhs: DashboardViewController.Subtab) -> Bool {
-            return lhs.title == rhs.title
-        }
-        
-        public init(type: DashboardViewModel.DahsboardItemData) {
-            self.type = type
-        }
-    }
-}
-
-// MARK: - type definition -
-extension DashboardViewModel.DahsboardItemData {
-    public var index: Int {
-        switch self {
-        case .allTags: return 0
-        case .allStatus: return 1
-        case .scheduled: return 2
-        case .overdue: return 3
-        case .overdueSoon: return 5
-        case .startSoon: return 6
-        case .today: return 9
-        }
-    }
-    
-    var icon: UIImage? {
-        switch self {
-        case .allTags(_): return Asset.SFSymbols.tag.image
-        case .allStatus(_): return Asset.Assets.planning.image
-        case .scheduled: return Asset.SFSymbols.calendarBadgePlus.image
-        case .overdue: return Asset.SFSymbols.calendarBadgeExclamationmark.image
-        default: return nil
-        }
-    }
-    
-    var detailIcon: UIImage? {
-        switch self {
-        case .allTags(_): return Asset.SFSymbols.chevronRight.image.resize(upto: CGSize(width: 10, height: 10))
-        case .allStatus(_): return Asset.SFSymbols.chevronRight.image.resize(upto: CGSize(width: 10, height: 10))
-        default: return nil
-        }
-    }
-    
-    var title: String {
-        switch self {
-        case .allTags(_): return L10n.Agenda.Sub.tags
-        case .allStatus: return L10n.Agenda.Sub.planning
-        case .overdue: return L10n.Agenda.Sub.overdue
-        case .scheduled: return L10n.Agenda.Sub.scheduled
-        case .overdueSoon: return L10n.Agenda.Sub.overdueSoon
-        case .startSoon: return L10n.Agenda.Sub.startSoon
-        case .today: return L10n.Agenda.Sub.today
-        }
-    }
-    
-    var subtitle: String {
-        switch self {
-        case .allTags(let tags): return "\(tags.count)"
-        case .allStatus(let plannings): return "\(plannings.count)"
-        case .overdue(let headings): return "\(headings.count)"
-        case .overdueSoon(let headings): return "\(headings.count)"
-        case .scheduled(let headings): return "\(headings.count)"
-        case .startSoon(let headings): return "\(headings.count)"
-        case .today(let headings): return "\(headings.count)"
-        }
-    }
-    
-    //  下一级页面的数据
-    var detailItems: [String] {
-        switch self {
-        case .allTags(let tags): return tags
-        case .allStatus(let status): return status
-        default: return []
-        }
     }
 }
 
 extension DashboardViewController: UITableViewDelegate, UITableViewDataSource {
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.tabs[section].sub.count
-    }
-    
-    public func numberOfSections(in tableView: UITableView) -> Int {
         return self.tabs.count
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: SubtabCell.reuseIdentifier, for: indexPath) as! SubtabCell
-        let item = self.tabs[indexPath.section].sub[indexPath.row]
-        cell.titleLabel.text = item.title
-        cell.iconView.image = item.icon?.withRenderingMode(.alwaysTemplate)
-        cell.subtitleLabel.text = item.subtitle
-        cell.detailIconView.image = item.type.detailIcon?.withRenderingMode(.alwaysTemplate)
+        let cell = tableView.dequeueReusableCell(withIdentifier: TabViewCell.reuseIdentifier, for: indexPath) as! TabViewCell
+        let tab = self.tabs[indexPath.row]
+        cell.tab = tab
+        
+        cell.action = {
+            self.selectOnTab(index: indexPath.row)
+        }
         return cell
-    }
-    
-    public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        let item = self.tabs[indexPath.section].sub[indexPath.row]
-        cell.setSelected(item.isCurrent, animated: false)
-    }
-    
-    public func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let view = tableView.dequeueReusableHeaderFooterView(withIdentifier: TabView.reuseIdentifier) as! TabView
-        let tab = self.tabs[section]
-        view.tab = tab
-        
-        view.action = {
-            self.selectOnTab(index: section)
-        }
-        
-        return view
-    }
-    
-    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.selectOnSubtab(tab: indexPath.section, subtab: indexPath.row)
-    }
-    
-    public func reloadDataIfNeeded() {
-        self.viewModel.loadDataIfNeeded()
-    }
-}
-
-extension DashboardViewController: DashboardViewModelDelegate {
-    public func didCompleteLoadFilteredData() {
-        self.tabs[0].sub.removeAll()
-        
-        self.viewModel.itemsData.forEach { data in
-            self.tabs[0].sub.append(Subtab(type: data))
-        }
-        
-        self.tableView.reloadSections([0], with: UITableView.RowAnimation.none)
     }
 }
 
 // MARK: - TabView -
 
-private class TabView: UITableViewHeaderFooterView {
-    static let reuseIdentifier = "TabView"
+private class TabViewCell: UITableViewCell {
+    static let reuseIdentifier = "TabViewCell"
     private let disposeBag = DisposeBag()
     
     var tab: DashboardViewController.Tab? {
@@ -455,7 +279,7 @@ private class TabView: UITableViewHeaderFooterView {
     }()
         
     var action: (() -> Void)?
-    var isHighlighted: Bool {
+    override var isHighlighted: Bool {
         get { return self.titleButton.isSelected }
         set {
             self.titleButton.isSelected = newValue
@@ -463,10 +287,10 @@ private class TabView: UITableViewHeaderFooterView {
         }
     }
     
-    override init(reuseIdentifier: String?) {
-        super.init(reuseIdentifier: reuseIdentifier)
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.interface { (me, theme) in
-            let tabView = me as! TabView
+            let tabView = me as! TabViewCell
             tabView.contentView.backgroundColor = InterfaceTheme.Color.background1
             tabView.backgroundColor = InterfaceTheme.Color.background1
         }
@@ -484,7 +308,7 @@ private class TabView: UITableViewHeaderFooterView {
         #if targetEnvironment(macCatalyst)
         #else
         self.interface { (view, theme) in
-            let me = view as! TabView
+            let me = view as! TabViewCell
             if #available(iOS 14.0, *) {
                 me.backgroundConfiguration?.backgroundColor = theme.color.background1
             }
@@ -502,133 +326,5 @@ private class TabView: UITableViewHeaderFooterView {
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-}
-
-// MARK: - SubtabCell -
-
-private class SubtabCell: UITableViewCell {
-    static let reuseIdentifier: String = "SubtabCell"
-    let titleLabel: UILabel = {
-        let label = UILabel()
-        
-        label.interface({ (me, theme) in
-            let label = me as! UILabel
-            label.font = theme.font.body
-            label.textColor = theme.color.spotlight
-        })
-        return label
-    }()
-    
-    let subtitleLabel: UILabel = {
-        let label = UILabel()
-        
-        label.interface({ (me, theme) in
-            let label = me as! UILabel
-            label.font = theme.font.footnote
-            label.textColor = theme.color.descriptive
-        })
-        
-        label.textAlignment = .right
-        return label
-    }()
-    
-    let detailIconView: UIImageView = {
-        let imageView = UIImageView()
-        
-        imageView.interface({ (me, theme) in
-            let imageView = me as! UIImageView
-            imageView.tintColor = InterfaceTheme.Color.descriptive
-        })
-        imageView.contentMode = .scaleAspectFit
-        return imageView
-    }()
-    
-    let iconView: UIImageView = {
-        let imageView = UIImageView()
-        
-        imageView.interface({ (me, theme) in
-            let imageView = me as! UIImageView
-            imageView.tintColor = InterfaceTheme.Color.interactive
-        })
-        imageView.contentMode = .scaleAspectFit
-        return imageView
-    }()
-    
-    let innerContentView: UIView = {
-        let view = UIView()
-        
-        view.interface ({ (me, interface) in
-            me.backgroundColor = interface.color.background1
-        })
-        
-        return view
-    }()
-    
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
-        self.interface { (me, theme) in
-            me.backgroundColor = theme.color.background1
-        }
-        
-        self.contentView.addSubview(self.innerContentView)
-        self.innerContentView.addSubview(self.titleLabel)
-        self.innerContentView.addSubview(self.iconView)
-        self.innerContentView.addSubview(self.subtitleLabel)
-        self.innerContentView.addSubview(self.detailIconView)
-        
-        self.innerContentView.allSidesAnchors(to: self.contentView, edgeInsets: .init(top: 0, left: 60, bottom: 0, right: -Layout.edgeInsets.right))
-        self.innerContentView.roundConer(radius: 8)
-        
-        self.iconView.sideAnchor(for: .left, to: self.innerContentView, edgeInsets: .init(top: 0, left: Layout.edgeInsets.left, bottom: 0, right: 0))
-        self.iconView.centerAnchors(position: .centerY, to: self.innerContentView)
-        self.iconView.sizeAnchor(width: 15, height: 15)
-        self.iconView.rowAnchor(view: self.titleLabel, space: 20)
-        
-        self.titleLabel.rowAnchor(view: self.subtitleLabel, space: 3)
-        
-        self.subtitleLabel.rowAnchor(view: self.detailIconView, space: 3)
-        self.subtitleLabel.setContentHuggingPriority(UILayoutPriority.defaultHigh, for: NSLayoutConstraint.Axis.horizontal)
-        self.detailIconView.sideAnchor(for: .right, to: self.innerContentView, edgeInset: Layout.edgeInsets.right)
-        self.detailIconView.sizeAnchor(width: 10, height: 10)
-        
-        self.enableHover(on: self.innerContentView, hoverColor: InterfaceTheme.Color.background3)
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    override public func setHighlighted(_ highlighted: Bool, animated: Bool) {
-        if highlighted {
-            self.innerContentView.backgroundColor = InterfaceTheme.Color.spotlight
-            self.subtitleLabel.textColor = InterfaceTheme.Color.spotlitTitle
-            self.titleLabel.textColor = InterfaceTheme.Color.spotlitTitle
-            self.detailIconView.tintColor = InterfaceTheme.Color.spotlitTitle
-            self.iconView.tintColor = InterfaceTheme.Color.spotlitTitle
-        } else {
-            self.innerContentView.backgroundColor = InterfaceTheme.Color.background1
-            self.subtitleLabel.textColor = InterfaceTheme.Color.interactive
-            self.titleLabel.textColor = InterfaceTheme.Color.interactive
-            self.detailIconView.tintColor = InterfaceTheme.Color.interactive
-            self.iconView.tintColor = InterfaceTheme.Color.interactive
-        }
-    }
-    
-    override public func setSelected(_ selected: Bool, animated: Bool) {
-        if selected {
-            self.innerContentView.backgroundColor = InterfaceTheme.Color.spotlight
-            self.subtitleLabel.textColor = InterfaceTheme.Color.spotlitTitle
-            self.titleLabel.textColor = InterfaceTheme.Color.spotlitTitle
-            self.detailIconView.tintColor = InterfaceTheme.Color.spotlitTitle
-            self.iconView.tintColor = InterfaceTheme.Color.spotlitTitle
-        } else {
-            self.innerContentView.backgroundColor = InterfaceTheme.Color.background1
-            self.subtitleLabel.textColor = InterfaceTheme.Color.interactive
-            self.titleLabel.textColor = InterfaceTheme.Color.interactive
-            self.detailIconView.tintColor = InterfaceTheme.Color.interactive
-            self.iconView.tintColor = InterfaceTheme.Color.interactive
-        }
     }
 }
