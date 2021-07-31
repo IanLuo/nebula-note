@@ -99,7 +99,7 @@ public class EditorService {
     }
     
     public var isOpen: Bool {
-        return self.document.documentState == .normal
+        return self.document.documentState == .normal && self.logs != nil
     }
     
     private let lock = NSLock()

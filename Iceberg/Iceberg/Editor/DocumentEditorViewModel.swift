@@ -27,7 +27,7 @@ public class DocumentEditorViewModel: ViewModelProtocol {
     
     public weak var delegate: DocumentEditViewModelDelegate? {
         didSet {
-            if self.isReadyToEdit {
+            if self.editorService.isOpen {
                 self.delegate?.didReadyToEdit()
             }
         }
