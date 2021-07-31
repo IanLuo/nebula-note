@@ -94,7 +94,7 @@ public class AgendaViewController: UIViewController {
             UIStackView(subviews: [
                 UIStackView(subviews: [
                     UIScrollView().sizeAnchor(height: 100).childBuilder(topView: self.view, bindTo: self.viewModel.tags.asDriver().asObservable(), builder: {
-                        UIStackView(subviews: $0.map { tagDict in
+                UIStackView(subviews: $0.sorted(by: { $0.key < $1.key }).map { tagDict in
                             Padding(child: UIStackView(subviews: [
                                 UILabel(text: "\(tagDict.value.count)").interface({ let l = $0 as! UILabel; l.font = $1.font.title; l.textColor = tagDict.value.count > 0 ? $1.color.interactive :  $1.color.descriptive}),
                                 UILabel(text: tagDict.key).interface({ let l = $0 as! UILabel; l.font = $1.font.footnote; l.textColor = tagDict.value.count > 0 ? $1.color.interactive : $1.color.descriptive})
@@ -109,7 +109,7 @@ public class AgendaViewController: UIViewController {
                 })], axis: .vertical, alignment: .fill).isHidden(observe: self.viewModel.tags.map({ $0.count == 0 })),
                 UIStackView(subviews: [
                     UIScrollView().sizeAnchor(height: 100).childBuilder(topView: self.view, bindTo: self.viewModel.status.asDriver().asObservable(), builder: {
-                        UIStackView(subviews: $0.map { statusDict in
+                        UIStackView(subviews: $0.sorted(by: { $0.key < $1.key }).map { statusDict in
                             Padding(child: UIStackView(subviews: [
                                 UILabel(text: "\(statusDict.value.count)").interface({ let l = $0 as! UILabel; l.font = $1.font.title; l.textColor = statusDict.value.count > 0 ? $1.color.interactive : $1.color.descriptive}),
                                 UILabel(text: statusDict.key).interface({ let l = $0 as! UILabel; l.font = $1.font.footnote; l.textColor = statusDict.value.count > 0 ? $1.color.interactive : $1.color.descriptive})
