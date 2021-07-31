@@ -40,7 +40,7 @@ static NSMutableDictionary *attachmentMap;
     if ([self class] == [TextStorage class]) {
         foldingAttachment = [[NSTextAttachment alloc] init];
         foldingAttachment.image = [[UIImage imageNamed:@"ellipsis" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil] fillWithColor:[[InterfaceTheme Color] descriptive]];
-        foldingAttachment.bounds = CGRectMake(0, ([[SettingsAccessor shared] lineHeight] - 14) / 2, [[SettingsAccessor shared] lineHeight] + 10, [[SettingsAccessor shared] lineHeight]);
+        foldingAttachment.bounds = CGRectMake(0, ([[SettingsAccessor shared] lineHeight] - 14) / 2, [[SettingsAccessor shared] lineHeight] + 8, [[SettingsAccessor shared] lineHeight]);
         
         linkAttachment = [[NSTextAttachment alloc] init];
         linkAttachment.image = [[UIImage imageNamed: @"link" inBundle:[NSBundle bundleForClass:[OutlineTheme class]] compatibleWithTraitCollection:nil] fillWithColor:[[InterfaceTheme Color]descriptive]];

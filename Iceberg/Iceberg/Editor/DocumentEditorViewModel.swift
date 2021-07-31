@@ -70,6 +70,9 @@ public class DocumentEditorViewModel: ViewModelProtocol {
         }
     }
     
+    
+    public let onTitleChanged: PublishSubject<String> = PublishSubject()
+    
     public var isResolvingConflict: Bool = false
     
     public convenience init(editorService: EditorService, coordinator: EditorCoordinator) {
@@ -544,10 +547,6 @@ public class DocumentEditorViewModel: ViewModelProtocol {
         return self.headings[index].level
     }
     
-    public func rename(newTitle: String, completion: ((Error?) -> Void)? = nil) {
-        self.editorService.rename(newTitle: newTitle, completion: completion)
-    }
-    
     public func delete(completion: ((Error?) -> Void)? = nil) {
         self.editorService.delete(completion: completion)
         
@@ -606,7 +605,19 @@ public class DocumentEditorViewModel: ViewModelProtocol {
     }
     
     public func rename(to: String, completion: @escaping (Error?) -> Void) {
-        self.editorService.rename(newTitle: to, completion: completion)
+        self.dependency
+            .documentManager
+            .rename(url: self.url,
+                    to: to,
+                    below: nil,
+                    completion: { [weak self] toURL in
+                self?.editorService.rename(newTitle: to) {
+                    completion(nil)
+                }
+            },
+                    failure: { error in
+                log.error(error)
+            })
     }
 }
 
@@ -628,6 +639,10 @@ extension DocumentEditorViewModel {
                 
             }
         })
+        
+        self.editorService.onTitleChanged.subscribe(onNext: { [weak self] in
+            self?.onTitleChanged.onNext($0)
+        }).disposed(by: self.disposeBag)
         
 //        self.dependency.appContext.isReadingMode.subscribe(onNext: {[weak self] isReadingMode in
 //            self?.isReadingModel = isReadingMode

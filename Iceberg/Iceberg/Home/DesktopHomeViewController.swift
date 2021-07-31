@@ -213,6 +213,7 @@ public class DesktopHomeViewController: UIViewController {
     
     private func setupLeftPart() {
         let nav = Application.createDefaultNavigationControlller(root: self.dashboardViewController, transparentBar: true)
+        nav.isNavigationBarHidden = true
         self.addChildViewController(nav)
         self.leftPart.addSubview(nav.view)
         nav.view.allSidesAnchors(to: self.leftPart, edgeInset: 0)

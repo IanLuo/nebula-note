@@ -28,13 +28,11 @@ public struct DocumentManager {
     private let _eventObserver: EventObserver
     private let _syncManager: iCloudDocumentManager
     
-    public func getFileLocationComplete(_ completion: @escaping (URL?) -> Void) {
+    public func getFileLocationComplete() -> URL {
         if iCloudDocumentManager.status == .on {
-            self._syncManager.geticloudContainerURL {
-                completion($0)
-            }
+            return self._syncManager.geticloudContainerURL()!
         } else {
-            completion(URL.localRootURL)
+            return URL.localRootURL
         }
     }
     

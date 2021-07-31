@@ -96,7 +96,7 @@ public class AgendaViewModel: ViewModelProtocol {
                 var allPlannings: [String: [Any]] = [:]
                 var results = allResult.filter { $0.heading.planning != nil && !finishedPlannings.contains($0.heading.planning ?? "") }
 
-                for result in results {
+                for result in allResult {
                     if let tags = result.heading.tags {
                         for tag in tags {
                             allTags.appendToGroup(key: tag, value: result)

@@ -253,6 +253,11 @@ public class DocumentEditorViewController: UIViewController {
                 self?.viewModel.createHeadingIdIfNotExisted(textView: self?.textView)
             }).disposed(by: self.disposeBag)
             
+            
+            self.viewModel.onTitleChanged.subscribe(onNext: { [weak self] in
+                self?.textView.setTitle($0)
+            }).disposed(by: self.disposeBag)
+            
             // disable global edit mode for now
 //            self.viewModel.dependency.appContext.isReadingMode.subscribe(onNext: { [weak self] isReadingMode in
 //                self?.textView.isEditable = !isReadingMode && self?.viewModel.isTemp == false

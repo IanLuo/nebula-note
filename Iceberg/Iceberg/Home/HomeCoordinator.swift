@@ -48,6 +48,7 @@ public class HomeCoordinator: Coordinator {
         self._viewModel = viewModel
         
         let navigationController = Coordinator.createDefaultNavigationControlller()
+        navigationController.isNavigationBarHidden = true
         navigationController.pushViewController(dashboardViewController, animated: false)
         
         self._dashboardViewController = dashboardViewController

@@ -53,6 +53,7 @@ public class EditorService {
     private var queue: DispatchQueue!
     private let url: URL
     private let settingsAccessor: SettingsAccessor
+    public let onTitleChanged: PublishSubject<String> = PublishSubject()
     
     // means the document it opens, is not stored on users document folder
     public let isTemp: Bool
@@ -388,13 +389,12 @@ public class EditorService {
         self.document.updateContent(editorController.string)
     }
 
-    public func rename(newTitle: String, completion: ((Error?) -> Void)? = nil) {
+    public func rename(newTitle: String, completion: (() -> Void)? = nil) {
         let newURL = document.fileURL.deletingLastPathComponent().appendingPathComponent(newTitle).appendingPathExtension(Document.fileExtension)
-        document.fileURL.rename(queue: self.queue, url: newURL, completion: { [weak self] error in
-            self?.document = Document(fileURL: newURL)
-            self?.open(completion: { _ in
-                completion?(error)
-            })
+        self.document = Document(fileURL: newURL)
+        self.open(completion: { [weak self] _ in
+            completion?()
+            self?.onTitleChanged.onNext(newTitle)
         })
     }
     

@@ -80,12 +80,21 @@ public class BrowserCellModel {
                         below: nil,
                         completion: { toURL in
                             self.url = toURL
+                    
+                    if let service = self.coordinator?.dependency.editorContext.getActiveEditorService(with: fromURL) {
+                        service.rename(newTitle: to) {
                             observer.onNext((fromURL, toURL))
                             observer.onCompleted()
+                        }
+                    } else {
+                        observer.onNext((fromURL, toURL))
+                        observer.onCompleted()
+                    }
                 },
+                        
                         failure: { error in
-                            log.error(error)
-                            observer.onError(error)
+                    log.error(error)
+                    observer.onError(error)
                 })
             
             return Disposables.create()

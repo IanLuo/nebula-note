@@ -58,7 +58,7 @@ public enum AttachmentError: Error {
                 if let error = error {
                     log.error(error)
                 } else {
-                    attachmentDocument.save(to: fileURL, for: UIDocument.SaveOperation.forCreating) { [unowned attachmentDocument] result in
+                    attachmentDocument.save(to: fileURL, for: UIDocument.SaveOperation.forCreating) { [attachmentDocument] result in
                         attachmentDocument.close(completionHandler: { result in
                             log.info("successfully insert new attachment key: \(newKey), url: \(fileURL)")
                             DispatchQueue.runOnMainQueueSafely {

@@ -24,9 +24,13 @@ public protocol OutlineTextViewDelegate: class {
     func didTapOnTitle(at: CGPoint)
     func didTapOnActions(textView: UITextView, characterIndex: Int, point: CGPoint)
     func didHandleIdeasFiles(urls: [URL], characterIndex: Int)
+    func didTapOnPreviewImage(attachmentKey: String, characterIndex: Int)
+    func didTapOnMakeImageCover(attachmentKey: String, characterIndex: Int)
+    func didTapOnExportImage(attachmentKey: String, characterIndex: Int)
+    func didTapOnOpenLocation(attachmentKey: String, characterIndex: Int)
 }
 
-public class OutlineTextView: UITextView, UIScrollViewDelegate {
+public class OutlineTextView: UITextView {
     public weak var outlineDelegate: OutlineTextViewDelegate?
     
     private let disposeBag = DisposeBag()
@@ -45,6 +49,20 @@ public class OutlineTextView: UITextView, UIScrollViewDelegate {
         return tap
     }()
     
+    private enum SelectionTarget {
+        case attachmentImage(String)
+        case attachmentLocation(String)
+        
+        var attachmentValue: String {
+            switch self {
+            case .attachmentLocation(let value): return value
+            case .attachmentImage(let value): return value
+            }
+        }
+    }
+    
+    private var selectedTarget: SelectionTarget?
+    
     deinit {
         self.textStorage.removeLayoutManager(self.layoutManager)
     }
@@ -58,6 +76,12 @@ public class OutlineTextView: UITextView, UIScrollViewDelegate {
         self.autocapitalizationType = .sentences
         self.autocorrectionType = .default
         self.keyboardDismissMode = .interactive
+        
+        let menus = UIMenuController.shared
+        menus.menuItems = [UIMenuItem(title: L10n.Attachment.preview, action: #selector(previewAttachment)),
+                           UIMenuItem(title: L10n.Document.Edit.Image.useAsCover, action: #selector(makeImageAsCover)),
+                           UIMenuItem(title: L10n.CaptureList.Action.openLocation, action: #selector(openLocationInMap)),
+                           UIMenuItem(title: L10n.Document.Export.title, action: #selector(exportImage))]
 
         if #available(iOS 11.0, *) {
             self.smartDashesType = .no
@@ -185,7 +209,6 @@ public class OutlineTextView: UITextView, UIScrollViewDelegate {
     }
     
     @objc private func tapped(location: CGPoint, locationOnView: CGPoint, event: UIEvent?) -> Bool {
-
         // handle multiple entrance
         guard location.x != lastTap.0.x || (CFAbsoluteTimeGetCurrent() - lastTap.2 > 0.5) else { return lastTap.1 }
         
@@ -204,9 +227,11 @@ public class OutlineTextView: UITextView, UIScrollViewDelegate {
         // check if the character is with range of all characters
         guard isPointInBorder(location, self.characterBorder) else { return true }
         
-        if let outlineTextStorage = self.textStorage as? OutlineTextStorage {
-            outlineTextStorage.updateCurrentInfo(at: characterIndex)
+        guard let outlineTextStorage = self.textStorage as? OutlineTextStorage else {
+            return true
         }
+        
+        outlineTextStorage.updateCurrentInfo(at: characterIndex)
         
         let attributes = self.textStorage.attributes(at: characterIndex, effectiveRange: nil)
         
@@ -236,10 +261,34 @@ public class OutlineTextView: UITextView, UIScrollViewDelegate {
         } else if let priority = attributes[OutlineAttribute.Heading.priority] as? String {
             self.hideKeyboardIfNeeded()
             self.outlineDelegate?.didTapOnPriority(textView: self, characterIndex: characterIndex, priority: priority, point: locationOnView)
-        }  else if let type = attributes[OutlineAttribute.Attachment.type] as? String,
+        } else if let type = attributes[OutlineAttribute.Attachment.type] as? String,
             let value = attributes[OutlineAttribute.Attachment.value] as? String {
-            self.hideKeyboardIfNeeded()
-            self.outlineDelegate?.didTapOnAttachment(textView: self, characterIndex: characterIndex, type: type, value: value, point: locationOnView)
+            let range = outlineTextStorage.token(at: characterIndex).first(where: { $0 is AttachmentToken })?.range
+            var shouldShowMenu = false
+            
+            if (type == Attachment.Kind.image.rawValue || type == Attachment.Kind.sketch.rawValue) {
+                self.selectedTarget = .attachmentImage(value)
+                shouldShowMenu = true
+            } else if type == Attachment.Kind.location.rawValue {
+                self.selectedTarget = .attachmentLocation(value)
+                shouldShowMenu = true
+            } else {
+                self.hideKeyboardIfNeeded()
+                self.outlineDelegate?.didTapOnAttachment(textView: self, characterIndex: characterIndex, type: type, value: value, point: locationOnView)
+            }
+            
+            if let range = range {
+                self.selectedRange = range
+                if self.isFirstResponder == false {
+                    _ = self.becomeFirstResponder()
+                }
+            }
+            
+            if shouldShowMenu {
+                let menus = UIMenuController.shared
+                menus.setTargetRect(CGRect(origin: location, size: .zero), in: self)
+                menus.setMenuVisible(true, animated: true)
+            }
         } else {
             shouldPassTapToOtherGuestureRecognizers = true
         }
@@ -330,7 +379,7 @@ public class OutlineTextView: UITextView, UIScrollViewDelegate {
         let paragraph = self.textStorage.attribute(NSAttributedString.Key.paragraphStyle, at: location, effectiveRange: nil) as? NSParagraphStyle
         let rect = CGRect(x: self.textContainerInset.left - self.currentLineIndicator.actionButton.bounds.width,
                           y: caretRect.origin.y - (self.currentLineIndicator.actionButton.bounds.height - caretRect.height) / 2,
-                             width: self.bounds.width, height: caretRect.size.height)
+                          width: self.bounds.width, height: caretRect.size.height)
         
         currentLineIndicator.frame = rect
         
@@ -374,7 +423,7 @@ private class CurrentLineIndicator: UIView {
         if event?.type == .touches && self.actionButton.frame.contains(point) {
             return self.actionButton
         } else {
-            return self.superview
+            return nil
         }
     }
 }
@@ -439,6 +488,15 @@ extension OutlineTextView: UIDropInteractionDelegate {
 
 extension OutlineTextView {
     public override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
+        if let selectedTarget = self.selectedTarget {
+            switch selectedTarget {
+            case .attachmentImage:
+                return [#selector(previewAttachment), #selector(exportImage), #selector(makeImageAsCover)].contains(action)
+            case .attachmentLocation:
+                return [#selector(previewAttachment), #selector(openLocationInMap)].contains(action)
+            }
+        }
+        
         if action == #selector(UITextView.paste(_:)) && UIPasteboard.general.image != nil {
             return true
         } else {
@@ -462,6 +520,30 @@ extension OutlineTextView {
         } else {
             super.paste(sender)
         }
+    }
+    
+    @objc private func exportImage() {
+        guard let attachmentValue = self.selectedTarget?.attachmentValue else { return }
+        self.selectedTarget = nil
+        self.outlineDelegate?.didTapOnExportImage(attachmentKey: attachmentValue, characterIndex: 0)
+    }
+    
+    @objc private func makeImageAsCover() {
+        guard let attachmentValue = self.selectedTarget?.attachmentValue else { return }
+        self.selectedTarget = nil
+        self.outlineDelegate?.didTapOnMakeImageCover(attachmentKey: attachmentValue, characterIndex: 0)
+    }
+    
+    @objc private func previewAttachment() {
+        guard let attachmentValue = self.selectedTarget?.attachmentValue else { return }
+        self.selectedTarget = nil
+        self.outlineDelegate?.didTapOnPreviewImage(attachmentKey: attachmentValue, characterIndex: 0)
+    }
+    
+    @objc private func openLocationInMap() {
+        guard let attachmentValue = self.selectedTarget?.attachmentValue else { return }
+        self.selectedTarget = nil
+        self.outlineDelegate?.didTapOnOpenLocation(attachmentKey: attachmentValue, characterIndex: 0)
     }
 }
 

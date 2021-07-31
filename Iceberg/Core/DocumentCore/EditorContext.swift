@@ -49,7 +49,7 @@ public class EditorContext {
     }
     
     private func _getCachedService(with url: URL) -> EditorService {
-        if let editorInstance = _tryGetCachedService(with: url) {
+        if let editorInstance = getActiveEditorService(with: url) {
             log.info("load editor service from cache: \(url)")
 
             // if load from cache successfully, add cache reference count
@@ -66,7 +66,7 @@ public class EditorContext {
         }
     }
     
-    private func _tryGetCachedService(with url: URL) -> EditorService? {
+    public func getActiveEditorService(with url: URL) -> EditorService? {
         let cacheKey = url.documentRelativePath
         log.info("trying to get editor service from cache with key: \(cacheKey)")
         return EditorContext._cachedServiceInstances[cacheKey]

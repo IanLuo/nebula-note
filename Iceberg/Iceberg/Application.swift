@@ -56,6 +56,19 @@ public class Application: Coordinator {
         
         self.window?.rootViewController = self.stack
         
+        // 导入 extension 收集的 idea
+        self.handleSharedIdeas()
+        
+        // 设置主题, set up the theme when the settings file is ready
+        self.dependency.appContext.uiStackReady.subscribe(onNext: { [weak self] in
+            if $0 {
+                self?.window?.rootViewController?.setupTheme()
+            }
+        }).disposed(by: self.disposeBag)
+        
+        let url = dependency.documentManager.getFileLocationComplete()
+        log.info("using \(url) as root")
+        
         self._setupObservers()
     }
     
@@ -102,22 +115,6 @@ public class Application: Coordinator {
     public override func start(from: Coordinator?, animated: Bool) {
         self.homeCoordinator = HomeCoordinator(stack: self.stack, dependency: self.dependency)
                 
-        // 导入 extension 收集的 idea
-        self.handleSharedIdeas()
-        
-        // 设置主题, set up the theme when the settings file is ready
-        self.dependency.appContext.uiStackReady.subscribe(onNext: { [weak self] in
-            if $0 {
-                self?.window?.rootViewController?.setupTheme()
-            }
-        }).disposed(by: self.disposeBag)
-        
-        dependency.documentManager.getFileLocationComplete { url in
-            guard let url = url else { return }
-            
-            log.info("using \(url) as root")
-        }
-        
         self.homeCoordinator?.start(from: self, animated: false)
                 
         DispatchQueue.main.async {
@@ -150,16 +147,12 @@ public class Application: Coordinator {
         switch status {
         case .changed:
             if iCloudDocumentManager.status == .on {
-                self.dependency.syncManager.geticloudContainerURL(completion: { [unowned self] url in
-                    // 开始同步 iCloud 文件
-                    self.dependency.syncManager.startMonitoringiCloudFileUpdateIfNeeded()
-                    
-                    self.stack.showAlert(title: L10n.Sync.Alert.Account.Changed.title, message: L10n.Sync.Alert.Account.Changed.msg)
-                    
-                    self.dependency.eventObserver.emit(iCloudAvailabilityChangedEvent(isEnabled: true))
-                    
-                    self.dependency.appContext.isFileReadyToAccess.accept(true)
-                })
+                self.dependency.syncManager.geticloudContainerURL()
+                // 开始同步 iCloud 文件
+                self.dependency.syncManager.startMonitoringiCloudFileUpdateIfNeeded()
+                self.stack.showAlert(title: L10n.Sync.Alert.Account.Changed.title, message: L10n.Sync.Alert.Account.Changed.msg)
+                self.dependency.eventObserver.emit(iCloudAvailabilityChangedEvent(isEnabled: true))
+                self.dependency.appContext.isFileReadyToAccess.accept(true)
             }
         case .closed:
             if self.didTheUserTurnOffiCloudFromSettings {
@@ -179,16 +172,15 @@ public class Application: Coordinator {
                 
                 confirmViewController.confirmAction = { viewController in
                     viewController.dismiss(animated: true, completion: {
-                        self.dependency.syncManager.geticloudContainerURL(completion: { [unowned self] url in
-                            iCloudDocumentManager.status = .on
-                            // 开始同步 iCloud 文件
-                            self.dependency.syncManager.startMonitoringiCloudFileUpdateIfNeeded()
-                            self.stack.showAlert(title: L10n.Sync.Alert.Status.On.title, message: L10n.Sync.Alert.Status.On.msg)
-                            
-                            self.dependency.eventObserver.emit(iCloudAvailabilityChangedEvent(isEnabled: true))
-                            
-                            self.dependency.appContext.isFileReadyToAccess.accept(true)
-                        })
+                        self.dependency.syncManager.geticloudContainerURL()
+                        iCloudDocumentManager.status = .on
+                        // 开始同步 iCloud 文件
+                        self.dependency.syncManager.startMonitoringiCloudFileUpdateIfNeeded()
+                        self.stack.showAlert(title: L10n.Sync.Alert.Status.On.title, message: L10n.Sync.Alert.Status.On.msg)
+                        
+                        self.dependency.eventObserver.emit(iCloudAvailabilityChangedEvent(isEnabled: true))
+                        
+                        self.dependency.appContext.isFileReadyToAccess.accept(true)
                     })
                 }
                 
@@ -211,13 +203,11 @@ public class Application: Coordinator {
                 }).disposed(by: self.disposeBag)
             } else if iCloudDocumentManager.status == .on {
                 
-                self.dependency.syncManager.geticloudContainerURL(completion: { [unowned self] url in
-                    // 开始同步 iCloud 文件
-                    self.dependency.syncManager.startMonitoringiCloudFileUpdateIfNeeded()
-                    self.dependency.eventObserver.emit(iCloudAvailabilityChangedEvent(isEnabled: true))
-                    
-                    self.dependency.appContext.isFileReadyToAccess.accept(true)
-                })
+                self.dependency.syncManager.geticloudContainerURL()
+                // 开始同步 iCloud 文件
+                self.dependency.syncManager.startMonitoringiCloudFileUpdateIfNeeded()
+                self.dependency.eventObserver.emit(iCloudAvailabilityChangedEvent(isEnabled: true))
+                self.dependency.appContext.isFileReadyToAccess.accept(true)
                 
                 // means off
             } else {

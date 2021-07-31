@@ -129,7 +129,7 @@ public class AgendaViewController: UIViewController {
                     UIView().childBuilder(topView: self.view, bindTo: self.viewModel.scheduled.asDriver().asObservable(), position: .center, builder: { scheduled in
                         UIStackView(subviews: [
                             UILabel(text: "\(scheduled.count)").interface({ let l = $0 as! UILabel; l.font = $1.font.largeTitle; l.textColor = scheduled.count > 0 ? $1.color.interactive : $1.color.descriptive}),
-                            UILabel(text: L10n.Agenda.Sub.startSoon).interface({ let l = $0 as! UILabel; l.font = $1.font.title; l.textColor = scheduled.count > 0 ? $1.color.interactive : $1.color.descriptive})
+                            UILabel(text: L10n.Agenda.Sub.scheduled).interface({ let l = $0 as! UILabel; l.font = $1.font.title; l.textColor = scheduled.count > 0 ? $1.color.interactive : $1.color.descriptive})
                         ], axis: .vertical, distribution: .equalCentering, alignment: .center)
                     }).sizeAnchor(height: 100)
                         .roundConer(radius: Layout.cornerRadius)

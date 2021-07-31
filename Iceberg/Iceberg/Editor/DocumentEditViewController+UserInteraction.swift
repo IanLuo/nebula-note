@@ -15,6 +15,8 @@ import MapKit
 import RxSwift
 
 extension DocumentEditorViewController: OutlineTextViewDelegate {
+    
+    
     public func didHandleIdeasFiles(urls: [URL], characterIndex: Int) {
         Observable.from(urls)
             .flatMap { url in
@@ -268,7 +270,6 @@ extension DocumentEditorViewController: OutlineTextViewDelegate {
                         log.info("changed document")
                         DispatchQueue.runOnMainQueueSafely {
                             strongSelf.viewModel.context.dependency.settingAccessor.logOpenDocument(url: strongSelf.viewModel.url)
-                            strongSelf.textView.setTitle(newName)
                             strongSelf.viewModel.dependency.eventObserver.emit(RenameDocumentEvent(oldUrl: oldURL, newUrl: strongSelf.viewModel.url))
                         }
                     }
@@ -290,5 +291,40 @@ extension DocumentEditorViewController: OutlineTextViewDelegate {
         }
 
         renameFormViewController.present(from: self, at: self.textView, location: at)
+    }
+    
+    public func didTapOnPreviewImage(attachmentKey: String, characterIndex: Int) {
+        guard let attachment = self.viewModel.dependency.attachmentManager.attachment(with: attachmentKey) else { return }
+        let previewViewController = PreviewManager(url: attachment.url).createPreviewController()
+        
+        self.present(previewViewController, animated: true)
+    }
+    
+    public func didTapOnMakeImageCover(attachmentKey: String, characterIndex: Int) {
+        guard let attachment = self.viewModel.dependency.attachmentManager.attachment(with: attachmentKey) else { return }
+        
+        self.viewModel.dependency.documentManager.setCover(UIImage(contentsOfFile: attachment.url.path), url: self.viewModel.url, completion: { [weak self] _ in
+            self?.toastSuccess()
+        })
+    }
+    
+    public func didTapOnExportImage(attachmentKey: String, characterIndex: Int) {
+        guard let attachment = self.viewModel.dependency.attachmentManager.attachment(with: attachmentKey) else { return }
+        
+        let exportManager = ExportManager(editorContext: self.viewModel.dependency.editorContext)
+        exportManager.share(from: self, url: attachment.url)
+    }
+    
+    public func didTapOnOpenLocation(attachmentKey: String, characterIndex: Int) {
+        guard let attachment = self.viewModel.dependency.attachmentManager.attachment(with: attachmentKey) else { return }
+        
+        let jsonDecoder = JSONDecoder()
+        do {
+            let coord = try jsonDecoder.decode(CLLocationCoordinate2D.self, from: try Data(contentsOf: attachment.url))
+            let mapItem = MKMapItem(placemark: MKPlacemark(coordinate: coord, addressDictionary:nil))
+            mapItem.openInMaps(launchOptions: [:])
+        } catch {
+            log.error("\(error)")
+        }
     }
 }

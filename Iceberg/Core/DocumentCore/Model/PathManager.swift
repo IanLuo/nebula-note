@@ -117,7 +117,7 @@ extension URL {
                 accessor(error)
             } else {
                 let fileCoordinator = fetchFileCoordinator(self)
-                let intent = NSFileAccessIntent.writingIntent(with: self, options: [])
+                let intent = NSFileAccessIntent.writingIntent(with: self, options: [.forMerging])
                 let queue = OperationQueue()
                 queue.underlyingQueue = q
                 fileCoordinator.coordinate(with: [intent], queue: queue) { error in

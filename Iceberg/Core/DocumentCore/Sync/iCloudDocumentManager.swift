@@ -185,14 +185,10 @@ public class iCloudDocumentManager: NSObject {
         return refreshCurrentiCloudAccountStatus()
     }
     
-    public func geticloudContainerURL(completion: @escaping (URL?) -> Void) {
-        DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
-            let url = FileManager.default.url(forUbiquityContainerIdentifier: nil)
-            iCloudDocumentManager.iCloudRoot = url
-            DispatchQueue.runOnMainQueueSafely {
-                completion(url)
-            }
-        }
+    public func geticloudContainerURL() -> URL? {
+        let url = FileManager.default.url(forUbiquityContainerIdentifier: nil)
+        iCloudDocumentManager.iCloudRoot = url
+        return url
     }
     
     public func startMonitoringiCloudFileUpdateIfNeeded() {
@@ -206,57 +202,55 @@ public class iCloudDocumentManager: NSObject {
     /// turn on, move local to iCloud, otherwise, move iCloud to local
     public func swithiCloud(on willBeOn: Bool, completion: @escaping (Error?) -> Void) {
         // 1. get the iCloud folder url
-        self.geticloudContainerURL { [weak self] url in
-            guard let strongSelf = self else { return }
-            
-            iCloudDocumentManager.iCloudRoot = url
-            
-            guard strongSelf.iCloudAccountStatus != .closed else {
-                completion(SyncError.iCloudIsNotAvailable)
-                return
-            }
-            
-            // 2. move file from/to iCloud folder
-            if willBeOn {
-                switch iCloudDocumentManager.status {
-                case .unknown: fallthrough
-                case .off:
-                    strongSelf.moveLocalFilesToIcloud { [weak strongSelf] error in
-                        // 3. notify to update all url from/to iCloud folder in memory
-                        if let error = error {
-                            log.error(error)
-                            completion(error)
-                        } else {
-                            completion(nil)
-                            iCloudDocumentManager.status = .on
-                            strongSelf?.startMonitoringiCloudFileUpdateIfNeeded()
-                            strongSelf?._eventObserver.emit(iCloudOpeningStatusChangedEvent(isiCloudEnabled: true))
-                        }
+        let url = self.geticloudContainerURL()
+        
+        iCloudDocumentManager.iCloudRoot = url
+        
+        guard self.iCloudAccountStatus != .closed else {
+            completion(SyncError.iCloudIsNotAvailable)
+            return
+        }
+        
+        // 2. move file from/to iCloud folder
+        if willBeOn {
+            switch iCloudDocumentManager.status {
+            case .unknown: fallthrough
+            case .off:
+                self.moveLocalFilesToIcloud { [weak self] error in
+                    // 3. notify to update all url from/to iCloud folder in memory
+                    if let error = error {
+                        log.error(error)
+                        completion(error)
+                    } else {
+                        completion(nil)
+                        iCloudDocumentManager.status = .on
+                        self?.startMonitoringiCloudFileUpdateIfNeeded()
+                        self?._eventObserver.emit(iCloudOpeningStatusChangedEvent(isiCloudEnabled: true))
                     }
-                case .on:
-                    completion(nil)
                 }
-            } else {
-                switch iCloudDocumentManager.status {
-                case .off:
-                    completion(nil)
-                case .unknown: fallthrough
-                case .on:
-                    strongSelf.moveiCloudFilesToLocal { [weak strongSelf] error in
-                        // 3. notify to update all url from/to iCloud folder in memory
-                        if let error = error {
-                            log.error(error)
-                            completion(error)
-                        } else {
-                            completion(nil)
-                            iCloudDocumentManager.status = .off
-                            strongSelf?.stopMonitoringiCloudFildUpdateIfNeeded()
-                            strongSelf?._eventObserver.emit(iCloudOpeningStatusChangedEvent(isiCloudEnabled: false))
-                        }
+            case .on:
+                completion(nil)
+            }
+        } else {
+            switch iCloudDocumentManager.status {
+            case .off:
+                completion(nil)
+            case .unknown: fallthrough
+            case .on:
+                self.moveiCloudFilesToLocal { [weak self] error in
+                    // 3. notify to update all url from/to iCloud folder in memory
+                    if let error = error {
+                        log.error(error)
+                        completion(error)
+                    } else {
+                        completion(nil)
+                        iCloudDocumentManager.status = .off
+                        self?.stopMonitoringiCloudFildUpdateIfNeeded()
+                        self?._eventObserver.emit(iCloudOpeningStatusChangedEvent(isiCloudEnabled: false))
                     }
                 }
             }
-
+            
         }
     }
     

@@ -13,15 +13,7 @@ import UIKit
 
 extension Coordinator {
     public func openDocument(url: URL, location: Int) {
-//        let navigationController = Coordinator.createDefaultNavigationControlller(transparentBar: false)
-//
-//        let documentCoordinator = EditorCoordinator(stack: navigationController, dependency: self.dependency,usage: EditorCoordinator.Usage.editor(url, location))
-//
-//        documentCoordinator.start(from: self)
-//        self.dependency.globalCaptureEntryWindow?.isForcedToHide = true
-        
         self.dependency.eventObserver.emit(OpenDocumentEvent(url: url, location: location))
-        
         self.dependency.eventObserver.emit(SwitchTabEvent(toTabIndex: 5))
     }
     
