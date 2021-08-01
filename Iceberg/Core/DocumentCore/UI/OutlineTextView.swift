@@ -371,21 +371,15 @@ public class OutlineTextView: UITextView {
     public func updateCurrentLineIndicator(location: Int) {
         guard self.currentLineIndicator.alpha == 1 else { return }
         guard self.text.count > 0 else { return }
-        
-        let position = self.position(from: self.beginningOfDocument, offset: location) ?? self.beginningOfDocument
-        let caretRect = self.caretRect(for: position)
-        
+        guard let layoutManager = self.textStorage.layoutManagers.first else { return }
+
         let location = max(0, min(location, self.text.count - 1)) // incase the cursor is at the end, which is beyong de text length
         let paragraph = self.textStorage.attribute(NSAttributedString.Key.paragraphStyle, at: location, effectiveRange: nil) as? NSParagraphStyle
-        let rect = CGRect(x: self.textContainerInset.left - self.currentLineIndicator.actionButton.bounds.width,
-                          y: caretRect.origin.y - (self.currentLineIndicator.actionButton.bounds.height - caretRect.height) / 2,
-                          width: self.bounds.width, height: caretRect.size.height)
+        let caretRect = self.caretRect(for: self.position(from: self.beginningOfDocument, offset: location)!)
         
-        currentLineIndicator.frame = rect
-        
-        var buttonRect = currentLineIndicator.actionButton.frame
-        buttonRect.origin.x = (paragraph?.firstLineHeadIndent ?? 0)
-        currentLineIndicator.actionButton.frame = buttonRect
+        currentLineIndicator.frame = layoutManager.lineFragmentRect(forGlyphAt: layoutManager.glyphIndexForCharacter(at: location), effectiveRange: nil).applying(CGAffineTransform(translationX: self.textContainerInset.left, y: self.textContainerInset.top))
+        currentLineIndicator.center.y = caretRect.midY
+        currentLineIndicator.setIndicatorButtonX(paragraph?.firstLineHeadIndent ?? 0)
     }
 }
 
@@ -394,7 +388,7 @@ private class CurrentLineIndicator: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
+        self.backgroundColor = .lightGray.withAlphaComponent(0.1)
         actionButton.interface { (me, theme) in
             let button = me as! UIButton
             button.setImage(Asset.SFSymbols.paragraph.image.fill(color: theme.color.descriptive).resize(upto: CGSize(width: 20, height: 20)), for: .normal)
@@ -405,6 +399,11 @@ private class CurrentLineIndicator: UIView {
         self.addSubview(actionButton)
         actionButton.size(width: 30, height: 30)
         actionButton.align(to: self, direction: .left, position: .head, inset: 0)
+    }
+    
+    func setIndicatorButtonX(_ x: CGFloat) {
+        self.actionButton.center.y = self.bounds.height / 2
+        self.actionButton.frame.origin.x = x - self.actionButton.bounds.width
     }
     
     var actionButtonFrameInTextVirew: CGRect {

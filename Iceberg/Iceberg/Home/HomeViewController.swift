@@ -43,7 +43,7 @@ public class HomeViewController: UIViewController {
     
     private lazy var moveIndicator: UIButton = {
         let button = UIButton()
-        button.sizeAnchor(width: 14, height: 50)
+        button.sizeAnchor(width: 24, height: 50)
         button.roundConer(radius: 5)
         button.rx.tap.subscribe(onNext: {
             if self.isShowingMaster {

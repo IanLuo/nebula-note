@@ -80,21 +80,22 @@ public class DashboardViewController: UIViewController {
         }
         
         self.view.addSubview(self.tableView)
-        self.view.addSubview(self.settingsButton)
-        self.view.addSubview(self.trashButton)
-        self.view.addSubview(self.membershipButton)
         
-        self.tableView.allSidesAnchors(to: self.view, edgeInset: 0)
+        let footer = UIStackView(subviews: [
+            self.membershipButton,
+            UIStackView(subviews: [
+                self.settingsButton,
+                self.trashButton
+            ], distribution: .equalSpacing, spacing: 20).sizeAnchor(height: 44)
+        ], axis: .horizontal, alignment: .center, spacing: 20)
         
-        self.settingsButton.sizeAnchor(width: 60)
-        self.settingsButton.sideAnchor(for: [.left, .bottom], to: self.view, edgeInsets: .init(top: 0, left: Layout.edgeInsets.left, bottom: -Layout.edgeInsets.bottom, right: 0), considerSafeArea: true)
+        self.tableView.allSidesAnchors(to: self.view, edgeInset: 0, considerSafeArea: true)
         
-        self.trashButton.sizeAnchor(width: 60)
-        self.trashButton.sideAnchor(for: [.right, .bottom], to: self.view, edgeInsets: .init(top: 0, left: 0, bottom: -Layout.edgeInsets.bottom, right: -Layout.edgeInsets.right), considerSafeArea: true)
-        
-        self.membershipButton.bottomAnchor.constraint(equalTo: self.settingsButton.topAnchor, constant: -20).isActive = true
-        self.membershipButton.sideAnchor(for: .left, to: self.view, edgeInset: Layout.edgeInsets.left, considerSafeArea: true)
-        self.membershipButton.sizeAnchor(height: 30)
+        let footerContainer = UIView(child: footer).interface({ me, theme in
+            me.backgroundColor = theme.color.background1
+        })
+        self.view.addSubview(footerContainer)
+        footerContainer.sideAnchor(for: [.left, .right, .bottom], to: self.view, edgeInset: 20, considerSafeArea: true)
         
         self.trashButton.tapped { [unowned self] _ in
             self.viewModel.context.coordinator?.showTrash()
@@ -116,6 +117,7 @@ public class DashboardViewController: UIViewController {
             .isMember
             .subscribe(onNext: { [weak self] isMember in
                 self?.membershipButton.isHidden = isMember
+                self?.view.layoutIfNeeded()
         }).disposed(by: self.disposeBag)
     }
     
