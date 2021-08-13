@@ -210,48 +210,48 @@ public enum AttachmentError: Error {
         return AttachmentDocument.createAttachment(url: AttachmentManager.wrappterURL(key: key.unescaped))
     }
     
-    public func scanUnusedAttachments() {
-        let searchManager = DocumentSearchManager()
-        let captureService = CaptureService(attachmentManager: self)
-        
-        var unReferencedAttachments: [URL] = []
-        
-        let dipatchGroup = DispatchGroup()
-        
-        var flag = 0
-        let queue = DispatchQueue(label: "", qos: DispatchQoS.background)
-        for url in self.allAttachments {
-            dipatchGroup.enter()
-            flag += 1
-            queue.async {
-                if self.isAttachmentInCaptureList(url: url, captureService: captureService) {
-                    dipatchGroup.leave()
-                    flag -= 1
-                } else {
-                    self.findReference(for: url, documentSearchManager: searchManager) { refs in
-                        if let refs = refs, refs.count == 0 {
-                            unReferencedAttachments.append(url)
-                        }
-                        dipatchGroup.leave()
-                        flag -= 1
-                    }
-                }
-            }
-        }
-        
-        dipatchGroup.notify(queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.background)) {
-            log.info("found \(unReferencedAttachments.count) attachments that is not used at any place: \n \(unReferencedAttachments)")
-            
-            for url in unReferencedAttachments {
-                do {
-                    try FileManager.default.removeItem(at: url)
-                } catch {
-                    log.error("fail to delete attachment when clearing un-referenced attachment: \(url)")
-                }
-            }
-        }
-        
-    }
+//    public func scanUnusedAttachments() {
+//        let searchManager = DocumentSearchManager()
+//        let captureService = CaptureService(attachmentManager: self)
+//        
+//        var unReferencedAttachments: [URL] = []
+//        
+//        let dipatchGroup = DispatchGroup()
+//        
+//        var flag = 0
+//        let queue = DispatchQueue(label: "", qos: DispatchQoS.background)
+//        for url in self.allAttachments {
+//            dipatchGroup.enter()
+//            flag += 1
+//            queue.async {
+//                if self.isAttachmentInCaptureList(url: url, captureService: captureService) {
+//                    dipatchGroup.leave()
+//                    flag -= 1
+//                } else {
+//                    self.findReference(for: url, documentSearchManager: searchManager) { refs in
+//                        if let refs = refs, refs.count == 0 {
+//                            unReferencedAttachments.append(url)
+//                        }
+//                        dipatchGroup.leave()
+//                        flag -= 1
+//                    }
+//                }
+//            }
+//        }
+//        
+//        dipatchGroup.notify(queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.background)) {
+//            log.info("found \(unReferencedAttachments.count) attachments that is not used at any place: \n \(unReferencedAttachments)")
+//            
+//            for url in unReferencedAttachments {
+//                do {
+//                    try FileManager.default.removeItem(at: url)
+//                } catch {
+//                    log.error("fail to delete attachment when clearing un-referenced attachment: \(url)")
+//                }
+//            }
+//        }
+//        
+//    }
     
     public func isAttachmentInCaptureList(url: URL, captureService: CaptureService) -> Bool {
         let name = url.deletingPathExtension().lastPathComponent

@@ -24,7 +24,6 @@ internal let log = SwiftyBeaver.self
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-    let console = ConsoleDestination()
     var application: Application!
     let disposeBag = DisposeBag()
     
@@ -33,17 +32,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        if !isMac {
             //FirebaseApp.configure()
 //        }
-        #if DEBUG
-//        ShowTime.enabled = .never
-        console.minLevel = .info
-        #else
-        console.minLevel = .error
-        #endif
         
-        console.format = "$DHH:mm:ss$d $L $M"
-        
-        log.addDestination(console)
-        
+        UserDefaults.standard.setValue(false, forKey:"_UIConstraintBasedLayoutLogUnsatisfiable")
+
         if #available(iOS 13, *) {} else {
             self.window = UIWindow(frame: UIScreen.main.bounds)
             

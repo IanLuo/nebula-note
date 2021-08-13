@@ -7,17 +7,21 @@
 //
 
 import Foundation
-import SwiftyBeaver
 
-internal let log = SwiftyBeaver.self
+public let log = Log()
 
 public struct Log {
-    let console = ConsoleDestination()
+    public func error(_ error: Any) {
+        print("[ERROR] \(error)")
+    }
     
-    public init() {
-        console.format = "$DHH:mm:ss$d $L $M"
-        console.minLevel = .info
-        
-        log.addDestination(console)
+    public func info(_ info: Any) {
+        print("[INFO] \(info)")
+    }
+    
+    public func verbose(_ verbose: Any) {
+        #if DEBUG
+        print("[VERBOSE] \(verbose)")
+        #endif
     }
 }

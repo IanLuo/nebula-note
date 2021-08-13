@@ -316,34 +316,33 @@ public class DateAndTimeType {
     /// 1. show past date count, 2. show upcoming date count(3 days)
     /// for **repeat**
     /// 1. last cirle will show past date count, 2. next circle show upcoming date count (3 days)
-    public func checkNotice(relative current: Date) -> DateAndTimeNotice? {
-        let past = self.closestDate(to: current, after: false)
-        let after = self.closestDate(to: current, after: true)
+    public func checkNotice(relative relativeDate: Date) -> DateAndTimeNotice? {
+        let past = self.closestDate(to: relativeDate, after: false)
+        let after = self.closestDate(to: relativeDate, after: true)
         
         var date: Date = self.date
         
         if self.isRepeatable {
-            date = (abs(past.timeIntervalSince1970 - current.timeIntervalSince1970) > abs(after.timeIntervalSince1970 - current.timeIntervalSince1970)) ? after : past
+            date = (abs(past.timeIntervalSince1970 - relativeDate.timeIntervalSince1970) > abs(after.timeIntervalSince1970 - relativeDate.timeIntervalSince1970)) ? after : past
         }
         
         var notice: DateAndTimeNotice?
         
         // check past
-        if date.timeIntervalSince1970 < current.timeIntervalSince1970 {
+        if date.timeIntervalSince1970 < relativeDate.timeIntervalSince1970 {
             if self.isDue {
-                notice = .init(daysCount: date.daysFrom(current), kind: .overDue)
+                notice = .init(daysCount: date.daysFrom(relativeDate), kind: .overDue)
             } else {
-                notice = .init(daysCount: date.daysFrom(current), kind: .start)
+                notice = .init(daysCount: date.daysFrom(relativeDate), kind: .start)
             }
         }
         
         // check upcoming
-        if date.dayBefore(3).timeIntervalSince1970 < current.timeIntervalSince1970
-            && date.timeIntervalSince1970 > current.timeIntervalSince1970 {
+        if date.timeIntervalSince1970 >= relativeDate.timeIntervalSince1970 {
             if self.isDue {
-                notice = .init(daysCount: date.daysFrom(current), kind: .overDue)
+                notice = .init(daysCount: date.daysFrom(relativeDate), kind: .overDue)
             } else {
-                notice = .init(daysCount: date.daysFrom(current), kind: .start)
+                notice = .init(daysCount: date.daysFrom(relativeDate), kind: .start)
             } 
         }
                 

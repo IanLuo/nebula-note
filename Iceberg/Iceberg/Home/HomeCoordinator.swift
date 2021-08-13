@@ -111,7 +111,7 @@ public class HomeCoordinator: Coordinator {
     }
     
     public override func didMoveIn() {
-        self.dependency.appContext.isFileReadyToAccess.subscribe(onNext: { [weak self] in
+        self.dependency.appContext.isFileReadyToAccess.observe(on: MainScheduler()).subscribe(onNext: { [weak self] in
             guard $0 else { return }
             
             self?.initializeDefaultTab()

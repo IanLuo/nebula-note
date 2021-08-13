@@ -244,18 +244,18 @@ extension Attachment {
     /// 附件类型
     /// - Parameter description
     /// 附件描述
-    public static func save(content: String,
-                            kind: Attachment.Kind,
-                            description: String,
-                            complete: @escaping (String) -> Void,
-                            failure: @escaping (Error) -> Void) {
-        let manager = AttachmentManager()
-        manager.insert(content: content,
-                                  kind: kind,
-                                  description: description,
-                                  complete: complete,
-                                  failure: failure)
-    }
+//    public static func save(content: String,
+//                            kind: Attachment.Kind,
+//                            description: String,
+//                            complete: @escaping (String) -> Void,
+//                            failure: @escaping (Error) -> Void) {
+//        let manager = AttachmentManager()
+//        manager.insert(content: content,
+//                                  kind: kind,
+//                                  description: description,
+//                                  complete: complete,
+//                                  failure: failure)
+//    }
 }
 
 extension CLLocationCoordinate2D: Codable {

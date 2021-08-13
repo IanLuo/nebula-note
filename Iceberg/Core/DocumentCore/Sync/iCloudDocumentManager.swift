@@ -192,11 +192,15 @@ public class iCloudDocumentManager: NSObject {
     }
     
     public func startMonitoringiCloudFileUpdateIfNeeded() {
-        self._metadataQuery.start()
+        self.iCloudeDispatchQueue.async { [unowned self] in
+            self._metadataQuery.start()
+        }
     }
     
     public func stopMonitoringiCloudFildUpdateIfNeeded() {
-        self._metadataQuery.stop()
+        self.iCloudeDispatchQueue.async { [unowned self] in
+            self._metadataQuery.stop()
+        }
     }
     
     /// turn on, move local to iCloud, otherwise, move iCloud to local
@@ -278,6 +282,7 @@ public class iCloudDocumentManager: NSObject {
         let queue = DispatchQueue(label: "move local files to iCloud")
 
         queue.async {
+            self.stopMonitoringiCloudFildUpdateIfNeeded()
             
             do {
                 var isDir = ObjCBool(true)
@@ -342,9 +347,9 @@ public class iCloudDocumentManager: NSObject {
                             log.info("there's an old file existed for \(destination.path), merge it")
                             let originalFile: URL = URL.localKeyValueStoreURL.appendingPathComponent(path)
                             let mergedFileURL: URL = mergePlistFiles(name: originalFile.deletingPathExtension().lastPathComponent.removeFirstSplashIfThereIsAny, url1: originalFile, url2: destination)
-                            try FileManager.default.removeItem(at: destination)
+                            _ = try FileManager.default.replaceItemAt(originalFile, withItemAt: mergedFileURL)
                             try FileManager.default.setUbiquitous(true,
-                                                                  itemAt: mergedFileURL,
+                                                                  itemAt: originalFile,
                                                                   destinationURL: destination)
                         } else {
                             try FileManager.default.setUbiquitous(true,
@@ -354,8 +359,10 @@ public class iCloudDocumentManager: NSObject {
                     }
                 }
                 
+                self.startMonitoringiCloudFileUpdateIfNeeded()
                 completion(nil)
             } catch {
+                self.startMonitoringiCloudFileUpdateIfNeeded()
                 completion(error)
             }
         }
@@ -428,12 +435,13 @@ public class iCloudDocumentManager: NSObject {
                         log.info("moving \(path) to \(destination)")
                         if FileManager.default.fileExists(atPath: destination.path) {
                             log.info("there's an old file existed for \(destination.path), merge it")
-                            let originalFile: URL = URL.localKeyValueStoreURL.appendingPathComponent(path)
+                            let originalFile: URL = icloudKeyValueStoreRoot.appendingPathComponent(path)
                             let mergedFileURL: URL = mergePlistFiles(name: originalFile.deletingPathExtension().lastPathComponent.removeFirstSplashIfThereIsAny, url1: originalFile, url2: destination)
-                            try FileManager.default.removeItem(at: destination)
+                            _ = try FileManager.default.replaceItemAt(originalFile, withItemAt: mergedFileURL)
+//                            try FileManager.default.removeItem(at: mergedFileURL)
                             try FileManager.default.setUbiquitous(false,
-                                                                  itemAt: mergedFileURL,
-                                                                  destinationURL: destination)
+                                                                  itemAt: destination,
+                                                                  destinationURL: originalFile)
                         } else {
                             
                             try FileManager.default.copyItem(at: icloudKeyValueStoreRoot.appendingPathComponent(path), to: destination)

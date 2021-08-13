@@ -148,6 +148,7 @@ extension URL {
         let fileCoordinator = fetchFileCoordinator(self)
         var error: NSError?
         
+        log.verbose("prepareting to read: \(self)")
         fileCoordinator.coordinate(readingItemAt: self,
                                    options: [.withoutChanges],
                                    error: &error) { (url) in

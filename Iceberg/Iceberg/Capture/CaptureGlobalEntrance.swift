@@ -65,8 +65,7 @@ public class CaptureGlobalEntranceWindow: UIWindow {
             .notification(ModalNotification.appear)
             .take(until: self.rx.deallocated)
             .subscribe(onNext: { _ in
-                let count = self.modalViewsInfront.value
-                self.modalViewsInfront.accept(count + 1)
+                self.modalViewAppear()
             })
             .disposed(by: self.disposeBag)
         
@@ -74,8 +73,7 @@ public class CaptureGlobalEntranceWindow: UIWindow {
             .notification(ModalNotification.disappear)
             .take(until: self.rx.deallocated)
             .subscribe(onNext: { _ in
-                let count = self.modalViewsInfront.value
-                self.modalViewsInfront.accept(count - 1)
+                self.modalViewDisappear()
             })
             .disposed(by: self.disposeBag)
         
@@ -86,6 +84,16 @@ public class CaptureGlobalEntranceWindow: UIWindow {
                 self.show()
             }
         }).disposed(by: self.disposeBag)
+    }
+    
+    public func modalViewAppear() {
+        let count = self.modalViewsInfront.value
+        self.modalViewsInfront.accept(count + 1)
+    }
+    
+    public func modalViewDisappear() {
+        let count = self.modalViewsInfront.value
+        self.modalViewsInfront.accept(count - 1)
     }
     
     @objc private func _orientationChanged(notification: Notification) {

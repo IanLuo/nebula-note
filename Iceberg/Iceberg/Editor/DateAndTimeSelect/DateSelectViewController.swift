@@ -175,7 +175,7 @@ public class DateSelectViewController: UIViewController {
         let number = UIStepper()
         let repeatTypeLabel = UILabel().textColor(InterfaceTheme.Color.interactive)
         
-        _ = self.repeatType.takeUntil(actionsController.rx.deallocated).subscribe(onNext: { type in
+        _ = self.repeatType.take(until: actionsController.rx.deallocated).subscribe(onNext: { type in
             switch type {
             
             case .none:

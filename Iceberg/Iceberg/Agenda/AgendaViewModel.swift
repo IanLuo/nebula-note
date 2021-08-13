@@ -123,6 +123,20 @@ public class AgendaViewModel: ViewModelProtocol {
                     } else {
                         return true
                     }
+                }.sorted {
+                    switch ($0.dateAndTime, $1.dateAndTime) {
+                    case (_, nil): return true
+                    case (nil, _): return false
+                    case (let date1?, let date2?):
+                        switch (date1.isDue, date2.isDue) {
+                        case (true, false): return true
+                        case (false, true): return false
+                        default:
+                            return date1.date.timeIntervalSince1970 > date2.date.timeIntervalSince1970
+                        }
+                    default:
+                        return $0.headingText < $1.headingText
+                    }
                 }
                 
                 self.tags.accept(allTags as! [String: [DocumentHeadingSearchResult]])

@@ -231,8 +231,10 @@ public class TabContainerViewController: UIViewController {
     
     public func closeDocument(url: URL) {
         if let viewController = self.viewController(for: url) {
-            viewController.removeFromParent()
-            self.container.subviews.forEach { $0.removeFromSuperview() }
+            DispatchQueue.runOnMainQueueSafely {
+                viewController.removeFromParent()
+                self.container.subviews.forEach { $0.removeFromSuperview() }
+            }
             self.removePair(for: url)
             DispatchQueue.global(qos: .userInteractive).async {
                 self.delegate?.didCloseDocument(url: url, editorViewController: viewController)
@@ -321,9 +323,11 @@ private class TabBar: UIScrollView {
     }
     
     func removeAll() {
-        self.stackView.arrangedSubviews.forEach { tab in
-            if let tab  = tab as? Tab {
-                tab.removeFromSuperview()
+        DispatchQueue.runOnMainQueueSafely {
+            self.stackView.arrangedSubviews.forEach { tab in
+                if let tab  = tab as? Tab {
+                    tab.removeFromSuperview()
+                }
             }
         }
     }

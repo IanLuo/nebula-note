@@ -1261,6 +1261,9 @@ extension OutlineTextStorage: OutlineParserDelegate {
             newRange = NSRange(location: max(0, self.string.nsstring.length - 1), length: 0)
         }
         
+        if newRange.upperBound > self.string.count {
+            newRange = NSRange(location: newRange.location, length: self.string.count - newRange.location)
+        }
         // 不包含已经折叠的部分
 //        if let folded = self.foldedRange(at: newRange.location) {
 //            newRange = NSRange(location: folded.upperBound, length: max(0, newRange.upperBound - folded.upperBound))

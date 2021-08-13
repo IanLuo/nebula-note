@@ -49,15 +49,21 @@ public class StoreContainer: CustomDebugStringConvertible {
         stores = [:]
     }
     
-    public func get(store: Store) -> KeyValueStore {
-        if let store = stores[store.key] {
-            return store
-        } else {
-            lock.lock()
-            stores[store.key] = KeyValueStoreFactory.store(type: KeyValueStoreType.plist(PlistStoreType.custom(store.key)))
+    public func get(store storeType: Store) -> KeyValueStore {
+        lock.lock()
+        
+        defer {
             lock.unlock()
-            return get(store: store)
         }
+        
+        var store = stores[storeType.key]
+        
+        if store == nil {
+            store = KeyValueStoreFactory.store(type: KeyValueStoreType.plist(PlistStoreType.custom(storeType.key)))
+            stores[storeType.key] = store
+        }
+        
+        return store!
     }
     
     public func storeURL(store: Store) -> URL {

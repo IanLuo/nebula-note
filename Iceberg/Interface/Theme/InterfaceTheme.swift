@@ -91,18 +91,18 @@ public struct Layout {
 }
 
 @objc public class DarkInterfaceColor: NSObject, InterfaceThemeColorProtocol {
-    @objc public var spotlitTitle: UIColor = UIColor(87, 84, 83)
+    @objc public var spotlitTitle: UIColor = UIColor(29, 29, 29)
     @objc public var level: UIColor = UIColor(10, 132, 255)
     @objc public var finished: UIColor = UIColor(148, 201, 113)
     @objc public var unfinished: UIColor = UIColor(red:1.00, green:0.77, blue:0.25, alpha:1.00)
     
-    @objc public let interactive: UIColor = UIColor(238, 238, 238)
+    @objc public let interactive: UIColor = UIColor(226, 221, 217)
     @objc public let descriptive: UIColor = UIColor(145, 145, 146)
     @objc public let secondaryDescriptive: UIColor = UIColor(124, 124, 123)
-    @objc public let background1: UIColor = UIColor(49, 49, 49)
-    @objc public let background2: UIColor = UIColor(64, 64, 64)
-    @objc public let background3: UIColor = UIColor(81, 80, 75)
-    @objc public let spotlight: UIColor = UIColor(219, 210, 199)
+    @objc public let background1: UIColor = UIColor(29, 29, 29)
+    @objc public let background2: UIColor = UIColor(50, 50, 50)
+    @objc public let background3: UIColor = UIColor(74, 74, 74)
+    @objc public let spotlight: UIColor = UIColor(226, 221, 217)
     @objc public let warning: UIColor = UIColor(194, 81, 76)
 }
 

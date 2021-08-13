@@ -102,6 +102,7 @@ public class DocumentEditorViewModel: ViewModelProtocol {
             service.open {
                 self?.isReadyToEdit = $0 != nil
                 self?.isOpenning = false
+                guard $0 != nil else { return }
                 self?.isFavorite.accept(self?.dependency
                                             .settingAccessor
                                             .favorites

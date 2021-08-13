@@ -8,7 +8,6 @@ target 'x3Note' do
     pod 'RxSwift', :git => 'git@github.com:ReactiveX/RxSwift.git', :tag => '6.1.0'
     pod 'RxCocoa', :git => 'git@github.com:ReactiveX/RxSwift.git', :tag => '6.1.0'
     pod 'RxDataSources', :git => 'git@github.com:RxSwiftCommunity/RxDataSources', :tag => '5.0.1'
-    pod 'SwiftyBeaver'
     pod 'Haptico' # https://github.com/iSapozhnik/Haptico
     pod 'Drawsana' # https://github.com/Asana/Drawsana
     pod 'SwiftGen', '~> 6.0'

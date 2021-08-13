@@ -147,7 +147,7 @@ public class Application: Coordinator {
         switch status {
         case .changed:
             if iCloudDocumentManager.status == .on {
-                self.dependency.syncManager.geticloudContainerURL()
+                _ = self.dependency.syncManager.geticloudContainerURL()
                 // 开始同步 iCloud 文件
                 self.dependency.syncManager.startMonitoringiCloudFileUpdateIfNeeded()
                 self.stack.showAlert(title: L10n.Sync.Alert.Account.Changed.title, message: L10n.Sync.Alert.Account.Changed.msg)
@@ -172,7 +172,7 @@ public class Application: Coordinator {
                 
                 confirmViewController.confirmAction = { viewController in
                     viewController.dismiss(animated: true, completion: {
-                        self.dependency.syncManager.geticloudContainerURL()
+                        _ = self.dependency.syncManager.geticloudContainerURL()
                         iCloudDocumentManager.status = .on
                         // 开始同步 iCloud 文件
                         self.dependency.syncManager.startMonitoringiCloudFileUpdateIfNeeded()
@@ -202,8 +202,7 @@ public class Application: Coordinator {
                     confirmViewController.present(from: self.stack, at: self.stack.view)
                 }).disposed(by: self.disposeBag)
             } else if iCloudDocumentManager.status == .on {
-                
-                self.dependency.syncManager.geticloudContainerURL()
+                _ = self.dependency.syncManager.geticloudContainerURL()
                 // 开始同步 iCloud 文件
                 self.dependency.syncManager.startMonitoringiCloudFileUpdateIfNeeded()
                 self.dependency.eventObserver.emit(iCloudAvailabilityChangedEvent(isEnabled: true))

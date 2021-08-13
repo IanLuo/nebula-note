@@ -25,7 +25,7 @@ public struct AppContext {
 public class Dependency {
     lazy var appContext: AppContext = { AppContext() }()
     lazy var documentManager: DocumentManager = { DocumentManager(editorContext: editorContext, eventObserver: eventObserver, syncManager: syncManager) }()
-    lazy var documentSearchManager: DocumentSearchManager = { DocumentSearchManager() }()
+    lazy var documentSearchManager: DocumentSearchManager = { DocumentSearchManager(editorContext: editorContext) }()
     lazy var editorContext: EditorContext = { EditorContext(eventObserver: eventObserver, settingsAccessor: settingAccessor) }()
     lazy var textTrimmer: OutlineTextTrimmer = { OutlineTextTrimmer(parser: OutlineParser()) }()
     lazy var eventObserver: EventObserver = { EventObserver() }()

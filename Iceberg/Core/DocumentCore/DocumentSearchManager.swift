@@ -128,8 +128,10 @@ public class DocumentSearchManager {
     private let _trashSearchOperationQueue: OperationQueue
     private let _documentSearchOperationQueue: OperationQueue
     private let _logSearchOperationQueue: OperationQueue
+    private let editorContext: EditorContext
     
-    public init() {
+    public init(editorContext: EditorContext) {
+        self.editorContext = editorContext
         self._headingSearchOperationQueue = OperationQueue()
         self._contentSearchOperationQueue = OperationQueue()
         self._headingChangeObservingQueue = OperationQueue()
@@ -469,7 +471,11 @@ public class DocumentSearchManager {
                 }
                 
                 URL.read(urls: self.loadAllFiles(), each: { url, string in
+                    var string = string
                     
+                    if let service = self.editorContext.getActiveEditorService(with: url.wrapperURL), service.isOpen {
+                        string = service.string
+                    }
                     parser.parse(str: string)
                     
                     var headingStack: [DocumentHeadingSearchResult] = []

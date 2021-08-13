@@ -68,7 +68,6 @@ public class EditorContext {
     
     public func getActiveEditorService(with url: URL) -> EditorService? {
         let cacheKey = url.documentRelativePath
-        log.info("trying to get editor service from cache with key: \(cacheKey)")
         return EditorContext._cachedServiceInstances[cacheKey]
     }
     

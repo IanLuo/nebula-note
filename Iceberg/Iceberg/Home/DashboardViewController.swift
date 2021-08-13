@@ -117,6 +117,7 @@ public class DashboardViewController: UIViewController {
             .isMember
             .subscribe(onNext: { [weak self] isMember in
                 self?.membershipButton.isHidden = isMember
+                guard self?.view.window != nil else { return }
                 self?.view.layoutIfNeeded()
         }).disposed(by: self.disposeBag)
     }

@@ -83,20 +83,24 @@ extension Coordinator {
             dateAndTimeSelectViewController.dismiss(animated: true)
             
             add(dateAndTime)
+            self.dependency.globalCaptureEntryWindow?.modalViewDisappear()
         }
         
         dateAndTimeSelectViewController.didDeleteAction = { [unowned dateAndTimeSelectViewController] in
             dateAndTimeSelectViewController.dismiss(animated: true)
             
             delete()
+            self.dependency.globalCaptureEntryWindow?.modalViewDisappear()
         }
         
         dateAndTimeSelectViewController.didCancelAction = { [unowned dateAndTimeSelectViewController] in
             dateAndTimeSelectViewController.dismiss(animated: true)
             
             cancel()
+            self.dependency.globalCaptureEntryWindow?.modalViewDisappear()
         }
         
+        self.dependency.globalCaptureEntryWindow?.modalViewAppear()
         dateAndTimeSelectViewController.present(from: self.viewController!, at: from, location: point, completion: nil)
     }
     
