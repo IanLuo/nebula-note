@@ -295,7 +295,7 @@ extension UIViewController {
             return DarkInterfaceTheme()
         case .auto:
             if #available(iOS 12.0, *) {
-                switch self.traitCollection.userInterfaceStyle {
+                switch UIScreen.main.traitCollection.userInterfaceStyle {
                 case .dark:
                     return DarkInterfaceTheme()
                 case .light:
