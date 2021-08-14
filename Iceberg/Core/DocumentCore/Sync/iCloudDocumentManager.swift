@@ -70,6 +70,7 @@ public class iCloudDocumentManager: NSObject {
         let query = NSMetadataQuery()
         query.delegate = self
         
+        query.operationQueue = OperationQueue()
         let predicate = NSPredicate(format: "%K like '*'", NSMetadataItemFSNameKey)
         query.predicate = predicate
         
@@ -81,7 +82,7 @@ public class iCloudDocumentManager: NSObject {
     private var metadataQueueStartObserver: Any!
     private var metadataQueueFinishObserver: Any!
     private var metadataQueueProgressObserver: Any!
-    private let metadataQueue: OperationQueue = OperationQueue()
+    private let metadataHandlingQueue: OperationQueue = OperationQueue()
     private let iCloudeDispatchQueue = DispatchQueue(label: "iCloud Queue", qos: DispatchQoS.background, attributes: [.concurrent], autoreleaseFrequency: .workItem, target: nil)
     
     public init(eventObserver: EventObserver) {
@@ -92,12 +93,12 @@ public class iCloudDocumentManager: NSObject {
         // 这个通知暂时不处理，貌似收不到
 //        NotificationCenter.default.addObserver(self, selector: #selector(_iCloudAvailabilityChanged(_:)), name: NSNotification.Name.NSUbiquityIdentityDidChange, object: nil)
         
-        self.metadataQueue.underlyingQueue = self.iCloudeDispatchQueue
+        self.metadataHandlingQueue.underlyingQueue = self.iCloudeDispatchQueue
 
         self.metadataQueueUpdateObserver
             = NotificationCenter.default.addObserver(forName: NSNotification.Name.NSMetadataQueryDidUpdate,
                                                      object:self._metadataQuery,
-                                                     queue: metadataQueue,
+                                                     queue: metadataHandlingQueue,
                                                      using: { notification in
                                                         self._metadataQueryDidUpdate(notification)
                                                      })
@@ -105,7 +106,7 @@ public class iCloudDocumentManager: NSObject {
         self.metadataQueueStartObserver
             = NotificationCenter.default.addObserver(forName: NSNotification.Name.NSMetadataQueryDidStartGathering,
                                                      object:self._metadataQuery,
-                                                     queue: metadataQueue,
+                                                     queue: metadataHandlingQueue,
                                                      using: { notification in
                                                         self._metadataQueryDidStart(notification)
                                                      })
@@ -113,7 +114,7 @@ public class iCloudDocumentManager: NSObject {
         self.metadataQueueFinishObserver
             = NotificationCenter.default.addObserver(forName: NSNotification.Name.NSMetadataQueryDidFinishGathering,
                                                      object:self._metadataQuery,
-                                                     queue: metadataQueue,
+                                                     queue: metadataHandlingQueue,
                                                      using: { notification in
                                                         self._metadataQueryDidFinish(notification)
                                                      })
@@ -121,7 +122,7 @@ public class iCloudDocumentManager: NSObject {
         self.metadataQueueProgressObserver
             = NotificationCenter.default.addObserver(forName: NSNotification.Name.NSMetadataQueryGatheringProgress,
                                                      object:self._metadataQuery,
-                                                     queue: metadataQueue,
+                                                     queue: metadataHandlingQueue,
                                                      using: { notification in
                                                         self._metadataQueryProgress(notification)
                                                      })
@@ -192,13 +193,14 @@ public class iCloudDocumentManager: NSObject {
     }
     
     public func startMonitoringiCloudFileUpdateIfNeeded() {
-        self.iCloudeDispatchQueue.async { [unowned self] in
+        self._metadataQuery.operationQueue?.addOperation {
             self._metadataQuery.start()
         }
+        
     }
     
     public func stopMonitoringiCloudFildUpdateIfNeeded() {
-        self.iCloudeDispatchQueue.async { [unowned self] in
+        self._metadataQuery.operationQueue?.addOperation {
             self._metadataQuery.stop()
         }
     }

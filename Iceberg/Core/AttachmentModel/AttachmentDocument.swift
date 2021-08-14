@@ -63,7 +63,6 @@ public class AttachmentDocument: UIDocument {
     
     public class func createAttachment(url: URL) -> Attachment? {
         let jsonURL = url.appendingPathComponent(AttachmentDocument.jsonFile)
-        log.info(jsonURL)
         do {
             var dd: Data?
             jsonURL.read(completion: { d in
