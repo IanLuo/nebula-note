@@ -27,7 +27,7 @@ public class DocumentEditorViewModel: ViewModelProtocol {
     
     public weak var delegate: DocumentEditViewModelDelegate? {
         didSet {
-            if self.editorService.isOpen {
+            if self.editorService.isOpen && self.isReadyToEdit {
                 self.delegate?.didReadyToEdit()
             }
         }
@@ -65,7 +65,10 @@ public class DocumentEditorViewModel: ViewModelProtocol {
                     self.editorService.syncFoldingStatus()
                 default: break
                 }
-                self.delegate?.didReadyToEdit()
+                
+                if oldValue == false {
+                    self.delegate?.didReadyToEdit()
+                }
             }
         }
     }
