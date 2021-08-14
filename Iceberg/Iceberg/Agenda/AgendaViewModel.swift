@@ -137,7 +137,14 @@ public class AgendaViewModel: ViewModelProtocol {
                     default:
                         return $0.headingText < $1.headingText
                     }
-                }
+                }.sorted(by: {
+                    switch ($0.priority, $1.priority) {
+                    case (_, nil): return true
+                    case (nil, _): return false
+                    case (let priority1?, let priority2?): return priority1 < priority2
+                    default: return true
+                    }
+                })
                 
                 self.tags.accept(allTags as! [String: [DocumentHeadingSearchResult]])
                 self.status.accept(allPlannings as! [String: [DocumentHeadingSearchResult]])
