@@ -47,9 +47,20 @@ public class iCloudDocumentManager: NSObject {
         return iCloudDocumentManager.iCloudRoot?.appendingPathComponent("keyValueStore")
     }
     
-    public let onDownloadingUpdates: BehaviorRelay<[URL: Int]> = BehaviorRelay(value: [:])
-    public let onDownloadingCompletes: PublishSubject<URL> = PublishSubject()
+    public lazy var onDownloadingUpdates: Observable<[URL: Int]> = {
+        return _onDownloadingUpdates
+            .observe(on: OperationQueueScheduler(operationQueue: OperationQueue()))
+            .throttle(RxTimeInterval.seconds(1), scheduler: SerialDispatchQueueScheduler(qos: .background))
+    }()
+    public let _onDownloadingUpdates: BehaviorRelay<[URL: Int]> = BehaviorRelay(value: [:])
     
+    public lazy var onDownloadingCompletes: Observable<URL> = {
+        return _onDownloadingCompletes
+            .throttle(RxTimeInterval.seconds(1), scheduler: SerialDispatchQueueScheduler(qos: .background))
+            .observe(on: OperationQueueScheduler(operationQueue: OperationQueue()))
+    }()
+    private let _onDownloadingCompletes: PublishSubject<URL> = PublishSubject()
+
     public var isThereAnyFileUploading: Bool {
         return self.uploadingItemsCache.count > 0
     }
@@ -63,7 +74,7 @@ public class iCloudDocumentManager: NSObject {
     }
     
     private var uploadingItemsCache: [URL: Any] = [:]
-    private var downloadingItemsCache: [URL: Any] = [:]
+    private var downloadingItemsCache: SyncedDictionary<URL, Any> = [:]
     
     private let _eventObserver: EventObserver
     private lazy var _metadataQuery: NSMetadataQuery = {
@@ -350,6 +361,7 @@ public class iCloudDocumentManager: NSObject {
                             let originalFile: URL = URL.localKeyValueStoreURL.appendingPathComponent(path)
                             let mergedFileURL: URL = mergePlistFiles(name: originalFile.deletingPathExtension().lastPathComponent.removeFirstSplashIfThereIsAny, url1: originalFile, url2: destination)
                             _ = try FileManager.default.replaceItemAt(originalFile, withItemAt: mergedFileURL)
+                            _ = try FileManager.default.removeItem(at: destination)
                             try FileManager.default.setUbiquitous(true,
                                                                   itemAt: originalFile,
                                                                   destinationURL: destination)
@@ -440,10 +452,8 @@ public class iCloudDocumentManager: NSObject {
                             let originalFile: URL = icloudKeyValueStoreRoot.appendingPathComponent(path)
                             let mergedFileURL: URL = mergePlistFiles(name: originalFile.deletingPathExtension().lastPathComponent.removeFirstSplashIfThereIsAny, url1: originalFile, url2: destination)
                             _ = try FileManager.default.replaceItemAt(originalFile, withItemAt: mergedFileURL)
-//                            try FileManager.default.removeItem(at: mergedFileURL)
-                            try FileManager.default.setUbiquitous(false,
-                                                                  itemAt: destination,
-                                                                  destinationURL: originalFile)
+                            try FileManager.default.removeItem(at: destination)
+                            try FileManager.default.copyItem(at: icloudKeyValueStoreRoot.appendingPathComponent(path), to: destination)
                         } else {
                             
                             try FileManager.default.copyItem(at: icloudKeyValueStoreRoot.appendingPathComponent(path), to: destination)
@@ -638,7 +648,7 @@ extension iCloudDocumentManager: NSMetadataQueryDelegate {
             guard self.downloadingItemsCache[url] != nil else { return }
             
             self.downloadingItemsCache[url] = nil
-            self.onDownloadingCompletes.onNext(url)
+            self._onDownloadingCompletes.onNext(url)
             
             self.handleConflictIfNeeded(item: item)
             
@@ -667,7 +677,7 @@ extension iCloudDocumentManager: NSMetadataQueryDelegate {
             let downloadSize = item.downloadingSize {
             log.info("downloading \(url) (\(downloadPercent)%), (\(downloadSize))")
             
-            var downloadingItems: [URL: Int] = self.onDownloadingUpdates.value
+            var downloadingItems: [URL: Int] = self._onDownloadingUpdates.value
 
             if item.downloadPercentage == 100 {
                 handleDocumentDownloadCompletion()
@@ -679,7 +689,7 @@ extension iCloudDocumentManager: NSMetadataQueryDelegate {
                 self.downloadingItemsCache[url] = url
             }
             
-            self.onDownloadingUpdates.accept(downloadingItems)
+            self._onDownloadingUpdates.accept(downloadingItems)
         }
                 
     }

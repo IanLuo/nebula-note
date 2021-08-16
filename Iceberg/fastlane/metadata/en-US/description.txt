@@ -17,6 +17,13 @@ Nebula is a personal knowledge system, combines note-taking, material management
 - Full-screen mode.
 - Works with Task Management and Material Management to make everything easy and efficient.
 
+* Task Agenda 
+- Automatically generate tasks from marks in agenda, no more effort to manage the work.
+- Automatically list high priority tasks.
+- Group tasks according to date, arrange the work more wisely.
+- Show overdue tasks automatically, in case you forget.
+- Set repetable tasks, and notify you in the agenda periodically.
+
 * Automatically Kanban
 - Automatically generate all items from document headings.
 - Automatically update note content from Kanban, and another way around.

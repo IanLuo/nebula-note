@@ -40,7 +40,7 @@
 			<key>CFBundleTypeIconFiles</key>
 			<array/>
 			<key>CFBundleTypeName</key>
-			<string>x3note file</string>
+			<string>Nebula file</string>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>LSHandlerRank</key>
@@ -100,7 +100,7 @@
 			<string>com.wod.x3note</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>x3note</string>
+				<string>nebula</string>
 			</array>
 		</dict>
 		<dict>
@@ -121,7 +121,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>360</string>
+	<string>363</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSApplicationCategoryType</key>
@@ -205,7 +205,7 @@
 				<string>com.apple.package</string>
 			</array>
 			<key>UTTypeDescription</key>
-			<string>x3note file</string>
+			<string>Nebula file</string>
 			<key>UTTypeIconFiles</key>
 			<array/>
 			<key>UTTypeIdentifier</key>

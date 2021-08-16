@@ -156,7 +156,7 @@ public class BrowserFolderViewController: UIViewController {
             break
         }
 
-        let configureCell: RxCollectionViewSectionedAnimatedDataSource<BrowserDocumentSection>.ConfigureCell = { (datasource, collectionView, indexPath, cellModel) -> UICollectionViewCell in
+        let configureCell: RxCollectionViewSectionedReloadDataSource<BrowserDocumentSection>.ConfigureCell = { (datasource, collectionView, indexPath, cellModel) -> UICollectionViewCell in
             var cell = collectionView.dequeueReusableCell(withReuseIdentifier: self.reuseIdentifier, for: indexPath) as! BrowserCell
             
             if cellModel.hasSubDocuments {
@@ -171,7 +171,7 @@ public class BrowserFolderViewController: UIViewController {
                         
             cell.onPresentingModalViewController
                 .asObserver()
-                .observeOn(MainScheduler())
+                .observe(on: MainScheduler())
                 .subscribe(onNext: { [weak self] (viewController, view) in
                     guard let strongSelf = self else { return }
                     if let transitionController = viewController as? TransitionViewController {
@@ -193,7 +193,7 @@ public class BrowserFolderViewController: UIViewController {
             return cell
         }
         
-        let datasource = RxCollectionViewSectionedAnimatedDataSource<BrowserDocumentSection>(configureCell: configureCell)
+        let datasource = RxCollectionViewSectionedReloadDataSource<BrowserDocumentSection>(configureCell: configureCell)
         
         self.viewModel
             .output

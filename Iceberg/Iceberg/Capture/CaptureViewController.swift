@@ -90,7 +90,7 @@ public class CaptureViewController: UIViewController, TransitionProtocol {
         super.viewDidLoad()
         self.view.addSubview(self.contentView)
         
-        self.contentView.backgroundColor = InterfaceTheme.Color.background2
+        self.view.backgroundColor = InterfaceTheme.Color.background2
         self.contentView.centerAnchors(position: [.centerX, .centerY], to: self.view)
         self.collectionView.sizeAnchor(width: 300, height: 400)
         

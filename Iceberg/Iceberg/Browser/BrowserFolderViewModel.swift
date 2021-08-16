@@ -79,6 +79,7 @@ public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
     public let input: Input = Input()
     public let output: Output = Output()
     private var allLoadedDocuments: BehaviorRelay<[BrowserCellModel]> = BehaviorRelay(value: [])
+    private let loadingOperationQueue = OperationQueue()
     
     override public required init() {}
     
@@ -87,6 +88,8 @@ public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
         self.init(coordinator: coordinator)
         self.dataMode = dataMode
         self.setupObservers()
+        
+        disposeBag.insert()
     }
     
     public convenience init(url: URL,
@@ -162,20 +165,29 @@ public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
         }))])
     }
     
-    public func reload() {
+    public func reload(downloadingDocuments: [URL] = []) {
+        // cancel other loading process
+        self.loadingOperationQueue.cancelAllOperations()
+        
         switch self.dataMode! {
         case .browser:
-            self.loadFolderData(url: self.url)
+            _ = self.loadFolderData(url: self.url)
+                .observe(on: OperationQueueScheduler(operationQueue: self.loadingOperationQueue))
                 .subscribe(onNext: { [weak self] in
                     self?.allLoadedDocuments.accept($0)
                 })
-                .disposed(by: self.disposeBag)
         case .favorite:
-            self.loadFavorites().subscribe(onNext: { [weak self] in
+            _ = self.loadFavorites()
+                .observe(on: OperationQueueScheduler(operationQueue: self.loadingOperationQueue))
+                .subscribe(onNext: { [weak self] in
                 self?.allLoadedDocuments.accept($0)
-            }).disposed(by: self.disposeBag)
+            })
         case .recent:
-            self.allLoadedDocuments.accept(self.loadRecent())
+            _ = self.loadRecent()
+                .observe(on: OperationQueueScheduler(operationQueue: self.loadingOperationQueue))
+                .subscribe(onNext: { [weak self] in
+                    self?.allLoadedDocuments.accept($0)
+                })
         }
     }
     
@@ -185,10 +197,17 @@ public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
         }
     }
     
-    private func loadRecent() -> [BrowserCellModel] {
-        return allFiles.filter { $0.lastOpenedStamp != nil && $0.path.hasSuffix(Document.fileExtension) && !$0.path.contains(SyncCoordinator.Prefix.deleted.rawValue) }
-            .sorted(by: { $0.lastOpenedStamp! > $1.lastOpenedStamp! })
-            .map { [weak self] in BrowserCellModel(url: $0, coordinator: self?.context.coordinator) }
+    private func loadRecent() -> Observable<[BrowserCellModel]> {
+        return Observable.create { observer in
+            let cellModels = self.allFiles.filter { $0.lastOpenedStamp != nil && $0.path.hasSuffix(Document.fileExtension) && !$0.path.contains(SyncCoordinator.Prefix.deleted.rawValue) }
+                .sorted(by: { $0.lastOpenedStamp! > $1.lastOpenedStamp! })
+                .map { [weak self] in BrowserCellModel(url: $0, coordinator: self?.context.coordinator) }
+            
+            
+            observer.onNext(cellModels)
+            observer.onCompleted()
+            return Disposables.create()
+        }
     }
     
     private func loadFavorites() -> Observable<[BrowserCellModel]> {
@@ -232,19 +251,6 @@ public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
                     cellModel.shouldShowChooseHeadingIndicator = self.mode.showChooseIndicator
                     cellModels.append(cellModel)
                 }
-                
-                //find from downloading urls
-                for url in Array(self.dependency.syncManager.onDownloadingUpdates.value.keys.filter { $0.pathExtension == Document.fileExtension && !$0.packageName
-                    .hasPrefix(SyncCoordinator.Prefix.deleted.rawValue) }) {
-                    if url.parentDocumentURL == self.url && !urls.contains(where: { $0.documentRelativePath == url.documentRelativePath }) {
-                        let cellModel = BrowserCellModel(url: url, isDownloading: true, coordinator: self.context.coordinator)
-                        cellModel.shouldShowActions = self.mode.showActions
-                        cellModel.shouldShowChooseHeadingIndicator = self.mode.showChooseIndicator
-                        cellModel.coordinator = self.context.coordinator
-                        cellModels.append(cellModel)
-                    }
-                }
-                
             } catch {
                 log.error(error)
             }
@@ -255,6 +261,29 @@ public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
             observer.onCompleted()
             
             return Disposables.create()
+        }
+    }
+    
+    private func addDownloadingDocuments(_ urls: [URL]) {
+        let cellModels: [BrowserCellModel] = urls
+            .filter({ url in url.pathExtension == Document.fileExtension
+                && url.packageName.hasPrefix(SyncCoordinator.Prefix.deleted.rawValue) == false })
+            .compactMap { url in
+                if url.parentDocumentURL == self.url && !urls.contains(where: { $0.documentRelativePath == url.documentRelativePath }) {
+                    let cellModel = BrowserCellModel(url: url, isDownloading: true, coordinator: self.context.coordinator)
+                    cellModel.shouldShowActions = self.mode.showActions
+                    cellModel.shouldShowChooseHeadingIndicator = self.mode.showChooseIndicator
+                    cellModel.coordinator = self.context.coordinator
+                    return cellModel
+                } else {
+                    return nil
+                }
+            }
+        
+        if cellModels.count > 0 {
+            var all = self.allLoadedDocuments.value
+            all.append(contentsOf: cellModels)
+            self.allLoadedDocuments.accept(all)
         }
     }
     
@@ -376,10 +405,8 @@ public class BrowserFolderViewModel: NSObject, ViewModelProtocol {
         self.dependency.syncManager.onDownloadingUpdates.subscribe(onNext: { [weak self] downloadingItemMap in
             guard let strongSelf = self else { return }
             
-            let urlsBelongsToCurrentFolder = downloadingItemMap.keys.filter { $0.pathExtension == Document.fileExtension && $0.parentDocumentURL == strongSelf.url }
-            
-            if urlsBelongsToCurrentFolder.count > 0 {
-                strongSelf.reload()
+            if downloadingItemMap.count > 0 {
+                strongSelf.addDownloadingDocuments(Array(downloadingItemMap.keys))
             }
         }).disposed(by: self.disposeBag)
         

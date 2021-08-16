@@ -74,7 +74,7 @@ platform :ios do
     
   end
 
-  lane :metadata_without_images do
+  lane :metadata do
     deliver(
       submit_for_review: false,
       automatic_release: false,
@@ -83,7 +83,7 @@ platform :ios do
     )
   end
 
-  lane :metadata_mac_without_images do
+  lane :metadata_mac do
     deliver(
       platform: 'osx',
       submit_for_review: false,
@@ -94,7 +94,7 @@ platform :ios do
   end
 
 
-  lane :metadata do
+  lane :metadata_with_images do
     deliver(
       submit_for_review: false,
       automatic_release: false,
@@ -103,7 +103,7 @@ platform :ios do
     )
   end
 
-  lane :metadata_mac do
+  lane :metadata_mac_with_images do
     deliver(
       platform: 'osx',
       submit_for_review: false,

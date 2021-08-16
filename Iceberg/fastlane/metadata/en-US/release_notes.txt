@@ -1,7 +1,13 @@
-New features
-1. macOS and iPad has better layout for windows
+New features:
+New Agenda, much easier to manage the task status, tags, priority.
+Material manage now includ all attachments.
 
-Fix
-1. Fix crash when try to add customized status
-2. Faster to open and close document
-3. The paragraph button now shows at correct place
+Improvements:
+Fix when renaming document, didn't correctly rename those opening documents.
+Improved opening speed.
+In editor now high light the current line.
+Fix when update task status, not update in agenda and kanban.
+Improve interaction with image attachment in editor.
+Fix cursor location misplaced when paste text.
+Fix selection range can't adjust in iPhone and iPad.
+Fix some customized settings didn't load in time after sync.
